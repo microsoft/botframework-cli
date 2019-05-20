@@ -1,0 +1,63 @@
+{
+  "name": "botframework-cli",
+  "version": "0.0.0",
+  "author": "Microsoft",
+  "bin": {
+    "bf": "./bin/run"
+  },
+  "bugs": "https://github.com/Microsoft/botframework-cli/issues",
+  "dependencies": {
+    "@oclif/command": "^1.5.13",
+    "@oclif/config": "^1.13.0",
+    "@oclif/plugin-help": "^2.1.6",
+    "tslib": "^1.9.3",
+    "bf-chatdown" : "^1.2.3"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.0",
+    "@oclif/test": "^1.2.4",
+    "@oclif/tslint": "^3.1.1",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.14.6",
+    "chai": "^4.2.0",
+    "globby": "^8.0.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.3.0",
+    "ts-node": "^8.1.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/Microsoft/botframework-cli",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "bf",
+    "plugins": [
+      "@oclif/plugin-help",
+      "bf-chatdown"
+    ]
+  },
+  "repository": "Microsoft/botframework-cli",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "tslint -p test -t stylish",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts"
+}
