@@ -9,7 +9,7 @@ if (!semver.satisfies(process.version, requiredVersion)) {
 }
 
 const chalk = require('chalk');
-const chatdown = require('./helpers/index');
+const chatdown = require('chatdown');
 const txtfile = require('read-text-file');
 const glob = require('glob');
 const latestVersion = require('latest-version');

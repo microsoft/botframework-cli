@@ -52,21 +52,21 @@ describe('chatdown', () => {
     });
 
     it('should read from file when chat file is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown ${path.join(__dirname, 'cli.sample.chat')}`, (error, stdout) => {
+        cp.exec(`node ./bin/run chatdown ${path.join(__dirname, '../utils/cli.sample.chat')}`, (error, stdout) => {
             assert.doesNotThrow(() => JSON.parse(stdout));
             done();
         });
     });
 
     it('should process all files when a glob is passed in with the -f argument, and the -o is passed in for the output directory', done => {
-        cp.exec(`node ./bin/run chatdown -f ../../src/utils/Examples/*.chat -o ./`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown -f ../utils/Examples/*.chat -o ./`, (error, stdout, stderr) => {
             assert(stdout.includes('Successfully wrote'));
             done();
         });
     });
 
     it('should process all files when a glob is passed in with the -f argument', done => {
-        cp.exec(`node ./bin/run chatdown -f ../../src/utils/Examples/*.chat`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown -f ../utils/Examples/*.chat`, (error, stdout, stderr) => {
             assert(stdout.includes('Successfully wrote'));
             done();
         });
