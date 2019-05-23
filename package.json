@@ -1,7 +1,24 @@
 {
-  "name": "root",
+  "name": "botframework-cli",
+  "scripts": {
+    "build": "lerna bootstrap && lerna run build",
+    "test": "lerna run test",
+    "coverage": "nyc npm test",
+    "coveralls": "npm run coverage",
+    "upload-coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "eslint": "eslint --format \"node_modules/eslint-friendly-formatter\" \"./packages/@(LUIS|LUISGen|QnAMaker)/bin/*\"",
+    "tslint": "tslint ./packages/*/src/**/*.ts -t verbose"
+  },
   "private": true,
   "devDependencies": {
-    "lerna": "^3.13.4"
+    "lerna": "^3.2.1",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "bf-chatdown": "file:packages/chatdown",
+    "botframework-cli": "file:packages/cli"
   }
 }
