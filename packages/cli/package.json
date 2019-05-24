@@ -7,11 +7,11 @@
   },
   "bugs": "https://github.com/Microsoft/botframework-cli/issues",
   "dependencies": {
-    "@oclif/command": "^1.5.13",
-    "@oclif/config": "^1.13.0",
-    "@oclif/plugin-help": "^2.1.6",
+    "@oclif/command": "~1.5.13",
+    "@oclif/config": "~1.13.0",
+    "@oclif/plugin-help": "~2.1.6",
     "tslib": "^1.9.3",
-    "bf-chatdown" : "^1.2.3"
+    "bf-chatdown" : "~1.2.3"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",
@@ -56,7 +56,6 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "lib/index.d.ts"
