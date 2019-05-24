@@ -1,7 +1,14 @@
 {
   "name": "root",
+  "scripts": {
+    "build": "lerna bootstrap && lerna run build",
+    "test": "lerna run test",
+    "coverage": "nyc npm test",
+    "coveralls": "npm run coverage",
+    "upload-coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
   "private": true,
   "devDependencies": {
-    "lerna": "^3.13.4"
+    "lerna": "^3.2.1"
   }
 }
