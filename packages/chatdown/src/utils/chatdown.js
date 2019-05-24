@@ -9,8 +9,7 @@ if (!semver.satisfies(process.version, requiredVersion)) {
 }
 
 const chalk = require('chalk');
-const help = require('./helpers/help');
-const chatdown = require('./helpers/index');
+const chatdown = require('chatdown');
 const txtfile = require('read-text-file');
 const glob = require('glob');
 const latestVersion = require('latest-version');
@@ -108,7 +107,7 @@ async function runProgram(args) {
 
     if (args.prefix) {
         intercept(function(txt) {
-            return `[${">=8.0.0"}]\n${txt}`;
+            return `[${pkg.name}]\n${txt}`;
         });
     }
 
@@ -125,18 +124,13 @@ async function runProgram(args) {
     }
 
     if (args.version || args.v) {
-        process.stdout.write("1.2.0");
-        return 0;
-    }
-
-    if (args.h || args.help) {
-        help(process.stdout);
+        process.stdout.write(pkg.version);
         return 0;
     }
 
     if (args.f || args.folder) {
-        let inputDir = args.f.trim();
-        let outputDir = (args.o || args.out_folder) ? args.o.trim() : "./";
+        let inputDir = args.folder.trim();
+        let outputDir = (args.o || args.out_folder) ? args.out_folder.trim() : "./";
         if (outputDir.substr(0, 2) === "./") {
             outputDir = path.resolve(process.cwd(), outputDir.substr(2))
         }
@@ -156,27 +150,9 @@ async function runProgram(args) {
             return 0;
         }
         else {
-            help();
             return -1;
         }
     }
-}
-
-/**
- * Utility function that exist the process with an
- * optional error. If an Error is received, the error
- * message is written to stdout, otherwise, the help
- * content are displayed.
- *
- * @param {*} error Either an instance of Error or null
- */
-function exitWithError(error) {
-    if (error instanceof Error) {
-        process.stderr.write(chalk.red(error));
-    } else {
-        help();
-    }
-    process.exit(1);
 }
 
 module.exports.runChatdown = runProgram;
