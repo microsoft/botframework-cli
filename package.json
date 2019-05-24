@@ -5,9 +5,7 @@
     "test": "lerna run test",
     "coverage": "nyc npm test",
     "coveralls": "npm run coverage",
-    "upload-coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "eslint": "eslint --format \"node_modules/eslint-friendly-formatter\" \"./packages/@(LUIS|LUISGen|QnAMaker)/bin/*\"",
-    "tslint": "tslint ./packages/*/src/**/*.ts -t verbose"
+    "upload-coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "private": true,
   "devDependencies": {
