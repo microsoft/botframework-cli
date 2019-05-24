@@ -1,7 +1,7 @@
 {
   "name": "bf-chatdown",
   "description": "Tool for parsing chat files and outputting replayable activities",
-  "version": "1.2.3",
+  "version": "0.1.0",
   "author": "Microsoft",
   "bugs": "https://github.com/Microsoft/chatdown/issues",
   "dependencies": {
