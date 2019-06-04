@@ -1,32 +1,13 @@
-bf-cli-command
-==============
+@heroku-cli/command
+===================
 
+Base class for Heroku CLI commands. Built off of [oclif](https://oclif.io).
 
-
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/bf-cli-command.svg)](https://npmjs.org/package/bf-cli-command)
-[![Downloads/week](https://img.shields.io/npm/dw/bf-cli-command.svg)](https://npmjs.org/package/bf-cli-command)
-[![License](https://img.shields.io/npm/l/bf-cli-command.svg)](https://github.com/munozemilio/bf-cli-command/blob/master/package.json)
-
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g bf-cli-command
-$ oclif-example COMMAND
-running command...
-$ oclif-example (-v|--version|version)
-bf-cli-command/0.0.0 darwin-x64 node-v12.1.0
-$ oclif-example --help [COMMAND]
-USAGE
-  $ oclif-example COMMAND
-...
-```
-<!-- usagestop -->
-# Commands
-<!-- commands -->
-
-<!-- commandsstop -->
+[![Version](https://img.shields.io/npm/v/@heroku-cli/command.svg)](https://npmjs.org/package/@heroku-cli/command)
+[![CircleCI](https://circleci.com/gh/heroku/heroku-cli-command/tree/master.svg?style=shield)](https://circleci.com/gh/heroku/heroku-cli-command/tree/master)
+[![Appveyor CI](https://ci.appveyor.com/api/projects/status/github/heroku/heroku-cli-command?branch=master&svg=true)](https://ci.appveyor.com/project/heroku/heroku-cli-command/branch/master)
+[![Codecov](https://codecov.io/gh/heroku/heroku-cli-command/branch/master/graph/badge.svg)](https://codecov.io/gh/heroku/heroku-cli-command)
+[![Greenkeeper](https://badges.greenkeeper.io/heroku/heroku-cli-command.svg)](https://greenkeeper.io/)
+[![Known Vulnerabilities](https://snyk.io/test/npm/@heroku-cli/command/badge.svg)](https://snyk.io/test/npm/@heroku-cli/command)
+[![Downloads/week](https://img.shields.io/npm/dw/@heroku-cli/command.svg)](https://npmjs.org/package/@heroku-cli/command)
+[![License](https://img.shields.io/npm/l/@heroku-cli/command.svg)](https://github.com/heroku/heroku-cli-command/blob/master/package.json)

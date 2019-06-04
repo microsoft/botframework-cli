@@ -1,6 +1,6 @@
 import * as AppInsights from 'applicationinsights';
 
-const INSTRUMENTATION_KEY = '';
+const INSTRUMENTATION_KEY = '12ca0fd4-de70-420e-aa46-3ec7f6cd040d';
 
 class Telemetry{
   private static _client: AppInsights.TelemetryClient;
@@ -14,6 +14,7 @@ class Telemetry{
     } catch (e) {
       // swallow the exception; we don't want to crash the app
       // on a failed attempt to collect usage data
+      console.log(e)
     }
   }
 
