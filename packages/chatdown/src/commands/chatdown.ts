@@ -1,4 +1,5 @@
-import {Command, flags} from '@oclif/command'
+import {Command} from 'bf-cli-command'
+import {flags} from '@oclif/command'
 const runProgram = require('../utils/chatdown.js')
 
 export default class Chatdown extends Command {
