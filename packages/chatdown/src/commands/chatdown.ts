@@ -1,5 +1,4 @@
-import {Command} from 'cli-command'
-import {flags} from '@oclif/command'
+import {Command, flags} from '@oclif/command'
 const runProgram = require('../utils/chatdown.js')
 
 export default class Chatdown extends Command {
