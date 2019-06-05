@@ -48,7 +48,7 @@
   "main": "lib/index.js",
   "repository": "heroku/heroku-cli-command",
   "scripts": {
-    "build": "rm -rf lib && tsc",
+    "build": "rm -rf lib && tsc -b",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
     "prepublishOnly": "rm -rf lib && tsc -b",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
