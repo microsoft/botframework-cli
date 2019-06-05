@@ -125,7 +125,7 @@ async function runProgram(args) {
 
     if (args.version || args.v) {
         process.stdout.write(pkg.version);
-        return;
+        return 0;
     }
 
     if (args.f || args.folder) {
@@ -147,10 +147,10 @@ async function runProgram(args) {
             if (typeof writeConfirmation === 'string') {
                 process.stdout.write(chalk`{green Successfully wrote file:} {blue ${writeConfirmation}}\n`);
             }
-            process.exit(0);
+            return 0;
         }
         else {
-            process.exit(0);
+            return -1;
         }
     }
 }

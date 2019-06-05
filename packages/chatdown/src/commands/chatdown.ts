@@ -21,11 +21,7 @@ export default class Chatdown extends Command {
   async run() {
     try {
       const {flags, argv} = this.parse(Chatdown)
-      if (flags.version) {
-        this.log(this.config.version);
-      } else {
-        await runProgram.runChatdown(argv.length === 0 ? flags : argv)
-      }
+      await runProgram.runChatdown(argv.length === 0 ? flags : argv)
 
     } catch (err) {
       if (err instanceof Error) {
