@@ -44,9 +44,9 @@
     "lib"
   ],
   "keywords": [],
-  "license": "ISC",
+  "license": "MIT",
   "main": "lib/index.js",
-  "repository": "heroku/heroku-cli-command",
+  "repository": "",
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "tsc -p test --noEmit && tslint -p test -t stylish",
