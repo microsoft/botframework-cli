@@ -5,6 +5,7 @@
   "author": "Microsoft",
   "bugs": "https://github.com/Microsoft/chatdown/issues",
   "dependencies": {
+    "cli-command": "0.0.0",
     "@oclif/command": "~1.5.13",
     "@oclif/config": "~1.13.0",
     "chalk": "2.4.1",
@@ -16,8 +17,7 @@
     "please-upgrade-node": "^3.0.1",
     "read-text-file": "^1.1.0",
     "semver": "^5.5.1",
-    "tslib": "^1.9.3",
-    "bf-cli-command": "~0.0.0"
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",

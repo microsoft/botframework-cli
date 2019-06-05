@@ -1,4 +1,4 @@
-import {Command} from 'bf-cli-command'
+import {Command} from 'cli-command'
 import {flags} from '@oclif/command'
 const runProgram = require('../utils/chatdown.js')
 
@@ -21,7 +21,11 @@ export default class Chatdown extends Command {
   async run() {
     try {
       const {flags, argv} = this.parse(Chatdown)
-      await runProgram.runChatdown(argv.length === 0 ? flags : argv)
+      if (flags.version) {
+        this.log(this.config.version);
+      } else {
+        await runProgram.runChatdown(argv.length === 0 ? flags : argv)
+      }
 
     } catch (err) {
       if (err instanceof Error) {
