@@ -16,7 +16,8 @@
     "please-upgrade-node": "^3.0.1",
     "read-text-file": "^1.1.0",
     "semver": "^5.5.1",
-    "tslib": "^1.9.3"
+    "tslib": "^1.9.3",
+    "cli-command" : "0.0.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",

@@ -3,7 +3,6 @@ import Telemetry from './telemetry'
 
 const pjson = require('../package.json')
 
-
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
 
@@ -13,7 +12,7 @@ export abstract class Command extends Base {
   }
 
   async init(){ 
-    this.TrackEvent(this.id+'', {'flags' : this.getTelemetryProperties()})
+    this.TrackEvent(`${this.id}`, {'flags' : this.getTelemetryProperties()})
     super.init();
   }
 
@@ -25,14 +24,21 @@ export abstract class Command extends Base {
   }
 
   private getTelemetryProperties() : Array<string>{
-        // Retrieve flags from command
-        const {flags, argv} = this.parse(this.ctor)
+    // Retrieve flags from command
+    const {flags, argv} = this.parse(this.ctor)
 
-        // Iterate through flags and store only flags and not parameters or arguments to avoid instrumentation on user data
-        let properties : string [] = [];
-        for (let key in flags) {
-          properties.push(key);
-        }
-        return properties;
+    // Iterate through flags and store only flags and not parameters or arguments to avoid instrumentation on user data
+    let properties : string [] = [];
+    for (let key in flags) {
+      properties.push(key);
+    }
+
+    return properties.sort();
+  }
+
+  // Flush telemetry to avoid performance issues
+  finally(_: Error | undefined): Promise<any> {
+    Telemetry.flushTelemetry();
+    return super.finally(_);
   }
 }
