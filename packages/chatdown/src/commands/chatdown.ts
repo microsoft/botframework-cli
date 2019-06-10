@@ -29,7 +29,6 @@ export default class Chatdown extends Command {
       } else {
         this._help()
       }
-      this.exit(1)
     }
   }
 }

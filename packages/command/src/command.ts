@@ -5,22 +5,36 @@ const pjson = require('../package.json')
 
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
+  
+    async init(){ 
+      this.trackEvent(`${this.id}`, {'flags' : this.getTelemetryProperties()})
+      super.init();
+    }
+  
+    error(input: string | Error, options: {code?: string, exit: false}): void
+    error(input: string | Error, options?: {code?: string, exit?: number}): never
+    error(input: string | Error, options: {code?: string, exit?: number | false} = {}) {
+      console.error(input);
+    }
 
-  // Implement telemetry tracking in Command
-  async TrackEvent(msg : string, properties?: { [key: string]: any }){
-    Telemetry.trackEvent(msg, properties);
-  }
+    async catch(err: any){
+      this.trackEvent(this.id+'', {'flags' : this.getTelemetryProperties(), 'error': this.extractError(err)})
+      return super.catch(err);
+    }
+  
+    // Flush telemetry to avoid performance issues
+    async finally(_: Error | undefined){
+      Telemetry.flushTelemetry();
+      super.finally(_);
+    }
 
-  async init(){ 
-    this.TrackEvent(`${this.id}`, {'flags' : this.getTelemetryProperties()})
-    super.init();
-  }
+    // Implement telemetry tracking in Command
+    async trackEvent(msg : string, properties?: { [key: string]: any }){
+      Telemetry.trackEvent(msg, properties);
+    }
 
-  error(input: string | Error, options: {code?: string, exit: false}): void
-  error(input: string | Error, options?: {code?: string, exit?: number}): never
-  error(input: string | Error, options: {code?: string, exit?: number | false} = {}) {
-    this.TrackEvent(this.id+'', {'flags' : this.getTelemetryProperties(), 'error': input})
-    return super.error(input, options as any);
+  private extractError(input: string | Error) : string {
+    return input instanceof Error ? input.message.concat(input.name)  : input;
   }
 
   private getTelemetryProperties() : Array<string>{
@@ -34,11 +48,5 @@ export abstract class Command extends Base {
     }
 
     return properties.sort();
-  }
-
-  // Flush telemetry to avoid performance issues
-  finally(_: Error | undefined): Promise<any> {
-    Telemetry.flushTelemetry();
-    return super.finally(_);
   }
 }

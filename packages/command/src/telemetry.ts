@@ -33,7 +33,6 @@ class Telemetry{
         .setAutoCollectPerformance(false)
         .setAutoCollectRequests(false)
         .setAutoDependencyCorrelation(false);
-      AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.cloudRoleInstance] = '';
       AppInsights.start();
 
       this._client = AppInsights.defaultClient;
