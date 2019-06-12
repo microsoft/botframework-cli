@@ -11,6 +11,8 @@
     "@oclif/config": "~1.13.0",
     "@oclif/plugin-help": "~2.1.6",
     "tslib": "^1.9.3",
+    "latest-version": "^4.0.0",
+    "semver": "^5.5.1",
     "bf-chatdown" : "~0.1.0"
   },
   "devDependencies": {
