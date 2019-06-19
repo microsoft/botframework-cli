@@ -2,7 +2,7 @@ import {flags} from '@oclif/command'
 import {Command} from 'cli-command'
 const txtfile = require('read-text-file')
 const path = require('path')
-const chatdown = require('../../lib/index');
+const chatdown = require('../../utils/index');
 const glob = require('glob')
 const fs = require('fs-extra')
 const intercept = require('intercept-stdout')
