@@ -13,7 +13,9 @@
     "tslib": "^1.9.3",
     "latest-version": "^4.0.0",
     "semver": "^5.5.1",
-    "bf-chatdown" : "~0.1.0"
+    "fs-extra": "^7.0.1",
+    "chalk": "2.4.1",
+    "bf-chatdown": "~0.1.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",
@@ -22,6 +24,7 @@
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.14.6",
+    "@types/fs-extra": "^5.0.5",
     "chai": "^4.2.0",
     "globby": "^8.0.2",
     "mocha": "^5.2.0",
@@ -51,8 +54,12 @@
     "plugins": [
       "@oclif/plugin-help",
       "bf-chatdown"
-    ]
+    ],
+    "hooks": {
+      "init": "./lib/hooks/init/configTelemetry"
+    }
   },
+  "telemetry": false,
   "repository": "Microsoft/botframework-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",

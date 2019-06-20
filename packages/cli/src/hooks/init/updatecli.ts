@@ -10,7 +10,6 @@ const hook: Hook.Init = async function (opts) {
       this.log(`${latest}\n`)
       this.log('     Run ')
       this.log(`npm i -g ${opts.config.name} `)
-      this.exit(0)
     }
   } catch (e) {
       // swallow the exception; we don't want to crash the app

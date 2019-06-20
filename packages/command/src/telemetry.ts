@@ -33,6 +33,11 @@ class Telemetry{
         .setAutoCollectPerformance(false)
         .setAutoCollectRequests(false)
         .setAutoDependencyCorrelation(false);
+
+      AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.deviceId] = '';
+      AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.locationIp] = '0.0.0.0';
+      AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.deviceOSVersion] = '';
+      AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.deviceType] = '';
       AppInsights.start();
 
       this._client = AppInsights.defaultClient;
