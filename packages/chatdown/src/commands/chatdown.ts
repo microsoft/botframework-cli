@@ -47,18 +47,19 @@ export default class Chatdown extends Command {
       }
       const len = await this.processFiles(inputDir, outputDir)
       this.log(chalk`{green Successfully wrote ${len} files}\n`)
-    } else {
-      const fileContents = await this.getInput(argv)
-      if (fileContents) {
-        const activities = await chatdown(fileContents, argv)
-        const writeConfirmation = await this.writeOut(activities)
-        /* tslint:disable:strict-type-predicates */
-        if (typeof writeConfirmation === 'string') {
-          process.stdout.write(chalk`{green Successfully wrote file:} {blue ${writeConfirmation}}\n`)
-        }
-      } else {
-        this._help()
+      return
+    }
+
+    const fileContents = await this.getInput(argv)
+    if (fileContents) {
+      const activities = await chatdown(fileContents, argv)
+      const writeConfirmation = await this.writeOut(activities)
+      /* tslint:disable:strict-type-predicates */
+      if (typeof writeConfirmation === 'string') {
+        process.stdout.write(chalk`{green Successfully wrote file:} {blue ${writeConfirmation}}\n`)
       }
+    } else {
+      this._help()
     }
   }
 
