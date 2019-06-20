@@ -39,10 +39,10 @@ LulaBot: Here's card2
 [Attachment=https://raw.githubusercontent.com/Microsoft/botbuilder-tools/master/Chatdown/test/samplecard.json adaptivecard]
 
 LulaBot: Here's adaptive card from disk
-[Attachment=folder/samplecard.json adaptivecard]
+[Attachment=cards/samplecard.json adaptivecard]
 
 LulaBot: Here's json attachment from disk
-[Attachment=folder/samplecard.json]
+[Attachment=cards/samplecard.json]
 
 
 Joe: I would like some cheese.
