@@ -1,12 +1,12 @@
 import {flags} from '@oclif/command'
 import {Command} from 'cli-command'
-const txtfile = require('read-text-file')
-const path = require('path')
-const chatdown = require('../../utils/index')
-const glob = require('glob')
-const fs = require('fs-extra')
-const intercept = require('intercept-stdout')
 const chalk = require('chalk')
+const chatdown = require('../../utils/index')
+const fs = require('fs-extra')
+const glob = require('glob')
+const intercept = require('intercept-stdout')
+const path = require('path')
+const txtfile = require('read-text-file')
 
 export default class Chatdown extends Command {
   static description = 'Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file'
@@ -18,64 +18,70 @@ export default class Chatdown extends Command {
     static: flags.boolean({description: 'Use static timestamps when generating timestamps on activities.'}),
     folder: flags.string({char: 'f'}),
     out_folder: flags.string({char: 'o'}),
-    version: flags.boolean({char: 'v'}),
-    prefix: flags.boolean()
+    version: flags.boolean({char: 'v', description: 'Show version'}),
+    prefix: flags.boolean({description: 'Use static timestamps when generating timestamps on activities.'})
   }
 
   static args = [{name: 'chat', description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}]
 
   async run() {
-    try {
-      const {flags, argv} = this.parse(Chatdown)
+    const {flags, argv} = this.parse(Chatdown)
 
-      if (flags.prefix) {
-        const pkgName = this.config.name
-        intercept(function (txt: any) {
-          return `[${pkgName}]\n${txt}`
-        })
-      }
+    if (flags.prefix) {
+      const pkgName = this.config.name
+      intercept(function (txt: any) {
+        return `[${pkgName}]\n${txt}`
+      })
+    }
 
-      if (flags.version) {
-        process.stdout.write(this.config.version)
-        return
-      }
+    if (flags.version) {
+      process.stdout.write(this.config.version)
+      return
+    }
 
-      if (flags.folder) {
-        let inputDir = flags.folder.trim()
-        let outputDir = (flags.out_folder) ? flags.out_folder.trim() : './'
-        if (outputDir.substr(0, 2) === './') {
-          outputDir = path.resolve(process.cwd(), outputDir.substr(2))
-        }
-        const len = await this.processFiles(inputDir, outputDir)
-        this.log(chalk`{green Successfully wrote ${len} files}\n`)
-        return len
-      } else {
-        const fileContents = await this.getInput(argv)
-        if (fileContents) {
-          const activities = await chatdown(fileContents, argv)
-          const writeConfirmation = await this.writeOut(activities)
-          /* tslint:disable:strict-type-predicates */
-          if (typeof writeConfirmation === 'string') {
-            process.stdout.write(chalk`{green Successfully wrote file:} {blue ${writeConfirmation}}\n`)
-          }
-        }
+    if (flags.folder) {
+      let inputDir = flags.folder.trim()
+      let outputDir = (flags.out_folder) ? flags.out_folder.trim() : './'
+      if (outputDir.substr(0, 2) === './') {
+        outputDir = path.resolve(process.cwd(), outputDir.substr(2))
       }
-    } catch (err) {
-      if (err instanceof Error) {
-        this.error(err)
-      } else {
-        this._help()
+      const len = await this.processFiles(inputDir, outputDir)
+      this.log(chalk`{green Successfully wrote ${len} files}\n`)
+      return
+    }
+
+    const fileContents = await this.getInput(argv)
+    if (fileContents) {
+      const activities = await chatdown(fileContents, argv)
+      const writeConfirmation = await this.writeOut(activities)
+      /* tslint:disable:strict-type-predicates */
+      if (typeof writeConfirmation === 'string') {
+        process.stdout.write(chalk`{green Successfully wrote file:} {blue ${writeConfirmation}}\n`)
       }
+    } else {
+      this._help()
     }
   }
 
   private getInput(args: any) {
     if (args.length > 0) {
       args.in = args[0]
-      return txtfile.readSync(path.resolve(args.in))
+      try {
+        return txtfile.readSync(path.resolve(args.in))
+      } catch (err) {
+        if (err.message.match(/ENOENT: no such file or directory/)) {
+          this.error('No such file or directory')
+          this.exit()
+        }
+        throw err
+      }
     } else {
+      const {stdin} = process
+      // Check if piped data was sent
+      if (stdin.isTTY) {
+        return false
+      }
       return new Promise((resolve, reject) => {
-        const {stdin} = process
         /* tslint:disable:no-string-based-set-timeout */
         let timeout: any = setTimeout(reject, 1000)
         let input = ''
