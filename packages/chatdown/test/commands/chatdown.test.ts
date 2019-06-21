@@ -59,14 +59,14 @@ describe('chatdown', () => {
     });
 
     it('should process all files when a glob is passed in with the -f argument, and the -o is passed in for the output directory', done => {
-        cp.exec(`node ./bin/run chatdown -f ../utils/Examples/*.chat -o ./`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown -f ./test/utils/*.sample.chat -o ./`, (error, stdout, stderr) => {
             assert(stdout.includes('Successfully wrote'));
             done();
         });
     });
 
     it('should process all files when a glob is passed in with the -f argument', done => {
-        cp.exec(`node ./bin/run chatdown -f ../utils/Examples/*.chat`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown -f ./test/utils/*.sample.chat`, (error, stdout, stderr) => {
             assert(stdout.includes('Successfully wrote'));
             done();
         });
@@ -89,6 +89,13 @@ describe('chatdown', () => {
     it('should prefix [chatdown] to stderr when --prefix is passed as an argument', done => {
         cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
             assert(stderr.startsWith(`[${pkg.name}]`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
+            done();
+        });
+    });
+
+    it('throw error if invalid path in argument', done => {
+        cp.exec(`node ./bin/run chatdown aaaaa`, (error, stdout, stderr) => {
+            assert(stderr.includes('No such file or directory'));
             done();
         });
     });
