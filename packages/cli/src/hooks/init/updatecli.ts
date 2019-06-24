@@ -11,7 +11,8 @@ const hook: Hook.Init = async function (opts) {
       this.log('     Run ')
       this.log(`npm i -g ${opts.config.name} `)
     }
-  } catch (e) {
+  /* tslint:disable:no-unused */
+  } catch (err) {
       // swallow the exception; we don't want to crash the app
       // on a failed attempt to check version
   }
