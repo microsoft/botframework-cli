@@ -20,10 +20,10 @@ const hook: Hook<'init'> = async function () {
       userConfig.telemetry = this.config.pjson.telemetry
       await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
     }
+  /* tslint:disable:no-unused */
   } catch (err) {
       // swallow the exception; we don't want to crash the app
       // on a failed attempt to set telemetry
-    this.log(err)
   }
 }
 
