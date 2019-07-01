@@ -190,6 +190,23 @@ npx oclif plugin myplugin_name
 #### Isolation
 Each plugin has it's own set of unit tests and runs independently.
 #### Error handling, return codes, exceptions management, & corresponding messaging
+Run function is executed inside a try catch.
+
+    async catch(err: any) {
+      if (err instanceof CLIError) return this.exit(0)
+      if (!err.message) throw err
+      if (err.message.match(/Unexpected arguments?: (-h|--help|help)(,|\n)/)) {
+        return this._help()
+      } else if (err.message.match(/Unexpected arguments?: (-v|--version|version)(,|\n)/)) {
+        return this._version()
+      } else {
+        try {
+          this.trackEvent(this.id + '', {flags : this.getTelemetryProperties(), error: this.extractError(err)})
+          this.log('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues')
+        } catch {}
+        throw err
+      }
+    }
 
 
 #### Linting, static analysis
