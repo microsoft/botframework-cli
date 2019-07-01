@@ -124,15 +124,15 @@ Each command extends from oclif/command https://github.com/oclif/command https:/
 
 A basic command looks like the following
 
-import Command from '@oclif/command'
+    import Command from '@oclif/command'
 
-export class MyCommand extends Command {
-  static description = 'description of this example command'
+    export class MyCommand extends Command {
+      static description = 'description of this example command'
 
-  async run() {
-    console.log('running my command')
-  }
-}
+      async run() {
+        console.log('running my command')
+      }
+    }
 
 The only part that is required is the run function
 BF CLI has a command class extending '@oclif/command'. All BF CLI plugins should extend the bf-cli commmand  custom class [https://github.com/microsoft/botframework-cli/blob/master/packages/command/src/command.ts]. 
@@ -143,23 +143,23 @@ This custom command class will send telemetry when a command is run, exposes the
 ### Command groups with parameters
 As Multi CLIs grow it can be useful to nest commands within topics. This is supported simply by placing command files in subdirectories. For example, with the BF CLI we have a topic bf ludown with commands like bf ludown, bf ludown:parse:toluis , bf ludown:translate, etc. The directory structure looks like this:
 
-package.json 
-src/ 
-└── commands/ 
-	└── ludown/ 
-		└── parse/ 
-			└──toluis.ts 
-└── translate.ts
+    package.json 
+    src/ 
+    └── commands/ 
+      └── ludown/ 
+        └── parse/ 
+          └──toluis.ts 
+    └── translate.ts
 
 #### Verbs with parameters
 Flag options are non-positional arguments passed to the command. Flags can either be option flags which take an argument, or boolean flags which do not. An option flag must have an argument.Here are some other ways the user can use input flags. This is assuming the command has flags like -f, --file=file and -v, --verbose (string and boolean flag):
-$ bf -v
-$ bf --file=foo
-$ bf --file foo
-$ bf -f foo
-$ bf -f=foo
-$ bf -ffoo
-$ bf -vffoo
+    $ bf -v
+    $ bf --file=foo
+    $ bf --file foo
+    $ bf -f foo
+    $ bf -f=foo
+    $ bf -ffoo
+    $ bf -vffoo
 
 For detailed info please refer to oclif doc [https://oclif.io/docs/flags].
 
@@ -172,16 +172,16 @@ The new CLI Command Base class exposes the trackEvent to log telemetry events
 #### Extensible plugin architecture
 Plugins are a great way to offer experimental functionality, allow users to extend your CLI, break up a CLI into modular components, or share functionality between CLIs.
 Plugins can have commands or hooks just like a CLI. BF cli will add each tool as a plugin. To add a plugin such as chatdown, first add it to your CLI as a dependency then add the following to cli package.json:
-{
-  "name": "bf-cli",
-  "version": "0.0.0",
-  // ...
-  "oclif": {
-    "plugins": [
-      "bf-chatdown"
-    ]
-  }
-}
+    {
+      "name": "bf-cli",
+      "version": "0.0.0",
+      // ...
+      "oclif": {
+        "plugins": [
+          "bf-chatdown"
+        ]
+      }
+    }
 
 To create a new plugin, just run the following command inside the packages folder of botframework-cli:
 
@@ -203,26 +203,27 @@ For example, in current CLI, the presences of an update is detected and results 
 
      Update available 1.3.0 -> 1.3.1
      Run npm i -g ludown to update.
-Usage: ludown [options] [command]
+    Usage: ludown [options] [command]
 
-Ludown is a command line tool to bootstrap language understanding models from .lu files
+    Ludown is a command line tool to bootstrap language understanding models from .lu files
 
-Options:
-  --prefix       Add [ludown] prefix to all messages
-  -v, --Version  output the version number
-  -h, --help     output usage information
+    Options:
+      --prefix       Add [ludown] prefix to all messages
+      -v, --Version  output the version number
+      -h, --help     output usage information
 
-Commands:
-  parse|p        Convert .lu file(s) into LUIS JSON OR QnA Maker JSON files.
-  refresh|d      Convert LUIS JSON and/ or QnAMaker JSON file into .lu file
-  translate|t    Translate .lu files
-  help [cmd]     display help for [cmd]
+    Commands:
+      parse|p        Convert .lu file(s) into LUIS JSON OR QnA Maker JSON files.
+      refresh|d      Convert LUIS JSON and/ or QnAMaker JSON file into .lu file
+      translate|t    Translate .lu files
+      help [cmd]     display help for [cmd]
 
 
 #### Package management (ala Lerna)
 Lerna is used only in development to bootstrap the packages that are not yet published. Each plugin and cli is an independent npm package. Main CLI will have the plugin listed as npm dependency. 
 
 #### Partner onboarding process & how-to documentation
+
 #### Automated documentation generation
 By default you can pass --help to the CLI to get help such as flag options and argument information. This information is also automatically placed in the README whenever the npm package of the CLI is published.
 
