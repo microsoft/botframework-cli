@@ -20,8 +20,8 @@ The following botbuilder-tools CLI that perform local file transformations will 
 |-------------|--------------|----------------------------------------------------------|-------------------------------------|
 | Ludown      | parse toluis | Convert .lu file(s) to LUIS JSON model                   | BF LUIS transform                   |
 |             | parse toqna  | Convert .lu file(s) to QnA JSON model                    | BF QnA transform                    |
-|             | translate    | Machine translate .lu file(s)                            | BF [LUIS | QnA] translate           |
-|             | refresh      | Convert LUIS or QnA JSON model to .lu file               | BF [LUIS | QnA] transform           |
+|             | translate    | Machine translate .lu file(s)                            | BF [LUIS \| QnA] translate           |
+|             | refresh      | Convert LUIS or QnA JSON model to .lu file               | BF [LUIS \| QnA] transform           |
 | LuisGen     | N/A          | Convert LUIS JSON model to a strong typed C# or TS class | BF LUIS transform                   |
 | Dispatch    | Init         | Initialize .dispatchrc file                              | BF Dispatch Init                    |
 |             | Add          | Add input sources. LUIS or QnA Maker models, files       | BF Dispatch Add                     |
