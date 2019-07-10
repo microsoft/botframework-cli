@@ -1,0 +1,16 @@
+{
+    "name": "test",
+    "files": [],
+    "oclif": {
+        "commands": "../../../src/commands",
+        "bin": "bf",
+        "plugins": [
+          "@oclif/plugin-help",
+          "bf-chatdown"
+        ],
+        "hooks": {
+          "init": "../../../src/hooks/init/configTelemetry"
+        }
+    },
+    "telemetry": true
+}
