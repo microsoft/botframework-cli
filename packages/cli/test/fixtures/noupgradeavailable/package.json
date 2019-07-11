@@ -1,0 +1,17 @@
+{
+    "name": "botframework-cli",
+    "version": "999.99.9",
+    "files": [],
+    "oclif": {
+        "commands": "../../../src/commands",
+        "bin": "bf",
+        "plugins": [
+          "@oclif/plugin-help",
+          "bf-chatdown"
+        ],
+        "hooks": {
+          "init": "../../../src/hooks/init/configTelemetry"
+        }
+    },
+    "telemetry": false
+}
