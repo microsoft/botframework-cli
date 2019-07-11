@@ -1,10 +1,22 @@
 import {expect, test} from '@oclif/test'
 import cli from 'cli-ux'
+import * as fs from 'fs-extra'
 const path = require('path')
 
 const rootTelemetryDisabled = path.join(__dirname, '../fixtures/telemetrydisabled')
 const rootTelemetryEnabled = path.join(__dirname, '../fixtures/telemetryenabled')
 const rootTelemetryNull = path.join(__dirname, '../fixtures/telemetrynull')
+
+const resetTelemetry = async (defaultVal: any) => {
+  const pathToJson = path.resolve(__dirname, '../../package.json')
+  const userConfig = await fs.readJSON(pathToJson)
+  userConfig.telemetry = defaultVal
+  await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
+}
+
+after(() => {
+  resetTelemetry(null)
+})
 
 describe('it should disable telemetry when a user opts out', () => {
   test
