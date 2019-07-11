@@ -6,7 +6,7 @@ const fs = require('fs-extra')
 const glob = require('glob')
 const intercept = require('intercept-stdout')
 const path = require('path')
-const txtfile = require('read-text-file')
+const txtfile = require('../../utils/read-text-file')
 
 export default class Chatdown extends Command {
   static description = 'Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file'
@@ -14,15 +14,16 @@ export default class Chatdown extends Command {
   static examples = ['$ bf chatdown']
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    static: flags.boolean({description: 'Use static timestamps when generating timestamps on activities.'}),
+    chat: flags.string({description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}),
     folder: flags.string({char: 'f'}),
     out_folder: flags.string({char: 'o'}),
+    static: flags.boolean({description: 'Use static timestamps when generating timestamps on activities.'}),
     version: flags.boolean({char: 'v', description: 'Show version'}),
-    prefix: flags.boolean({description: 'Use static timestamps when generating timestamps on activities.'})
+    prefix: flags.boolean({description: 'Use static timestamps when generating timestamps on activities.'}),
+    help: flags.help({char: 'h', description: 'Chatdown command help'})
   }
 
-  static args = [{name: 'chat', description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}]
+  //static args = [{name: 'chat', description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}]
 
   async run() {
     const {flags, argv} = this.parse(Chatdown)
@@ -46,17 +47,17 @@ export default class Chatdown extends Command {
         outputDir = path.resolve(process.cwd(), outputDir.substr(2))
       }
       const len = await this.processFiles(inputDir, outputDir)
-      this.log(chalk`{green Successfully wrote ${len} files}\n`)
+      this.log(chalk.green(`Successfully wrote ${len} files\n`))
       return
     }
 
-    const fileContents = await this.getInput(argv)
+    const fileContents = await this.getInput(flags.chat)
     if (fileContents) {
       const activities = await chatdown(fileContents, argv)
       const writeConfirmation = await this.writeOut(activities)
       /* tslint:disable:strict-type-predicates */
       if (typeof writeConfirmation === 'string') {
-        process.stdout.write(chalk`{green Successfully wrote file:} {blue ${writeConfirmation}}\n`)
+        process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${writeConfirmation}\n`)
       }
     } else {
       this._help()
@@ -64,10 +65,9 @@ export default class Chatdown extends Command {
   }
 
   private getInput(args: any) {
-    if (args.length > 0) {
-      args.in = args[0]
+    if (args && args.length > 0) {
       try {
-        return txtfile.readSync(path.resolve(args.in))
+        return txtfile.readSync(args)
       } catch (err) {
         if (err.message.match(/ENOENT: no such file or directory/)) {
           this.error('No such file or directory')
