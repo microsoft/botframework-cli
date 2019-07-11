@@ -3,7 +3,7 @@ const latestVersion = require('latest-version')
 const semver = require('semver')
 const version = {latestVersion}
 
-const hook: Hook<'init'> = async function (opts) {
+const hook: Hook.Init = async function (opts) {
   try {
     const latest = await version.latestVersion(opts.config.name, {version: `>${opts.config.version}`})
     if (semver.gt(latest, opts.config.version)) {

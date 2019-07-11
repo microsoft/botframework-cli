@@ -57,7 +57,7 @@
       "bf-chatdown"
     ],
     "hooks": {
-      "init": "./lib/hooks/init/configTelemetry"
+      "init": "./lib/hooks/init/configtelemetry"
     }
   },
   "telemetry": null,
