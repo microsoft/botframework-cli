@@ -24,7 +24,7 @@ export abstract class Command extends Base {
 
   async catch(err: any) {
     if (err instanceof CLIError) {
-      if(err.message.match(/Unexpected argument/)){
+      if (err.message.match(/Unexpected argument/)) {
         this.log(err.message)
         return this._help()
       }
