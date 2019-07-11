@@ -1,8 +1,8 @@
 import {Hook} from '@oclif/config'
 import cli from 'cli-ux'
 import * as fs from 'fs-extra'
-const path = require('path')
 const chalk = require('chalk')
+const path = require('path')
 
 const hook: Hook<'init'> = async function () {
   try {
