@@ -19,7 +19,7 @@ $ npm install -g botframework-cli
 $ bf COMMAND
 running command...
 $ bf (-v|--version|version)
-botframework-cli/0.0.0 darwin-x64 node-v12.1.0
+botframework-cli/0.1.0 darwin-x64 node-v12.1.0
 $ bf --help [COMMAND]
 USAGE
   $ bf COMMAND
@@ -28,28 +28,33 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bf hello [FILE]`](#bf-hello-file)
+* [`bf chatdown [CHAT]`](#bf-chatdown-chat)
 * [`bf help [COMMAND]`](#bf-help-command)
 
-## `bf hello [FILE]`
+## `bf chatdown [CHAT]`
 
-describe the command here
+Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file
 
 ```
 USAGE
-  $ bf hello [FILE]
+  $ bf chatdown [CHAT]
+
+ARGUMENTS
+  CHAT  The path of the chat file to be parsed. If omitted, stdin will be used.
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -f, --folder=folder
+  -h, --help                   show CLI help
+  -o, --out_folder=out_folder
+  -v, --version                Show version
+  --prefix                     Use static timestamps when generating timestamps on activities.
+  --static                     Use static timestamps when generating timestamps on activities.
 
 EXAMPLE
-  $ bf hello
-  hello world from ./src/hello.ts!
+  $ bf chatdown
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/Microsoft/botframework-cli/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [bf-chatdown](https://github.com/Microsoft/chatdown/blob/v0.1.0/src/commands/chatdown.ts)_
 
 ## `bf help [COMMAND]`
 
