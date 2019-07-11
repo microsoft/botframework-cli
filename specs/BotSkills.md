@@ -11,6 +11,9 @@ The _BotSkills_ tool is used to manage (list, connect, modify) skills to bots. S
 ## Requirements
 <Any requirements driving this feature, goals, functionality, itemized considerations>
 
+The principal requirements for this tool is to retain 1-1 equivalence to the existing tool as described [here](https://github.com/microsoft/botframework-solutions/blob/master/tools/botskills/README.md).
+
+
 ## Inputs
 <input requirements, upstream dependencies>
 These are requirements inputs (not program inputs). What are the pre-conditions, and dependencies required for this tool.
