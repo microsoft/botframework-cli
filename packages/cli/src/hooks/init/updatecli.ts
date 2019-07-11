@@ -9,7 +9,6 @@ const hook: Hook.Init = async function (opts) {
       this.log('Update available ')
       this.log('     Run ')
       this.log(`npm i -g ${opts.config.name} `)
-      this.log('h')
     }
   /* tslint:disable:no-unused */
   } catch (err) {

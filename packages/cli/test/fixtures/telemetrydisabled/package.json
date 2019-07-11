@@ -9,7 +9,7 @@
           "bf-chatdown"
         ],
         "hooks": {
-          "init": "../../../src/hooks/init/configTelemetry"
+          "init": "../../../src/hooks/init/configtelemetry"
         }
     },
     "telemetry": false

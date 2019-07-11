@@ -54,6 +54,7 @@
   "keywords": [
     "oclif-plugin"
   ],
+  "main": "utils/index.js",
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
