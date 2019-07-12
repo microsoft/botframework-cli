@@ -28,59 +28,58 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
-* [`oclif-example telemetry:disable [FILE]`](#oclif-example-telemetrydisable-file)
-* [`oclif-example telemetry:enable [FILE]`](#oclif-example-telemetryenable-file)
+* [`oclif-example config`](#oclif-example-config)
+* [`oclif-example config:telemetry`](#oclif-example-configtelemetry)
+* [`oclif-example config:telemetry:disable`](#oclif-example-configtelemetrydisable)
+* [`oclif-example config:telemetry:enable`](#oclif-example-configtelemetryenable)
 
-## `oclif-example hello [FILE]`
+## `oclif-example config`
 
-describe the command here
-
-```
-USAGE
-  $ oclif-example hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src\commands\hello.ts](https://github.com/packages/bf-config/blob/v0.0.0/src\commands\hello.ts)_
-
-## `oclif-example telemetry:disable [FILE]`
-
-describe the command here
+The config plugin allows users to configure various settings within the cli.
 
 ```
 USAGE
-  $ oclif-example telemetry:disable [FILE]
+  $ oclif-example config
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src\commands\telemetry\disable.ts](https://github.com/packages/bf-config/blob/v0.0.0/src\commands\telemetry\disable.ts)_
+_See code: [src\commands\config\index.ts](https://github.com/packages/bf-config/blob/v0.0.0/src\commands\config\index.ts)_
 
-## `oclif-example telemetry:enable [FILE]`
+## `oclif-example config:telemetry`
 
-describe the command here
+The telemetry commands allow the user to enable and disable telemetry.
 
 ```
 USAGE
-  $ oclif-example telemetry:enable [FILE]
+  $ oclif-example config:telemetry
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src\commands\telemetry\enable.ts](https://github.com/packages/bf-config/blob/v0.0.0/src\commands\telemetry\enable.ts)_
+_See code: [src\commands\config\telemetry\index.ts](https://github.com/packages/bf-config/blob/v0.0.0/src\commands\config\telemetry\index.ts)_
+
+## `oclif-example config:telemetry:disable`
+
+Disable telemetry
+
+```
+USAGE
+  $ oclif-example config:telemetry:disable
+```
+
+_See code: [src\commands\config\telemetry\disable.ts](https://github.com/packages/bf-config/blob/v0.0.0/src\commands\config\telemetry\disable.ts)_
+
+## `oclif-example config:telemetry:enable`
+
+enable telemetry
+
+```
+USAGE
+  $ oclif-example config:telemetry:enable
+```
+
+_See code: [src\commands\config\telemetry\enable.ts](https://github.com/packages/bf-config/blob/v0.0.0/src\commands\config\telemetry\enable.ts)_
 <!-- commandsstop -->
