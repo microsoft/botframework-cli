@@ -4,7 +4,7 @@ const path = require('path')
 
 export default class ConfigTelemetryDisable extends Command {
   static description = 'Disable telemetry'
-  
+
   async run() {
     const pathToJson = path.resolve(__dirname, '../../../../../cli/package.json')
     const userConfig = await fs.readJSON(pathToJson)

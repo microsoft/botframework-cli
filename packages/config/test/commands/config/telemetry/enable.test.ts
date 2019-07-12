@@ -26,4 +26,3 @@ describe('config:telemetry:enable', () => {
     });
   });
 })
-
