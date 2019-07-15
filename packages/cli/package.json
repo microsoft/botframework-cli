@@ -10,6 +10,7 @@
     "@oclif/command": "~1.5.13",
     "@oclif/config": "~1.13.0",
     "@oclif/plugin-help": "~2.1.6",
+    "@microsoft/bf-config": "0.0.0",
     "bf-chatdown": "~0.1.0",
     "chalk": "2.4.1",
     "cli-ux": "^5.3.0",
@@ -54,15 +55,17 @@
     "bin": "bf",
     "plugins": [
       "@oclif/plugin-help",
-      "bf-chatdown"
+      "bf-chatdown",
+      "@microsoft/bf-config"
     ],
     "hooks": {
-      "init": "./lib/hooks/init/configTelemetry"
+      "init": "./lib/hooks/init/configtelemetry"
     }
   },
   "telemetry": null,
   "repository": "Microsoft/botframework-cli",
   "scripts": {
+    "postinstall": "node bin/postinstall.js",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",

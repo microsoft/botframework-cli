@@ -1,6 +1,6 @@
 {
-    "name": "botframework-cli",
-    "version": "999.99.9",
+    "name": "botbuilder",
+    "version": "1.0.0",
     "files": [],
     "oclif": {
         "commands": "../../../src/commands",
@@ -10,7 +10,7 @@
           "bf-chatdown"
         ],
         "hooks": {
-          "init": "../../../src/hooks/init/configTelemetry"
+          "init": "../../../src/hooks/init/updatecli"
         }
     },
     "telemetry": false
