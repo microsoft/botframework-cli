@@ -115,6 +115,8 @@ export default class Chatdown extends Command {
         } catch (e) {
           if (e.message.match(/no such file or directory/)) {
             reject(new CLIError(e.message))
+          } else if (e.message.match(/Invalid Input/)) {
+            reject(new CLIError('No chat file path: '+inputDir))
           }
           reject(e)
         }
