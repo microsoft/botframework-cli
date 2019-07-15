@@ -20,7 +20,7 @@ export default class Chatdown extends Command {
 
   static flags = {
     chat: flags.string({char: 'c', description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}),
-    folder: flags.string({char: 'f', description: 'Path to directory and/or all subdirectories containing chat files to be processed all at once, ex. **/*.chat. If an output directory is not present (-o), it will default the output to the current working directory. '}),
+    folder: flags.string({char: 'f', description: 'Path to directory and/or all subdirectories containing chat files to be processed all at once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the output to the current working directory. '}),
     out_folder: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-f) will be placed.'}),
     static: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
     prefix: flags.boolean({char: 'p', description: 'Prefix stdout with package name.'}),
@@ -45,6 +45,9 @@ export default class Chatdown extends Command {
           outputDir = path.resolve(process.cwd(), outputDir.substr(2))
         }
         const len = await this.processFiles(inputDir, outputDir)
+        if (len === 0) {
+          throw new CLIError('No chat files found at: ' + flags.folder)
+        }
         this.log(chalk.green(`Successfully wrote ${len} files\n`))
         return
       }

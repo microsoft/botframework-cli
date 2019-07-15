@@ -60,7 +60,7 @@
       "init": "./lib/hooks/init/configTelemetry"
     }
   },
-  "telemetry": true,
+  "telemetry": null,
   "repository": "Microsoft/botframework-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
