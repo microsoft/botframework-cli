@@ -62,7 +62,7 @@
       "init": "./lib/hooks/init/configtelemetry"
     }
   },
-  "telemetry": true,
+  "telemetry": null,
   "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
     "postinstall": "node bin/postinstall.js",
