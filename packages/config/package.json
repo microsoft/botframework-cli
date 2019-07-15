@@ -2,7 +2,7 @@
   "name": "@microsoft/bf-cli-config",
   "version": "0.0.0",
   "author": "Microsoft",
-  "bugs": "https://github.com/munozemilio/bf-cli-config/issues",
+  "bugs": "https://github.com/microsoft/botframework-cli",
   "dependencies": {
     "@oclif/command": "~1.5.13",
     "@oclif/config": "~1.13.0",
@@ -35,7 +35,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/munozemilio/bf-cli-config",
+  "homepage": "https://github.com/microsoft/botframework-cli",
   "keywords": [
     "oclif-plugin"
   ],
@@ -47,7 +47,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "munozemilio/bf-cli-config",
+  "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",

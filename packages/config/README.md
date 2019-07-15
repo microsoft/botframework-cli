@@ -15,7 +15,6 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @microsoft/bf-cli-config
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)

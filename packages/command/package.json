@@ -3,7 +3,7 @@
   "description": "base class for Microsoft Bot Framework CLI commands",
   "version": "0.0.0",
   "author": "Microsoft",
-  "bugs": "",
+  "bugs": "https://github.com/microsoft/botframework-cli",
   "dependencies": {
     "@oclif/errors": "^1.2.2",
     "applicationinsights": "^1.0.8",
@@ -48,7 +48,7 @@
   "keywords": [],
   "license": "MIT",
   "main": "lib/index.js",
-  "repository": "",
+  "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
     "build": "rm -rf lib && tsc",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
