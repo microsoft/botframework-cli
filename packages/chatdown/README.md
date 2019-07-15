@@ -15,7 +15,6 @@ Tool for parsing chat files and outputting replayable activities
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g bf-chatdown
 $ bf COMMAND
 running command...
 $ bf (-v|--version|version)
