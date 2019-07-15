@@ -18,7 +18,7 @@ Tool for parsing chat files and outputting replayable activities
 $ bf COMMAND
 running command...
 $ bf (-v|--version|version)
-bf-chatdown/0.1.0 darwin-x64 node-v12.1.0
+@microsoft/bf-chatdown/0.0.0 darwin-x64 node-v12.1.0
 $ bf --help [COMMAND]
 USAGE
   $ bf COMMAND
@@ -41,7 +41,7 @@ OPTIONS
   -c, --chat=chat              The path of the chat file to be parsed. If omitted, stdin will be used.
 
   -f, --folder=folder          Path to directory and/or all subdirectories containing chat files to be processed all at
-                               once, ex. **/*.chat. If an output directory is not present (-o), it will default the
+                               once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the
                                output to the current working directory.
 
   -h, --help                   Chatdown command help
@@ -61,5 +61,5 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [src/commands/chatdown.ts](https://github.com/Microsoft/chatdown/blob/v0.1.0/src/commands/chatdown.ts)_
+_See code: [src/commands/chatdown.ts](https://github.com/Microsoft/chatdown/blob/v0.0.0/src/commands/chatdown.ts)_
 <!-- commandsstop -->

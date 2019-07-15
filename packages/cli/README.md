@@ -15,11 +15,11 @@ botframework-cli
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g botframework-cli
+$ npm install -g @microsoft/botframework-cli
 $ bf COMMAND
 running command...
 $ bf (-v|--version|version)
-botframework-cli/0.1.0 darwin-x64 node-v12.1.0
+@microsoft/botframework-cli/0.1.0 darwin-x64 node-v12.1.0
 $ bf --help [COMMAND]
 USAGE
   $ bf COMMAND
@@ -28,12 +28,27 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`bf `](#bf-)
 * [`bf chatdown`](#bf-chatdown)
 * [`bf config`](#bf-config)
 * [`bf config:telemetry`](#bf-configtelemetry)
 * [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
 * [`bf config:telemetry:enable`](#bf-configtelemetryenable)
 * [`bf help [COMMAND]`](#bf-help-command)
+
+## `bf `
+
+The config plugin allows users to configure various settings within the cli.
+
+```
+USAGE
+  $ bf
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/index.ts)_
 
 ## `bf chatdown`
 
@@ -67,7 +82,7 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [bf-chatdown](https://github.com/Microsoft/chatdown/blob/v0.1.0/src/commands/chatdown.ts)_
+_See code: [@microsoft/bf-chatdown](https://github.com/Microsoft/chatdown/blob/v0.0.0/src/commands/chatdown.ts)_
 
 ## `bf config`
 
@@ -81,11 +96,11 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [@microsoft/bf-config](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/index.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/index.ts)_
 
 ## `bf config:telemetry`
 
-The telemetry commands allow the user to enable and disable telemetry.
+The telemetry commands allow the user to enable and disable telemetry
 
 ```
 USAGE
@@ -95,7 +110,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [@microsoft/bf-config](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
 
 ## `bf config:telemetry:disable`
 
@@ -104,20 +119,26 @@ Disable telemetry
 ```
 USAGE
   $ bf config:telemetry:disable
+
+OPTIONS
+  -h, --help  show CLI help
 ```
 
-_See code: [@microsoft/bf-config](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
 
 ## `bf config:telemetry:enable`
 
-enable telemetry
+Enable Telemetry
 
 ```
 USAGE
   $ bf config:telemetry:enable
+
+OPTIONS
+  -h, --help  show CLI help
 ```
 
-_See code: [@microsoft/bf-config](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
 
 ## `bf help [COMMAND]`
 

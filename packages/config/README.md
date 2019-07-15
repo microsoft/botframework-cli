@@ -1,12 +1,12 @@
-@microsoft/bf-config
-====================
+@microsoft/bf-cli-config
+========================
 
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@microsoft/bf-config.svg)](https://npmjs.org/package/@microsoft/bf-config)
-[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-config.svg)](https://npmjs.org/package/@microsoft/bf-config)
-[![License](https://img.shields.io/npm/l/@microsoft/bf-config.svg)](https://github.com/packages/bf-config/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-cli-config.svg)](https://npmjs.org/package/@microsoft/bf-cli-config)
+[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-cli-config.svg)](https://npmjs.org/package/@microsoft/bf-cli-config)
+[![License](https://img.shields.io/npm/l/@microsoft/bf-cli-config.svg)](https://github.com/munozemilio/bf-cli-config/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -15,70 +15,123 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ bf COMMAND
+$ npm install -g @microsoft/bf-cli-config
+$ oclif-example COMMAND
 running command...
-$ bf (-v|--version|version)
-@microsoft/bf-config/0.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
+$ oclif-example (-v|--version|version)
+@microsoft/bf-cli-config/0.0.0 darwin-x64 node-v12.1.0
+$ oclif-example --help [COMMAND]
 USAGE
-  $ bf COMMAND
+  $ oclif-example COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bf config`](#bf-config)
-* [`bf config:telemetry`](#bf-configtelemetry)
-* [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
-* [`bf config:telemetry:enable`](#bf-configtelemetryenable)
+* [`oclif-example [FILE]`](#oclif-example-file)
+* [`oclif-example config [FILE]`](#oclif-example-config-file)
+* [`oclif-example config:telemetry [FILE]`](#oclif-example-configtelemetry-file)
+* [`oclif-example config:telemetry:disable [FILE]`](#oclif-example-configtelemetrydisable-file)
+* [`oclif-example config:telemetry:enable [FILE]`](#oclif-example-configtelemetryenable-file)
+* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
 
-## `bf config`
+## `oclif-example [FILE]`
 
-The config plugin allows users to configure various settings within the cli.
+describe the command here
 
 ```
 USAGE
-  $ bf config
+  $ oclif-example [FILE]
 
 OPTIONS
-  -h, --help  show CLI help
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/index.ts)_
+_See code: [src/commands/index.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/index.ts)_
 
-## `bf config:telemetry`
+## `oclif-example config [FILE]`
 
-The telemetry commands allow the user to enable and disable telemetry.
+describe the command here
 
 ```
 USAGE
-  $ bf config:telemetry
+  $ oclif-example config [FILE]
 
 OPTIONS
-  -h, --help  show CLI help
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
 ```
 
-_See code: [src/commands/config/telemetry/index.ts](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/index.ts)_
 
-## `bf config:telemetry:disable`
+## `oclif-example config:telemetry [FILE]`
 
-Disable telemetry
-
-```
-USAGE
-  $ bf config:telemetry:disable
-```
-
-_See code: [src/commands/config/telemetry/disable.ts](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
-
-## `bf config:telemetry:enable`
-
-enable telemetry
+describe the command here
 
 ```
 USAGE
-  $ bf config:telemetry:enable
+  $ oclif-example config:telemetry [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
 ```
 
-_See code: [src/commands/config/telemetry/enable.ts](https://github.com/packages/bf-config/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
+_See code: [src/commands/config/telemetry/index.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
+
+## `oclif-example config:telemetry:disable [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example config:telemetry:disable [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/config/telemetry/disable.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
+
+## `oclif-example config:telemetry:enable [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example config:telemetry:enable [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/config/telemetry/enable.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
+
+## `oclif-example hello [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example hello [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+
+EXAMPLE
+  $ oclif-example hello
+  hello world from ./src/hello.ts!
+```
+
+_See code: [src/commands/hello.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/hello.ts)_
 <!-- commandsstop -->

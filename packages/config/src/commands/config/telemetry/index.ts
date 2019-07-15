@@ -1,12 +1,13 @@
-import {flags} from '@oclif/command'
-import {Command} from 'cli-command'
+import {Command, flags} from '@oclif/command'
 
 export default class ConfigTelemetryIndex extends Command {
-  static description = 'The telemetry commands allow the user to enable and disable telemetry.'
+  static description = 'The telemetry commands allow the user to enable and disable telemetry'
 
   static flags = {
-    help: flags.help({char: 'h'})
+    help: flags.help({char: 'h'}),
   }
 
-  async run() {}
+  async run() {
+    this._help()
+  }
 }

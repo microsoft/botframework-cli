@@ -1,5 +1,5 @@
 {
-  "name": "cli-command",
+  "name": "@microsoft/bf-cli-command",
   "description": "base class for Microsoft Bot Framework CLI commands",
   "version": "0.0.0",
   "author": "Microsoft",
