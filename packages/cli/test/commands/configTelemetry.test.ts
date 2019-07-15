@@ -20,21 +20,21 @@ after(() => {
 
 describe('it should disable telemetry when a user opts out', () => {
   test
-  .stub(cli, 'prompt', () => async () => 'Y')
+  .stub(cli, 'prompt', () => async () => 'N')
   .loadConfig({root: rootTelemetryNull})
   .stdout()
   .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
-  .do(output => expect(output.stdout).to.contain('Telemetry has been disabled'))
+  .do(output => expect(output.stdout).to.contain('Telemetry will remain disabled'))
   .it()
 })
 
 describe('it should enable telemetry when a user opts in', () => {
   test
-  .stub(cli, 'prompt', () => async () => 'N')
+  .stub(cli, 'prompt', () => async () => 'Y')
   .loadConfig({root: rootTelemetryNull})
   .stdout()
   .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
-  .do(output => expect(output.stdout).to.contain('Telemetry will remain enabled'))
+  .do(output => expect(output.stdout).to.contain('Telemetry has been enabled'))
   .it()
 })
 

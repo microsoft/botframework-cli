@@ -1,5 +1,5 @@
 import * as cp from 'child_process';
-import * as fs from 'fs-extra'
+const fs = require('fs-extra')
 const assert = require('assert');
 const path = require('path')
 const pathToJson = path.resolve(__dirname, '../../../../../cli/package.json')

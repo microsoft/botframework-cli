@@ -1,8 +1,12 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 
 const readTextFile = {
     readSync: function(file){
-        try {
+        try {  
+            if(!fs.existsSync(file))
+            {
+                throw new Error('ENOENT: no such file or directory, '+file);
+            }
             let fileBuffer = fs.readFileSync(file);
             if(fileBuffer) {
                 // If the data starts with BOM, we know it is UTF
@@ -29,13 +33,12 @@ const readTextFile = {
                     fileBuffer = fileBuffer.slice(2);
                 }
             }
-        
             return fileBuffer.toString('utf8').replace(/\0/g, '');
         } catch(err) {
             if (err.message.match(/ENOENT: no such file or directory/)) {
                 throw err;
             } 
-            throw (new Error('Invalid Input', `Sorry, unable to parse file: \n\n ${JSON.stringify(err, null, 2)}\n\n`));
+            throw new Error('Invalid Input', `Sorry, unable to parse file: \n\n ${JSON.stringify(err, null, 2)}\n\n`);
         }
     }
 }

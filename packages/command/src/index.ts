@@ -1,5 +1,3 @@
-import {Command} from './command'
-import * as flags from './flags'
-export {flags}
-export {Command}
+import {CLIError, Command} from './command'
+export {CLIError, Command}
 export default Command

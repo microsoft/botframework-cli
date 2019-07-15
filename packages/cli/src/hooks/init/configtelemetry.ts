@@ -7,13 +7,13 @@ const path = require('path')
 const hook: Hook<'init'> = async function () {
   try {
     if (this.config.pjson.telemetry === null) {
-      const disableTelemetry = await cli.prompt(chalk.red('Telemetry is enabled. Would you like to opt out? (Y/N)'))
+      const disableTelemetry = await cli.prompt(chalk.red('Telemetry is disabled. Would you like to opt in? (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
-        this.config.pjson.telemetry = false
-        this.log(chalk.blue('Telemetry has been disabled.'))
-      } else {
         this.config.pjson.telemetry = true
-        this.log(chalk.blue('Telemetry will remain enabled'))
+        this.log(chalk.blue('Telemetry has been enabled.'))
+      } else {
+        this.config.pjson.telemetry = false
+        this.log(chalk.blue('Telemetry will remain disabled'))
       }
       const pathToJson = path.resolve(__dirname, '../../../package.json')
       const userConfig = await fs.readJSON(pathToJson)

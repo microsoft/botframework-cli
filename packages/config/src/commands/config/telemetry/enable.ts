@@ -1,9 +1,14 @@
-import {Command} from 'cli-command'
-import * as fs from 'fs-extra'
+import {Command} from '@microsoft/bf-cli-command'
+import {flags} from '@oclif/command'
+const fs = require('fs-extra')
 const path = require('path')
 
 export default class ConfigTelemetryEnable extends Command {
-  static description = 'enable telemetry'
+  static description = 'Enable Telemetry'
+
+  static flags = {
+    help: flags.help({char: 'h'}),
+  }
 
   async run() {
     const pathToJson = path.resolve(__dirname, '../../../../../cli/package.json')

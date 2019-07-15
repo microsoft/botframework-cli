@@ -5,6 +5,7 @@ let assert = require('assert');
 
 describe('command', () => {
   fancy
+  .stderr()
   .do(async () => {
     const thrownError = new Error('failure')
     class Test extends Command {
@@ -16,10 +17,11 @@ describe('command', () => {
 
     return Test.run([])
   })
-  .catch(/failure/)
+  .do(output => expect(output.stderr).to.equal('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues\nfailure\n'))
   .it('errors out')
 
   fancy
+  .stderr()
   .do(async () => {
     const thrownError = new CLIError('failure')
     class Test extends Command {
@@ -31,7 +33,7 @@ describe('command', () => {
 
     return Test.run([])
   })
-  .catch(/EEXIT: 0/)
+  .do(output => expect(output.stderr).to.equal('failure\n'))
   .it('Exits with error')
 
   fancy

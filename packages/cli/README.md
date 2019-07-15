@@ -15,11 +15,11 @@ botframework-cli
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g botframework-cli
+$ npm install -g @microsoft/botframework-cli
 $ bf COMMAND
 running command...
 $ bf (-v|--version|version)
-botframework-cli/0.1.0 darwin-x64 node-v12.1.0
+@microsoft/botframework-cli/0.1.0 darwin-x64 node-v12.1.0
 $ bf --help [COMMAND]
 USAGE
   $ bf COMMAND
@@ -28,33 +28,117 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bf chatdown [CHAT]`](#bf-chatdown-chat)
+* [`bf `](#bf-)
+* [`bf chatdown`](#bf-chatdown)
+* [`bf config`](#bf-config)
+* [`bf config:telemetry`](#bf-configtelemetry)
+* [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
+* [`bf config:telemetry:enable`](#bf-configtelemetryenable)
 * [`bf help [COMMAND]`](#bf-help-command)
 
-## `bf chatdown [CHAT]`
+## `bf `
 
-Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file
+The config plugin allows users to configure various settings within the cli.
 
 ```
 USAGE
-  $ bf chatdown [CHAT]
-
-ARGUMENTS
-  CHAT  The path of the chat file to be parsed. If omitted, stdin will be used.
+  $ bf
 
 OPTIONS
-  -f, --folder=folder
-  -h, --help                   show CLI help
-  -o, --out_folder=out_folder
-  -v, --version                Show version
-  --prefix                     Use static timestamps when generating timestamps on activities.
-  --static                     Use static timestamps when generating timestamps on activities.
-
-EXAMPLE
-  $ bf chatdown
+  -h, --help  show CLI help
 ```
 
-_See code: [bf-chatdown](https://github.com/Microsoft/chatdown/blob/v0.1.0/src/commands/chatdown.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/index.ts)_
+
+## `bf chatdown`
+
+Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+
+```
+USAGE
+  $ bf chatdown
+
+OPTIONS
+  -c, --chat=chat              The path of the chat file to be parsed. If omitted, stdin will be used.
+
+  -f, --folder=folder          Path to directory and/or all subdirectories containing chat files to be processed all at
+                               once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the
+                               output to the current working directory.
+
+  -h, --help                   Chatdown command help
+
+  -o, --out_folder=out_folder  Path to the directory where the output of the multiple chat file processing (-f) will be
+                               placed.
+
+  -p, --prefix                 Prefix stdout with package name.
+
+  -s, --static                 Use static timestamps when generating timestamps on activities.
+
+EXAMPLE
+
+     $ bf chatdown
+     $ bf chatdown --chat=./path/to/file/sample.chat
+     $ bf chatdown -f ./test/utils/*.sample.chat -o ./
+     $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
+```
+
+_See code: [@microsoft/bf-chatdown](https://github.com/Microsoft/chatdown/blob/v0.0.0/src/commands/chatdown.ts)_
+
+## `bf config`
+
+The config plugin allows users to configure various settings within the cli.
+
+```
+USAGE
+  $ bf config
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/index.ts)_
+
+## `bf config:telemetry`
+
+The telemetry commands allow the user to enable and disable telemetry
+
+```
+USAGE
+  $ bf config:telemetry
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
+
+## `bf config:telemetry:disable`
+
+Disable telemetry
+
+```
+USAGE
+  $ bf config:telemetry:disable
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
+
+## `bf config:telemetry:enable`
+
+Enable Telemetry
+
+```
+USAGE
+  $ bf config:telemetry:enable
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
 
 ## `bf help [COMMAND]`
 

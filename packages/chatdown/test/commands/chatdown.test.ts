@@ -32,7 +32,7 @@ describe('chatdown', () => {
 
     it('should throw when a malformed config options is encountered in the input', done => {
         cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown`, (error, stdout, stderr) => {
-            assert(stderr.trim().indexOf('Error: Malformed configurations options detected. Options must be in the format optionName=optionValue') >= 0);
+            assert(stderr.trim().indexOf('Malformed configurations options detected. Options must be in the format optionName=optionValue') >= 0);
             done();
         });
     });
@@ -40,13 +40,6 @@ describe('chatdown', () => {
     it('should generate static based timestamps when --static is passed as an argument', done => {
         cp.exec(`(echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | node ./bin/run chatdown --static`, (error, stdout) => {
             assert.doesNotThrow(() => JSON.parse(stdout));
-            done();
-        });
-    });
-
-    it('should return version number when --version is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --version`, (error, stdout) => {
-            assert(sv.valid(stdout));
             done();
         });
     });
@@ -78,13 +71,6 @@ describe('chatdown', () => {
             done();
         });
     });
-    
-    it('should prefix [chatdown] to stdout when --prefix is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --version --prefix`, (error, stdout, stderr) => {
-            assert(stdout.startsWith(`[${pkg.name}]`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
-            done();
-        });
-    });
 
     it('should prefix [chatdown] to stderr when --prefix is passed as an argument', done => {
         cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
@@ -95,7 +81,7 @@ describe('chatdown', () => {
 
     it('throw error if invalid path in argument', done => {
         cp.exec(`node ./bin/run chatdown --chat aaaaa`, (error, stdout, stderr) => {
-            assert(stderr.includes('No such file or directory'));
+            assert(stderr.includes('no such file or directory'));
             done();
         });
     });
