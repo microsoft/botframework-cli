@@ -1,5 +1,5 @@
-import {CLIError, Command} from '@microsoft/bf-cli-command'
 import {flags} from '@oclif/command'
+import {CLIError, Command} from '@microsoft/bf-cli-command'
 
 const chalk = require('chalk')
 const chatdown = require('../../utils/index')
