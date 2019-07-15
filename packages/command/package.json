@@ -1,7 +1,7 @@
 {
   "name": "@microsoft/bf-cli-command",
   "description": "base class for Microsoft Bot Framework CLI commands",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli",
   "dependencies": {
