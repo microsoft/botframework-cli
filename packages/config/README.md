@@ -15,122 +15,91 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ oclif-example COMMAND
+$ bf COMMAND
 running command...
-$ oclif-example (-v|--version|version)
+$ bf (-v|--version|version)
 @microsoft/bf-cli-config/0.0.0 darwin-x64 node-v12.1.0
-$ oclif-example --help [COMMAND]
+$ bf --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ bf COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example [FILE]`](#oclif-example-file)
-* [`oclif-example config [FILE]`](#oclif-example-config-file)
-* [`oclif-example config:telemetry [FILE]`](#oclif-example-configtelemetry-file)
-* [`oclif-example config:telemetry:disable [FILE]`](#oclif-example-configtelemetrydisable-file)
-* [`oclif-example config:telemetry:enable [FILE]`](#oclif-example-configtelemetryenable-file)
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`bf `](#bf-)
+* [`bf config`](#bf-config)
+* [`bf config:telemetry`](#bf-configtelemetry)
+* [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
+* [`bf config:telemetry:enable`](#bf-configtelemetryenable)
 
-## `oclif-example [FILE]`
+## `bf `
 
-describe the command here
-
-```
-USAGE
-  $ oclif-example [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src/commands/index.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/index.ts)_
-
-## `oclif-example config [FILE]`
-
-describe the command here
+The config plugin allows users to configure various settings within the cli.
 
 ```
 USAGE
-  $ oclif-example config [FILE]
+  $ bf
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/config/index.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/index.ts)_
+_See code: [src/commands/index.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/index.ts)_
 
-## `oclif-example config:telemetry [FILE]`
+## `bf config`
 
-describe the command here
+The config plugin allows users to configure various settings within the cli.
 
 ```
 USAGE
-  $ oclif-example config:telemetry [FILE]
+  $ bf config
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/config/telemetry/index.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
+_See code: [src/commands/config/index.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/config/index.ts)_
 
-## `oclif-example config:telemetry:disable [FILE]`
+## `bf config:telemetry`
 
-describe the command here
+The telemetry commands allow the user to enable and disable telemetry
 
 ```
 USAGE
-  $ oclif-example config:telemetry:disable [FILE]
+  $ bf config:telemetry
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/config/telemetry/disable.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
+_See code: [src/commands/config/telemetry/index.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
 
-## `oclif-example config:telemetry:enable [FILE]`
+## `bf config:telemetry:disable`
 
-describe the command here
+Disable telemetry
 
 ```
 USAGE
-  $ oclif-example config:telemetry:enable [FILE]
+  $ bf config:telemetry:disable
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/config/telemetry/enable.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
+_See code: [src/commands/config/telemetry/disable.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
 
-## `oclif-example hello [FILE]`
+## `bf config:telemetry:enable`
 
-describe the command here
+Enable Telemetry
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ bf config:telemetry:enable
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/config/telemetry/enable.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
 <!-- commandsstop -->
