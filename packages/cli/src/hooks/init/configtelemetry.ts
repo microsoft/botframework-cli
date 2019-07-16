@@ -18,8 +18,8 @@ const hook: Hook<'init'> = async function () {
       } else {
         this.config.pjson.telemetry = false
         this.log(chalk.blue('Telemetry will remain disabled'))
-        this.log(chalk.blue('At any time you may disable data collection by changing the configuration using command:'))
-        this.log(chalk.blue('bf config:telemetry:disable'))
+        this.log(chalk.blue('At any time you may enable data collection by changing the configuration using command:'))
+        this.log(chalk.blue('bf config:telemetry:enable'))
       }
       const pathToJson = path.resolve(__dirname, '../../../package.json')
       const userConfig = await fs.readJSON(pathToJson)
