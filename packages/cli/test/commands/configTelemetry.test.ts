@@ -38,20 +38,20 @@ describe('it should enable telemetry when a user opts in', () => {
   .it()
 })
 
-describe('it should take no action when telemetry is already enabled', () => {
-  test
-  .loadConfig({root: rootTelemetryEnabled})
-  .stdout()
-  .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
-  .do(output => expect(output.stdout).equal(''))
-  .it()
-})
+// describe('it should take no action when telemetry is already enabled', () => {
+//   test
+//   .loadConfig({root: rootTelemetryEnabled})
+//   .stdout()
+//   .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
+//   .do(output => expect(output.stdout).equal(''))
+//   .it()
+// })
 
-describe('it should take no action when telemetry is already disabled', () => {
-  test
-  .loadConfig({root: rootTelemetryDisabled})
-  .stdout()
-  .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
-  .do(output => expect(output.stdout).equal(''))
-  .it()
-})
+// describe('it should take no action when telemetry is already disabled', () => {
+//   test
+//   .loadConfig({root: rootTelemetryDisabled})
+//   .stdout()
+//   .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
+//   .do(output => expect(output.stdout).equal(''))
+//   .it()
+// })

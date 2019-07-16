@@ -3,8 +3,22 @@ import cli from 'cli-ux'
 import * as fs from 'fs-extra'
 const chalk = require('chalk')
 const path = require('path')
+const latestVersion = require('latest-version')
+const semver = require('semver')
 
-const hook: Hook<'init'> = async function () {
+const hook: Hook<'init'> = async function (opts) {
+  try {
+    const latest = await latestVersion(opts.config.name, {version: `>${opts.config.version}`})
+    if (semver.gt(latest, opts.config.version)) {
+      this.log('Update available ')
+      this.log('     Run ')
+      this.log(`npm i -g ${opts.config.name} `)
+    }
+  /* tslint:disable:no-unused */
+  } catch (err) {
+      // swallow the exception; we don't want to crash the app
+      // on a failed attempt to check version
+  }
   try {
     if (this.config.pjson.telemetry === null) {
       const disableTelemetry = await cli.prompt(chalk.red('Telemetry is disabled. Would you like to opt in?. Only command and flags usage will be sent. (Y/N)'))
