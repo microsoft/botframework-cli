@@ -13,11 +13,11 @@
     "fs-extra": "^7.0.1"
   },
   "devDependencies": {
-    "@oclif/command": "~1.5.13",
-    "@oclif/config": "~1.12.12",
-    "@oclif/plugin-help": "~2.1.6",
-    "@oclif/plugin-plugins": "~1.7.7",
-    "@oclif/tslint": "~3.1.1",
+    "@oclif/command": "^1.5.13",
+    "@oclif/config": "^1.12.12",
+    "@oclif/plugin-help": "^2.1.6",
+    "@oclif/plugin-plugins": "^1.7.7",
+    "@oclif/tslint": "^3.1.1",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.5",

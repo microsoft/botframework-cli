@@ -59,7 +59,10 @@
       "@microsoft/bf-cli-config"
     ],
     "hooks": {
-      "init": "./lib/hooks/init/configtelemetry"
+      "init": [
+        "./lib/hooks/init/configtelemetry",
+        "./lib/hooks/init/updatecli"
+      ]
     }
   },
   "telemetry": null,
