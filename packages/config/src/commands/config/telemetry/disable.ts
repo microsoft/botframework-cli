@@ -1,5 +1,4 @@
-import {flags} from '@oclif/command'
-import {Command} from '@microsoft/bf-cli-command'
+import {Command, flags} from '@oclif/command'
 const fs = require('fs-extra')
 const path = require('path')
 
