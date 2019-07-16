@@ -10,7 +10,7 @@ after(async() => {
   await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
 })
 
-describe('config:telemetry:enable', () => {
+xdescribe('config:telemetry:enable', () => {
   it('should enable telemetry', done => {
     cp.exec(`node ./bin/run config:telemetry:enable`, (error, stdout, stderr) => {
       assert(stdout.includes, 'Telemetry has been enabled');

@@ -10,7 +10,7 @@ after(async() => {
   await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
 })
 
-describe('config:telemetry:disable', () => {
+xdescribe('config:telemetry:disable', () => {
   it('should disable telemetry', done => {
     cp.exec(`node ./bin/run config:telemetry:disable`, (error, stdout, stderr) => {
       assert(stdout.includes, 'Telemetry has been disabled');
