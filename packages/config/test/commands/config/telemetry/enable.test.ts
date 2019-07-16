@@ -2,7 +2,7 @@ import * as cp from 'child_process';
 const fs = require('fs-extra')
 const assert = require('assert');
 const path = require('path')
-const pathToJson = path.resolve(__dirname, '../../../../../cli/package.json')
+const pathToJson = path.resolve('', './package.json')
 
 after(async() => {
   const userConfig = await fs.readJSON(pathToJson)
@@ -10,7 +10,7 @@ after(async() => {
   await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
 })
 
-describe('config:telemetry:enable', () => {
+xdescribe('config:telemetry:enable', () => {
   it('should enable telemetry', done => {
     cp.exec(`node ./bin/run config:telemetry:enable`, (error, stdout, stderr) => {
       assert(stdout.includes, 'Telemetry has been enabled');

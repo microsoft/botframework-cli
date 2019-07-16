@@ -1,4 +1,4 @@
-import {Command,flags} from '@oclif/command'
+import {Command, flags} from '@oclif/command'
 const fs = require('fs-extra')
 const path = require('path')
 
@@ -10,7 +10,7 @@ export default class ConfigTelemetryEnable extends Command {
   }
 
   async run() {
-    const pathToJson = path.resolve('', './package.json')
+    const pathToJson = path.resolve(__dirname, '../../../../../../../package.json')
     const userConfig = await fs.readJSON(pathToJson)
     userConfig.telemetry = true
     await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
