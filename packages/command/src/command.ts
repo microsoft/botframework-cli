@@ -42,6 +42,7 @@ export abstract class Command extends Base {
   // Flush telemetry to avoid performance issues
   async finally(_: Error | undefined) {
     Telemetry.flushTelemetry()
+    process.stdin.destroy();
   }
 
   trackEvent(msg: string, properties?: { [key: string]: any }) {
