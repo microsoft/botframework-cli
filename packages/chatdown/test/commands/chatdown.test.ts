@@ -17,7 +17,7 @@ describe('chatdown', () => {
 
     it('should print the help contents to stderr when no input is passed', done => {
         cp.exec(`node ./bin/run chatdown`, (error, stdout, stderr) => {
-            assert(stdout.includes, 'Converts chat dialog files in <filename>.');
+            assert(stdout.trim().indexOf('Converts chat dialog files in <filename>.') >=0);
             done();
         });
     });
