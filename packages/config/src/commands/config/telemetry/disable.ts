@@ -1,11 +1,12 @@
-import {Command, flags} from '@oclif/command'
+import {Command, flags} from '@microsoft/bf-cli-command'
+
 const fs = require('fs-extra')
 const path = require('path')
 
 export default class ConfigTelemetryDisable extends Command {
   static description = 'Disable telemetry'
 
-  static flags = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
   }
 

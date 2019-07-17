@@ -1,9 +1,9 @@
-import {Command, flags} from '@oclif/command'
+import {Command, flags} from '@microsoft/bf-cli-command'
 
 export default class ConfigTelemetryIndex extends Command {
   static description = 'The telemetry commands allow the user to enable and disable telemetry'
 
-  static flags = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
   }
 

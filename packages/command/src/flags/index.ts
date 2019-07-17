@@ -1,1 +1,1 @@
-export * from '@oclif/command/lib/flags'
+export {flags} from '@oclif/command'

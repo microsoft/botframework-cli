@@ -1,5 +1,4 @@
-import {flags} from '@oclif/command'
-import {CLIError, Command} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
 const chalk = require('chalk')
 const chatdown = require('../../utils/index')
@@ -19,7 +18,7 @@ export default class Chatdown extends Command {
   $ bf chatdown -f ./test/utils/*.sample.chat -o ./
   $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static`]
 
-  static flags = {
+  static flags: flags.Input<any> = {
     chat: flags.string({char: 'c', description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}),
     folder: flags.string({char: 'f', description: 'Path to directory and/or all subdirectories containing chat files to be processed all at once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the output to the current working directory. '}),
     out_folder: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-f) will be placed.'}),
