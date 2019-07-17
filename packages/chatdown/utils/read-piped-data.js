@@ -2,6 +2,7 @@ const readPipedStdin = {
     readStdin: async function(){
         return new Promise(function(resolve, reject){
             let timer = setTimeout(() => {
+                clearTimeout(timer);
                 reject(new Error('No Input'));
             }, 1000);
     
