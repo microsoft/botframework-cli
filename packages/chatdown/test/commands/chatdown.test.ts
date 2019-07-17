@@ -6,19 +6,18 @@ let pkg = require('../../package.json');
 let assert = require('assert');
 let sv = require('semver');
 
-
 describe('chatdown', () => {
 
-    it('should print the help contents when --help is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --help`, (error, stdout, stderr) => {
-            assert(stdout.includes, 'Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file');
-            done();
-        });
-    });
+    test
+    .stdout()
+    .command(['chatdown', '--help'])
+    .it('should print the help contents when --help is passed as an argument', ctx => {
+      expect(ctx.stdout).to.contain('Converts chat dialog files in <filename>.')
+    })
 
     it('should print the help contents to stderr when no input is passed', done => {
         cp.exec(`node ./bin/run chatdown`, (error, stdout, stderr) => {
-            assert(stdout.includes, 'Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file');
+            assert(stdout.includes, 'Converts chat dialog files in <filename>.');
             done();
         });
     });
