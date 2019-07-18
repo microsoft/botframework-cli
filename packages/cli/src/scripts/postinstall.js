@@ -20,7 +20,7 @@ const promptTelemetry = async () => {
     let telemetryOptIn = false;
     const userConfig = await getUserConfig()
     if (userConfig.telemetry === null) {
-      const disableTelemetry = await cli.prompt(chalk.red('Telemetry is disabled. Would you like to opt in?. Only command and flags usage will be sent. (Y/N)'))
+      const disableTelemetry = await cli.prompt(chalk.red('Telemetry is disabled. Would you like to opt in? Only command and flags usage will be sent. (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
         telemetryOptIn = true
         console.log(chalk.blue('Telemetry has been enabled.'))
