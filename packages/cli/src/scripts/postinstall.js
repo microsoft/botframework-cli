@@ -1,7 +1,28 @@
+const os = require('os')
 const {cli} = require('cli-ux')
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs-extra')
+const pjson = require('../../package.json');
+
+const windowsHomedriveHome = () => process.env.HOMEDRIVE && process.env.HOMEPATH && path.join(process.env.HOMEDRIVE, process.env.HOMEPATH)
+const windowsUserprofileHome = () => process.env.USERPROFILE
+const windowsHome = () => windowsHomedriveHome() || windowsUserprofileHome()
+
+const packageName = pjson.name
+const platform = os.platform()
+const isWindows = platform === 'win32'
+const home = process.env.HOME || (isWindows && windowsHome()) || os.homedir() || os.tmpdir()
+
+const getConfigDir = (isWindows, home, pname) => {
+  const base = process.env[`XDG_CONFIG_HOME`]
+  || (isWindows && process.env.LOCALAPPDATA)
+  || path.join(home, '.config')
+return path.join(base, pname)
+}
+
+const pathToConfigJson = getConfigDir(isWindows, home, packageName)
+console.log(`Path to oclif config dir :::: ${pathToConfigJson}`)
 
 const pathToJson = path.resolve(__dirname, '../../package.json')
 
@@ -50,5 +71,3 @@ const init = async () => {
 }
 
 init()
-
-
