@@ -65,7 +65,7 @@
   "telemetry": null,
   "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
-    "postinstall": "node bin/postinstall.js",
+    "postinstall": "node src/scripts/postinstall.js",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
