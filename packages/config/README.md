@@ -4,9 +4,9 @@
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@microsoft/bf-cli-config.svg)](https://npmjs.org/package/@microsoft/bf-cli-config)
-[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-cli-config.svg)](https://npmjs.org/package/@microsoft/bf-cli-config)
-[![License](https://img.shields.io/npm/l/@microsoft/bf-cli-config.svg)](https://github.com/munozemilio/bf-cli-config/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-cli-config.svg)](https://www.npmjs.com/package/@microsoft/bf-cli-config)
+[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-cli-config.svg)](https://www.npmjs.com/package/@microsoft/bf-cli-config)
+[![License](https://img.shields.io/npm/l/@microsoft/bf-cli-config.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/config/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
