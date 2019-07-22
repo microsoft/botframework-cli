@@ -10,10 +10,9 @@ export default class ConfigTelemetryEnable extends Command {
   }
 
   async run() {
-    const pathToJson = path.resolve(__dirname, '../../../../../../../package.json')
-    const userConfig = await fs.readJSON(pathToJson)
+    const userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))       
     userConfig.telemetry = true
-    await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
+    await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     this.log('Telemetry has been enabled.')
   }
 }

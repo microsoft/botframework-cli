@@ -7,11 +7,10 @@
         "bin": "bf",
         "plugins": [
           "@oclif/plugin-help",
-          "bf-chatdown"
+          "@microsoft/bf-chatdown"
         ],
         "hooks": {
-          "init": "../../../src/hooks/init/updatecli"
+          "init": "../../../src/hooks/init/inithook"
         }
-    },
-    "telemetry": false
+    }
 }
