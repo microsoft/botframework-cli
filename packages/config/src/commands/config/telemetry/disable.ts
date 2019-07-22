@@ -10,7 +10,7 @@ export default class ConfigTelemetryDisable extends Command {
   }
 
   async run() {
-    const userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))       
+    const userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
     userConfig.telemetry = false
     await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     this.log('Telemetry has been disabled.')
