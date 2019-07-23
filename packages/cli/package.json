@@ -41,6 +41,7 @@
   "files": [
     "/bin",
     "/lib",
+    "/scripts",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
