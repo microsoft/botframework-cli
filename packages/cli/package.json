@@ -41,6 +41,7 @@
   "files": [
     "/bin",
     "/lib",
+    "/scripts",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
@@ -59,13 +60,12 @@
       "@microsoft/bf-cli-config"
     ],
     "hooks": {
-      "init": "./lib/hooks/init/configtelemetry"
+      "init": "./lib/hooks/init/inithook"
     }
   },
-  "telemetry": null,
   "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
-    "postinstall": "node bin/postinstall.js",
+    "postinstall": "node scripts/postinstall.js",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",

@@ -1,16 +1,15 @@
 {
-    "name": "test",
+    "name": "hooktest",
     "files": [],
     "oclif": {
         "commands": "../../../src/commands",
         "bin": "bf",
         "plugins": [
           "@oclif/plugin-help",
-          "bf-chatdown"
+          "@microsoft/bf-chatdown"
         ],
         "hooks": {
-          "init": "../../../src/hooks/init/configtelemetry"
+          "init": "../../../src/hooks/init/inithook"
         }
-    },
-    "telemetry": null
+    }
 }
