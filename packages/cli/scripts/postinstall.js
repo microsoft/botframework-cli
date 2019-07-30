@@ -51,6 +51,11 @@ const getUserConfig = async () => {
         console.log(chalk.blue('At any time you may enable data collection by changing the configuration using command:'))
         console.log(chalk.blue('bf config:telemetry:enable'))
       }
+
+      if (!fs.existsSync(path.join(pathToConfigJson))) {
+        fs.mkdirSync(pathToConfigJson, { recursive: true })
+      }
+
       await fs.writeFile(path.join(pathToConfigJson, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
   /* tslint:disable:no-unused */
