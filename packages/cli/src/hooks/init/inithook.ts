@@ -48,7 +48,7 @@ const hook: Hook<'init'> = async function (opts) {
         this.log(chalk.blue('bf config:telemetry:enable'))
       }
 
-      fs.mkdirpSync(this.config.configDir)
+      await fs.mkdirp(this.config.configDir)
 
       await fs.writeFileSync(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
