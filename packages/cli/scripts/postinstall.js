@@ -52,9 +52,7 @@ const getUserConfig = async () => {
         console.log(chalk.blue('bf config:telemetry:enable'))
       }
 
-      if (!fs.existsSync(path.join(pathToConfigJson))) {
-        fs.mkdirSync(pathToConfigJson, { recursive: true })
-      }
+      fs.mkdirpSync(pathToConfigJson)
 
       await fs.writeFile(path.join(pathToConfigJson, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
