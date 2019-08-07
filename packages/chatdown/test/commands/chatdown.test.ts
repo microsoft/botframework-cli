@@ -15,13 +15,6 @@ describe('chatdown', () => {
       expect(ctx.stdout).to.contain('Converts chat dialog files in <filename>.')
     })
 
-    it('should print the help contents to stderr when no input is passed', done => {
-        cp.exec(`node ./bin/run chatdown`, (error, stdout, stderr) => {
-            assert(stdout.includes, 'Converts chat dialog files in <filename>.');
-            done();
-        });
-    });
-
     it('should accept data as a pipe and output the results', done => {
         cp.exec(`(echo user=Joe && echo bot=LuliBot && echo LuliBot: hello! && echo joe:can I get some help?) | node ./bin/run chatdown`, (error, stdout) => {
             assert.doesNotThrow(() => JSON.parse(stdout));
