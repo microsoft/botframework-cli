@@ -49,7 +49,7 @@ const hook: Hook<'init'> = async function (opts) {
       }
 
       await fs.mkdirp(this.config.configDir)
-      
+
       await fs.writeFileSync(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
 
