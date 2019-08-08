@@ -19,7 +19,7 @@ let util: any = require('util');
 let exec: any = util.promisify(require('child_process').exec);
 
 export default class DialogMerge extends Command {
-
+   
     static flags = {
         help: flags.help({ char: 'h' }),
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: "app.schema", required: false }),
