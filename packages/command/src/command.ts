@@ -1,9 +1,12 @@
 import {Command as Base} from '@oclif/command'
 import {CLIError} from '@oclif/errors'
 
+const chalk = require('chalk')
 const pjson = require('../package.json')
 import Telemetry from './telemetry'
 
+export {CLIError} from '@oclif/errors'
+export {flags} from '@oclif/command'
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
   telemetryEnabled = false
@@ -19,35 +22,33 @@ export abstract class Command extends Base {
   /* tslint:disable:no-unused */
   error(input: string | Error, options: {code?: string, exit?: number | false} = {}) {
     /* tslint:disable:no-console */
-    console.error(input)
+    console.error(chalk.red(input))
   }
 
   async catch(err: any) {
-    if (err instanceof CLIError) return this.exit(0)
-    if (!err.message) throw err
-    if (err.message.match(/Unexpected arguments?: (-h|--help|help)(,|\n)/)) {
-      return this._help()
-    } else if (err.message.match(/Unexpected arguments?: (-v|--version|version)(,|\n)/)) {
-      return this._version()
+    if (err instanceof CLIError) {
+      if (!err.message.match(/EEXIT: 0/)) {
+        this.error(err.message)
+      }
     } else {
       try {
         this.trackEvent(this.id + '', {flags : this.getTelemetryProperties(), error: this.extractError(err)})
-        this.log('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues')
-      } catch {}
-      throw err
+        this.error('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues')
+        this.error(err.message)
+      } catch (e) {}
     }
   }
 
   // Flush telemetry to avoid performance issues
   async finally(_: Error | undefined) {
     Telemetry.flushTelemetry()
-    return super.finally(_)
+    process.stdin.destroy()
   }
 
   trackEvent(msg: string, properties?: { [key: string]: any }) {
     /* tslint:disable:strict-type-predicates */
     if (this.telemetryEnabled !== null && this.telemetryEnabled) {
-      Telemetry.trackEvent(msg, properties)
+      Telemetry.trackEvent('bf-cli-' + msg, properties)
     }
   }
 

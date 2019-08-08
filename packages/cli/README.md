@@ -4,9 +4,9 @@ botframework-cli
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/botframework-cli.svg)](https://npmjs.org/package/botframework-cli)
-[![Downloads/week](https://img.shields.io/npm/dw/botframework-cli.svg)](https://npmjs.org/package/botframework-cli)
-[![License](https://img.shields.io/npm/l/botframework-cli.svg)](https://github.com/Microsoft/botframework-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/botframework-cli.svg)](https://www.npmjs.com/package/@microsoft/botframework-cli)
+[![Downloads/week](https://img.shields.io/npm/dw/botframework-cli.svg)](https://www.npmjs.com/package/@microsoft/botframework-cli)
+[![License](https://img.shields.io/npm/l/botframework-cli.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
@@ -15,11 +15,11 @@ botframework-cli
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g botframework-cli
+$ npm install -g @microsoft/botframework-cli
 $ bf COMMAND
 running command...
 $ bf (-v|--version|version)
-botframework-cli/0.0.0 darwin-x64 node-v12.1.0
+@microsoft/botframework-cli/0.1.0 darwin-x64 node-v12.1.0
 $ bf --help [COMMAND]
 USAGE
   $ bf COMMAND
@@ -28,28 +28,117 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bf hello [FILE]`](#bf-hello-file)
+* [`bf `](#bf-)
+* [`bf chatdown`](#bf-chatdown)
+* [`bf config`](#bf-config)
+* [`bf config:telemetry`](#bf-configtelemetry)
+* [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
+* [`bf config:telemetry:enable`](#bf-configtelemetryenable)
 * [`bf help [COMMAND]`](#bf-help-command)
 
-## `bf hello [FILE]`
+## `bf `
 
-describe the command here
+The config plugin allows users to configure various settings within the cli.
 
 ```
 USAGE
-  $ bf hello [FILE]
+  $ bf
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ bf hello
-  hello world from ./src/hello.ts!
+  -h, --help  show CLI help
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/Microsoft/botframework-cli/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/index.ts)_
+
+## `bf chatdown`
+
+Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+
+```
+USAGE
+  $ bf chatdown
+
+OPTIONS
+  -c, --chat=chat              The path of the chat file to be parsed. If omitted, stdin will be used.
+
+  -f, --folder=folder          Path to directory and/or all subdirectories containing chat files to be processed all at
+                               once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the
+                               output to the current working directory.
+
+  -h, --help                   Chatdown command help
+
+  -o, --out_folder=out_folder  Path to the directory where the output of the multiple chat file processing (-f) will be
+                               placed.
+
+  -p, --prefix                 Prefix stdout with package name.
+
+  -s, --static                 Use static timestamps when generating timestamps on activities.
+
+EXAMPLE
+
+     $ bf chatdown
+     $ bf chatdown --chat=./path/to/file/sample.chat
+     $ bf chatdown -f ./test/utils/*.sample.chat -o ./
+     $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
+```
+
+_See code: [@microsoft/bf-chatdown](https://github.com/Microsoft/chatdown/blob/v0.0.0/src/commands/chatdown.ts)_
+
+## `bf config`
+
+The config plugin allows users to configure various settings within the cli.
+
+```
+USAGE
+  $ bf config
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/index.ts)_
+
+## `bf config:telemetry`
+
+The telemetry commands allow the user to enable and disable telemetry
+
+```
+USAGE
+  $ bf config:telemetry
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/index.ts)_
+
+## `bf config:telemetry:disable`
+
+Disable telemetry
+
+```
+USAGE
+  $ bf config:telemetry:disable
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/disable.ts)_
+
+## `bf config:telemetry:enable`
+
+Enable Telemetry
+
+```
+USAGE
+  $ bf config:telemetry:enable
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/munozemilio/bf-cli-config/blob/v0.0.0/src/commands/config/telemetry/enable.ts)_
 
 ## `bf help [COMMAND]`
 

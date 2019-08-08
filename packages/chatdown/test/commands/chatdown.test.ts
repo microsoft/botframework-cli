@@ -6,22 +6,14 @@ let pkg = require('../../package.json');
 let assert = require('assert');
 let sv = require('semver');
 
-
 describe('chatdown', () => {
 
-    it('should print the help contents when --help is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --help`, (error, stdout, stderr) => {
-            assert(stdout.includes, 'Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file');
-            done();
-        });
-    });
-
-    it('should print the help contents to stderr when no input is passed', done => {
-        cp.exec(`node ./bin/run chatdown`, (error, stdout, stderr) => {
-            assert(stdout.includes, 'Chatdown cli tool used to parse chat dialogs (.chat file) into a mock transcript file');
-            done();
-        });
-    });
+    test
+    .stdout()
+    .command(['chatdown', '--help'])
+    .it('should print the help contents when --help is passed as an argument', ctx => {
+      expect(ctx.stdout).to.contain('Converts chat dialog files in <filename>.')
+    })
 
     it('should accept data as a pipe and output the results', done => {
         cp.exec(`(echo user=Joe && echo bot=LuliBot && echo LuliBot: hello! && echo joe:can I get some help?) | node ./bin/run chatdown`, (error, stdout) => {
@@ -32,7 +24,7 @@ describe('chatdown', () => {
 
     it('should throw when a malformed config options is encountered in the input', done => {
         cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown`, (error, stdout, stderr) => {
-            assert(stderr.trim().indexOf('Error: Malformed configurations options detected. Options must be in the format optionName=optionValue') >= 0);
+            assert(stderr.trim().indexOf('Malformed configurations options detected. Options must be in the format optionName=optionValue') >= 0);
             done();
         });
     });
@@ -44,15 +36,8 @@ describe('chatdown', () => {
         });
     });
 
-    it('should return version number when --version is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --version`, (error, stdout) => {
-            assert(sv.valid(stdout));
-            done();
-        });
-    });
-
     it('should read from file when chat file is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown ${path.join(__dirname, '../utils/cli.sample.chat')}`, (error, stdout) => {
+        cp.exec(`node ./bin/run chatdown --chat ${path.join(__dirname, '../utils/cli.sample.chat')}`, (error, stdout) => {
             assert.doesNotThrow(() => JSON.parse(stdout));
             done();
         });
@@ -78,13 +63,6 @@ describe('chatdown', () => {
             done();
         });
     });
-    
-    it('should prefix [chatdown] to stdout when --prefix is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --version --prefix`, (error, stdout, stderr) => {
-            assert(stdout.startsWith(`[${pkg.name}]`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
-            done();
-        });
-    });
 
     it('should prefix [chatdown] to stderr when --prefix is passed as an argument', done => {
         cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
@@ -94,8 +72,8 @@ describe('chatdown', () => {
     });
 
     it('throw error if invalid path in argument', done => {
-        cp.exec(`node ./bin/run chatdown aaaaa`, (error, stdout, stderr) => {
-            assert(stderr.includes('No such file or directory'));
+        cp.exec(`node ./bin/run chatdown --chat aaaaa`, (error, stdout, stderr) => {
+            assert(stderr.includes('no such file or directory'));
             done();
         });
     });

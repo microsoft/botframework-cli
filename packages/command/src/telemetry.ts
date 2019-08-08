@@ -1,6 +1,6 @@
 import * as AppInsights from 'applicationinsights'
 
-const INSTRUMENTATION_KEY = '12ca0fd4-de70-420e-aa46-3ec7f6cd040d'
+const INSTRUMENTATION_KEY = 'cc91f74a-1abd-4be0-8a96-fddedbc08dd7'
 
 /* tslint:disable:no-unnecessary-class */
 class Telemetry {
@@ -35,6 +35,7 @@ class Telemetry {
       .setAutoCollectRequests(false)
       .setAutoDependencyCorrelation(false)
 
+    AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.cloudRoleInstance] = ''
     AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.deviceId] = ''
     AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.locationIp] = '0.0.0.0'
     AppInsights.defaultClient.context.tags[AppInsights.defaultClient.context.keys.deviceOSVersion] = ''
