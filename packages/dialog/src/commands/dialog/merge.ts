@@ -17,7 +17,7 @@ export default class DialogMerge extends Command {
     const {args, flags} = this.parse(DialogMerge)
 
     const name = flags.name || 'world'
-    this.log(`hello ${name} from /Users/emiliomunoz/Documents/BotFramework/rimraf/packages/dialog/src/commands/dialog/merge.ts`)
+    this.log(`hello ${name} `)
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }

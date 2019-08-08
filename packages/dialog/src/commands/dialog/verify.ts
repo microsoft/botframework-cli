@@ -17,7 +17,7 @@ export default class DialogVerify extends Command {
     const {args, flags} = this.parse(DialogVerify)
 
     const name = flags.name || 'world'
-    this.log(`hello ${name} from /Users/emiliomunoz/Documents/BotFramework/rimraf/packages/dialog/src/commands/dialog/verify.ts`)
+    this.log(`hello ${name}`)
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }
