@@ -19,7 +19,7 @@ let util: any = require('util');
 let exec: any = util.promisify(require('child_process').exec);
 
 export default class DialogMerge extends Command {
-
+   
     static flags = {
         help: flags.help({ char: 'h' }),
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: "app.schema", required: false }),
@@ -27,10 +27,12 @@ export default class DialogMerge extends Command {
         update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
     }
 
-    async run() {
-        const { argv, flags } = this.parse(DialogMerge)
+    static args = [{ name: 'files' }]
 
-        var finished = await this.mergeSchemas(argv, flags.output, flags.branch, flags.update);
+    async run() {
+        const { args, flags } = this.parse(DialogMerge)
+
+        this.log('yo');
     }
 
     private failed = false;
