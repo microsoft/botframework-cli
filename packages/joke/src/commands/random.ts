@@ -76,7 +76,7 @@ export default class Random extends Command {
     {
       Object.entries(aJoke["result"]).forEach(([key, value]) => {
 //        this.log(`key= ${key} value = ${value}`)
-        var result = value;
+        var result = value as { [key: string]: any };
         this.log(`--- [${key}] ---`)
         this.log("Joke:\t" + result["value"]);
         this.log("Url:\t" + result["url"])
@@ -91,15 +91,5 @@ export default class Random extends Command {
       this.log("Category:\t" + jokeCategory)
     }
 
-
-
-
-    /*
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from .\\src\\commands\\categories.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
-    }
-*/
   }
 }
