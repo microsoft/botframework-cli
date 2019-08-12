@@ -6,7 +6,7 @@ const pjson = require('../package.json')
 import Telemetry from './telemetry'
 
 export {CLIError} from '@oclif/errors'
-
+export {flags} from '@oclif/command'
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
   telemetryEnabled = false

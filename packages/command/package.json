@@ -33,6 +33,7 @@
     "nock": "^10.0.6",
     "nyc": "^13.3.0",
     "proxyquire": "^2.1.0",
+    "rimraf": "^2.6.3",
     "sinon": "^7.3.2",
     "testdouble": "^3.11.0",
     "ts-node": "^8.1.0",
@@ -50,9 +51,9 @@
   "main": "lib/index.js",
   "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
-    "build": "rm -rf lib && tsc",
+    "build": "rimraf lib && tsc -b",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
-    "prepublishOnly": "rm -rf lib && tsc -b",
+    "prepublishOnly": "rimraf lib && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
   },
   "types": "./lib/index.d.ts"
