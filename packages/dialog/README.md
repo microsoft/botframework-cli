@@ -28,7 +28,41 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`oclif-example dialog:merge [FILE]`](#oclif-example-dialogmerge-file)
+* [`oclif-example dialog:verify [FILE]`](#oclif-example-dialogverify-file)
 * [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+
+## `oclif-example dialog:merge [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example dialog:merge [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/merge.ts)_
+
+## `oclif-example dialog:verify [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example dialog:verify [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/verify.ts)_
 
 ## `oclif-example hello [FILE]`
 
@@ -45,7 +79,7 @@ OPTIONS
 
 EXAMPLE
   $ oclif-example hello
-  hello world from ./src/hello.ts!
+       hello world from ./src/hello.ts!
 ```
 
 _See code: [src/commands/hello.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/hello.ts)_
