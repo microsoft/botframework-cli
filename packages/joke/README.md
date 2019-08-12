@@ -15,13 +15,15 @@ Displays a random joke from an online resource
 # Usage
 <!-- usage -->
 ```sh-session
-$ bf COMMAND
-running command...
+$ bf joke
+displays help
 $ bf (-v|--version|version)
 @microsoft/bf-joke/4.5.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
+$ bf --help [COMMAND]     Displays usage help
+  $ bf joke:random        Displays a random joke
+  $ bf joke:random -category <Category>   Displays joke in specified (predefined) category
+  $ bf joke:random -search <term>         Display joke containing simple search term 
+  $ bf joke:categories    Displays list of available categories
 ...
 ```
 <!-- usagestop -->
@@ -43,5 +45,5 @@ EXAMPLE
   $ bf joke
 ```
 
-_See code: [TBD](TBD)_
+_See code: [https://github.com/microsoft/botframework-cli/tree/esbfcli/packages/joke](https://github.com/microsoft/botframework-cli/tree/esbfcli/packages/joke)_
 <!-- commandsstop -->
