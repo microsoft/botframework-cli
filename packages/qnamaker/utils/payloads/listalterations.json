@@ -1,0 +1,18 @@
+{
+    "name": "alterations",
+    "className": "Alterations",
+    "url": "/alterations",
+    "operations": {
+        "downloadAlterations": {
+            "name": "downloadAlterations",
+            "method": "GET",
+            "methodAlias": "list",
+            "target": [
+                "alterations"
+            ],
+            "command": "qnamaker list alterations",
+            "pathFragment": "",
+            "description": "Downloads all word alterations (synonyms) that have been automatically mined or added by the user."
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "name": "operations",
+    "className": "Operations",
+    "url": "/operations/{operationId}",
+    "operations": {
+        "getOperationDetails": {
+            "name": "getOperationDetails",
+            "method": "GET",
+            "methodAlias": "get",
+            "target": [
+                "operationdetails",
+                "OperationDetails"
+            ],
+            "command": "qnamaker get operationdetails --operationId <string>",
+            "pathFragment": "",
+            "params": [
+                {
+                    "type": "string",
+                    "name": "operationId",
+                    "in": "path",
+                    "required": true,
+                    "x-nullable": false,
+                    "description": "Operation id."
+                }
+            ],
+            "description": "Gets details of a specific long running operation."
+        }
+    }
+}
