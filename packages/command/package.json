@@ -51,7 +51,7 @@
   "main": "lib/index.js",
   "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
-    "build": "rimraf lib && tsc -b",
+    "build": "npm install && rimraf lib && tsc -b",
     "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
     "prepublishOnly": "rimraf lib && tsc -b",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\""
