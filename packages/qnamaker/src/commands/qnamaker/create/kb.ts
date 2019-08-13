@@ -67,7 +67,7 @@ export default class QnamakerCreateKb extends Command {
       this.log(JSON.stringify(result, null, 2))
 
       if (flags.wait) {
-        let answer = await cli.prompt(`Would you like to save ${kb.name} ${kb.id} in your .qnamakerrc so that future commands will be with this KB? [yes] `, {default: 'yes'})
+        const answer = await cli.prompt(`Would you like to save ${kb.name} ${kb.id} in your .qnamakerrc so that future commands will be with this KB? [yes] `, {default: 'yes'})
         if (answer[0] === 'y') {
           await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), input.config, {spaces: 2})
           await this.log('.qnamakerrc updated')
@@ -81,7 +81,7 @@ export default class QnamakerCreateKb extends Command {
     config.endpointKey = JSON.parse(await response.text()).primaryEndpointKey
 
     response = await new Knowledgebase().getKnowledgebaseDetails(config)
-    let kb = JSON.parse(await response.text())
+    const kb = JSON.parse(await response.text())
     config.hostname = kb.hostName
 
     return kb

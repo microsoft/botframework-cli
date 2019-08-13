@@ -96,7 +96,6 @@ class ServiceBase {
             if (body)
                 console.log(body);
         }
-        //console.log('url is: '+URL+ " method "+ method)
         return fetch(URL, { headers, method, body });
     }
 

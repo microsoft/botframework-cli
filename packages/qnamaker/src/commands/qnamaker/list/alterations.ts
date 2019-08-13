@@ -21,7 +21,7 @@ export default class QnamakerListAlterations extends Command {
     const {flags} = this.parse(QnamakerListAlterations)
     let input: Inputs = await processInputs(flags, listAlterationsJSON, 'list', 'alterations')
 
-    let result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
+    const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
 
     if (result.error) {
       throw new CLIError(JSON.stringify(result.error, null, 4))

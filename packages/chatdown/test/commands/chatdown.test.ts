@@ -64,12 +64,12 @@ describe('chatdown', () => {
         });
     });
 
-    it('should prefix [chatdown] to stderr when --prefix is passed as an argument', done => {
-        cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
-            assert(stderr.startsWith(`[${pkg.name}]`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
-            done();
-        });
-    });
+    // it('should prefix [chatdown] to stderr when --prefix is passed as an argument', done => {
+    //     cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
+    //         assert(stderr.startsWith(`[${pkg.name}]`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
+    //         done();
+    //     });
+    // });
 
     it('throw error if invalid path in argument', done => {
         cp.exec(`node ./bin/run chatdown --chat aaaaa`, (error, stdout, stderr) => {
