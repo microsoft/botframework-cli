@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/bf-dialog",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
