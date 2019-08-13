@@ -22,15 +22,15 @@ let exec: any = util.promisify(require('child_process').exec);
 export default class DialogMerge extends Command {
 
     static args = [
-        { name: 'pattern1', required: true },
-        { name: 'pattern2', required: false },
-        { name: 'pattern3', required: false },
-        { name: 'pattern4', required: false },
-        { name: 'pattern5', required: false },
-        { name: 'pattern6', required: false },
-        { name: 'pattern7', required: false },
-        { name: 'pattern8', required: false },
-        { name: 'pattern9', required: false },
+        { name: 'glob1', required: true },
+        { name: 'glob2', required: false },
+        { name: 'glob3', required: false },
+        { name: 'glob4', required: false },
+        { name: 'glob5', required: false },
+        { name: 'glob6', required: false },
+        { name: 'glob7', required: false },
+        { name: 'glob8', required: false },
+        { name: 'glob9', required: false },
     ]
 
     static flags = {

@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
+            "name": "Dialog Merge Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "cwd":"${workspaceFolder}",
             "args": [
@@ -17,6 +17,22 @@
                 "999999",
                 "--colors",
                 "${workspaceFolder}/test/commands/dialog/merge.test.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Dialog Verify Tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "cwd":"${workspaceFolder}",
+            "args": [
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/test/commands/dialog/verify.test.ts"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },

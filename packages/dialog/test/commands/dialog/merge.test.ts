@@ -11,10 +11,10 @@ import glob from 'globby';
 import 'mocha';
 import * as os from 'os';
 import * as ppath from 'path';
-import MergeDialog from '../../../src/commands/dialog/merge';
+import DialogMerge from '../../../src/commands/dialog/merge';
 import * as dt from '../../../src/library/dialogTracker';
 
-describe('Test schema merge and .dialog indexing library', async () => {
+describe('Test schema merge', async () => {
     let schemas = new dt.SchemaTracker();
     let tracker = new dt.DialogTracker(schemas);
 
@@ -40,9 +40,9 @@ describe('Test schema merge and .dialog indexing library', async () => {
 
         await fs.remove("examples/app.schema");
 
-        await MergeDialog.run(["-b", "4.Future", "-o", "examples/app.schema", "schemas/*.schema"]);
-        await MergeDialog.run(["-b", "4.Future", "-o", "examples/promptOnly.schema", "schemas/prompt.schema"]);
-        await MergeDialog.run(["-b", "4.Future", "-o", "examples/packages.schema", "package.json", "projects/*"]);
+        await DialogMerge.run(["-b", "4.Future", "-o", "examples/app.schema", "schemas/*.schema"]);
+        await DialogMerge.run(["-b", "4.Future", "-o", "examples/promptOnly.schema", "schemas/prompt.schema"]);
+        await DialogMerge.run(["-b", "4.Future", "-o", "examples/packages.schema", "package.json", "projects/*"]);
 
         tracker.root = process.cwd();
         await tracker.addDialogFiles(["examples/*.dialog"]);

@@ -8,6 +8,7 @@
     "@oclif/config": "~1.13.0",
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
+    "chalk": "^2.4.2",
     "fs-extra": "^8.1.0",
     "get-json": "^1.0.1",
     "globby": "^9.2.0",
@@ -51,7 +52,7 @@
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "oclif-example",
+    "bin": "bf",
     "devPlugins": [
       "@oclif/plugin-help"
     ]
