@@ -1,0 +1,50 @@
+{
+    "name": "generateAnswer",
+    "className": "GenerateAnswer",
+    "url": "/qnamaker/knowledgebases/{kbId}/generateAnswer",
+    "operations": {
+        "generateAnswer": {
+            "name": "generateAnswer",
+            "method": "POST",
+            "methodAlias": "query",
+            "target": [],
+            "command": "qnamaker query --question \"how do I turn it on\" --top 5",
+            "pathFragment": "",
+            "params": [
+                {
+                    "name": "question",
+                    "in": "question",
+                    "description": "question you want to ask",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "top",
+                    "in": "top",
+                    "description": "number of answers you would like",
+                    "required": false,
+                    "type": "number"
+                },
+                {
+                    "name": "kbId",
+                    "alias": "knowledgeBaseID",
+                    "in": "path",
+                    "description": "kbId, this should be get from QnAMaker portal",
+                    "required": true,
+                    "type": "string"
+                },
+                {
+                    "name": "hostname",
+                    "alias": "hostname",
+                    "in": "path",
+                    "description": "the url of your private qnamaker service",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "description": "Returns the list of answers for the given question sorted in descending order of ranking score.",
+            "entityName": "generateAnswer",
+            "entityType": "GenerateAnswer"
+        }
+    }
+}

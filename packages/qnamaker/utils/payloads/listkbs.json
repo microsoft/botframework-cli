@@ -1,0 +1,20 @@
+{
+    "name": "knowledgebases",
+    "className": "Knowledgebases",
+    "url": "/knowledgebases",
+    "operations": {
+        "getKnowledgebasesForUser": {
+            "name": "getKnowledgebasesForUser",
+            "method": "GET",
+            "methodAlias": "list",
+            "target": [
+                "kbs",
+                "knowledgebases",
+                "kb"
+            ],
+            "command": "qnamaker list kbs",
+            "pathFragment": "",
+            "description": "List all of your knowledgebases"
+        }
+    }
+}

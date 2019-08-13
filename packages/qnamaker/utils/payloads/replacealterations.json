@@ -1,0 +1,20 @@
+{
+    "name": "alterations",
+    "className": "Alterations",
+    "url": "/alterations",
+    "operations": {
+        "replaceAlterations": {
+            "name": "replaceAlterations",
+            "method": "PUT",
+            "methodAlias": "replace",
+            "target": [
+                "alterations"
+            ],
+            "command": "qnamaker replace alterations --in wordAlterations.json",
+            "pathFragment": "",
+            "description": "Replaces word alterations (synonyms) for the KB with the give records.",
+            "entityName": "wordAlterations",
+            "entityType": "WordAlterationsDTO"
+        }
+    }
+}
