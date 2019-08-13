@@ -8,6 +8,7 @@
     "@oclif/config": "~1.13.0",
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
+    "@microsoft/bf-cli-command": "1.0.0",
     "chalk": "^2.4.2",
     "fs-extra": "^8.1.0",
     "get-json": "^1.0.1",
@@ -18,7 +19,6 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/plugin-help": "^2.2.0",
     "@oclif/test": "^1.2.5",
     "@oclif/tslint": "^3.1.1",
@@ -61,7 +61,7 @@
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "build": "tsc",
+    "build2": "tsc",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   }
