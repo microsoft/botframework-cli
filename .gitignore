@@ -64,3 +64,6 @@ typings/
 
 # Visual Studio setup
 .vs
+
+#package-lock.json
+package-lock.json
