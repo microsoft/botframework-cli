@@ -1,0 +1,39 @@
+{
+    "name": "knowledgebase",
+    "className": "Knowledgebase",
+    "url": "/knowledgebases/{kbId}",
+    "operations": {
+        "updateKnowledgebase": {
+            "name": "updateKnowledgebase",
+            "method": "PATCH",
+            "methodAlias": "update",
+            "target": [
+                "kb",
+                "knowledgebase"
+            ],
+            "command": "qnamaker update kb --in updateKb.json --kbId <string> [--wait]",
+            "pathFragment": "",
+            "params": [
+                {
+                    "type": "string",
+                    "name": "kbId",
+                    "in": "path",
+                    "required": true,
+                    "x-nullable": false,
+                    "description": "Knowledgebase id"
+                },
+                {
+                    "name": "wait",
+                    "in": "path",
+                    "description": "Wait for the operation to complete",
+                    "required": false,
+                    "type": "boolean",
+                    "x-ms-parameter-location": "method"
+                }
+            ],
+            "description": "Add or delete QnA Pairs and / or URLs to an existing knowledge base",
+            "entityName": "updateKb",
+            "entityType": "UpdateKbOperationDTO"
+        }
+    }
+}

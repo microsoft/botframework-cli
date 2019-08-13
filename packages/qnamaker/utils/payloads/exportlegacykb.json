@@ -1,0 +1,38 @@
+{
+    "name": "qnalegacy",
+    "className": "QnaLegacy",
+    "url": "/knowledgebases/{kbId}",
+    "operations": {
+        "downloadLegacyKnowledgebase": {
+            "name": "downloadLegacyKnowledgebase",
+            "method": "get",
+            "methodAlias": "export",
+            "target": [
+                "legacykb",
+                "legacyknowledgebase"
+            ],
+            "command": "qnamaker export legacykb --kbId <legacyKB>",
+            "pathFragment": "",
+            "legacy": true,
+            "params": [
+                {
+                    "type": "string",
+                    "name": "kbId",
+                    "in": "path",
+                    "required": true,
+                    "x-nullable": false,
+                    "description": "legacy Knowledgebase id"
+                },
+                {
+                    "type": "string",
+                    "name": "name",
+                    "in": "path",
+                    "required": false,
+                    "x-nullable": false,
+                    "description": "name of the knowledgebase. (NOTE: This is used to modify the output to be compliant with V4 import, not to lookup the knowledgebase)"
+                }
+            ],
+            "description": "Export legacy knowledgebase (requires legacy --kbid and --subscriptionKey to be passed in)"
+        }
+    }
+}
