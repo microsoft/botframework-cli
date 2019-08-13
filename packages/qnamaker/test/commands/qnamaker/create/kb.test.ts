@@ -1,6 +1,7 @@
 import {expect, test} from '@oclif/test'
 import * as path from 'path'
 import cli from 'cli-ux'
+import { doesNotReject } from 'assert';
 const nock = require('nock')
 const fs = require('fs-extra')
 
@@ -27,9 +28,8 @@ describe('qnamaker:create:kb', () => {
   test
   .stdout()
   .command(['qnamaker:create:kb','--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`])
-  .it('Creates kb', ctx => {
+  .it('Creates kb qnamaker:create:kb --in', ctx => {
     expect(ctx.stdout).to.empty
-    nock.cleanAll()
   })
 })
 
@@ -111,7 +111,5 @@ describe('qnamaker:create:kb --wait', () => {
   .command(['qnamaker:create:kb', '--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`, '--wait'])
   .it('Creates kb and awaits for the creation of it', ctx => {
     expect(ctx.stdout).to.contain('{\n  "operationState": "Succeeded",\n  "createdTimestamp": "2019-08-06T12:46:03Z",\n  "lastActionTimestamp": "2019-08-06T12:46:19Z",\n  "resourceLocation": "/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2"')
-    nock.cleanAll()
   })
-
 })
