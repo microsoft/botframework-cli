@@ -7,6 +7,7 @@
 import { Command, flags } from '@oclif/command';
 import * as Validator from 'ajv';
 import * as fs from 'fs-extra';
+import * as getJson from 'get-json';
 import * as glob from 'globby';
 import * as os from 'os';
 import * as ppath from 'path';
@@ -20,10 +21,22 @@ let exec: any = util.promisify(require('child_process').exec);
 
 export default class DialogMerge extends Command {
 
+    static args = [
+        { name: 'pattern1', required: true },
+        { name: 'pattern2', required: false },
+        { name: 'pattern3', required: false },
+        { name: 'pattern4', required: false },
+        { name: 'pattern5', required: false },
+        { name: 'pattern6', required: false },
+        { name: 'pattern7', required: false },
+        { name: 'pattern8', required: false },
+        { name: 'pattern9', required: false },
+    ]
+
     static flags = {
         help: flags.help({ char: 'h' }),
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: "app.schema", required: false }),
-        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: "master", required: false }),
+        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: "4.Future", required: false }),
         update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
     }
 
@@ -84,7 +97,7 @@ export default class DialogMerge extends Command {
                 } else if (!metaSchema && branch) {
                     // Find branch specific schema
                     let path = `https://raw.githubusercontent.com/Microsoft/botbuilder-dotnet/${branch}/schemas/component.schema`;
-                    metaSchema = await fs.readJSON(path);
+                    metaSchema = await getJson(path);
                 }
 
                 if (metaSchema) {

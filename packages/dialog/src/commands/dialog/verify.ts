@@ -11,7 +11,6 @@ export default class DialogVerify extends Command {
     async run() {
         const { argv, flags } = this.parse(DialogVerify);
 
-
         const schema = new SchemaTracker();
         const tracker = new DialogTracker(schema);
 
