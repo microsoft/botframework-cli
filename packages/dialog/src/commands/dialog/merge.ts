@@ -204,7 +204,7 @@ export default class DialogMerge extends Command {
                             if (elt.PackageReference) {
                                 for (let pkgRef of elt.PackageReference) {
                                     let pkg = pkgRef.$;
-                                    let pkgName = pkg.Include;
+                                    let pkgName = pkg.Include.toLowerCase();
                                     let pkgPath = ppath.join(packages, pkgName);
                                     let versions: string[] = [];
                                     for (let version of fs.readdirSync(pkgPath)) {
