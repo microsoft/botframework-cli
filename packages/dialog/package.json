@@ -6,7 +6,6 @@
   "dependencies": {
     "@oclif/command": "~1.5.13",
     "@oclif/config": "~1.13.0",
-    "@microsoft/bf-cli-command": "1.0.0",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
