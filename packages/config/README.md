@@ -30,9 +30,7 @@ USAGE
 <!-- commands -->
 * [`bf `](#bf-)
 * [`bf config`](#bf-config)
-* [`bf config:qnamaker:set [FILE]`](#bf-configqnamakerset-file)
-* [`bf config:qnamaker:setkbid`](#bf-configqnamakersetkbid)
-* [`bf config:qnamaker:setsubscriptionkey`](#bf-configqnamakersetsubscriptionkey)
+* [`bf config:qnamaker:set`](#bf-configqnamakerset)
 * [`bf config:telemetry`](#bf-configtelemetry)
 * [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
 * [`bf config:telemetry:enable`](#bf-configtelemetryenable)
@@ -65,49 +63,20 @@ OPTIONS
 
 _See code: [src/commands/config/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/index.ts)_
 
-## `bf config:qnamaker:set [FILE]`
+## `bf config:qnamaker:set`
 
-describe the command here
+Set the QnAMaker config data
 
 ```
 USAGE
-  $ bf config:qnamaker:set [FILE]
+  $ bf config:qnamaker:set
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  --kbid=kbid                        QnAMaker kbid to be set
+  --subscriptionkey=subscriptionkey  QnAMaker subscriptionkey to be set
 ```
 
 _See code: [src/commands/config/qnamaker/set.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/qnamaker/set.ts)_
-
-## `bf config:qnamaker:setkbid`
-
-Set the QnAMaker kbid
-
-```
-USAGE
-  $ bf config:qnamaker:setkbid
-
-OPTIONS
-  --kbid=kbid  (required) QnAMaker kbid to be set
-```
-
-_See code: [src/commands/config/qnamaker/setkbid.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/qnamaker/setkbid.ts)_
-
-## `bf config:qnamaker:setsubscriptionkey`
-
-Set the QnAMaker Subscriptionkey
-
-```
-USAGE
-  $ bf config:qnamaker:setsubscriptionkey
-
-OPTIONS
-  --subscriptionkey=subscriptionkey  (required) QnAMaker subscriptionkey to be set
-```
-
-_See code: [src/commands/config/qnamaker/setsubscriptionkey.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/qnamaker/setsubscriptionkey.ts)_
 
 ## `bf config:telemetry`
 
