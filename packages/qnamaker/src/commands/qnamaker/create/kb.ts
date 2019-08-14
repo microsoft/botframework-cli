@@ -31,7 +31,7 @@ export default class QnamakerCreateKb extends Command {
   async run() {
     const {flags} = this.parse(QnamakerCreateKb)
 
-    let input: Inputs = await processInputs(flags, createKbJSON, 'create', 'kb')
+    let input: Inputs = await processInputs(flags, createKbJSON, 'create', 'kb', this.config.configDir)
 
     if (flags.name) {
       input.requestBody.name = flags.name

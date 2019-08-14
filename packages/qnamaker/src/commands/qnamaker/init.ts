@@ -53,7 +53,16 @@ export default class QnamakerInit extends Command {
     }
 
     if (confirmation) {
-      await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), config, {spaces: 2})
+      //await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), config, {spaces: 2})
+      let userConfig: any = {}
+      if (fs.existsSync(path.join(this.config.configDir, 'config.json'))) {
+        userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
+      } else {
+        await fs.mkdirp(this.config.configDir)
+      }
+
+      userConfig.qnamaker = config
+      await fs.writeJson(path.join(this.config.configDir, 'config.json'), userConfig, {spaces: 2})
     }
     return confirmation
   }

@@ -18,7 +18,7 @@ export default class QnamakerListKbs extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerListKbs)
-    let input: Inputs = await processInputs(flags, listKbsJSON, 'list', 'kbs')
+    let input: Inputs = await processInputs(flags, listKbsJSON, 'list', 'kbs', this.config.configDir)
 
     const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
 

@@ -18,7 +18,7 @@ export default class QnamakerPublishKb extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerPublishKb)
-    let input: Inputs = await processInputs(flags, publishKbJSON, 'publish', 'kb')
+    let input: Inputs = await processInputs(flags, publishKbJSON, 'publish', 'kb', this.config.configDir)
 
     const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
 
