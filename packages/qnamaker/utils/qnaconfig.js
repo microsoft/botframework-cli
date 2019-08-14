@@ -14,7 +14,7 @@ const config = {
         flags.hostname = (flags.hostname || serviceIn.hostname || config.hostname)
     },
 
-    composeConfig: async function (args) {
+    composeConfig: async function (args, configfile) {
         const {QNAMAKER_SUBSCRIPTION_KEY, QNAMAKER_HOSTNAME, QNAMAKER_ENDPOINTKEY, QNAMAKER_KBID} = process.env;
         const {subscriptionKey, hostname, endpointKey, kbId} = args;
 
@@ -22,8 +22,12 @@ const config = {
         let config = {}
 
         try {
-            await fs.access(path.join(process.cwd(), '.qnamakerrc'), fs.R_OK);
-            qnamakerrcJson = await fs.readJSON(path.join(process.cwd(), '.qnamakerrc'));
+            // await fs.access(path.join(process.cwd(), '.qnamakerrc'), fs.R_OK);
+            // qnamakerrcJson = await fs.readJSON(path.join(process.cwd(), '.qnamakerrc'));
+            if (fs.existsSync(path.join(configfile, 'config.json'))) {
+                config = await fs.readJSON(path.join(configfile, 'config.json'))
+                qnamakerrcJson = config.qnamaker
+            } 
         } catch (e) {
             // Do nothing
         } finally {

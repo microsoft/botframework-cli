@@ -19,7 +19,7 @@ export default class QnamakerGetOperationdetails extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerGetOperationdetails)
-    let input: Inputs = await processInputs(flags, getOperationDetailsJSON, 'get', 'operationdetails')
+    let input: Inputs = await processInputs(flags, getOperationDetailsJSON, 'get', 'operationdetails', this.config.configDir)
 
     let result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
 

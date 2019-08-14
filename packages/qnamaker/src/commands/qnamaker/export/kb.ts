@@ -23,7 +23,7 @@ export default class QnamakerExportKb extends Command {
     const {flags} = this.parse(QnamakerExportKb)
     const payload = flags.legacy ? exportlegacyKbJSON : exportKbJSON
     const kbType = flags.legacy ? 'legacykb' : 'kb'
-    let input: Inputs = await processInputs(flags, payload, 'export', kbType)
+    let input: Inputs = await processInputs(flags, payload, 'export', kbType, this.config.configDir)
 
     const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
     if (result.error) {

@@ -1,18 +1,10 @@
 import {expect, test} from '@oclif/test'
-import * as path from 'path'
-const fs = require('fs-extra')
+import {initTestConfigFile, deleteTestConfigFile} from '../../configfilehelper'
 const nock = require('nock')
 
 describe('qnamaker:query', () => {
   before(async function() {
-    let config = {
-      subscriptionKey: "222222cccccctttttth223kk3k33",
-      hostname: "https://somehost.net",
-      endpointKey: "xxxxxxxxxxxxxxxxxxx",
-      kbId: "xxxxxxxxxxxxxxxxxxxxxxx"
-    }
-    
-    await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), config, {spaces: 2})
+    await initTestConfigFile()
     nock('https://somehostname.net/qnamaker')
     .post('/knowledgebases/xxxxxxxxxxxxxxxxxxxxxxx/generateAnswer')
     .reply(200, {
@@ -37,7 +29,7 @@ describe('qnamaker:query', () => {
   })
 
   after(async function(){
-    await fs.remove(path.join(process.cwd(), '.qnamakerrc'))
+    await deleteTestConfigFile()
   })
 
   test

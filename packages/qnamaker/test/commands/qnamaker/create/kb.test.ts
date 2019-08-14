@@ -1,20 +1,13 @@
 import {expect, test} from '@oclif/test'
 import * as path from 'path'
 import cli from 'cli-ux'
-import { doesNotReject } from 'assert';
+import {initTestConfigFile, deleteTestConfigFile} from '../../../configfilehelper'
 const nock = require('nock')
-const fs = require('fs-extra')
 
 describe('qnamaker:create:kb', () => {
   before(async function() {
-    let config = {
-      subscriptionKey: "222222cccccctttttth223kk3k33",
-      hostname: "https://somehost.net",
-      endpointKey: "xxxxxxxxxxxxxxxxxxx",
-      kbId: "xxxxxxxxxxxxxxxxxxxxxxx"
-    }
-    
-    await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), config, {spaces: 2})
+    await initTestConfigFile()
+
     // runs before all tests in this block
     const scope = nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
     .post('/knowledgebases/createasync')
@@ -22,7 +15,7 @@ describe('qnamaker:create:kb', () => {
     });
 
     after(async function(){
-      await fs.remove(path.join(process.cwd(), '.qnamakerrc'))
+      await deleteTestConfigFile()
     })
 
   test
@@ -35,14 +28,7 @@ describe('qnamaker:create:kb', () => {
 
 describe('qnamaker:create:kb --wait', () => {
   before(async function() {
-    let config = {
-      subscriptionKey: "222222cccccctttttth223kk3k33",
-      hostname: "https://somehost.net",
-      endpointKey: "xxxxxxxxxxxxxxxxxxx",
-      kbId: "xxxxxxxxxxxxxxxxxxxxxxx"
-    }
-    
-    await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), config, {spaces: 2})
+    await initTestConfigFile()
     // runs before all tests in this block
     const scope = nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
     .post('/knowledgebases/createasync')
@@ -101,7 +87,7 @@ describe('qnamaker:create:kb --wait', () => {
     });
 
     after(async function(){
-      await fs.remove(path.join(process.cwd(), '.qnamakerrc'))
+      await deleteTestConfigFile()
     })
 
 

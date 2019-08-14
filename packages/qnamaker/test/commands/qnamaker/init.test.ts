@@ -1,13 +1,12 @@
 import {expect, test} from '@oclif/test'
 import cli from 'cli-ux'
 const fs = require('fs-extra')
-const path = require('path')
 const nock = require('nock')
-
-let userConfig: any = null
+import {initTestConfigFile, deleteTestConfigFile, getConfigFile} from '../../configfilehelper'
 
 describe('qnamaker:init', () => {
     before(async function() {
+      await initTestConfigFile()
       const scope = nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
       .get('/endpointkeys')
       .reply(200,
@@ -37,29 +36,19 @@ describe('qnamaker:init', () => {
           ]
         }
       )
-
-      if (fs.existsSync(path.join(process.cwd(), '.qnamakerrc'))) {
-        userConfig = await fs.readJSON(path.join(process.cwd(), '.qnamakerrc'))
-      } else {
-        userConfig = null
-      }
     });
 
     after(async function() {
-      if (userConfig != null) {
-        await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), userConfig, {spaces: 2})
-      } else {
-        await fs.remove(path.join(process.cwd(), '.qnamakerrc'))
-      }
+      await deleteTestConfigFile()
     });
 
     test
     .stub(cli, 'prompt', () => async () => 'abcdefg')
     .stub(cli, 'confirm', () => async () => 'y')
-    .stdout()
     .command(['qnamaker:init'])
-    .it('Creates .qna.rc file', async ctx => {
-      let config = await fs.readJSON(path.join(process.cwd(), '.qnamakerrc'))
-      expect(config.subscriptionKey).to.contain('abcdefg')
+    .do(async output => {
+      let config = await fs.readJSON(getConfigFile())
+      expect(config.qnamaker.subscriptionKey).to.contain('abcdefg')
     })
+    .it('Creates .qna.rc file')
 })

@@ -18,7 +18,7 @@ export default class QnamakerReplaceAlterations extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerReplaceAlterations)
-    let input: Inputs = await processInputs(flags, replaceAlterationsJSON, 'replace', 'alterations')
+    let input: Inputs = await processInputs(flags, replaceAlterationsJSON, 'replace', 'alterations', this.config.configDir)
     // hack to map incorrect export property from expected import.  Export uses qnaDocuments, create/update/replace qnaList :(
     if (input.requestBody.qnaDocuments && !input.requestBody.qnaList) {
       input.requestBody.qnaList = input.requestBody.qnaDocuments
