@@ -16,18 +16,18 @@ export default class ConfigQnamakerSet extends Command {
 
     if (flags.subscriptionkey) {
       if (qnamaker) {
-        qnamaker.subscriptionkey = flags.subscriptionkey
+        qnamaker.subscriptionKey = flags.subscriptionkey
       } else {
-        userConfig.qnamaker = {subscriptionkey: flags.subscriptionkey}
+        userConfig.qnamaker = {subscriptionKey: flags.subscriptionkey}
       }
       this.log('Subscriptionkey set to ' + flags.subscriptionkey)
     }
 
     if (flags.kbid) {
       if (qnamaker) {
-        qnamaker.kbid = flags.kbid
+        qnamaker.kbId = flags.kbid
       } else {
-        userConfig.qnamaker = {kbid: flags.kbid}
+        userConfig.qnamaker = {kbId: flags.kbid}
       }
       this.log('Kbid set to ' + flags.kbid)
     }
