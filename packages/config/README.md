@@ -30,6 +30,7 @@ USAGE
 <!-- commands -->
 * [`bf `](#bf-)
 * [`bf config`](#bf-config)
+* [`bf config:get [FILE]`](#bf-configget-file)
 * [`bf config:qnamaker:set`](#bf-configqnamakerset)
 * [`bf config:telemetry`](#bf-configtelemetry)
 * [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
@@ -62,6 +63,22 @@ OPTIONS
 ```
 
 _See code: [src/commands/config/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/index.ts)_
+
+## `bf config:get [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bf config:get [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/config/get.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/get.ts)_
 
 ## `bf config:qnamaker:set`
 
