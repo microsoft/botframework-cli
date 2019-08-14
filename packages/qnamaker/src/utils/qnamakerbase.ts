@@ -16,7 +16,7 @@ export async function processInputs(flags: any, payload: any, verb: string, targ
 
   qnaconfig.buildConfig(flags, service, config)
   ServiceBase.config = flags
-  
+
   try {
     await qnaconfig.validateConfig(flags)
   } catch (e) {

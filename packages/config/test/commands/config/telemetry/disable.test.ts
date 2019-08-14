@@ -1,28 +1,21 @@
-import * as cp from 'child_process';
+import {expect, test} from '@oclif/test'
+import {initTestConfigFile, deleteTestConfigFile, getConfigFile} from '../../../configfilehelper'
 const fs = require('fs-extra')
-const assert = require('assert');
-const path = require('path')
-const pathToJson = path.resolve('', './package.json')
 
-after(async() => {
-  const userConfig = await fs.readJSON(pathToJson)
-  userConfig.telemetry = null
-  await fs.writeFile(pathToJson, JSON.stringify(userConfig, null, 2))
-})
+describe('config:telemetry:disable', () => {
+  before(async function() {
+    await initTestConfigFile()
+  });
 
-xdescribe('config:telemetry:disable', () => {
-  it('should disable telemetry', done => {
-    cp.exec(`node ./bin/run config:telemetry:disable`, (error, stdout, stderr) => {
-      assert(stdout.includes, 'Telemetry has been disabled');
-      done();
-    });
+  after(async function() {
+    await deleteTestConfigFile()
   });
-  
-  it('should set the telemetry flag to false', done => {
-    cp.exec(`node ./bin/run config:telemetry:disable`, async (error, stdout, stderr) => {
-      const userConfig = await fs.readJSON(pathToJson)
-      assert(userConfig.telemetry === false)
-      done();
-    });
-  });
+
+  test
+    .stdout()
+    .command(['config:telemetry:disable'])
+    .it('Disables telemetry in config file', async ctx => {
+      let config = await fs.readJSON(getConfigFile())
+      expect(config.telemetry).to.be.false
+    })
 })

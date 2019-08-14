@@ -1,6 +1,5 @@
 import {Command, flags} from '@oclif/command'
-const fs = require('fs-extra')
-const path = require('path')
+import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfilehandler'
 
 export default class ConfigTelemetryEnable extends Command {
   static description = 'Enable Telemetry'
@@ -10,9 +9,9 @@ export default class ConfigTelemetryEnable extends Command {
   }
 
   async run() {
-    const userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
+    let userConfig: Config = await getConfigFile(this.config.configDir)
     userConfig.telemetry = true
-    await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
+    await writeConfigFile(this.config.configDir, userConfig)
     this.log('Telemetry has been enabled.')
   }
 }
