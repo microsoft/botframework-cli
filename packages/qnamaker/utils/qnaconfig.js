@@ -22,11 +22,9 @@ const config = {
         let config = {}
 
         try {
-            // await fs.access(path.join(process.cwd(), '.qnamakerrc'), fs.R_OK);
-            // qnamakerrcJson = await fs.readJSON(path.join(process.cwd(), '.qnamakerrc'));
             if (fs.existsSync(path.join(configfile, 'config.json'))) {
                 config = await fs.readJSON(path.join(configfile, 'config.json'))
-                qnamakerrcJson = config.qnamaker
+                qnamakerrcJson = config.qnamaker === undefined ? {} : config.qnamaker
             } 
         } catch (e) {
             // Do nothing
