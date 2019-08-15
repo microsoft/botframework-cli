@@ -8,7 +8,7 @@ export async function processInputs(flags: any, payload: any, verb: string, targ
   let result: Inputs = {}
   const config = await qnaconfig.composeConfig(flags, configfile)
   let service = {}
-  
+
   try {
     if (flags.stdin) {
       let json = await stdin()
