@@ -5,6 +5,7 @@
   "author": "@scheyal",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
+    "@microsoft/botframework-cli": "^4.5.2",
     "@oclif/command": "^1.5.18",
     "@oclif/config": "^1.13.2",
     "node-fetch": "^2.6.0",
