@@ -26,6 +26,7 @@
             "name": "Dialog Verify Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "cwd":"${workspaceFolder}",
+            "sourceMaps": false,
             "args": [
                 "-u",
                 "tdd",

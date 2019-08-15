@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import { Command, flags } from '@microsoft/bf-cli-command';
 import * as chalk from 'chalk';
 import { Definition, DialogTracker, SchemaTracker } from '../../library/dialogTracker';
 // import * as process from 'process';
@@ -17,10 +17,9 @@ export default class DialogVerify extends Command {
         { name: 'glob9', required: false },
     ]
 
-    static flags = {
+    static flags: flags.Input<any> = {
         help: flags.help({ char: 'h' }),
-        verbose: flags.boolean({ description: 'Show verbose output' }),
-        write: flags.string({ char: 'w', description: 'Write dialog lg information into .lg files where <write> is an .lg file with no locale.' }),
+        verbose: flags.boolean({ description: 'Show verbose output', default: false }),
     }
 
     private currentFile: string;
@@ -30,24 +29,24 @@ export default class DialogVerify extends Command {
 
     async run() {
         const { argv, flags } = this.parse(DialogVerify);
-        await this.execute(argv, flags);
+        await this.execute(argv, flags.verbose);
     }
 
-    async execute(argv: string[], flags: any) {
+    async execute(dialogFiles: string[], verbose?: boolean): Promise<void> {
         const schema = new SchemaTracker();
         const tracker = new DialogTracker(schema);
 
-        await tracker.addDialogFiles(argv);
+        await tracker.addDialogFiles(dialogFiles);
         let hasError = false;
 
         if (tracker.dialogs.length == 0) {
-            this._help();
+            this.error('No  dialogs found!');
         } else {
             for (let dialog of tracker.dialogs) {
                 this.files++;
                 this.currentFile = dialog.file;
                 if (dialog.errors.length == 0) {
-                    if (flags.verbose) {
+                    if (verbose) {
                         this.consoleLog(`${dialog}`);
                     }
                 } else {
@@ -80,7 +79,7 @@ export default class DialogVerify extends Command {
                 this.consoleWarn(`Unused id ${def}`);
             }
 
-            if (flags.verbose) {
+            if (verbose) {
                 for (let [type, definitions] of tracker.typeToDef) {
                     this.consoleMsg(`Instances of ${type}`);
                     for (let def of definitions) {
@@ -89,17 +88,10 @@ export default class DialogVerify extends Command {
                 }
             }
 
-            if (flags.write) {
-                tracker.writeLG(flags.write, (msg) => this.consoleLog(msg));
-            }
-
             this.log(`${this.files} files processed.`);
             this.warn(`${this.warnings} found.`);
             if (this.errors > 0) {
-                this.error(`${this.errors} found.`);
-            }
-            else {
-                this.log(`${this.errors} found.`);
+                this.error(`Error: ${this.errors} found.`);
             }
         }
     }
@@ -122,10 +114,3 @@ export default class DialogVerify extends Command {
         console.error(chalk.default.redBright(`${this.currentFile}: error: ${msg}`));
     }
 }
-
-
-// interface IPackage {
-//     version: string;
-//     engines: { node: string };
-// }
-

@@ -21,9 +21,11 @@ describe('Test schema merge', async () => {
     before(async () => {
         // If you want to regenerate the oracle *.schema files, run schemas/makeschemas.cmd
         let tempDir = ppath.join(os.tmpdir(), "test.out");
+        // console.log(`Test dir ${tempDir}`);
+
         await fs.remove(tempDir);
         await fs.mkdirp(tempDir);
-        console.log(`Test dir ${tempDir}`);
+        
         for (let file of await glob(["test/commands/dialog/**/*.schema", "test/commands/dialog/**/*.lg", "test/commands/dialog/**/*.dialog", "test/commands/dialog/**/*.cmd", "test/commands/dialog/projects/*", "test/commands/dialog/packages/**"])) {
             let target = ppath.join(tempDir, file.substring(file.indexOf("/") + 1).replace("commands/dialog", ""));
             await fs.copy(file, target);

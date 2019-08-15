@@ -5,12 +5,10 @@
  */
 // tslint:disable:no-console
 // tslint:disable:no-object-literal-type-assertion
-export * from './lgTracker';
 export * from './schemaTracker';
 import * as fs from 'fs-extra';
 import * as glob from 'globby';
 import * as path from 'path';
-import * as lgt from './lgTracker';
 import * as st from './schemaTracker';
 
 let clone = require('clone');
@@ -169,9 +167,6 @@ export class DialogTracker {
     /** Tracker for information about schemas. */
     schema: st.SchemaTracker;
 
-    /** Tracker for LG information. */
-    lg: lgt.LGTracker;
-
     /** 
      * Map from $id to the definition.
      * If there are more than one, then it is multiply defined.
@@ -190,7 +185,6 @@ export class DialogTracker {
 
     constructor(schema: st.SchemaTracker, root?: string) {
         this.schema = schema;
-        this.lg = new lgt.LGTracker(schema);
         this.root = root || process.cwd();
         this.idToDef = new Map<string, Definition[]>();
         this.typeToDef = new Map<string, Definition[]>();
@@ -214,11 +208,6 @@ export class DialogTracker {
                         }
                         dialog.errors.push(new Error(`${path} ${err.message}`));
                     }
-                }
-                if (added) {
-                    // Add .lg files from schema
-                    let pattern = path.join(path.dirname(schemaPath), path.basename(schemaPath, ".schema") + "*.lg");
-                    await this.lg.addLGFiles([pattern]);
                 }
             } else {
                 dialog.errors.push(new Error(`${dialog} does not have a $schema.`));
@@ -246,16 +235,6 @@ export class DialogTracker {
                 }
                 return false;
             });
-            // Ensure we have templates for this specific dialog
-            if (dialog.id()) {
-                let type = this.schema.typeToType.get(dialog.body.$type);
-                if (type) {
-                    for (let fullName of type.lgProperties) {
-                        let propName = dialog.id() + fullName.substring(fullName.indexOf("/")).replace(/\//g, '.');
-                        this.lg.addTemplate(new lgt.Template(propName, undefined, ""))
-                    }
-                }
-            }
             // Assume we will save it and reset this when coming from file
             dialog.save = true;
         } catch (e) {
@@ -348,11 +327,6 @@ export class DialogTracker {
                 dialog.save = false;
             }
         }
-    }
-
-    /** Update .lg files based on current state. */
-    async writeLG(basePath: string, log?: (msg: string) => void) {
-        this.lg.writeFiles(basePath, undefined, log);
     }
 
     /** All definitions. */

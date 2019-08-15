@@ -38,14 +38,16 @@ export default class DialogMerge extends Command {
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: "app.schema", required: false }),
         branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: "4.Future", required: false }),
         update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
+        verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
 
     async run() {
         const { argv, flags } = this.parse(DialogMerge)
 
-        var finished = await this.mergeSchemas(argv, flags.output, flags.branch, flags.update);
+        var finished = await this.mergeSchemas(argv, flags.output, flags.branch, flags.update, flags.verbose);
     }
 
+    private verbose: boolean = false;
     private failed = false;
     private missingTypes = new Set();
     private currentFile: string = '';
@@ -57,7 +59,8 @@ export default class DialogMerge extends Command {
      * @param branch Branch to use for where to find component.schema.
      * @param update True to update .schema files to point to branch component.schema files.
      */
-    async mergeSchemas(patterns: string[], output?: string, branch?: string, update?: boolean): Promise<boolean> {
+    async mergeSchemas(patterns: string[], output?: string, branch?: string, update?: boolean, verbose?: boolean): Promise<boolean> {
+        this.verbose = verbose;
         this.failed = false;
         this.missingTypes = new Set();
         try {
@@ -68,7 +71,9 @@ export default class DialogMerge extends Command {
                     return false;
                 }
                 await this.updateMetaSchema(branch);
-                this.log(`Updating component.schema references to branch ${branch}`)
+                if (verbose) {
+                    this.log(`Updating component.schema references to branch ${branch}`)
+                }
             }
 
             if (!output) {
@@ -106,7 +111,9 @@ export default class DialogMerge extends Command {
 
                 for (let schemaPath of schemaPaths) {
                     this.currentFile = schemaPath;
-                    this.log(`Parsing ${schemaPath}`);
+                    if (verbose) {
+                        this.log(`Parsing ${schemaPath}`);
+                    }
                     if (update) {
                         let schema = await fs.readJSON(schemaPath);
                         if (!schema.$id) {
@@ -123,7 +130,9 @@ export default class DialogMerge extends Command {
                         if (!metaSchema) {
                             metaSchema = JSON.parse(await this.getURL(schema.$schema));
                             validator.addSchema(metaSchema, 'componentSchema');
-                            this.log(`  Using component.schema ${metaSchema.$id}`);
+                            if (verbose) {
+                                this.log(`  Using component.schema ${metaSchema.$id}`);
+                            }
                         } else if (schema.$schema != metaSchema.$id) {
                             this.error(`${this.currentFile}: error:${this.currentFile}: error:${schema.$schema} does not match component.schema ${metaSchema.$id}`);
                         }
@@ -173,7 +182,6 @@ export default class DialogMerge extends Command {
                 if (!this.failed) {
                     this.log(`Writing ${output}`);
                     await fs.writeJSON(output, finalSchema, this.jsonOptions);
-                    console.log("");
                 } else {
                     this.error(`${this.currentFile}: error: Could not merge schemas`);
                 }
@@ -193,7 +201,9 @@ export default class DialogMerge extends Command {
             } else {
                 let references: string[] = [];
                 let name = ppath.basename(path);
-                this.log(`Following ${path}`);
+                if (this.verbose) {
+                    this.log(`Following ${path}`);
+                }
                 if (name.endsWith(".csproj")) {
                     references.push(ppath.join(ppath.dirname(path), "/**/*.schema"));
                     let json = await this.xmlToJSON(path);
@@ -303,7 +313,9 @@ export default class DialogMerge extends Command {
     // Update component.schema to a specific branch version
     async updateMetaSchema(branch: string): Promise<void> {
         if (fs.existsSync("baseComponent.schema")) {
-            console.log(`Generating component.schema for branch ${branch}`);
+            if (this.verbose) {
+                console.log(`Generating component.schema for branch ${branch}`);
+            }
             let schema = await fs.readJSON("baseComponent.schema");
             let metaSchemaName = schema.$schema;
             let metaSchemaDef = await this.getURL(metaSchemaName);
