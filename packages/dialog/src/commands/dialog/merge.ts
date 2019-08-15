@@ -4,7 +4,7 @@
  */
 // tslint:disable:no-console
 // tslint:disable:no-object-literal-type-assertion
-import { Command, flags } from '@oclif/command';
+import { Command, flags } from '@microsoft/bf-cli-command';
 import * as Validator from 'ajv';
 import * as fs from 'fs-extra';
 import * as getJson from 'get-json';
@@ -33,7 +33,7 @@ export default class DialogMerge extends Command {
         { name: 'glob9', required: false },
     ]
 
-    static flags = {
+    static flags: flags.Input<any> = {
         help: flags.help({ char: 'h' }),
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: "app.schema", required: false }),
         branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: "4.Future", required: false }),
@@ -123,7 +123,7 @@ export default class DialogMerge extends Command {
                     }
                     let noref = await parser.dereference(schemaPath);
                     if (noref.$id) {
-                        this.warn(`${this.currentFile}: warning: Skipping because of top-level $id:${noref.$id}.`);
+                        this.error(`${this.currentFile}: warning: Skipping because of top-level $id:${noref.$id}.`);
                     } else {
                         let schema = allof(noref);
                         // Pick up meta-schema from first .dialog file
@@ -281,7 +281,7 @@ export default class DialogMerge extends Command {
                 result = stdout.substring(start + name.length).trim();
             }
         } catch (err) {
-            this.warn(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n{err}`);
+            this.error(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n{err}`);
         }
         return result;
     }

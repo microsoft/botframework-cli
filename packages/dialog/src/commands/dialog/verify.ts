@@ -89,7 +89,7 @@ export default class DialogVerify extends Command {
             }
 
             this.log(`${this.files} files processed.`);
-            this.warn(`${this.warnings} found.`);
+            this.error(`${this.warnings} found.`);
             if (this.errors > 0) {
                 this.error(`Error: ${this.errors} found.`);
             }
@@ -97,20 +97,20 @@ export default class DialogVerify extends Command {
     }
 
     consoleMsg(msg: string): void {
-        console.log(chalk.default(msg));
+        this.log(chalk.default(msg));
     }
 
     consoleLog(msg: string): void {
-        console.log(chalk.default.gray(msg));
+        this.log(chalk.default.gray(msg));
     }
 
     consoleWarn(msg: string): void {
         this.warnings++;
-        console.warn(chalk.default.yellowBright(`${this.currentFile}: warning: ${msg}`));
+        this.error(chalk.default.yellowBright(`${this.currentFile}: warning: ${msg}`));
     }
 
     consoleError(msg: string): void {
         this.errors++;
-        console.error(chalk.default.redBright(`${this.currentFile}: error: ${msg}`));
+        this.error(chalk.default.redBright(`${this.currentFile}: error: ${msg}`));
     }
 }

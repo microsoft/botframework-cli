@@ -4,11 +4,9 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
-    "@oclif/command": "^1.5.18",
-    "@oclif/config": "~1.13.0",
+    "@microsoft/bf-cli-command": "1.0.0",
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
-    "@microsoft/bf-cli-command": "1.0.0",
     "chalk": "^2.4.2",
     "fs-extra": "^8.1.0",
     "get-json": "^1.0.1",
@@ -61,7 +59,6 @@
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "build2": "tsc",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   }
