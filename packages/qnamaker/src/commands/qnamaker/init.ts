@@ -41,7 +41,9 @@ export default class QnamakerInit extends Command {
     const config = Object.assign({}, {subscriptionKey, kbId})
 
     if (subscriptionKey && kbId) {
+      cli.action.start('Updating hostname')
       await this.updateKbId(config)
+      cli.action.stop()
     }
 
     let confirmation: boolean
