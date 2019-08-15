@@ -1,18 +1,10 @@
 import {expect, test} from '@oclif/test'
 const nock = require('nock')
-const fs = require('fs-extra')
-import * as path from 'path'
+import {initTestConfigFile, deleteTestConfigFile} from '../../../configfilehelper'
 
 describe('qnamaker:list:kbs', () => {
   before(async function() {
-    let config = {
-      subscriptionKey: "222222cccccctttttth223kk3k33",
-      hostname: "https://somehost.net",
-      endpointKey: "xxxxxxxxxxxxxxxxxxx",
-      kbId: "xxxxxxxxxxxxxxxxxxxxxxx"
-    }
-    
-    await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), config, {spaces: 2})
+    await initTestConfigFile()
     // runs before all tests in this block
     const scope = nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
     .get('/knowledgebases')
@@ -57,7 +49,7 @@ describe('qnamaker:list:kbs', () => {
     })
 
     after(async function(){
-      await fs.remove(path.join(process.cwd(), '.qnamakerrc'))
+      await deleteTestConfigFile()
     })
 
   test

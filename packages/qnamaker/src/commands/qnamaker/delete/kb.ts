@@ -22,7 +22,7 @@ export default class QnamakerDeleteKb extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerDeleteKb)
-    let input: Inputs = await processInputs(flags, deleteKbJSON, 'delete', 'kb')
+    let input: Inputs = await processInputs(flags, deleteKbJSON, 'delete', 'kb', this.config.configDir)
 
     if (!flags.force) {
       let kbResult = await new Knowledgebase().getKnowledgebaseDetails(input.config)

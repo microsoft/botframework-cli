@@ -19,7 +19,7 @@ export default class QnamakerQuery extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerQuery)
-    let input: Inputs = await processInputs(flags, queryQuestionJSON, 'query', undefined)
+    let input: Inputs = await processInputs(flags, queryQuestionJSON, 'query', undefined, this.config.configDir)
 
     const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
     if (result.error) {

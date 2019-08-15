@@ -18,7 +18,7 @@ export default class QnamakerListEndpointkeys extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerListEndpointkeys)
-    let input: Inputs = await processInputs(flags, listEndpointKeysJSON, 'list', 'endpointkeys')
+    let input: Inputs = await processInputs(flags, listEndpointKeysJSON, 'list', 'endpointkeys', this.config.configDir)
 
     const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
 
