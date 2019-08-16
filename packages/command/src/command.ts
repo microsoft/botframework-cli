@@ -1,12 +1,13 @@
-import { Command as Base } from '@oclif/command';
-import { CLIError } from '@oclif/errors';
-import Telemetry from './telemetry';
+import { Command as Base } from '@oclif/command'
+import { CLIError } from '@oclif/errors'
+
+import Telemetry from './telemetry'
 
 const chalk = require('chalk')
 const pjson = require('../package.json')
 
-export { flags } from '@oclif/command';
-export { CLIError } from '@oclif/errors';
+export { flags } from '@oclif/command'
+export { CLIError } from '@oclif/errors'
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
   telemetryEnabled = false
