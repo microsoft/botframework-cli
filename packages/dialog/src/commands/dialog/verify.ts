@@ -66,17 +66,14 @@ export default class DialogVerify extends Command {
                 for (let def of defs) {
                     this.consoleError(`  ${def.pathString()}`, 'DLG002')
                 }
-                hasError = true
             }
 
             for (let def of tracker.missingDefinitions()) {
                 this.consoleError(`Missing definition for ${def} ${def.usedByString()}`, 'DLG003')
-                hasError = true
             }
 
             for (let def of tracker.missingTypes) {
                 this.consoleError(`Missing $type for ${def}`, 'DLG004')
-                hasError = true
             }
 
             for (let def of tracker.unusedIDs()) {
