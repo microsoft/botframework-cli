@@ -3,6 +3,15 @@
     "rules": {
         "file-name-casing": false,
         "forin": false,
-        "ter-indent": false
+        "no-for-in": false,
+        "ter-indent": false,
+        "no-console": false,
+        "no-object-literal-type-assertion": false,
+        "whitespace": false,
+        "object-curly-spacing": false,
+        "no-trailing-whitespace": false,
+        "ordered-imports": false,
+        "no-empty-line-after-opening-brace": false,
+        "semicolon": false
     }
 }

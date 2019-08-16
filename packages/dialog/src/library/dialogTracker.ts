@@ -3,20 +3,16 @@
  * Copyright(c) Microsoft Corporation.All rights reserved.
  * Licensed under the MIT License.
  */
-    // tslint:disable:no-console
-    // tslint:disable:no-object-literal-type-assertion
-    // tslint:disable:jsdoc-format
-    export * from './schemaTracker'
-    import * as fs from 'fs-extra'
-    import * as glob from 'globby'
-    import * as path from 'path'
+export * from './schemaTracker';
+import * as fs from 'fs-extra';
+import * as glob from 'globby';
+import * as path from 'path';
+import * as st from './schemaTracker';
 
-    import * as st from './schemaTracker'
-
-    let clone = require('clone')
+let clone = require('clone')
 
 // Top-level dialog definition that would be found in a file.
-    export class Dialog {
+export class Dialog {
     // The path relative to the DialogTracker root where the dialog came from or should be written to.
     file: string
 
@@ -55,7 +51,7 @@
 }
 
 // Definition of a Bot Framework component.
-    export class Definition {
+export class Definition {
     // $type definition of the copmonent or undefined.
     type?: st.Type
 
@@ -81,7 +77,7 @@
      * @param dialog The dialog that contains the definition. (undefined for forward reference.)
      * @param path The path within the file to the component.
      * @param copy The id of the copied definition.
-    */
+     */
     constructor(type?: st.Type, id?: string, dialog?: Dialog, path?: string, copy?: string) {
         this.type = type
         this.id = id
@@ -162,7 +158,7 @@
 }
 
 // Tracks cogs and the definitions they contain.
-    export class DialogTracker {
+export class DialogTracker {
     // Paths will be relative to root directory.
     root: string
 
@@ -174,7 +170,7 @@
      * Map from $id to the definition.
      * If there are more than one, then it is multiply defined.
      * If any of them are missing dialog, then there is a $copy, but no definition.
-    */
+     */
     idToDef: Map<string, Definition[]>
 
     // Map from a type to all instances of that type.
@@ -201,7 +197,7 @@
             const schemaFile = dialog.body.$schema
             if (schemaFile) {
                 let schemaPath = path.join(path.dirname(dialog.file), schemaFile)
-                let [validator, added] = await this.schema.getValidator(schemaPath)
+                let [validator] = await this.schema.getValidator(schemaPath)
                 let validation = validator(dialog.body, dialog.file)
                 if (!validation && validator.errors) {
                     for (let err of validator.errors) {
@@ -313,9 +309,10 @@
         await this.addDialog(dialog)
     }
 
-    /**  Write out dialog files with save true and reset the flag.
+    /**  
+     * Write out dialog files with save true and reset the flag.
      * @param root If present this is the new root and paths below will be relative to process.cwd.
-    */
+     */
     async writeDialogs(root?: string): Promise<void> {
         for (let dialog of this.dialogs) {
             if (dialog.save) {
@@ -378,9 +375,10 @@
         }
     }
 
-    /**  Add a new definition to the tracker.
-    * The definition might be a forward reference.
-    */
+    /**  
+     * Add a new definition to the tracker.
+     * The definition might be a forward reference.
+     */
     private addDefinition(definition: Definition) {
         if (definition.type && !this.typeToDef.has(definition.type.name)) {
             this.typeToDef.set(definition.type.name, [])
@@ -478,7 +476,7 @@
     }
 }
 
-    function walkJSON(json: any, path: string, fun: (val: any, path: string) => boolean): boolean {
+function walkJSON(json: any, path: string, fun: (val: any, path: string) => boolean): boolean {
     let done = fun(json, path)
     if (!done) {
         if (Array.isArray(json)) {

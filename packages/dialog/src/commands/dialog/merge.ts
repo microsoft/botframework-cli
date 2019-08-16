@@ -2,13 +2,6 @@
  * Copyright(c) Microsoft Corporation.All rights reserved.
  * Licensed under the MIT License.
  */
-// tslint:disable:no-console
-// tslint:disable:no-object-literal-type-assertion
-// tslint:disable:whitespace
-// tslint:disable:object-curly-spacing
-// tslint:diable:no-for-in
-// tslint:diable:semicolon
-// tslint:disable:no-empty-line-after-opening-brace
 
 import { Command, flags } from '@microsoft/bf-cli-command';
 import * as Validator from 'ajv';
@@ -56,7 +49,7 @@ export default class DialogMerge extends Command {
     async run() {
         const { argv, flags } = this.parse(DialogMerge)
 
-        let finished = await this.mergeSchemas(argv, flags.output, flags.branch, flags.update, flags.verbose)
+        await this.mergeSchemas(argv, flags.output, flags.branch, flags.update, flags.verbose)
     }
 
     /**
@@ -287,7 +280,7 @@ export default class DialogMerge extends Command {
                 result = stdout.substring(start + name.length).trim()
             }
         } catch (err) {
-            this.error(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n{err}`)
+            this.error(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n${err}`)
         }
         return result
     }

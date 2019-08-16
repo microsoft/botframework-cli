@@ -3,13 +3,6 @@
  * Copyright(c) Microsoft Corporation.All rights reserved.
  * Licensed under the MIT License.
  */
-// tslint:disable:no-console
-// tslint:disable:no-object-literal-type-assertion
-// tslint:disable:whitespace
-// tslint:disable:object-curly-spacing
-// tslint:diable:no-for-in
-// tslint:diable:semicolon
-// tslint:disable:no-empty-line-after-opening-brace
 
 import * as ajv from 'ajv';
 import * as fs from 'fs-extra';
@@ -83,7 +76,7 @@ export class SchemaTracker {
                 try {
                     let metaSchemaDefinition = await this.getURL(metaSchemaName)
                     metaSchema = JSON.parse(metaSchemaDefinition)
-                } catch (e) {
+                } catch {
                     throw new Error(`Could not parse ${metaSchemaName}`)
                 }
                 await fs.writeJSON(metaSchemaCache, metaSchema, { spaces: 4 })
