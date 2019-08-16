@@ -1,3 +1,8 @@
 {
-    "extends": "@oclif/tslint"
+    "extends": "@oclif/tslint",
+    "rules": {
+        "file-name-casing": false,
+        "forin": false,
+        "ter-indent": false
+    }
 }

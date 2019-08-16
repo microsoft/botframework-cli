@@ -133,85 +133,117 @@
         "version": "abde5172a3f0254b611346598b6f9ce9e15a01ffcf6d770ce9e5fe095a781334",
         "signature": "8f7e4599e19f9eac2788386920e16f38eb68b4c83dcdd3c4c96fdbd186e84578"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts": {
         "version": "b8fac2a2a066d140f34e5e0c698440f1f8c8a94eea2c95d156ce821ed53336e2",
         "signature": "b8fac2a2a066d140f34e5e0c698440f1f8c8a94eea2c95d156ce821ed53336e2"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/alphabet.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/alphabet.d.ts": {
         "version": "2f79c688ac24759632fe8dda94c822d169cbe2a11f37fe6de1588d653af051ca",
         "signature": "2f79c688ac24759632fe8dda94c822d169cbe2a11f37fe6de1588d653af051ca"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts": {
-        "version": "a4f3f52371398d6a6e42e32f0bae5279ebd9c40a1c27d5e687d559f936290629",
-        "signature": "a4f3f52371398d6a6e42e32f0bae5279ebd9c40a1c27d5e687d559f936290629"
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts": {
+        "version": "4acfa80a7a1e7701c679d03b5e539d05c452c2f9c4ff133f7334ccf359214681",
+        "signature": "4acfa80a7a1e7701c679d03b5e539d05c452c2f9c4ff133f7334ccf359214681"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/metadata.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/metadata.d.ts": {
         "version": "ebdcf50c5fdb4f68caf05066fb3bd839436a3c39c3154d65dd81a8855382b5e5",
         "signature": "ebdcf50c5fdb4f68caf05066fb3bd839436a3c39c3154d65dd81a8855382b5e5"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/parse.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/parse.d.ts": {
         "version": "ee66d834ddc05efda67651fd52023eef1c8b471e20ec2baee05043f1f62ef635",
         "signature": "ee66d834ddc05efda67651fd52023eef1c8b471e20ec2baee05043f1f62ef635"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/help.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/help.d.ts": {
         "version": "34e73f0523e9afb52074fcec0844a6334d48bdb2977f944b3e6648da99755bba",
         "signature": "34e73f0523e9afb52074fcec0844a6334d48bdb2977f944b3e6648da99755bba"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts": {
         "version": "0096b80854aa269e2d6cb47d7d264cf376ee27f902f71406fb09faa0288432bb",
         "signature": "0096b80854aa269e2d6cb47d7d264cf376ee27f902f71406fb09faa0288432bb"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts": {
-        "version": "e959961027053278d3c8bde65a01f7726697229ea3cb798b0d15ffdec888ec02",
-        "signature": "e959961027053278d3c8bde65a01f7726697229ea3cb798b0d15ffdec888ec02"
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts": {
+        "version": "bf67e5f33b4258a5ac05488de04a86871df56175cfa36b0c66587284969a9749",
+        "signature": "bf67e5f33b4258a5ac05488de04a86871df56175cfa36b0c66587284969a9749"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts": {
         "version": "b05352898b844a87fd8ef31b0420dfa584b2c058e39677bd51e0d942af1afe60",
         "signature": "b05352898b844a87fd8ef31b0420dfa584b2c058e39677bd51e0d942af1afe60"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts": {
         "version": "1e1fa6121eed38a97f548077cd06a16afba9a62e9cc7945d69c0c867449abdbd",
         "signature": "1e1fa6121eed38a97f548077cd06a16afba9a62e9cc7945d69c0c867449abdbd"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts": {
         "version": "4108bca6ec2cc28598948e80fca629bb096ca3371091ee3bbca6f87c8a8ff3e1",
         "signature": "4108bca6ec2cc28598948e80fca629bb096ca3371091ee3bbca6f87c8a8ff3e1"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts": {
         "version": "bd80422c68e0575fee07883efc93fdbf32da39f76ab8479d56eba05e7fac8363",
         "signature": "bd80422c68e0575fee07883efc93fdbf32da39f76ab8479d56eba05e7fac8363"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts": {
         "version": "a32bf18b0d7717fbd6217fe18835f32924cd58ac978bdcb88f3fb9577ff6bb05",
         "signature": "a32bf18b0d7717fbd6217fe18835f32924cd58ac978bdcb88f3fb9577ff6bb05"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/config.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/config.d.ts": {
         "version": "6a30fa9391f874f455bdf5e6216b3fe46112f6cb7063af7c675e5def6c11909d",
         "signature": "6a30fa9391f874f455bdf5e6216b3fe46112f6cb7063af7c675e5def6c11909d"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts": {
         "version": "03d343b7b13b8809088b45ab0f6f442adc2b49e2a77ab375d205d018f0d56785",
         "signature": "03d343b7b13b8809088b45ab0f6f442adc2b49e2a77ab375d205d018f0d56785"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts": {
-        "version": "40909c1f04fe302b13e8d70fe790ae09cc33aca77962819319ab6651a7b0697f",
-        "signature": "40909c1f04fe302b13e8d70fe790ae09cc33aca77962819319ab6651a7b0697f"
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts": {
+        "version": "013c7f4547d58905da988f8920ab744c454b12c5a1e1fa9108f4d7d67de92998",
+        "signature": "013c7f4547d58905da988f8920ab744c454b12c5a1e1fa9108f4d7d67de92998"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/command.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/command.d.ts": {
         "version": "5f8e8d891075ea91098fe14dad95d7d85e9f5853134d6bc12d5a7ecdb9ab6316",
         "signature": "5f8e8d891075ea91098fe14dad95d7d85e9f5853134d6bc12d5a7ecdb9ab6316"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/main.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/main.d.ts": {
         "version": "fc1f16ae8cc4ba5bd55869f317a0c2ec0775f47b61b7d61c691bd9b5fc602208",
         "signature": "fc1f16ae8cc4ba5bd55869f317a0c2ec0775f47b61b7d61c691bd9b5fc602208"
       },
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts": {
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts": {
         "version": "778d7164f3612aad776e12987f46889f3fe3541e5d9aed5f673daed728b643d5",
         "signature": "778d7164f3612aad776e12987f46889f3fe3541e5d9aed5f673daed728b643d5"
       },
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/handle.d.ts": {
+        "version": "207218b7704a71e718a25a35101afb2206581fd07c878c34540038639ad2759e",
+        "signature": "207218b7704a71e718a25a35101afb2206581fd07c878c34540038639ad2759e"
+      },
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts": {
+        "version": "ce944b8fd9225950f1d3921b04e5a1746dd90d963de872b1401fcee52cc437a9",
+        "signature": "ce944b8fd9225950f1d3921b04e5a1746dd90d963de872b1401fcee52cc437a9"
+      },
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/exit.d.ts": {
+        "version": "2ec1aa91f5a7e5c87e32a3ab3bea3f3bc2c78700502a27139974479d272788d6",
+        "signature": "2ec1aa91f5a7e5c87e32a3ab3bea3f3bc2c78700502a27139974479d272788d6"
+      },
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts": {
+        "version": "1b9f1ba55985edc074f18ddfe23c6c93d8463ff30651482e8783e56ca0df0653",
+        "signature": "1b9f1ba55985edc074f18ddfe23c6c93d8463ff30651482e8783e56ca0df0653"
+      },
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/config.d.ts": {
+        "version": "e12f2c48252d0ae261db2be28206e4f1cc282fa5459a0f991a09f86bb766543f",
+        "signature": "e12f2c48252d0ae261db2be28206e4f1cc282fa5459a0f991a09f86bb766543f"
+      },
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/index.d.ts": {
+        "version": "ba093d7f1d0b2d57e2fc3059949eb8f65cfd6b08e1a9642917a6aa752029c7d7",
+        "signature": "ba093d7f1d0b2d57e2fc3059949eb8f65cfd6b08e1a9642917a6aa752029c7d7"
+      },
+      "c:/source/github/botframework-cli/packages/command/lib/command.d.ts": {
+        "version": "c040e5271a6ff87ab510978e4d09254f44b9502e355caa3dcbd08c929ce5bd17",
+        "signature": "c040e5271a6ff87ab510978e4d09254f44b9502e355caa3dcbd08c929ce5bd17"
+      },
+      "c:/source/github/botframework-cli/packages/command/lib/index.d.ts": {
+        "version": "349597634432a05c8a11619908091728913ca7c87087bfdb45ffddab690d1583",
+        "signature": "349597634432a05c8a11619908091728913ca7c87087bfdb45ffddab690d1583"
+      },
       "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts": {
-        "version": "ff489bfdfafddc4f687048c76fd39684add146d08165856f262a9c2fcd0c24d7",
-        "signature": "ae59b108bde10d2944031ace430c68bf617f9d6089ab6a879b5fd928d24324e0"
+        "version": "e7e03da9a457c0141b07c36e3e02418e629134f512f058920418ee737fd218ff",
+        "signature": "fc8b872d2eb95a213ba361792aae6c5991900ac87e1dd433a1c57e67a12358a4"
       },
       "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts": {
         "version": "b040cc8b4fd1b9d0a74b4dad292fb1554c66ccef626abca4798f532d084a3975",
@@ -446,24 +478,24 @@
         "signature": "51620afac1a5f9373a6eac2ce7f120a22df23e8540738dca1fc9d1ea0742eb5a"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts": {
-        "version": "19c4c0def6a972132162336f0eaea8491bea13b7912e3e0fad8a8c2887e9787f",
-        "signature": "d84a3a8f2d658e7b03850d446cb894edf5d6da1f66a4209542b2e79d5f115e05"
+        "version": "f73321fffdededeb2104bd0ed94fe3e11df9ae374ec235f5e80e41a1699afbda",
+        "signature": "c6bacad475bba0ad6f93a626c5981bc151cbbc2d1c4c89c3ada7b8e685cdb2e0"
       },
       "c:/source/github/botframework-cli/packages/dialog/node_modules/chalk/types/index.d.ts": {
         "version": "091f417275a51ab3c47b949723e9e8a193012157ecc64a96e2d7b1505e82f395",
         "signature": "091f417275a51ab3c47b949723e9e8a193012157ecc64a96e2d7b1505e82f395"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/library/schematracker.ts": {
-        "version": "d6f0060ad3b70a0435df7169ae9d84789a866c5fcec4294ef49d7c75ede1355a",
-        "signature": "d6f0060ad3b70a0435df7169ae9d84789a866c5fcec4294ef49d7c75ede1355a"
+        "version": "5311fd302a2a47693258262917bf8dc5b508f0428e149792e7209f37e7f283b4",
+        "signature": "5311fd302a2a47693258262917bf8dc5b508f0428e149792e7209f37e7f283b4"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/library/dialogtracker.ts": {
-        "version": "99b9b289490f084f4c98f88c742e215e23ff124d55479e14451fc2930eb4a13d",
-        "signature": "99b9b289490f084f4c98f88c742e215e23ff124d55479e14451fc2930eb4a13d"
+        "version": "fcaeeb98ade775a31234dda589287c1d3ae7b28efea602fd5598201a9991829c",
+        "signature": "fcaeeb98ade775a31234dda589287c1d3ae7b28efea602fd5598201a9991829c"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/verify.ts": {
-        "version": "573df8ba2a72180a7ae5517902f5310ff94800ca50326b3315a9648be41f5124",
-        "signature": "fce4965a6e7ad2705e17d8a69681432a03d0c72c90c424e6f9f79e604088b8dd"
+        "version": "efe9a176f4ce0697fd9657a5730e67d1b0a412b38ec838b45ca7c639396025bc",
+        "signature": "f33820fe274036eba66e86c990080162599423dda6848aa83b8d06a691714046"
       },
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/chai/index.d.ts": {
         "version": "b26b3829d52ebdc82a2b9f4fa8051890dc953003382b4411fe4ec6f05351dcf4",
@@ -678,124 +710,166 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts": [
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/alphabet.d.ts": [
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/alphabet.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/alphabet.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/alphabet.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/metadata.d.ts": [
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/metadata.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/parse.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/metadata.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/parse.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/metadata.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/help.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/help.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/parse.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/help.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/parse.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/help.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts": [
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts": [
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/config.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/config.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/config.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/config.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/command.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/command.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/main.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/main.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/main.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/main.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/handle.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/exit.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/config.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/handle.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/exit.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/config.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/lib/command.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/lib/command.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/lib/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1140,7 +1214,7 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/lib/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/fs-extra/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/globby/index.d.ts",
@@ -1166,7 +1240,7 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/verify.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/lib/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/chalk/types/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/lib/library/dialogtracker.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
@@ -1530,146 +1604,168 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts": [
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/parse.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/help.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/alphabet.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/command.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/alphabet.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/main.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/metadata.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/verify.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts"
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/parse.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/metadata.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts"
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/help.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/parse.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/help.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/config.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/config.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/command.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/main.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/main.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/handle.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/exit.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/config.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/handle.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/exit.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/config.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/lib/command.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/command/lib/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/command/lib/command.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/main.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/config.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/config.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/parse.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/metadata.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/alphabet.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/alphabet.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/help.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/metadata.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+        "c:/source/github/botframework-cli/packages/command/lib/index.d.ts"
       ],
       "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/src/library/schematracker.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/src/library/dialogtracker.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/lib/library/schematracker.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1678,6 +1774,209 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/assert.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/async_hooks.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/buffer.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/events/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/child_process.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/cluster.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/child_process.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/console.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/constants.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/crypto.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dgram.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/domain.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http2.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tls.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/https.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tls.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/inspector.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/module.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/os.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/path.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/perf_hooks.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/async_hooks.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/process.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/punycode.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/querystring.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/readline.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/repl.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/readline.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/vm.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/string_decoder.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/timers.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tls.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/crypto.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/trace_events.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tty.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/querystring.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/v8.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/vm.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/worker_threads.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/zlib.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1724,23 +2023,33 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/zlib.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/globals.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/globals.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/base.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/globals.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/nock/index.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/fs-extra/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/index.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/minimatch/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/glob/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/lib/processors.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/minimatch/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
@@ -1748,6 +2057,22 @@
       "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/entries.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/patterns.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/managers/options.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/entries.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/patterns.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/managers/tasks.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/patterns.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/managers/options.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1765,398 +2090,50 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/managers/options.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/entries.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/patterns.d.ts",
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/semver/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/managers/tasks.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/patterns.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/managers/options.d.ts",
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/lib/processors.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/glob/index.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/minimatch/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/lib/processors.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/fs-extra/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/index.d.ts",
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts": [
+        "c:/source/github/botframework-cli/packages/command/lib/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/chalk/types/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/async_hooks.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/src/library/schematracker.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/perf_hooks.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/async_hooks.d.ts",
+      "c:/source/github/botframework-cli/packages/dialog/src/library/dialogtracker.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/lib/library/schematracker.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/buffer.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/verify.ts": [
+        "c:/source/github/botframework-cli/packages/command/lib/index.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/chai/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/events/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/child_process.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/cluster.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/child_process.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/console.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/constants.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/crypto.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tls.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/crypto.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/https.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tls.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http2.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tls.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dgram.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/dns.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/tty.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/net.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/domain.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/worker_threads.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/zlib.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/readline.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/repl.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/readline.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/vm.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/stream.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/inspector.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/events.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/module.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/os.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/path.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/process.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/punycode.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/querystring.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/querystring.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/string_decoder.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/timers.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/trace_events.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/sinon/ts3.1/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/mocha/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
@@ -2185,8 +2162,168 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/util.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/function.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/lang.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/math.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/number.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/object.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/seq.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/string.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/common.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/array.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/collection.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/common/date.d.ts",
@@ -2201,43 +2338,19 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/chai/index.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/mocha/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/chalk/types/index.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/nock/index.d.ts": [
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/fs.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/http.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/url.d.ts",
+        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/lib/processors.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/semver/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/fast-glob/out/types/patterns.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/minimatch/index.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/globals.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/globals.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/vm.d.ts": [
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
-        "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/v8.d.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/sinon/ts3.1/index.d.ts": [
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ]
@@ -2276,25 +2389,33 @@
       "c:/source/github/botframework-cli/packages/dialog/node_modules/typescript/lib/lib.es2017.full.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/tslib/tslib.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/src/index.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/args.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/alphabet.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/flags.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/metadata.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/parse.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/help.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/parser/lib/index.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/command.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/hooks.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/pjson.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/manifest.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/topic.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/plugin.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/config.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/config/lib/index.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/flags.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/command.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/main.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@oclif/command/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/args.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/alphabet.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/flags.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/metadata.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/parse.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/help.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/parser/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/command.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/hooks.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/pjson.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/manifest.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/topic.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/plugin.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/config.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/config/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/flags.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/command.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/main.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/command/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/handle.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/cli.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/errors/exit.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/logger.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/config.d.ts",
+      "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/index.d.ts",
+      "c:/source/github/botframework-cli/packages/command/lib/command.d.ts",
+      "c:/source/github/botframework-cli/packages/command/lib/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/globals.d.ts",
@@ -2354,7 +2475,6 @@
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/semver/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/lib/processors.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/index.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/chalk/types/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/src/library/schematracker.ts",
       "c:/source/github/botframework-cli/packages/dialog/src/library/dialogtracker.ts",
@@ -2375,7 +2495,8 @@
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/mocha/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/nock/index.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/sinon/ts3.1/index.d.ts"
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/sinon/ts3.1/index.d.ts",
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts"
     ]
   },
   "version": "3.5.3"

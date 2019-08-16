@@ -1,3 +1,5 @@
+// tslint:disable:object-curly-spacing
+
 import { Command as Base } from '@oclif/command'
 import { CLIError } from '@oclif/errors'
 
