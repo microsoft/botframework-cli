@@ -314,7 +314,7 @@ export default class DialogMerge extends Command {
     async updateMetaSchema(branch: string): Promise<void> {
         if (fs.existsSync("baseComponent.schema")) {
             if (this.verbose) {
-                console.log(`Generating component.schema for branch ${branch}`);
+                this.log(`Generating component.schema for branch ${branch}`);
             }
             let schema = await fs.readJSON("baseComponent.schema");
             let metaSchemaName = schema.$schema;

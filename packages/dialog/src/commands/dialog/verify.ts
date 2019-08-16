@@ -51,32 +51,32 @@ export default class DialogVerify extends Command {
                     }
                 } else {
                     for (let error of dialog.errors) {
-                        this.consoleError(`${error.message.trim()}`);
+                        this.consoleError(`${error.message.trim()}`, "DLG001");
                     }
                 }
             }
 
             for (let defs of tracker.multipleDefinitions()) {
                 let def = (<Definition[]>defs)[0];
-                this.consoleError(`Multiple definitions for ${def} ${def.usedByString()}`);
+                this.consoleError(`Multiple definitions for ${def} ${def.usedByString()}`, "DLG002");
                 for (let def of defs) {
-                    this.consoleError(`  ${def.pathString()}`);
+                    this.consoleError(`  ${def.pathString()}`, "DLG002");
                 }
                 hasError = true;
             }
 
             for (let def of tracker.missingDefinitions()) {
-                this.consoleError(`Missing definition for ${def} ${def.usedByString()}`);
+                this.consoleError(`Missing definition for ${def} ${def.usedByString()}`, "DLG003");
                 hasError = true;
             }
 
             for (let def of tracker.missingTypes) {
-                this.consoleError(`Missing $type for ${def}`);
+                this.consoleError(`Missing $type for ${def}`, "DLG004");
                 hasError = true;
             }
 
             for (let def of tracker.unusedIDs()) {
-                this.consoleWarn(`Unused id ${def}`);
+                this.consoleWarn(`Unused id ${def}`, "DLG005");
             }
 
             if (verbose) {
@@ -104,13 +104,13 @@ export default class DialogVerify extends Command {
         this.log(chalk.default.gray(msg));
     }
 
-    consoleWarn(msg: string): void {
+    consoleWarn(msg: string, code: string): void {
         this.warnings++;
-        this.error(chalk.default.yellowBright(`${this.currentFile}: warning: ${msg}`));
+        this.warn(`${this.currentFile}: warning ${code||''}: ${msg}`);
     }
 
-    consoleError(msg: string): void {
+    consoleError(msg: string,code:string): void {
         this.errors++;
-        this.error(chalk.default.redBright(`${this.currentFile}: error: ${msg}`));
+        this.error(`${this.currentFile}: error ${code||''}: ${msg}`);
     }
 }
