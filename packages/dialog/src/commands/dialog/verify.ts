@@ -106,11 +106,11 @@ export default class DialogVerify extends Command {
 
     consoleWarn(msg: string, code: string): void {
         this.warnings++;
-        this.warn(`${this.currentFile}: warning ${code||''}: ${msg}`);
+        this.warn(`${this.currentFile} - warning ${code||''}: ${msg}`);
     }
 
     consoleError(msg: string,code:string): void {
         this.errors++;
-        this.error(`${this.currentFile}: error ${code||''}: ${msg}`);
+        this.error(`${this.currentFile} - error ${code||''}: ${msg}`);
     }
 }
