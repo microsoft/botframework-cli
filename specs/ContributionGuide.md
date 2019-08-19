@@ -15,3 +15,8 @@
     2. Replace the import 'import {Command, flags} from '@oclif/command' line inside the newly created command with 'import {Command, flags} from '@microsoft/bf-cli-command'
     3. Add the type to the flags property like this:   static flags: flags.Input<any> = {}
     4. Implement the run method
+    
+## Stage Preview
+    1. All command groups in preview shall display the following message in help and run: Preview: This command is in preview stage. Please use with discretion and report any issues in the git repository.
+    2. File an issue for review and scheduling into GA
+    3. If command group is in early stages of development, direct users to your forked repository.
