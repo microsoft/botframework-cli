@@ -96,10 +96,7 @@ export default class DialogMerge extends Command {
                 let definitions: any = {}
                 let validator = new Validator()
 
-                if (fs.pathExistsSync('component.schema')) {
-                    // Use a local component.schema file if present in the assumption it will be checked into branch
-                    metaSchema = await fs.readJSON('component.schema')
-                } else if (!metaSchema && branch) {
+                if (!metaSchema && branch) {
                     // Find branch specific schema
                     let path = `https://raw.githubusercontent.com/Microsoft/botbuilder-dotnet/${branch}/schemas/component.schema`
                     metaSchema = await getJson(path)
