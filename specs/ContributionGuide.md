@@ -1,5 +1,9 @@
 # Contribution guide
 
+## Pre-requisites
+    1. Review and follow guidelines based on [Foundation Dev Spec](https://github.com/microsoft/botframework-cli/blob/master/specs/FoundationDevSpec.md)
+    2. Create a corresponding design spec & schedule a review with BF CLI primary owners
+ 
 ## Steps to create a new plugin
     1. Clone the repo by running 'git clone https://github.com/microsoft/botframework-cli.git'
     2. Inside the project folder run 'npm run build'
