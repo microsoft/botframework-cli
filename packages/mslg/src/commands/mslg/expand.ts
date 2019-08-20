@@ -1,4 +1,5 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
+import {Expander} from '../../utils/expander';
 
 export default class MslgExpand extends Command {
   static description = 'Expand one or all templates in a .lg file or an inline expression.'
@@ -17,7 +18,12 @@ export default class MslgExpand extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(MslgExpand)
-    this._help()
+    try {
+      const {flags} = this.parse(MslgExpand)
+      const expander: any = new Expander();
+      expander.Expand(flags);
+    } catch(error) {
+      this.error(new Error(error))
+    }
   }
 }

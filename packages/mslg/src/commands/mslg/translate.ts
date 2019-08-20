@@ -1,4 +1,5 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
+import {Translator} from '../../utils/translator';
 
 export default class MslgTranslate extends Command {
   static description = 'Translate .lg files to a target language by Microsoft translation API.'
@@ -19,7 +20,12 @@ export default class MslgTranslate extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(MslgTranslate)
-    this._help()
+    try {
+      const {flags} = this.parse(MslgTranslate)
+      const translator: any = new Translator();
+      translator.Translate(flags);
+    } catch(error) {
+      this.error(new Error(error))
+    }
   }
 }

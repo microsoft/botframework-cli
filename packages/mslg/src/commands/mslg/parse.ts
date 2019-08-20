@@ -1,5 +1,5 @@
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import { Parser } from '../../utils/parser';
+import {Command, flags} from '@microsoft/bf-cli-command'
+import {Parser} from '../../utils/parser';
 
 export default class MslgParse extends Command {
   static description = 'Parse any provided .lg file and collate them into a single lg file.'
@@ -22,11 +22,10 @@ export default class MslgParse extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(MslgParse)
     try {
-      const ctx = { 'flags': flags };
+      const {flags} = this.parse(MslgParse)
       const parser: any = new Parser();
-      parser.Parser(ctx);
+      parser.Parser(flags);
     } catch(error) {
       this.error(new Error(error))
     }
