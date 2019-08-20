@@ -21,9 +21,9 @@ export default class MslgExpand extends Command {
     try {
       const {flags} = this.parse(MslgExpand)
       const expander: any = new Expander();
-      expander.Expand(flags);
+      await expander.Expand(flags);
     } catch(error) {
-      this.error(new Error(error))
+      this.error(error)
     }
   }
 }

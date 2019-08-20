@@ -25,9 +25,9 @@ export default class MslgParse extends Command {
     try {
       const {flags} = this.parse(MslgParse)
       const parser: any = new Parser();
-      parser.Parser(flags);
+      await parser.Parser(flags);
     } catch(error) {
-      this.error(new Error(error))
+      this.error(error)
     }
   }
 }

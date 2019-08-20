@@ -20,12 +20,12 @@ export default class MslgTranslate extends Command {
   }
 
   async run() {
+    const {flags} = this.parse(MslgTranslate)
+    const translator: any = new Translator()
     try {
-      const {flags} = this.parse(MslgTranslate)
-      const translator: any = new Translator();
-      translator.Translate(flags);
+      await translator.Translate(flags)
     } catch(error) {
-      this.error(new Error(error))
+      this.error(error)
     }
   }
 }
