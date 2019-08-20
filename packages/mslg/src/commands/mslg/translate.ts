@@ -19,6 +19,7 @@ export default class MslgTranslate extends Command {
   }
 
   async run() {
+    const {flags} = this.parse(MslgTranslate)
     this._help()
   }
 }

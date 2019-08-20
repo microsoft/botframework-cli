@@ -11,6 +11,10 @@
     "@oclif/command": "^1.5.18",
     "@oclif/config": "^1.13.3",
     "@oclif/plugin-help": "^2.2.1",
+    "@types/fs-extra": "^8.0.0",
+    "botbuilder-lg": "https://botbuilder.myget.org/F/botbuilder-declarative/npm/botbuilder-lg/-/4.5.1.tgz",
+    "fs-extra": "^8.1.0",
+    "read-text-file": "^1.1.0",
     "tslib": "^1.10.0"
   },
   "devDependencies": {

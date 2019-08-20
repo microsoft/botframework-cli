@@ -17,6 +17,7 @@ export default class MslgExpand extends Command {
   }
 
   async run() {
+    const {flags} = this.parse(MslgExpand)
     this._help()
   }
 }

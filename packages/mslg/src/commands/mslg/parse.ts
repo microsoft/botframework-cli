@@ -1,4 +1,5 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import { Parser } from '../../utils/parser';
 
 export default class MslgParse extends Command {
   static description = 'Parse any provided .lg file and collate them into a single lg file.'
@@ -21,14 +22,13 @@ export default class MslgParse extends Command {
   }
 
   async run() {
+    const {flags} = this.parse(MslgParse)
     try {
-        const {flags} = this.parse(MslgParse)
-        this._help()
-    } catch (err) {
-        if (err.message.match(/Malformed configurations options detected/)) {
-          throw new CLIError(err.message)
-        }
-        throw err
+      const ctx = { 'flags': flags };
+      const parser: any = new Parser();
+      parser.Parser(ctx);
+    } catch(error) {
+      this.error(new Error(error))
     }
   }
 }
