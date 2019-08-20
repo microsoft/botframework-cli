@@ -4,23 +4,33 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
-    "@oclif/command": "~1.5.13",
-    "@oclif/config": "~1.13.0",
-    "tslib": "^1.10.0"
+    "@microsoft/bf-cli-command": "~1.0.0",
+    "@types/semver": "^6.0.1",
+    "@types/xml2js": "^0.4.4",
+    "ajv": "^6.9.1",
+    "chalk": "^2.4.2",
+    "fs-extra": "^8.1.0",
+    "get-json": "^1.0.1",
+    "globby": "^9.2.0",
+    "json-schema-merge-allof": "^0.6.0",
+    "json-schema-ref-parser": "^7.1.0",
+    "tslib": "^1.10.0",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
     "@oclif/plugin-help": "^2.2.0",
     "@oclif/test": "^1.2.5",
     "@oclif/tslint": "^3.1.1",
-    "@types/chai": "^4.1.7",
+    "@types/chai": "^4.2.0",
+    "@types/fs-extra": "^8.0.0",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^10.14.14",
+    "@types/node": "^10.14.15",
     "chai": "^4.2.0",
-    "globby": "^10.0.1",
+    "clone": "^2.1.2",
     "mocha": "^5.2.0",
     "nyc": "^13.3.0",
     "rimraf": "^2.6.3",
+    "semver": "^5.7.0",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
@@ -40,7 +50,7 @@
   "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "oclif-example",
+    "bin": "bf",
     "devPlugins": [
       "@oclif/plugin-help"
     ]
@@ -48,8 +58,8 @@
   "repository": "microsoft/botframework-cli",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
-    "posttest": "tslint -p test -t stylish",
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "posttest": "tslint -p test -t stylish",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   }

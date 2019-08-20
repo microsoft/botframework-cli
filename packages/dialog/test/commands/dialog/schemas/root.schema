@@ -1,0 +1,23 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/4.Future/schemas/component.schema",
+    "properties": {
+        "recognizers": {
+            "type": "array",
+            "items": {
+                "$type": "IRecognizer"
+            }
+        },
+        "prompt": {
+            "$type": "prompt"
+        },
+        "condition": {
+            "$role": "expression"
+        },
+        "property": {
+            "$role": "memoryPath"
+        }
+    },
+    "required": [
+        "recognizers"
+    ]
+}
