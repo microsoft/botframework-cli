@@ -15,6 +15,8 @@
     "json-schema-merge-allof": "^0.6.0",
     "json-schema-ref-parser": "^7.1.0",
     "tslib": "^1.10.0",
+    "clone": "^2.1.2",
+    "semver": "^5.7.0",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
@@ -26,11 +28,9 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.14.15",
     "chai": "^4.2.0",
-    "clone": "^2.1.2",
     "mocha": "^5.2.0",
     "nyc": "^13.3.0",
     "rimraf": "^2.6.3",
-    "semver": "^5.7.0",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
