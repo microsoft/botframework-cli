@@ -5,6 +5,7 @@
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
     "@microsoft/bf-cli-command": "~1.0.0",
+    "@oclif/config": "^1.13.2",
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
     "ajv": "^6.9.1",
@@ -20,8 +21,9 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1.22.0",
     "@oclif/plugin-help": "^2.2.0",
-    "@oclif/test": "^1.2.5",
+    "@oclif/test": "^1.2.4",
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.2.0",
     "@types/fs-extra": "^8.0.0",

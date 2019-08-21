@@ -241,9 +241,9 @@
         "version": "349597634432a05c8a11619908091728913ca7c87087bfdb45ffddab690d1583",
         "signature": "349597634432a05c8a11619908091728913ca7c87087bfdb45ffddab690d1583"
       },
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts": {
-        "version": "e7e03da9a457c0141b07c36e3e02418e629134f512f058920418ee737fd218ff",
-        "signature": "fc8b872d2eb95a213ba361792aae6c5991900ac87e1dd433a1c57e67a12358a4"
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/index.ts": {
+        "version": "cc09c76a4322db621f8e621f38376df1a9ac853983999c9f918dd1c66dd4fe47",
+        "signature": "0c15944dd6939cc21e0f44406a2166b4d0ce6a50eddadc9966c3775d205f3507"
       },
       "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts": {
         "version": "b040cc8b4fd1b9d0a74b4dad292fb1554c66ccef626abca4798f532d084a3975",
@@ -478,24 +478,24 @@
         "signature": "51620afac1a5f9373a6eac2ce7f120a22df23e8540738dca1fc9d1ea0742eb5a"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts": {
-        "version": "f73321fffdededeb2104bd0ed94fe3e11df9ae374ec235f5e80e41a1699afbda",
-        "signature": "c6bacad475bba0ad6f93a626c5981bc151cbbc2d1c4c89c3ada7b8e685cdb2e0"
+        "version": "4819c4bf1df46688f95d68cc8c9e356cf5e36791b7ee0eabffa22ec0843ba392",
+        "signature": "99a53bc7ee31954e4f90a9fa3fd7069a95279c1228c550d490b9c28358e16ef6"
       },
       "c:/source/github/botframework-cli/packages/dialog/node_modules/chalk/types/index.d.ts": {
         "version": "091f417275a51ab3c47b949723e9e8a193012157ecc64a96e2d7b1505e82f395",
         "signature": "091f417275a51ab3c47b949723e9e8a193012157ecc64a96e2d7b1505e82f395"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/library/schematracker.ts": {
-        "version": "7568566483d12f60c7c4c0d8ced87cf654f6ffb3c71a5cf0a536c7c1efbf4887",
-        "signature": "5311fd302a2a47693258262917bf8dc5b508f0428e149792e7209f37e7f283b4"
+        "version": "d0a51ca0bb7f4906512bd92c722303dbe5d1dcb331767244fd7f775c1999d63b",
+        "signature": "da03a8e040d425f68bcba300c21f174289cfe54cf90eb4a59bf7907bdf026eb3"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/library/dialogtracker.ts": {
-        "version": "70c21707fdfcf01dc074fb9388ffd098d116e203b2234e53afdc6b2fbea44762",
-        "signature": "fcaeeb98ade775a31234dda589287c1d3ae7b28efea602fd5598201a9991829c"
+        "version": "22fbbb6776534fa02b85a3b541f5c387dad85a09640da9f21bd4e59985fd1513",
+        "signature": "68b7630b102c49bec55e483e2c37b142daa0579d6a5b9bcfa99ea741078df63e"
       },
       "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/verify.ts": {
-        "version": "efe9a176f4ce0697fd9657a5730e67d1b0a412b38ec838b45ca7c639396025bc",
-        "signature": "f33820fe274036eba66e86c990080162599423dda6848aa83b8d06a691714046"
+        "version": "870433a2278caee18d0c12c26722495cef37b1123340e2c652d7af88ce56ea4a",
+        "signature": "1bd1d07294469c8cb20732f933b4bd968bfffaaab853c8c3e17645501dba337f"
       },
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/chai/index.d.ts": {
         "version": "b26b3829d52ebdc82a2b9f4fa8051890dc953003382b4411fe4ec6f05351dcf4",
@@ -571,11 +571,11 @@
       "declaration": true,
       "importHelpers": true,
       "module": 1,
-      "outDir": "c:/source/GitHub/botframework-cli/packages/dialog/lib",
-      "rootDir": "c:/source/GitHub/botframework-cli/packages/dialog/src",
+      "outDir": "C:/source/GitHub/botframework-cli/packages/dialog/lib",
+      "rootDir": "C:/source/GitHub/botframework-cli/packages/dialog/src",
       "strict": false,
       "target": 4,
-      "configFilePath": "c:/source/GitHub/botframework-cli/packages/dialog/tsconfig.json"
+      "configFilePath": "C:/source/GitHub/botframework-cli/packages/dialog/tsconfig.json"
     },
     "referencedMap": {
       "c:/source/github/botframework-cli/packages/dialog/node_modules/typescript/lib/lib.es5.d.ts": [
@@ -868,7 +868,7 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/index.ts": [
         "c:/source/github/botframework-cli/packages/command/lib/index.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
@@ -1767,7 +1767,7 @@
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/util.d.ts",
         "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts": [
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/index.ts": [
         "c:/source/github/botframework-cli/packages/command/lib/index.d.ts"
       ],
       "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts": [
@@ -2417,7 +2417,7 @@
       "c:/source/github/botframework-cli/packages/command/node_modules/@oclif/errors/lib/index.d.ts",
       "c:/source/github/botframework-cli/packages/command/lib/command.d.ts",
       "c:/source/github/botframework-cli/packages/command/lib/index.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/index.ts",
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/index.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/ajv/lib/ajv.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/globals.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/node/assert.d.ts",
@@ -2476,6 +2476,7 @@
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/semver/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/lib/processors.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/xml2js/index.d.ts",
+      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/chalk/types/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/src/library/schematracker.ts",
       "c:/source/github/botframework-cli/packages/dialog/src/library/dialogtracker.ts",
@@ -2496,8 +2497,7 @@
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/lodash/ts3.1/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/mocha/index.d.ts",
       "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/nock/index.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/sinon/ts3.1/index.d.ts",
-      "c:/source/github/botframework-cli/packages/dialog/src/commands/dialog/merge.ts"
+      "c:/source/github/botframework-cli/packages/dialog/node_modules/@types/sinon/ts3.1/index.d.ts"
     ]
   },
   "version": "3.5.3"
