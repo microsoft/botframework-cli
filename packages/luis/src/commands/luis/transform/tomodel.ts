@@ -3,7 +3,7 @@ const fParser = require('../../../../utils/parser')
 const cmdEnum = require('../../../../utils/enums/parsecommands')
 
 export default class LuisTransformTomodel extends Command {
-  static description = 'describe the command here'
+  static description = 'Transformation from one or more source .lu file(s) to a LUIS application JSON model.'
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'Source .lu file'}),

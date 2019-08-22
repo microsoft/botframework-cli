@@ -28,7 +28,24 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`bf luis:transform:tolu [FILE]`](#bf-luistransformtolu-file)
 * [`bf luis:transform:tomodel`](#bf-luistransformtomodel)
+
+## `bf luis:transform:tolu [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bf luis:transform:tolu [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/luis/transform/tolu.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/transform/tolu.ts)_
 
 ## `bf luis:transform:tomodel`
 
