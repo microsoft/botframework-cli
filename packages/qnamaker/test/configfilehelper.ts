@@ -36,6 +36,11 @@ export async function initTestConfigFile() {
   await fs.writeFile(configFile, JSON.stringify(config, null, 2))
 }
 
+export async function initEmptyTestConfigFile() {
+  await fs.mkdirp(pathToConfigJson)
+  await fs.writeFile(configFile, JSON.stringify({}, null, 2))
+}
+
 export async function deleteTestConfigFile() {
   await fs.remove(pathToConfigJson)
 }
