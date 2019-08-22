@@ -1,6 +1,6 @@
 import {expect, test} from '@oclif/test'
 const nock = require('nock')
-import {initTestConfigFile, deleteTestConfigFile} from '../../../configfilehelper'
+import {initEmptyTestConfigFile, initTestConfigFile, deleteTestConfigFile} from '../../../configfilehelper'
 
 describe('qnamaker:list:kbs', () => {
   before(async function() {
@@ -57,5 +57,22 @@ describe('qnamaker:list:kbs', () => {
     .command(['qnamaker:list:kbs'])
     .it('Gets knowledgebase list', ctx => {
       expect(ctx.stdout).to.contain('"createdTimestamp": "2019-06-28T20:19:22Z"\n    },\n    {\n      "id": "kasdjhfliu4849r4",\n      "hostName": "https://some.hostname.net"')
+    })
+})
+
+describe('qnamaker:list:kbs', () => {
+  before(async function() {
+    await initEmptyTestConfigFile()
+  })
+
+  after(async function(){
+    await deleteTestConfigFile()
+  })
+
+  test
+    .stderr()
+    .command(['qnamaker:list:kbs'])
+    .it('Prompts the user if no config passed or set in config.file', ctx => {
+      expect(ctx.stderr).to.contain('Did you run qnamaker init yet?')
     })
 })

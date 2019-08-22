@@ -8,6 +8,7 @@ As part of the effort to improve Bot Framework SDK toolset we are happy to annou
 ## Available Commands
 The following commands are currently available:
 * [Chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-chatdown) 
+* [QnAMaker (Preview)](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
 
 ## Plugin Architecture

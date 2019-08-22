@@ -43,14 +43,14 @@ USAGE
 * [`bf qnamaker:publish:kb`](#bf-qnamakerpublishkb)
 * [`bf qnamaker:query`](#bf-qnamakerquery)
 * [`bf qnamaker:refresh:endpointkeys`](#bf-qnamakerrefreshendpointkeys)
-* [`bf qnamaker:replace [FILE]`](#bf-qnamakerreplace-file)
+* [`bf qnamaker:replace`](#bf-qnamakerreplace)
 * [`bf qnamaker:replace:alterations`](#bf-qnamakerreplacealterations)
 * [`bf qnamaker:replace:kb`](#bf-qnamakerreplacekb)
 * [`bf qnamaker:update:kb`](#bf-qnamakerupdatekb)
 
 ## `bf qnamaker`
 
-QnA Maker CLI
+QnA Maker CLI (Preview version)
 
 ```
 USAGE
@@ -461,18 +461,16 @@ OPTIONS
 
 _See code: [src/commands/qnamaker/refresh/endpointkeys.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/refresh/endpointkeys.ts)_
 
-## `bf qnamaker:replace [FILE]`
+## `bf qnamaker:replace`
 
-describe the command here
+Replace QnA maker resources
 
 ```
 USAGE
-  $ bf qnamaker:replace [FILE]
+  $ bf qnamaker:replace
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  display qnamaker:replace available commands
 ```
 
 _See code: [src/commands/qnamaker/replace/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/index.ts)_
