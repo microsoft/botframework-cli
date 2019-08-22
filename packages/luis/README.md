@@ -16,37 +16,39 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @microsoft/bf-luis
-$ oclif-example COMMAND
+$ bf COMMAND
 running command...
-$ oclif-example (-v|--version|version)
+$ bf (-v|--version|version)
 @microsoft/bf-luis/1.0.0 darwin-x64 node-v12.1.0
-$ oclif-example --help [COMMAND]
+$ bf --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ bf COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`bf luis:transform:tomodel`](#bf-luistransformtomodel)
 
-## `oclif-example hello [FILE]`
+## `bf luis:transform:tomodel`
 
 describe the command here
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ bf luis:transform:tomodel
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+  --in=in                          Source .lu file
+  --lu_folder=lu_folder            Source folder that contains .lu file(s)
+  --luis_culture=luis_culture      Lang code for the LUIS application
+  --luis_desc=luis_desc            Text describing the LUIS applicaion
+  --luis_name=luis_name            Name of the LUIS application
+  --luis_versionId=luis_versionId  Version ID of the LUIS application
+  --out=out                        Output file name
+  --out_folder=out_folder          Output folder name
+  --subfolder                      Indicates if sub-folders need to be considered to file .lu file(s)
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/hello.ts)_
+_See code: [src/commands/luis/transform/tomodel.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/transform/tomodel.ts)_
 <!-- commandsstop -->
