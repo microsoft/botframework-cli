@@ -1,72 +1,70 @@
-type Action = (value: string) => void;
+export namespace Utils {
+  type Action = (value: string) => void
 
-export class Utils {
-  public static normalizeName(name: any): string {
-    return (name as string).replace(/./g, "_").replace(/ /g, "_");
+  export function normalizeName(name: any): string {
+    return (name as string).replace(/./g, '_').replace(/ /g, '_')
   }
 
-  public static isHierarchical(name: any, app: any): boolean {
-    let isHierarchical: boolean = false;
-    if (app.entities != null) {
-      for (let index = 0; index < app.entities.length; index++) {
-        const child = app.entities[index];
-        if (child.name == name) {
-          isHierarchical = child.children != null;
-          break;
+  export function isHierarchical(name: any, app: any): boolean {
+    let isHierarchical = false
+    if (app.entities !== null && app.entities !== null) {
+      for (let child of app.entities) {
+        if (child.name === name) {
+          isHierarchical = child.children !== null
+          break
         }
       }
     }
-    return isHierarchical;
+    return isHierarchical
   }
 
-  public static isList(name: any, app: any): boolean {
-    if (app.closedLists != null) {
+  export function isList(name: any, app: any): boolean {
+    if (app.closedLists !== null && app.closedLists !== undefined) {
       return (app.closedLists as Array<any>).some(list => {
         return (
           list.name === name ||
           (list.roles as Array<any>).some(role => {
-            return role === name;
+            return role === name
           })
-        );
-      });
+        )
+      })
     }
-    return false;
+    return false
   }
 
-  public static jsonPropertyName(property: any, app: any): string {
-    let name = (property as string).split(":").slice(-1)[0];
+  export function jsonPropertyName(property: any): string {
+    let name = (property as string).split(':').slice(-1)[0]
     if (
-      !name.startsWith("geographyV2") &&
-      !name.startsWith("ordinalV2") &&
-      name.endsWith("V2")
+      !name.startsWith('geographyV2') &&
+      !name.startsWith('ordinalV2') &&
+      name.endsWith('V2')
     ) {
-      name = name.substring(0, name.length - 2);
+      name = name.substring(0, name.length - 2)
     }
-    return Utils.normalizeName(name);
+    return normalizeName(name)
   }
 
-  public static entityApply(entity: any, action: Action): void {
-    action(entity.name as string);
-    if (entity && entity.roles != null) {
+  export function entityApply(entity: any, action: Action): void {
+    action(entity.name as string)
+    if (entity.roles !== null) {
       (entity.roles as Array<any>)
         .sort((a, b) => (a.role > b.role ? 1 : -1))
         .forEach(item => {
-          action(item.role);
-        });
+          action(item.role)
+        })
     }
   }
 
-  public static entity(name: any): any {
-    let obj: any = {};
-    obj.name = name;
-    obj.roles = [];
+  export function entity(name: any): any {
+    let obj: any = {}
+    obj.name = name
+    obj.roles = []
 
-    return obj;
+    return obj
   }
 
-  public static writeInstances(app: any, writeInstance: Action): void {
-    if (app != null) {
-      let empty = [];
+  export function writeInstances(app: any, writeInstance: Action): void {
+    if (app !== null && app !== undefined) {
       let lists = [
         app.entities,
         app.prebuiltEntities,
@@ -74,17 +72,18 @@ export class Utils {
         app.regex_entities,
         app.patternAnyEntities,
         app.composites
-      ];
-      let entities: any[] = [];
-      entities.concat(...lists).sort((a, b) => (a.name > b.name ? 1 : -1));
+      ]
+
+      let entities: any[] = []
+      entities.concat(...lists).filter(a => a !== null && a !== undefined).sort((a, b) => (a.name > b.name ? 1 : -1))
       entities.forEach(entity => {
-        Utils.entityApply(entity, writeInstance);
-        if (Utils.isHierarchical(entity, app)) {
+        entityApply(entity, writeInstance)
+        if (isHierarchical(entity, app)) {
           entity.children.forEach((child: any) => {
-            writeInstance(child as string);
-          });
+            writeInstance(child as string)
+          })
         }
-      });
+      })
     }
   }
 }
