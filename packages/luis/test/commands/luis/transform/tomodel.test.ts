@@ -12,7 +12,7 @@ describe('luis:transform:tomodel', () => {
     .it('luis:transform:tomodel --in ./test/fixtures/file.lu --out root.luis.json', async () => {
       let result = await fs.readFile(path.join(__dirname, '../../../../root.luis.json'))
       let fixtureFile = await fs.readFile(path.join(__dirname, '../../../fixtures/root.luis.json'))
-      expect(result).to.deep.equal(fixtureFile)
+      expect(result).to.eql(fixtureFile)
     })
 
     test
@@ -32,7 +32,7 @@ describe('luis:transform:tomodel', () => {
     test
     .stderr()
     .command(['luis:transform:tomodel', '--in', 'wrongfile', '--out', 'root.luis.json'])
-    .it('luis:transform:tomodel --in ./test/fixtures/file.lu --out root.luis.json', ctx => {
+    .it('luis:transform:tomodel --in wrongfile --out root.luis.json', ctx => {
       expect(ctx.stderr).to.have.string('Sorry unable to open [wrongfile]')
     })
 })
