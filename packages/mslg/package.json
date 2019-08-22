@@ -14,7 +14,9 @@
     "@types/fs-extra": "^8.0.0",
     "botbuilder-lg": "https://botbuilder.myget.org/F/botbuilder-declarative/npm/botbuilder-lg/-/4.5.1.tgz",
     "chalk": "^2.4.2",
+    "dotenv": "^8.1.0",
     "fs-extra": "^8.1.0",
+    "node-fetch": "^2.6.0",
     "read-text-file": "^1.1.0",
     "readline-sync": "^1.4.10",
     "tslib": "^1.10.0"
@@ -62,7 +64,7 @@
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc --reporter=html --reporter=text --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
   "types": "lib/index.d.ts"

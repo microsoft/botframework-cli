@@ -1,5 +1,5 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
-import {Parser} from '../../utils/parser';
+const {Parser} = require('../../utils/parser')
 
 export default class MslgParse extends Command {
   static description = 'Parse any provided .lg file and collate them into a single lg file.'
@@ -9,7 +9,7 @@ export default class MslgParse extends Command {
   $ bf mslg parse -l examples/validExamples -s --out finalResult -c`]
 
   static flags = {
-    in: flags.string({required: true, description: 'The .lg file to parse'}),
+    in: flags.string({description: 'The .lg file to parse'}),
     lg_folder: flags.string({char: 'l', description: 'Folder that has the .lg file. By default mslg will only look at the current folder. To look at all subfolders, include -s.'}),
     subfolder: flags.boolean({char: 's', description: 'Include sub-folders as well when looking for .lg files.'}),
     out: flags.string({description: 'Output .lg file name.'}),
@@ -24,9 +24,9 @@ export default class MslgParse extends Command {
   async run() {
     try {
       const {flags} = this.parse(MslgParse)
-      const parser: any = new Parser();
-      await parser.Parser(flags);
-    } catch(error) {
+      const parser: any = new Parser()
+      await parser.Parser(flags)
+    } catch (error) {
       this.error(error)
     }
   }

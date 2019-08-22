@@ -1,3 +1,9 @@
 {
-  "extends": "@oclif/tslint"
+  "extends": "@oclif/tslint",
+  "linterOptions": {
+    "exclude": [
+        "bin",
+        "src/utils/*"
+    ]
+}
 }
