@@ -1,4 +1,4 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const {Translator} = require('../../utils/translator')
 
 export default class MslgTranslate extends Command {
@@ -25,7 +25,7 @@ export default class MslgTranslate extends Command {
     try {
       await translator.Translate(flags)
     } catch (error) {
-      this.error(error)
+      throw new CLIError(error.message)
     }
   }
 }

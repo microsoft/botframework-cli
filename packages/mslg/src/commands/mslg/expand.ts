@@ -1,4 +1,4 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const {Expander} = require('../../utils/expander')
 
 export default class MslgExpand extends Command {
@@ -23,7 +23,7 @@ export default class MslgExpand extends Command {
       const expander: any = new Expander()
       await expander.Expand(flags)
     } catch (error) {
-      this.error(error)
+      throw new CLIError(error.message)
     }
   }
 }

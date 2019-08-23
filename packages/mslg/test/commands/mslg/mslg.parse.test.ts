@@ -43,7 +43,7 @@ describe('The mslg:parse command', () => {
     .stderr()
     .command(['mslg:parse', '-l', 'examples/validExamples'])
     .it('should print an error if --collate is not specified and multiple templates of same name exist in different files', ctx => {
-      expect(ctx.stderr).to.contain('Error: below template names are defined in multiple files:')
+      expect(ctx.stderr).to.contain('below template names are defined in multiple files:')
     })
   test
     .stdout()

@@ -1,4 +1,4 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const {Parser} = require('../../utils/parser')
 
 export default class MslgParse extends Command {
@@ -27,7 +27,7 @@ export default class MslgParse extends Command {
       const parser: any = new Parser()
       await parser.Parser(flags)
     } catch (error) {
-      this.error(error)
+      throw new CLIError(error.message)
     }
   }
 }
