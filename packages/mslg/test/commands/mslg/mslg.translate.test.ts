@@ -9,6 +9,7 @@ const dotenv = require('dotenv');
 const ENV_FILE = path.join(__dirname, '../../../.env');
 dotenv.config({ path: '.env' });
 const TRANSLATE_KEY = process.env.TRANSLATE_KEY
+const testDir = 'test/testOutput';
 
 function compareFiles(actualPath: string, expectedPath: string) {
   let expected = fs.existsSync(actualPath)
@@ -22,6 +23,12 @@ function compareFiles(actualPath: string, expectedPath: string) {
 
 if (TRANSLATE_KEY) {
   describe('The mslg:translate command', () => {
+
+    before(() => {
+      if (!fs.existsSync(testDir)){
+        fs.mkdirSync(testDir);
+      }
+    });
     
     test
       .stdout()

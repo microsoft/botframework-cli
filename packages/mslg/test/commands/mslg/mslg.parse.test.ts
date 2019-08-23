@@ -1,7 +1,16 @@
 import {expect, test} from '@oclif/test'
 const rimraf = require('rimraf')
+const fs = require('fs');
+const testDir = 'test/testOutput';
 
 describe('The mslg:parse command', () => {
+
+  before(() => {
+    if (!fs.existsSync(testDir)){
+      fs.mkdirSync(testDir);
+    }
+  });
+
   test
     .stdout()
     .command(['mslg:parse', '--help'])
@@ -41,7 +50,7 @@ describe('The mslg:parse command', () => {
     .stderr()
     .command(['mslg:parse', '-l', 'test/testOutput', '-o', 'test/testOutput', '-c'])
     .it('should output an error for no files found', ctx => {
-      expect(ctx.stderr).to.contain(' no .lg files found in the specified folder')
+      expect(ctx.stderr).to.contain('no .lg files found in the specified folder')
     })
   test
     .stdout()
