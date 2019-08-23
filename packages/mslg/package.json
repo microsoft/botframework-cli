@@ -7,10 +7,10 @@
     "mslg": "./bin/run"
   },
   "dependencies": {
-    "@microsoft/bf-cli-command": "^4.5.4",
-    "@oclif/command": "^1.5.18",
-    "@oclif/config": "^1.13.3",
-    "@oclif/plugin-help": "^2.2.1",
+    "@microsoft/bf-cli-command": "1.0.0",
+    "@oclif/command": "~1.5.18",
+    "@oclif/config": "~1.13.3",
+    "@oclif/plugin-help": "~2.2.1",
     "@types/fs-extra": "^8.0.0",
     "botbuilder-lg": "https://botbuilder.myget.org/F/botbuilder-declarative/npm/botbuilder-lg/-/4.5.1.tgz",
     "chalk": "^2.4.2",
@@ -22,9 +22,9 @@
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
-    "@oclif/test": "^1.2.5",
-    "@oclif/tslint": "^3.1.1",
+    "@oclif/dev-cli": "~1.22.2",
+    "@oclif/test": "~1.2.5",
+    "@oclif/tslint": "~3.1.1",
     "@types/chai": "^4.2.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.14.15",

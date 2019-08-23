@@ -1,87 +1,118 @@
-mslg
-====
+> *NOTE: This is a **preview** tool and breaking changes may happen before it is released*.
 
+# MSLG Command Line tool
+MSLG is a command line tool that parses .lg files which adheres to the [LG file format](https://github.com/Microsoft/BotBuilder-Samples/blob/master/experimental/language-generation/docs/lg-file-format.md). MSLG CLI tool can:
+- Report an error on invalid .lg file. All errors that are statically detectable are reported.
+- Generate a collated .lg file by parsing and analyzing more than one .lg files.
+- Expand any given template (or all templates in a file) based on test values for entity references.
+- Translate .lg files to a target language by microsoft translation API.
 
+## Prerequisite
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/mslg.svg)](https://npmjs.org/package/mslg)
-[![Downloads/week](https://img.shields.io/npm/dw/mslg.svg)](https://npmjs.org/package/mslg)
-[![License](https://img.shields.io/npm/l/mslg.svg)](https://github.com/packages/mslg/blob/master/package.json)
+- [Node.js](https://nodejs.org/) version 8.5 or higher
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g mslg
-$ mslg COMMAND
-running command...
-$ mslg (-v|--version|version)
-mslg/1.0.0 win32-x64 node-v10.16.0
-$ mslg --help [COMMAND]
-USAGE
-  $ mslg COMMAND
-...
-```
-<!-- usagestop -->
-# Commands
-<!-- commands -->
-* [`mslg hello [FILE]`](#mslg-hello-file)
-* [`mslg help [COMMAND]`](#mslg-help-command)
-* [`mslg mslg [FILE]`](#mslg-mslg-file)
+## Installation
 
-## `mslg hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ mslg hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ mslg hello
-  hello world from ./src/hello.ts!
+To install:
+```bash
+npm i -g @microsoft/botframework-cli
 ```
 
-_See code: [src\commands\hello.ts](https://github.com/packages/mslg/blob/v1.0.0/src\commands\hello.ts)_
-
-## `mslg help [COMMAND]`
-
-display help for mslg
-
+## Commands
 ```
-USAGE
-  $ mslg help [COMMAND]
+>bf mslg
 
-ARGUMENTS
-  COMMAND  command to show help for
+  Usage: bf mslg [command] [options]
 
-OPTIONS
-  --all  see all commands in CLI
-```
+  MSLG is a command line tool to parse, collate, expand and translate lg files.
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.1/src\commands\help.ts)_
+  Options:
 
-## `mslg mslg [FILE]`
+    -v, --Version  output the version number
+    -h, --help     output usage information
 
-describe the command here
+  Commands:
 
-```
-USAGE
-  $ mslg mslg [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+    parse|p        Parse any provided .lg file and collate them into a single file.
+    expand|d       Expand one or all templates in a .lg file or an inline expression.
+    translate|t    Translate .lg files to a target language by microsoft translation API.
+    help [cmd]     display help for [cmd]
 ```
 
-_See code: [src\commands\mslg.ts](https://github.com/packages/mslg/blob/v1.0.0/src\commands\mslg.ts)_
-<!-- commandsstop -->
+### Parse command
+
+```
+>mslg parse
+
+  Usage: bf mslg:parse [options]
+
+  Parse any provided .lg file and collate all .lg files into a single file.
+
+  Options:
+  --in <lgFile>                    .lg file to parse
+  -l, --lg_folder <inputFolder>    [Optional] Folder that has the .lg file. By default mslg will only look at the current folder. To look at all subfolders, include -s
+  -s, --subfolder                  [Optional] Include sub-folders as well when looking for .lg files
+  --out <outputFileName>           [Optional] Output .lg file name.
+  -o, --out_folder <outputFolder>  [Optional] Output folder for all files the tool will generate
+  --stdin                          [Optional] Read .lg file as stream from stdin to validate and collate
+  --stdout                         [Optional] when set, write out the final file to stdout
+  --verbose                        [Optional] Flag option used to request verbose output. With this option set, additional useful parse, validate and collate logs are written to stdout
+  -c, --collate                    [Optional] If not set, same template name across multiple .lg files will throw exceptions.
+  -h, --help                       output usage information
+  ```
+
+  ### Expand command
+```
+  Usage: bf mslg:expand [options]
+
+  Expand one or all templates in a .lg file or an inline expression.
+
+  Options:
+  --in <lgFile>                        lg file to expand
+  -t, --template <templateName>        Name of the template to expand. Template names with spaces must be enclosed in quotes.
+  -e, --inline <expression>            [Optional] Inline expression provided as a string to evaluate.
+  --all                                [Optional] Flag option to request that all templates in the .lg file be expanded.
+  -i, --interactive                    [Optional] Flag option to request that all missing entity value references be obtained through interactive prompts.
+  -j, --testInput <testInputJSONFile>  [Optional] full or relative path to a JSON file containing test input for all variable references.
+  -h, --help                           output usage information
+```
+
+  ### Translate command
+```
+  Usage: bf mslg:translate [options]
+
+  Translate .lg files to a target language by microsoft translation API.
+
+  Options:
+  -k, --translate_key <translatorKey>  Microsoft translation API key
+  -t, --target_lang <targetLang>       Target language to localize content to. See https://aka.ms/translate-langs for list of supported languages and codes. You can also specify comma or space delimited list of target languages.
+  --in <lgFile>                        A direct .lg file passed in
+  -l, --lg_folder <folder_name>        [Optional] Relative or absolute path to a folder containing .lg files
+  -s, --subfolder                      [Optional] Flag option used to denote that subfolders need to be recursively checked to find .lg files
+  -o, --out_folder <output_folder>     [Optional] output folder to write out the final .lg file
+  -c, --translate_comments             [Optional] Flag option to indicate if comments in the input file is also translated. Default is set to false
+  --verbose                            [Optional] Flag option used to request verbose output. With this option set, additional useful parse, validate and collate logs are written to stdout
+  -h, --help                           output usage information
+```
+
+## Sample Usage
+- [More Samples](examples/samples.md)
+
+ ### Parse
+```bash
+bf mslg:parse --in examples/exceptionExamples/EmptyTemplate.lg    // parse the specific lg file.
+```
+
+ ### Collate
+```bash
+bf mslg:parse -l examples/validExamples -s --out finalResult -c    // parse and merge all templates under folder validExamples into single finalResult file.
+```
+
+ ### Expand
+```bash
+bf mslg:expand --in examples/validExamples/simple.lg -t FinalGreeting    // basic usage of expand command.
+```
+ ### Translate
+```
+bf mslg:translate -k your_translate_Key -t your_target_lang --in examples/validExamples/translator.lg -c    // basic usage of translate command.
+```
