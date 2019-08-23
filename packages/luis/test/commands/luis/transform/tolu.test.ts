@@ -10,8 +10,8 @@ describe('luis:transform:tolu', () => {
   test
     .command(['luis:transform:tolu', '--LUIS_File', `${path.join(__dirname, '../../../fixtures/root.luis.json')}`, '--lu_File', 'root.lu'])
     .it('luis:transform:tolu --LUIS_File ./test/fixtures/root.luis.json --lu_File root.lu', async () => {
-      let result = await fs.readFile(path.join(__dirname, '../../../../root.lu'))
-      let fixtureFile = await fs.readFile(path.join(__dirname, '../../../fixtures/file.lu'))
+      let result = await fs.readFile(path.join(__dirname, '../../../../root.lu')).toString().replace(/\r\n/g, "\n")
+      let fixtureFile = await fs.readFile(path.join(__dirname, '../../../fixtures/file.lu')).toString().replace(/\r\n/g, "\n")
       expect(result.includes(fixtureFile)).to.be.true
     })
 

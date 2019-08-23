@@ -10,9 +10,9 @@ describe('luis:transform:tomodel', () => {
   test
     .command(['luis:transform:tomodel', '--in', `${path.join(__dirname, '../../../fixtures/file.lu')}`, '--out', 'root.luis.json'])
     .it('luis:transform:tomodel --in ./test/fixtures/file.lu --out root.luis.json', async () => {
-      let result = await fs.readFile(path.join(__dirname, '../../../../root.luis.json'))
-      let fixtureFile = await fs.readFile(path.join(__dirname, '../../../fixtures/root.luis.json'))
-      expect(result.equals(fixtureFile)).to.be.true
+      let result = await fs.readFile(path.join(__dirname, '../../../../root.luis.json')).toString().replace(/\r\n/g, "\n")
+      let fixtureFile = await fs.readFile(path.join(__dirname, '../../../fixtures/root.luis.json')).toString().replace(/\r\n/g, "\n")
+      expect(result === fixtureFile).to.be.true
     })
 
     test
