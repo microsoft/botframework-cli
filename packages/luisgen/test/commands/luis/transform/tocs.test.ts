@@ -1,16 +1,16 @@
 import {expect, test} from '@oclif/test'
 
-describe('hello', () => {
+describe('luis:transform:tocs', () => {
   test
     .stdout()
-    .command(['hello'])
+    .command(['luis:transform:tocs'])
     .it('runs hello', ctx => {
       expect(ctx.stdout).to.contain('hello world')
     })
 
   test
     .stdout()
-    .command(['hello', '--name', 'jeff'])
+    .command(['luis:transform:tocs', '--name', 'jeff'])
     .it('runs hello --name jeff', ctx => {
       expect(ctx.stdout).to.contain('hello jeff')
     })
