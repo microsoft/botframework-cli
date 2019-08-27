@@ -16,71 +16,63 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @microsoft/bf-dialog
-$ oclif-example COMMAND
+$ bf COMMAND
 running command...
-$ oclif-example (-v|--version|version)
+$ bf (-v|--version|version)
 @microsoft/bf-dialog/0.0.0 darwin-x64 node-v12.1.0
-$ oclif-example --help [COMMAND]
+$ bf --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ bf COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example dialog:merge [FILE]`](#oclif-example-dialogmerge-file)
-* [`oclif-example dialog:verify [FILE]`](#oclif-example-dialogverify-file)
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`bf dialog:merge [FILE]`](#bf-dialogmerge-file)
+* [`bf dialog:verify [FILE]`](#bf-dialogverify-file)
 
-## `oclif-example dialog:merge [FILE]`
+## `bf dialog:merge [FILE]`
 
-describe the command here
+The bf dialog:merge creates an merged schema file which represents merging of all of the component
+schemas and the SDK schemas together into an application .schema file.
+
+The file pattern can be an arbitrary GLOB patterns for finding .schema files (such as myfolder/**/*.schema), but
+the better way to use it is to invoke it in the folder that has a project in it (either .csproj or packages.json).
+In that case the project file will be analyzed for all dependent folders and .schema files will be merged to create
+the app.schema for the project.
 
 ```
 USAGE
-  $ oclif-example dialog:merge [FILE]
+  $ bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
 
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+OPTIONS                                                                                                                                                                                                                                                                                           -b, --branch=branch  [default: 4.Future] The branch to use for the meta-schema component.schema.                                                                                                                                                                                                -h, --help           show CLI help
+  -o, --output=output  [default: app.schema] Output path and filename for merged schema. [default: app.schema]                                                                                                                                                                                  -u, --update         Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.
+  --verbose            output verbose logging of files as they are processed
+```
+
+Example:
+```
+bf dialog:merge -o app.schema
 ```
 
 _See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/merge.ts)_
 
-## `oclif-example dialog:verify [FILE]`
+## `bf dialog:verify [FILE]`
 
-describe the command here
+The dialog:verify command is used to validate that all of the .dialog file resources for a project are valid based on the 
+applications app.schema file (see dialog:merge command).
 
 ```
 USAGE
-  $ oclif-example dialog:verify [FILE]
+  $ bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
 
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+OPTIONS                                                                                                                                                                                                                                                                                           -h, --help  show CLI help
+  --verbose   Show verbose output
+```
+
+Example:
+```
+bf dialog:verify test/**/*.dialog
 ```
 
 _See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/verify.ts)_
-
-## `oclif-example hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-       hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/hello.ts)_
-<!-- commandsstop -->

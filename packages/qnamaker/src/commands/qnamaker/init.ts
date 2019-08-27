@@ -41,7 +41,9 @@ export default class QnamakerInit extends Command {
     const config = Object.assign({}, {subscriptionKey, kbId})
 
     if (subscriptionKey && kbId) {
+      cli.action.start('Updating hostname')
       await this.updateKbId(config)
+      cli.action.stop()
     }
 
     let confirmation: boolean
@@ -53,7 +55,6 @@ export default class QnamakerInit extends Command {
     }
 
     if (confirmation) {
-      //await fs.writeJson(path.join(process.cwd(), '.qnamakerrc'), config, {spaces: 2})
       let userConfig: any = {}
       if (fs.existsSync(path.join(this.config.configDir, 'config.json'))) {
         userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
