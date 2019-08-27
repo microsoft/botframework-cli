@@ -1,0 +1,28 @@
+{
+    "name": "endpointkeys",
+    "className": "Endpointkeys",
+    "url": "/endpointkeys/{keyType}",
+    "operations": {
+        "refreshEndpointKeys": {
+            "name": "refreshEndpointKeys",
+            "method": "PATCH",
+            "methodAlias": "refresh",
+            "target": [
+                "endpointkeys"
+            ],
+            "command": "qnamaker refresh endpointkeys --keyType <string>",
+            "pathFragment": "",
+            "params": [
+                {
+                    "type": "string",
+                    "name": "keyType",
+                    "in": "path",
+                    "required": true,
+                    "x-nullable": false,
+                    "description": "type of Key"
+                }
+            ],
+            "description": "Re-generates an endpoint key, in case you suspect your keys have been compromised"
+        }
+    }
+}

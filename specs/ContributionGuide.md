@@ -5,6 +5,7 @@
     2. Inside the project root folder run 'npm run build'
     3. Inside the packages folder run 'npx oclif plugin <plugin-name>'
     4. Add @microsoft/bf-cli-command as a dependency <where?>
+    5. At the root level(https://github.com/microsoft/botframework-cli) run npm run build to bootstrap the packages
 
 ## Steps to create a new command
     1. To add a command, inside the plugin folder run 'npx oclif command <command-name>'. If you want to add a subcommand just name it colon separated as <command-name:subcommand-name>

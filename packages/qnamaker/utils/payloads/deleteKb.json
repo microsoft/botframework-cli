@@ -1,0 +1,28 @@
+{   "name": "knowledgebase",
+    "className": "Knowledgebase",
+    "url": "/knowledgebases/{kbId}",
+    "operations": {
+        "deleteKnowledgebase": {
+            "name": "deleteKnowledgebase",
+            "method": "DELETE",
+            "methodAlias": "delete",
+            "target": [
+                "kb",
+                "knowledgebase"
+            ],
+            "command": "qnamaker delete kb --kbId <string>",
+            "pathFragment": "",
+            "params": [
+                {
+                    "type": "string",
+                    "name": "kbId",
+                    "in": "path",
+                    "required": true,
+                    "x-nullable": false,
+                    "description": "Knowledgebase id."
+                }
+            ],
+            "description": "Delete a knowledgebase by id"
+        }
+    }
+}
