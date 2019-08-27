@@ -2,7 +2,7 @@ export namespace Utils {
   type Action = (value: string) => void
 
   export function normalizeName(name: any): string {
-    return (name as string).replace(/./g, '_').replace(/ /g, '_')
+    return name.replace(/\./g, '_').replace(/ /g, '_')
   }
 
   export function isHierarchical(name: any, app: any): boolean {
@@ -47,11 +47,10 @@ export namespace Utils {
   export function entityApply(entity: any, action: Action): void {
     action(entity.name as string)
     if (entity.roles !== null) {
-      (entity.roles as Array<any>)
-        .sort((a, b) => (a.role > b.role ? 1 : -1))
-        .forEach(item => {
-          action(item.role)
-        })
+      entity.roles.sort()
+      entity.roles.forEach((item: any) => {
+        action(item)
+      })
     }
   }
 
@@ -74,8 +73,10 @@ export namespace Utils {
         app.composites
       ]
 
-      let entities: any[] = []
-      entities.concat(...lists).filter(a => a !== null && a !== undefined).sort((a, b) => (a.name > b.name ? 1 : -1))
+      let entities: any[] = [].concat(...lists)
+      .filter((a: any) => a !== null && a !== undefined)
+      .sort((a: any, b: any) => (a.name > b.name ? 1 : -1))
+
       entities.forEach(entity => {
         entityApply(entity, writeInstance)
         if (isHierarchical(entity, app)) {

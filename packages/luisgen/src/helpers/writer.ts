@@ -6,10 +6,11 @@ export class Writer {
   private outputStream?: WriteStream = undefined
 
   public async setOutputStream(outputPath: string): Promise<void> {
-    return new Promise(() => {
-      const stream = createWriteStream(outputPath)
+    const stream = createWriteStream(outputPath)
+    return new Promise((resolve: any) => {
       stream.once('ready', (_fd: number) => {
         this.outputStream = stream
+        resolve()
       })
     })
   }
@@ -42,8 +43,11 @@ export class Writer {
   }
 
   public async closeOutputStream(): Promise<void> {
-    return new Promise(() => {
-      this.outputStream!.close()
+    this.outputStream!.end()
+    return new Promise((resolve: any) => {
+      this.outputStream!.on('finish', (_fd: number) => {
+        resolve()
+      })
     })
   }
 }

@@ -1,25 +1,52 @@
 import {Command, flags} from '@oclif/command'
+import * as path from 'path'
+
+import {CSharpGenerator} from '../../../helpers/csharp-generator'
+
+const fs = require('fs-extra')
 
 export default class LuisTransformTocs extends Command {
   static description = 'describe the command here'
 
   static flags = {
-    help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    in: flags.string({char: 'i', description: 'Source LUIS application JSON file .OR. source .lu file'}),
+    folder: flags.string({char: 'l', description: 'Source folder that contains .lu file(s)'}),
+    subFolder: flags.boolean({char: 's', description: 'Indicates if sub-folders need to be considered to file .lu file(s)'}),
+    out: flags.string({char: 'o', description: 'Output file name'}),
+    outFolder: flags.string({char: 'd', description: 'Output file name'}),
   }
 
-  static args = [{name: 'file'}]
+  static args = [{name: 'file', required: true}, {name: 'className', required: true}]
+
+  reorderEntities(app: any, name: string): void {
+    if (app[name] !== null && app[name] !== undefined) {
+      app[name].sort((a: any, b: any) => (a.name > b.name ? 1 : -1))
+    }
+  }
 
   async run() {
     const {args, flags} = this.parse(LuisTransformTocs)
+    const dot_index = args.className.indexOf('.')
+    let space = 'Luis'
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from /Users/axelsuarez/Documents/botframework-cli/packages/luisgen/src/commands/luis/transform/tocs.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    if (dot_index !== -1) {
+      space = args.className.substr(dot_index + 1)
+      args.className = args.className.substr(0, dot_index)
     }
+
+    const app = await fs.readJSON(path.join('/Users/axelsuarez/Documents/botframework-cli/packages/luisgen', args.file))
+
+    this.reorderEntities(app, 'entities')
+    this.reorderEntities(app, 'prebuiltEntities')
+    this.reorderEntities(app, 'closedLists')
+    this.reorderEntities(app, 'regex_entities')
+    this.reorderEntities(app, 'patternAnyEntities')
+    this.reorderEntities(app, 'composites')
+
+    args.className = args.className || app.name.replace(' ', '_')
+    flags.out = flags.out || './'
+    const description = `tocs ${args.name} ${space}.${args.className} -o ${__dirname}`
+
+    await CSharpGenerator.generate(description, app, args.className, space, flags.out, this)
   }
 }
