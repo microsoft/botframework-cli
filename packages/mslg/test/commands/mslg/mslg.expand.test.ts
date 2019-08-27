@@ -4,7 +4,7 @@ const rimraf = require('rimraf')
 describe('The mslg:expand command', () => {
   test
     .stdout()
-    .command(['mslg:expand', '--in', 'examples/validExamples/simple.lg', '-t', 'FinalGreeting'])
+    .command(['mslg:expand', '--in', 'examples/validExamples/simple.lg', '--template', 'FinalGreeting'])
     .it('should expand specific template successfully', ctx => {
       expect(ctx.stdout).to.contain('# FinalGreeting')
       expect(ctx.stdout).to.contain('- Hi Morning')
@@ -35,7 +35,7 @@ describe('The mslg:expand command', () => {
 
   test
     .stdout()
-    .command(['mslg:expand', '--in', 'examples/validExamples/simpleWithVariables.lg', '-t', 'TimeOfDayWithCondition', '-j', 'examples/validExamples/variables.json'])
+    .command(['mslg:expand', '--in', 'examples/validExamples/simpleWithVariables.lg', '--template', 'TimeOfDayWithCondition', '--testInput', 'examples/validExamples/variables.json'])
     .it('should expand a template with scope and variables successfully', ctx => {
       expect(ctx.stdout).to.contain('# TimeOfDayWithCondition')
       expect(ctx.stdout).to.contain('- Hi Morning')

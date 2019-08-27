@@ -42,7 +42,7 @@ if (TRANSLATE_KEY) {
     test
       .stdout()
       .stderr()
-      .command(['mslg:translate', '-k', `${TRANSLATE_KEY}`, '-t', 'zh-Hans', '--in', 'examples/exceptionExamples/InvalidTemplateName.lg', '--out_folder', 'test/testOutput', '-c', '--verbose'])
+      .command(['mslg:translate', '--translate_key', `${TRANSLATE_KEY}`, '--target_lang', 'zh-Hans', '--in', 'examples/exceptionExamples/InvalidTemplateName.lg', '--out_folder', 'test/testOutput', '--translate_comments', '--verbose'])
       .it('should output an error for invalid token', ctx => {
         expect(ctx.stderr).to.contain('')
       })
@@ -50,7 +50,7 @@ if (TRANSLATE_KEY) {
     test
       .stdout()
       .stderr()
-      .command(['mslg:translate', '-k', `${TRANSLATE_KEY}`, '-t', 'zh-Hans', '--in', 'examples/exceptionExamples/completelyEmptyFile.lg', '--out_folder', 'test/testOutput', '-c', '--verbose'])
+      .command(['mslg:translate', '--translate_key', `${TRANSLATE_KEY}`, '--target_lang', 'zh-Hans', '--in', 'examples/exceptionExamples/completelyEmptyFile.lg', '--out_folder', 'test/testOutput', '--translate_comments', '--verbose'])
       .it('should output an error for invalid file type', ctx => {
         expect(ctx.stderr).to.contain('Encoding not recognized')
       })
@@ -58,14 +58,14 @@ if (TRANSLATE_KEY) {
     test
       .stdout()
       .stderr()
-      .command(['mslg:translate', '-k', `${TRANSLATE_KEY}`, '-t', 'zh-Hans', '--in', 'examples/xyz/completelyEmptyFile.lg', '--out_folder', 'test/testOutput', '-c', '--verbose'])
+      .command(['mslg:translate', '--translate_key', `${TRANSLATE_KEY}`, '--target_lang', 'zh-Hans', '--in', 'examples/xyz/completelyEmptyFile.lg', '--out_folder', 'test/testOutput', '--translate_comments', '--verbose'])
       .it('should output an error for folder does not exist', ctx => {
         expect(ctx.stderr).to.contain('unable to open file')
       })
 
     test
       .stdout()
-      .command(['mslg:translate', '-k', `${TRANSLATE_KEY}`, '-t', 'zh-Hans', '--in', 'examples/validExamples/translator.lg', '--out_folder', 'test/testOutput', '-c', '--verbose'])
+      .command(['mslg:translate', '--translate_key', `${TRANSLATE_KEY}`, '--target_lang', 'zh-Hans', '--in', 'examples/validExamples/translator.lg', '--out_folder', 'test/testOutput', '--translate_comments', '--verbose'])
       .it('should translate a specific lg file', ctx => {
         expect(ctx.stdout).to.contain('Parsing file: ')
       })
@@ -73,21 +73,21 @@ if (TRANSLATE_KEY) {
     test
       .stdout()
       .stderr()
-      .command(['mslg:translate', '-k', `${TRANSLATE_KEY}`, '-t', 'zh-Hans', '--in', 'examples/validExamples/translator.lg', '--out_folder', '../testOutput', '-c', '--verbose'])
+      .command(['mslg:translate', '--translate_key', `${TRANSLATE_KEY}`, '--target_lang', 'zh-Hans', '--in', 'examples/validExamples/translator.lg', '--out_folder', '../testOutput', '--translate_comments', '--verbose'])
       .it('should translate a specific lg file with outfolder relative path specified', ctx => {
         expect(ctx.stderr).to.contain('output folder')
       })
 
     test
       .stdout()
-      .command(['mslg:translate', '-k', `${TRANSLATE_KEY}`, '-t', 'zh-Hans', '-l', 'examples/validExamples', '--out_folder', 'test/testOutput', '-s', '-c', '--verbose'])
+      .command(['mslg:translate', '--translate_key', `${TRANSLATE_KEY}`, '--target_lang', 'zh-Hans', '--lg_folder', 'examples/validExamples', '--out_folder', 'test/testOutput', '--subfolder', '--translate_comments', '--verbose'])
       .it('should translate in subfolder', ctx => {
         expect(ctx.stdout).to.contain('Parsing file: ')
       })
 
     test
       .stdout()
-      .command(['mslg:translate', '-k', `${TRANSLATE_KEY}`, '-t', 'zh-Hans', '-l', 'examples/validExamples/batch', '--out_folder', 'test/testOutput', '-s', '-c', '--verbose'])
+      .command(['mslg:translate', '--translate_key', `${TRANSLATE_KEY}`, '--target_lang', 'zh-Hans', '--lg_folder', 'examples/validExamples/batch', '--out_folder', 'test/testOutput', '--subfolder', '--translate_comments', '--verbose'])
       .it('should translate all files from a specific folder', ctx => {
         compareFiles('test/testOutput/zh-Hans/translator.lg', 'test/fixtures/translator/zh-Hans/translator.lg');
       })
