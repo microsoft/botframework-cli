@@ -15,7 +15,7 @@ describe('luis:transform:tolu', () => {
       expect(result.includes(fixtureFile)).to.be.true
     })
 
-    test
+  test
     .stderr()
     .command(['luis:transform:tolu', '--LUIS_File', 'wrongfile'])
     .it('luis:transform:tolu --LUIS_File wrongfile', ctx => {

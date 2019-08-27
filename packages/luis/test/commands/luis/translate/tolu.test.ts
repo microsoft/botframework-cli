@@ -26,7 +26,6 @@ describe('luis:translate:tolu', () => {
     .it('luis:translate:tolu --translate_key xxxxxx --in file.lu --to_lang fr', async (ctx) => {
       let result = await fs.readFile(path.join(__dirname, '../../../../fr/file.lu')).toString().replace(/\r\n/g, "\n")
       let fixtureFile = await fs.readFile(path.join(__dirname, '../../../fixtures/fr/file.lu')).toString().replace(/\r\n/g, "\n")
-      console.log(ctx.stderr)
       expect(result.includes(fixtureFile)).to.be.true
     })
 
