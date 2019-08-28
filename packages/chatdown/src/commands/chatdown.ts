@@ -106,7 +106,6 @@ export default class Chatdown extends Command {
             fileName = files[i].substr(files[i].lastIndexOf('/'))
           }
           fileName = fileName.split('.')[0]
-          console.log('call function to read this damn file')
           let activities = await chatdown(await this.readTextFile.read(files[i]))
           let writeFile = `${outputDir}/${fileName}.transcript`
           await fs.ensureFile(writeFile)
