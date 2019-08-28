@@ -24,7 +24,7 @@ const ReadPipedStdin = {
 
       })
 
-      readData().then((res: any) => {
+      Promise.race([readData]).then((res: any) => {
         clearTimeout(timer)
         resolve(res)
       }).catch((err: any) => {
