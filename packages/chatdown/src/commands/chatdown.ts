@@ -7,8 +7,6 @@ const fs = require('fs-extra')
 const glob = require('glob')
 const intercept = require('intercept-stdout')
 const path = require('path')
-const txtfile = require('../../utils/read-text-file')
-const piped = require('../../utils/read-piped-data')
 
 export default class Chatdown extends Command {
   static description = 'Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file'
@@ -76,14 +74,14 @@ export default class Chatdown extends Command {
     try {
       // Check if path passed in --chat
       if (args && args.length > 0) {
-        return txtfile.readSync(args)
+        return this.readTextFile.read(args)
       } else {
         //Check if piped data was sent
         const {stdin} = process
         if (stdin.isTTY) {
           return false
         } else {
-          return await piped.readStdin()
+          return await this.readPipedData.read()
         }
       }
     } catch (err) {
@@ -108,7 +106,8 @@ export default class Chatdown extends Command {
             fileName = files[i].substr(files[i].lastIndexOf('/'))
           }
           fileName = fileName.split('.')[0]
-          let activities = await chatdown(txtfile.readSync(files[i]))
+          console.log('call function to read this damn file')
+          let activities = await chatdown(await this.readTextFile.read(files[i]))
           let writeFile = `${outputDir}/${fileName}.transcript`
           await fs.ensureFile(writeFile)
           await fs.writeJson(writeFile, activities, {spaces: 2})

@@ -2,7 +2,8 @@
 
 import { Command as Base } from '@oclif/command'
 import { CLIError } from '@oclif/errors'
-
+import ReadPipedData from './readpipeddata'
+import ReadTextFile from './readtextfile'
 import Telemetry from './telemetry'
 
 const chalk = require('chalk')
@@ -13,6 +14,8 @@ export { CLIError } from '@oclif/errors'
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
   telemetryEnabled = false
+  public readPipedData = ReadPipedData;
+  public readTextFile = ReadTextFile;
 
   async init() {
     this.telemetryEnabled = (this.config.pjson.telemetry === undefined || this.config.pjson.telemetry === null) ? false : this.config.pjson.telemetry
