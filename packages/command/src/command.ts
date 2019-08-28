@@ -6,15 +6,12 @@ export { flags } from '@oclif/command'
 export { CLIError } from '@oclif/errors'
 const chalk = require('chalk')
 import ReadPipedData from './readpipeddata'
-import ReadTextFile from './readtextfile'
 import Telemetry from './telemetry'
 const pjson = require('../package.json')
 
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
   telemetryEnabled = false
-  public readPipedData = ReadPipedData
-  public readTextFile = ReadTextFile
 
   async init() {
     this.telemetryEnabled = (this.config.pjson.telemetry === undefined || this.config.pjson.telemetry === null) ? false : this.config.pjson.telemetry
@@ -53,6 +50,10 @@ export abstract class Command extends Base {
   async finally(_: Error | undefined) {
     Telemetry.flushTelemetry()
     process.stdin.destroy()
+  }
+
+  readStdin() {
+    return ReadPipedData.read()
   }
 
   trackEvent(msg: string, properties?: { [key: string]: any }) {

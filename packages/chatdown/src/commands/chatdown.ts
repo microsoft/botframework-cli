@@ -1,6 +1,5 @@
 import {flags} from '@oclif/command'
-import {CLIError, Command} from '@microsoft/bf-cli-command'
-
+import {CLIError, Command, utils} from '@microsoft/bf-cli-command'
 const chalk = require('chalk')
 const chatdown = require('../../utils/index')
 const fs = require('fs-extra')
@@ -74,14 +73,14 @@ export default class Chatdown extends Command {
     try {
       // Check if path passed in --chat
       if (args && args.length > 0) {
-        return this.readTextFile.read(args)
+        return utils.readTextFile(args)
       } else {
         //Check if piped data was sent
         const {stdin} = process
         if (stdin.isTTY) {
           return false
         } else {
-          return await this.readPipedData.read()
+          return await this.readStdin()
         }
       }
     } catch (err) {
@@ -106,7 +105,7 @@ export default class Chatdown extends Command {
             fileName = files[i].substr(files[i].lastIndexOf('/'))
           }
           fileName = fileName.split('.')[0]
-          let activities = await chatdown(await this.readTextFile.read(files[i]))
+          let activities = await chatdown(await utils.readTextFile(files[i]))
           let writeFile = `${outputDir}/${fileName}.transcript`
           await fs.ensureFile(writeFile)
           await fs.writeJson(writeFile, activities, {spaces: 2})
