@@ -1,5 +1,21 @@
 # Contribution guide
 
+## Steps to create a new plugin
+
+    1. Clone the repo by running 'git clone https://github.com/microsoft/botframework-cli.git'
+    2. Inside the project folder run 'npm run build'
+    3. Inside the packages folder(https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
+    4. Go to the folder created by the previous command and add @microsoft/bf-cli-command as a dependency in your package.json file
+    5. At the root level(https://github.com/microsoft/botframework-cli) run 'npm run build' to bootstrap the packages
+
+## Steps to create a new command
+    1. Inside the plugin folder run 'npx oclif command <command-name>'. 
+    	a. To add a subcommand use a colon separated format as follows: 
+    		<command-name:subcommand-name>
+    2. Replace the import 'import {Command, options} from '@oclif/command' line inside the newly created command with 'import {Command, options} from '@microsoft/bf-cli-command'
+    3. Add the type to the options property like this: static options: options.Input<any> = {}
+    4. Implement the run method
+
 ## General Guidelines
 
 ### Common Options Rules
@@ -96,20 +112,3 @@ CLI contribution Software Development Lifecycle is as follows:
 3. Implement. All code must be test-covered at > 90% coverage integrated into CI. 
 4. Schedule a team show & tell demo for introduction, feedback and fine tuning
 
-
-
-## Steps to create a new plugin
-
-    1. Clone the repo by running 'git clone https://github.com/microsoft/botframework-cli.git'
-    2. Inside the project folder run 'npm run build'
-    3. Inside the packages folder(https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
-    4. Go to the folder created by the previous command and add @microsoft/bf-cli-command as a dependency in your package.json file
-    5. At the root level(https://github.com/microsoft/botframework-cli) run 'npm run build' to bootstrap the packages
-
-## Steps to create a new command
-    1. Inside the plugin folder run 'npx oclif command <command-name>'. 
-    	a. To add a subcommand use a colon separated format as follows: 
-    		<command-name:subcommand-name>
-    2. Replace the import 'import {Command, options} from '@oclif/command' line inside the newly created command with 'import {Command, options} from '@microsoft/bf-cli-command'
-    3. Add the type to the options property like this: static options: options.Input<any> = {}
-    4. Implement the run method
