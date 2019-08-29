@@ -1,15 +1,9 @@
 import {Command, flags} from '@oclif/command'
 
-export default class Hello extends Command {
+export default class LuisTransformTocs extends Command {
   static description = 'describe the command here'
 
-  static examples = [
-    `$ oclif-example hello
-    hello world from ./src/hello.ts!
-    `,
-  ]
-
-  static flags: flags.Input<any> = {
+  static flags = {
     help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
     name: flags.string({char: 'n', description: 'name to print'}),
@@ -20,10 +14,10 @@ export default class Hello extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(Hello)
+    const {args, flags} = this.parse(LuisTransformTocs)
 
     const name = flags.name || 'world'
-    this.log(`hello ${name} from ./src/commands/hello.ts`)
+    this.log(`hello ${name} from /Users/axelsuarez/Documents/botframework-cli/packages/luisgen/src/commands/luis/transform/tocs.ts`)
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }
