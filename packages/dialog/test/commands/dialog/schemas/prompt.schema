@@ -1,0 +1,14 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/4.Future/schemas/component.schema",
+    "properties": {
+        "prompt": {
+            "$role": "lg"
+        },
+        "alternatePrompt": {
+            "$role": "lg"
+        }
+    },
+    "required": [
+        "prompt"
+    ]
+}

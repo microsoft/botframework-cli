@@ -55,8 +55,12 @@ module.exports = async function readContents(fileContents, args = {}) {
     args.users = [];
     let inHeader = true;
     for (let line of lines) {
+        // skip line if it is just a comment        
+        if(line.indexOf(">") === 0) continue;
+        
         // pick up settings from the first lines
         if (inHeader && configurationRegExp.test(line)) {
+             
             const [optionName, value, ...rest] = line.trim().split('=');
             if (rest.length) {
                 throw new Error('Malformed configurations options detected. Options must be in the format optionName=optionValue');

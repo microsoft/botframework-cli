@@ -1,0 +1,31 @@
+{
+    "name": "knowledgebase",
+    "className": "Knowledgebase",
+    "url": "/knowledgebases/{kbId}",
+    "operations": {
+        "replaceKnowledgebase": {
+            "name": "replaceKnowledgebase",
+            "method": "PUT",
+            "methodAlias": "replace",
+            "target": [
+                "kb",
+                "knowledgebase"
+            ],
+            "command": "qnamaker replace kb --in replaceKb.json --kbId <string>",
+            "pathFragment": "",
+            "params": [
+                {
+                    "type": "string",
+                    "name": "kbId",
+                    "in": "path",
+                    "required": true,
+                    "x-nullable": false,
+                    "description": "Knowledgebase id"
+                }
+            ],
+            "description": "Replace a knowledgebase contents with new contents",
+            "entityName": "replaceKb",
+            "entityType": "ReplaceKbDTO"
+        }
+    }
+}

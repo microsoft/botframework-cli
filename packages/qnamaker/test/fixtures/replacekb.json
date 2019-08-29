@@ -1,0 +1,13 @@
+{                                                                                                                                                                                                            
+    "qnAList": [                                                                                                                                                                                               
+        {                                                                                                                                                                                                        
+            "id": 1,                                                                                                                                                                                               
+            "answer": "Answer changed",                                                                                                                                                                                    
+            "source": "Manual.pdf",                                                                                                                                                                                    
+            "questions": [                                                                                                                                                                                         
+                "What is UNDP’s eRecruit system?"                                                                                                                                                                                          
+            ],                                                                                                                                                                                                     
+            "metadata": []                                                                                                                                                                                                      
+        }                                                                                                                                                                                                        
+    ]                                                                                                                                                                                                          
+}
