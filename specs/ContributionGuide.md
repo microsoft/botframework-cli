@@ -28,7 +28,7 @@
 * [--log|-l]  [quite|normal|verbose]: Control STDOUT log level. 
   * Default: normal. Plugin owner must respect quite mode; but verbose implementation is optional
 * Short form:
-  * Mandatory for common optoins: -i, -o, -r, -v, -h 
+  * Mandatory for common options: -i, -o, -r, -v, -h 
   * Suggested for frequent operations 
   * Optional otherwise
 
