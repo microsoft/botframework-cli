@@ -143,7 +143,7 @@ USAGE
 
 OPTIONS
   --kbid=kbid                        QnAMaker kbid to be set
-  --subscriptionkey=subscriptionkey  QnAMaker subscriptionkey to be set
+  --subscriptionkey=subscriptionkey  QnAMaker Ocp Apim subscription key to be set
 ```
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/qnamaker/set.ts)_
@@ -209,14 +209,14 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `bf qnamaker`
 
-QnA Maker CLI (Preview version)
+Provides access to QnA Maker commands
 
 ```
 USAGE
   $ bf qnamaker
 
 OPTIONS
-  -h, --help  Display QnA Maker CLI available commnads
+  -h, --help  Displays commands available for QnA Maker
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/index.ts)_
@@ -233,25 +233,23 @@ OPTIONS
   -h, --help                         qnamaker:create:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the endpoint Key value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
                                      the QNAMAKER_HOSTNAME environment variable.
 
   --in=in                            (required) The CreateKbDTO object to send in the body of the request.
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
+  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the kbId present in the config and
                                      the QNAMAKER_KBID environment variable.
 
   --name=name                        Name of the kb you want to create.
 
   --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
+                                     config value and the QNAMAKER_KBID environment variable.
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in 'Keys' under Resource Management section                                      for your Qna Maker cognitive service). Overrides the config value and the OCP-APIM-SUBSCRIPTION-KEY                                      environment variable.
 
   --wait                             Wait for the operation to complete.
 ```
@@ -270,22 +268,20 @@ OPTIONS
   -h, --help                         qnamaker:delete:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
   --force                            Do not prompt for confirmation, force the operation
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value in config and
                                      the QNAMAKER_HOSTNAME environment variable.
 
   --kbId=kbId                        (required) Knowledgebase id to be deleted
 
   --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
+                                     config values and the QNAMAKER_KBID environment variable.
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in 'Keys' under Resource Management section                                      for your Qna Maker cognitive service). Overrides the config value and the OCP-APIM-SUBSCRIPTION-KEY                                      environment variable.
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/delete/kb.ts)_
@@ -302,24 +298,20 @@ OPTIONS
   -h, --help                         qnamaker:export:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
   --environment=environment          (required) Specifies whether environment is Test or Prod.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
                                      the QNAMAKER_HOSTNAME environment variable.
 
   --kbId=kbId                        (required) Knowledgebase id to be exported.
 
-  --legacy                           Specifies if is a legacy knowlegebase.
-
   --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
+                                     config values and the QNAMAKER_KBID environment variable.
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in 'Keys' under Resource Management section                                      for your Qna Maker cognitive service). Overrides the config value and the OCP-APIM-SUBSCRIPTION-KEY                                      environment variable.
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/export/kb.ts)_
@@ -350,13 +342,13 @@ OPTIONS
   -h, --help                         qnamaker:get:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
   --environment=environment          Specifies whether environment is Test or Prod.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --kbId=kbId                        (required) Knowledgebase id to get metadata.
 
@@ -382,11 +374,11 @@ OPTIONS
   -h, --help                         qnamaker:get:operationdetails command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
                                      the QNAMAKER_KBID environment variable.
@@ -403,19 +395,6 @@ OPTIONS
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/operationdetails.ts)_
 
-## `bf qnamaker:init`
-
-Initializes the .qnamakerrc file with settings.
-
-```
-USAGE
-  $ bf qnamaker:init
-
-OPTIONS
-  -h, --help  qnamaker:init command help
-```
-
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/init.ts)_
 
 ## `bf qnamaker:list`
 
@@ -433,7 +412,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:list:alterations`
 
-Downloads all word alterations (synonyms) that have been automatically mined or added by the user.
+Downloads all word alterations (synonyms) that have been added by the user.
 
 ```
 USAGE
@@ -443,11 +422,11 @@ OPTIONS
   -h, --help                         qnamaker:list:alterations command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
                                      the QNAMAKER_KBID environment variable.
@@ -474,11 +453,11 @@ OPTIONS
   -h, --help                         qnamaker:list:endpointkeys command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
                                      the QNAMAKER_KBID environment variable.
@@ -505,11 +484,11 @@ OPTIONS
   -h, --help                         qnamaker:list:kbs command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname               Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
                                      the QNAMAKER_KBID environment variable.
@@ -536,11 +515,11 @@ OPTIONS
   -h, --help                         qnamaker:publish:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --kbId=kbId                        (required) Knowledgebase id to pubish.
 
@@ -556,7 +535,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:query`
 
-Query model for prediction
+Query model for fetching the answer from Kb for a query
 
 ```
 USAGE
@@ -566,12 +545,12 @@ OPTIONS
   -h, --help                         qnamaker:query command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
+                                     
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
                                      the QNAMAKER_KBID environment variable.
 
@@ -599,11 +578,11 @@ OPTIONS
   -h, --help                         qnamaker:refresh:endpoints command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
                                      the QNAMAKER_KBID environment variable.
@@ -636,7 +615,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:replace:alterations`
 
-Replaces word alterations (synonyms) for the KB with the give records.
+Replaces word alterations (synonyms) for the KB with the given records.
 
 ```
 USAGE
@@ -646,11 +625,11 @@ OPTIONS
   -h, --help                         qnamaker:replace:alterations command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --in=in                            (required) The WordAlterationsDTO object to send in the body of the request
 
@@ -679,11 +658,11 @@ OPTIONS
   -h, --help                         qnamaker:replace:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --in=in                            (required) The ReplaceKbDTO object to send in the body of the request
 
@@ -711,11 +690,11 @@ OPTIONS
   -h, --help                         qnamaker:update:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
+                                     KB settings page). Overrides the value present in config and the QNAMAKER_ENDPOINTKEY
                                      environment variable.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in config and
+                                     the QNAMAKER_HOSTNAME environment variable
 
   --in=in                            (required) The UpdateKbOperationDTO object to send in the body of the request.
 
