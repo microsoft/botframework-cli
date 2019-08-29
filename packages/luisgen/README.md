@@ -28,15 +28,34 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bf luis:transform:tocs [FILE]`](#bf-luistransformtocs-file)
+* [`bf luis:transform:tocs FILE CLASSNAME`](#bf-luistransformtocs-file-classname)
+* [`bf luis:transform:tots [FILE]`](#bf-luistransformtots-file)
 
-## `bf luis:transform:tocs [FILE]`
+## `bf luis:transform:tocs FILE CLASSNAME`
 
 describe the command here
 
 ```
 USAGE
-  $ bf luis:transform:tocs [FILE]
+  $ bf luis:transform:tocs FILE CLASSNAME
+
+OPTIONS
+  -d, --outFolder=outFolder  Output file name
+  -i, --in=in                Source LUIS application JSON file .OR. source .lu file
+  -l, --folder=folder        Source folder that contains .lu file(s)
+  -o, --out=out              Output file name
+  -s, --subFolder            Indicates if sub-folders need to be considered to file .lu file(s)
+```
+
+_See code: [src/commands/luis/transform/tocs.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/transform/tocs.ts)_
+
+## `bf luis:transform:tots [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bf luis:transform:tots [FILE]
 
 OPTIONS
   -f, --force
@@ -44,5 +63,5 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/luis/transform/tocs.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/transform/tocs.ts)_
+_See code: [src/commands/luis/transform/tots.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/transform/tots.ts)_
 <!-- commandsstop -->

@@ -1,11 +1,11 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
 import * as path from 'path'
 
-import {CSharpGenerator} from '../../../helpers/csharp-generator'
+import {TSGenerator} from '../../../helpers/ts-generator'
 
 const fs = require('fs-extra')
 
-export default class LuisTransformTocs extends Command {
+export default class LuisTransformTots extends Command {
   static description = 'describe the command here'
 
   static flags: flags.Input<any> = {
@@ -25,15 +25,7 @@ export default class LuisTransformTocs extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(LuisTransformTocs)
-    const dot_index = args.className.indexOf('.')
-    let space = 'Luis'
-
-    if (dot_index !== -1) {
-      space = args.className.substr(dot_index + 1)
-      args.className = args.className.substr(0, dot_index)
-    }
-
+    const {args, flags} = this.parse(LuisTransformTots)
     const app = await fs.readJSON(path.join('/Users/axelsuarez/Documents/botframework-cli/packages/luisgen', args.file))
 
     this.reorderEntities(app, 'entities')
@@ -45,8 +37,8 @@ export default class LuisTransformTocs extends Command {
 
     args.className = args.className || app.name.replace(' ', '_')
     flags.out = flags.out || './'
-    const description = `tocs ${args.name} ${space}.${args.className} -o ${__dirname}`
+    const description = `tots ${args.name} ${args.className} -o ${__dirname}`
 
-    await CSharpGenerator.generate(description, app, args.className, space, flags.out, this)
+    await TSGenerator.generate(description, app, args.className, flags.out, this)
   }
 }
