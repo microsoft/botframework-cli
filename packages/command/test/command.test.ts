@@ -91,7 +91,7 @@ describe('command', () => {
       if (error) console.log(`Error: ${error}`)
     }
   })
-  .do(output => expect(output.stdout).to.contain('No Input'))
+  .do(output => expect(output.stdout).to.contain('No input'))
   .it('should receive an error if there is no stdin input')
 
   fancy

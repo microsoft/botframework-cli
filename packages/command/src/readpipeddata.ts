@@ -4,7 +4,7 @@ const ReadPipedStdin = {
       const timer = setTimeout(async () => {
         clearTimeout(timer)
         if (input) return resolve(input)
-        reject(new Error('No Input'))
+        reject(new Error('No input'))
       }, 1000)
 
       let input = ''
@@ -22,7 +22,7 @@ const ReadPipedStdin = {
 
       stdin.on('error', err => {
         clearTimeout(timer)
-        reject(new Error(`No Input ${err}`))
+        reject(new Error(`No input ${err}`))
       })
 
     })
