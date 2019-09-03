@@ -66,7 +66,7 @@ describe('chatdown', () => {
 
     it('should prefix [chatdown] to stderr when --prefix is passed as an argument', done => {
         cp.exec(`echo bot=LuliBot | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
-            assert(stdout.startsWith(`[${pkg.name}]\n`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
+            assert(stdout.startsWith(`[${pkg.name}]`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
             done();
         });
     });
