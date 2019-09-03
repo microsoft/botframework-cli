@@ -5,7 +5,7 @@ const ReadPipedStdin = {
         clearTimeout(timer)
         if (input) return resolve(input)
         reject(new Error('No Input'))
-      }, 3000)
+      }, 1000)
 
       let input = ''
       const {stdin} = process
