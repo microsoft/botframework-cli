@@ -1,8 +1,9 @@
 import {Command} from '../src/command'
-import {CLIError, ExitError} from '@oclif/errors' 
+import {CLIError} from '@oclif/errors' 
 import {expect, fancy} from 'fancy-test'
 import ReadPipedStdin from '../src/readpipeddata'
-const assert = require('assert');
+import * as path from 'path';
+import utils from '../src/utils'
 
 describe('command', () => {
   fancy
@@ -70,7 +71,7 @@ describe('command', () => {
   .stdout()
   .do(async () => {
     try {
-      const resp = await ReadPipedStdin.read()
+      const resp: any = await ReadPipedStdin.read()
       if (resp) console.log(resp)
     } catch (error) {
       if (error) console.log(`Error: ${error}`)
@@ -78,5 +79,24 @@ describe('command', () => {
   })
   .do(output => expect(output.stdout).to.equal('test reading of piped data\n'))
   .it('should read and echo the stdin input')
+
+  fancy
+  .stdout()
+  .do(async () => {
+    class Test extends Command {
+      async run() {
+        try {
+          const simpleChatFile = path.join(__dirname, 'fixtures/cli.sample.chat')
+          const resp: any = await utils.readTextFile(simpleChatFile)
+          this.log(resp.toString())
+        } catch (error) {
+          if (error) this.log(`Error: ${error}`)
+        }
+      }
+    }
+    return Test.run([])
+  })
+  .do(output => expect(output.stdout).to.contain('LulaBot: Hello there!'))
+  .it('should read and echo the file contents')
 
 })
