@@ -58,15 +58,15 @@ describe('chatdown', () => {
     });
 
     it('should not prefix [chatdown] to stdout when --prefix is not passed as an argument', done => {
-        cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
+        cp.exec(`echo bot=LuliBot | node ./bin/run chatdown`, (error, stdout, stderr) => {
             assert.notEqual(stdout.startsWith(`[${pkg.name}]`), `It should not show the tag '[${pkg.name}]' when not using the argument --prefix`);
             done();
         });
     });
 
     it('should prefix [chatdown] to stderr when --prefix is passed as an argument', done => {
-        cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
-            assert(stderr.includes(`[${pkg.name}]`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
+        cp.exec(`echo bot=LuliBot | node ./bin/run chatdown --prefix`, (error, stdout, stderr) => {
+            assert(stdout.startsWith(`[${pkg.name}]\n`), `It should show the tag '[${pkg.name}]' when using the argument --prefix`);
             done();
         });
     });
