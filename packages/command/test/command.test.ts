@@ -1,7 +1,8 @@
 import {Command} from '../src/command'
 import {CLIError, ExitError} from '@oclif/errors' 
 import {expect, fancy} from 'fancy-test'
-let assert = require('assert');
+import ReadPipedStdin from '../src/readpipeddata'
+const assert = require('assert');
 
 describe('command', () => {
   fancy
@@ -10,7 +11,6 @@ describe('command', () => {
     const thrownError = new Error('failure')
     class Test extends Command {
         async run() {
-  
           throw new Error('failure')
         }
       }
@@ -26,7 +26,6 @@ describe('command', () => {
     const thrownError = new CLIError('failure')
     class Test extends Command {
         async run() {
-  
           throw new CLIError('failure')
         }
       }
@@ -65,5 +64,19 @@ describe('command', () => {
   })
   .do(output => expect(output.stdout).to.equal('No crash\n'))
   .it('Track Event should not crash')
+
+  fancy
+  .stdin('test reading of piped data')
+  .stdout()
+  .do(async () => {
+    try {
+      const resp = await ReadPipedStdin.read()
+      if (resp) console.log(resp)
+    } catch (error) {
+      if (error) console.log(`Error: ${error}`)
+    }
+  })
+  .do(output => expect(output.stdout).to.equal('test reading of piped data\n'))
+  .it('should read and echo the stdin input')
 
 })
