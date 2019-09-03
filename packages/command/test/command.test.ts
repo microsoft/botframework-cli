@@ -81,12 +81,26 @@ describe('command', () => {
   .it('should read and echo the stdin input')
 
   fancy
+  .stdin('')
+  .stdout()
+  .do(async () => {
+    try {
+      const resp: any = await ReadPipedStdin.read()
+      if (resp) console.log(resp)
+    } catch (error) {
+      if (error) console.log(`Error: ${error}`)
+    }
+  })
+  .do(output => expect(output.stdout).to.contain('No Input'))
+  .it('should receive an error if there is no stdin input')
+
+  fancy
   .stdout()
   .do(async () => {
     class Test extends Command {
       async run() {
         try {
-          const simpleChatFile = path.join(__dirname, 'fixtures/cli.sample.chat')
+          const simpleChatFile = path.join(__dirname, 'fixtures/cli.sample.txt')
           const resp: any = await utils.readTextFile(simpleChatFile)
           this.log(resp.toString())
         } catch (error) {
@@ -98,5 +112,25 @@ describe('command', () => {
   })
   .do(output => expect(output.stdout).to.contain('LulaBot: Hello there!'))
   .it('should read and echo the file contents')
+
+  fancy
+  .stdout()
+  .do(async () => {
+    class Test extends Command {
+      async run() {
+        try {
+          const simpleChatFile = path.join(__dirname, 'fixtures/xxx.txt')
+          const resp: any = await utils.readTextFile(simpleChatFile)
+          this.log(resp.toString())
+        } catch (error) {
+          if (error) this.log(`Error: ${error}`)
+        }
+      }
+    }
+    return Test.run([])
+  })
+  .do(output => expect(output.stdout).to.contain('Error'))
+  .it('should receive an error if file does not exist')
+
 
 })
