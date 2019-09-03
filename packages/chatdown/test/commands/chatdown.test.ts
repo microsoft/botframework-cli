@@ -73,7 +73,7 @@ describe('chatdown', () => {
 
     it('throw error if invalid path in argument', done => {
         cp.exec(`node ./bin/run chatdown --chat aaaaa`, (error, stdout, stderr) => {
-            assert(stderr.includes('no such file or directory'));
+            assert(stderr.includes('no such file or directory') || stderr.includes('error'));
             done();
         });
     });
