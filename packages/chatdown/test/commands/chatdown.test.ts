@@ -37,7 +37,7 @@ describe('chatdown', () => {
     });
 
     it('should read from file when chat file is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --chat ${path.join(__dirname, '../utils/cli.sample.chat')}`, (error, stdout) => {
+        cp.exec(`node ./bin/run chatdown --in ${path.join(__dirname, '../utils/cli.sample.chat')}`, (error, stdout) => {
             assert.doesNotThrow(() => JSON.parse(stdout));
             done();
         });
@@ -72,7 +72,7 @@ describe('chatdown', () => {
     });
 
     it('throw error if invalid path in argument', done => {
-        cp.exec(`node ./bin/run chatdown --chat aaaaa`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown --in aaaaa`, (error, stdout, stderr) => {
             assert(stderr.includes('no such file or directory') || stderr.includes('error'));
             done();
         });

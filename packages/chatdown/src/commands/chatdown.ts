@@ -12,14 +12,14 @@ export default class Chatdown extends Command {
 
   static examples = [`
   $ bf chatdown
-  $ bf chatdown --chat=./path/to/file/sample.chat
+  $ bf chatdown --in=./path/to/file/sample.chat
   $ bf chatdown -f ./test/utils/*.sample.chat -o ./
   $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static`]
 
   static flags = {
-    chat: flags.string({char: 'c', description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}),
+    in: flags.string({char: 'i', description: 'The path of the chat file to be parsed. If omitted, stdin will be used.'}),
     folder: flags.string({char: 'f', description: 'Path to directory and/or all subdirectories containing chat files to be processed all at once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the output to the current working directory. '}),
-    out_folder: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-f) will be placed.'}),
+    out: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-f) will be placed.'}),
     static: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
     prefix: flags.boolean({char: 'p', description: 'Prefix stdout with package name.'}),
     help: flags.help({char: 'h', description: 'Chatdown command help'})
@@ -38,7 +38,7 @@ export default class Chatdown extends Command {
 
       if (flags.folder) {
         let inputDir = flags.folder.trim()
-        let outputDir = (flags.out_folder) ? flags.out_folder.trim() : './'
+        let outputDir = (flags.out) ? flags.out.trim() : './'
         if (outputDir.substr(0, 2) === './') {
           outputDir = path.resolve(process.cwd(), outputDir.substr(2))
         }
@@ -50,7 +50,7 @@ export default class Chatdown extends Command {
         return
       }
 
-      let fileContents = await this.getInput(flags.chat)
+      let fileContents = await this.getInput(flags.in)
       if (fileContents) {
         const activities = await chatdown(fileContents, flags)
         const writeConfirmation = await this.writeOut(activities)
@@ -71,7 +71,7 @@ export default class Chatdown extends Command {
 
   private async getInput(args: any) {
     try {
-      // Check if path passed in --chat
+      // Check if path passed in --in
       if (args && args.length > 0) {
         return utils.readTextFile(args)
       } else {
