@@ -238,7 +238,7 @@ OPTIONS
 
   --in=in                            (required) The CreateKbDTO object to send in the body of the request.
 
-  --name=name                        Name of the kb you want to create.
+  --name=name                        Name of the kb you want to create. This will override the name of KB that might be present in the                                        CreateKb DTO
 
   --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
                                      config value.
