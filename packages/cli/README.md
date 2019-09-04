@@ -352,7 +352,7 @@ OPTIONS
 
   --operationId=operationId          (required) Operation id.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin.Overrides the value present in the                                            config
+  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the value present in the                                            config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
                                      Services Azure portal page under "access keys"). Overrides the value present in the config
@@ -480,7 +480,7 @@ OPTIONS
                                      
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the value present in the config
   
-  --question=question                (required) Query to get a prediction for.
+  --question=question                (required) Query to get a answer for.
 
   --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the value present in th                                            config
 ```
