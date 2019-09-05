@@ -43,8 +43,6 @@ OPTIONS
 
   -r, --recurs					If processing folder, will recurs down. Optional
 
-  -h, --help                       This help
-
   -s, --stamp [datetime]  If [datetime] not specified, stamps the file with local time. Optional
 
 ​										 if specified, [datetime] must be in format s:dd-mm-yyyyThhmmssz   
