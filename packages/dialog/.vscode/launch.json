@@ -40,6 +40,22 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Dialog Form Tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "cwd":"${workspaceFolder}",
+            "args": [
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/test/commands/dialog/form.test.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },    
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceFolder}\\bin\\run",
             "preLaunchTask": "tsc: build - tsconfig.json",

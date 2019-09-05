@@ -1,0 +1,12 @@
+> This file contains the generic templates to use for properties of particular types.
+> It is copied to the output because it has the locale in it.
+> They are called by property specific .lg files.
+
+> TODO: We should look at the schema and if a few items list them or do cards or..
+# askEnum(property)
+- Which value do you want for {tolower(property)}?
+
+> TODO: We should use min/max from schema if present to indicate the range
+# askNumber(property)
+- Enter a number for {tolower(property)}
+
