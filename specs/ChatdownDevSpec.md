@@ -45,9 +45,11 @@ OPTIONS
 
   -h, --help                       This help
 
-  -s, --stamp [value]       If value not specified, stamps the file with local time. Optional
+  -s, --stamp [datetime]  If [datetime] not specified, stamps the file with local time. Optional
 
-​										 Stamp value may be any 32 length string ([a-zA-Z0-9\-_\.:])
+​										 if specified, [datetime] must be in format s:dd-mm-yyyyThhmmssz   
+
+​										(example: s:07-10-2018T130000z)
 
 
 
