@@ -57,12 +57,12 @@ OPTIONS
 
 **Command Group:** Chatdown
 
-| Sub-Command | Options     | Old Command  | Comments                |
-| ----------- | ----------- | ------------ | ----------------------- |
-|             | -i, --in    | -c, --chat   |                         |
-|             | -o, --out   | -f, --folder |                         |
-|             | -s, --stamp | -s, --static |                         |
-|             |             | -p, --prefix | global default behavior |
+| Sub-Command | Options     | Old Command                    | Comments                              |
+| ----------- | ----------- | ------------------------------ | ------------------------------------- |
+|             | -i, --in    | -c, --chat                     |                                       |
+|             | -o, --out   | -f, --folder, -o, --out_folder | Combined out, and folder, auto-detect |
+|             | -s, --stamp | -s, --static                   |                                       |
+|             |             | -p, --prefix                   | global default behavior               |
 
 All standard BF commands are respected (e.g. -h, -?, --help, -v, --version, --quite, --log...)
 
