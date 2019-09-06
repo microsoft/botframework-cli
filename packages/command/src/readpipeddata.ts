@@ -1,15 +1,19 @@
 const ReadPipedStdin = {
   read: async () => {
     return new Promise(async (resolve, reject) => {
+      let input = ''
+      const {stdin} = process
+      stdin.setEncoding('utf8')
+
+      if (stdin.isTTY) {
+        return reject()
+      }
+
       const timer = setTimeout(async () => {
         clearTimeout(timer)
         if (input) return resolve(input)
         reject(new Error('No input'))
       }, 1000)
-
-      let input = ''
-      const {stdin} = process
-      stdin.setEncoding('utf8')
 
       stdin.on('data', chunk => {
         input += chunk
