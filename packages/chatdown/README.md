@@ -38,11 +38,9 @@ USAGE
   $ bf chatdown
 
 OPTIONS
-  -i, --in=in              The path of the chat file to be parsed. If omitted, stdin will be used.
-
-  -f, --folder=folder          Path to directory and/or all subdirectories containing chat files to be processed all at
-                               once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the
-                               output to the current working directory.
+  -i, --in=in                  The path of the chat file or directory to be parsed. A glob expression may be passed containing 
+                               chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. 
+                               If an output directory is not present (-o), it will default the output to the current working directory.
 
   -h, --help                   Chatdown command help
 
@@ -57,7 +55,7 @@ EXAMPLE
 
      $ bf chatdown
      $ bf chatdown --in=./path/to/file/sample.chat
-     $ bf chatdown -f ./test/utils/*.sample.chat -o ./
+     $ bf chatdown --in ./test/utils/*.sample.chat -o ./
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
