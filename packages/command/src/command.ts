@@ -53,7 +53,11 @@ export abstract class Command extends Base {
   }
 
   readStdin() {
-    return ReadPipedData.read()
+    try {
+      return ReadPipedData.read()
+    } catch (error) {
+      throw new CLIError(error)
+    }
   }
 
   trackEvent(msg: string, properties?: { [key: string]: any }) {
