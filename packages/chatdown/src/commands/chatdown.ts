@@ -13,7 +13,7 @@ export default class Chatdown extends Command {
   static examples = [`
   $ bf chatdown
   $ bf chatdown --in=./path/to/file/sample.chat
-  $ bf chatdown -f ./test/utils/*.sample.chat -o ./
+  $ bf chatdown --in ./test/utils/*.sample.chat -o ./
   $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static`]
 
   static flags = {
