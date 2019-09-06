@@ -38,7 +38,7 @@ USAGE
   $ bf chatdown
 
 OPTIONS
-  -c, --chat=chat              The path of the chat file to be parsed. If omitted, stdin will be used.
+  -i, --in=in              The path of the chat file to be parsed. If omitted, stdin will be used.
 
   -f, --folder=folder          Path to directory and/or all subdirectories containing chat files to be processed all at
                                once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the
@@ -46,7 +46,7 @@ OPTIONS
 
   -h, --help                   Chatdown command help
 
-  -o, --out_folder=out_folder  Path to the directory where the output of the multiple chat file processing (-f) will be
+  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-f) will be
                                placed.
 
   -p, --prefix                 Prefix stdout with package name.
@@ -56,7 +56,7 @@ OPTIONS
 EXAMPLE
 
      $ bf chatdown
-     $ bf chatdown --chat=./path/to/file/sample.chat
+     $ bf chatdown --in=./path/to/file/sample.chat
      $ bf chatdown -f ./test/utils/*.sample.chat -o ./
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```

@@ -78,7 +78,7 @@ export default class Chatdown extends Command {
 
   private async getInput(args: any) {
     try {
-      // Check if path passed in --chat
+      // Check if path passed in --in
       if (args && args.length > 0) {
         return utils.readTextFile(args)
       } else {
