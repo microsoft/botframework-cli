@@ -13,6 +13,7 @@ export default class LuisConvert extends Command {
     in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model', required: true}),
     recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
+    sort: flags.boolean({description: 'When set, intent, utterances, entities are alphabetically sorted in .lu files', default: false}),
     out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output'}),
     name: flags.string({description: 'Name of the LUIS application'}),
     description: flags.string({description: 'Text describing the LUIS applicaion'}),
@@ -37,7 +38,7 @@ export default class LuisConvert extends Command {
         let luFiles = await this.getLuFiles(flags.in, flags.recurse)
         result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
       } else {
-        result = await luisConverter.parseLuisToLu(flags.in)
+        result = await luisConverter.parseLuisFileToLu(flags.in, flags.sort)
       }
 
       // If result is null or undefined return
@@ -99,7 +100,7 @@ export default class LuisConvert extends Command {
     } catch (err) {
       throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
     }
-    this.log('Successfully wrote LUIS model to ' + filePath + '\n')
+    this.log('Successfully wrote LUIS model to ' + filePath)
   }
 
   private async generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean): Promise<string> {

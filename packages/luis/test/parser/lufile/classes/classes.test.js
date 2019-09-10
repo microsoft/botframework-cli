@@ -10,7 +10,7 @@ const QnAList = require('./../../../../parser/lufile/classes/qnaList');
 const QnAMetadata = require('./../../../../parser/lufile/classes/qnaMetaData');
 const hClasses = require('./../../../../parser/lufile/classes/hclasses');
 
-xdescribe('Testing all classes', function() {
+describe('Testing all classes', function() {
     describe('Exception class', function() {
         it('can create a new instance from a valid object', function() {
             let testData = {

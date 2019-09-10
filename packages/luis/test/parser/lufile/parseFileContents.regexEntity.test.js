@@ -12,7 +12,7 @@ const translateHelpers = require('./../../../parser/lufile/translate-helpers');
 const TRANSLATE_KEY = process.env.TRANSLATOR_KEY;
 const helpers = require('./../../../parser/lufile/helpers');
 const NEWLINE = require('os').EOL;
-const validateLUISModel = require('./../../../parser/lufile/parseFileContents').validateLUISBlob;
+const validateLUISModel = require('./../../../parser/luisfile/parseLuisFile').validateLUISBlob;
 function sanitizeContent(fileContent) {
     let escapedExampleNewLine = JSON.stringify('\r\n').replace(/"/g, '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
     let escapedNewLine = JSON.stringify(NEWLINE).replace(/"/g, '');

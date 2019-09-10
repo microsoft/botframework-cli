@@ -1,6 +1,6 @@
 const lu = require('./lumerger')
 const deepEqual = require('deep-equal')
-const parseFileContents = require('./../lufile/parseFileContents')
+const luisJSON = require('./../luisfile/parseLuisFile')
 const retCode = require('./../lufile/enums/CLI-errors')
 const helpers = require('./../lufile/helpers')
 const exception = require('./../lufile/classes/exception')
@@ -14,7 +14,7 @@ module.exports = {
             // pass only files that need to be collated.
             let finalLUISJSON  = await this.collateLUISFiles(allParsedContent.LUISContent.filter(item => item.includeInCollate))
             if (haveLUISContent(finalLUISJSON)) {
-                await parseFileContents.validateLUISBlob(finalLUISJSON)
+                await luisJSON.validateLUISBlob(finalLUISJSON)
             }
             return finalLUISJSON
         } catch (err) {

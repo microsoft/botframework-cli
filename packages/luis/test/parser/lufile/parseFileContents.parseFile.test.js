@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 const parseFile = require('./../../../parser/lufile/parseFileContents');
+const validateLUISBlob = require('./../../../parser/luisfile/parseLuisFile').validateLUISBlob;
 var chai = require('chai');
 var assert = chai.assert;
 describe('With helper functions', function () {
@@ -15,7 +16,7 @@ $commPreference:call=
 - phone call`;
                 parseFile.parseFile(luFile, false, 'en-us')
                         .then(function (parsedContent) {
-                                parseFile.validateLUISBlob(parsedContent.LUISJsonStructure)
+                                validateLUISBlob(parsedContent.LUISJsonStructure)
                                         .then(() => done('Test fail. validateLUISBlob did not throw when expected!'))
                                         .catch(() => done())
                         })
@@ -30,7 +31,7 @@ $commPreference:phraseList
 - m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix`;
                 parseFile.parseFile(luFile, false, 'en-us')
                         .then(function (parsedContent) {
-                                parseFile.validateLUISBlob(parsedContent.LUISJsonStructure)
+                                validateLUISBlob(parsedContent.LUISJsonStructure)
                                         .then(() => done())
                                         .catch(() => done('Test fail. validateLUISBlob did not throw when expected!'))
                         })

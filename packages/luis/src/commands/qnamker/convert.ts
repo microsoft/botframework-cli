@@ -13,6 +13,7 @@ export default class QnamkerConvert extends Command {
     in: flags.string({description: 'Source .qna file(s) or QnA KB JSON file', required: true}),
     alterations: flags.boolean({description: 'Indicates if files is QnA Alterations'}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
+    sort: flags.boolean({description: 'When set, questions collections are alphabetically sorted are alphabetically sorted in .lu files', default: false}),
     recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .qna file(s)'}),
     out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output'}),
     name: flags.string({description: 'Name of the QnA KB'}),
@@ -35,7 +36,7 @@ export default class QnamkerConvert extends Command {
         let luFiles = await this.getLuFiles(flags.in, flags.recurse)
         result = await luConverter.parseQnaToJson(luFiles, false, flags.luis_culture)
       } else {
-        result = await qnaConverter.parseQnAToLu(flags.in, flags.alterations)
+        result = await qnaConverter.parseQnAToLu(flags.in, flags.alterations, flags.sort)
       }
 
       // If result is null or undefined return
@@ -102,7 +103,7 @@ export default class QnamkerConvert extends Command {
     } catch (err) {
       throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
     }
-    this.log('Successfully wrote QnA model to ' + filePath + '\n')
+    this.log('Successfully wrote QnA model to ' + filePath)
   }
 
   private async generateNewFilePath(outFileName: string, inputfile: string, isQnA: boolean, isAlterations: boolean): Promise<string> {

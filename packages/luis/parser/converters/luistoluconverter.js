@@ -3,10 +3,30 @@ const luisFile = require('./../luisfile/parseLuisFile')
 const helperClasses = require('./../lufile/classes/hclasses')
 
 module.exports = {
-    parseLuisToLu: async function(file) {
+    parseLuisFileToLu: async function(file, sort) {
         let LUISJSON = new helperClasses.readerObject()
         LUISJSON.model = await luisFile.parseLuisJson(file)
         LUISJSON.sourceFile = file
+        if (sort) {
+            await sortLUISJSON(LUISJSON.model)
+        }
+        return await this.constructMdFileHelper(LUISJSON)
+    },
+    parseLuisObjectToLu: async function(luisObjectString, sort) {
+        let LUISJSON = new helperClasses.readerObject()
+        let parsedJsonFromStdin
+        try {
+            parsedJsonFromStdin = JSON.parse(luisObjectString)
+        } catch (err) {
+            throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, unable to parse stdin as JSON! \n\n ${JSON.stringify(err, null, 2)}\n\n`));
+        }
+        // if validation did not throw, then ground this as valid LUIS JSON
+        LUISJSON.model = parsedJsonFromStdin;
+        LUISJSON.sourceFile = 'stdin';
+  
+        if (sort) {
+            await sortLUISJSON(LUISJSON.model)
+        }
         return await this.constructMdFileHelper(LUISJSON)
     },
     /**
@@ -258,4 +278,13 @@ const sortLUISJSON = async function(LUISJSON) {
     LUISJSON.patternAnyEntities.sort(sortComparers.compareNameFn);
     LUISJSON.prebuiltEntities.sort(sortComparers.compareNameFn);
     LUISJSON.utterances.sort(sortComparers.compareIntentFn);
+}
+
+const sortComparers = {   
+    compareNameFn : function(a, b) {
+        return a.name.toUpperCase() > b.name.toUpperCase();
+    },    
+    compareIntentFn : function(a, b) {
+        return a.intent.toUpperCase() > b.intent.toUpperCase();
+    }
 }

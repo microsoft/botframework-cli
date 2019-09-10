@@ -397,3 +397,16 @@ describe('luis:convert VA skill lu files', () => {
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])})
 })
 
+xdescribe('luis:convert sort option enabled', () => {
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../root.lu'))
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all.json')}`, '--out', 'root.lu', '--sort'])
+  .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model', async () => {
+    expect(await compareLuFiles('./../../../root.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
+  })
+})
+

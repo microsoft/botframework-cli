@@ -40,16 +40,14 @@ describe('qnamker:convert', () => {
     })
 
     test
-    .stdout()
     .command(['qnamker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', 'qna.lu'])
-    .it('qnamker:convert refresh command successfully reconstructs a markdown file from QnA input file', async (ctx) => {
+    .it('qnamker:convert refresh command successfully reconstructs a markdown file from QnA input file', async () => {
       expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/allGenQnA.lu')).to.be.true
     })
 
     test
-    .stdout()
     .command(['qnamker:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/all.lu')}`, '--out', 'qna.json', '--name', 'all-qna'])
-    .it('qnamker:convert all concepts of lu file definition is parsed correctly  [QnA]', async (ctx) => {
+    .it('qnamker:convert all concepts of lu file definition is parsed correctly  [QnA]', async () => {
       let parsedObjects = await parseJsonFiles('./../../../qna.json', './../../fixtures/verified/all-qna.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
@@ -71,7 +69,7 @@ describe('qnamker:convert', () => {
     test
     .stderr()
     .command(['qnamker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', 'qna.json', '--name', 'collate-qna'])
-    .it('qnamker:convert Collate can correctly merge QnA content split across LU files', async (ctx) => {
+    .it('qnamker:convert Collate can correctly merge QnA content split across LU files', async () => {
       let parsedObjects = await parseJsonFiles('./../../../qna.json', './../../fixtures/verified/collate-qna.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
@@ -79,8 +77,33 @@ describe('qnamker:convert', () => {
     test
     .stderr()
     .command(['qnamker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', 'qna.json'])
-    .it('qnamker:convert Collate can correctly merge QnA word alteration content split across LU files', async (ctx) => {
+    .it('qnamker:convert Collate can correctly merge QnA word alteration content split across LU files', async () => {
       let parsedObjects = await parseJsonFiles('./../../../alterations_qna.json', './../../fixtures/verified/collate_Alterations.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 })
+
+xdescribe('qnamker:convert with --sort option', () => {
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../qna.lu'))
+  })
+
+  test
+  .stderr()
+  .command(['qnamker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all_qna.json')}`, '--out', 'qna.lu', '--sort'])
+  .it('qnamker:convert With -r/ --sort option, correctly sorts a QnA model', async () => {
+    expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/qna_sorted.lu')).to.be.true
+  })
+
+  test
+  .stderr()
+  .command(['qnamker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-alterations_Alterations.json')}`, '--out', 'qna.lu', '--sort'])
+  .it('qnamker:convert With -r/ --sort option, correctly sorts a QnA Alteration model', async () => {
+    expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/qna_a_sorted.lu')).to.be.true
+  })
+})
+
+
+
+
+

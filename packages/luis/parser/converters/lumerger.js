@@ -12,6 +12,7 @@ const parserObject = require('./../lufile/classes/parserObject');
 const txtfile = require('./../lufile/read-text-file');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 const LUISObjNameEnum = require('./../lufile/enums/luisobjenum');
+const luisJSON = require('./../luisfile/parseLuisFile');
 
 
 module.exports = {
@@ -41,7 +42,7 @@ const getAgregatedDataFromLuFiles = async function (filesToParse, log, luis_cult
         parsedFiles.push(file);
         try {
             if (haveLUISContent(parsedContent.LUISJsonStructure)
-                && await parseFileContents.validateLUISBlob(parsedContent.LUISJsonStructure)) {
+                && await luisJSON.validateLUISBlob(parsedContent.LUISJsonStructure)) {
                 allParsedLUISContent.push(parserObject.create(parsedContent.LUISJsonStructure, undefined, undefined, file, filesToParse[0].includeInCollate));
             }
         } catch (err) {
@@ -301,3 +302,4 @@ const resolveReferencesInUtterances = async function(allParsedContent) {
         })
     })
 }
+
