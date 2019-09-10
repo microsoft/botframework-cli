@@ -4,8 +4,8 @@
  */
 
 import { Command, flags } from '@microsoft/bf-cli-command';
-import * as os from 'os';
-import * as ft from '../../library/formTracker'
+import * as fs from '../../library/formSchema'
+import * as gen from '../../library/formGenerator'
 import * as path from 'path'
 let util: any = require('util')
 
@@ -33,10 +33,10 @@ export default class DialogForm extends Command {
                 outDir = path.join(schemaName + "-resources")
             }
             this.progress(`Generating resources for ${args.schema} in ${outDir}`)
-            let schema = await ft.FormSchema.readSchema(args.schema)
-            await schema.generate(outDir, flags.locale, flags.templates, flags.force,
+            let schema = await fs.FormSchema.readSchema(args.schema)
+            await gen.generate(schema, outDir, flags.locale, flags.templates, flags.force,
                 (type, msg) => {
-                    if (type == ft.FeedbackType.error || (type == ft.FeedbackType.info && flags.verbose)) {
+                    if (type == gen.FeedbackType.error || (type == gen.FeedbackType.info && flags.verbose)) {
                         this.progress(msg)
                     } 
                     return true

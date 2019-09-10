@@ -253,6 +253,10 @@
         "version": "b040cc8b4fd1b9d0a74b4dad292fb1554c66ccef626abca4798f532d084a3975",
         "signature": "b040cc8b4fd1b9d0a74b4dad292fb1554c66ccef626abca4798f532d084a3975"
       },
+      "./src/library/formschema.ts": {
+        "version": "fc9c0b361fda2b88efada414df965d4b28a8a13ef30e49d31b8a86896edc440d",
+        "signature": "3c9b5b405afce900a943eeb6b6262aba5e15416c93a7cf108b433b0a8166f101"
+      },
       "./node_modules/@types/node/globals.d.ts": {
         "version": "6062bf0c69f8a4bb7f5bb817634899e94fbe74822e59187584a50277215d6dfc",
         "signature": "6062bf0c69f8a4bb7f5bb817634899e94fbe74822e59187584a50277215d6dfc"
@@ -437,14 +441,6 @@
         "version": "02f8dc4777a4efb7efdc6613659540925b2a5660b483f9fa12cbc1b3ddef6050",
         "signature": "02f8dc4777a4efb7efdc6613659540925b2a5660b483f9fa12cbc1b3ddef6050"
       },
-      "./src/library/formtracker.ts": {
-        "version": "dda31926c6b642683f10e737ecc35c8611f288984612b38b89ccd1491d3c0034",
-        "signature": "157f7fd722ba62f35eb4683aa45e7e79dea2aafd61d2aa0da7c7fbc748f4992b"
-      },
-      "./src/commands/dialog/form.ts": {
-        "version": "d5e55ad3c6f02a66400c001bb8b32254ff4ee2b5a2bbb8908da07a768b9de856",
-        "signature": "602e48f54671a72a71fe32dae6433f824e12f65b8529686b1d1c165b91c95c8c"
-      },
       "./node_modules/@types/minimatch/index.d.ts": {
         "version": "1d1e6bd176eee5970968423d7e215bfd66828b6db8d54d17afec05a831322633",
         "signature": "1d1e6bd176eee5970968423d7e215bfd66828b6db8d54d17afec05a831322633"
@@ -476,6 +472,14 @@
       "./node_modules/globby/index.d.ts": {
         "version": "ba8f7fdc64f8cf2852b71452f5d5f73908d6ec7f8b6b9734eca59195dbe5ebf3",
         "signature": "ba8f7fdc64f8cf2852b71452f5d5f73908d6ec7f8b6b9734eca59195dbe5ebf3"
+      },
+      "./src/library/formgenerator.ts": {
+        "version": "32370a29a0d5f9f745b57c610dcc7fc47ea8cb512df273cd6431a0497018aa03",
+        "signature": "cdc83e1a71dd75f044cb359547b081b39190b0cb646a3e0e5e9bdb427bedc260"
+      },
+      "./src/commands/dialog/form.ts": {
+        "version": "c427e099458d89e2f98b5fc73310e769febe0c9116b2de7f3707fcd79d2efb8e",
+        "signature": "602e48f54671a72a71fe32dae6433f824e12f65b8529686b1d1c165b91c95c8c"
       },
       "./node_modules/@types/semver/index.d.ts": {
         "version": "f5bb797c1e6ddbbe8fa03d68adc329946813f04d74743ad9f1c5b3957c1277c4",
@@ -895,6 +899,13 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./src/library/formschema.ts": [
+        "./src/library/formschema.ts",
+        "./node_modules/ajv/lib/ajv.d.ts",
+        "./node_modules/@types/node/os.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "./node_modules/@types/node/globals.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -1169,23 +1180,6 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./src/library/formtracker.ts": [
-        "./src/library/formtracker.ts",
-        "./node_modules/ajv/lib/ajv.d.ts",
-        "./node_modules/@types/fs-extra/index.d.ts",
-        "./node_modules/@types/node/os.d.ts",
-        "./node_modules/@types/node/path.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "./src/commands/dialog/form.ts": [
-        "../command/lib/index.d.ts",
-        "./node_modules/@types/node/os.d.ts",
-        "./src/library/formtracker.ts",
-        "./node_modules/@types/node/path.d.ts",
-        "./node_modules/@types/node/util.d.ts",
-        "./node_modules/@types/node/ts3.2/util.d.ts"
-      ],
       "./node_modules/@types/minimatch/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -1230,6 +1224,25 @@
       "./node_modules/globby/index.d.ts": [
         "./node_modules/@types/glob/index.d.ts",
         "./node_modules/fast-glob/index.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/library/formgenerator.ts": [
+        "./src/library/formgenerator.ts",
+        "./src/library/formschema.ts",
+        "./node_modules/@types/fs-extra/index.d.ts",
+        "./node_modules/globby/index.d.ts",
+        "./node_modules/@types/node/os.d.ts",
+        "./node_modules/@types/node/path.d.ts",
+        "./node_modules/@types/node/fs.d.ts",
+        "./node_modules/@types/node/util.d.ts",
+        "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/commands/dialog/form.ts": [
+        "../command/lib/index.d.ts",
+        "./src/library/formschema.ts",
+        "./src/library/formgenerator.ts",
+        "./node_modules/@types/node/path.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1813,6 +1826,9 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./src/library/formschema.ts": [
+        "./src/library/formschema.ts"
+      ],
       "./node_modules/@types/node/globals.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -2087,12 +2103,6 @@
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./src/library/formtracker.ts": [
-        "./src/library/formtracker.ts"
-      ],
-      "./src/commands/dialog/form.ts": [
-        "../command/lib/index.d.ts"
-      ],
       "./node_modules/@types/minimatch/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
@@ -2139,6 +2149,13 @@
         "./node_modules/fast-glob/index.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/library/formgenerator.ts": [
+        "./src/library/formgenerator.ts",
+        "./src/library/formschema.ts"
+      ],
+      "./src/commands/dialog/form.ts": [
+        "../command/lib/index.d.ts"
       ],
       "./node_modules/@types/semver/index.d.ts": [
         "./node_modules/@types/node/util.d.ts",
@@ -2402,8 +2419,7 @@
       ]
     },
     "semanticDiagnosticsPerFile": [
-      "./src/library/formtracker.ts",
-      "./src/commands/dialog/form.ts",
+      "./src/library/formgenerator.ts",
       "./node_modules/typescript/lib/lib.es5.d.ts",
       "./node_modules/typescript/lib/lib.es2015.d.ts",
       "./node_modules/typescript/lib/lib.es2016.d.ts",
@@ -2467,6 +2483,7 @@
       "../command/lib/index.d.ts",
       "./src/commands/index.ts",
       "./node_modules/ajv/lib/ajv.d.ts",
+      "./src/library/formschema.ts",
       "./node_modules/@types/node/globals.d.ts",
       "./node_modules/@types/node/assert.d.ts",
       "./node_modules/@types/node/async_hooks.d.ts",
@@ -2521,6 +2538,7 @@
       "./node_modules/fast-glob/out/managers/tasks.d.ts",
       "./node_modules/fast-glob/index.d.ts",
       "./node_modules/globby/index.d.ts",
+      "./src/commands/dialog/form.ts",
       "./node_modules/@types/semver/index.d.ts",
       "./node_modules/@types/xml2js/lib/processors.d.ts",
       "./node_modules/@types/xml2js/index.d.ts",

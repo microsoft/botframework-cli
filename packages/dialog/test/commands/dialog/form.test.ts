@@ -11,7 +11,8 @@ import 'mocha'
 import * as os from 'os'
 import * as ppath from 'path'
 import DialogForm from '../../../src/commands/dialog/form'
-import * as ft from '../../../src/library/formTracker'
+import * as ft from '../../../src/library/formSchema'
+import * as gen from '../../../src/library/formGenerator'
 import { fail } from 'assert';
 
 describe('dialog:form', async () => {
@@ -47,7 +48,7 @@ describe('dialog:form', async () => {
     it("Generation", async () => {
         try {
             let schema = await ft.FormSchema.readSchema(schemaPath)
-            await schema.generate(output)
+            await gen.generate(schema, output, ["en-us"])
         }
         catch (e) {
             fail(e.message)
