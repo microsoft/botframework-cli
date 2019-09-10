@@ -13,7 +13,8 @@
     "intercept-stdout": "^0.1.2",
     "node-fetch": "^2.1.2",
     "semver": "^5.5.1",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "antlr4": "^4.7.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -57,7 +58,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.**\"",
     "version": "oclif-dev readme && git add README.md"
   }
 }
