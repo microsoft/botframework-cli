@@ -5,7 +5,7 @@
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
-[​![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-dialog.svg](https://npmjs.org/package/@microsoft/bf-dialog)
+[​![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-dialog.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
 
 <!-- toc -->
