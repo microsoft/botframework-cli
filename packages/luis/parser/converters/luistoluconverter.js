@@ -4,6 +4,8 @@ const path = require('path')
 const txtfile = require('./../lufile/read-text-file')
 const luisFile = require('./../luisfile/parseLuisFile')
 const helperClasses = require('./../lufile/classes/hclasses')
+const exception = ('./../lufile/classes/exception')
+const retCode = require('./../lufile/enums/CLI-errors')
 
 module.exports = {
     parseLuisFileToLu: async function(file, sort) {
@@ -175,6 +177,10 @@ module.exports = {
 const parseLuis = async function(luisObject, src, sort){
     let LUISJSON = new helperClasses.readerObject()
     LUISJSON.model = await luisFile.parseLuisJson(luisObject)
+
+    if (!LUISJSON.model) {
+        throw (new exception(retCode.errorCode.FILE_OPEN_ERROR, 'No input Luis content found  '));
+    }
     LUISJSON.sourceFile = src
     if (sort) {
         await sortLUISJSON(LUISJSON.model)

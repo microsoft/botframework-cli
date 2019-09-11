@@ -4,6 +4,8 @@ const path = require('path')
 const txtfile = require('./../lufile/read-text-file')
 const qnaFile = require('./../qnafile/parseQnAFile')
 const helperClasses = require('./../lufile/classes/hclasses')
+const exception = ('./../lufile/classes/exception')
+const retCode = require('./../lufile/enums/CLI-errors')
 
 module.exports = {
     parseQnAFileToLu: async function(file, sort, isAlterations) {
@@ -89,7 +91,7 @@ const parseQnA= async function(qnaObject, src, sort, isAlterations){
     QnAJSON.sourceFile = src
 
     if (!QnAJSON.model) {
-        return
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'No input QnA content found '));
     }
 
     if (sort) {

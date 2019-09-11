@@ -1,6 +1,3 @@
-const fs = require('fs-extra')
-const path = require('path')
-const txtfile = require('./../lufile/read-text-file')
 const exception = ('./../lufile/classes/exception')
 const helpers = require('./../lufile/helpers');
 const retCode = require('./../lufile/enums/CLI-errors');
