@@ -254,7 +254,7 @@
         "signature": "b040cc8b4fd1b9d0a74b4dad292fb1554c66ccef626abca4798f532d084a3975"
       },
       "./src/library/formschema.ts": {
-        "version": "fc9c0b361fda2b88efada414df965d4b28a8a13ef30e49d31b8a86896edc440d",
+        "version": "c2b186b87b66c311cd100a399cbd1286336270dc43a44bc7823a0c4a049f733c",
         "signature": "3c9b5b405afce900a943eeb6b6262aba5e15416c93a7cf108b433b0a8166f101"
       },
       "./node_modules/@types/node/globals.d.ts": {
@@ -474,7 +474,7 @@
         "signature": "ba8f7fdc64f8cf2852b71452f5d5f73908d6ec7f8b6b9734eca59195dbe5ebf3"
       },
       "./src/library/formgenerator.ts": {
-        "version": "32370a29a0d5f9f745b57c610dcc7fc47ea8cb512df273cd6431a0497018aa03",
+        "version": "4fbd1527339a9fb7e881fb77dc4a0693b589742fbd16ecd0c045953df98741fa",
         "signature": "cdc83e1a71dd75f044cb359547b081b39190b0cb646a3e0e5e9bdb427bedc260"
       },
       "./src/commands/dialog/form.ts": {

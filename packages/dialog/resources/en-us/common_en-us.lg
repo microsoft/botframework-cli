@@ -2,23 +2,22 @@
 > It is copied to the output because it has the locale in it.
 > They are called by property specific .lg files.
 
+>>> Ask prompts <<<
+
 > TODO: We should look at the schema and if a few items list them or do cards or..
 # askEnum(property)
-- Which value do you want for {tolower(property)}?
+- Which value do you want for {toLower(property)}?
 
-> TODO: We should use min/max from schema if present to indicate the range
 # askNumber(property)
-- Enter a number for {tolower(property)}
+- IF: {turn.schema[property].minimum && turn.schema[property].maximum}
+- Enter a number for {toLower(property)} between {turn.schema[property].minimum} and {turn.schema[property].maximum}
+- ELSE:
+- Enter a number for {toLower(property)}
 
-**PROPERTIES
--Each **PROPERTY**
+# askString(property)
+- Enter a value for {toLower(property)}
 
-**ENTITIES
-- Each **ENTITY**
-ENTITIES**
+>>> Help messages <<<
+# helpEnum(property)
+- Possible values for {toLower(property)} include: [{join(turn.schema[property].enum, ',')}]
 
-**ENUMS
-- Each **ENUM**
-ENUMS**
-
-PROPERTIES**

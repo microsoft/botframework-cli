@@ -1,13 +1,5 @@
 # Ask**PROPERTY**
-- [askEnum("**PROPERTY**')]
+- [askEnum('**PROPERTY**')]
 
-# Foo
--Foo**PROPERTY**
-**ENTITIES
--Current **ENTITY**
-ENTITIES**
-**ENUMS
-$**ENUM**
-ENUMS**
-- after enum
-- after props **PROPERTY**
+# Help**PROPERTY**
+- [helpEnum('**PROPERTY**')]

@@ -91,23 +91,32 @@ export class FormSchema {
     }
 
     mappings(): string[] {
-        let mappings: string[] = this.schema.mappings
-        if (mappings == null) {
-            mappings = [this.path]
+        let mappings: string[] = this.schema.$mappings
+        if (mappings == null && this.path) {
+            if (this.schema.type == 'number') {
+                mappings = ['number']
+            } else {
+                mappings = [this.path]
+            }
+        }
+        if (!mappings) {
+            mappings = []
         }
         return mappings
     }
 
     private addEntities(entities: EntitySet) {
-        for (let mapping in this.mappings) {
-            if (mapping == this.path) {
-                let values = null
-                if (this.typeName() == "enum") {
-                    // TODO: Do we want to enhance the schema with enum synonyms or leave that to the .lu files?
-                    let entity = new Entity(mapping)
-                    entity.values = this.schema.enum.map((e: string) => { value: e })
+        for (let mapping of this.mappings()) {
+            if (!entities.hasOwnProperty(mapping)) {
+                let entity = new Entity(mapping)
+                if (mapping == this.path) {
+                    let values = null
+                    if (this.typeName() == "enum") {
+                        // TODO: Do we want to enhance the schema with enum synonyms or leave that to the .lu files?
+                        entity.values = this.schema.enum
+                    }
                 }
-                entities[mapping] = new Entity(mapping)
+                entities[mapping] = entity
             }
         }
         for (let prop of this.schemaProperties()) {

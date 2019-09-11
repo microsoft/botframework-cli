@@ -199,29 +199,25 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outputDir: 
 }
 
 async function generateLU(schema: s.FormSchema, templateDir: string, outputDir: string, force: boolean, feedback: Feedback): Promise<void> {
-    /*
     for (let entity of Object.values(schema.entities())) {
-        let template = await readTemplate(templateDir, entity.name, '.lg')
+        let template = await readTemplate(templateDir, entity.name, '.lu')
         if (entity.values) {
             // Define base values for enum based list
             if (!template) {
-                template = await readTemplate(templateDir, 'enum', '.lg', feedback);
+                template = await readTemplate(templateDir, 'enum', '.lu', feedback);
             }
             if (template) {
-                for (let value of entity.values) {
-                    template += `$${entity.name}:{value}=` + os.EOL + `- ${entity.name}` + os.EOL
-                }
-                await writeTemplate(template, templateDir, entity.name, '.lg', true, feedback)
+                let valueSchema = new s.FormSchema("", { enum: entity.values })
+                template = expand(template, valueSchema, undefined, entity.name, undefined, feedback)
+                await writeTemplate(template, outputDir, entity.name, '.lu', true, feedback)
             }
         } else {
-            let template = await readTemplate(templateDir, entity.name, '.lg', feedback)
+            let template = await readTemplate(templateDir, entity.name, '.lu', feedback)
             if (template) {
-                await writeTemplate(template)
+                await writeTemplate(template, outputDir, entity.name, '.lu', true, feedback)
             }
-
         }
     }
-    */
 }
 
 async function generateDialog(schema: s.FormSchema, templateDir: string, outputDir: string, force: boolean, feedback: Feedback): Promise<void> {

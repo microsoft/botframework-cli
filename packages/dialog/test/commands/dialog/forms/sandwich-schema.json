@@ -6,7 +6,9 @@
             "type": "number"
         },
         "Directions": {
-            "type": "string"
+            "type": "string",
+            "$comment": "This indicates the whole string is what maps to this.",
+            "$mappings": ["string"]
         },
         "Length": {
             "type": "string",
@@ -53,7 +55,8 @@
             ]
         },
         "Name": {
-            "type": "string"
+            "type": "string",
+            "$mappings": ["string"]
         },
         "Toppings": {
             "type": "array",
