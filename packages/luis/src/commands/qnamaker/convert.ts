@@ -6,7 +6,7 @@ const helpers = require('./../../../parser/lufile/helpers')
 const luConverter = require('./../../../parser/converters/qnatoqnajsonconverter')
 const qnaConverter = require('./../../../parser/converters/qnajsontoqnaconverter')
 
-export default class QnamkerConvert extends Command {
+export default class QnamakerConvert extends Command {
   static description = 'describe the command here'
 
   static flags: flags.Input<any> = {
@@ -23,7 +23,7 @@ export default class QnamkerConvert extends Command {
 
   async run() {
     try {
-      const {flags} = this.parse(QnamkerConvert)
+      const {flags} = this.parse(QnamakerConvert)
 
       // Check if file or folder
       // If folder, only lu to luis is supported
@@ -67,6 +67,7 @@ export default class QnamkerConvert extends Command {
       throw err
     }
   }
+
 
   private async getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
     let filesToParse = []
