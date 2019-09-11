@@ -10,16 +10,10 @@ const retCode = require('./../lufile/enums/CLI-errors')
 module.exports = {
     parseQnAFileToLu: async function(file, sort, isAlterations) {
         let QnAFileContent = await openFileAndReadContent(file)
-        let QnAJSON  = await parseQnA(QnAFileContent, file, sort, isAlterations)
-
-        if (!isAlterations) {
-            return await this.constructMdFromQnAJSON(QnAJSON.model)
-        } else {
-            return await this.constructMdFromQnAAlterationJSON(QnAJSON.model)
-        }
+        return await this.parseQnAObjectToLu(QnAFileContent, sort, isAlterations, file)
     },
-    parseQnAbjectToLu: async function(qnaObjectString, sort, isAlterations) {
-        let QnAJSON  = await parseQnA(qnaObjectString, file, sort, isAlterations)
+    parseQnAObjectToLu: async function(qnaObjectString, sort, isAlterations, src) {
+        let QnAJSON  = await parseQnA(qnaObjectString, src, sort, isAlterations)
 
         if (!isAlterations) {
             return await this.constructMdFromQnAJSON(QnAJSON.model)

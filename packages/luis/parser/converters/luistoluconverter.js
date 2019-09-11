@@ -10,14 +10,11 @@ const retCode = require('./../lufile/enums/CLI-errors')
 module.exports = {
     parseLuisFileToLu: async function(file, sort) {
         let LUISFileContent = await openFileAndReadContent(file)
-        let LUISJSON = await parseLuis(LUISFileContent, file, sort)
-        let fileContent = await this.constructMdFromLUISJSON(LUISJSON.model)
-        return fileContent
+        return await this.parseLuisObjectToLu(LUISFileContent, file, sort)
     },
-    parseLuisObjectToLu: async function(luisObjectString, sort) {
-        let LUISJSON = parseLuis(luisObjectString, 'stdin', sort)
-        let fileContent = await this.constructMdFromLUISJSON(LUISJSON.model)
-        return fileContent
+    parseLuisObjectToLu: async function(luisObjectString, src, sort) {
+        let LUISJSON = await parseLuis(luisObjectString, src, sort)
+        return await this.constructMdFromLUISJSON(LUISJSON.model)
     },
     /**
      * Construct lu file content from LUIS JSON object
