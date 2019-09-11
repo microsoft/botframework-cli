@@ -68,7 +68,6 @@ export default class QnamakerConvert extends Command {
     }
   }
 
-
   private async getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
     let filesToParse = []
 
