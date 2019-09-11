@@ -22,6 +22,13 @@ describe('chatdown', () => {
         });
     });
 
+    it('should output an error if no stdin data passed', done => {
+        cp.exec(`node ./bin/run chatdown`, (error, stdout, stderr) => {
+            assert(stderr.includes('No input'));
+            done();
+        });
+    });
+
     it('should throw when a malformed config options is encountered in the input', done => {
         cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown`, (error, stdout, stderr) => {
             assert(stderr.trim().indexOf('Malformed configurations options detected. Options must be in the format optionName=optionValue') >= 0);
