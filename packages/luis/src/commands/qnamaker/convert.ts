@@ -7,7 +7,7 @@ const luConverter = require('./../../../parser/converters/qnatoqnajsonconverter'
 const qnaConverter = require('./../../../parser/converters/qnajsontoqnaconverter')
 
 export default class QnamakerConvert extends Command {
-  static description = 'describe the command here'
+  static description = 'Convert .lu file(s) to a QnA application JSON model or vice versa'
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'Source .qna file(s) or QnA KB JSON file', required: true}),
@@ -36,7 +36,7 @@ export default class QnamakerConvert extends Command {
         let luFiles = await this.getLuFiles(flags.in, flags.recurse)
         result = await luConverter.parseQnaToJson(luFiles, false, flags.luis_culture)
       } else {
-        result = await qnaConverter.parseQnAToLu(flags.in, flags.alterations, flags.sort)
+        result = await qnaConverter.parseQnAFileToLu(flags.in, flags.alterations, flags.sort)
       }
 
       // If result is null or undefined return

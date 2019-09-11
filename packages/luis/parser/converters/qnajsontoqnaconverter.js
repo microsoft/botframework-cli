@@ -1,43 +1,30 @@
 const NEWLINE = require('os').EOL;
+const fs = require('fs-extra')
+const path = require('path')
+const txtfile = require('./../lufile/read-text-file')
 const qnaFile = require('./../qnafile/parseQnAFile')
 const helperClasses = require('./../lufile/classes/hclasses')
 
 module.exports = {
-    parseQnAToLu: async function(file, isAlterations, sort) {
-            let QnAJSON = new helperClasses.readerObject()
-            QnAJSON.model = await qnaFile.parseQnAJSONFile(file)
-            QnAJSON.sourceFile = file
-            if (sort) {
-                const sortingFunction = isAlterations ? sortQnAAltJSON : sortQnAJSON
-                sortingFunction(QnAJSON.model)
-            }
-            return await this.constructMdFileHelper(QnAJSON, isAlterations)
-    },
-    /**
-     * Helper function to construct the file content based on parsed luis and qna objects
-     * 
-     * @param {object} QnAJSON QnA JSON or QnA Alteration file content
-     * @param {boolean} include_model_info If true, QnA Alteration file content will be parsed
-     * @returns {String} Generated Markdown file content to flush to disk
-     * @throws {exception} Throws on errors. exception object includes errCode and text. 
-     */
-    constructMdFileHelper: async function(QnAJSON, isAlterations) {
-        let fileContent = ''
-        let modelDesc = ''
-
-        if (!QnAJSON.sourceFile) {
-            return
-        }
+    parseQnAFileToLu: async function(file, sort, isAlterations) {
+        let QnAFileContent = await openFileAndReadContent(file)
+        let QnAJSON  = await parseQnA(QnAFileContent, file, sort, isAlterations)
 
         if (!isAlterations) {
-            fileContent += await this.constructMdFromQnAJSON(QnAJSON.model)
-            modelDesc += await constructModelDescFromQnAJSON(QnAJSON.model)
+            return await this.constructMdFromQnAJSON(QnAJSON.model)
         } else {
-            fileContent += await this.constructMdFromQnAAlterationJSON(QnAJSON.model)
+            return await this.constructMdFromQnAAlterationJSON(QnAJSON.model)
         }
-        return fileContent
     },
+    parseQnAbjectToLu: async function(qnaObjectString, sort, isAlterations) {
+        let QnAJSON  = await parseQnA(qnaObjectString, file, sort, isAlterations)
 
+        if (!isAlterations) {
+            return await this.constructMdFromQnAJSON(QnAJSON.model)
+        } else {
+            return await this.constructMdFromQnAAlterationJSON(QnAJSON.model)
+        }
+    },
     /**
      * Construct lu file content from QnA Alteration JSON object
      * @param {object} QnAAltJSON QnA Alteration JSON object
@@ -96,16 +83,21 @@ module.exports = {
     }
 }
 
-/**
- * Helper function to construct model description information from QnA JSON
- * @param {Object} QnAJSON 
- * @returns {string} model description
- */
-const constructModelDescFromQnAJSON = async function(QnAJSON) {
-    let modelDesc = NEWLINE;
-    modelDesc += '> QnA KB information' + NEWLINE;
-    modelDesc += '> !# @kb.name = ' + QnAJSON.name + NEWLINE;
-    return modelDesc;
+const parseQnA= async function(qnaObject, src, sort, isAlterations){
+    let QnAJSON = new helperClasses.readerObject()
+    QnAJSON.model = await qnaFile.parseQnAJSONFile(qnaObject)
+    QnAJSON.sourceFile = src
+
+    if (!QnAJSON.model) {
+        return
+    }
+
+    if (sort) {
+        const sortingFunction = isAlterations ? sortQnAAltJSON : sortQnAJSON
+        sortingFunction(QnAJSON.model)
+    }
+
+    return QnAJSON
 }
 
 
@@ -145,4 +137,19 @@ const sortComparers = {
     compareQn : function(a, b) {
         return a.questions[0].toUpperCase() > b.questions[0].toUpperCase();
     }
+}
+
+const openFileAndReadContent = async function(file) {
+    // catch if input file is a folder
+    if(fs.lstatSync(file).isDirectory()) {
+        throw (new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, "' + file + '" is a directory! Please try a QnA Maker JSON file as input.'));
+    }
+    if(!fs.existsSync(path.resolve(file))) {
+        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry unable to open [' + file + ']'));
+    }
+    let fileContent = txtfile.readSync(file);
+    if (!fileContent) {
+        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, error reading file: ' + file));
+    }
+    return fileContent;
 }
