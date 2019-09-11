@@ -1,51 +1,21 @@
 const NEWLINE = require('os').EOL;
+const fs = require('fs-extra')
+const path = require('path')
+const txtfile = require('./../lufile/read-text-file')
 const luisFile = require('./../luisfile/parseLuisFile')
 const helperClasses = require('./../lufile/classes/hclasses')
 
 module.exports = {
     parseLuisFileToLu: async function(file, sort) {
-        let LUISJSON = new helperClasses.readerObject()
-        LUISJSON.model = await luisFile.parseLuisJson(file)
-        LUISJSON.sourceFile = file
-        if (sort) {
-            await sortLUISJSON(LUISJSON.model)
-        }
-        return await this.constructMdFileHelper(LUISJSON)
+        let LUISFileContent = await openFileAndReadContent(file)
+        let LUISJSON = await parseLuis(LUISFileContent, file, sort)
+        let fileContent = await this.constructMdFromLUISJSON(LUISJSON.model)
+        return fileContent
     },
     parseLuisObjectToLu: async function(luisObjectString, sort) {
-        let LUISJSON = new helperClasses.readerObject()
-        let parsedJsonFromStdin
-        try {
-            parsedJsonFromStdin = JSON.parse(luisObjectString)
-        } catch (err) {
-            throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, unable to parse stdin as JSON! \n\n ${JSON.stringify(err, null, 2)}\n\n`));
-        }
-        // if validation did not throw, then ground this as valid LUIS JSON
-        LUISJSON.model = parsedJsonFromStdin;
-        LUISJSON.sourceFile = 'stdin';
-  
-        if (sort) {
-            await sortLUISJSON(LUISJSON.model)
-        }
-        return await this.constructMdFileHelper(LUISJSON)
-    },
-    /**
-     * Helper function to construct the file content based on parsed luis and qna objects
-     * 
-     * @param {object} LUISJSON LUIS JSON file content
-     * @returns {String} Generated Markdown file content to flush to disk
-     * @throws {exception} Throws on errors. exception object includes errCode and text. 
-     */
-    constructMdFileHelper: async function(LUISJSON) {
-        let fileContent = '';
-        let modelDesc = '';
-
-        if(LUISJSON.sourceFile) {
-            fileContent += await this.constructMdFromLUISJSON(LUISJSON.model)
-            modelDesc += await constructModelDescFromLUISJSON(LUISJSON.model)
-        }
-        
-        return fileContent;
+        let LUISJSON = parseLuis(luisObjectString, 'stdin', sort)
+        let fileContent = await this.constructMdFromLUISJSON(LUISJSON.model)
+        return fileContent
     },
     /**
      * Construct lu file content from LUIS JSON object
@@ -200,9 +170,33 @@ module.exports = {
         }
         return fileContent;
     }
-
 }
 
+const parseLuis = async function(luisObject, src, sort){
+    let LUISJSON = new helperClasses.readerObject()
+    LUISJSON.model = await luisFile.parseLuisJson(luisObject)
+    LUISJSON.sourceFile = src
+    if (sort) {
+        await sortLUISJSON(LUISJSON.model)
+    }
+
+    return LUISJSON
+}
+
+const openFileAndReadContent = async function(file) {
+    // catch if input file is a folder
+    if(fs.lstatSync(file).isDirectory()) {
+        throw (new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, "' + file + '" is a directory! Please try a LUIS/ QnA Maker JSON file as input.'));
+    }
+    if(!fs.existsSync(path.resolve(file))) {
+        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry unable to open [' + file + ']'));
+    }
+    let fileContent = txtfile.readSync(file);
+    if (!fileContent) {
+        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, error reading file: ' + file));
+    }
+    return fileContent;
+}
 
 /**
  * helper function to add utterances to collection if it does not exist

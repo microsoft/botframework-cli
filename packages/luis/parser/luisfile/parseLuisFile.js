@@ -8,13 +8,8 @@ const helperClass = require('./../lufile/classes/hclasses');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 
 module.exports = {
-    parseLuisJson: async function(file) {
-        let LUISFileContent, LUISJSON;
-        try {
-            LUISFileContent = await openFileAndReadContent(file);
-        } catch (err) {
-            throw(err);
-        }
+    parseLuisJson: async function(LUISFileContent) {
+        let LUISJSON;
         try {
             LUISJSON = await JSON.parse(LUISFileContent);
         } catch (err) {
@@ -179,21 +174,6 @@ module.exports = {
         }
         return true;
     }
-}
-
-const openFileAndReadContent = async function(file) {
-    // catch if input file is a folder
-    if(fs.lstatSync(file).isDirectory()) {
-        throw (new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, "' + file + '" is a directory! Please try a LUIS/ QnA Maker JSON file as input.'));
-    }
-    if(!fs.existsSync(path.resolve(file))) {
-        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry unable to open [' + file + ']'));
-    }
-    let fileContent = txtfile.readSync(file);
-    if (!fileContent) {
-        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, error reading file: ' + file));
-    }
-    return fileContent;
 }
 
 const validateLUISJSON = async function(LUISJSON) {
