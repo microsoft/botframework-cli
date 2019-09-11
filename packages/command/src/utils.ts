@@ -1,4 +1,5 @@
 const fs = require('fs-extra')
+import { CLIError } from '@oclif/errors'
 
 const utils = {
   readTextFile: async (file: any) => {
@@ -46,7 +47,7 @@ const utils = {
         return resolve(fileBuffer.toString('utf8').replace(/\0/g, ''))
       } catch (err) {
         if (err.message.match(/ENOENT: no such file or directory/)) {
-          return reject(err)
+          return reject(new CLIError(err.message))
         }
         return reject(
           `Invalid Input. Sorry, unable to parse file: \n\n ${JSON.stringify(err, null, 2)}\n\n`)

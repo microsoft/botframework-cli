@@ -77,27 +77,17 @@ export default class Chatdown extends Command {
   }
 
   private async getInput(args: any) {
-    try {
-      // Check if path passed in --in
-      if (args && args.length > 0) {
-        return utils.readTextFile(args)
-      } else {
-        //Check if piped data was sent
-        const {stdin} = process
-        if (stdin.isTTY) {
-          return false
-        } else {
-          return await this.readStdin()
-        }
-      }
-    } catch (err) {
-      if (err.message.match(/no such file or directory/)) {
-        throw new CLIError(err.message)
-      }
-      if (err.message.match(/No Input/)) {
+    // Check if path passed in --in
+    if (args && args.length > 0) {
+      return utils.readTextFile(args)
+    } else {
+      //Check if piped data was sent
+      const {stdin} = process
+      if (stdin.isTTY) {
         return false
+      } else {
+        return this.readStdin()
       }
-      throw err
     }
   }
 
