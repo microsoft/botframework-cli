@@ -10,7 +10,13 @@ Use this template as a foundation for quick one-pager. Feel free to morph as you
 <Any requirements driving this feature, goals, functionality, itemized considerations>
 
 ## Inputs
-<input requirements, upstream dependencies>
+<input requirements, prerequisites, upstream dependencies>
+
+### Prerequisites
+<libraries, packages>
+
+### Dependencies
+<environments, conditions>
 
 ## Outputs
 <output guarantees, downstream dependencies>
