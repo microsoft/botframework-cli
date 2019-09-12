@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-import { CLIError } from '@oclif/errors'
+import {CLIError} from '@oclif/errors'
 
 const utils = {
   readTextFile: async (file: any) => {
