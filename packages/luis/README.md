@@ -28,16 +28,62 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bf luis:transform:tolu [FILE]`](#bf-luistransformtolu-file)
-* [`bf luis:transform:tomodel`](#bf-luistransformtomodel)
+* [`bf luis:convert`](#bf-luisconvert)
+* [`bf luis:translate`](#bf-luistranslate)
+* [`bf qnamaker:convert [FILE]`](#bf-qnamakerconvert-file)
+* [`bf qnamker:convert`](#bf-qnamkerconvert)
 
-## `bf luis:transform:tolu [FILE]`
+## `bf luis:convert`
+
+Convert .lu file(s) to a LUIS application JSON model or vice versa
+
+```
+USAGE
+  $ bf luis:convert
+
+OPTIONS
+  --culture=culture              Lang code for the LUIS application
+  --description=description      Text describing the LUIS applicaion
+  --in=in                        (required) Source .lu file(s) or LUIS application JSON model
+  --log                          Enables log messages
+  --name=name                    Name of the LUIS application
+  --out=out                      Output file or folder name. If not specified stdout will be used as output
+  --recurse                      Indicates if sub-folders need to be considered to file .lu file(s)
+  --schemaversion=schemaversion  Schema version of the LUIS application
+  --sort                         When set, intent, utterances, entities are alphabetically sorted in .lu files
+  --versionid=versionid          Version ID of the LUIS application
+```
+
+_See code: [src/commands/luis/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/convert.ts)_
+
+## `bf luis:translate`
+
+Translate given LUIS application JSON model or lu file(s)
+
+```
+USAGE
+  $ bf luis:translate
+
+OPTIONS
+  --in=in                                    (required) Source .lu file(s) or LUIS application JSON model
+  --out=out                                  Output file or folder name. If not specified stdout will be used as output
+  --recurse                                  Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+  --translate_comments=translate_comments    When set, machine translate comments found in .lu or .qna file
+  --translate_link_text=translate_link_text  When set, machine translate link description in .lu or .qna file
+  --translatekey=translatekey                (required) Machine translation endpoint key.
+```
+
+_See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
+
+## `bf qnamaker:convert [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ bf luis:transform:tolu [FILE]
+  $ bf qnamaker:convert [FILE]
 
 OPTIONS
   -f, --force
@@ -45,27 +91,25 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/luis/transform/tolu.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/transform/tolu.ts)_
+_See code: [src/commands/qnamaker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
 
-## `bf luis:transform:tomodel`
+## `bf qnamker:convert`
 
 describe the command here
 
 ```
 USAGE
-  $ bf luis:transform:tomodel
+  $ bf qnamker:convert
 
 OPTIONS
-  --in=in                          Source .lu file
-  --lu_folder=lu_folder            Source folder that contains .lu file(s)
-  --luis_culture=luis_culture      Lang code for the LUIS application
-  --luis_desc=luis_desc            Text describing the LUIS applicaion
-  --luis_name=luis_name            Name of the LUIS application
-  --luis_versionId=luis_versionId  Version ID of the LUIS application
-  --out=out                        Output file name
-  --out_folder=out_folder          Output folder name
-  --subfolder                      Indicates if sub-folders need to be considered to file .lu file(s)
+  --alterations  Indicates if files is QnA Alterations
+  --in=in        (required) Source .qna file(s) or QnA KB JSON file
+  --log          Enables log messages
+  --name=name    Name of the QnA KB
+  --out=out      Output file or folder name. If not specified stdout will be used as output
+  --recurse      Indicates if sub-folders need to be considered to file .qna file(s)
+  --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .lu files
 ```
 
-_See code: [src/commands/luis/transform/tomodel.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/transform/tomodel.ts)_
+_See code: [src/commands/qnamker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamker/convert.ts)_
 <!-- commandsstop -->

@@ -5,15 +5,18 @@
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
-[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
+[​![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-dialog.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
 
 <!-- toc -->
 * [Usage](#usage)
+
 * [Commands](#commands)
-<!-- tocstop -->
+
+  <!-- tocstop -->
 # Usage
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @microsoft/bf-dialog
 $ bf COMMAND
@@ -45,8 +48,11 @@ the app.schema for the project.
 USAGE
   $ bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
 
-OPTIONS                                                                                                                                                                                                                                                                                           -b, --branch=branch  [default: 4.Future] The branch to use for the meta-schema component.schema.                                                                                                                                                                                                -h, --help           show CLI help
-  -o, --output=output  [default: app.schema] Output path and filename for merged schema. [default: app.schema]                                                                                                                                                                                  -u, --update         Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.
+OPTIONS
+  -b, --branch=branch  The branch to use for the meta-schema component.schema. [default: 4.Future] 
+  -h, --help              show CLI help
+  -o, --output=output  Output path and filename for merged schema. [default: app.schema]
+  -u, --update         Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.
   --verbose            output verbose logging of files as they are processed
 ```
 
@@ -66,12 +72,13 @@ applications app.schema file (see dialog:merge command).
 USAGE
   $ bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
 
-OPTIONS                                                                                                                                                                                                                                                                                           -h, --help  show CLI help
+OPTIONS
+  -h, --help  show CLI help
   --verbose   Show verbose output
 ```
 
 Example:
-```
+``` 
 bf dialog:verify test/**/*.dialog
 ```
 
