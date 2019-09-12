@@ -1,0 +1,54 @@
+> # Intent definitions
+
+## Calendar.Add
+- ajouter un nouvel événement le 27 - avr
+- ajouter une nouvelle tâche d'affectation de finition
+- ajouter un événement à lire sur adam lambert nouvelles
+- ajouter un événement pour visiter 209 nashville gym
+- ajouter du théâtre imax à mes événements à venir
+- calendrier i ' ll être au garage de 8 à 3 ce samedi
+- dunmore pa sons sonores vendredi matin s'il vous plaît
+- rencontrer mon manager
+- enregistrer la date mai 17 photos partie
+- rendez-vous pour demain s'il vous plaît
+- la réunion durera une heure
+
+
+## Calendar.Find
+- calendrier pour novembre 1948
+- afficher les plans de week-end
+- ai-je quelque chose le mercredi?
+- Combien de jours y a-t-il entre le 13 mars 2015 et aujourd'hui ?
+- tirer vers le haut de mon rendez-vous savoir combien de temps j'ai avant mon prochain rendez-vous
+- recherche de rencontres avec Chris
+- montrez-moi l'heure de la fête de mariage de demain
+- dites-moi les détails de l'événement
+- voix activée lecture des rendez-vous cette semaine
+
+
+## None
+- suis-je libre d'être avec des amis samedi ?
+- rendez-vous avec Johnson doit être la semaine prochaine
+- appeler papa mike
+- changer la réunion avec Chris à 9: 00 h
+- email cloney john
+- prolonger la réunion du déjeuner 30 minutes de plus
+- Je veux reprogrammer la réuni on au club de l'armée de l'air
+- réunions de marketing le mardi sera maintenant tous les mercredis s'il vous plaît changer sur mon calendrier
+- déplacer la fête bbq à vendredi
+- l'atelier durera 10 heures
+
+
+> # Entity definitions
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
