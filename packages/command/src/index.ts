@@ -1,3 +1,4 @@
 import {CLIError, Command, flags} from './command'
-export {CLIError, Command, flags}
+import utils from './utils'
+export {CLIError, Command, flags, utils}
 export default Command
