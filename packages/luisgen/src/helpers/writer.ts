@@ -27,19 +27,43 @@ export class Writer {
     this.outputStream!.write(str)
   }
 
-  public writeLine(str = ''): void {
-    this.outputStream!.write(str + '\n')
-  }
-
-  public writeIndented(str: string): void {
-    for (let index = 0; index < this.indentLevel; index++) {
-      this.outputStream!.write(' ')
+  public writeLine(str: string | string[] = ''): void {
+    if (typeof str === 'string') {
+      this.outputStream!.write(str + '\n')
+    } else {
+      str.forEach(line => {
+        this.outputStream!.write(line + '\n')
+      })
     }
-    this.outputStream!.write(str)
   }
 
-  public writeLineIndented(str: string): void {
-    this.writeIndented(str + '\n')
+  public writeIndented(str: string | string[]): void {
+    let writeFunction = (text: string) => {
+      for (let index = 0; index < this.indentLevel; index++) {
+        this.outputStream!.write(' ')
+      }
+      this.outputStream!.write(text)
+    }
+
+    writeFunction.bind(this)
+
+    if (typeof str === 'string') {
+      writeFunction(str)
+    } else {
+      str.forEach(line => {
+        writeFunction(line)
+      })
+    }
+  }
+
+  public writeLineIndented(lines: string | string[]): void {
+    if (typeof lines === 'string') {
+      this.writeIndented(lines + '\n')
+    } else {
+      lines.forEach(line => {
+        this.writeIndented(line + '\n')
+      })
+    }
   }
 
   public async closeOutputStream(): Promise<void> {

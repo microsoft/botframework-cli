@@ -1,7 +1,8 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
 import * as path from 'path'
 
-import {CSharpGenerator} from '../../../helpers/csharp-generator'
+import {CSharpTemplate} from '../../../helpers/csharp-template'
+import {LuisTransformToClass} from '../../../helpers/luis-to-classes'
 
 const fs = require('fs-extra')
 
@@ -47,6 +48,12 @@ export default class LuisTransformTocs extends Command {
     flags.out = flags.out || './'
     const description = `tocs ${args.name} ${space}.${args.className} -o ${__dirname}`
 
-    await CSharpGenerator.generate(description, app, args.className, space, flags.out, this)
+    const outName = `${flags.out}/${args.className}.cs`
+    this.log(
+      `Generating file ${outName} that contains class ${space}.${args.className}.`
+    )
+    const result = LuisTransformToClass.fromLuisApp(app)
+
+    await CSharpTemplate.fromLuisObject(result, description, args.className, space, outName)
   }
 }
