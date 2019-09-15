@@ -45,7 +45,7 @@ Here's a "reducted" (but almost verbatim) version of the guidelines as applicabl
 
 ### Command Naming and Behavior
 
-* Commands must follow a "[noun] [noun] [verb]" pattern
+* Commands must follow a "[noun] : [verb] : [noun]" pattern (e.g. config:show:telemetry)
 * Multi-word subgroups should be hyphenated e.g. foo-resource instead of fooresource
 * All command names should contain a verb e.g. account get-connection-string instead of account connection-string
 * For commands which maintain child collections, the follow pairings are acceptable. CREATE/DELETE (same as top level resources); ADD/REMOVE

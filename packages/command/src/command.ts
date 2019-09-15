@@ -2,14 +2,13 @@
 
 import { Command as Base } from '@oclif/command'
 import { CLIError } from '@oclif/errors'
-
-import Telemetry from './telemetry'
-
-const chalk = require('chalk')
-const pjson = require('../package.json')
-
 export { flags } from '@oclif/command'
 export { CLIError } from '@oclif/errors'
+const chalk = require('chalk')
+import ReadPipedData from './readpipeddata'
+import Telemetry from './telemetry'
+const pjson = require('../package.json')
+
 export abstract class Command extends Base {
   base = `${pjson.name}@${pjson.version}`
   telemetryEnabled = false
@@ -51,6 +50,14 @@ export abstract class Command extends Base {
   async finally(_: Error | undefined) {
     Telemetry.flushTelemetry()
     process.stdin.destroy()
+  }
+
+  readStdin() {
+    try {
+      return ReadPipedData.read()
+    } catch (error) {
+      throw new CLIError(error)
+    }
   }
 
   trackEvent(msg: string, properties?: { [key: string]: any }) {
