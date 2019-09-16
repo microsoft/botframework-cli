@@ -14,6 +14,6 @@ export default class ConfigSetTelemetry extends Command {
     let userConfig: Config = await getConfigFile(this.config.configDir)
     userConfig.telemetry = !flags.disable
     await writeConfigFile(this.config.configDir, userConfig)
-    this.log('Telemetry set to ' + flags.disable)
+    this.log('Telemetry set to ' + !flags.disable)
   }
 }
