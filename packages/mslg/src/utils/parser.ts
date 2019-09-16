@@ -10,26 +10,26 @@ const readlineSync = require('readline-sync');
 export class Parser {
     private tool: MSLGTool = new MSLGTool();
 
-    public Parser(program: any) {
+    public Parser(flags: any) {
         let filesToParse: any[] = [];
         let folderStat: any;
-        if (program.in) {
-            filesToParse.push(program.in);
+        if (flags.in) {
+            filesToParse.push(flags.in);
         }
 
-        if (program.lg_folder) {
+        if (flags.lg_folder) {
             try {
-                folderStat = fs.statSync(program.lg_folder);
+                folderStat = fs.statSync(flags.lg_folder);
             } catch (err) {
-                throw new Error(program.lg_folder + ' is not a folder or does not exist');
+                throw new Error(flags.lg_folder + ' is not a folder or does not exist');
             }
             if (!folderStat.isDirectory()) {
-                throw new Error(program.lg_folder + ' is not a folder or does not exist');
+                throw new Error(flags.lg_folder + ' is not a folder or does not exist');
             }
-            if (program.subfolder) {
-                filesToParse = helpers.findLGFiles(program.lg_folder, true);
+            if (flags.subfolder) {
+                filesToParse = helpers.findLGFiles(flags.lg_folder, true);
             } else {
-                filesToParse = helpers.findLGFiles(program.lg_folder, false);
+                filesToParse = helpers.findLGFiles(flags.lg_folder, false);
             }
             if (filesToParse.length === 0) {
                 throw new Error('no .lg files found in the specified folder.');
@@ -40,12 +40,12 @@ export class Parser {
 
         while (filesToParse.length > 0) {
             let file = filesToParse[0];
-            const parseRes = this.parseFile(file, program.verbose);
+            const parseRes = this.parseFile(file, flags.verbose);
             errors = errors.concat(parseRes);
             filesToParse.splice(0, 1);
         }
 
-        if (program.stdin) {
+        if (flags.stdin) {
             let parsedJsonFromStdin;
             try {
                 let value = readlineSync.question(`Please enter the lg file content: `);
@@ -54,7 +54,7 @@ export class Parser {
                 throw new Error(`unable to parse stdin as JSON! \n\n ${JSON.stringify(err, null, 2)}\n\n`);
             }
 
-            errors = errors.concat(this.parseStream(parsedJsonFromStdin, program.verbose));
+            errors = errors.concat(this.parseStream(parsedJsonFromStdin, flags.verbose));
         }
 
         if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
@@ -62,14 +62,14 @@ export class Parser {
         }
 
         let fileName: string;
-        if (program.out) {
-            fileName = program.out + '_mslg.lg';
-        } else if (program.in) {
-            if (!path.isAbsolute(program.in)) {
-                fileName = path.resolve('', program.in);
+        if (flags.out) {
+            fileName = flags.out + '_mslg.lg';
+        } else if (flags.in) {
+            if (!path.isAbsolute(flags.in)) {
+                fileName = path.resolve('', flags.in);
             }
             else {
-                fileName = program.in;
+                fileName = flags.in;
             }
 
            
@@ -78,22 +78,22 @@ export class Parser {
               ? fileNameSegment.replace('.lg', '') + '_mslg.lg'
               : ''
         } else {
-            if (!path.isAbsolute(program.lg_folder)) {
-                fileName = path.resolve('', program.lg_folder);
+            if (!path.isAbsolute(flags.lg_folder)) {
+                fileName = path.resolve('', flags.lg_folder);
             }
             else {
-                fileName = program.lg_folder;
+                fileName = flags.lg_folder;
             }
 
             fileName = fileName.split('\\').pop() + '_mslg.lg'
         }
 
         let outFolder: string = process.cwd();
-        if (program.out_folder) {
-            if (path.isAbsolute(program.out_folder)) {
-                outFolder = program.out_folder;
+        if (flags.out_folder) {
+            if (path.isAbsolute(flags.out_folder)) {
+                outFolder = flags.out_folder;
             } else {
-                outFolder = path.resolve('', program.out_folder);
+                outFolder = path.resolve('', flags.out_folder);
             }
 
             if (!fs.existsSync(outFolder)) {
@@ -112,7 +112,7 @@ export class Parser {
 
             throw new Error("collating lg files failed." + '\n');
         } else {
-            if (program.collate === undefined && this.tool.NameCollisions.length > 0) {
+            if (flags.collate === undefined && this.tool.NameCollisions.length > 0) {
                 throw new Error('below template names are defined in multiple files: ' + this.tool.NameCollisions.toString());
             } else {
                 const mergedLgFileContent = this.tool.CollateTemplates();
@@ -123,7 +123,7 @@ export class Parser {
                 if (fs.existsSync(filePath)) {
                     throw new Error(`a file named ${fileName} already exists in the folder ${outFolder}.`);
                 } else {
-                    if (program.stdout) {
+                    if (flags.stdout) {
                         process.stdout.write(chalk.default.whiteBright(mergedLgFileContent));
                     } else {
                         fs.writeFileSync(filePath, mergedLgFileContent);

@@ -10,32 +10,32 @@ const MAX_CHAR_IN_REQUEST = 4990
 const fetch = require('node-fetch')
 
 export class Translator {
-  public async Translate(program: any) {
+  public async Translate(flags: any) {
     let filesToParse: any[] = []
     let folderStat: any
-    if (program.in) {
-      filesToParse.push(program.in)
+    if (flags.in) {
+      filesToParse.push(flags.in)
     }
 
-    if (program.lg_folder) {
+    if (flags.lg_folder) {
       try {
-        folderStat = fs.statSync(program.lg_folder)
+        folderStat = fs.statSync(flags.lg_folder)
       } catch (err) {
         if (err) {
           throw new Error(
-            program.lg_folder + ' is not a folder or does not exist'
+            flags.lg_folder + ' is not a folder or does not exist'
           )
         }
       }
       if (!folderStat.isDirectory()) {
         throw new Error(
-          program.lg_folder + ' is not a folder or does not exist'
+          flags.lg_folder + ' is not a folder or does not exist'
         )
       }
-      if (program.subfolder) {
-        filesToParse = helpers.findLGFiles(program.lg_folder, true)
+      if (flags.subfolder) {
+        filesToParse = helpers.findLGFiles(flags.lg_folder, true)
       } else {
-        filesToParse = helpers.findLGFiles(program.lg_folder, false)
+        filesToParse = helpers.findLGFiles(flags.lg_folder, false)
       }
       if (filesToParse.length === 0) {
         throw new Error('no .lg files found in the specified folder.')
@@ -43,11 +43,11 @@ export class Translator {
     }
 
     let outFolder: string = process.cwd()
-    if (program.out_folder) {
-      if (path.isAbsolute(program.out_folder)) {
-        outFolder = program.out_folder
+    if (flags.out_folder) {
+      if (path.isAbsolute(flags.out_folder)) {
+        outFolder = flags.out_folder
       } else {
-        outFolder = path.resolve('', program.out_folder)
+        outFolder = path.resolve('', flags.out_folder)
       }
 
       if (!fs.existsSync(outFolder)) {
@@ -61,11 +61,11 @@ export class Translator {
       await this.parseFile(
         file,
         outFolder,
-        program.translate_key,
-        program.target_lang,
+        flags.translate_key,
+        flags.target_lang,
         src_lang,
-        program.translate_comments,
-        program.verbose
+        flags.translate_comments,
+        flags.verbose
       )
       filesToParse.splice(0, 1)
     }

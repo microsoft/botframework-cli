@@ -10,29 +10,29 @@ const readlineSync = require('readline-sync');
 export class Expander {
     private tool: MSLGTool = new MSLGTool();
 
-    public Expand(program: any) {
+    public Expand(flags: any) {
         let fileToExpand: any;
-        if (program.in) {
-            fileToExpand = program.in;
+        if (flags.in) {
+            fileToExpand = flags.in;
         }
 
         let errors: string[] = [];
-        errors = this.parseFile(fileToExpand, program.inline);
+        errors = this.parseFile(fileToExpand, flags.inline);
 
         if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
             throw new Error("parsing lg file or inline expression failed.");
         }
 
         let templatesName: string[] = [];
-        if (program.template) {
-            templatesName.push(program.template);
+        if (flags.template) {
+            templatesName.push(flags.template);
         }
 
-        if (program.all) {
+        if (flags.all) {
             templatesName = Array.from(new Set(templatesName.concat(this.getTemplatesName(this.tool.CollatedTemplates))));
         }
 
-        if (program.inline) {
+        if (flags.inline) {
             templatesName.push('__temp__');
         }
 
@@ -41,10 +41,10 @@ export class Expander {
         let userInputValues: Map<string, any> = new Map<string, any>();
         for (const templateName of templatesName) {
             const expectedVariables = this.tool.GetTemplateVariables(templateName);
-            variablesValue = this.getVariableValues(program.testInput, expectedVariables, userInputValues);
+            variablesValue = this.getVariableValues(flags.testInput, expectedVariables, userInputValues);
             for (const variableValue of variablesValue) {
                 if (variableValue[1] === undefined) {
-                    if (program.interactive) {
+                    if (flags.interactive) {
                         let value = readlineSync.question(`Please enter variable value of ${variableValue[0]} in template ${templateName}: `);
                         let valueObj: any;
                         try {
@@ -72,7 +72,7 @@ export class Expander {
 
         let expandedTemplatesFile: string = this.generateExpandedTemplatesFile(expandedTemplates)
 
-        let fileName: string = program.in;
+        let fileName: string = flags.in;
         if (fileName === undefined) {
             expandedTemplatesFile = expandedTemplatesFile.replace('# __temp__\n- ', '');
         }
