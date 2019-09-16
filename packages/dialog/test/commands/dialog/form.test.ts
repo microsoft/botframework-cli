@@ -17,9 +17,9 @@ import { fail } from 'assert';
 
 describe('dialog:form', async () => {
     let output = ppath.join(os.tmpdir(), "test.out")
-    let schemaPath = "test/commands/dialog/forms/sandwich-schema.json"
-    let badSchema = "test/commands/dialog/forms/bad-schema.json"
-    let notObject = "test/commands/dialog/forms/not-object-schema.json"
+    let schemaPath = "test/commands/dialog/forms/sandwich.schema.dialog"
+    let badSchema = "test/commands/dialog/forms/bad-schema.schema.dialog"
+    let notObject = "test/commands/dialog/forms/not-object.schema.dialog"
     before(async () => {
         await fs.remove(output)
         await fs.mkdirp(output)
@@ -41,7 +41,7 @@ describe('dialog:form', async () => {
             fail("Did not detect bad schema");
         }
         catch (e) {
-            expect(e.message).to.contain("Error parsing")
+            expect(e.message).to.contain("is not a valid JSON Schema")
         }
     })
 

@@ -6,6 +6,7 @@
 export * from './formSchema'
 import * as Validator from 'ajv'
 import * as os from 'os'
+import * as ppath from 'path'
 let allof: any = require('json-schema-merge-allof')
 let parser: any = require('json-schema-ref-parser')
 
@@ -32,6 +33,8 @@ export class Entity {
 type EntitySet = Record<string, Entity>
 
 export class FormSchema {
+    /** Name of schema */
+    name: string
 
     /** Path to this schema definition. */
     path: string
@@ -39,7 +42,8 @@ export class FormSchema {
     /** Schema definition.  This is the content of a properties JSON Schema object. */
     schema: any
 
-    constructor(path: string, schema: any) {
+    constructor(path: string, schema: any, name?: string) {
+        this.name = name || ""
         this.path = path
         this.schema = schema
     }
@@ -62,7 +66,7 @@ export class FormSchema {
         if (schema.type != "object") {
             throw "Form schema must be of type object."
         }
-        return new FormSchema("", schema)
+        return new FormSchema("", schema, ppath.basename(schemaPath, '.schema.dialog'))
     }
 
     * schemaProperties(): Iterable<FormSchema> {

@@ -32,14 +32,20 @@ async function readTemplate(templateDir: string, templateName: string, templateE
     return template
 }
 
-async function writeTemplate(template: string, outDir: string, templateName: string, templateExt: string, includeLocale: boolean, feedback: Feedback): Promise<void> {
+async function writeTemplate(template: string, outDir: string, templateName: string, templateExt: string, includeLocale: boolean, force: boolean, feedback: Feedback): Promise<string | undefined> {
+    let outName = templateName + (includeLocale ? '_' + path.basename(outDir) : '') + templateExt
     try {
-        let outPath = path.join(outDir, templateName + (includeLocale ? '_' + path.basename(outDir) : '') + templateExt);
-        feedback(FeedbackType.info, `Generating ${outPath}`)
-        await fs.writeFile(outPath, template)
+        let outPath = path.join(outDir, outName);
+        if (!force && await fs.pathExists(outPath)) {
+            feedback(FeedbackType.info, `Skipping already existing ${outPath}`)
+        } else {
+            feedback(FeedbackType.info, `Generating ${outPath}`)
+            await fs.writeFile(outPath, template)
+        }
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }
+    return outName
 }
 
 const TOKENS = ['**PROPERTY**', '**PROPERTIES', 'PROPERTIES**', '**ENTITY**', '**ENTITIES', 'ENTITIES**', '**ENUM**', '**ENUMS', 'ENUMS**']
@@ -187,51 +193,71 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
     return newTemplate
 }
 
-async function generateLG(schema: s.FormSchema, templateDir: string, outputDir: string, force: boolean, feedback: Feedback): Promise<void> {
+async function copyLibraries(schema: s.FormSchema, templateDir: string, ext: string, outdir: string, force: boolean, feedback: Feedback): Promise<string[]> {
+    let locale = path.basename(templateDir)
+    let templates: string[] = []
+    for (let templatePath of await glob(path.join(templateDir, '*_' + locale + ext))) {
+        let template = await fs.readFile(templatePath, 'utf8')
+        let newTemplate = expand(template, schema, undefined, undefined, undefined, feedback)
+        let ext = path.extname(templatePath)
+        let outName = await writeTemplate(newTemplate, outdir, path.basename(templatePath, ext), ext, false, force, feedback)
+        if (outName) {
+            templates.push(outName)
+        }
+    }
+    return templates
+}
+
+async function generateLG(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
     for (let prop of schema.schemaProperties()) {
         let type = prop.typeName()
         let template = await readTemplate(templateDir, type, '.lg', feedback)
         if (template) {
             let newTemplate = expand(template, prop, prop.path, undefined, undefined, feedback)
-            await writeTemplate(newTemplate, outputDir, prop.path, '.lg', true, feedback)
+            await writeTemplate(newTemplate, outDir, prop.path, '.lg', true, force, feedback)
         }
     }
+    copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)
 }
 
-async function generateLU(schema: s.FormSchema, templateDir: string, outputDir: string, force: boolean, feedback: Feedback): Promise<void> {
+async function generateLU(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
+    let templates = ''
     for (let entity of Object.values(schema.entities())) {
-        let template = await readTemplate(templateDir, entity.name, '.lu')
-        if (entity.values) {
-            // Define base values for enum based list
-            if (!template) {
-                template = await readTemplate(templateDir, 'enum', '.lu', feedback);
+        if (entity.name != 'string') {
+            let template = await readTemplate(templateDir, entity.name, '.lu')
+            let outName: string | undefined = undefined
+            if (entity.values) {
+                // Define base values for enum based list
+                if (!template) {
+                    template = await readTemplate(templateDir, 'enum', '.lu', feedback);
+                }
+                if (template) {
+                    let valueSchema = new s.FormSchema("", { enum: entity.values })
+                    template = expand(template, valueSchema, undefined, entity.name, undefined, feedback)
+                    outName = await writeTemplate(template, outDir, entity.name, '.lu', true, force, feedback)
+                }
+            } else {
+                if (template) {
+                    template = expand(template, schema, undefined, entity.name, undefined, feedback)
+                    outName = await writeTemplate(template, outDir, entity.name, '.lu', true, force, feedback)
+                }
             }
-            if (template) {
-                let valueSchema = new s.FormSchema("", { enum: entity.values })
-                template = expand(template, valueSchema, undefined, entity.name, undefined, feedback)
-                await writeTemplate(template, outputDir, entity.name, '.lu', true, feedback)
-            }
-        } else {
-            let template = await readTemplate(templateDir, entity.name, '.lu', feedback)
-            if (template) {
-                await writeTemplate(template, outputDir, entity.name, '.lu', true, feedback)
+            if (outName) {
+                templates += `[${outName}](./${outName})` + os.EOL
             }
         }
     }
-}
 
-async function generateDialog(schema: s.FormSchema, templateDir: string, outputDir: string, force: boolean, feedback: Feedback): Promise<void> {
-}
-
-async function copyLibraries(schema: s.FormSchema, templateDir: string, outdir: string, feedback: Feedback): Promise<void> {
-    let locale = path.basename(templateDir)
-    for (let templatePath of await glob(path.join(templateDir, '*_' + locale + '.*'))) {
-        let template = await fs.readFile(templatePath, 'utf8')
-        let newTemplate = expand(template, schema, undefined, undefined, undefined, feedback)
-        let ext = path.extname(templatePath)
-        await writeTemplate(newTemplate, outdir, path.basename(templatePath, ext), ext, false, feedback)
+    for (let lib of await copyLibraries(schema, templateDir, '.lu', outDir, force, feedback)) {
+        templates += `[${lib}](./${lib})` + os.EOL
     }
+
+    await writeTemplate(templates, outDir, schema.name, '.lu.dialog', true, force, feedback)
 }
+
+async function generateDialog(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
+}
+
 
 // TODO: 
 // One .lu per entity
@@ -269,7 +295,6 @@ export async function generate(schema: s.FormSchema, outDir: string, locales?: s
             await generateLG(schema, localeIn, localeOut, force, feedback)
             await generateLU(schema, localeIn, localeOut, force, feedback)
             await generateDialog(schema, localeIn, localeOut, force, feedback)
-            await copyLibraries(schema, localeIn, localeOut, feedback)
         } catch (e) {
             feedback(FeedbackType.error, e.message)
         }

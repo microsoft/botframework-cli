@@ -55,8 +55,7 @@
             ]
         },
         "Name": {
-            "type": "string",
-            "$mappings": ["string"]
+            "type": "string"
         },
         "Toppings": {
             "type": "array",
