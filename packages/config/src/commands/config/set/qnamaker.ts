@@ -1,7 +1,7 @@
-import {Command, flags} from '@oclif/command'
+import {Command, flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfilehandler'
 
-export default class ConfigQnamakerSet extends Command {
+export default class ConfigSetQnamaker extends Command {
   static description = 'Set the QnAMaker config data'
 
   static flags = {
@@ -10,7 +10,7 @@ export default class ConfigQnamakerSet extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(ConfigQnamakerSet)
+    const {flags} = this.parse(ConfigSetQnamaker)
     let userConfig: Config = await getConfigFile(this.config.configDir)
     let qnamaker = userConfig.qnamaker
 
