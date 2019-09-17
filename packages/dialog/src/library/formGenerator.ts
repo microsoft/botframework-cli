@@ -9,7 +9,6 @@ import * as fs from 'fs-extra'
 import * as glob from 'globby'
 import * as os from 'os'
 import * as path from 'path'
-import { readFile, writeFile } from 'fs'
 
 export enum FeedbackType {
     info,
@@ -23,8 +22,7 @@ async function readTemplate(templateDir: string, templateName: string, templateE
     let template = null
     try {
         template = await fs.readFile(path.join(templateDir, templateName + templateExt), 'utf8')
-    }
-    catch (e) {
+    } catch (_) {
         if (feedback) {
             feedback(FeedbackType.warning, `There is no ${templateExt} template file for ${templateName}`)
         }
@@ -60,13 +58,13 @@ const STARTENUM = 7
 const ENDENUM = 8
 
 function scanForToken(template: string, pos: number, endToken: string): { newpos: number, block: string } | undefined {
-    let current = ""
+    let current = ''
     let start = pos
     while (pos < template.length) {
         current += template[pos]
         if (!endToken.startsWith(current)) {
-            current = ""
-        } else if (current == endToken) {
+            current = ''
+        } else if (current === endToken) {
             return { newpos: pos, block: template.substring(start, pos - endToken.length) }
         }
         ++pos
@@ -96,13 +94,13 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
     let startPos = 0
     let pos = 0
     while (pos < template.length) {
-        if (current == "") {
+        if (current === '') {
             startPos = pos
         }
         current += template[pos]
-        if (!TOKENS.some((t) => t.startsWith(current))) {
+        if (!TOKENS.some(t => t.startsWith(current))) {
             newTemplate += current
-            current = ""
+            current = ''
         } else {
             let match = TOKENS.indexOf(current)
             switch (match) {
@@ -112,7 +110,7 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
                     } else {
                         feedback(FeedbackType.error, `No definition for property at ${startPos}.`)
                     }
-                    current = ""
+                    current = ''
                     break;
                 case ENTITY:
                     if (entity) {
@@ -120,7 +118,7 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
                     } else {
                         feedback(FeedbackType.error, `No definition for entity at ${startPos}.`)
                     }
-                    current = ""
+                    current = ''
                     break;
                 case ENUM:
                     if (value) {
@@ -128,7 +126,7 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
                     } else {
                         feedback(FeedbackType.error, `No definition for value at ${startPos}.`)
                     }
-                    current = ""
+                    current = ''
                     break;
                 case STARTPROP:
                     {
@@ -140,9 +138,9 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
                             }
                             pos = newpos
                         } else {
-                            throw `${TOKENS[STARTPROP]} at ${startPos} missing end.`
+                            throw new Error(`${TOKENS[STARTPROP]} at ${startPos} missing end.`)
                         }
-                        current = ""
+                        current = ''
                         break;
                     }
                 case ENDPROP:
@@ -158,9 +156,9 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
                             }
                             pos = newpos
                         } else {
-                            throw `${TOKENS[STARTENTITY]} at ${startPos} missing end.`
+                            throw new Error(`${TOKENS[STARTENTITY]} at ${startPos} missing end.`)
                         }
-                        current = ""
+                        current = ''
                         break;
                     }
                 case ENDENTITY:
@@ -178,9 +176,9 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
                             }
                             pos = newpos
                         } else {
-                            throw `${TOKENS[STARTENTITY]} at ${pos} missing end.`
+                            throw new Error(`${TOKENS[STARTENTITY]} at ${pos} missing end.`)
                         }
-                        current = ""
+                        current = ''
                         break;
                     }
                 case ENDENUM:
@@ -223,7 +221,7 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outDir: str
 async function generateLU(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
     let templates = ''
     for (let entity of Object.values(schema.entities())) {
-        if (entity.name != 'string') {
+        if (entity.name !== 'string') {
             let template = await readTemplate(templateDir, entity.name, '.lu')
             let outName: string | undefined = undefined
             if (entity.values) {
@@ -232,7 +230,7 @@ async function generateLU(schema: s.FormSchema, templateDir: string, outDir: str
                     template = await readTemplate(templateDir, 'enum', '.lu', feedback);
                 }
                 if (template) {
-                    let valueSchema = new s.FormSchema("", { enum: entity.values })
+                    let valueSchema = new s.FormSchema('', { enum: entity.values })
                     template = expand(template, valueSchema, undefined, entity.name, undefined, feedback)
                     outName = await writeTemplate(template, outDir, entity.name, '.lu', true, force, feedback)
                 }
@@ -258,12 +256,6 @@ async function generateLU(schema: s.FormSchema, templateDir: string, outDir: str
 async function generateDialog(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
 }
 
-
-// TODO: 
-// One .lu per entity
-// One .lg per property
-// Do pieces for pulling out all entities, etc.
-
 /**
  * Iterate through the locale templates and generate per property/locale files.
  * Each template file will map to <filename>_<property>.<ext>.
@@ -275,7 +267,7 @@ async function generateDialog(schema: s.FormSchema, templateDir: string, outDir:
  */
 export async function generate(schema: s.FormSchema, outDir: string, locales?: string[], templateDir?: string, force?: boolean, feedback?: Feedback): Promise<void> {
     if (!locales) {
-        locales = ["en-us"]
+        locales = ['en-us']
     }
     if (!feedback) {
         feedback = (info, message) => true

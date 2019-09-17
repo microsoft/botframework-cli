@@ -474,11 +474,11 @@
         "signature": "ba8f7fdc64f8cf2852b71452f5d5f73908d6ec7f8b6b9734eca59195dbe5ebf3"
       },
       "./src/library/formgenerator.ts": {
-        "version": "79c6abc38811123ecca0d9eb2a9f9fff88089d98ac6ccfb86d8c42103b20cca4",
-        "signature": "cdc83e1a71dd75f044cb359547b081b39190b0cb646a3e0e5e9bdb427bedc260"
+        "version": "9008c55096866cee57aab0316c452f9cbd0f65a3201d9362e124e5489591855d",
+        "signature": "b7ac91469f16c37496a6d77ff1c253bc5e767fcb7039ed98aa60908ba671c036"
       },
       "./src/commands/dialog/form.ts": {
-        "version": "c427e099458d89e2f98b5fc73310e769febe0c9116b2de7f3707fcd79d2efb8e",
+        "version": "7c31104cf7e8718498463d3bc1692e27611180faaa0d5a185bdd3a23f0f652be",
         "signature": "602e48f54671a72a71fe32dae6433f824e12f65b8529686b1d1c165b91c95c8c"
       },
       "./node_modules/@types/semver/index.d.ts": {
@@ -1235,7 +1235,6 @@
         "./node_modules/globby/index.d.ts",
         "./node_modules/@types/node/os.d.ts",
         "./node_modules/@types/node/path.d.ts",
-        "./node_modules/@types/node/fs.d.ts",
         "./node_modules/@types/node/util.d.ts",
         "./node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -2421,6 +2420,7 @@
     },
     "semanticDiagnosticsPerFile": [
       "./src/library/formgenerator.ts",
+      "./src/commands/dialog/form.ts",
       "./node_modules/typescript/lib/lib.es5.d.ts",
       "./node_modules/typescript/lib/lib.es2015.d.ts",
       "./node_modules/typescript/lib/lib.es2016.d.ts",
@@ -2539,7 +2539,6 @@
       "./node_modules/fast-glob/out/managers/tasks.d.ts",
       "./node_modules/fast-glob/index.d.ts",
       "./node_modules/globby/index.d.ts",
-      "./src/commands/dialog/form.ts",
       "./node_modules/@types/semver/index.d.ts",
       "./node_modules/@types/xml2js/lib/processors.d.ts",
       "./node_modules/@types/xml2js/index.d.ts",
