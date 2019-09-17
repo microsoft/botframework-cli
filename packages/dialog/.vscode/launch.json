@@ -50,7 +50,6 @@
             "request": "launch",
             "name": "Dialog Form Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "cwd":"${workspaceFolder}",
             "args": [
                 "-u",
                 "tdd",

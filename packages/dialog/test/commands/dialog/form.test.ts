@@ -55,23 +55,21 @@ describe('dialog:form', async () => {
         }
     })
 
-    /*
     test
         .stdout()
         .stderr()
         .command(["dialog:form", `${badSchema}`])
         .it("Detect bad schema", ctx => {
             expect(ctx.stderr)
-                .to.contain("must be of type object")
+                .to.contain("not a valid JSON Schema")
         })
 
     test
         .stdout()
         .stderr()
-        .command(["dialog:form", `${schemaPath}`, "-o", `${output}`])
+        .command(["dialog:form", `${schemaPath}`, "-o", `${output}`, '--verbose'])
         .it("Detect success", ctx => {
-            expect(ctx.stdout)
-                .to.contain("Generated")
+            expect(ctx.stderr)
+                .to.contain("Generating")
         })
-        */
 })

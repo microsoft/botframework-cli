@@ -18,7 +18,7 @@ export default class DialogForm extends Command {
     static flags: flags.Input<any> = {
         force: flags.boolean({ char: 'f', description: 'Force overwriting generated files' }),
         help: flags.help({ char: 'h' }),
-        locale: flags.string({ char: 'l', default: 'en-us', description: 'Locales to generate.', multiple: true }),
+        locale: flags.string({ char: 'l', description: 'Locales to generate. [default: en-us]', multiple: true }),
         output: flags.string({ char: 'o', description: 'Output path for where to put generated .lu, .lg and .dialog files. [default: ./<schema>-resources]', default: '.', required: false }),
         templates: flags.string({ char: 't', description: "Directory with templates to use for generating form assets.", default: 'resources' }),
         verbose: flags.boolean({ description: 'Output verbose logging of files as they are processed', default: false }),
@@ -27,7 +27,7 @@ export default class DialogForm extends Command {
     async run() {
         const { args, flags } = this.parse(DialogForm)
         try {
-            let schemaName = path.basename(args.schema, 'json')
+            let schemaName = path.basename(args.schema, '.schema.dialog')
             let outDir = flags.output
             if (!outDir) {
                 outDir = path.join(schemaName + "-resources")
@@ -39,7 +39,6 @@ export default class DialogForm extends Command {
                     if (type == gen.FeedbackType.error || (type == gen.FeedbackType.info && flags.verbose)) {
                         this.progress(msg)
                     } 
-                    return true
                 })
             return true;
         } catch (e) {

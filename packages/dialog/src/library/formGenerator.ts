@@ -17,7 +17,7 @@ export enum FeedbackType {
     error
 }
 
-type Feedback = (type: FeedbackType, message: string) => boolean
+type Feedback = (type: FeedbackType, message: string) => void
 
 async function readTemplate(templateDir: string, templateName: string, templateExt: string, feedback?: Feedback): Promise<string | null> {
     let template = null
