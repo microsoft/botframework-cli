@@ -219,24 +219,20 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outDir: str
 async function generateLU(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
     let templates = ''
     for (let entity of Object.values(schema.entities())) {
-        if (entity.name !== 'string') {
+        if (entity.name !== 'utterance') {
             let template = await readTemplate(templateDir, entity.name, '.lu')
             let outName: string | undefined
-            if (entity.values) {
-                // Define base values for enum based list
-                if (!template) {
-                    template = await readTemplate(templateDir, 'enum', '.lu', feedback);
+            if (!template) {
+                if (entity.values) {
+                    template = await readTemplate(templateDir, 'enum', '.lu', feedback)
+                } else {
+                    template = await readTemplate(templateDir, 'string', '.lu', feedback)
                 }
-                if (template) {
-                    let valueSchema = new s.FormSchema('', { enum: entity.values })
-                    template = expand(template, valueSchema, undefined, entity.name, undefined, feedback)
-                    outName = await writeTemplate(template, outDir, entity.name, '.lu', true, force, feedback)
-                }
-            } else {
-                if (template) {
-                    template = expand(template, schema, undefined, entity.name, undefined, feedback)
-                    outName = await writeTemplate(template, outDir, entity.name, '.lu', true, force, feedback)
-                }
+            }
+            if (template) {
+                let valueSchema = new s.FormSchema('', { enum: entity.values })
+                template = expand(template, valueSchema, undefined, entity.name, undefined, feedback)
+                outName = await writeTemplate(template, outDir, entity.name, '.lu', true, force, feedback)
             }
             if (outName) {
                 templates += `[${outName}](./${outName})` + os.EOL
@@ -248,7 +244,7 @@ async function generateLU(schema: s.FormSchema, templateDir: string, outDir: str
         templates += `[${lib}](./${lib})` + os.EOL
     }
 
-    await writeTemplate(templates, outDir, schema.name, '.lu.dialog', true, force, feedback)
+    await writeTemplate(templates, outDir, schema.name, '.lu', true, force, feedback)
 }
 
 async function generateDialog(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {

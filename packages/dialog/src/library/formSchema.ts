@@ -102,7 +102,7 @@ export class FormSchema {
 
     mappings(): string[] {
         let mappings: string[] = this.schema.$mappings
-        if (mappings === null && this.path) {
+        if (!mappings && this.path) {
             if (this.schema.type === 'number') {
                 mappings = ['number']
             } else {
