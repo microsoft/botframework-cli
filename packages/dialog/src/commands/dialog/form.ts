@@ -20,7 +20,7 @@ export default class DialogForm extends Command {
         help: flags.help({ char: 'h' }),
         locale: flags.string({ char: 'l', description: 'Locales to generate. [default: en-us]', multiple: true }),
         output: flags.string({ char: 'o', description: 'Output path for where to put generated .lu, .lg and .dialog files. [default: ./<schema>-resources]', default: '.', required: false }),
-        templates: flags.string({ char: 't', description: "Directory with templates to use for generating form assets.", default: 'resources' }),
+        templates: flags.string({ char: 't', description: "Directory with templates to use for generating form assets." }),
         verbose: flags.boolean({ description: 'Output verbose logging of files as they are processed', default: false }),
     }
 
@@ -38,7 +38,7 @@ export default class DialogForm extends Command {
                 (type, msg) => {
                     if (type == gen.FeedbackType.error || (type == gen.FeedbackType.info && flags.verbose)) {
                         this.progress(msg)
-                    } 
+                    }
                 })
             return true;
         } catch (e) {

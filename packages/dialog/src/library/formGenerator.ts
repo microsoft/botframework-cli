@@ -277,11 +277,12 @@ export async function generate(schema: s.FormSchema, outDir: string, locales?: s
     if (!locales) {
         locales = ["en-us"]
     }
-    if (!templateDir) {
-        templateDir = 'resources'
-    }
     if (!feedback) {
         feedback = (info, message) => true
+    }
+    if (!templateDir) {
+        templateDir = path.join(__dirname, '../../resources')
+        feedback(FeedbackType.info, templateDir)
     }
     if (!force) {
         force = false;
