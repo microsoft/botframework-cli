@@ -3,11 +3,9 @@ const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../../../parser/lufile/helpers')
 const luTranslator = require('./../../../parser/translator/lutranslate')
-const luisConverter = require('./../../../parser/converters/luistoluconverter')
-const luConverter = require('./../../../parser/converters/lutoluisconverter')
 
-export default class LuisTranslate extends Command {
-  static description = ' Translate given LUIS application JSON model or lu file(s)'
+export default class QnamakerTranslate extends Command {
+  static description = 'Translate given LUIS application JSON model or lu file(s)'
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model', required: true}),
@@ -24,27 +22,21 @@ export default class LuisTranslate extends Command {
 
   async run() {
     try {
-      const {flags} = this.parse(LuisTranslate)
+      const {flags} = this.parse(QnamakerTranslate)
       this.inputStat = await fs.stat(flags.in)
-      let outputStat = flags.out ? await fs.stat(flags.out) : undefined
+      let outputStat = await fs.stat(flags.out)
 
-      if (!this.inputStat.isFile() && outputStat && outputStat.isFile()) {
+      if (!this.inputStat.isFile() && outputStat.isFile()) {
         throw new CLIError('Specified output cannot be applied to input')
       }
 
       let isLu = !this.inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
+
       let result: any
       let luFiles: any
       if (isLu) {
         luFiles = await this.getLuFiles(flags.in, flags.recurse)
         result = await luTranslator.translateLuFile(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
-      } else {
-        result = await luisConverter.parseLuisFileToLu(flags.in, false)
-        result = await luTranslator.translateLuObject(result, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
-        let tempFile = path.join(__dirname, 'tempfile')
-        await fs.writeFile(tempFile, result['luTranslation'][flags.tgtlang])
-        result = await luConverter.parseLuToLuis([tempFile], false, undefined)
-        await fs.remove(tempFile)
       }
 
       if (flags.out) {
@@ -78,6 +70,7 @@ export default class LuisTranslate extends Command {
     }
     return filesToParse
   }
+
 
   private async writeOutput(translatedObject: any, files: Array<string>, isLu: boolean, languages: Array<string>, out: string) {
     let filePath = ''

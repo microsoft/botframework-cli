@@ -6,17 +6,27 @@ const retCode = require('./../lufile/enums/CLI-errors')
 const translateHelpers = require('./../lufile/translate-helpers')
 
 module.exports = {
-    translateLu: async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+    translateLuFile: async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
         let translation = {}
         let i = 0
         while(files.length > i) {
             let file = files[i++] + ''       
             try {
-                translation[path.basename(file)] = await parseFile(file, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
+                let luObject = await parseFile(file)
+                translation[path.basename(file)] = await translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
             } catch (err) {
                 throw(err);
             }
          }
+        return translation
+    },
+    translateLuObject: async function(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+        let translation = {}
+        try {
+            translation['luTranslation'] = await translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
+        } catch (err) {
+            throw(err);
+        }
         return translation
     }
 }
@@ -32,7 +42,7 @@ module.exports = {
  * @returns {void} nothing
  * @throws {exception} Throws on errors. exception object includes errCode and text. 
  */
-async function parseFile(file, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+async function parseFile(file) {
     if(!fs.existsSync(path.resolve(file))) {
         throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry unable to open [' + file + ']'));
     }
@@ -40,18 +50,21 @@ async function parseFile(file, translate_key, to_lang, src_lang, translate_comme
     if (!fileContent) {
         throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, error reading file:' + file));
     }
+    return fileContent
+}
 
+async function translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
     let parsedLocContent = ''
     let result = {}
     // Support multi-language specification for targets.
     // Accepted formats are space or comma separated list of target language codes.
     // Tokenize to_lang
-    let toLang = to_lang.split(/[, ]/g);
+    let toLang = to_lang.split(/[, ]/g)
     for (idx in toLang) {
         let tgt_lang = toLang[idx].trim();
         if (tgt_lang === '') continue;
         try {
-            parsedLocContent = await translateHelpers.parseAndTranslate(fileContent, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, false, undefined)
+            parsedLocContent = await translateHelpers.parseAndTranslate(luObject, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, false, undefined)
         } catch (err) {
             throw(err);
         }
