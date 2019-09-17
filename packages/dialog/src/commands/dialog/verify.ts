@@ -27,7 +27,7 @@ export default class DialogVerify extends Command {
         verbose: flags.boolean({ description: 'Show verbose output', default: false }),
     }
 
-    private currentFile: string = ""
+    private currentFile = ''
     private files = 0
     private errors = 0
     private warnings = 0

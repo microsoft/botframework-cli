@@ -22,7 +22,7 @@ async function readTemplate(templateDir: string, templateName: string, templateE
     let template = null
     try {
         template = await fs.readFile(path.join(templateDir, templateName + templateExt), 'utf8')
-    } catch (_) {
+    } catch {
         if (feedback) {
             feedback(FeedbackType.warning, `There is no ${templateExt} template file for ${templateName}`)
         }
@@ -69,7 +69,7 @@ function scanForToken(template: string, pos: number, endToken: string): { newpos
         }
         ++pos
     }
-    return undefined
+    return
 }
 
 /**
@@ -87,7 +87,7 @@ function scanForToken(template: string, pos: number, endToken: string): { newpos
  */
 function expand(template: string, schema: s.FormSchema, property?: string, entity?: string, value?: string, feedback?: Feedback): string {
     if (!feedback) {
-        feedback = (type: FeedbackType, msg: string) => true
+        feedback = (_info: FeedbackType, _msg: string) => true
     }
     let newTemplate = ''
     let current = ''
@@ -128,62 +128,60 @@ function expand(template: string, schema: s.FormSchema, property?: string, entit
                     }
                     current = ''
                     break;
-                case STARTPROP:
-                    {
-                        let scan = scanForToken(template, pos + 1, TOKENS[ENDPROP])
-                        if (scan) {
-                            let { newpos, block } = scan
-                            for (let prop of schema.schemaProperties()) {
-                                newTemplate += expand(block, prop, prop.path, entity, value, feedback)
-                            }
-                            pos = newpos
-                        } else {
-                            throw new Error(`${TOKENS[STARTPROP]} at ${startPos} missing end.`)
+                case STARTPROP: {
+                    let scan = scanForToken(template, pos + 1, TOKENS[ENDPROP])
+                    if (scan) {
+                        let { newpos, block } = scan
+                        for (let prop of schema.schemaProperties()) {
+                            newTemplate += expand(block, prop, prop.path, entity, value, feedback)
                         }
-                        current = ''
-                        break;
+                        pos = newpos
+                    } else {
+                        throw new Error(`${TOKENS[STARTPROP]} at ${startPos} missing end.`)
                     }
+                    current = ''
+                    break;
+                }
                 case ENDPROP:
                     feedback(FeedbackType.error, `${TOKENS[ENDPROP]} at ${startPos} missing start.`)
                     break;
-                case STARTENTITY:
-                    {
-                        let scan = scanForToken(template, pos + 1, TOKENS[ENDENTITY])
-                        if (scan) {
-                            let { newpos, block } = scan
-                            for (let entity of schema.mappings()) {
-                                newTemplate += expand(block, schema, property, entity, value, feedback)
-                            }
-                            pos = newpos
-                        } else {
-                            throw new Error(`${TOKENS[STARTENTITY]} at ${startPos} missing end.`)
+                case STARTENTITY: {
+                    let scan = scanForToken(template, pos + 1, TOKENS[ENDENTITY])
+                    if (scan) {
+                        let { newpos, block } = scan
+                        for (let entity of schema.mappings()) {
+                            newTemplate += expand(block, schema, property, entity, value, feedback)
                         }
-                        current = ''
-                        break;
+                        pos = newpos
+                    } else {
+                        throw new Error(`${TOKENS[STARTENTITY]} at ${startPos} missing end.`)
                     }
+                    current = ''
+                    break;
+                }
                 case ENDENTITY:
                     feedback(FeedbackType.error, `${TOKENS[ENDENTITY]} at ${startPos} missing start.`)
                     break;
-                case STARTENUM:
-                    {
-                        let scan = scanForToken(template, pos + 1, TOKENS[ENDENUM])
-                        if (scan) {
-                            let { newpos, block } = scan
-                            if (schema.schema.enum) {
-                                for (let value of schema.schema.enum) {
-                                    newTemplate += expand(block, schema, property, entity, value, feedback)
-                                }
+                case STARTENUM: {
+                    let scan = scanForToken(template, pos + 1, TOKENS[ENDENUM])
+                    if (scan) {
+                        let { newpos, block } = scan
+                        if (schema.schema.enum) {
+                            for (let value of schema.schema.enum) {
+                                newTemplate += expand(block, schema, property, entity, value, feedback)
                             }
-                            pos = newpos
-                        } else {
-                            throw new Error(`${TOKENS[STARTENTITY]} at ${pos} missing end.`)
                         }
-                        current = ''
-                        break;
+                        pos = newpos
+                    } else {
+                        throw new Error(`${TOKENS[STARTENTITY]} at ${pos} missing end.`)
                     }
+                    current = ''
+                    break;
+                }
                 case ENDENUM:
                     feedback(FeedbackType.error, `${TOKENS[ENDENUM]} at ${pos} missing start.`)
                     break;
+                default:
             }
         }
         ++pos;
@@ -215,7 +213,7 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outDir: str
             await writeTemplate(newTemplate, outDir, prop.path, '.lg', true, force, feedback)
         }
     }
-    copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)
+    await copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)
 }
 
 async function generateLU(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
@@ -223,7 +221,7 @@ async function generateLU(schema: s.FormSchema, templateDir: string, outDir: str
     for (let entity of Object.values(schema.entities())) {
         if (entity.name !== 'string') {
             let template = await readTemplate(templateDir, entity.name, '.lu')
-            let outName: string | undefined = undefined
+            let outName: string | undefined
             if (entity.values) {
                 // Define base values for enum based list
                 if (!template) {
@@ -270,7 +268,7 @@ export async function generate(schema: s.FormSchema, outDir: string, locales?: s
         locales = ['en-us']
     }
     if (!feedback) {
-        feedback = (info, message) => true
+        feedback = (_info, _message) => true
     }
     if (!templateDir) {
         templateDir = path.join(__dirname, '../../resources')
@@ -293,4 +291,3 @@ export async function generate(schema: s.FormSchema, outDir: string, locales?: s
         }
     }
 }
-

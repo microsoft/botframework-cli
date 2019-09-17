@@ -40,8 +40,8 @@ export default class DialogMerge extends Command {
         verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
 
-    private verbose?: boolean = false
-    private failed: boolean = false
+    private verbose? = false
+    private failed = false
     private missingTypes = new Set()
     private currentFile = ''
     private readonly jsonOptions = { spaces: 4, EOL: os.EOL }

@@ -33,21 +33,6 @@ export class Entity {
 type EntitySet = Record<string, Entity>
 
 export class FormSchema {
-    /** Name of schema */
-    name: string
-
-    /** Path to this schema definition. */
-    path: string
-
-    /** Schema definition.  This is the content of a properties JSON Schema object. */
-    schema: any
-
-    constructor(path: string, schema: any, name?: string) {
-        this.name = name || ""
-        this.path = path
-        this.schema = schema
-    }
-
     /**
      * Read and validate schema from a path.
      * @param schemaPath URL for schema.
@@ -57,21 +42,42 @@ export class FormSchema {
         let schema = allof(noref)
         let validator = new Validator()
         if (!validator.validateSchema(schema)) {
-            let message = ""
+            let message = ''
             for (let error in validator.errors) {
                 message = message + error + os.EOL
             }
             throw message
         }
-        if (schema.type != "object") {
-            throw "Form schema must be of type object."
+        if (schema.type !== 'object') {
+            throw new Error('Form schema must be of type object.')
         }
-        return new FormSchema("", schema, ppath.basename(schemaPath, '.schema.dialog'))
+        return new FormSchema('', schema, ppath.basename(schemaPath, '.schema.dialog'))
+    }
+
+    /** 
+     * Name of schema 
+     */
+    name: string
+
+    /** 
+     * Path to this schema definition. 
+     */
+    path: string
+
+    /** 
+     * Schema definition.  This is the content of a properties JSON Schema object. 
+     */
+    schema: any
+
+    constructor(path: string, schema: any, name?: string) {
+        this.name = name || ''
+        this.path = path
+        this.schema = schema
     }
 
     * schemaProperties(): Iterable<FormSchema> {
         for (let prop in this.schema.properties) {
-            let newPath = this.path + (this.path == "" ? "" : ".") + prop
+            let newPath = this.path + (this.path === '' ? '' : '.') + prop
             yield new FormSchema(newPath, this.schema.properties[prop])
         }
     }
@@ -80,24 +86,24 @@ export class FormSchema {
         let isArray = false
         let schema = this.schema
         let type = schema.type
-        if (type == "array") {
+        if (type === 'array') {
             schema = this.schema.items
             type = schema.type
             isArray = true
         }
         if (schema.enum) {
-            type = "enum"
+            type = 'enum'
         }
         if (isArray) {
-            type = type + "[]"
+            type = type + '[]'
         }
         return type
     }
 
     mappings(): string[] {
         let mappings: string[] = this.schema.$mappings
-        if (mappings == null && this.path) {
-            if (this.schema.type == 'number') {
+        if (mappings === null && this.path) {
+            if (this.schema.type === 'number') {
                 mappings = ['number']
             } else {
                 mappings = [this.path]
@@ -109,13 +115,21 @@ export class FormSchema {
         return mappings
     }
 
+    /**
+     * Return all entities found in schema.
+     */
+    entities(): EntitySet {
+        let entities: EntitySet = {}
+        this.addEntities(entities)
+        return entities
+    }
+
     private addEntities(entities: EntitySet) {
         for (let mapping of this.mappings()) {
             if (!entities.hasOwnProperty(mapping)) {
                 let entity = new Entity(mapping)
-                if (mapping == this.path) {
-                    let values = null
-                    if (this.typeName() == "enum") {
+                if (mapping === this.path) {
+                    if (this.typeName() === 'enum') {
                         // TODO: Do we want to enhance the schema with enum synonyms or leave that to the .lu files?
                         entity.values = this.schema.enum
                     }
@@ -127,13 +141,4 @@ export class FormSchema {
             prop.addEntities(entities)
         }
     }
-
-    /**
-     * Return all entities found in schema.
-     */
-    entities(): EntitySet {
-        let entities: EntitySet = {}
-        this.addEntities(entities)
-        return entities
-    }
-}   
+}
