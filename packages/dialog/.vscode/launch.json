@@ -74,6 +74,24 @@
                 "-f",
                 "c:/source/github/botbuilder-dotnet/**/*.schema"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Sandwich Form",
+            "program": "${workspaceFolder}\\bin\\run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:form",
+                "${workspaceFolder}/test/commands/dialog/forms/sandwich.form.dialog",
+                "-o",
+                "D:/WorkStation/form.bot.tmp",
+                "--force",
+                "--verbose"
+            ]
         }
     ]
 }
