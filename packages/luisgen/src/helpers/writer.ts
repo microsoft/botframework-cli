@@ -1,17 +1,24 @@
 import {createWriteStream, WriteStream} from 'fs'
+import {Writable} from 'stream'
 
 export class Writer {
   public indentSize = 4
   public indentLevel = 0
-  private outputStream?: WriteStream = undefined
+  private outputStream?: Writable = undefined
 
   public async setOutputStream(outputPath: string): Promise<void> {
-    const stream = createWriteStream(outputPath)
+    const ConsoleStream = require('console-stream')
+    const stream: Writable = outputPath ? createWriteStream(outputPath) : ConsoleStream()
     return new Promise((resolve: any) => {
-      stream.once('ready', (_fd: number) => {
+      if (stream instanceof WriteStream) {
+        stream.once('ready', (_fd: number) => {
+          this.outputStream = stream
+          resolve()
+        })
+      } else {
         this.outputStream = stream
         resolve()
-      })
+      }
     })
   }
 
@@ -69,9 +76,13 @@ export class Writer {
   public async closeOutputStream(): Promise<void> {
     this.outputStream!.end()
     return new Promise((resolve: any) => {
-      this.outputStream!.on('finish', (_fd: number) => {
+      if (this.outputStream instanceof WriteStream) {
+        this.outputStream!.on('finish', (_fd: number) => {
+          resolve()
+        })
+      } else {
         resolve()
-      })
+      }
     })
   }
 }

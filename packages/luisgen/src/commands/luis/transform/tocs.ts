@@ -3,6 +3,7 @@ import * as path from 'path'
 
 import {CSharpTemplate} from '../../../helpers/csharp-template'
 import {LuisTransformToClass} from '../../../helpers/luis-to-classes'
+import {Utils} from '../../../helpers/utils'
 
 const fs = require('fs-extra')
 
@@ -10,14 +11,10 @@ export default class LuisTransformTocs extends Command {
   static description = 'describe the command here'
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Source LUIS application JSON file .OR. source .lu file'}),
-    folder: flags.string({char: 'l', description: 'Source folder that contains .lu file(s)'}),
-    subFolder: flags.boolean({char: 's', description: 'Indicates if sub-folders need to be considered to file .lu file(s)'}),
-    out: flags.string({char: 'o', description: 'Output file name'}),
-    outFolder: flags.string({char: 'd', description: 'Output file name'}),
+    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
+    out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output', default: ''}),
+    className: flags.string({description: 'Name of the class', required: true}),
   }
-
-  static args = [{name: 'file', required: true}, {name: 'className', required: true}]
 
   reorderEntities(app: any, name: string): void {
     if (app[name] !== null && app[name] !== undefined) {
@@ -26,34 +23,44 @@ export default class LuisTransformTocs extends Command {
   }
 
   async run() {
-    const {args, flags} = this.parse(LuisTransformTocs)
-    const dot_index = args.className.indexOf('.')
-    let space = 'Luis'
+    try {
+      const {flags} = this.parse(LuisTransformTocs)
+      const dot_index = flags.className.indexOf('.')
+      let space = 'Luis'
+      let stdInput = null
 
-    if (dot_index !== -1) {
-      space = args.className.substr(dot_index + 1)
-      args.className = args.className.substr(0, dot_index)
+      try {
+        stdInput = await this.readStdin()
+      } catch {}
+
+      if (dot_index !== -1) {
+        space = flags.className.substr(dot_index + 1)
+        flags.className = flags.className.substr(0, dot_index)
+      }
+
+      const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()
+      const app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+
+      this.reorderEntities(app, 'entities')
+      this.reorderEntities(app, 'prebuiltEntities')
+      this.reorderEntities(app, 'closedLists')
+      this.reorderEntities(app, 'regex_entities')
+      this.reorderEntities(app, 'patternAnyEntities')
+      this.reorderEntities(app, 'composites')
+
+      flags.className = flags.className || app.name.replace(' ', '_')
+
+      const description = `tocs ${flags.name} ${space}.${flags.className} -o ${__dirname}`
+
+      const outputPath = Utils.validatePath(flags.out, process.cwd(), flags.className + '.cs')
+      this.log(
+        `Generating file at ${outputPath || ''} that contains class ${space}.${flags.className}.`
+      )
+      const result = LuisTransformToClass.fromLuisApp(app)
+
+      await CSharpTemplate.fromLuisObject(result, description, flags.className, space, outputPath)
+    } catch (err) {
+      this.log(err)
     }
-
-    const app = await fs.readJSON(path.join('/Users/axelsuarez/Documents/botframework-cli/packages/luisgen', args.file))
-
-    this.reorderEntities(app, 'entities')
-    this.reorderEntities(app, 'prebuiltEntities')
-    this.reorderEntities(app, 'closedLists')
-    this.reorderEntities(app, 'regex_entities')
-    this.reorderEntities(app, 'patternAnyEntities')
-    this.reorderEntities(app, 'composites')
-
-    args.className = args.className || app.name.replace(' ', '_')
-    flags.out = flags.out || './'
-    const description = `tocs ${args.name} ${space}.${args.className} -o ${__dirname}`
-
-    const outName = `${flags.out}/${args.className}.cs`
-    this.log(
-      `Generating file ${outName} that contains class ${space}.${args.className}.`
-    )
-    const result = LuisTransformToClass.fromLuisApp(app)
-
-    await CSharpTemplate.fromLuisObject(result, description, args.className, space, outName)
   }
 }
