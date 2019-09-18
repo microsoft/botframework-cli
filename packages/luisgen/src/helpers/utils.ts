@@ -1,6 +1,6 @@
+import {CLIError} from '@microsoft/bf-cli-command'
 import {existsSync} from 'fs'
 import {basename, dirname, extname, isAbsolute, join} from 'path'
-import {CLIError} from '@microsoft/bf-cli-command'
 
 export namespace Utils {
   type Action = (value: string) => void
