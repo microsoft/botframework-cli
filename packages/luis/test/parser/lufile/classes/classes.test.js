@@ -4,11 +4,11 @@
  */
 const chai = require('chai');
 const assert = chai.assert;
-const exception = require('./../../../../parser/lufile/classes/exception');
-const QnA = require('./../../../../parser/lufile/classes/qna');
-const QnAList = require('./../../../../parser/lufile/classes/qnaList');
-const QnAMetadata = require('./../../../../parser/lufile/classes/qnaMetaData');
-const hClasses = require('./../../../../parser/lufile/classes/hclasses');
+const exception = require('./../../../../src/parser/lufile/classes/exception');
+const QnA = require('./../../../../src/parser/lufile/classes/qna');
+const QnAList = require('./../../../../src/parser/lufile/classes/qnaList');
+const QnAMetadata = require('./../../../../src/parser/lufile/classes/qnaMetaData');
+const hClasses = require('./../../../../src/parser/lufile/classes/hclasses');
 
 describe('Testing all classes', function() {
     describe('Exception class', function() {

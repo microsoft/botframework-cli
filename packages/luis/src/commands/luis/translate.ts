@@ -1,8 +1,8 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
-const helpers = require('./../../../parser/lufile/helpers')
-const luTranslator = require('./../../../parser/translator/lutranslate')
+const helpers = require('./../../parser/lufile/helpers')
+const luTranslator = require('./../../parser/translator/lutranslate')
 
 export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'

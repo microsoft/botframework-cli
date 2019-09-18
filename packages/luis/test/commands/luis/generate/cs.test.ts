@@ -1,0 +1,2 @@
+describe('luis:generate:cs', () => {
+})

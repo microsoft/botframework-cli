@@ -19,7 +19,7 @@ $ npm install -g @microsoft/bf-luis
 $ bf COMMAND
 running command...
 $ bf (-v|--version|version)
-@microsoft/bf-luis/1.0.0 darwin-x64 node-v12.1.0
+@microsoft/bf-luis/1.0.0 darwin-x64 node-v12.3.1
 $ bf --help [COMMAND]
 USAGE
   $ bf COMMAND
@@ -29,9 +29,9 @@ USAGE
 # Commands
 <!-- commands -->
 * [`bf luis:convert`](#bf-luisconvert)
+* [`bf luis:generate:cs [FILE]`](#bf-luisgeneratecs-file)
 * [`bf luis:translate`](#bf-luistranslate)
-* [`bf qnamaker:convert [FILE]`](#bf-qnamakerconvert-file)
-* [`bf qnamker:convert`](#bf-qnamkerconvert)
+* [`bf qnamaker:convert`](#bf-qnamakerconvert)
 
 ## `bf luis:convert`
 
@@ -56,6 +56,22 @@ OPTIONS
 
 _See code: [src/commands/luis/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/convert.ts)_
 
+## `bf luis:generate:cs [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bf luis:generate:cs [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/luis/generate/cs.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/generate/cs.ts)_
+
 ## `bf luis:translate`
 
 Translate given LUIS application JSON model or lu file(s)
@@ -77,29 +93,13 @@ OPTIONS
 
 _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
 
-## `bf qnamaker:convert [FILE]`
+## `bf qnamaker:convert`
 
-describe the command here
-
-```
-USAGE
-  $ bf qnamaker:convert [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src/commands/qnamaker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
-
-## `bf qnamker:convert`
-
-describe the command here
+Convert .lu file(s) to a QnA application JSON model or vice versa
 
 ```
 USAGE
-  $ bf qnamker:convert
+  $ bf qnamaker:convert
 
 OPTIONS
   --alterations  Indicates if files is QnA Alterations
@@ -111,5 +111,5 @@ OPTIONS
   --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .lu files
 ```
 
-_See code: [src/commands/qnamker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamker/convert.ts)_
+_See code: [src/commands/qnamaker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
 <!-- commandsstop -->

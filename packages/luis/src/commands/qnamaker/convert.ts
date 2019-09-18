@@ -1,10 +1,10 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-const exception = require('./../../../parser/lufile/classes/exception')
+const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
 const path = require('path')
-const helpers = require('./../../../parser/lufile/helpers')
-const luConverter = require('./../../../parser/converters/qnatoqnajsonconverter')
-const qnaConverter = require('./../../../parser/converters/qnajsontoqnaconverter')
+const helpers = require('./../../parser/lufile/helpers')
+const luConverter = require('./../../parser/converters/qnatoqnajsonconverter')
+const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
 
 export default class QnamakerConvert extends Command {
   static description = 'Convert .lu file(s) to a QnA application JSON model or vice versa'

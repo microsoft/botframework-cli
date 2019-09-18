@@ -4,9 +4,9 @@
  */
 const chai = require('chai');
 const assert = chai.assert;
-const parseFile = require('./../../../parser/lufile/parseFileContents').parseFile;
-const collateFiles = require('./../../../parser/converters/qnatoqnajsonconverter').collateQnAFiles;
-const retCode = require('./..//../../parser/lufile/enums/CLI-errors').errorCode;
+const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
+const collateFiles = require('./../../../src/parser/converters/qnatoqnajsonconverter').collateQnAFiles;
+const retCode = require('./..//../../src/parser/lufile/enums/CLI-errors').errorCode;
 describe('With parse file function', function() {
     it('Throws when input lu file has invalid URIs', function(done){
         let fileContent = `[InvalidPDF](https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN2.pdf)`;
