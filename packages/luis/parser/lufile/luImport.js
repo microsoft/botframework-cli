@@ -1,5 +1,4 @@
 const ImportDefinitionContext = require('./generated/LUFileParser').LUFileParser.ImportDefinitionContext;
-const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 
 class LUImport {

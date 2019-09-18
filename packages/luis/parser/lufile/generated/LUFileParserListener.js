@@ -38,6 +38,78 @@ LUFileParserListener.prototype.exitNewline = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#sectionDefinition.
+LUFileParserListener.prototype.enterSectionDefinition = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#sectionDefinition.
+LUFileParserListener.prototype.exitSectionDefinition = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#sectionNameLine.
+LUFileParserListener.prototype.enterSectionNameLine = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#sectionNameLine.
+LUFileParserListener.prototype.exitSectionNameLine = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#sectionName.
+LUFileParserListener.prototype.enterSectionName = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#sectionName.
+LUFileParserListener.prototype.exitSectionName = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#nameIdentifier.
+LUFileParserListener.prototype.enterNameIdentifier = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#nameIdentifier.
+LUFileParserListener.prototype.exitNameIdentifier = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#sectionBodyDefinition.
+LUFileParserListener.prototype.enterSectionBodyDefinition = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#sectionBodyDefinition.
+LUFileParserListener.prototype.exitSectionBodyDefinition = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#subSectionDefinition.
+LUFileParserListener.prototype.enterSubSectionDefinition = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#subSectionDefinition.
+LUFileParserListener.prototype.exitSubSectionDefinition = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#subIntentDefinition.
+LUFileParserListener.prototype.enterSubIntentDefinition = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#subIntentDefinition.
+LUFileParserListener.prototype.exitSubIntentDefinition = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#subIntentNameLine.
+LUFileParserListener.prototype.enterSubIntentNameLine = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#subIntentNameLine.
+LUFileParserListener.prototype.exitSubIntentNameLine = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#intentDefinition.
 LUFileParserListener.prototype.enterIntentDefinition = function(ctx) {
 };
@@ -62,15 +134,6 @@ LUFileParserListener.prototype.enterIntentName = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#intentName.
 LUFileParserListener.prototype.exitIntentName = function(ctx) {
-};
-
-
-// Enter a parse tree produced by LUFileParser#intentNameIdentifier.
-LUFileParserListener.prototype.enterIntentNameIdentifier = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#intentNameIdentifier.
-LUFileParserListener.prototype.exitIntentNameIdentifier = function(ctx) {
 };
 
 

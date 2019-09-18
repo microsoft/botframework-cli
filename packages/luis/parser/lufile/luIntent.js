@@ -2,7 +2,6 @@ const IntentDefinitionContext = require('./generated/LUFileParser').LUFileParser
 const visitor = require('./visitor');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const LUISObjNameEnum = require('./enums/luisobjenum');
 
 class LUIntent {
     /**
@@ -18,7 +17,11 @@ class LUIntent {
     }
 
     ExtractName(parseTree) {
-        return parseTree.intentNameLine().intentName().getText().trim();
+        if (parseTree.intentNameLine !== undefined) {
+            return parseTree.intentNameLine().intentName().getText().trim();
+        } else {
+            return parseTree.subIntentNameLine().intentName().getText().trim();
+        }
     }
 
     ExtractUtteranceAndEntitiesMap(parseTree) {

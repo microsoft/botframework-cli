@@ -3,6 +3,7 @@ const LUFileLexer = require('./generated/LUFileLexer').LUFileLexer;
 const LUFileParser = require('./generated/LUFileParser').LUFileParser;
 const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext;
 const LUResource = require('./luResource');
+const LUSection = require('./luSection');
 const LUIntent = require('./luIntent');
 const LUEntity = require('./luEntity');
 const LUImport = require('./luImport');
@@ -15,16 +16,20 @@ class LUParser {
      * @param {string} text
      */
     static parse(text) {
+        let luSections;
         let luIntents;
         let luEntities;
         let luImports;
         let qnas;
         let modelInfos;
+        let content = text;
 
         let { fileContent, errors } = this.getFileContent(text);
         if (errors.length > 0) {
-            return new LUResource(luIntents, luEntities, luImports, qnas, modelInfos, errors);
+            return new LUResource(luSections, luIntents, luEntities, luImports, qnas, modelInfos, content, errors);
         }
+
+        luSections = this.extractLUSections(fileContent);
 
         luIntents = this.extractLUIntents(fileContent);
         luIntents.forEach(luIntent => errors = errors.concat(luIntent.Errors));
@@ -39,7 +44,7 @@ class LUParser {
 
         modelInfos = this.extractLUModelInfos(fileContent);
 
-        return new LUResource(luIntents, luEntities, luImports, qnas, modelInfos, errors);
+        return new LUResource(luSections, luIntents, luEntities, luImports, qnas, modelInfos, errors);
     }
 
     /**
@@ -65,6 +70,24 @@ class LUParser {
         const fileContent = parser.file();
         
         return { fileContent, errors };
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractLUSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let sectionDefinitions = fileContext.paragraph()
+            .map(x => x.sectionDefinition())
+            .filter(x => x !== undefined && x !== null);
+
+        let sections = sectionDefinitions.map(x => new LUSection(x));
+
+        return sections;
     }
 
     /**

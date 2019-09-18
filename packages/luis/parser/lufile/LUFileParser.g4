@@ -8,6 +8,7 @@ file
 
 paragraph
     : newline
+    | sectionDefinition
     | intentDefinition
     | entityDefinition
     | importDefinition
@@ -23,6 +24,38 @@ newline
     | EOF
     ;
 
+sectionDefinition
+    : sectionNameLine newline+ sectionBodyDefinition
+    ;
+
+sectionNameLine
+    : HASH sectionName
+    ;
+
+sectionName
+    : nameIdentifier (WS|nameIdentifier)*
+    ;
+
+nameIdentifier
+    : IDENTIFIER (DOT IDENTIFIER)*
+    ;
+
+sectionBodyDefinition
+    : (subSectionDefinition newline*)+
+    ;
+
+subSectionDefinition
+    : subIntentDefinition newline* (entityDefinition newline*)*
+    ;
+
+subIntentDefinition
+    : subIntentNameLine newline intentBody?
+    ;
+
+subIntentNameLine
+    : DOUBLE_HASH intentName
+    ;
+
 intentDefinition
 	: intentNameLine newline intentBody?
 	;
@@ -32,11 +65,7 @@ intentNameLine
 	;
 
 intentName
-    : intentNameIdentifier (WS|intentNameIdentifier)*
-    ;
-
-intentNameIdentifier
-    : IDENTIFIER (DOT IDENTIFIER)*
+    : nameIdentifier (WS|nameIdentifier)*
     ;
 
 intentBody

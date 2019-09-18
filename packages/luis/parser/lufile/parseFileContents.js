@@ -121,8 +121,24 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
         }
     }
 
+    // parse model info section
+    [enableSections, enableMergeIntents] = parseAndHandleModelInfo(parsedContent, luResource, log);
+
+    if (!enableSections && luResource.Sections && luResource.length > 0) {
+        let errorMsg = `Section defintion '${luResource.Sections[0].Name}' is detected. Please enable @Sections = true in comments at the beginning of lu file`;
+        let error = BuildDiagnostic({
+            message: errorMsg,
+            context: luResource.Sections[0].ParseTree
+        })
+
+        throw (new exception(retCode.errorCode.INVALID_LINE, error.toString()));
+    }
+
     // parse reference section
     await parseAndHandleReference(parsedContent, luResource);
+
+    // parse section section
+    parseAndHandleSection(luResource, enableMergeIntents);
 
     // parse intent section
     parseAndHandleIntent(parsedContent, luResource);
@@ -132,9 +148,6 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     // parse qna section
     parseAndHandleQna(parsedContent, luResource);
-
-    // parse model info section
-    parseAndHandleModelInfo(parsedContent, luResource, log);
 }
 
 /**
@@ -188,6 +201,53 @@ const parseAndHandleReference = async function (parsedContent, luResource) {
                 parsedContent.additionalFilesToParse.push(new fileToParse(linkValue));
             }
         }
+    }
+}
+
+/**
+ * Intent parser code to parse intent section.
+ * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
+ * @param {LUResouce} luResource resources extracted from lu file content
+ * @throws {exception} Throws on errors. exception object includes errCode and text.
+ */
+const parseAndHandleSection = function (luResource, enableMergeIntents) {
+    // handle sections
+    let entitiesFromSections = [];
+    let sections = luResource.Sections;
+    if (sections && sections.length > 0) {
+        sections.forEach(section => {
+            if (enableMergeIntents) {
+                let mergedIntent = section.SubSections[0].Intent;
+                mergedIntent.ParseTree = section.ParseTree;
+                mergedIntent.Name = section.Name;
+                for (let idx = 1; idx < section.SubSections.length; idx++) {
+                    mergedIntent.UtteranceAndEntitiesMap = mergedIntent.UtteranceAndEntitiesMap.concat(subSection.Intent.UtteranceAndEntitiesMap);
+                    mergedIntent.Errors = mergedIntent.Errors.concat(subSection.Intent.Errors);
+                }
+
+                luResource.Intents.push(mergedIntent);
+            } else {
+                section.SubSections.forEach(subSection => {
+                    subSection.Intent.Name = section.Name + '.' + subSection.Intent.Name;
+                    luResource.Intents.push(subSection.Intent);
+                })
+            }
+
+            section.SubSections.forEach(subSection => {
+                if (subSection.Entities && subSection.Entities.length > 0) {
+                    entitiesFromSections = entitiesFromSections.concat(subSection.Entities);
+                }
+            })
+
+            // remove dups as sections may define same entities several times
+            entitiesFromSections = entitiesFromSections.filter((entity, index, self) =>
+                index === self.findIndex((t) => (
+                    t.Name === entity.Name
+                ))
+            )
+
+            luResource.Entities = luResource.Entities.concat(entitiesFromSections);
+        })
     }
 }
 
@@ -726,12 +786,24 @@ const parseAndHandleQna = function (parsedContent, luResource) {
  */
 const parseAndHandleModelInfo = function (parsedContent, luResource, log) {
     // handle model info
+    let enableSections = false;
+    let enableMergeIntents = true;
     let modelInfos = luResource.ModelInfos;
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents).(.*)=/g).map(item => item.trim());
             if (kvPair.length === 4) {
+                if (kvPair[1] === 'enableSections' && kvPair[3] === 'true') {
+                    enableSections = true;
+                    continue;
+                }
+
+                if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
+                    enableMergeIntents = false;
+                    continue;
+                }
+
                 let hasError = false;
                 kvPair.forEach(item => {
                     if (item.trim() === '') {
@@ -813,6 +885,8 @@ const parseAndHandleModelInfo = function (parsedContent, luResource, log) {
             }
         }
     }
+
+    return [enableSections, enableMergeIntents];
 }
 
 

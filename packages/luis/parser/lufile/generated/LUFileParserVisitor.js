@@ -30,6 +30,54 @@ LUFileParserVisitor.prototype.visitNewline = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#sectionDefinition.
+LUFileParserVisitor.prototype.visitSectionDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#sectionNameLine.
+LUFileParserVisitor.prototype.visitSectionNameLine = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#sectionName.
+LUFileParserVisitor.prototype.visitSectionName = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#nameIdentifier.
+LUFileParserVisitor.prototype.visitNameIdentifier = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#sectionBodyDefinition.
+LUFileParserVisitor.prototype.visitSectionBodyDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#subSectionDefinition.
+LUFileParserVisitor.prototype.visitSubSectionDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#subIntentDefinition.
+LUFileParserVisitor.prototype.visitSubIntentDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#subIntentNameLine.
+LUFileParserVisitor.prototype.visitSubIntentNameLine = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#intentDefinition.
 LUFileParserVisitor.prototype.visitIntentDefinition = function(ctx) {
   return this.visitChildren(ctx);
@@ -44,12 +92,6 @@ LUFileParserVisitor.prototype.visitIntentNameLine = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#intentName.
 LUFileParserVisitor.prototype.visitIntentName = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#intentNameIdentifier.
-LUFileParserVisitor.prototype.visitIntentNameIdentifier = function(ctx) {
   return this.visitChildren(ctx);
 };
 
