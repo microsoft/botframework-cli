@@ -46,12 +46,12 @@ export class FormSchema {
             for (let error in validator.errors) {
                 message = message + error + os.EOL
             }
-            throw message
+            throw new Error(message)
         }
         if (schema.type !== 'object') {
             throw new Error('Form schema must be of type object.')
         }
-        return new FormSchema('', schema, ppath.basename(schemaPath, '.schema.dialog'))
+        return new FormSchema('', schema, ppath.basename(schemaPath, '.form.dialog'))
     }
 
     /** 
@@ -98,6 +98,10 @@ export class FormSchema {
             type = type + '[]'
         }
         return type
+    }
+
+    templateName(): string {
+        return this.schema.$template || this.typeName()
     }
 
     mappings(): string[] {
