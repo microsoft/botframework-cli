@@ -1,7 +1,7 @@
-import {Command, flags} from '@oclif/command'
+import {Command, flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, Config} from '../../utils/configfilehandler'
 
-export default class ConfigGet extends Command {
+export default class ConfigShow extends Command {
   static description = 'Displays the config file'
 
   static flags = {

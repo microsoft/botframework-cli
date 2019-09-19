@@ -23,6 +23,7 @@ const configFile = path.join(pathToConfigJson, 'config.json')
 
 export async function initTestConfigFile() {
   const config = {
+    telemetry:true,
     qnamaker: {
       subscriptionKey: "222222cccccctttttth223kk3k33",
       hostname: "https://somehost.net",

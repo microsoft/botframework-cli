@@ -19,7 +19,7 @@ describe('command', () => {
     return Test.run([])
   })
   .do(output => expect(output.stderr).to.equal('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues\nfailure\n'))
-  .it('errors out')
+  .it('Errors out')
 
   fancy
   .stderr()
@@ -65,6 +65,20 @@ describe('command', () => {
   })
   .do(output => expect(output.stdout).to.equal('No crash\n'))
   .it('Track Event should not crash')
+
+  fancy
+  .stderr()
+  .do(async () => {
+    class Test extends Command {
+        async run() {
+            let stdin = await this.readStdin()
+            this.log(stdin)
+        }
+      }
+    return Test.run([])
+  })
+  .do(output => expect(output.stderr).to.equal(''))
+  .it('Command should return empty string if no stdin')
 
   fancy
   .stdin('test reading of piped data')
