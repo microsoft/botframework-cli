@@ -228,15 +228,23 @@ async function copyLibraries(schema: s.FormSchema, templateDir: string, ext: str
 }
 
 async function generateLG(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
+    let refs = ''
     for (let prop of schema.schemaProperties()) {
         let type = prop.templateName()
         let template = await readTemplate(templateDir, type, '.lg', feedback)
         if (template) {
             let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
-            await writeTemplate(newTemplate, outDir, prop.path, '.lg', true, force, feedback)
+            let outName = await writeTemplate(newTemplate, outDir, prop.path, '.lg', true, force, feedback)
+            if (outName) {
+                refs += `(${outName})[${outName}]${os.EOL}`
+            }
         }
     }
-    await copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)
+
+    for (let ref of await copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)) {
+        refs += `(${ref})[${ref}]${os.EOL}`
+    }
+    await writeTemplate(refs, outDir, schema.name, '.lu', true, force, feedback)
 }
 
 async function generateLU(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {

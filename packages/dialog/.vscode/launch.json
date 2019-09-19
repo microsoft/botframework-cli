@@ -17,7 +17,7 @@
             "request": "launch",
             "name": "Dialog Merge Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "cwd":"${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "args": [
                 "-u",
                 "tdd",
@@ -33,7 +33,7 @@
             "request": "launch",
             "name": "Dialog Verify Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "cwd":"${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "sourceMaps": false,
             "args": [
                 "-u",
@@ -50,6 +50,7 @@
             "request": "launch",
             "name": "Dialog Form Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "preLaunchTask": "tsc: build - tsconfig.json",
             "args": [
                 "-u",
                 "tdd",
@@ -59,7 +60,7 @@
                 "${workspaceFolder}/test/commands/dialog/form.test.ts"
             ],
             "internalConsoleOptions": "openOnSessionStart"
-        },    
+        },
         {
             "type": "node",
             "request": "launch",
