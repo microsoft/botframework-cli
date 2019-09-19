@@ -4511,11 +4511,6 @@
       "entities": []
     },
     {
-      "text": "^[(would you|could you|can you)] [please] cancel (previous|current|this) (step|operation)",
-      "intent": "Cancel",
-      "entities": []
-    },
-    {
       "text": "confirm all of them",
       "intent": "Confirm",
       "entities": [
@@ -6101,11 +6096,6 @@
       "entities": []
     },
     {
-      "text": "^[(can|could|would)] [you] [please] [(show|display|go back to)][the](first|previous)page",
-      "intent": "ShowPreviousPage",
-      "entities": []
-    },
-    {
       "text": "access my shopping list",
       "intent": "ShowToDo",
       "entities": [
@@ -6838,12 +6828,20 @@
       "intent": "AddToDo"
     },
     {
+      "pattern": "^[(would you|could you|can you)] [please] cancel (previous|current|this) (step|operation)",
+      "intent": "Cancel"
+    },
+    {
       "pattern": "^(yes|ok|sure), [please][(add|delete|update)] [the] [(item|task|todo item)][(of|about|that)]{TaskContent}",
       "intent": "Confirm"
     },
     {
       "pattern": "^[task][(done|finished|completed)]{TaskContent},[please][(check off|mark it)][as][(done|finished|complete)]",
       "intent": "MarkToDo"
+    },
+    {
+      "pattern": "^[(can|could|would)] [you] [please] [(show|display|go back to)][the](first|previous)page",
+      "intent": "ShowPreviousPage"
     },
     {
       "pattern": "^(what|anything)[do] i (need|should|have to) (buy|shop|purchase) for {TaskContent}",
