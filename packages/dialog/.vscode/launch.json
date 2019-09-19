@@ -89,7 +89,7 @@
                 "dialog:form",
                 "${workspaceFolder}/test/commands/dialog/forms/sandwich.form.dialog",
                 "-o",
-                "D:/WorkStation/form.bot.tmp",
+                "${env:TEMP}/sandwich.out",
                 "--force",
                 "--verbose"
             ]

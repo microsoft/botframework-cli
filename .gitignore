@@ -76,3 +76,7 @@ packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.As
 
 #generated antlr files
 .antlr
+packages/dialog/tsconfig.tsbuildinfo
+
+# BuildInfo
+tsconfig.tsbuildinfo

@@ -236,15 +236,15 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outDir: str
             let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
             let outName = await writeTemplate(newTemplate, outDir, prop.path, '.lg', true, force, feedback)
             if (outName) {
-                refs += `(${outName})[${outName}]${os.EOL}`
+                refs += `[${outName}](./${outName})${os.EOL}`
             }
         }
     }
 
     for (let ref of await copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)) {
-        refs += `(${ref})[${ref}]${os.EOL}`
+        refs += `[${ref}](./${ref})${os.EOL}`
     }
-    await writeTemplate(refs, outDir, schema.name, '.lu', true, force, feedback)
+    await writeTemplate(refs, outDir, schema.name, '.lg', true, force, feedback)
 }
 
 async function generateLU(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
