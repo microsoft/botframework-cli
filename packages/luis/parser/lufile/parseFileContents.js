@@ -208,13 +208,12 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
             for (const utteranceAndEntities of intent.UtteranceAndEntitiesMap) {
                 // add utterance
                 let utterance = utteranceAndEntities.utterance.trim();
-                if (utterance.indexOf('[') == 0) {
-                    let linkExp = (utterance || '').trim().match(new RegExp(/\(.*?\)/g));
-                    if (linkExp && linkExp.length === 1) {
-                        let parsedLinkUriInUtterance = helpers.parseLinkURI(utterance);
-                        // examine and add these to filestoparse list.
-                        parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
-                    }
+                // Fix for BF-CLI #122. 
+                // Ensure only links are detected and passed on to be parsed.
+                if (helpers.isUtteranceLinkRef(utterance || '')) {
+                    let parsedLinkUriInUtterance = helpers.parseLinkURI(utterance);
+                    // examine and add these to filestoparse list.
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
                 }
 
                 if (utteranceAndEntities.entities.length > 0) {
@@ -387,8 +386,14 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                     }
 
                 } else {
-                    let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
-                    parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
+                    // detect if utterance is a pattern and if so add it as a pattern
+                    if (helpers.isUtterancePattern(utterance)) {
+                        let patternObject = new helperClass.pattern(utterance, intentName);
+                        parsedContent.LUISJsonStructure.patterns.push(patternObject);
+                    } else {
+                        let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                        parsedContent.LUISJsonStructure.utterances.push(utteranceObject);    
+                    }
                 }
             }
         }
