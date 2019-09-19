@@ -1,4 +1,3 @@
-const LUResource = require('./luResource');
 const LUSection = require('./luSection');
 const LUIntent = require('./luIntent');
 const LUEntity = require('./luEntity');
