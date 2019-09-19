@@ -1,6 +1,6 @@
 ﻿> # Intent definitions
 
-## AddFlag
+# AddFlag
 - add a flag
 - add a flag please
 - add a flag to the {OrderReference=last} email
@@ -34,7 +34,7 @@
 - turn flag on
 
 
-## AddMore
+# AddMore
 - add a {Attachment=file} to the email
 - add a {Attachment=picture}
 - add a subject
@@ -102,7 +102,7 @@
 - write more
 
 
-## CancelMessages
+# CancelMessages
 - abort deletion
 - can you cancel it
 - cancel email
@@ -152,7 +152,7 @@
 - ^cancel [sending] [(my|the)] (email|mail) to {ContactName}
 
 
-## CheckMessages
+# CheckMessages
 - any {Category=new} email
 - any {Category=new} email available
 - any {Category=new} email {Time=now}
@@ -201,7 +201,7 @@
 - show [(my|the)] [(unread|important|{Category})] (email|mail|emails)^
 
 
-## ConfirmMessages
+# ConfirmMessages
 - "okay, send it"
 - "sure, go ahead"
 - "yes, you can"
@@ -225,7 +225,7 @@
 - yes, send it
 
 
-## Delete
+# Delete
 - can you help me delete it
 - clear my inbox
 - delete all emails from {SenderName=tom}
@@ -255,7 +255,7 @@
 - ^(delete|remove) [the] [{OrderReference}] (email|emails|mails) [from {SenderName}]
 
 
-## Forward
+# Forward
 - could you forward this message to {ContactName=ronald} and {ContactName=roy}
 - could you please forward this email to my {RelationshipName=sister}
 - forward all {Attachment=files} from {SenderName=sally} to {ContactName=austin}
@@ -290,7 +290,7 @@
 - please forward to {ContactName=benjamin}
 
 
-## None
+# None
 - 1
 - 2
 - 3
@@ -299,7 +299,7 @@
 - the {PositionReference=third} one
 
 
-## QueryLastText
+# QueryLastText
 - can you tell me the {OrderReference=last} email i received
 - come to the {OrderReference=last}
 - go to the {OrderReference=last} one
@@ -334,7 +334,7 @@
 - whose email {Time=now} ?
 
 
-## ReadAloud
+# ReadAloud
 - can you read my emails
 - can you read my {OrderReference=last} email
 - could you read out the email on {EmailSubject=how to use the new tool}?
@@ -421,7 +421,7 @@
 - ^read [me] the (email|mail) (titled|about|on) [the] {EmailSubject}^
 
 
-## Reply
+# Reply
 - create a response to the email by saying {Message=pls send me the picture again}
 - email back
 - email back {Message=i will call you back}
@@ -458,7 +458,7 @@
 - ^reply [back] [with] [the] [message] [that] "{Message.Any}"
 
 
-## SearchMessages
+# SearchMessages
 - can you search my emails
 - detect emails from {SenderName=betty}
 - detect the email containing keyword {SearchTexts=beauty}
@@ -514,7 +514,7 @@
 - ^(show|search|find) [me] [(an|the)] [{Category}] email[s] (on|about|titled) {EmailSubject} [sent] [(by|from) {SenderName}]^
 
 
-## SendEmail
+# SendEmail
 - compose new email about {EmailSubject=spanish homework}
 - create new mail titled {EmailSubject=urgent meeting information} to {ContactName=jonathan}
 - email her the message "fine, ok"
@@ -620,7 +620,7 @@
 - ^(write|send|start) [(a|an|the)] [new] email to {ContactName} (about|on|with) [the subject] [that] {EmailSubject}^
 
 
-## ShowNext
+# ShowNext
 - are there any {Category=unread} messages? show {OrderReference=next}
 - go forward to {OrderReference=next} mails
 - go on, show me more mails
@@ -645,7 +645,7 @@
 - ^(show|give|tell) [me] [the] next (email|message|mail)^
 
 
-## ShowPrevious
+# ShowPrevious
 - back to the {OrderReference=last} one from {SenderName=apple}
 - bring the {OrderReference=previous} one, i want to read it again
 - go to {OrderReference=previous} mails

@@ -1,6 +1,6 @@
 > # Intent definitions
 
-## AddToOrder
+# AddToOrder
 - give me a large {Item=big apple} and a large {Item=coffee} with two {Item=milk}
 
 

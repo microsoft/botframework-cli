@@ -9,7 +9,7 @@
 
 > # Intent definitions
 
-## Cancel
+# Cancel
 - cancel
 - cancel app
 - cancel cancel
@@ -45,7 +45,7 @@
 - sorry, don't do it
 
 
-## Confirm
+# Confirm
 - confirm
 - do it
 - fine
@@ -96,7 +96,7 @@
 - yes
 
 
-## Escalate
+# Escalate
 - can i talk to a person
 - contact support
 - contact the customer service
@@ -113,7 +113,7 @@
 - talk to a human
 
 
-## FinishTask
+# FinishTask
 - all finished
 - all set
 - done
@@ -130,7 +130,7 @@
 - submit it
 
 
-## GoBack
+# GoBack
 - back
 - back please
 - back to
@@ -150,7 +150,7 @@
 - return
 
 
-## Help
+# Help
 - any help
 - can you help
 - can you help me
@@ -167,20 +167,20 @@
 - some help
 - who can help me
 
-## Logout
+# Logout
 - signout
 - forget me
 - sign out
 - logout
 - log out
 
-## None
+# None
 - all of them
 - i want them all
 - i want to all of them
 
 
-## ReadAloud
+# ReadAloud
 - can you read it
 - can you read that
 - can you read that for me
@@ -246,7 +246,7 @@
 - would you read that to me please
 
 
-## Reject
+# Reject
 - i don't like it
 - i reject
 - negative
@@ -280,7 +280,7 @@
 - reject it
 
 
-## Repeat
+# Repeat
 - again
 - could you say it again
 - i didn't hear repeat again
@@ -298,7 +298,7 @@
 - what was that again
 
 
-## SelectAny
+# SelectAny
 - any of it
 - any one is ok
 - anyone is fine
@@ -314,7 +314,7 @@
 - select any of it
 
 
-## SelectItem
+# SelectItem
 - choose last
 - choose last one
 - choose no.2
@@ -383,7 +383,7 @@
 - what about the third one
 
 
-## SelectNone
+# SelectNone
 - i don't want to choose any one
 - i don't want to select any one
 - i want neither of them
@@ -403,7 +403,7 @@
 - they look bad, can you give me other choices
 
 
-## ShowNext
+# ShowNext
 - and after that
 - display more
 - displays more
@@ -434,7 +434,7 @@
 - what's up next
 
 
-## ShowPrevious
+# ShowPrevious
 - back to the last one
 - bring the previous one
 - display previously
@@ -459,7 +459,7 @@
 - what's before that
 
 
-## StartOver
+# StartOver
 - clear and start again
 - could you start it over
 - please begin again
@@ -472,7 +472,7 @@
 - turn over a new leaf
 
 
-## Stop
+# Stop
 - baby just be quiet
 - be quiet
 - be quiet now

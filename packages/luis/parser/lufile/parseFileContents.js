@@ -1031,6 +1031,10 @@ const addItemOrRoleIfNotPresent = function (collection, type, value, roles) {
     let existingItem = collection[type].filter(item => item.name == value);
     if (existingItem.length !== 0) {
         // see if the role exists and if so, merge
+        if (existingItem[0].roles === undefined) {
+            existingItem[0].roles = [];
+        }
+
         mergeRoles(existingItem[0].roles, roles);
     } else {
         let itemObj = {};

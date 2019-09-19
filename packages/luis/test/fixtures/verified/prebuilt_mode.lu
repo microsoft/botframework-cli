@@ -8,12 +8,12 @@
 
 > # Intent definitions
 
-## None
+# None
 
 
 > !# @intent.inherits = name : Web.WebSearch; domain_name : Web; model_name : WebSearch
 
-## Web.WebSearch
+# Web.WebSearch
 - open {Web.SearchText=pinterest.com}
 - {Web.SearchText=amazon.com}
 - {Web.SearchText=ancestry login}
