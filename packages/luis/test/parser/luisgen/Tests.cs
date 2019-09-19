@@ -22,12 +22,12 @@ namespace LUISGenTest
     [TestClass]
     public class Tests
     {
-        private readonly string _appId = TestUtilities.GetKey("LUISAPPID", "app-id");
-        private readonly string _endpointKey = TestUtilities.GetKey("LUISAPPKEY", "luis-key");
+        private readonly string _appId = TestUtilities.GetKey("LUISAPPID", "ed5f31d2-9a96-495a-be34-19fa838b50e4");
+        private readonly string _endpointKey = TestUtilities.GetKey("LUISAPPKEY", "69370670960f479bac48626999f8c4de");
         private readonly string _endpoint = TestUtilities.GetKey("LUISENDPOINT", "https://westus.api.cognitive.microsoft.com");
         // Changing this to false will cause running against the actual LUIS service.
         // This is useful in order to see if the oracles for mocking or testing have changed.
-        private readonly bool _mock = true;
+        private readonly bool _mock = false;
 
         private bool WithinDelta(JToken token1, JToken token2, double delta, bool compare = false)
         {

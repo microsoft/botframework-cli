@@ -8209,11 +8209,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/axelsuarez/Documents/botframework-cli/packages/luisgen/test/LUISGenTest/LUISGenTest.csproj",
+      "projectUniqueName": "/Users/axelsuarez/Documents/botframework-cli/packages/luis/test/parser/luisgen/LUISGenTest.csproj",
       "projectName": "LUISGenTest",
-      "projectPath": "/Users/axelsuarez/Documents/botframework-cli/packages/luisgen/test/LUISGenTest/LUISGenTest.csproj",
+      "projectPath": "/Users/axelsuarez/Documents/botframework-cli/packages/luis/test/parser/luisgen/LUISGenTest.csproj",
       "packagesPath": "/Users/axelsuarez/.nuget/packages/",
-      "outputPath": "/Users/axelsuarez/Documents/botframework-cli/packages/luisgen/test/LUISGenTest/obj/",
+      "outputPath": "/Users/axelsuarez/Documents/botframework-cli/packages/luis/test/parser/luisgen/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
