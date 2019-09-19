@@ -1,0 +1,25 @@
+> !# @enableSections = true
+> !# @enableMergeIntents = false
+
+# Greeting
+## HelloGreeting
+- Hi {userName=vishwac}
+- Hello my name is {userName=vishwac}
+
+> # Entity definitions
+$userName:simple
+
+## GoodbyeGreeting
+- Bye {userName=vishwac}, see you {dateTime=tomorrow}
+- Bye Bye {userName=vishwac}, see you at the same time {dateTime=tomorrow}
+- Good Bye {userName=vishwac}
+
+> # Entity definitions
+$userName:simple
+
+$dateTime:simple
+
+# Help
+- help
+- I need help
+- please help

@@ -343,6 +343,22 @@ describe('luis:convert', () => {
     .it('luis:convert Invalid intent inherits information is skipped (invalid model)', async (ctx) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @app = test"`)
     })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_enabled.lu')}`, '--out', 'root.json',])
+    .it('luis:convert section enabled lu file', async () => {
+      let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/section_enabled.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/merge_intents_disabled.lu')}`, '--out', 'root.json',])
+    .it('luis:convert section enabled lu file', async () => {
+      let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/merge_intents_disabled.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
 })   
 
 describe('luis:convert negative tests', () => {

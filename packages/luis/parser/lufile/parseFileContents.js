@@ -221,8 +221,8 @@ const parseAndHandleSection = function (luResource, enableMergeIntents) {
                 mergedIntent.ParseTree = section.ParseTree;
                 mergedIntent.Name = section.Name;
                 for (let idx = 1; idx < section.SubSections.length; idx++) {
-                    mergedIntent.UtteranceAndEntitiesMap = mergedIntent.UtteranceAndEntitiesMap.concat(subSection.Intent.UtteranceAndEntitiesMap);
-                    mergedIntent.Errors = mergedIntent.Errors.concat(subSection.Intent.Errors);
+                    mergedIntent.UtteranceAndEntitiesMap = mergedIntent.UtteranceAndEntitiesMap.concat(section.SubSections[idx].Intent.UtteranceAndEntitiesMap);
+                    mergedIntent.Errors = mergedIntent.Errors.concat(section.SubSections[idx].Intent.Errors);
                 }
 
                 luResource.Intents.push(mergedIntent);
