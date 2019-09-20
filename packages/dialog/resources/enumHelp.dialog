@@ -5,7 +5,7 @@
     "actions": [
         {
             "$type": "Microsoft.SendActivity",
-            "activity": "[help**PROPERTY**]"           
+            "activity": "[Help**PROPERTY**]"           
         }
     ]
 }
