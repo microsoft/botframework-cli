@@ -1,4 +1,5 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {camelCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
 import {LuisToCsConverter} from '../../../parser/converters/luis-to-cs-converter'
@@ -34,7 +35,7 @@ export default class LuisGenerateCs extends Command {
       const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()
       const app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
 
-      flags.className = flags.className || app.name.replace(' ', '_')
+      flags.className = flags.className || upperFirst(camelCase(app.name))
 
       const dot_index = flags.className ? flags.className.indexOf('.') : -1
       if (dot_index !== -1) {
@@ -59,7 +60,7 @@ export default class LuisGenerateCs extends Command {
       await LuisToCsConverter.writeFromLuisJson(app, description, flags.className, space, outputPath)
 
     } catch (err) {
-      this.log(err)
+      throw new CLIError(err)
     }
   }
 }

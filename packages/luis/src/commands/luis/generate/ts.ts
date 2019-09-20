@@ -1,4 +1,5 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {camelCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
 import {LuisToTsConverter} from '../../../parser/converters/luis-to-ts-converter'
@@ -24,16 +25,12 @@ export default class LuisGenerateTs extends Command {
   async run() {
     try {
       const {flags} = this.parse(LuisGenerateTs)
-      let stdInput = null
-
-      try {
-        stdInput = await this.readStdin()
-      } catch {}
+      let stdInput = await this.readStdin()
 
       const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()
       const app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
 
-      flags.className = flags.className || app.name.replace(' ', '_')
+      flags.className = flags.className || upperFirst(camelCase(app.name))
 
       this.reorderEntities(app, 'entities')
       this.reorderEntities(app, 'prebuiltEntities')
@@ -52,7 +49,7 @@ export default class LuisGenerateTs extends Command {
       await LuisToTsConverter.writeFromLuisJson(app, description, flags.className, outputPath)
 
     } catch (err) {
-      this.log(err)
+      throw new CLIError(err)
     }
   }
 }

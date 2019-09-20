@@ -41,7 +41,7 @@ export namespace LuisToTsConverter {
 
   function intents(app: MultiPlatformLuis, writer: Writer): void {
     writer.writeLine()
-    writer.writeLineIndented('export interface _Intents { ')
+    writer.writeLineIndented('export interface GeneratedIntents {')
     writer.increaseIndentation()
     app.intents.forEach((intent: string) => {
       writer.writeLineIndented(`${ParseMultiPlatformLuis.normalizeName(intent)}: IntentData`)
@@ -55,7 +55,7 @@ export namespace LuisToTsConverter {
     app.composites.forEach((composite: Composite) => {
       let name = ParseMultiPlatformLuis.normalizeName(composite.compositeName)
       writer.writeLine()
-      writer.writeLineIndented(`export interface _Instance${name} {`)
+      writer.writeLineIndented(`export interface GeneratedInstance${name} {`)
       writer.increaseIndentation()
       composite.attributes.forEach((attribute: any) => {
         writer.writeLineIndented(
@@ -72,14 +72,14 @@ export namespace LuisToTsConverter {
           isList(attribute, app)
         ))
       })
-      writer.writeLineIndented(`$instance?: _Instance${name}`)
+      writer.writeLineIndented(`$instance?: GeneratedInstance${name}`)
       writer.decreaseIndentation()
       writer.writeLineIndented('}')
     })
     writer.writeLine()
 
     // Entity instance
-    writer.writeLineIndented('export interface _Instance {')
+    writer.writeLineIndented('export interface GeneratedInstance {')
     writer.increaseIndentation()
     app.getInstancesList().forEach(instance => {
       writer.writeLineIndented(
@@ -91,7 +91,7 @@ export namespace LuisToTsConverter {
 
     // Entities
     writer.writeLine()
-    writer.writeLineIndented('export interface _Entities {')
+    writer.writeLineIndented('export interface GeneratedEntities {')
     writer.increaseIndentation()
 
     writeEntityGroup(app.simpleEntities, '// Simple entities', writer)
@@ -117,7 +117,7 @@ export namespace LuisToTsConverter {
         `${composite.compositeName}?: ${composite.compositeName}[]`
         )
     })
-    writer.writeLineIndented('$instance: _Instance')
+    writer.writeLineIndented('$instance: GeneratedInstance')
     writer.decreaseIndentation()
     writer.writeLineIndented('}')
   }
@@ -129,8 +129,8 @@ export namespace LuisToTsConverter {
     writer.writeLineIndented([
       'text: string',
       'alteredText?: string',
-      'intents: _Intents',
-      'entities: _Entities',
+      'intents: GeneratedIntents',
+      'entities: GeneratedEntities',
       '[propName: string]: any'
     ])
     writer.decreaseIndentation()
