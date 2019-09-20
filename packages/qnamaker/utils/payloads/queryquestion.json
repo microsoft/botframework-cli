@@ -8,7 +8,7 @@
             "method": "POST",
             "methodAlias": "query",
             "target": [],
-            "command": "qnamaker query --question \"how do I turn it on\" --top 5",
+            "command": "qnamaker:query --question \"how do I turn it on\" --top 5",
             "pathFragment": "",
             "params": [
                 {
@@ -22,6 +22,20 @@
                     "name": "top",
                     "in": "top",
                     "description": "number of answers you would like",
+                    "required": false,
+                    "type": "number"
+                },
+                {
+                    "name": "isTest",
+                    "in": "isTest",
+                    "description": "query against the test index.",
+                    "required": false,
+                    "type": "boolean"
+                },
+                {
+                    "name": "scoreThreshold",
+                    "in": "scoreThreshold",
+                    "description": "Threshold for answers returned based on score.",
                     "required": false,
                     "type": "number"
                 },
@@ -42,9 +56,7 @@
                     "type": "string"
                 }
             ],
-            "description": "Returns the list of answers for the given question sorted in descending order of ranking score.",
-            "entityName": "generateAnswer",
-            "entityType": "GenerateAnswer"
+            "description": "Returns the list of answers for the given question sorted in descending order of ranking score."
         }
     }
 }

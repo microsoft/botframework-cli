@@ -1,40 +1,26 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-
 const qnamaker = require('./../../../utils/index')
-const queryQuestionJSON = require('./../../../utils/payloads/queryquestion')
-import {Inputs, processInputs} from '../../utils/qnamakerbase'
+const trainJSON = require('./../../../utils/payloads/train')
 
-export default class QnamakerQuery extends Command {
-  static description = 'Query model for fetching the answer from Kb for a query'
+import {Inputs, processInputs} from '../../utils/qnamakerbase'
+export default class QnamakerTrain extends Command {
+  static description = 'Train call to add suggestions to the knowledgebase.'
 
   static flags: flags.Input<any> = {
-    question: flags.string({description: 'Query to get a prediction for.', required: true}),
-    top: flags.integer({description: 'Query to get a prediction for.'}),
-    isTest: flags.boolean({description: 'Query against the test index.', default: false}),
-    scoreThreshold: flags.integer({description: 'Query to get a prediction for.'}),
+    in: flags.string({description: 'The FeedbackRecordDTO object to send in the body of the request.', required: true}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
     hostname: flags.string({description: 'Specifies the url for your private QnA service. Overrides the value present in config.'}),
     endpointKey: flags.string({description: 'Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal user settings page). Overrides the value present in config.'}),
     kbId: flags.string({description: 'Specifies the active qnamaker knowledgebase id. Overrides the value present in the config'}),
-    help: flags.help({char: 'h', description: 'qnamaker:query command help'}),
+    help: flags.help({char: 'h', description: 'qnamaker:get:kb command help'}),
   }
 
   async run() {
-    const {flags} = this.parse(QnamakerQuery)
-    let input: Inputs = await processInputs(flags, queryQuestionJSON, this.config.configDir)
-    input.requestBody = {
-      question: flags.question,
-      top: flags.top,
-      isTest: flags.isTest,
-      scoreThreshold: flags.scoreThreshold
-    }
+    const {flags} = this.parse(QnamakerTrain)
+    let input: Inputs = await processInputs(flags, trainJSON, this.config.configDir)
     const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)
     if (result.error) {
       throw new CLIError(JSON.stringify(result.error, null, 4))
-    }
-
-    if (typeof result === 'string') {
-      this.log(result)
     } else {
       this.log(JSON.stringify(result, null, 2))
     }
