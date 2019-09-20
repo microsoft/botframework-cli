@@ -21,5 +21,3 @@
 # helpProperty(property)
 - Possible values for {toLower(property)} include: \[{join(turn.schema[property].enum, ',')}\]
 
-# cancel
-- Current conversation has been cancelled.
