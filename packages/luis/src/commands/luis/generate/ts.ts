@@ -1,5 +1,5 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import {camelCase, upperFirst} from 'lodash'
+import {camelCase, kebabCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
 import {LuisToTsConverter} from '../../../parser/converters/luis-to-ts-converter'
@@ -8,7 +8,7 @@ import {Utils} from '../../../utils'
 const fs = require('fs-extra')
 
 export default class LuisGenerateTs extends Command {
-  static description = 'describe the command here'
+  static description = 'Generate:ts generates a strongly typed typescript source code from an exported (json) LUIS model.'
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
@@ -30,7 +30,8 @@ export default class LuisGenerateTs extends Command {
       const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()
       const app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
 
-      flags.className = flags.className || upperFirst(camelCase(app.name))
+      flags.className = flags.className || app.name
+      flags.className = upperFirst(camelCase(flags.className))
 
       this.reorderEntities(app, 'entities')
       this.reorderEntities(app, 'prebuiltEntities')
@@ -40,7 +41,7 @@ export default class LuisGenerateTs extends Command {
       this.reorderEntities(app, 'composites')
 
       const description = `luis:generate:ts ${flags.className} -o ${__dirname}`
-      const outputPath = Utils.validatePath(flags.out, process.cwd(), flags.className + '.ts')
+      const outputPath = Utils.validatePath(flags.out, process.cwd(), kebabCase(flags.className) + '.ts')
 
       this.log(
         `Generating file at ${outputPath || ''} that contains class ${flags.className}.`

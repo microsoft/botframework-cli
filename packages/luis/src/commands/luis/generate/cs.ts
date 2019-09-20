@@ -8,7 +8,7 @@ import {Utils} from '../../../utils'
 const fs = require('fs-extra')
 
 export default class LuisGenerateCs extends Command {
-  static description = 'describe the command here'
+  static description = 'Generate:cs generates a strongly typed C# source code from an exported (json) LUIS model.'
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
@@ -26,16 +26,13 @@ export default class LuisGenerateCs extends Command {
     try {
       const {flags} = this.parse(LuisGenerateCs)
       let space = 'Luis'
-      let stdInput = null
-
-      try {
-        stdInput = await this.readStdin()
-      } catch {}
+      let stdInput = await this.readStdin()
 
       const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()
       const app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
 
-      flags.className = flags.className || upperFirst(camelCase(app.name))
+      flags.className = flags.className || app.name
+      flags.className = upperFirst(camelCase(flags.className))
 
       const dot_index = flags.className ? flags.className.indexOf('.') : -1
       if (dot_index !== -1) {

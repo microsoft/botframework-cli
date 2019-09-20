@@ -16,10 +16,11 @@ export namespace Utils {
     // If the last element in the path is a file
     if (baseElement.includes('.')) {
       return pathAlreadyExist ? enumerateFileName(completePath) : completePath
-    } else { // If the last element in the path is a folder
-      if (!pathAlreadyExist) throw new CLIError("Path doesn't exist")
-      return join(completePath, defaultFileName)
     }
+
+    // If the last element in the path is a folder
+    if (!pathAlreadyExist) throw new CLIError("Path doesn't exist")
+    return join(completePath, defaultFileName)
   }
 
   function enumerateFileName(filePath: string): string {

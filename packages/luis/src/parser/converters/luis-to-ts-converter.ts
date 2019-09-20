@@ -35,7 +35,7 @@ export namespace LuisToTsConverter {
       ' * regenerated.',
       ' * </auto-generated>',
       ' */',
-      "import {DateTimeSpec, GeographyV2, IntentData, InstanceData, NumberWithUnits, OrdinalV2} from 'botbuilder-ai'"
+      "import {DateTimeSpec, GeographyV2, InstanceData, IntentData, NumberWithUnits, OrdinalV2} from 'botbuilder-ai'"
     ])
   }
 
