@@ -1,15 +1,18 @@
-const IntentDefinitionContext = require('./generated/LUFileParser').LUFileParser.IntentDefinitionContext;
+const SimpleIntentSectionContext = require('./generated/LUFileParser').LUFileParser.SimpleIntentSectionContext;
+const EntitySection = require('./entitySection');
 const visitor = require('./visitor');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const LUSectionTypes = require('./enums/lusectiontypes'); 
 
-class LUIntent {
+class SimpleIntentSection {
     /**
      * 
-     * @param {IntentDefinitionContext} parseTree 
+     * @param {SimpleIntentSectionContext} parseTree 
      */
     constructor(parseTree) {
         this.ParseTree = parseTree;
+        this.SectionType = LUSectionTypes.SIMPLEINTENTSECTION;
         this.Name = this.ExtractName(parseTree);
         const result = this.ExtractUtteranceAndEntitiesMap(parseTree);
         this.UtteranceAndEntitiesMap = result.utteranceAndEntitiesMap;
@@ -17,18 +20,14 @@ class LUIntent {
     }
 
     ExtractName(parseTree) {
-        if (parseTree.intentNameLine !== undefined) {
-            return parseTree.intentNameLine().intentName().getText().trim();
-        } else {
-            return parseTree.subIntentNameLine().intentName().getText().trim();
-        }
+        return parseTree.intentDefinition().intentNameLine().intentName().getText().trim();
     }
 
     ExtractUtteranceAndEntitiesMap(parseTree) {
         let utteranceAndEntitiesMap = [];
         let errors = [];
-        if (parseTree.intentBody() && parseTree.intentBody().normalIntentBody()) {
-            for (const normalIntentStr of parseTree.intentBody().normalIntentBody().normalIntentString()) {
+        if (parseTree.intentDefinition().intentBody() && parseTree.intentDefinition().intentBody().normalIntentBody()) {
+            for (const normalIntentStr of parseTree.intentDefinition().intentBody().normalIntentBody().normalIntentString()) {
                 let utteranceAndEntities = visitor.visitNormalIntentStringContext(normalIntentStr);
                 utteranceAndEntities.context = normalIntentStr;
                 utteranceAndEntitiesMap.push(utteranceAndEntities);
@@ -43,7 +42,7 @@ class LUIntent {
             let errorMsg = `no utterances found for intent definition: "# ${this.Name}"`
             let error = BuildDiagnostic({
                 message: errorMsg,
-                context: parseTree.intentNameLine(),
+                context: parseTree.intentDefinition().intentNameLine(),
                 severity: DiagnosticSeverity.WARN
             })
 
@@ -52,6 +51,17 @@ class LUIntent {
 
         return { utteranceAndEntitiesMap, errors };
     }
+
+    ExtractEntities(parseTree) {
+        let entitySections = [];
+        if (parseTree.entitySection) {
+            for (const entitySection of parseTree.entitySection()) {
+                entitySections.push(new EntitySection(entitySection));
+            }
+        }
+
+        return entitySections;
+    }
 }
 
-module.exports = LUIntent;
+module.exports = SimpleIntentSection;

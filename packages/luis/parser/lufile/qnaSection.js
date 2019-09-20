@@ -1,12 +1,14 @@
-const QnaDefinitionContext = require('./generated/LUFileParser').LUFileParser.QnaDefinitionContext;
+const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
+const LUSectionTypes = require('./enums/lusectiontypes'); 
 
-class LUQna {
+class QnaSection {
     /**
      * 
-     * @param {QnaDefinitionContext} parseTree 
+     * @param {QnaSectionContext} parseTree 
      */
     constructor(parseTree) {
         this.ParseTree = parseTree;
+        this.SectionType = LUSectionTypes.QNASECTION;
         this.Questions = [this.ExtractQuestion(parseTree)];
         this.Questions = this.Questions.concat(this.ExtractMoreQuestions(parseTree));
         this.FilterPairs = this.ExtractFilterPairs(parseTree);
@@ -14,12 +16,12 @@ class LUQna {
     }
 
     ExtractQuestion(parseTree) {
-        return parseTree.qnaQuestion().questionText().getText().trim();
+        return parseTree.qnaDefinition().qnaQuestion().questionText().getText().trim();
     }
 
     ExtractMoreQuestions(parseTree) {
         let questions = [];
-        let questionsBody = parseTree.moreQuestionsBody();
+        let questionsBody = parseTree.qnaDefinition().moreQuestionsBody();
         for (const question of questionsBody.moreQuestion()) {
             let questionText = question.getText().trim();
             questions.push(questionText.substr(1).trim());
@@ -30,7 +32,7 @@ class LUQna {
 
     ExtractFilterPairs(parseTree) {
         let filterPairs = [];
-        let filterSection = parseTree.qnaAnswerBody().filterSection();
+        let filterSection = parseTree.qnaDefinition().qnaAnswerBody().filterSection();
         if (filterSection) {
             let filterLines = filterSection.filterLine();
             for (const filterLine of filterLines) {
@@ -47,11 +49,11 @@ class LUQna {
     }
 
     ExtractAnswer(parseTree) {
-        let multiLineAnswer = parseTree.qnaAnswerBody().multiLineAnswer().getText().trim();
+        let multiLineAnswer = parseTree.qnaDefinition().qnaAnswerBody().multiLineAnswer().getText().trim();
         let answer = multiLineAnswer.slice(11, multiLineAnswer.length - 3);
         
         return answer;
     }
 }
 
-module.exports = LUQna;
+module.exports = QnaSection;

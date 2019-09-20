@@ -8,12 +8,12 @@ file
 
 paragraph
     : newline
-    | sectionDefinition
-    | intentDefinition
-    | entityDefinition
-    | importDefinition
-    | qnaDefinition
-    | modelInfoDefinition
+    | nestedIntentSection
+    | simpleIntentSection
+    | entitySection
+    | importSection
+    | qnaSection
+    | modelInfoSection
     ;
 
 // Treat EOF as newline to hanle file end gracefully
@@ -24,15 +24,15 @@ newline
     | EOF
     ;
 
-sectionDefinition
-    : sectionNameLine newline+ sectionBodyDefinition
+nestedIntentSection
+    : nestedIntentNameLine newline+ nestedIntentBodyDefinition
     ;
 
-sectionNameLine
-    : HASH sectionName
+nestedIntentNameLine
+    : HASH nestedIntentName
     ;
 
-sectionName
+nestedIntentName
     : nameIdentifier (WS|nameIdentifier)*
     ;
 
@@ -40,20 +40,16 @@ nameIdentifier
     : IDENTIFIER (DOT IDENTIFIER)*
     ;
 
-sectionBodyDefinition
-    : (subSectionDefinition newline*)+
-    ;
-
-subSectionDefinition
-    : subIntentDefinition newline* (entityDefinition newline*)*
+nestedIntentBodyDefinition
+    : (subIntentDefinition newline*)+
     ;
 
 subIntentDefinition
-    : subIntentNameLine newline intentBody?
+    : HASH simpleIntentSection
     ;
 
-subIntentNameLine
-    : DOUBLE_HASH intentName
+simpleIntentSection
+    : intentDefinition newline* (entitySection newline*)*
     ;
 
 intentDefinition
@@ -79,6 +75,10 @@ normalIntentBody
 normalIntentString
 	: DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
+
+entitySection
+    : entityDefinition
+    ;
 
 entityDefinition
     : entityLine newline entityListBody?
@@ -116,8 +116,16 @@ normalItemString
     : DASH (WS|TEXT)*
     ;
 
+importSection
+    : importDefinition
+    ;
+
 importDefinition
     : IMPORT_DESC IMPORT_PATH
+    ;
+
+qnaSection
+    : qnaDefinition
     ;
 
 qnaDefinition
@@ -154,6 +162,10 @@ filterLine
 
 multiLineAnswer
     : MULTI_LINE_TEXT
+    ;
+
+modelInfoSection
+    : modelInfoDefinition
     ;
 
 modelInfoDefinition

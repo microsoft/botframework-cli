@@ -1,14 +1,16 @@
-const EntityDefinitionContext = require('./generated/LUFileParser').LUFileParser.EntityDefinitionContext;
+const EntitySectionContext = require('./generated/LUFileParser').LUFileParser.EntitySectionContext;
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const LUSectionTypes = require('./enums/lusectiontypes'); 
 
-class LUEntity {
+class EntitySection {
     /**
      * 
-     * @param {EntityDefinitionContext} parseTree 
+     * @param {EntitySectionContext} parseTree 
      */
     constructor(parseTree) {
         this.ParseTree = parseTree;
+        this.SectionType = LUSectionTypes.ENTITYSECTION;
         this.Name = this.ExtractName(parseTree);
         this.Type = this.ExtractType(parseTree);
         const result = this.ExtractSynonymsOrPhraseList(parseTree);
@@ -17,19 +19,19 @@ class LUEntity {
     }
 
     ExtractName(parseTree) {
-        return parseTree.entityLine().entityName().getText().trim();
+        return parseTree.entityDefinition().entityLine().entityName().getText().trim();
     }
 
     ExtractType(parseTree) {
-        return parseTree.entityLine().entityType().getText().trim();
+        return parseTree.entityDefinition().entityLine().entityType().getText().trim();
     }
 
     ExtractSynonymsOrPhraseList(parseTree) {
         let synonymsOrPhraseList = [];
         let errors = [];
 
-        if (parseTree.entityListBody()) {
-            for (const normalItemStr of parseTree.entityListBody().normalItemString()) {
+        if (parseTree.entityDefinition().entityListBody()) {
+            for (const normalItemStr of parseTree.entityDefinition().entityListBody().normalItemString()) {
                 var itemStr = normalItemStr.getText().trim();
                 synonymsOrPhraseList.push(itemStr.substr(1).trim());
             }
@@ -39,7 +41,7 @@ class LUEntity {
             let errorMsg = `no synonyms list found for list entity definition: "${parseTree.entityLine().getText()}"`;
             let error = BuildDiagnostic({
                 message: errorMsg,
-                context: parseTree.entityLine(),
+                context: parseTree.entityDefinition().entityLine(),
                 severity: DiagnosticSeverity.WARN
             })
 
@@ -50,4 +52,4 @@ class LUEntity {
     }
 }
 
-module.exports = LUEntity;
+module.exports = EntitySection;

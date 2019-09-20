@@ -30,20 +30,20 @@ LUFileParserVisitor.prototype.visitNewline = function(ctx) {
 };
 
 
-// Visit a parse tree produced by LUFileParser#sectionDefinition.
-LUFileParserVisitor.prototype.visitSectionDefinition = function(ctx) {
+// Visit a parse tree produced by LUFileParser#nestedIntentSection.
+LUFileParserVisitor.prototype.visitNestedIntentSection = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by LUFileParser#sectionNameLine.
-LUFileParserVisitor.prototype.visitSectionNameLine = function(ctx) {
+// Visit a parse tree produced by LUFileParser#nestedIntentNameLine.
+LUFileParserVisitor.prototype.visitNestedIntentNameLine = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by LUFileParser#sectionName.
-LUFileParserVisitor.prototype.visitSectionName = function(ctx) {
+// Visit a parse tree produced by LUFileParser#nestedIntentName.
+LUFileParserVisitor.prototype.visitNestedIntentName = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -54,14 +54,8 @@ LUFileParserVisitor.prototype.visitNameIdentifier = function(ctx) {
 };
 
 
-// Visit a parse tree produced by LUFileParser#sectionBodyDefinition.
-LUFileParserVisitor.prototype.visitSectionBodyDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#subSectionDefinition.
-LUFileParserVisitor.prototype.visitSubSectionDefinition = function(ctx) {
+// Visit a parse tree produced by LUFileParser#nestedIntentBodyDefinition.
+LUFileParserVisitor.prototype.visitNestedIntentBodyDefinition = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -72,8 +66,8 @@ LUFileParserVisitor.prototype.visitSubIntentDefinition = function(ctx) {
 };
 
 
-// Visit a parse tree produced by LUFileParser#subIntentNameLine.
-LUFileParserVisitor.prototype.visitSubIntentNameLine = function(ctx) {
+// Visit a parse tree produced by LUFileParser#simpleIntentSection.
+LUFileParserVisitor.prototype.visitSimpleIntentSection = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -110,6 +104,12 @@ LUFileParserVisitor.prototype.visitNormalIntentBody = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#normalIntentString.
 LUFileParserVisitor.prototype.visitNormalIntentString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#entitySection.
+LUFileParserVisitor.prototype.visitEntitySection = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -168,8 +168,20 @@ LUFileParserVisitor.prototype.visitNormalItemString = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#importSection.
+LUFileParserVisitor.prototype.visitImportSection = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#importDefinition.
 LUFileParserVisitor.prototype.visitImportDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#qnaSection.
+LUFileParserVisitor.prototype.visitQnaSection = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -224,6 +236,12 @@ LUFileParserVisitor.prototype.visitFilterLine = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#multiLineAnswer.
 LUFileParserVisitor.prototype.visitMultiLineAnswer = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#modelInfoSection.
+LUFileParserVisitor.prototype.visitModelInfoSection = function(ctx) {
   return this.visitChildren(ctx);
 };
 

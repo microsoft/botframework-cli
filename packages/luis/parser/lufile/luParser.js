@@ -3,12 +3,12 @@ const LUFileLexer = require('./generated/LUFileLexer').LUFileLexer;
 const LUFileParser = require('./generated/LUFileParser').LUFileParser;
 const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext;
 const LUResource = require('./luResource');
-const LUSection = require('./luSection');
-const LUIntent = require('./luIntent');
-const LUEntity = require('./luEntity');
-const LUImport = require('./luImport');
-const LUQna = require('./luQna');
-const LUModelInfo = require('./luModelInfo');
+const NestIntentSection = require('./nestIntentSection');
+const SimpleIntentSection = require('./simpleIntentSection');
+const EntitySection = require('./entitySection');
+const ImportSection = require('./importSection');
+const QnaSection = require('./qnaSection');
+const ModelInfoSection = require('./modelInfoSection');
 const LUErrorListener = require('./luErrorListener');
 
 class LUParser {
@@ -16,35 +16,37 @@ class LUParser {
      * @param {string} text
      */
     static parse(text) {
-        let luSections;
-        let luIntents;
-        let luEntities;
-        let luImports;
-        let qnas;
-        let modelInfos;
+        let sections = [];
         let content = text;
 
         let { fileContent, errors } = this.getFileContent(text);
         if (errors.length > 0) {
-            return new LUResource(luSections, luIntents, luEntities, luImports, qnas, modelInfos, content, errors);
+            return new LUResource(sections, content, errors);
         }
 
-        luSections = this.extractLUSections(fileContent);
+        let nestedIntentSections = this.extractNestedIntentSections(fileContent);
+        nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(nestedIntentSections);
 
-        luIntents = this.extractLUIntents(fileContent);
-        luIntents.forEach(luIntent => errors = errors.concat(luIntent.Errors));
+        let simpleIntentSections = this.extractSimpleIntentSections(fileContent);
+        simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(simpleIntentSections);
 
-        luEntities = this.extractLUEntities(fileContent);
-        luEntities.forEach(luEntity => errors = errors.concat(luEntity.Errors));
+        let entitySections = this.extractEntitiesSections(fileContent);
+        entitySections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(entitySections);
 
-        luImports = this.extractLUImports(fileContent);
-        luImports.forEach(luImport => errors = errors.concat(luImport.Errors));
+        let importSections = this.extractImportSections(fileContent);
+        importSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(importSections);
         
-        qnas = this.extractLUQnas(fileContent);
+        let qnaSections = this.extractQnaSections(fileContent);
+        sections = sections.concat(qnaSections);
 
-        modelInfos = this.extractLUModelInfos(fileContent);
+        let modelInfoSections = this.extractModelInfoSections(fileContent);
+        sections = sections.concat(modelInfoSections);
 
-        return new LUResource(luSections, luIntents, luEntities, luImports, qnas, modelInfos, content, errors);
+        return new LUResource(sections, content, errors);
     }
 
     /**
@@ -75,109 +77,109 @@ class LUParser {
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUSections(fileContext) {
+    static extractNestedIntentSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let sectionDefinitions = fileContext.paragraph()
-            .map(x => x.sectionDefinition())
+        let nestedIntentSections = fileContext.paragraph()
+            .map(x => x.nestedIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let sections = sectionDefinitions.map(x => new LUSection(x));
+        let nestedIntentSectionList = nestedIntentSections.map(x => new NestIntentSection(x));
 
-        return sections;
+        return nestedIntentSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUIntents(fileContext) {
+    static extractSimpleIntentSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let intentDefinitions = fileContext.paragraph()
-            .map(x => x.intentDefinition())
+        let simpleIntentSections = fileContext.paragraph()
+            .map(x => x.simpleIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let intents = intentDefinitions.map(x => new LUIntent(x));
+        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x));
 
-        return intents;
+        return simpleIntentSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUEntities(fileContext) {
+    static extractEntitiesSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.entityDefinition())
+        let entitySections = fileContext.paragraph()
+            .map(x => x.entitySection())
             .filter(x => x !== undefined && x != null);
 
-        let entities = entityDefinitions.map(x => new LUEntity(x));
+        let entitySectionList = entitySections.map(x => new EntitySection(x));
 
-        return entities;
+        return entitySectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUImports(fileContext) {
+    static extractImportSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.importDefinition())
+        let importSections = fileContext.paragraph()
+            .map(x => x.importSection())
             .filter(x => x !== undefined && x != null);
 
-        let imports = entityDefinitions.map(x => new LUImport(x));
+        let importSectionList = importSections.map(x => new ImportSection(x));
 
-        return imports;
+        return importSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUQnas(fileContext) {
+    static extractQnaSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let qnaDefinitions = fileContext.paragraph()
-            .map(x => x.qnaDefinition())
+        let qnaSections = fileContext.paragraph()
+            .map(x => x.qnaSection())
             .filter(x => x !== undefined && x != null);
 
-        let qnas = qnaDefinitions.map(x => new LUQna(x));
+        let qnaSectionList = qnaSections.map(x => new QnaSection(x));
 
-        return qnas;
+        return qnaSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUModelInfos(fileContext) {
+    static extractModelInfoSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let modelInfoDefinitions = fileContext.paragraph()
-            .map(x => x.modelInfoDefinition())
+        let modelInfoSections = fileContext.paragraph()
+            .map(x => x.modelInfoSection())
             .filter(x => x !== undefined && x != null);
 
-        let modelInfos = modelInfoDefinitions.map(x => new LUModelInfo(x));
+        let modelInfoSections = modelInfoSections.map(x => new ModelInfoSection(x));
 
-        return modelInfos;
+        return modelInfoSections;
     }
 }
 

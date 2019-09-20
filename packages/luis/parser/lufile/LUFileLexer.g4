@@ -1,7 +1,7 @@
 lexer grammar LUFileLexer;
 
 @lexer::members {
-  ignoreWS = true;             // usually we ignore whitespace, but inside template, whitespace is significant
+  this.ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
 }
 
 fragment LETTER: 'a'..'z' | 'A'..'Z';
@@ -31,10 +31,6 @@ NEWLINE
 
 QNA
   : '#'+ WHITESPACE+ '?' {this.ignoreWS = false;} -> pushMode(QNA_MODE)
-  ;
-
-DOUBLE_HASH
-  : '##' {this.ignoreWS = true;} -> pushMode(INTENT_NAME_MODE)
   ;
 
 HASH
