@@ -2,4 +2,9 @@
 - [askEnum('**PROPERTY**')]
 
 # Help**PROPERTY**
-- [helpEnum('**PROPERTY**')]
+- [helpProperty('**PROPERTY**')]
+
+**ENUMS
+# Help**ENUM**
+- help with **ENUM**
+ENUMS**

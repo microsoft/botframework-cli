@@ -18,8 +18,8 @@
 - Enter a value for {toLower(property)}
 
 >>> Help messages <<<
-# helpEnum(property)
+# helpProperty(property)
 - Possible values for {toLower(property)} include: \[{join(turn.schema[property].enum, ',')}\]
 
-# cancelProperty(property)
-- Are you sure you want to cancel {toLower(property)}?
+# cancel
+- Current conversation has been cancelled.
