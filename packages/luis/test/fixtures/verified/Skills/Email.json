@@ -5982,11 +5982,6 @@
       ]
     },
     {
-      "text": "^(show|give|tell) [me] [the] next (email|message|mail)^",
-      "intent": "ShowNext",
-      "entities": []
-    },
-    {
       "text": "back to the last one from apple",
       "intent": "ShowPrevious",
       "entities": [
@@ -6181,11 +6176,6 @@
           "endPos": 19
         }
       ]
-    },
-    {
-      "text": "^(show|give|tell) [me] [the] previous (email|message|mail)^",
-      "intent": "ShowPrevious",
-      "entities": []
     },
     {
       "text": "cancel",
@@ -8904,6 +8894,14 @@
     {
       "pattern": "^(write|send|start) [(a|an|the)] [new] email to {ContactName} (about|on|with) [the subject] [that] {EmailSubject}^",
       "intent": "SendEmail"
+    },
+    {
+      "pattern": "^(show|give|tell) [me] [the] next (email|message|mail)^",
+      "intent": "ShowNext"
+    },
+    {
+      "pattern": "^(show|give|tell) [me] [the] previous (email|message|mail)^",
+      "intent": "ShowPrevious"
     },
     {
       "pattern": "^(yes|sure)[[,]i want (that|the ({DirectionalReference}|{ordinal}) ({number}|one))]",

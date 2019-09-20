@@ -12497,11 +12497,6 @@
       "entities": []
     },
     {
-      "text": "^[(show|display)] next [page] [please]^",
-      "intent": "Calendar.ShowNext",
-      "entities": []
-    },
-    {
       "text": "what is the previous",
       "intent": "Calendar.ShowPrevious",
       "entities": []
@@ -13022,6 +13017,10 @@
     {
       "pattern": "^(remind|inform|tell) (the|all) attendees {Calendar.Message}^",
       "intent": "Calendar.ContactMeetingAttendees"
+    },
+    {
+      "pattern": "^[(show|display)] next [page] [please]^",
+      "intent": "Calendar.ShowNext"
     },
     {
       "pattern": "^i (want to|need to|would like to) (attend|join) {Calendar.Subject}, [please] add it.^",
