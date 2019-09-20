@@ -228,22 +228,24 @@ async function copyLibraries(schema: s.FormSchema, templateDir: string, ext: str
 }
 
 async function generateLG(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
+    let libs = ''
+    for (let ref of await copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)) {
+        libs += `[${ref}](./${ref})${os.EOL}`
+    }
+
     let refs = ''
     for (let prop of schema.schemaProperties()) {
         let type = prop.templateName()
         let template = await readTemplate(templateDir, type, '.lg', feedback)
         if (template) {
             let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
-            let outName = await writeTemplate(newTemplate, outDir, schema.name, prop.path, '.lg', true, force, feedback)
+            let outName = await writeTemplate(newTemplate + os.EOL + libs, outDir, schema.name, prop.path, '.lg', true, force, feedback)
             if (outName) {
                 refs += `[${outName}](./${outName})${os.EOL}`
             }
         }
     }
 
-    for (let ref of await copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)) {
-        refs += `[${ref}](./${ref})${os.EOL}`
-    }
     await writeTemplate(refs, outDir, '', schema.name, '.lg', true, force, feedback)
 }
 
@@ -326,7 +328,6 @@ async function generateDialog(schema: s.FormSchema, templateDir: string, outDir:
 async function generateMultiLanguage(schema: s.FormSchema, locales: string[], templateDir: string, outDir: string, feedback: Feedback): Promise<void> {
     let template = await readTemplate(templateDir, 'luconfig', '.json', feedback)
     if (template) {
-        // TODO: We need to expand this to .lg, but declarative is missing for .lg
         let refs = ''
         for (let locale of locales) {
             if (refs !== '') {

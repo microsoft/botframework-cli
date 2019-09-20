@@ -19,5 +19,5 @@
 
 >>> Help messages <<<
 # helpEnum(property)
-- Possible values for {toLower(property)} include: [{join(turn.schema[property].enum, ',')}]
+- Possible values for {toLower(property)} include: \[{join(turn.schema[property].enum, ',')}\]
 

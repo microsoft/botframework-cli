@@ -80,7 +80,7 @@
             "type": "node",
             "request": "launch",
             "name": "Generate Sandwich Form",
-            "program": "${workspaceFolder}\\bin\\run",
+            "program": "${workspaceFolder}/bin/run",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
@@ -92,7 +92,8 @@
                 "${env:TEMP}/sandwich.out",
                 "--force",
                 "--verbose"
-            ]
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }
