@@ -21,3 +21,5 @@
 # helpEnum(property)
 - Possible values for {toLower(property)} include: \[{join(turn.schema[property].enum, ',')}\]
 
+# cancelProperty(property)
+- Are you sure you want to cancel {toLower(property)}?

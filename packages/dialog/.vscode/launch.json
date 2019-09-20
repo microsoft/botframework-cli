@@ -5,14 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "antlr-debug",
-            "request": "launch",
-            "name": "Debug Current Grammar",
-            "input": "test/commands/dialog/forms/input.txt",
-            "startRule": "doc",
-            "visualParseTree": true
-        },
-        {
             "type": "node",
             "request": "launch",
             "name": "Dialog Merge Tests",
@@ -85,15 +77,16 @@
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
             ],
+            "sourceMaps": true,
             "args": [
                 "dialog:form",
                 "${workspaceFolder}/test/commands/dialog/forms/sandwich.form.dialog",
                 "-o",
-                "${env:TEMP}/sandwich.out",
+                "D:/WorkStation/form.bot.tmp/en-us/sandwich.out",
                 "--force",
                 "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart"
-        }
+         }
     ]
 }
