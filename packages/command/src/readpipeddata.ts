@@ -1,6 +1,6 @@
 const ReadPipedStdin = {
   read: async () => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
       let input = ''
       const {stdin} = process
       stdin.setEncoding('utf8')

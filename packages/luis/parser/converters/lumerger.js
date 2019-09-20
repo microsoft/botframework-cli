@@ -161,11 +161,9 @@ const resolveReferencesInUtterances = async function(allParsedContent) {
         let newPatternsToAdd = [];
         let spliceList = [];
         (luisModel.LUISJsonStructure.utterances || []).forEach((utterance,idx) => {
-            // Deep references must have [link name](link-value) notation
-            if (utterance.text.indexOf('[') !== 0) return;
-            // does this utterance have a deep link uri? 
-            let linkExp = (utterance.text || '').trim().match(new RegExp(/\(.*?\)/g));
-            if (linkExp && linkExp.length !== 0) {
+            // Fix for BF-CLI #122. 
+            // Ensure only links are detected and passed on to be parsed.
+            if (helpers.isUtteranceLinkRef(utterance.text || '')) {
                 // we have stuff to parse and resolve
                 let parsedUtterance = helpers.parseLinkURI(utterance.text);
                 if (!path.isAbsolute(parsedUtterance.luFile)) parsedUtterance.luFile = path.resolve(path.dirname(luisModel.srcFile), parsedUtterance.luFile);

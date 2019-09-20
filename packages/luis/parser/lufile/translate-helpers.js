@@ -44,22 +44,22 @@ const translateHelpers = {
             // is current line a comment? 
             if(currentLine.indexOf(PARSERCONSTS.COMMENT) === 0) {
                 if (inAnswer) {
-                    this.addSegment(linesToTranslate, currentLine, true);
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, currentLine, true);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
                 if(translate_comments) {
-                    this.addSegment(linesToTranslate, currentLine, true);
+                    addSegment(linesToTranslate, currentLine, true);
                 } else {
-                    this.addSegment(linesToTranslate, currentLine, false);
+                    addSegment(linesToTranslate, currentLine, false);
                 }
             } else if (currentLine.indexOf(PARSERCONSTS.FILTER) === 0) {
-                this.addSegment(linesToTranslate, currentLine, false);
+                addSegment(linesToTranslate, currentLine, false);
                 currentSectionType = PARSERCONSTS.FILTER;
             } else if (currentLine.indexOf(PARSERCONSTS.INTENT) === 0) {
                 if (inAnswer) {
-                    this.addSegment(linesToTranslate, currentLine, true);
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, currentLine, true);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
                 let intentName = currentLine.substring(currentLine.indexOf(' ') + 1).trim();
@@ -67,26 +67,26 @@ const translateHelpers = {
                 if(intentName.indexOf(PARSERCONSTS.QNA) === 0) {
                     let beforeQuestion = currentLine.substring(0, currentLine.indexOf(' ') + 1);
                     let question = intentName.slice(1).trim();
-                    this.addSegment(linesToTranslate, beforeQuestion + '? ', false);
-                    this.addSegment(linesToTranslate, question, true);
+                    addSegment(linesToTranslate, beforeQuestion + '? ', false);
+                    addSegment(linesToTranslate, question, true);
                     currentSectionType = PARSERCONSTS.QNA;
                 } else {
                     // we would not localize intent name but remember we are under intent section
                     currentSectionType = PARSERCONSTS.INTENT;
-                    this.addSegment(linesToTranslate, currentLine, false);
+                    addSegment(linesToTranslate, currentLine, false);
                 }
             } else if(currentLine.indexOf('-') === 0 || 
                     currentLine.indexOf('*') === 0 || 
                     currentLine.indexOf('+') === 0 ) {
                 if (inAnswer) {
-                    this.addSegment(linesToTranslate, currentLine, true);
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, currentLine, true);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
                 // Fix for #1191. Do not localize meta-data filters for QnA.
                 if (currentSectionType === PARSERCONSTS.FILTER) {
-                    this.addSegment(linesToTranslate, currentLine, false);
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, currentLine, false);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
                 let listSeparator = '';
@@ -95,7 +95,7 @@ const translateHelpers = {
                 case PARSERCONSTS.INTENT: {
                     // strip line of the list separator
                     listSeparator = currentLine.charAt(0);
-                    this.addSegment(linesToTranslate, listSeparator + ' ', false);
+                    addSegment(linesToTranslate, listSeparator + ' ', false);
                     content = currentLine.slice(1).trim();
                     let entitiesList = [];
                     // strip line off labelled entity values,mark pattern any entities as not to localize
@@ -141,26 +141,26 @@ const translateHelpers = {
                         if (entity.start !== offset) {
                             candidateText = content.substring(offset, entity.start);
                             if (candidateText.trim() !== '') {
-                                this.addSegment(linesToTranslate, candidateText, true);
+                                addSegment(linesToTranslate, candidateText, true);
                             } else {
-                                this.addSegment(linesToTranslate, candidateText, false);
+                                addSegment(linesToTranslate, candidateText, false);
                             }
                         }
                         if (entity.value !== '') {
-                            this.addSegment(linesToTranslate, ' {' + entity.entity + '=', false);
-                            this.addSegment(linesToTranslate, content.substring(entity.start, entity.end + 1).trim(), true);
-                            this.addSegment(linesToTranslate, '} ', false);
+                            addSegment(linesToTranslate, ' {' + entity.entity + '=', false);
+                            addSegment(linesToTranslate, content.substring(entity.start, entity.end + 1).trim(), true);
+                            addSegment(linesToTranslate, '} ', false);
                         } else {
-                            this.addSegment(linesToTranslate, ' {' + entity.entity + '} ', false);
+                            addSegment(linesToTranslate, ' {' + entity.entity + '} ', false);
                         }
                         offset = entity.end + 1;
                     }
                     if (offset !== content.length) {
                         candidateText = content.substring(offset);
                         if (candidateText.trim() !== '') {
-                            this.addSegment(linesToTranslate, candidateText.trim(), true);
+                            addSegment(linesToTranslate, candidateText.trim(), true);
                         } else {
-                            this.addSegment(linesToTranslate, candidateText, false);
+                            addSegment(linesToTranslate, candidateText, false);
                         }
                     }
                 }
@@ -171,14 +171,14 @@ const translateHelpers = {
                     // strip line of the list separator
                     listSeparator = currentLine.charAt(0);
                     content = currentLine.slice(1).trim();
-                    this.addSegment(linesToTranslate, listSeparator + ' ', false);
-                    this.addSegment(linesToTranslate, content, true);
+                    addSegment(linesToTranslate, listSeparator + ' ', false);
+                    addSegment(linesToTranslate, content, true);
                     break;
                 }
             } else if(currentLine.indexOf(PARSERCONSTS.ENTITY) === 0) {
                 if (inAnswer) {
-                    this.addSegment(linesToTranslate, currentLine, true);
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, currentLine, true);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
                 // we need to localize qna alterations if specified.
@@ -186,25 +186,33 @@ const translateHelpers = {
                 let entityName = entityDef[0];
                 let entityType = entityDef[1];
                 if(entityType.includes(PARSERCONSTS.QNAALTERATIONS)) {
-                    this.addSegment(linesToTranslate, '$', false);
-                    this.addSegment(linesToTranslate, entityName.trim(), true);
-                    this.addSegment(linesToTranslate, ' : ' + PARSERCONSTS.QNAALTERATIONS + ' = ', false);
+                    addSegment(linesToTranslate, '$', false);
+                    addSegment(linesToTranslate, entityName.trim(), true);
+                    addSegment(linesToTranslate, ' : ' + PARSERCONSTS.QNAALTERATIONS + ' = ', false);
                     currentSectionType = PARSERCONSTS.ENTITY;
                 } else {
                     // we would not localize entity line but remember we are under entity section for list entities
-                    this.addSegment(linesToTranslate, currentLine, false);
+                    // FIX for BF CLI # 121
+                    // If list entity, add normalized value to list of synonyms to translate.
+                    addSegment(linesToTranslate, currentLine, false);
+                    if (entityType.trim().endsWith('=')) {
+                        addSegment(linesToTranslate, NEWLINE, false);
+                        let normalizedValueAsSynonym = entityType.replace('=', '').trim();
+                        addSegment(linesToTranslate, '- ', false);
+                        addSegment(linesToTranslate, normalizedValueAsSynonym, true);
+                    } 
                 }
             } else if(currentLine.indexOf(PARSERCONSTS.ANSWER) === 0) {
                 if (inAnswer) {
                     answerData = '';
                 }
-                this.addSegment(linesToTranslate, currentLine, false);
+                addSegment(linesToTranslate, currentLine, false);
                 inAnswer = !inAnswer;
                 currentSectionType = PARSERCONSTS.ANSWER;
             } else if (currentLine.indexOf(PARSERCONSTS.URLORFILEREF) ===0) {
                 if (inAnswer) {
-                    this.addSegment(linesToTranslate, currentLine, true);
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, currentLine, true);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
                 currentSectionType = PARSERCONSTS.URLORFILEREF;
@@ -215,32 +223,32 @@ const translateHelpers = {
                     const linkTextRegEx = new RegExp(/\[.*\]/g);
                     let linkTextList = currentLine.trim().match(linkTextRegEx);
                     let linkTextValue = linkTextList[0].replace('[','').replace(']','');
-                    this.addSegment(linesToTranslate, '[', false);
-                    this.addSegment(linesToTranslate, linkTextValue, true);
-                    this.addSegment(linesToTranslate, ']', false);
-                    this.addSegment(linesToTranslate, '(' + linkValue + ')', false);
+                    addSegment(linesToTranslate, '[', false);
+                    addSegment(linesToTranslate, linkTextValue, true);
+                    addSegment(linesToTranslate, ']', false);
+                    addSegment(linesToTranslate, '(' + linkValue + ')', false);
                 } else {
-                    this.addSegment(linesToTranslate, currentLine, false);
+                    addSegment(linesToTranslate, currentLine, false);
                 }
             } else if(currentLine === '') {
                 if (inAnswer) {
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
             } else {
                 if (inAnswer) {
-                    this.addSegment(linesToTranslate, currentLine, true);
-                    this.addSegment(linesToTranslate, NEWLINE, false);
+                    addSegment(linesToTranslate, currentLine, true);
+                    addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 } else {
                     throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Error: Unexpected line encountered when parsing \n' + '[' + lineIndex + ']:' + currentLine));
                 }
             }
-            this.addSegment(linesToTranslate, NEWLINE, false);
+            addSegment(linesToTranslate, NEWLINE, false);
             // do we have any payload to localize? and have we hit the batch size limit?
             if ((linesToTranslate.length !== 0) && (lineCtr % batch_translate_size === 0)) {
                 try {
-                    localizedContent += await this.batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang, log);
+                    localizedContent += await batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang, log);
                     linesToTranslate = [];
                 } catch (err) {
                     throw (err)
@@ -249,7 +257,7 @@ const translateHelpers = {
         }
         if (linesToTranslate.length !== 0) {
             try {
-                localizedContent += await this.batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang, log);
+                localizedContent += await batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang, log);
                 linesToTranslate = [];
             } catch (err) {
                 throw (err)
@@ -257,95 +265,9 @@ const translateHelpers = {
         }
         return localizedContent;
     },
-    /**
-     * Helper function to break down input string if it is longer than MAX_CHAR_IN_REQUEST to translate API
-     * @param {translateLine []} linesToTranslate Array of translateLine objects
-     * @param {string} text text to translate
-     * @param {boolean} localize indicates if the request should be localized or not.
-     * @returns {void} 
-     */
-    addSegment: function (linesToTranslate, text, localize) {
-        if (text.length >= MAX_CHAR_IN_REQUEST) {
-            // break it up into smaller segments and add it to the batchRequest payload
-            let splitRegExp = new RegExp(`(.{${MAX_CHAR_IN_REQUEST}})`);
-            let splitLine = text.split(splitRegExp).filter(O => O);
-            splitLine.forEach(item => {
-                linesToTranslate.push(new helperClasses.translateLine(item, localize));
-            })
-        } else {
-            linesToTranslate.push(new helperClasses.translateLine(text, localize));
-        }
-    },
-    /**
-     * Helper function to batch calls to translate API
-     * @param {translateLine []} linesToTranslate Array of translateLine objects
-     * @param {string} subscriptionKey translate text API key
-     * @param {string} to_lang language code to translate content to
-     * @param {string} src_lang language code for source content
-     * @param {boolean} log indicates if this function should write verbose messages to process.stdout
-     * @returns {string} translated content
-     * @throws {exception} Throws on errors. exception object includes errCode and text. 
-     */
-    batchTranslateText: async function(linesToTranslate, subscriptionKey, to_lang, src_lang, log) {
-        // responsible for breaking localizable text into chunks that are 
-        // - not more than 5000 characters in combined length 
-        // - not more than 25 segments in one chunk
-        let retValue = '';
-        if (!Array.isArray(linesToTranslate) || linesToTranslate.length === 0) return retValue;
-        let charCountInChunk = 0;
-        let batchTranslate = [];
-        for (var idx in linesToTranslate) {
-            let item = linesToTranslate[idx];
-            if (item.text.length + charCountInChunk >= MAX_CHAR_IN_REQUEST) {
-                await this.translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
-                batchTranslate = [];
-                charCountInChunk = 0;
-            }
-            let currentBatchSize = batchTranslate.length > 0 ? batchTranslate.length : 1;
-            if (currentBatchSize % MAX_TRANSLATE_BATCH_SIZE === 0) {
-                await this.translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
-                batchTranslate = [];
-                charCountInChunk = 0;
-            }
-            if (item.localize) {
-                item.idx = batchTranslate.length; 
-                batchTranslate.push({'Text': item.text});
-                charCountInChunk += item.text.length;
-            }
-        }
-        if (batchTranslate.length !== 0) {
-            await this.translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
-            batchTranslate = [];
-            charCountInChunk = 0;
-        }
-        linesToTranslate.forEach(item => retValue += item.text);
-        if(log) process.stdout.write(chalk.default.gray(retValue));
-        return retValue;
-    },
-    /**
-     * Helper function to call translate and update text with localized result
-     * @param {object []} batchRequest Array of {'Text':'value'} objects
-     * @param {string} subscriptionKey translate text API key
-     * @param {string} to_lang language code to translate content to
-     * @param {string} src_lang language code for source content
-     * @param {translateLine []} linesToTranslateCopy Array of translateLine objects
-     * @returns {void} 
-     */
-    translateAndMap: async function (batchRequest, subscriptionKey, to_lang, src_lang, linesToTranslateCopy) {
-        if (batchRequest.length === 0) return;
-        let data;
-        try {
-            data = await this.translateText(batchRequest, subscriptionKey, to_lang, src_lang);
-        } catch (err) {
-            throw (err);
-        }
-        data.forEach((item, idx) => {
-            // find the correponding item in linesToTranslate
-            let itemInLine = linesToTranslateCopy.find(item => item.idx === idx);
-            itemInLine.text = item.translations[0].text;
-            itemInLine.idx = -1;
-        });
-    },
+    
+    
+    
     /**
      * Helper function to call MT rest API to translate content
      * @param {string} text Text to translate
@@ -375,7 +297,97 @@ const translateHelpers = {
         let data = await res.json();
         return data;
     }
-}
+};
+/**
+ * Helper function to break down input string if it is longer than MAX_CHAR_IN_REQUEST to translate API
+ * @param {translateLine []} linesToTranslate Array of translateLine objects
+ * @param {string} text text to translate
+ * @param {boolean} localize indicates if the request should be localized or not.
+ * @returns {void} 
+ */
+const addSegment = function (linesToTranslate, text, localize) {
+    if (text.length >= MAX_CHAR_IN_REQUEST) {
+        // break it up into smaller segments and add it to the batchRequest payload
+        let splitRegExp = new RegExp(`(.{${MAX_CHAR_IN_REQUEST}})`);
+        let splitLine = text.split(splitRegExp).filter(O => O);
+        splitLine.forEach(item => {
+            linesToTranslate.push(new helperClasses.translateLine(item, localize));
+        })
+    } else {
+        linesToTranslate.push(new helperClasses.translateLine(text, localize));
+    }
+};
+/**
+ * Helper function to batch calls to translate API
+ * @param {translateLine []} linesToTranslate Array of translateLine objects
+ * @param {string} subscriptionKey translate text API key
+ * @param {string} to_lang language code to translate content to
+ * @param {string} src_lang language code for source content
+ * @param {boolean} log indicates if this function should write verbose messages to process.stdout
+ * @returns {string} translated content
+ * @throws {exception} Throws on errors. exception object includes errCode and text. 
+ */
+const batchTranslateText = async function(linesToTranslate, subscriptionKey, to_lang, src_lang, log) {
+    // responsible for breaking localizable text into chunks that are 
+    // - not more than 5000 characters in combined length 
+    // - not more than 25 segments in one chunk
+    let retValue = '';
+    if (!Array.isArray(linesToTranslate) || linesToTranslate.length === 0) return retValue;
+    let charCountInChunk = 0;
+    let batchTranslate = [];
+    for (var idx in linesToTranslate) {
+        let item = linesToTranslate[idx];
+        if (item.text.length + charCountInChunk >= MAX_CHAR_IN_REQUEST) {
+            await translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
+            batchTranslate = [];
+            charCountInChunk = 0;
+        }
+        let currentBatchSize = batchTranslate.length > 0 ? batchTranslate.length : 1;
+        if (currentBatchSize % MAX_TRANSLATE_BATCH_SIZE === 0) {
+            await translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
+            batchTranslate = [];
+            charCountInChunk = 0;
+        }
+        if (item.localize) {
+            item.idx = batchTranslate.length; 
+            batchTranslate.push({'Text': item.text});
+            charCountInChunk += item.text.length;
+        }
+    }
+    if (batchTranslate.length !== 0) {
+        await translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
+        batchTranslate = [];
+        charCountInChunk = 0;
+    }
+    linesToTranslate.forEach(item => retValue += item.text);
+    if(log) process.stdout.write(chalk.default.gray(retValue));
+    return retValue;
+};
+
+/**
+ * Helper function to call translate and update text with localized result
+ * @param {object []} batchRequest Array of {'Text':'value'} objects
+ * @param {string} subscriptionKey translate text API key
+ * @param {string} to_lang language code to translate content to
+ * @param {string} src_lang language code for source content
+ * @param {translateLine []} linesToTranslateCopy Array of translateLine objects
+ * @returns {void} 
+ */
+const translateAndMap = async function (batchRequest, subscriptionKey, to_lang, src_lang, linesToTranslateCopy) {
+    if (batchRequest.length === 0) return;
+    let data;
+    try {
+        data = await translateHelpers.translateText(batchRequest, subscriptionKey, to_lang, src_lang);
+    } catch (err) {
+        throw (err);
+    }
+    data.forEach((item, idx) => {
+        // find the correponding item in linesToTranslate
+        let itemInLine = linesToTranslateCopy.find(item => item.idx === idx);
+        itemInLine.text = item.translations[0].text;
+        itemInLine.idx = -1;
+    });
+};
 
 /**
  * Helper function to create a random guid
