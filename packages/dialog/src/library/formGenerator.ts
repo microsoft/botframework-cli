@@ -316,6 +316,9 @@ async function generateDialog(schema: s.FormSchema, templateDir: string, outDir:
     for (let lib of await copyLibraries(schema, templateDir, '.dialog', outDir, force, feedback)) {
         addTemplate(lib)
     }
+
+    await writeTemplate(JSON.stringify(schema.schema, undefined, 4), outDir, '', schema.name, '.form.dialog', false, true, feedback)
+
     let root = await readTemplate(templateDir, 'root', '.dialog', feedback)
     if (root) {
         let newRoot = expand(root, schema, { references: templates, locale: path.basename(templateDir) }, feedback)

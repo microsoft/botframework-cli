@@ -3,5 +3,6 @@
     "$type": "Microsoft.FormDialog",
     "recognizer": "**SCHEMA**.lu",
     "generator": "**SCHEMA**.lg",
+    "schema": "**SCHEMA**.form",
     "events": [ **REFERENCES** ]
 }
