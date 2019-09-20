@@ -116,6 +116,33 @@ const helpers = {
             returnValue.roles = parsedRoleDefinition.replace('[', '').replace(']', '').split(RolesSplitRegEx).map(item => item.trim());
         }
         return returnValue;
+    },
+    /**
+     * Helper function to detect if a given text is a link reference
+     * @param {String} utterance utterance text to examine
+     * @returns {Boolean} true if input is a link reference
+     */
+    isUtteranceLinkRef : function (utterance) {
+        utterance = utterance || '';
+        // Ensure only links are detected and passed on to be parsed.
+        // Valid link: [bar](xyz)
+        // Not a link: [bar](xyz|123), [bar[tar]](xyz), abc [foo](bar)
+        let linkDetectRegex = /^\[[^\[]+\]\([^|]+\)$/gi;
+        return linkDetectRegex.test(utterance);   
+    },
+    /**
+     * Helper function to detect if a given text is a pattern.
+     * @param {String} utterance
+     * @returns {Boolean} true if utterance is a pattern 
+     */
+    isUtterancePattern : function (utterance) {
+        utterance = utterance || '';
+        // link references cannot be a pattern
+        if (this.isUtteranceLinkRef(utterance)) return false;
+
+        // patterns must have at least one [optional] and or one (group | text)
+        let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
+        return detectPatternRegex.test(utterance);
     }
 }
 

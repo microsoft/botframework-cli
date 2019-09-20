@@ -970,4 +970,16 @@ describe('parseFile correctly parses utterances', function () {
                         .catch(err => done())
         })
 
+        it ('Test for BF CLI #122', function(done){
+                let testLU = `# intent1
+                - [[this]is] a new form (a | b)`;
+
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patterns.length, 1);
+                                assert.equal(res.LUISJsonStructure.patterns[0].pattern, '[[this]is] a new form (a | b)');
+                                done();
+                        })
+                        .catch(err => done('Fail! Did not throw when expected'))
+        })
 })
