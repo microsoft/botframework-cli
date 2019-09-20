@@ -38,7 +38,7 @@ export namespace LuisToCsConverter {
     await writer.closeOutputStream()
   }
 
-  export function header(
+  function header(
     description: string,
     space: string,
     className: string,
@@ -91,7 +91,6 @@ export namespace LuisToCsConverter {
     if (lastIntent) {
       writer.writeLineIndented(lastIntent)
     }
-    writer.writeLine()
     writer.decreaseIndentation()
 
     writer.writeLineIndented([
