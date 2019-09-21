@@ -980,6 +980,23 @@ describe('parseFile correctly parses utterances', function () {
                                 assert.equal(res.LUISJsonStructure.patterns[0].pattern, '[[this]is] a new form (a | b)');
                                 done();
                         })
-                        .catch(err => done('Fail! Did not throw when expected'))
+                        .catch(err => done('Fail!'))
+        });
+
+        it ('Multiple utterance sections with individual label definitions are handled correctly', function(done) {
+                let testLU = `# test
+                - one {protein = cheese} sandwich
+                    - one cheese sandwich
+                - tomato orange 
+                - one cheese {foodType = sandwich}
+                `;
+
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.utterances.length, 2);
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
+                                done();
+                        })
+                        .catch(err => done('Fail!'))
         })
 })
