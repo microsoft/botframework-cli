@@ -44,7 +44,7 @@ describe('dialog:form', async () => {
     it('Generation', async () => {
         try {
             let schema = await ft.FormSchema.readSchema(schemaPath)
-            await gen.generate(schema, output, ['en-us'])
+            await gen.generate(schema, output, undefined, ['en-us'])
         } catch (e) {
             fail(e.message)
         }

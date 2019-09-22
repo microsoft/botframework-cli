@@ -91,7 +91,9 @@
                 "-o",
                 "${env:TEMP}/sandwich.out",
                 "--force",
-                "--verbose"
+                "--verbose",
+                "--schema",
+                "c:/users/chrimc/source/repos/botbuilder-dotnet/schemas/sdk.schema"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         }

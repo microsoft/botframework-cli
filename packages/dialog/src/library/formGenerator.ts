@@ -11,14 +11,12 @@ import * as os from 'os'
 import * as path from 'path'
 
 // TODO:
-// Allow multiple template directories
 // Add $templates to schema
 // Support numbered tokens in order to support **ASK1**, etc.
 // Add --multiple for lists of properties to bind
 // Write templates for set
 // Hook up to testbot.json
 // Revamp utterance to only support if in expected and add to clarify if it overlaps other entities.
-// Expose regex to copylibrary
 export enum FeedbackType {
     info,
     warning,
@@ -305,7 +303,7 @@ function expandedName(templateName: string, propertyName: string): string {
     return propertyName + suffix
 }
 
-async function generateDialog(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
+async function generateDialog(form: s.FormSchema, schema: string, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
     let templates = ''
     let addTemplate = function (t?: string) {
         if (t) {
@@ -316,30 +314,35 @@ async function generateDialog(schema: s.FormSchema, templateDir: string, outDir:
             }
         }
     }
-    for (let prop of schema.schemaProperties()) {
+    for (let prop of form.schemaProperties()) {
         let type = prop.templateName()
         for (let templateName of await glob(path.join(templateDir, type + '*.dialog'))) {
-            let template = await readTemplate(templateDir, path.basename(templateName, '.dialog'), '.dialog', feedback) || ''
-            let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
-            let name = expandedName(path.basename(templateName, '.dialog'), prop.path)
-            let outName = await writeTemplate(newTemplate, outDir, schema.name, name, '.dialog', false, force, feedback)
-            addTemplate(outName)
+            let template = await readTemplate(templateDir, path.basename(templateName, '.dialog'), '.dialog', feedback)
+            if (template) {
+                let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
+                let name = expandedName(path.basename(templateName, '.dialog'), prop.path)
+                let obj = JSON.parse(newTemplate)
+                obj.$schema = schema
+                newTemplate = JSON.stringify(obj, [4])
+                let outName = await writeTemplate(newTemplate, outDir, form.name, name, '.dialog', false, force, feedback)
+                addTemplate(outName)
+            }
         }
     }
 
     let pattern = path.join(templateDir, '[a-z]+.dialog')
-    for (let lib of await copyLibraryPattern(schema, pattern, outDir, force, feedback)) {
+    for (let lib of await copyLibraryPattern(form, pattern, outDir, force, feedback)) {
         addTemplate(lib)
     }
 
-    await writeTemplate(JSON.stringify(schema.schema, undefined, 4), outDir, '', schema.name, '.form.dialog', false, true, feedback)
+    await writeTemplate(JSON.stringify(form.schema, undefined, 4), outDir, '', form.name, '.form.dialog', false, true, feedback)
 
     let root = await readTemplate(templateDir, 'Main', '.dialog', feedback)
     if (root) {
-        let newRoot = expand(root, schema, { references: templates, locale: path.basename(templateDir) }, feedback)
-        await writeTemplate(newRoot, outDir, '', schema.name, '.dialog', false, force, feedback)
+        let newRoot = expand(root, form, { references: templates, locale: path.basename(templateDir) }, feedback)
+        await writeTemplate(newRoot, outDir, '', form.name, '.dialog', false, force, feedback)
     } else {
-        throw new Error('Missing root.dialog template')
+        throw new Error('Missing Main.dialog template')
     }
 }
 
@@ -367,34 +370,49 @@ async function generateMultiLanguage(schema: s.FormSchema, locales: string[], te
  * @param force True to force overwriting existing files.
  * @param feedback Callback function for progress and errors.
  */
-export async function generate(schema: s.FormSchema, outDir: string, locales?: string[], templateDir?: string, force?: boolean, feedback?: Feedback): Promise<void> {
-    if (!locales) {
-        locales = ['en-us']
-    }
+export async function generate(form: s.FormSchema, outDir: string, schema?: string, locales?: string[], templateDirs?: string[], force?: boolean, feedback?: Feedback): Promise<void> {
     if (!feedback) {
         feedback = (_info, _message) => true
     }
-    if (!templateDir) {
-        templateDir = path.join(__dirname, '../../resources')
+    if (!schema) {
+        schema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema'
+    } else if (!schema.startsWith('http')) {
+        // Adjust relative to outDir
+        schema = path.relative(outDir, schema)
     }
+    if (!locales) {
+        locales = ['en-us']
+    }
+
+    if (!templateDirs) {
+        templateDirs = [path.join(__dirname, '../../resources')]
+    }
+    let op = 'Regenerating'
     if (!force) {
         force = false
+        op = 'Generating'
     }
+    feedback(FeedbackType.info, `${op} resources for ${form.name} in ${outDir}`)
+    feedback(FeedbackType.info, `Locales: ${JSON.stringify(locales)}`)
+    feedback(FeedbackType.info, `Templates: ${JSON.stringify(templateDirs)}`)
+    feedback(FeedbackType.info, `Schema: ${schema}`)
     try {
         await fs.ensureDir(outDir)
-        for (let locale of locales) {
-            try {
-                let localeIn = path.join(templateDir, locale)
-                let localeOut = path.join(outDir, locale)
-                await fs.ensureDir(localeOut)
-                await generateLG(schema, localeIn, localeOut, force, feedback)
-                await generateLU(schema, localeIn, localeOut, force, feedback)
-            } catch (e) {
-                feedback(FeedbackType.error, e.message)
+        for (let templateDir of templateDirs) {
+            for (let locale of locales) {
+                try {
+                    let localeIn = path.join(templateDir, locale)
+                    let localeOut = path.join(outDir, locale)
+                    await fs.ensureDir(localeOut)
+                    await generateLG(form, localeIn, localeOut, force, feedback)
+                    await generateLU(form, localeIn, localeOut, force, feedback)
+                } catch (e) {
+                    feedback(FeedbackType.error, e.message)
+                }
             }
+            await generateMultiLanguage(form, locales, templateDir, outDir, feedback)
+            await generateDialog(form, schema, templateDir, outDir, force, feedback)
         }
-        await generateMultiLanguage(schema, locales, templateDir, outDir, feedback)
-        await generateDialog(schema, templateDir, outDir, force, feedback)
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }
