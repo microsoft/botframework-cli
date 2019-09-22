@@ -10,6 +10,15 @@ import * as glob from 'globby'
 import * as os from 'os'
 import * as path from 'path'
 
+// TODO:
+// Allow multiple template directories
+// Add $templates to schema
+// Support numbered tokens in order to support **ASK1**, etc.
+// Add --multiple for lists of properties to bind
+// Write templates for set
+// Hook up to testbot.json
+// Revamp utterance to only support if in expected and add to clarify if it overlaps other entities.
+// Expose regex to copylibrary
 export enum FeedbackType {
     info,
     warning,
@@ -212,10 +221,9 @@ function expand(template: string, schema: s.FormSchema, bindings: { property?: s
     return newTemplate
 }
 
-async function copyLibraries(schema: s.FormSchema, templateDir: string, ext: string, outdir: string, force: boolean, feedback: Feedback): Promise<string[]> {
-    let locale = path.basename(templateDir)
+async function copyLibraryPattern(schema: s.FormSchema, pattern: string, outdir: string, force: boolean, feedback: Feedback): Promise<string[]> {
     let templates: string[] = []
-    for (let templatePath of await glob(path.join(templateDir, '*.' + locale + ext))) {
+    for (let templatePath of await glob(pattern)) {
         let template = await fs.readFile(templatePath, 'utf8')
         let newTemplate = expand(template, schema, {}, feedback)
         let ext = path.extname(templatePath)
@@ -225,6 +233,12 @@ async function copyLibraries(schema: s.FormSchema, templateDir: string, ext: str
         }
     }
     return templates
+}
+
+async function copyLibraries(schema: s.FormSchema, templateDir: string, ext: string, outDir: string, force: boolean, feedback: Feedback): Promise<string[]> {
+    let locale = path.basename(templateDir)
+    let pattern = path.join(templateDir, '*.' + locale + ext)
+    return copyLibraryPattern(schema, pattern, outDir, force, feedback)
 }
 
 async function generateLG(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
@@ -313,13 +327,14 @@ async function generateDialog(schema: s.FormSchema, templateDir: string, outDir:
         }
     }
 
-    for (let lib of await copyLibraries(schema, templateDir, '.dialog', outDir, force, feedback)) {
+    let pattern = path.join(templateDir, '[a-z]+.dialog')
+    for (let lib of await copyLibraryPattern(schema, pattern, outDir, force, feedback)) {
         addTemplate(lib)
     }
 
     await writeTemplate(JSON.stringify(schema.schema, undefined, 4), outDir, '', schema.name, '.form.dialog', false, true, feedback)
 
-    let root = await readTemplate(templateDir, 'root', '.dialog', feedback)
+    let root = await readTemplate(templateDir, 'Main', '.dialog', feedback)
     if (root) {
         let newRoot = expand(root, schema, { references: templates, locale: path.basename(templateDir) }, feedback)
         await writeTemplate(newRoot, outDir, '', schema.name, '.dialog', false, force, feedback)
