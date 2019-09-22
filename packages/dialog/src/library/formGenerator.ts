@@ -11,7 +11,6 @@ import * as os from 'os'
 import * as path from 'path'
 
 // TODO:
-// Add $templates to schema
 // Support numbered tokens in order to support **ASK1**, etc.
 // Add --multiple for lists of properties to bind
 // Write templates for set
@@ -53,7 +52,8 @@ async function writeTemplate(template: string, outDir: string, prefix: string, t
     return outName
 }
 
-const TOKENS = ['**PROPERTY**', '**PROPERTIES', 'PROPERTIES**', '**ENTITY**', '**ENTITIES', 'ENTITIES**', '**ENUM**', '**ENUMS', 'ENUMS**', '**SCHEMA**', '**REFERENCES**', '**LOCALE**']
+const TOKENS = ['**PROPERTY**', '**PROPERTIES', 'PROPERTIES**', '**ENTITY**', '**ENTITIES', 'ENTITIES**', '**ENUM**', '**ENUMS', 'ENUMS**', '**FORM**', '**REFERENCES**', '**LOCALE**',
+    '**PROP0**', '**PROP1**', '**PROP2**', '**PROP3**', '**PROP4**', '**PROP5**', '**PROP6**', '**PROP7**', '**PROP8**', '**PROP9**']
 const PROPERTY = 0
 const STARTPROP = 1
 const ENDPROP = 2
@@ -63,9 +63,10 @@ const ENDENTITY = 5
 const ENUM = 6
 const STARTENUM = 7
 const ENDENUM = 8
-const SCHEMA = 9
+const FORM = 9
 const REFERENCES = 10
 const LOCALE = 11
+const PROP = 12
 
 function scanForToken(template: string, pos: number, endToken: string): { newpos: number, block: string } | undefined {
     let current = ''
@@ -89,15 +90,16 @@ function scanForToken(template: string, pos: number, endToken: string): { newpos
  * \*\*ENUMS ... ENUMS\*\*: will duplicate the full block inside for each enum value and bound \*\*ENUM\*\* to the current enum.
  * \*\*PROPERTY\*\* gets the current property name.
  * \*\*ENTITY\*\* gets the current entity name.
- * \*\*SCHEMA\*\* gets the current schema name.
+ * \*\*FORM\*\* gets the current form name.
  * \*\*REFERENCES\*\*: list of references for generated files of that type.
  * \*\*LOCALE\*\* gets the locale name.
+ * \*\*PROP<N>\*\* gets the nth prop name from an explicit list.
  * @param template The template to substitute in.
- * @param schema The schema of the current property or the whole schema.
+ * @param form The schema of the current property or the whole schema.
  * @param bindings Current bindings for tokens.
  * @param feedback Feedback function.
  */
-function expand(template: string, schema: s.FormSchema, bindings: { property?: string, entity?: string, value?: string, references?: string, locale?: string }, feedback?: Feedback): string {
+function expand(template: string, form: s.FormSchema, bindings: { property?: string, entity?: string, value?: string, references?: string, locale?: string, props?: string[] }, feedback?: Feedback): string {
     if (!feedback) {
         feedback = (_info: FeedbackType, _msg: string) => true
     }
@@ -140,9 +142,9 @@ function expand(template: string, schema: s.FormSchema, bindings: { property?: s
                     }
                     current = ''
                     break
-                case SCHEMA:
-                    if (schema.name) {
-                        newTemplate += schema.name
+                case FORM:
+                    if (form.name) {
+                        newTemplate += form.name
                     } else {
                         feedback(FeedbackType.error, `No definition for schema at ${startPos}.`)
                     }
@@ -168,7 +170,7 @@ function expand(template: string, schema: s.FormSchema, bindings: { property?: s
                     let scan = scanForToken(template, pos + 1, TOKENS[ENDPROP])
                     if (scan) {
                         let { newpos, block } = scan
-                        for (let prop of schema.schemaProperties()) {
+                        for (let prop of form.schemaProperties()) {
                             newTemplate += expand(block, prop, { property: prop.path, ...bindings }, feedback)
                         }
                         pos = newpos
@@ -182,8 +184,8 @@ function expand(template: string, schema: s.FormSchema, bindings: { property?: s
                     let scan = scanForToken(template, pos + 1, TOKENS[ENDENTITY])
                     if (scan) {
                         let { newpos, block } = scan
-                        for (let entityName of schema.mappings()) {
-                            newTemplate += expand(block, schema, { entity: entityName, ...bindings }, feedback)
+                        for (let entityName of form.mappings()) {
+                            newTemplate += expand(block, form, { entity: entityName, ...bindings }, feedback)
                         }
                         pos = newpos
                     } else {
@@ -196,9 +198,9 @@ function expand(template: string, schema: s.FormSchema, bindings: { property?: s
                     let scan = scanForToken(template, pos + 1, TOKENS[ENDENUM])
                     if (scan) {
                         let { newpos, block } = scan
-                        if (schema.schema.enum) {
-                            for (let val of schema.schema.enum) {
-                                newTemplate += expand(block, schema, { value: val, ...bindings }, feedback)
+                        if (form.schema.enum) {
+                            for (let val of form.schema.enum) {
+                                newTemplate += expand(block, form, { value: val, ...bindings }, feedback)
                             }
                         }
                         pos = newpos
@@ -209,7 +211,10 @@ function expand(template: string, schema: s.FormSchema, bindings: { property?: s
                     break
                 }
                 default:
-                    if (match >= 0) {
+                    if (match >= PROP) {
+                        let num = current.substring(TOKENS[PROP].length - 1)
+                        newTemplate += Number(num)
+                    } else if (match >= 0) {
                         feedback(FeedbackType.error, `${TOKENS[match]} at ${pos} missing start.`)
                     }
             }
@@ -247,13 +252,14 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outDir: str
 
     let refs = ''
     for (let prop of schema.schemaProperties()) {
-        let type = prop.templateName()
-        let template = await readTemplate(templateDir, type, '.lg', feedback)
-        if (template) {
-            let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
-            let outName = await writeTemplate(newTemplate + os.EOL + libs, outDir, schema.name, prop.path, '.lg', true, force, feedback)
-            if (outName) {
-                refs += `[${outName}](./${outName})${os.EOL}`
+        for (let type of prop.templateNames()) {
+            let template = await readTemplate(templateDir, type, '.lg', feedback)
+            if (template) {
+                let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
+                let outName = await writeTemplate(newTemplate + os.EOL + libs, outDir, schema.name, prop.path, '.lg', true, force, feedback)
+                if (outName) {
+                    refs += `[${outName}](./${outName})${os.EOL}`
+                }
             }
         }
     }
@@ -315,17 +321,18 @@ async function generateDialog(form: s.FormSchema, schema: string, templateDir: s
         }
     }
     for (let prop of form.schemaProperties()) {
-        let type = prop.templateName()
-        for (let templateName of await glob(path.join(templateDir, type + '*.dialog'))) {
-            let template = await readTemplate(templateDir, path.basename(templateName, '.dialog'), '.dialog', feedback)
-            if (template) {
-                let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
-                let name = expandedName(path.basename(templateName, '.dialog'), prop.path)
-                let obj = JSON.parse(newTemplate)
-                obj.$schema = schema
-                newTemplate = JSON.stringify(obj, [4])
-                let outName = await writeTemplate(newTemplate, outDir, form.name, name, '.dialog', false, force, feedback)
-                addTemplate(outName)
+        for (let type of prop.templateNames()) {
+            for (let templateName of await glob(path.join(templateDir, type + '*.dialog'))) {
+                let template = await readTemplate(templateDir, path.basename(templateName, '.dialog'), '.dialog', feedback)
+                if (template) {
+                    let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
+                    let name = expandedName(path.basename(templateName, '.dialog'), prop.path)
+                    let obj = JSON.parse(newTemplate)
+                    obj.$schema = schema
+                    newTemplate = JSON.stringify(obj, [4])
+                    let outName = await writeTemplate(newTemplate, outDir, form.name, name, '.dialog', false, force, feedback)
+                    addTemplate(outName)
+                }
             }
         }
     }
@@ -385,7 +392,7 @@ export async function generate(form: s.FormSchema, outDir: string, schema?: stri
     }
 
     if (!templateDirs) {
-        templateDirs = [path.join(__dirname, '../../resources')]
+        templateDirs = [path.join(__dirname, '../../templates')]
     }
     let op = 'Regenerating'
     if (!force) {

@@ -32,6 +32,13 @@ export class Entity {
 
 type EntitySet = Record<string, Entity>
 
+/**
+ * Extra properties:
+ * $mappings: [entity] defaults based on type, string -> [property], numbers -> [prooperty, number]
+ * $templates: Template basenames to specialize for this property.
+ * 
+ * TODO: Add more like $units.
+ */
 export class FormSchema {
     /**
      * Read and validate schema from a path.
@@ -100,8 +107,8 @@ export class FormSchema {
         return type
     }
 
-    templateName(): string {
-        return this.schema.$template || this.typeName()
+    templateNames(): string[] {
+        return this.schema.$templates || [this.typeName()]
     }
 
     mappings(): string[] {
