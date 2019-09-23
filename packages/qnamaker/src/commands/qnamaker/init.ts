@@ -17,7 +17,7 @@ export default class QnamakerInit extends Command {
   async run() {
     const result = await this.initializeConfig()
     if (result) {
-      this.log(`Successfully wrote ${process.cwd()}/.qnamakerrc`)
+      this.log(`Successfully wrote ${this.config.configDir}/config.json`)
     }
   }
 
