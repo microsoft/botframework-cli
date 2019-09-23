@@ -329,7 +329,7 @@ async function generateDialog(form: s.FormSchema, schema: string, templateDir: s
                     let name = expandedName(path.basename(templateName, '.dialog'), prop.path)
                     let obj = JSON.parse(newTemplate)
                     obj.$schema = schema
-                    newTemplate = JSON.stringify(obj, [4])
+                    newTemplate = JSON.stringify(obj, undefined, 4)
                     let outName = await writeTemplate(newTemplate, outDir, form.name, name, '.dialog', false, force, feedback)
                     addTemplate(outName)
                 }
