@@ -4,7 +4,7 @@ const path = require('path')
 const txtfile = require('./../lufile/read-text-file')
 const qnaFile = require('./../qnafile/parseQnAFile')
 const helperClasses = require('./../lufile/classes/hclasses')
-const exception = ('./../lufile/classes/exception')
+const exception = require('./../lufile/classes/exception')
 const retCode = require('./../lufile/enums/CLI-errors')
 
 module.exports = {

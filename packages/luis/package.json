@@ -38,6 +38,7 @@
   },
   "files": [
     "/lib",
+    "/parser",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],

@@ -13,17 +13,17 @@ module.exports = {
             let file = files[i++] + ''       
             try {
                 let luObject = await parseFile(file)
-                translation[path.basename(file)] = await translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
+                translation[path.basename(file)] = await this.translateLuObj(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
             } catch (err) {
                 throw(err);
             }
          }
         return translation
     },
-    translateLuObject: async function(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+    translateLuObj: async function(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
         let translation = {}
         try {
-            translation['luTranslation'] = await translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
+            translation = await translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
         } catch (err) {
             throw(err);
         }
