@@ -2,7 +2,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const exception = require('./../../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
 const path = require('path')
-const helpers = require('./../../../parser/lufile/helpers')
+const file = require('./../../utils/filehelper')
 const luConverter = require('./../../../parser/converters/lutoluisconverter')
 const luisConverter = require('./../../../parser/converters/luistoluconverter')
 
@@ -22,20 +22,18 @@ export default class LuisConvert extends Command {
     schemaversion: flags.string({description: 'Schema version of the LUIS application'}),
   }
 
-  inputStat: any
-
   async run() {
     try {
       const {flags} = this.parse(LuisConvert)
       //Check if file or folder
       //if folder, only lu to luis is supported
-      this.inputStat = await fs.stat(flags.in)
-      let isLu = !this.inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
+      let inputStat = await fs.stat(flags.in)
+      let isLu = !inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
 
        // Parse the object depending on the input
       let result: any
       if (isLu) {
-        let luFiles = await this.getLuFiles(flags.in, flags.recurse)
+        const luFiles = await file.getLuFiles(flags.in, flags.recurse)
         result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
       } else {
         result = await luisConverter.parseLuisFileToLu(flags.in, flags.sort)
@@ -71,28 +69,8 @@ export default class LuisConvert extends Command {
     }
   }
 
-  private async getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
-    let filesToParse = []
-
-    if (this.inputStat.isFile()) {
-      filesToParse.push(input)
-      return filesToParse
-    }
-
-    if (!this.inputStat.isDirectory()) {
-      throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
-    }
-
-    filesToParse = helpers.findLUFiles(input, recurse)
-
-    if (filesToParse.length === 0) {
-      throw new CLIError('Sorry, no .lu files found in the specified folder.')
-    }
-    return filesToParse
-  }
-
   private async writeOutput(convertedObject: any, flags: any, isLu: boolean) {
-    let filePath = await this.generateNewFilePath(flags.out, flags.in, isLu)
+    let filePath = await file.generateNewFilePath(flags.out, flags.in, isLu)
     // write out the final file
     try {
       await fs.writeFile(filePath, convertedObject, 'utf-8')
@@ -101,22 +79,5 @@ export default class LuisConvert extends Command {
       throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
     }
     this.log('Successfully wrote LUIS model to ' + filePath)
-  }
-
-  private async generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean): Promise<string> {
-    let extension = path.extname(outFileName)
-    if (extension === '.json' || extension === '.lu') {
-      return path.join(process.cwd(), outFileName)
-    }
-
-    let base = path.join(process.cwd(), outFileName)
-    await fs.mkdirp(base)
-    let name
-    if (this.inputStat.isFile()) {
-      name = path.basename(inputfile, path.extname(inputfile)) + (isLu ? '.json' : '.lu')
-    } else {
-      name = isLu ? 'lufile.lu' : 'luisapp.json'
-    }
-    return path.join(base, name)
   }
 }
