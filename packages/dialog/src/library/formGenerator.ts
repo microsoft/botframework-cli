@@ -347,7 +347,7 @@ async function generateDialog(form: s.FormSchema, schema: string, templateDir: s
     let root = await readTemplate(templateDir, 'Main', '.dialog', feedback)
     if (root) {
         let newRoot = expand(root, form, { references: templates, locale: path.basename(templateDir) }, feedback)
-        await writeTemplate(newRoot, outDir, '', form.name, '.dialog', false, force, feedback)
+        await writeTemplate(newRoot, outDir, '', form.name + '.main', '.dialog', false, force, feedback)
     } else {
         throw new Error('Missing Main.dialog template')
     }
