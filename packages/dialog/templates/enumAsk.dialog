@@ -5,7 +5,7 @@
     "actions": [
         {
             "$type": "Microsoft.Ask",
-            "activity": "[ask**PROPERTY**]",
+            "activity": "[Ask**PROPERTY**]",
             "expectedSlots": [
                 "**PROPERTY**"
             ]

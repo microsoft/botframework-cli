@@ -1,5 +1,8 @@
 # Ask**PROPERTY**
 - [askEnum('**PROPERTY**')]
 
+# Clarify**PROPERTY**
+- [clarifyEnum('**PROPERTY**')]
+
 # Help**PROPERTY**
 - [helpProperty('**PROPERTY**')]
