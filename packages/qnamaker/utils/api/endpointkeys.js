@@ -18,6 +18,7 @@ class Endpointkeys extends ServiceBase {
     * Re-generates an endpoint key.
     */
     refreshEndpointKeys(params) {
+        this.relativeEndpoint = '/endpointkeys/{keyType}'
         return this.createRequest('', params, 'PATCH');
     }
 }
