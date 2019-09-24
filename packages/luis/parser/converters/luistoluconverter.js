@@ -105,7 +105,7 @@ module.exports = {
             });
             fileContent += NEWLINE;
         }
-
+    
         if(LUISJSON.prebuiltEntities && LUISJSON.prebuiltEntities.length >= 0){
             fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
             LUISJSON.prebuiltEntities.forEach(function(entity) {
@@ -182,7 +182,6 @@ const parseLuis = async function(luisObject, src, sort){
     if (sort) {
         await sortLUISJSON(LUISJSON.model)
     }
-
     return LUISJSON
 }
 
@@ -266,22 +265,38 @@ constructModelDescFromLUISJSON = async function(LUISJSON) {
  */
 const sortLUISJSON = async function(LUISJSON) {
     // sort intents first
-    LUISJSON.intents.sort(sortComparers.compareNameFn);
-    LUISJSON.composites.sort(sortComparers.compareNameFn);
-    LUISJSON.entities.sort(sortComparers.compareNameFn);
-    LUISJSON.closedLists.sort(sortComparers.compareNameFn);
-    LUISJSON.regex_entities.sort(sortComparers.compareNameFn);
-    LUISJSON.model_features.sort(sortComparers.compareNameFn);
-    LUISJSON.patternAnyEntities.sort(sortComparers.compareNameFn);
-    LUISJSON.prebuiltEntities.sort(sortComparers.compareNameFn);
-    LUISJSON.utterances.sort(sortComparers.compareIntentFn);
+    try {
+        LUISJSON.intents.sort(sortComparers.compareNameFn);
+        LUISJSON.composites.sort(sortComparers.compareNameFn);
+        LUISJSON.entities.sort(sortComparers.compareNameFn);
+        LUISJSON.closedLists.sort(sortComparers.compareNameFn);
+        LUISJSON.regex_entities.sort(sortComparers.compareNameFn);
+        LUISJSON.model_features.sort(sortComparers.compareNameFn);
+        LUISJSON.patternAnyEntities.sort(sortComparers.compareNameFn);
+        LUISJSON.prebuiltEntities.sort(sortComparers.compareNameFn);
+        LUISJSON.utterances.sort(sortComparers.compareIntentFn);
+    } catch (e) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT, 'Sorry, invalid LUIS json object'));
+    }
 }
 
-const sortComparers = {   
+const sortComparers = { 
     compareNameFn : function(a, b) {
-        return a.name.toUpperCase() > b.name.toUpperCase();
+        return compareString(a.name.toUpperCase(), b.name.toUpperCase())
     },    
     compareIntentFn : function(a, b) {
-        return a.intent.toUpperCase() > b.intent.toUpperCase();
+        return compareString(a.intent.toUpperCase(), b.intent.toUpperCase())
     }
+}
+
+const compareString = function(a, b) {
+    if (a < b) {
+        return -1;
+    }
+
+    if (a > b) {
+        return 1;
+    }
+
+    return 0;
 }

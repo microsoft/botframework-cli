@@ -12,9 +12,7 @@ module.exports = {
         } catch (err) {
             throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, error parsing file as LUIS JSON: ' + file));
         }
-        if(!await validateLUISJSON(LUISJSON)){
-            throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, invalid input LUIS JSON. Cannot convert to .lu file.'));
-        }
+        await validateLUISJSON(LUISJSON)
         return LUISJSON;
     },
     /**
@@ -175,10 +173,9 @@ module.exports = {
 
 const validateLUISJSON = async function(LUISJSON) {
     if(!LUISJSON.intents && !LUISJSON.entities) {
-        return false;
+        throw new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, input LUIS JSON file has no intents and entities');
     }
     if(LUISJSON.regex_features && LUISJSON.regex_features.length !== 0) {
-        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, input LUIS JSON file has references to regex_features. Cannot convert to .lu file.'));
+        throw new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, input LUIS JSON file has references to regex_features. Cannot convert to .lu file.');
     }
-    return true;
 }

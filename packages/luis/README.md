@@ -30,8 +30,8 @@ USAGE
 <!-- commands -->
 * [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:translate`](#bf-luistranslate)
-* [`bf qnamaker:convert [FILE]`](#bf-qnamakerconvert-file)
-* [`bf qnamker:convert`](#bf-qnamkerconvert)
+* [`bf qnamaker:convert`](#bf-qnamakerconvert)
+* [`bf qnamaker:translate [FILE]`](#bf-qnamakertranslate-file)
 
 ## `bf luis:convert`
 
@@ -77,29 +77,13 @@ OPTIONS
 
 _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
 
-## `bf qnamaker:convert [FILE]`
+## `bf qnamaker:convert`
 
-describe the command here
-
-```
-USAGE
-  $ bf qnamaker:convert [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src/commands/qnamaker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
-
-## `bf qnamker:convert`
-
-describe the command here
+Convert .lu file(s) to a QnA application JSON model or vice versa
 
 ```
 USAGE
-  $ bf qnamker:convert
+  $ bf qnamaker:convert
 
 OPTIONS
   --alterations  Indicates if files is QnA Alterations
@@ -111,5 +95,21 @@ OPTIONS
   --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .lu files
 ```
 
-_See code: [src/commands/qnamker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamker/convert.ts)_
+_See code: [src/commands/qnamaker/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
+
+## `bf qnamaker:translate [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bf qnamaker:translate [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/translate.ts)_
 <!-- commandsstop -->
