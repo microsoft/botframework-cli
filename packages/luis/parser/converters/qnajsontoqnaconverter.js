@@ -102,10 +102,14 @@ const parseQnA= async function(qnaObject, src, sort, isAlterations){
  * @param {Object} QnAJSON 
  */
 const sortQnAJSON = function(QnAJSON) {
-    (QnAJSON.qnaList || []).forEach(pair => {
-        pair.questions.sort(sortComparers.compareFn);
-    });
-    QnAJSON.qnaList.sort(sortComparers.compareQn);
+    try {
+        (QnAJSON.qnaList || []).forEach(pair => {
+            pair.questions.sort(sortComparers.compareFn);
+        });
+        QnAJSON.qnaList.sort(sortComparers.compareQn);
+    } catch (e) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT, 'Sorry, invalid QnA Maker json object'));
+    }
 };
 
 /**
@@ -113,10 +117,14 @@ const sortQnAJSON = function(QnAJSON) {
  * @param {Object} QnAAltJSON 
  */
 const sortQnAAltJSON = function(QnAAltJSON) {
-    (QnAAltJSON.wordAlterations || []).forEach(word => {
-        word.alterations.sort(sortComparers.compareFn);
-    });
-    QnAAltJSON.wordAlterations.sort(sortComparers.compareAltName);
+    try {
+        (QnAAltJSON.wordAlterations || []).forEach(word => {
+            word.alterations.sort(sortComparers.compareFn);
+        });
+        QnAAltJSON.wordAlterations.sort(sortComparers.compareAltName);
+    } catch (e) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT, 'Sorry, invalid QnA Maker json object'));
+    }
 }; 
 
 /**

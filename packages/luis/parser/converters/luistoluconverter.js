@@ -265,15 +265,19 @@ constructModelDescFromLUISJSON = async function(LUISJSON) {
  */
 const sortLUISJSON = async function(LUISJSON) {
     // sort intents first
-    LUISJSON.intents.sort(sortComparers.compareNameFn);
-    LUISJSON.composites.sort(sortComparers.compareNameFn);
-    LUISJSON.entities.sort(sortComparers.compareNameFn);
-    LUISJSON.closedLists.sort(sortComparers.compareNameFn);
-    LUISJSON.regex_entities.sort(sortComparers.compareNameFn);
-    LUISJSON.model_features.sort(sortComparers.compareNameFn);
-    LUISJSON.patternAnyEntities.sort(sortComparers.compareNameFn);
-    LUISJSON.prebuiltEntities.sort(sortComparers.compareNameFn);
-    LUISJSON.utterances.sort(sortComparers.compareIntentFn);
+    try {
+        LUISJSON.intents.sort(sortComparers.compareNameFn);
+        LUISJSON.composites.sort(sortComparers.compareNameFn);
+        LUISJSON.entities.sort(sortComparers.compareNameFn);
+        LUISJSON.closedLists.sort(sortComparers.compareNameFn);
+        LUISJSON.regex_entities.sort(sortComparers.compareNameFn);
+        LUISJSON.model_features.sort(sortComparers.compareNameFn);
+        LUISJSON.patternAnyEntities.sort(sortComparers.compareNameFn);
+        LUISJSON.prebuiltEntities.sort(sortComparers.compareNameFn);
+        LUISJSON.utterances.sort(sortComparers.compareIntentFn);
+    } catch (e) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT, 'Sorry, invalid LUIS json object'));
+    }
 }
 
 const sortComparers = { 

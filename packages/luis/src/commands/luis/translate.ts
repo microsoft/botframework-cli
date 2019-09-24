@@ -26,7 +26,7 @@ export default class LuisTranslate extends Command {
     try {
       const {flags} = this.parse(LuisTranslate)
       let inputStat = await fs.stat(flags.in)
-      let outputStat = flags.out ? await fs.stat(flags.out) : undefined
+      let outputStat = flags.out ? await fs.stat(flags.out) : null
 
       if (outputStat && outputStat.isFile()) {
         throw new CLIError('Output can only be writen to a folder')
@@ -42,7 +42,7 @@ export default class LuisTranslate extends Command {
         translation = await luTranslator.translateLuObj(result, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         result = {}
         Object.keys(translation).forEach(async idx => {
-          result[flags.in][idx] = await luConverter.parseFile(translation[idx][0], false, undefined)
+          result[flags.in][idx] = await luConverter.parseFile(translation[idx][0], false)
         })
       }
 

@@ -64,7 +64,7 @@ async function translateLuObject(luObject, translate_key, to_lang, src_lang, tra
         let tgt_lang = toLang[idx].trim();
         if (tgt_lang === '') continue;
         try {
-            parsedLocContent = await translateHelpers.parseAndTranslate(luObject, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, false, undefined)
+            parsedLocContent = await translateHelpers.parseAndTranslate(luObject, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, false)
         } catch (err) {
             throw(err);
         }
