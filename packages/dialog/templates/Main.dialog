@@ -4,5 +4,5 @@
     "recognizer": "**FORM**.lu",
     "generator": "**FORM**.lg",
     "schema": "**FORM**.form",
-    "events": [ **REFERENCES** ]
+    "triggers": [ **REFERENCES** ]
 }

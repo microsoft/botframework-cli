@@ -313,10 +313,11 @@ async function generateDialog(form: s.FormSchema, schema: string, templateDir: s
     let templates = ''
     let addTemplate = function (t?: string) {
         if (t) {
+            let name = path.basename(t, '.dialog')
             if (templates !== '') {
-                templates += `, "${t}"`
+                templates += `, "${name}"`
             } else {
-                templates += `"${t}"`
+                templates += `"${name}"`
             }
         }
     }
