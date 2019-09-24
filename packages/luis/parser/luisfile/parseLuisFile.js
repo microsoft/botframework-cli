@@ -1,4 +1,4 @@
-const exception = ('./../lufile/classes/exception')
+const exception = require('./../lufile/classes/exception')
 const helpers = require('./../lufile/helpers');
 const retCode = require('./../lufile/enums/CLI-errors');
 const helperClass = require('./../lufile/classes/hclasses');
