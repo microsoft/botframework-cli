@@ -33,6 +33,7 @@ USAGE
 * [`bf qnamaker:delete:kb`](#bf-qnamakerdeletekb)
 * [`bf qnamaker:export:kb`](#bf-qnamakerexportkb)
 * [`bf qnamaker:get`](#bf-qnamakerget)
+* [`bf qnamaker:get:endpointsettings`](#bf-qnamakergetendpointsettings)
 * [`bf qnamaker:get:kb`](#bf-qnamakergetkb)
 * [`bf qnamaker:get:operationdetails`](#bf-qnamakergetoperationdetails)
 * [`bf qnamaker:init`](#bf-qnamakerinit)
@@ -46,6 +47,8 @@ USAGE
 * [`bf qnamaker:replace`](#bf-qnamakerreplace)
 * [`bf qnamaker:replace:alterations`](#bf-qnamakerreplacealterations)
 * [`bf qnamaker:replace:kb`](#bf-qnamakerreplacekb)
+* [`bf qnamaker:train`](#bf-qnamakertrain)
+* [`bf qnamaker:update:endpointsettings`](#bf-qnamakerupdateendpointsettings)
 * [`bf qnamaker:update:kb`](#bf-qnamakerupdatekb)
 
 ## `bf qnamaker`
@@ -72,27 +75,14 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:create:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
   --in=in                            (required) The CreateKbDTO object to send in the body of the request.
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
+  --name=name                        Name of the kb you want to create. This will override the name of KB that might be
+                                     present in the CreateKb DTO
 
-  --name=name                        Name of the kb you want to create.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 
   --wait                             Wait for the operation to complete.
 ```
@@ -109,24 +99,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:delete:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
   --force                            Do not prompt for confirmation, force the operation
+  --kbId=kbId                        Knowledgebase id to be deleted
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        (required) Knowledgebase id to be deleted
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/delete/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/delete/kb.ts)_
@@ -141,26 +119,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:export:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
   --environment=environment          (required) Specifies whether environment is Test or Prod.
+  --kbId=kbId                        Knowledgebase id to be exported.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        (required) Knowledgebase id to be exported.
-
-  --legacy                           Specifies if is a legacy knowlegebase.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/export/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/export/kb.ts)_
@@ -179,6 +143,25 @@ OPTIONS
 
 _See code: [src/commands/qnamaker/get/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/index.ts)_
 
+## `bf qnamaker:get:endpointsettings`
+
+Gets endpoint settings for an endpoint.
+
+```
+USAGE
+  $ bf qnamaker:get:endpointsettings
+
+OPTIONS
+  -h, --help                         qnamaker:get:endpointsettings command help
+  --kbId=kbId                        Knowledgebase id to get metadata.
+
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
+```
+
+_See code: [src/commands/qnamaker/get/endpointsettings.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/endpointsettings.ts)_
+
 ## `bf qnamaker:get:kb`
 
 Get metadata about a knowledgebase
@@ -189,24 +172,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --environment=environment          Specifies whether environment is Test or Prod.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
   --kbId=kbId                        (required) Knowledgebase id to get metadata.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/get/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/kb.ts)_
@@ -221,25 +191,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:operationdetails command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
   --operationId=operationId          (required) Operation id.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/get/operationdetails.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/operationdetails.ts)_
@@ -274,7 +230,7 @@ _See code: [src/commands/qnamaker/list/index.ts](https://github.com/microsoft/bo
 
 ## `bf qnamaker:list:alterations`
 
-Downloads all word alterations (synonyms) that have been automatically mined or added by the user.
+Downloads all word alterations (synonyms) that have been added by the user.
 
 ```
 USAGE
@@ -283,22 +239,9 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:list:alterations command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/list/alterations.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/alterations.ts)_
@@ -314,22 +257,9 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:list:endpointkeys command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/list/endpointkeys.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/endpointkeys.ts)_
@@ -345,22 +275,9 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:list:kbs command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/list/kbs.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/kbs.ts)_
@@ -375,29 +292,18 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:publish:kb command help
+  --kbId=kbId                        Knowledgebase id to pubish.
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        (required) Knowledgebase id to pubish.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/publish/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/publish/kb.ts)_
 
 ## `bf qnamaker:query`
 
-Query model for prediction
+Query model for fetching the answer from Kb for a query
 
 ```
 USAGE
@@ -407,23 +313,25 @@ OPTIONS
   -h, --help                         qnamaker:query command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
+                                     user settings page). Overrides the value present in config.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in
+                                     config.
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
+  --isTest                           Query against the test index.
+
+  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the value present in the
+                                     config
 
   --question=question                (required) Query to get a prediction for.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
+  --scoreThreshold=scoreThreshold    Query to get a prediction for.
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
+
+  --top=top                          Query to get a prediction for.
 ```
 
 _See code: [src/commands/qnamaker/query.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/query.ts)_
@@ -438,25 +346,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:refresh:endpoints command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
   --keyType=keyType                  (required) Type of Key.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/refresh/endpointkeys.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/refresh/endpointkeys.ts)_
@@ -485,25 +379,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:replace:alterations command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
   --in=in                            (required) The WordAlterationsDTO object to send in the body of the request
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [src/commands/qnamaker/replace/alterations.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/alterations.ts)_
@@ -518,27 +398,63 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:replace:kb command help
+  --in=in                            (required) The ReplaceKbDTO object to send in the body of the request
+  --kbId=kbId                        Knowledgebase id.
+
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
+```
+
+_See code: [src/commands/qnamaker/replace/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/kb.ts)_
+
+## `bf qnamaker:train`
+
+Train call to add suggestions to the knowledgebase.
+
+```
+USAGE
+  $ bf qnamaker:train
+
+OPTIONS
+  -h, --help                         qnamaker:get:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
+                                     user settings page). Overrides the value present in config.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in
+                                     config.
 
-  --in=in                            (required) The ReplaceKbDTO object to send in the body of the request
+  --in=in                            (required) The FeedbackRecordDTO object to send in the body of the request.
 
-  --kbId=kbId                        (required) Knowledgebase id.
+  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the value present in the
+                                     config
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
+```
+
+_See code: [src/commands/qnamaker/train.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/train.ts)_
+
+## `bf qnamaker:update:endpointsettings`
+
+Updates endpoint settings for an endpoint.
+
+```
+USAGE
+  $ bf qnamaker:update:endpointsettings
+
+OPTIONS
+  -h, --help                         qnamaker:update:endpointsettings command help
+  --activelearning                   Enable active learning. Disables if flag not set
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
                                      Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
                                      and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
 ```
 
-_See code: [src/commands/qnamaker/replace/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/kb.ts)_
+_See code: [src/commands/qnamaker/update/endpointsettings.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/update/endpointsettings.ts)_
 
 ## `bf qnamaker:update:kb`
 
@@ -550,24 +466,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:update:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
   --in=in                            (required) The UpdateKbOperationDTO object to send in the body of the request.
+  --kbId=kbId                        Knowledgebase id.
 
-  --kbId=kbId                        (required) Knowledgebase id.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 
   --wait                             Wait for the operation to complete.
 ```

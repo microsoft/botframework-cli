@@ -8,9 +8,9 @@ const {cli} = require('cli-ux')
 
 const config = {
     buildConfig: function(flags, serviceIn, config) {
-        flags.kbId = (flags.kbId || serviceIn.kbId || config.kbId)
-        flags.subscriptionKey = (flags.subscriptionKey || serviceIn.subscriptionKey || config.subscriptionKey)
-        flags.endpointKey = (flags.endpointKey || serviceIn.endpointKey || config.endpointKey)
+        flags.kbId = (flags.kbId || serviceIn.kbId || config.kbId),
+        flags.subscriptionKey = (flags.subscriptionKey || serviceIn.subscriptionKey || config.subscriptionKey),
+        flags.endpointKey = (flags.endpointKey || serviceIn.endpointKey || config.endpointKey),
         flags.hostname = (flags.hostname || serviceIn.hostname || config.hostname)
     },
 
@@ -44,7 +44,7 @@ const config = {
         // Validation of specific params are done in the
         // ServiceBase.js
         const {subscriptionKey} = config;
-        const messageTail = `is missing from the configuration.\n\nDid you run ${chalk.cyan.bold('qnamaker init')} yet?`;
+        const messageTail = `is missing from the configuration.\n\nDid you run ${chalk.cyan.bold('bf qnamaker:init')} yet?`;
         assert(typeof subscriptionKey === 'string', `The subscriptionKey ${messageTail}`);
     },
 

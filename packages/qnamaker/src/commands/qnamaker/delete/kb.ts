@@ -11,18 +11,15 @@ export default class QnamakerDeleteKb extends Command {
   static description = 'Delete a knowledgebase by id'
 
   static flags: flags.Input<any> = {
-    kbId: flags.string({description: 'Knowledgebase id to be deleted', required: true}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker subscription key/access keys (found on the Cognitive Services Azure portal page under "access keys"). Overrides the .qnamakerrc value and the QNAMAKER_SUBSCRIPTION_KEY environment variable.'}),
-    hostname: flags.string({description: 'Specifies the url for your private QnA service. Overrides the .qnamakerrc value and the QNAMAKER_HOSTNAME environment variable.'}),
-    endpointKey: flags.string({description: 'Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY environment variable.'}),
-    stdin: flags.boolean({description: 'Specifies qnamaker configuration is being passed via stdin. Overrides the .qnamakerrc value and the QNAMAKER_KBID environment variable.'}),
+    kbId: flags.string({description: 'Knowledgebase id to be deleted'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
     force: flags.boolean({description: 'Do not prompt for confirmation, force the operation  '}),
     help: flags.help({char: 'h', description: 'qnamaker:delete:kb command help'}),
   }
 
   async run() {
     const {flags} = this.parse(QnamakerDeleteKb)
-    let input: Inputs = await processInputs(flags, deleteKbJSON, 'delete', 'kb', this.config.configDir)
+    let input: Inputs = await processInputs(flags, deleteKbJSON, this.config.configDir)
 
     if (!flags.force) {
       let kbResult = await new Knowledgebase().getKnowledgebaseDetails(input.config)

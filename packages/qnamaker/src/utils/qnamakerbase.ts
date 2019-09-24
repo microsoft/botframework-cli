@@ -4,7 +4,7 @@ const qnaconfig = require('./../../utils/qnaconfig')
 const srvMan = require('./../../utils/servicemanifest')
 const {ServiceBase} = require('./../../utils/api/serviceBase')
 
-export async function processInputs(flags: any, payload: any, verb: string, target: string | undefined, configfile: string) {
+export async function processInputs(flags: any, payload: any, configfile: string) {
   let result: Inputs = {}
   const config = await qnaconfig.composeConfig(flags, configfile)
   let service = {}
@@ -17,7 +17,7 @@ export async function processInputs(flags: any, payload: any, verb: string, targ
     qnaconfig.buildConfig(flags, service, config)
     ServiceBase.config = flags
     await qnaconfig.validateConfig(flags)
-    const serviceManifest = srvMan.getServiceManifest(verb, target, payload)
+    const serviceManifest = srvMan.getServiceManifest(payload)
     result.requestBody = await srvMan.validateArguments(serviceManifest, flags)
     result.config = config
     result.serviceManifest = serviceManifest
