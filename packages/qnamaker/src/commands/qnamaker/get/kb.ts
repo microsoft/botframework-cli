@@ -8,7 +8,7 @@ export default class QnamakerGetKb extends Command {
   static description = 'Get metadata about a knowledgebase'
 
   static flags: flags.Input<any> = {
-    kbId: flags.string({description: 'Knowledgebase id to get metadata.', required: true}),
+    kbId: flags.string({description: 'Knowledgebase id to get metadata.'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
     help: flags.help({char: 'h', description: 'qnamaker:get:kb command help'}),
   }
