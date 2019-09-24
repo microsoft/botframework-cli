@@ -105,7 +105,7 @@ module.exports = {
             });
             fileContent += NEWLINE;
         }
-
+    
         if(LUISJSON.prebuiltEntities && LUISJSON.prebuiltEntities.length >= 0){
             fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
             LUISJSON.prebuiltEntities.forEach(function(entity) {
@@ -182,7 +182,6 @@ const parseLuis = async function(luisObject, src, sort){
     if (sort) {
         await sortLUISJSON(LUISJSON.model)
     }
-
     return LUISJSON
 }
 
@@ -277,11 +276,23 @@ const sortLUISJSON = async function(LUISJSON) {
     LUISJSON.utterances.sort(sortComparers.compareIntentFn);
 }
 
-const sortComparers = {   
+const sortComparers = { 
     compareNameFn : function(a, b) {
-        return a.name.toUpperCase() > b.name.toUpperCase();
+        return compareString(a.name.toUpperCase(), b.name.toUpperCase())
     },    
     compareIntentFn : function(a, b) {
-        return a.intent.toUpperCase() > b.intent.toUpperCase();
+        return compareString(a.intent.toUpperCase(), b.intent.toUpperCase())
     }
+}
+
+const compareString = function(a, b) {
+    if (a < b) {
+        return -1;
+    }
+
+    if (a > b) {
+        return 1;
+    }
+
+    return 0;
 }

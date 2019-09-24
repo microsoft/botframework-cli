@@ -28,7 +28,7 @@ module.exports = {
      */
     constructMdFromQnAAlterationJSON: function(QnAAltJSON) {
         let fileContent = '> # QnA Alterations' + NEWLINE + NEWLINE;
-        if(QnAAltJSON.wordAlterations.length > 0) {
+        if(QnAAltJSON.wordAlterations && QnAAltJSON.wordAlterations.length > 0) {
             QnAAltJSON.wordAlterations.forEach(function(alteration) {
                 fileContent += '$' + alteration.alterations[0] + ' : ' + 'qna-alterations = ' + NEWLINE;
                 alteration.alterations.splice(0, 1);
@@ -125,14 +125,26 @@ const sortQnAAltJSON = function(QnAAltJSON) {
 const sortComparers = {
     
     compareAltName : function(a, b) {
-        return a.alterations[0].toUpperCase() > b.alterations[0].toUpperCase();
+        return compareString(a.alterations[0].toUpperCase(), b.alterations[0].toUpperCase())
     },    
     compareFn : function(a, b) {
-        return a.toUpperCase() > b.toUpperCase();
+        return compareString(a.toUpperCase(), b.toUpperCase())
     },    
     compareQn : function(a, b) {
-        return a.questions[0].toUpperCase() > b.questions[0].toUpperCase();
+        return compareString(a.questions[0].toUpperCase(), b.questions[0].toUpperCase())
     }
+}
+
+const compareString = function(a, b) {
+    if (a < b) {
+        return -1;
+    }
+
+    if (a > b) {
+        return 1;
+    }
+
+    return 0;
 }
 
 const openFileAndReadContent = async function(file) {

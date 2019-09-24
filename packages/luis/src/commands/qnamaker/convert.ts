@@ -34,7 +34,7 @@ export default class QnamakerConvert extends Command {
         let luFiles = await file.getLuFiles(flags.in, flags.recurse)
         result = await luConverter.parseQnaToJson(luFiles, false, flags.luis_culture)
       } else {
-        result = await qnaConverter.parseQnAFileToLu(flags.in, flags.alterations, flags.sort)
+        result = await qnaConverter.parseQnAFileToLu(flags.in, flags.sort, flags.alterations)
       }
 
       // If result is null or undefined return
