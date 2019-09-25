@@ -1,5 +1,11 @@
 # Ask**PROPERTY**
 - [askEnum('**PROPERTY**')]
 
+# Clarify**PROPERTY**
+- [chooseSlotValue('**PROPERTY**')]
+
 # Help**PROPERTY**
 - [helpProperty('**PROPERTY**')]
+
+# ChooseValueFor**PROPERTY**
+- [chooseSlotValue('**PROPERTY**')]
