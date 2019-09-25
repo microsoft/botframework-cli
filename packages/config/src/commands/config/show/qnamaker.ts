@@ -1,4 +1,4 @@
-import {Command, flags} from '@oclif/command'
+import {Command, flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, Config} from '../../../utils/configfilehandler'
 
 export default class ConfigShowQnamaker extends Command {
