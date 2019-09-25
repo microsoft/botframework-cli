@@ -4,5 +4,9 @@
 # Clarify**PROPERTY**
 - [clarifyEnum('**PROPERTY**')]
 
+
 # Help**PROPERTY**
 - [helpProperty('**PROPERTY**')]
+
+# ChooseValueFor**PROPERTY**
+- [chooseSlotValue('**PROPERTY**')]
