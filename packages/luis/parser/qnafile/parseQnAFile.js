@@ -1,4 +1,4 @@
-const exception = ('./../lufile/classes/exception')
+const exception = require('./../lufile/classes/exception')
 const retCode = require('./../lufile/enums/CLI-errors')
 
 module.exports = {
