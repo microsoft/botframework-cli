@@ -48,6 +48,7 @@ export abstract class Command extends Base {
 
   // Flush telemetry to avoid performance issues
   async finally(_: Error | undefined) {
+    /* tslint:disable:strict-type-predicates */
     if (this.telemetryEnabled !== null && this.telemetryEnabled) {
       Telemetry.flushTelemetry()
     }
