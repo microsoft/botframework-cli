@@ -2,8 +2,8 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-const parseFile = require('./../../../parser/lufile/parseFileContents');
-const validateLUISBlob = require('./../../../parser/luisfile/parseLuisFile').validateLUISBlob;
+const parseFile = require('./../../../src/parser/lufile/parseFileContents');
+const validateLUISBlob = require('./../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
 var chai = require('chai');
 var assert = chai.assert;
 describe('With helper functions', function () {
@@ -980,6 +980,57 @@ describe('parseFile correctly parses utterances', function () {
                                 assert.equal(res.LUISJsonStructure.patterns[0].pattern, '[[this]is] a new form (a | b)');
                                 done();
                         })
-                        .catch(err => done('Fail! Did not throw when expected'))
+                        .catch(err => done('Fail!'))
+        });
+
+        it ('Multiple utterance sections with individual label definitions are handled correctly', function(done) {
+                let testLU = `# test
+                - one {protein = cheese} sandwich
+                    - one cheese sandwich
+                - tomato orange 
+                - one cheese {foodType = sandwich}
+                `;
+
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.utterances.length, 2);
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
+                                done();
+                        })
+                        .catch(err => done('Fail!'))
         })
+
+        it ('patterns are handled correctly', function(done){
+                let testLU = `# intent1
+                - this is a {number}
+                
+                $ prebuilt : number`;
+
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 0);
+                                assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                                done();
+                        })
+                        .catch(err => done('Fail!'))
+        })
+
+        it ('patterns are handled correctly (with roles)', function(done){
+                let testLU = `# intent1
+                - this is a {number:one}
+                
+                $ prebuilt : number`;
+
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 0);
+                                assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                                assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles.length, 1);
+                                done();
+                        })
+                        .catch(err => done('Fail!'))
+
+        })
+
+
 })

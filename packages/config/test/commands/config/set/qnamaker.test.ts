@@ -13,7 +13,7 @@ describe('config:set:qnamaker', () => {
   
     test
       .stdout()
-      .command(['config:set:qnamaker', '--kbid', 'aaaaaaaa'])
+      .command(['config:set:qnamaker', '--kbId', 'aaaaaaaa'])
       .it('Sets kbid in config file', async ctx => {
         let config = await fs.readJSON(getConfigFile())
         expect(config.qnamaker.kbId).to.contain('aaaaaaaa')
@@ -21,10 +21,26 @@ describe('config:set:qnamaker', () => {
   
     test
       .stdout()
-      .command(['config:set:qnamaker', '--subscriptionkey', 'aaaaaaaa'])
+      .command(['config:set:qnamaker', '--subscriptionKey', 'aaaaaaaa'])
       .it('Sets subscriptionkey in config file', async ctx => {
         let config = await fs.readJSON(getConfigFile())
         expect(config.qnamaker.subscriptionKey).to.contain('aaaaaaaa')
+    })
+
+    test
+    .stdout()
+    .command(['config:set:qnamaker', '--endpointKey', 'aaaaaaaa'])
+    .it('Sets endpointKey in config file', async ctx => {
+      let config = await fs.readJSON(getConfigFile())
+      expect(config.qnamaker.subscriptionKey).to.contain('aaaaaaaa')
+    })
+
+    test
+    .stdout()
+    .command(['config:set:qnamaker', '--hostname', 'aaaaaaaa'])
+    .it('Sets hostname in config file', async ctx => {
+      let config = await fs.readJSON(getConfigFile())
+      expect(config.qnamaker.subscriptionKey).to.contain('aaaaaaaa')
     })
 
     test
@@ -34,3 +50,19 @@ describe('config:set:qnamaker', () => {
         expect(ctx.stdout).to.contain('Plase specify flag')
     })
 })
+
+describe('config:set:qnamaker empty config file', () => {
+
+  after(async function() {
+    await deleteTestConfigFile()
+  });
+
+  test
+    .stdout()
+    .command(['config:set:qnamaker', '--kbId', 'aaaaaaaa'])
+    .it('Sets kbid in config file', async ctx => {
+      let config = await fs.readJSON(getConfigFile())
+      expect(config.qnamaker.kbId).to.contain('aaaaaaaa')
+  })
+})
+

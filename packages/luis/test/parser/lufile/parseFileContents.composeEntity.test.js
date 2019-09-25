@@ -4,12 +4,12 @@
  */
 const chai = require('chai');
 const assert = chai.assert;
-const parseFile = require('./../../../parser/lufile/parseFileContents').parseFile;
-const hClasses = require('./../../../parser/lufile/classes/hclasses');
-const collateLUISFiles = require('./../../../parser/converters/lutoluisconverter').collateLUISFiles;
-const LUFromLUISJson = require('./../../../parser/converters/luistoluconverter').constructMdFromLUISJSON;
+const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
+const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
+const collateLUISFiles = require('./../../../src/parser/converters/lutoluisconverter').collateLUISFiles;
+const LUFromLUISJson = require('./../../../src/parser/converters/luistoluconverter').constructMdFromLUISJSON;
 const NEWLINE = require('os').EOL;
-const validateLUISModel = require('./../../../parser/luisfile/parseLuisFile').validateLUISBlob;
+const validateLUISModel = require('./../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
 function sanitizeContent(fileContent) {
     let escapedExampleNewLine = JSON.stringify('\r\n').replace(/"/g, '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
     let escapedNewLine = JSON.stringify(NEWLINE).replace(/"/g, '');
