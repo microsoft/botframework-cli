@@ -6,28 +6,28 @@
     2. Inside the project folder run 'npm run build'
     3. Inside the packages folder(https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
     4. Follow the wizard and set the prompts:
-        ```
-        ? npm package: @microsoft/bf-<plugin-name>
-        ? description: <Plugin brief description>
-        ? author: Microsoft
-        ? version: 1.0.0
-        ? license: MIT
-        ? Who is the GitHub owner of repository (https://github.com/OWNER/repo): microsoft
-        ? What is the GitHub name of repository (https://github.com/owner/REPO): botframework-cli
-        ? Select a package manager: npm
-        ? TypeScript: Y
-        ? Use tslint (linter for TypeScript): Y
-        ? Use mocha (testing framework): Y
-        ? Add CI service config (Press <space> to select, <a> to toggle all, <i> to invert selection): select any
-        ```
+
+      ? npm package: @microsoft/bf-<plugin-name>
+      ? description: <Plugin brief description>
+      ? author: Microsoft
+      ? version: 1.0.0
+      ? license: MIT
+      ? Who is the GitHub owner of repository (https://github.com/OWNER/repo): microsoft
+      ? What is the GitHub name of repository (https://github.com/owner/REPO): botframework-cli
+      ? Select a package manager: npm
+      ? TypeScript: Y
+      ? Use tslint (linter for TypeScript): Y
+      ? Use mocha (testing framework): Y
+      ? Add CI service config (Press <space> to select, <a> to toggle all, <i> to invert selection): select any
+
     4. Go to the folder created by the previous command and add @microsoft/bf-cli-command as a dependency in your package.json file
-    ```
-    "dependencies": {
+
+      "dependencies": {
         ...,
         "@microsoft/bf-cli-command": "1.0.0",
         ...
-    }   
-    ```
+      }   
+
     5. At the root level(https://github.com/microsoft/botframework-cli) run 'npm run build' to bootstrap the packages
 
 ## Steps to create a new command
@@ -35,16 +35,16 @@
     	a. To add a subcommand use a colon separated format as follows: 
     		<command-name:subcommand-name>
     2. Replace the import 'import {Command, flags} from '@oclif/command' line inside the newly created command with '@microsoft/bf-cli-command'
-    ```
-    - import {Command, flags} from '@oclif/command'
-    + import {Command, flags} from '@microsoft/bf-cli-command'
-    ```
+
+      - import {Command, flags} from '@oclif/command'
+      + import {Command, flags} from '@microsoft/bf-cli-command'
+
     3. Add the typing to the flags property like this if needed:
-    ```
+
       static flags: flags.Input<any> = {
         help: flags.help({description: 'Display help'}),
       }
-    ```
+
     4. Implement the run method
 
 ## General Guidelines
