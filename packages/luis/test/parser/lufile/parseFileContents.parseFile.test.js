@@ -999,4 +999,38 @@ describe('parseFile correctly parses utterances', function () {
                         })
                         .catch(err => done('Fail!'))
         })
+
+        it ('patterns are handled correctly', function(done){
+                let testLU = `# intent1
+                - this is a {number}
+                
+                $ prebuilt : number`;
+
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 0);
+                                assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                                done();
+                        })
+                        .catch(err => done('Fail!'))
+        })
+
+        it ('patterns are handled correctly (with roles)', function(done){
+                let testLU = `# intent1
+                - this is a {number:one}
+                
+                $ prebuilt : number`;
+
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 0);
+                                assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                                assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles.length, 1);
+                                done();
+                        })
+                        .catch(err => done('Fail!'))
+
+        })
+
+
 })
