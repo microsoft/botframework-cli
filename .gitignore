@@ -68,6 +68,9 @@ typings/
 #package-lock.json
 package-lock.json
 
+#tsconfig.tsbuildinfo
+tsconfig.tsbuildinfo
+
 #vscode files
 .vscode
 packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.csproj.CoreCompileInputs.cache
