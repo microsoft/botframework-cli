@@ -48,7 +48,9 @@ export abstract class Command extends Base {
 
   // Flush telemetry to avoid performance issues
   async finally(_: Error | undefined) {
-    Telemetry.flushTelemetry()
+    if (this.telemetryEnabled !== null && this.telemetryEnabled) {
+      Telemetry.flushTelemetry()
+    }
     process.stdin.destroy()
   }
 
