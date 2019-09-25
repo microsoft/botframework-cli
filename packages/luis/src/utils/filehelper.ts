@@ -1,7 +1,7 @@
 import {CLIError} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
-const helpers = require('./../../parser/lufile/helpers')
+const helpers = require('./../parser/lufile/helpers')
 
 export async function getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
   let filesToParse = []
