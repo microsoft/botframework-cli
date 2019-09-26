@@ -11,7 +11,9 @@ const compareSourceFiles = async function (file1: string, file2: string) {
 }
 
 describe('luis:generate:cs', () => {
-  
+  after(async function () {
+    await fs.emptyDir(path.join(__dirname, 'test_data/result'))
+  })
 
   test
     .stdout()
@@ -20,7 +22,8 @@ describe('luis:generate:cs', () => {
       `${path.join(__dirname, 'test_data/Intents.json')}`,
       '--out',
       `${path.join(__dirname, 'test_data/result/Intents.cs')}`])
-    .it('Generates intents correctly', async () => {
+    .it('Generates intents correctly', async ctx => {
+      console.error(ctx.stdout)
       expect(await compareSourceFiles('test_data/Intents.cs', 'test_data/result/Intents.cs')).to.be.true
     })
 
