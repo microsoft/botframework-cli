@@ -19,6 +19,7 @@ export namespace LuisToTsConverter {
     intents(app, writer)
     entities(app, writer)
     classInterface(className, writer)
+    await writer.closeOutputStream()
   }
 
   function header(

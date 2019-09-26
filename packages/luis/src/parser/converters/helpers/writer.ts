@@ -98,6 +98,7 @@ export class Writer {
     })
 
     return Promise.race([streamPromise, timeoutPromise]).then(() => {
+      this.outputStream = undefined
     })
   }
 }
