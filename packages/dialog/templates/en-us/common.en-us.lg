@@ -17,10 +17,12 @@
 # askString(property)
 - Enter a value for {toLower(property)}
 
-# clarifyEnum(property)
-- TODO ask clarification
-
 >>> Help messages <<<
 # helpProperty(property)
 - Possible values for {toLower(property)} include: \[{join(turn.schema[property].enum, ',')}\]
 
+# clarifyEnum(property)
+- Please choose a value for {toLower(property)} from \[{join(turn.schema[property].enum, ',')}\]
+
+# chooseSlot(entity)
+- Please choose a slot for {toLower(entity)} from \[{join(turn.schema.properties, ',')}\]
