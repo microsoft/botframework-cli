@@ -35,14 +35,17 @@ class LUParser {
         luEntities.forEach(luEntity => errors = errors.concat(luEntity.Errors));
 
         luNewEntities = this.extractNewEntities(fileContent); 
+        luNewEntities.forEach(luNewEntity => errors = errors.concat(luNewEntities.Errors));
 
         luImports = this.extractLUImports(fileContent);
         luImports.forEach(luImport => errors = errors.concat(luImport.Errors));
         
         qnas = this.extractLUQnas(fileContent);
+        qnas.forEach(qna => errors = errors.concat(qna.Errors));
 
         modelInfos = this.extractLUModelInfos(fileContent);
-
+        modelInfos.forEach(modelInfo => errors = errors.concat(modelInfo.Errors));
+        
         return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
     }
 

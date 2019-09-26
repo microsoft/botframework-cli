@@ -70,6 +70,7 @@ INVALID_TOKEN_DEFAULT_MODE
   ;
   
 mode NEW_ENTITY_MODE;
+
 WS_IN_NEW_ENTITY_IGNORED
   : WHITESPACE+ {this.ignoreWS}? -> skip
   ;
@@ -91,7 +92,7 @@ NEW_EQUAL
   ;
 
 HAS_ROLES_LABEL
-  : 'hasRoles'
+  : 'hasRole' 's'?
   ;
 
 HAS_FEATURES_LABEL
@@ -99,11 +100,11 @@ HAS_FEATURES_LABEL
   ;
 
 NEW_ENTITY_TYPE_IDENTIFIER
-  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'ndepth'
+  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'machine-learned'|'patternany'|'phraselist'
   ;
 
 NEW_ENTITY_IDENTIFIER
-  : (LETTER | NUMBER | '_' | '-' | '|' | '.')+
+  : (LETTER | NUMBER | '_' | '-' | '|' | '.' | '(' | ')')+
   ;
 
 NEW_ENTITY_IDENTIFIER_WITH_WS

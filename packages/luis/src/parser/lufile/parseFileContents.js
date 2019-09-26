@@ -25,6 +25,7 @@ const fileToParse = require('./classes/filesToParse');
 const luParser = require('./luParser');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const EntityTypeEnum = require('./enums/lusiEntityTypes');
 const parseFileContentsModule = {
     /**
      * Main parser code to parse current file contents into LUIS and QNA sections.
@@ -115,7 +116,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
             process.stdout.write(luResource.Errors.filter(error => error.Severity === DiagnosticSeverity.WARN).map(warn => warn.toString()).join('\n').concat('\n'));
         }
 
-        var errors = luResource.Errors.filter(error => error.Severity === DiagnosticSeverity.ERROR);
+        var errors = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR));
         if (errors.length > 0) {
             throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n')));
         }
@@ -129,6 +130,9 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     // parse entity section
     parseAndHandleEntity(parsedContent, luResource, log, locale);
+
+    // parse entity definition v2 section
+    parseAndHandleEntityV2(parsedContent, luResource, log, locale);
 
     // parse qna section
     parseAndHandleQna(parsedContent, luResource);
@@ -404,6 +408,82 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
 }
 
 /**
+ * 
+ * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
+ * @param {LUResouce} luResource resources extracted from lu file content
+ * @throws {exception} Throws on errors. exception object includes errCode and text.
+ */
+const parseAndHandleEntityV2 = async function (parsedContent, luResource) {
+    // handle new entity definitions.
+    let entities = luResource.NewEntities;
+    if (entities && entities.length > 0) {
+        for (const entity of entities) {
+            let entityName = entity.Name;
+            let entityType = entity.Type;
+            let entityRoles = entity.Roles ? entity.Roles.split(',').map(item => item.trim()) : [];
+            // CompositeDefinition
+            // Features
+            // RegexDefinition
+            // SynonymsOrPhraseList
+            // Type
+            let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, entityName, entityType, entity.ParseTree.newEntityLine());
+            if (PAEntityRoles.length > 0) {
+                PAEntityRoles.forEach(role => {
+                    if (!entityRoles.includes(role)) entityRoles.push(role);
+                })
+            }
+            switch(entityType) {
+                case EntityTypeEnum.SIMPLE: 
+                    addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
+                    break;
+                case EntityTypeEnum.COMPOSITE:
+                    break;
+                case EntityTypeEnum.LIST:
+                    break;
+                case EntityTypeEnum.PATTERNANY:
+                    break;
+                case EntityTypeEnum.PREBUILT:
+                    break;
+                case EntityTypeEnum.REGEX:
+                    break;
+                case EntityTypeEnum.ML:
+                    break;
+                default:
+                    //Unknown entity type
+                    break;
+            }
+        }
+    }
+}
+const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, entityType, entityLine) {
+    // see if we already have this as Pattern.Any entity
+    // see if we already have this in patternAny entity collection; if so, remove it but remember the roles (if any)
+    let PAIdx = -1;
+    let entityRoles = [];
+    let PAEntityFound = parsedContent.LUISJsonStructure.patternAnyEntities.find(function(item, idx) {
+        if(item.name === pEntityName) {
+            PAIdx = idx;
+            return true
+        } else {
+            return false;
+        }
+    });
+    if (PAEntityFound !== undefined && PAIdx !== -1) {
+        if (entityType.toLowerCase().trim().includes('phraselist')) {
+            let errorMsg = `Phrase lists cannot be used as an entity in a pattern "${pEntityName}"`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                context: entityLine
+            })
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        } 
+        entityRoles = (PAEntityFound.roles.length !== 0) ? PAEntityFound.roles : [];
+        parsedContent.LUISJsonStructure.patternAnyEntities.splice(PAIdx, 1);
+    }
+    return entityRoles;
+};
+
+/**
  * Reference parser code to parse reference section.
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
  * @param {LUResouce} luResource resources extracted from lu file content
@@ -422,23 +502,14 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
             let entityRoles = parsedRoleAndType.roles;
             entityType = parsedRoleAndType.entityType;
             let pEntityName = (entityName.toLowerCase() === 'prebuilt') ? entityType : entityName;
+            
             // see if we already have this as Pattern.Any entity
             // see if we already have this in patternAny entity collection; if so, remove it but remember the roles (if any)
-            for (let i in parsedContent.LUISJsonStructure.patternAnyEntities) {
-                if (parsedContent.LUISJsonStructure.patternAnyEntities[i].name === pEntityName) {
-                    if (entityType.toLowerCase().trim().includes('phraselist')) {
-                        let errorMsg = `Phrase lists cannot be used as an entity in a pattern "${pEntityName}"`;
-                        let error = BuildDiagnostic({
-                            message: errorMsg,
-                            context: entity.ParseTree.entityLine()
-                        })
-
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                    }
-                    if (parsedContent.LUISJsonStructure.patternAnyEntities[i].roles.length !== 0) entityRoles = parsedContent.LUISJsonStructure.patternAnyEntities[i].roles;
-                    parsedContent.LUISJsonStructure.patternAnyEntities.splice(i, 1);
-                    break;
-                }
+            let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, pEntityName, entityType, entity.ParseTree.entityLine());
+            if (PAEntityRoles.length > 0) {
+                PAEntityRoles.forEach(role => {
+                    if (!entityRoles.includes(role)) entityRoles.push(role);
+                })
             }
 
             // add this entity to appropriate place
