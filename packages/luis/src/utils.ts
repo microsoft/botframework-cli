@@ -20,7 +20,8 @@ export namespace Utils {
 
     // If the last element in the path is a folder
     if (!pathAlreadyExist) throw new CLIError("Path doesn't exist")
-    return join(completePath, defaultFileName)
+    completePath = join(completePath, defaultFileName)
+    return existsSync(completePath) ? enumerateFileName(completePath) : completePath
   }
 
   function enumerateFileName(filePath: string): string {

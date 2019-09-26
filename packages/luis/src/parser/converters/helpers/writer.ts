@@ -9,7 +9,7 @@ export class Writer {
   public async setOutputStream(outputPath: string): Promise<void> {
     const ConsoleStream = require('console-stream')
     const stream: Writable = outputPath ? createWriteStream(outputPath) : ConsoleStream()
-    return new Promise((resolve: any) => {
+    const streamPromise = new Promise((resolve: any) => {
       if (stream instanceof WriteStream) {
         stream.once('ready', (_fd: number) => {
           this.outputStream = stream
@@ -19,6 +19,14 @@ export class Writer {
         this.outputStream = stream
         resolve()
       }
+    })
+
+    const timeoutPromise = new Promise((resolve: (...args: any) => void) => {
+      setTimeout(resolve, 1000)
+      this.outputStream = stream
+    })
+
+    return Promise.race([streamPromise, timeoutPromise]).then(() => {
     })
   }
 
@@ -36,10 +44,10 @@ export class Writer {
 
   public writeLine(str: string | string[] = ''): void {
     if (typeof str === 'string') {
-      this.outputStream!.write(str + '\n')
+      this.write(str + '\n')
     } else {
       str.forEach(line => {
-        this.outputStream!.write(line + '\n')
+        this.write(line + '\n')
       })
     }
   }
@@ -47,9 +55,9 @@ export class Writer {
   public writeIndented(str: string | string[]): void {
     let writeFunction = (text: string) => {
       for (let index = 0; index < this.indentLevel; index++) {
-        this.outputStream!.write(' ')
+        this.write(' ')
       }
-      this.outputStream!.write(text)
+      this.write(text)
     }
 
     writeFunction.bind(this)
@@ -75,7 +83,7 @@ export class Writer {
 
   public async closeOutputStream(): Promise<void> {
     this.outputStream!.end()
-    return new Promise((resolve: any) => {
+    const streamPromise = new Promise((resolve: any) => {
       if (this.outputStream instanceof WriteStream) {
         this.outputStream!.on('finish', (_fd: number) => {
           resolve()
@@ -83,6 +91,13 @@ export class Writer {
       } else {
         resolve()
       }
+    })
+
+    const timeoutPromise = new Promise((resolve: (...args: any) => void) => {
+      setTimeout(resolve, 1000)
+    })
+
+    return Promise.race([streamPromise, timeoutPromise]).then(() => {
     })
   }
 }
