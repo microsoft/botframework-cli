@@ -17,6 +17,7 @@ class LUParser {
     static parse(text) {
         let luIntents;
         let luEntities;
+        let newEntities;
         let luImports;
         let qnas;
         let modelInfos;
@@ -31,6 +32,8 @@ class LUParser {
 
         luEntities = this.extractLUEntities(fileContent);
         luEntities.forEach(luEntity => errors = errors.concat(luEntity.Errors));
+
+        newEntities = this.extractNewEntities(fileContent); 
 
         luImports = this.extractLUImports(fileContent);
         luImports.forEach(luImport => errors = errors.concat(luImport.Errors));
@@ -85,6 +88,20 @@ class LUParser {
         return intents;
     }
 
+    static extractNewEntities(fileContent) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let entityDefinitions = fileContext.paragraph()
+            .map(x => x.newEntityDefinition())
+            .filter(x => x !== undefined && x != null);
+
+        let entities = entityDefinitions.map(x => new LUEntity(x));
+
+        return entities;
+    }
     /**
      * @param {FileContext} fileContext 
      */

@@ -1,4 +1,4 @@
-// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
+// Generated from c:\repos\botframework-cli\packages\luis\src\parser\lufile\LUFileParser.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -68,6 +68,66 @@ LUFileParserVisitor.prototype.visitNormalIntentBody = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#normalIntentString.
 LUFileParserVisitor.prototype.visitNormalIntentString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityDefinition.
+LUFileParserVisitor.prototype.visitNewEntityDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityListbody.
+LUFileParserVisitor.prototype.visitNewEntityListbody = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityLine.
+LUFileParserVisitor.prototype.visitNewEntityLine = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newCompositeInlineDefinition.
+LUFileParserVisitor.prototype.visitNewCompositeInlineDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newRegexInlineDefinition.
+LUFileParserVisitor.prototype.visitNewRegexInlineDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityType.
+LUFileParserVisitor.prototype.visitNewEntityType = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityRoles.
+LUFileParserVisitor.prototype.visitNewEntityRoles = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityUsesFeatures.
+LUFileParserVisitor.prototype.visitNewEntityUsesFeatures = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityName.
+LUFileParserVisitor.prototype.visitNewEntityName = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#newEntityNameWithWS.
+LUFileParserVisitor.prototype.visitNewEntityNameWithWS = function(ctx) {
   return this.visitChildren(ctx);
 };
 

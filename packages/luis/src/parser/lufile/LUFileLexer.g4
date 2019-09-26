@@ -45,6 +45,10 @@ DOLLAR
   : '$' {this.ignoreWS = true;} -> pushMode(ENTITY_MODE)
   ;
 
+AT
+  : '@' {this.ignoreWS = true;} -> pushMode(NEW_ENTITY_MODE)
+  ;
+
 IMPORT_DESC
   : '[' .*? ']'
   ;
@@ -65,6 +69,75 @@ INVALID_TOKEN_DEFAULT_MODE
   : .
   ;
   
+mode NEW_ENTITY_MODE;
+NEW_EQUAL
+  : '='
+  ;
+
+NEW_COMPOSITE_DECORATION_LEFT
+  : '['
+  ;
+
+NEW_COMPOSITE_DECORATION_RIGHT
+  : ']'
+  ;
+
+NEW_REGEX_DECORATION
+  : '/'
+  ;
+
+SINGLE_QUOTE
+  : '\''
+  ;
+
+DOUBLE_QUOTE
+  : '"'
+  ;
+
+HAS_ROLES_LABEL
+  : 'hasRoles'
+  ;
+
+HAS_FEATURES_LABEL
+  : 'usesFeature' 's'?
+  ;
+
+WS_IN_NEW_ENTITY_IGNORED
+  : WHITESPACE+ {this.ignoreWS}? -> skip
+  ;
+
+WS_IN_NEW_ENTITY
+  : WHITESPACE+ -> type(WS)
+  ;
+
+NEWLINE_IN_NEW_ENTITY
+  : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
+  ;
+
+NEW_ENTITY_IDENTIFIER
+  : (LETTER | NUMBER | '_' | '-' | '|' | '.')+ { this.ignoreWS = false;}
+  ;
+
+NEW_COMPOSITE_ENTITY
+  : '[' (~[\r\n{}[()])*
+  ;
+
+NEW_REGEX_ENTITY
+  : '/' (~[\r\n])*
+  ;
+
+NEW_SPECIAL_CHAR_MARK 
+  : '=' | ',' | '!'
+  ;
+
+NEW_ENTITY_TYPE_IDENTIFIER
+  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'ndepth'
+  ;
+
+NEW_TEXT
+  : ~[ =\t\r\n{}]+  { this.ignoreWS = false;}
+  ;
+
 mode INTENT_NAME_MODE;
 
 WS_IN_NAME_IGNORED

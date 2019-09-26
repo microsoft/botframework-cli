@@ -9,6 +9,7 @@ file
 paragraph
     : newline
     | intentDefinition
+    | newEntityDefinition
     | entityDefinition
     | importDefinition
     | qnaDefinition
@@ -50,6 +51,46 @@ normalIntentBody
 normalIntentString
 	: DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
+
+newEntityDefinition
+    : newEntityLine newline newEntityListbody?
+    ;
+
+newEntityListbody
+    : (normalItemString newline)+
+    ;
+
+newEntityLine
+    : AT newEntityType (newEntityName|newEntityNameWithWS)? (newEntityRoles|newEntityUsesFeatures)* NEW_EQUAL? (newCompositeInlineDefinition|newRegexInlineDefinition)?
+    ;
+
+newCompositeInlineDefinition
+    : NEW_COMPOSITE_DECORATION_LEFT (WS|NEW_TEXT)* NEW_COMPOSITE_DECORATION_RIGHT
+    ;
+
+newRegexInlineDefinition
+    : NEW_REGEX_DECORATION (WS|NEW_TEXT)* NEW_REGEX_DECORATION
+    ;
+
+newEntityType
+    : NEW_ENTITY_TYPE_IDENTIFIER
+    ;
+
+newEntityRoles
+    : HAS_ROLES_LABEL? (WS|NEW_TEXT)+
+    ;
+
+newEntityUsesFeatures
+    : HAS_FEATURES_LABEL (WS|NEW_TEXT)+
+    ;
+
+newEntityName
+    : NEW_ENTITY_IDENTIFIER
+    ;
+
+newEntityNameWithWS
+    : (SINGLE_QUOTE | DOUBLE_QUOTE) (newEntityName|WS)* (SINGLE_QUOTE | DOUBLE_QUOTE) 
+    ;
 
 entityDefinition
     : entityLine newline entityListBody?
