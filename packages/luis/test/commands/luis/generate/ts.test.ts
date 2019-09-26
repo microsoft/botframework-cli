@@ -22,8 +22,7 @@ describe('luis:generate:ts', () => {
       `${path.join(__dirname, 'test_data/Intents.json')}`,
       '--out',
       `${path.join(__dirname, 'test_data/result/intents.ts')}`])
-    .it('Generates intents correctly', async ctx => {
-      console.error(ctx.stdout)
+    .it('Generates intents correctly', async () => {
       expect(await compareSourceFiles('test_data/intents.ts', 'test_data/result/intents.ts')).to.be.true
     })
 

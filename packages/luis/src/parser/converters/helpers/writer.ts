@@ -22,7 +22,7 @@ export class Writer {
     })
 
     const timeoutPromise = new Promise((resolve: (...args: any) => void) => {
-      setTimeout(resolve, 1000)
+      setTimeout(resolve, 2000)
       this.outputStream = stream
     })
 
