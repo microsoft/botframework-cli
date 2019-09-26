@@ -21,7 +21,7 @@ class LUNewEntity {
     }
 
     ExtractName(parseTree) {
-        if (parseTree.newEntityLine().newEntityName) {
+        if (parseTree.newEntityLine().newEntityName()) {
             return parseTree.newEntityLine().newEntityName().getText().trim();
         } else {
             return parseTree.newEntityLine().newEntityNameWithWS().getText().trim();
@@ -33,26 +33,26 @@ class LUNewEntity {
     }
 
     ExtractRoles(parseTree) {
-        if (parseTree.newEntityLine().newEntityRoles()) {
-            return parseTree.newEntityLine().newEntityRoles();
+        if (parseTree.newEntityLine().newEntityRoles()) {            
+            return parseTree.newEntityLine().newEntityRoles().newEntityRoleOrFeatures().getText().trim();
         }
     }
 
     ExtractFeatures(parseTree) {
         if (parseTree.newEntityLine().newEntityUsesFeatures()) {
-            return parseTree.newEntityLine().newEntityUsesFeatures();
+            return parseTree.newEntityLine().newEntityUsesFeatures().newEntityRoleOrFeatures().getText().trim();
         }
     }
 
     ExtractCompositeDefinition(parseTree) {
         if (parseTree.newEntityLine().newCompositeDefinition()) {
-            return parseTree.newEntityLine().newCompositeDefinition();
+            return parseTree.newEntityLine().newCompositeDefinition().getText().trim();
         }
     }
 
     ExtractRegexDefinition(parseTree) {
         if (parseTree.newEntityLine().newRegexDefinition()) {
-            return parseTree.newEntityLine().newRegexDefinition();
+            return parseTree.newEntityLine().newRegexDefinition().getText().trim();
         }
     }
 
@@ -60,8 +60,8 @@ class LUNewEntity {
         let synonymsOrPhraseList = [];
         let errors = [];
 
-        if (parseTree.entityListBody()) {
-            for (const normalItemStr of parseTree.entityListBody().normalItemString()) {
+        if (parseTree.newEntityListbody()) {
+            for (const normalItemStr of parseTree.newEntityListbody().normalItemString()) {
                 var itemStr = normalItemStr.getText().trim();
                 synonymsOrPhraseList.push(itemStr.substr(1).trim());
             }

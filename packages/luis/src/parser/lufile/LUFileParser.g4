@@ -61,7 +61,7 @@ newEntityListbody
     ;
 
 newEntityLine
-    : AT newEntityType (newEntityName|newEntityNameWithWS) (newEntityRoles|newEntityUsesFeatures)* NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
+    : AT newEntityType (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
     ;
 
 newCompositeDefinition
