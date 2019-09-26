@@ -82,4 +82,4 @@ class LUNewEntity {
     }
 }
 
-module.exports = LUEntity;
+module.exports = LUNewEntity;

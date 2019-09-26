@@ -5,6 +5,7 @@ const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext
 const LUResource = require('./luResource');
 const LUIntent = require('./luIntent');
 const LUEntity = require('./luEntity');
+const LUNewEntity = require('./luNewEntity');
 const LUImport = require('./luImport');
 const LUQna = require('./luQna');
 const LUModelInfo = require('./luModelInfo');
@@ -88,7 +89,7 @@ class LUParser {
         return intents;
     }
 
-    static extractNewEntities(fileContent) {
+    static extractNewEntities(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
