@@ -1,4 +1,4 @@
-bf-chatdown
+@microsoft/bf-chatdown
 ========
 
 Tool for parsing chat files and outputting replayable activities
@@ -8,23 +8,6 @@ Tool for parsing chat files and outputting replayable activities
 [![Downloads/week](https://img.shields.io/npm/dw/chatdown.svg)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
 [![License](https://img.shields.io/npm/l/chatdown.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/chatdown/package.json)
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/bf-chatdown/0.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
-```
-<!-- usagestop -->
 # Commands
 <!-- commands -->
 * [`bf chatdown`](#bf-chatdown)

@@ -1,8 +1,9 @@
 import {expect, test} from '@oclif/test'
 import * as path from 'path'
 import cli from 'cli-ux'
-import {initTestConfigFile, deleteTestConfigFile} from '../../../configfilehelper'
+import {initTestConfigFile, deleteTestConfigFile, getConfigFile} from '../../../configfilehelper'
 const nock = require('nock')
+const fs = require('fs-extra')
 
 describe('qnamaker:create:kb', () => {
   before(async function() {
@@ -11,7 +12,27 @@ describe('qnamaker:create:kb', () => {
     // runs before all tests in this block
     const scope = nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
     .post('/knowledgebases/createasync')
-    .reply(200, {operationState: "Succeeded"})
+    .reply(200,   
+      {
+        operationState: "Succeeded",
+        createdTimestamp: "2019-08-06T12:46:03Z",
+        lastActionTimestamp: "2019-08-06T12:46:19Z",
+        resourceLocation: "/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2",
+        userId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        operationId: "5690998c-4438-4ae1-900a-88a2aa3bfa68"
+      })
+  
+    const scope2 = nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
+    .get('/operations/5690998c-4438-4ae1-900a-88a2aa3bfa68')
+    .reply(200, 
+      {
+        operationState: "Succeeded",
+        createdTimestamp: "2019-08-06T12:46:03Z",
+        lastActionTimestamp: "2019-08-06T12:46:19Z",
+        resourceLocation: "/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2",
+        userId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        operationId: "5690998c-4438-4ae1-900a-88a2aa3bfa68"
+      })
     });
 
     after(async function(){
@@ -22,11 +43,11 @@ describe('qnamaker:create:kb', () => {
   .stdout()
   .command(['qnamaker:create:kb','--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`])
   .it('Creates kb qnamaker:create:kb --in', ctx => {
-    expect(ctx.stdout).to.empty
+    expect(ctx.stdout).to.contain('"resourceLocation": "/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2",\n ')
   })
 })
 
-describe('qnamaker:create:kb --wait', () => {
+describe('qnamaker:create:kb --save', () => {
   before(async function() {
     await initTestConfigFile()
     // runs before all tests in this block
@@ -68,7 +89,7 @@ describe('qnamaker:create:kb --wait', () => {
     .get('/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2')
     .reply(200, 
       {
-        id: "f8654745-2406-4a51-b3e6-bba5fb4942ba",
+        id: "8600c573-2acf-4466-97e8-999ad4cecbc2",
         hostName: "https://somehostname.net",
         lastAccessedTimestamp: "2019-08-06T18:00:50Z",
         lastChangedTimestamp: "2019-08-06T18:00:50Z",
@@ -92,10 +113,9 @@ describe('qnamaker:create:kb --wait', () => {
 
 
   test
-  .stub(cli, 'prompt', () => async () => 'N')
-  .stdout()
-  .command(['qnamaker:create:kb', '--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`, '--wait'])
-  .it('Creates kb and awaits for the creation of it', ctx => {
-    expect(ctx.stdout).to.contain('{\n  "operationState": "Succeeded",\n  "createdTimestamp": "2019-08-06T12:46:03Z",\n  "lastActionTimestamp": "2019-08-06T12:46:19Z",\n  "resourceLocation": "/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2"')
+  .command(['qnamaker:create:kb', '--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`, '--save'])
+  .it('Creates kb and awaits for the creation of it', async () => {
+    let config = await fs.readJSON(getConfigFile())
+    expect(config.qnamaker.kbId).to.contain('8600c573-2acf-4466-97e8-999ad4cecbc2')
   })
 })

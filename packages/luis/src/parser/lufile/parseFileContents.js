@@ -364,7 +364,8 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                         });
 
                         // add utterance
-                        let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                        let utteranceExists = parsedContent.LUISJsonStructure.utterances.find(item => item.text == utterance && item.intent == intentName);
+                        let utteranceObject = utteranceExists || new helperClass.uttereances(utterance, intentName, []);
                         entitiesFound.forEach(item => {
                             if (item.startPos > item.endPos) {
                                 let errorMsg = `No labelled value found for entity: "${item.entity}" in utterance: "${utteranceAndEntities.context.getText()}"`;
@@ -382,7 +383,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                             }
                             utteranceObject.entities.push(utteranceEntity)
                         });
-                        parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
+                        if (utteranceExists === undefined) parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                     }
 
                 } else {
@@ -391,8 +392,10 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                         let patternObject = new helperClass.pattern(utterance, intentName);
                         parsedContent.LUISJsonStructure.patterns.push(patternObject);
                     } else {
-                        let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
-                        parsedContent.LUISJsonStructure.utterances.push(utteranceObject);    
+                        if(parsedContent.LUISJsonStructure.utterances.find(item => item.text == utterance && item.intent == intentName) === undefined) {
+                            let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                            parsedContent.LUISJsonStructure.utterances.push(utteranceObject);    
+                        }
                     }
                 }
             }
@@ -418,7 +421,7 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
             let parsedRoleAndType = helpers.getRolesAndType(entityType);
             let entityRoles = parsedRoleAndType.roles;
             entityType = parsedRoleAndType.entityType;
-            let pEntityName = (entityName === 'PREBUILT') ? entityType : entityName;
+            let pEntityName = (entityName.toLowerCase() === 'prebuilt') ? entityType : entityName;
             // see if we already have this as Pattern.Any entity
             // see if we already have this in patternAny entity collection; if so, remove it but remember the roles (if any)
             for (let i in parsedContent.LUISJsonStructure.patternAnyEntities) {

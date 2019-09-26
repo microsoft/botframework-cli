@@ -17,12 +17,12 @@ export default class QnamakerInit extends Command {
   async run() {
     const result = await this.initializeConfig()
     if (result) {
-      this.log(`Successfully wrote ${process.cwd()}/.qnamakerrc`)
+      this.log(`Successfully wrote ${this.config.configDir}/config.json`)
     }
   }
 
   async initializeConfig(): Promise<boolean> {
-    this.log(chalk.cyan.bold('\nThis util will walk you through creating a .qnamakerrc file\n\nPress ^C at any time to quit.\n\n'))
+    this.log(chalk.cyan.bold('\nThis util will walk you through the QnA Maker config settings\n\nPress ^C at any time to quit.\n\n'))
     const questions = [
       'What is your QnAMaker access/subscription key? (found on the Cognitive Services Azure portal page under "access keys") ',
       'What would you like to use as your active knowledgebase ID? [none] '

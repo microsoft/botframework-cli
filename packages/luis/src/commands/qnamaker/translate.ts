@@ -4,11 +4,11 @@ const path = require('path')
 const fileHelper = require('./../../utils/filehelper')
 const exception = require('./../../parser/lufile/classes/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
-const luisConverter = require('./../../parser/converters/luistoluconverter')
+const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
 const luConverter = require('./../../parser/lufile/parseFileContents')
 
-export default class LuisTranslate extends Command {
-  static description = ' Translate given LUIS application JSON model or lu file(s)'
+export default class QnamakerTranslate extends Command {
+  static description = 'Translate given LUIS application JSON model or lu file(s)'
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model', required: true}),
@@ -24,7 +24,7 @@ export default class LuisTranslate extends Command {
   /* tslint:disable:forin no-for-in*/
   async run() {
     try {
-      const {flags} = this.parse(LuisTranslate)
+      const {flags} = this.parse(QnamakerTranslate)
       let inputStat = await fs.stat(flags.in)
       let outputStat = flags.out ? await fs.stat(flags.out) : null
 
@@ -35,11 +35,11 @@ export default class LuisTranslate extends Command {
       let isLu = !inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
       let result: any
       if (isLu) {
-        let luFiles = await fileHelper.getLuFiles(flags.in, flags.recurse)
+        const luFiles = await fileHelper.getLuFiles(flags.in, flags.recurse)
         result = await luTranslator.translateLuFile(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
-        let translation = await luisConverter.parseLuisFileToLu(flags.in, false)
-        translation = await luTranslator.translateLuObj(result, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let translation = await qnaConverter.parseQnAFileToLu(flags.in, false, false)
+        translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         result = {}
         Object.keys(translation).forEach(async idx => {
           result[flags.in][idx] = await luConverter.parseFile(translation[idx][0], false)
@@ -49,7 +49,7 @@ export default class LuisTranslate extends Command {
       if (flags.out) {
         await this.writeOutput(result, flags.out)
       } else {
-        this.log(result)
+        this.log(JSON.stringify(result, null, 2))
       }
 
     } catch (err) {
