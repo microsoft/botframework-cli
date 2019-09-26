@@ -70,38 +70,6 @@ INVALID_TOKEN_DEFAULT_MODE
   ;
   
 mode NEW_ENTITY_MODE;
-NEW_EQUAL
-  : '='
-  ;
-
-NEW_COMPOSITE_DECORATION_LEFT
-  : '['
-  ;
-
-NEW_COMPOSITE_DECORATION_RIGHT
-  : ']'
-  ;
-
-NEW_REGEX_DECORATION
-  : '/'
-  ;
-
-SINGLE_QUOTE
-  : '\''
-  ;
-
-DOUBLE_QUOTE
-  : '"'
-  ;
-
-HAS_ROLES_LABEL
-  : 'hasRoles'
-  ;
-
-HAS_FEATURES_LABEL
-  : 'usesFeature' 's'?
-  ;
-
 WS_IN_NEW_ENTITY_IGNORED
   : WHITESPACE+ {this.ignoreWS}? -> skip
   ;
@@ -114,28 +82,44 @@ NEWLINE_IN_NEW_ENTITY
   : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
   ;
 
-NEW_ENTITY_IDENTIFIER
-  : (LETTER | NUMBER | '_' | '-' | '|' | '.')+ { this.ignoreWS = false;}
+COMMA
+  : ','
   ;
 
-NEW_COMPOSITE_ENTITY
-  : '[' (~[\r\n{}[()])*
+NEW_EQUAL
+  : '='
   ;
 
-NEW_REGEX_ENTITY
-  : '/' (~[\r\n])*
+HAS_ROLES_LABEL
+  : 'hasRoles'
   ;
 
-NEW_SPECIAL_CHAR_MARK 
-  : '=' | ',' | '!'
+HAS_FEATURES_LABEL
+  : 'usesFeature' 's'?
   ;
 
 NEW_ENTITY_TYPE_IDENTIFIER
   : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'ndepth'
   ;
 
+NEW_ENTITY_IDENTIFIER
+  : (LETTER | NUMBER | '_' | '-' | '|' | '.')+
+  ;
+
+NEW_ENTITY_IDENTIFIER_WITH_WS
+  : ('\'' | '"') (LETTER | NUMBER | '_' | '-' | '|' | '.' | WS)+ ('\'' | '"')
+  ;
+
+NEW_COMPOSITE_ENTITY
+  : '[' (~[\r\n{}[()])* ']'
+  ;
+
+NEW_REGEX_ENTITY
+  : '/' (~[\r\n])* '/'
+  ;
+
 NEW_TEXT
-  : ~[ =\t\r\n{}]+  { this.ignoreWS = false;}
+  : ~[ \t\r\n{}=,]+ 
   ;
 
 mode INTENT_NAME_MODE;

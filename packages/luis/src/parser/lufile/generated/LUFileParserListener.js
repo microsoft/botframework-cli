@@ -1,4 +1,4 @@
-// Generated from c:\repos\botframework-cli\packages\luis\src\parser\lufile\LUFileParser.g4 by ANTLR 4.7.2
+// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -128,21 +128,21 @@ LUFileParserListener.prototype.exitNewEntityLine = function(ctx) {
 };
 
 
-// Enter a parse tree produced by LUFileParser#newCompositeInlineDefinition.
-LUFileParserListener.prototype.enterNewCompositeInlineDefinition = function(ctx) {
+// Enter a parse tree produced by LUFileParser#newCompositeDefinition.
+LUFileParserListener.prototype.enterNewCompositeDefinition = function(ctx) {
 };
 
-// Exit a parse tree produced by LUFileParser#newCompositeInlineDefinition.
-LUFileParserListener.prototype.exitNewCompositeInlineDefinition = function(ctx) {
+// Exit a parse tree produced by LUFileParser#newCompositeDefinition.
+LUFileParserListener.prototype.exitNewCompositeDefinition = function(ctx) {
 };
 
 
-// Enter a parse tree produced by LUFileParser#newRegexInlineDefinition.
-LUFileParserListener.prototype.enterNewRegexInlineDefinition = function(ctx) {
+// Enter a parse tree produced by LUFileParser#newRegexDefinition.
+LUFileParserListener.prototype.enterNewRegexDefinition = function(ctx) {
 };
 
-// Exit a parse tree produced by LUFileParser#newRegexInlineDefinition.
-LUFileParserListener.prototype.exitNewRegexInlineDefinition = function(ctx) {
+// Exit a parse tree produced by LUFileParser#newRegexDefinition.
+LUFileParserListener.prototype.exitNewRegexDefinition = function(ctx) {
 };
 
 
@@ -170,6 +170,24 @@ LUFileParserListener.prototype.enterNewEntityUsesFeatures = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#newEntityUsesFeatures.
 LUFileParserListener.prototype.exitNewEntityUsesFeatures = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#newEntityRoleOrFeatures.
+LUFileParserListener.prototype.enterNewEntityRoleOrFeatures = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#newEntityRoleOrFeatures.
+LUFileParserListener.prototype.exitNewEntityRoleOrFeatures = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#text.
+LUFileParserListener.prototype.enterText = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#text.
+LUFileParserListener.prototype.exitText = function(ctx) {
 };
 
 

@@ -61,15 +61,15 @@ newEntityListbody
     ;
 
 newEntityLine
-    : AT newEntityType (newEntityName|newEntityNameWithWS)? (newEntityRoles|newEntityUsesFeatures)* NEW_EQUAL? (newCompositeInlineDefinition|newRegexInlineDefinition)?
+    : AT newEntityType (newEntityName|newEntityNameWithWS) (newEntityRoles|newEntityUsesFeatures)* NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
     ;
 
-newCompositeInlineDefinition
-    : NEW_COMPOSITE_DECORATION_LEFT (WS|NEW_TEXT)* NEW_COMPOSITE_DECORATION_RIGHT
+newCompositeDefinition
+    : NEW_COMPOSITE_ENTITY
     ;
 
-newRegexInlineDefinition
-    : NEW_REGEX_DECORATION (WS|NEW_TEXT)* NEW_REGEX_DECORATION
+newRegexDefinition
+    : NEW_REGEX_ENTITY
     ;
 
 newEntityType
@@ -77,11 +77,19 @@ newEntityType
     ;
 
 newEntityRoles
-    : HAS_ROLES_LABEL? (WS|NEW_TEXT)+
+    : HAS_ROLES_LABEL? newEntityRoleOrFeatures
     ;
 
 newEntityUsesFeatures
-    : HAS_FEATURES_LABEL (WS|NEW_TEXT)+
+    : HAS_FEATURES_LABEL newEntityRoleOrFeatures
+    ;
+
+newEntityRoleOrFeatures
+    : text (COMMA text)*
+    ;
+
+text
+    : NEW_TEXT | NEW_ENTITY_IDENTIFIER
     ;
 
 newEntityName
@@ -89,7 +97,7 @@ newEntityName
     ;
 
 newEntityNameWithWS
-    : (SINGLE_QUOTE | DOUBLE_QUOTE) (newEntityName|WS)* (SINGLE_QUOTE | DOUBLE_QUOTE) 
+    : NEW_ENTITY_IDENTIFIER_WITH_WS
     ;
 
 entityDefinition
