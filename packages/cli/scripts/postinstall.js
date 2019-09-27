@@ -13,6 +13,7 @@ const packageName = pjson.name
 const platform = os.platform()
 const isWindows = platform === 'win32'
 const home = process.env.HOME || (isWindows && windowsHome()) || os.homedir() || os.tmpdir()
+const today = new Date();
 
 const getConfigDir = (isWindows, home, pname) => {
     const base = process.env[`XDG_CONFIG_HOME`]
@@ -36,6 +37,7 @@ const getUserConfig = async () => {
  const promptTelemetry = async () => {
   try {
     const userConfig = await getUserConfig()
+    userConfig.lastVersionCheck = today;
     if (userConfig.telemetry === null) {
       const disableTelemetry = await cli.prompt(chalk.red('Telemetry is disabled. Would you like to opt in? Only command and flags usage will be sent. (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
@@ -53,7 +55,6 @@ const getUserConfig = async () => {
       }
 
       await fs.mkdirp(pathToConfigJson)
-      
       await fs.writeFile(path.join(pathToConfigJson, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
   /* tslint:disable:no-unused */

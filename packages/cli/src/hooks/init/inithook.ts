@@ -12,8 +12,9 @@ const hook: Hook<'init'> = async function (opts) {
   const curDateTime = new Date()
   const configFileExists = fs.existsSync(path.join(this.config.configDir, 'config.json'))
 
-  const createConfigDir = async (path: string) => {
+  const writeUserConfig = async (userconfig: any) => {
     await fs.mkdirp(this.config.configDir)
+    await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userconfig, null, 2))
   }
 
   try {
@@ -37,10 +38,9 @@ const hook: Hook<'init'> = async function (opts) {
       }
     }
 
-    const updateUserConfig = (curVersionCheck: Date) => {
+    const updateUserConfig = async (curVersionCheck: Date) => {
       userConfig.lastVersionCheck = curVersionCheck
-      createConfigDir(this.config.configDir)
-      fs.writeFileSync(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
+      await writeUserConfig(userConfig)
     }
 
     const isToday = (dateObj: Date | null, today: Date) => {
@@ -81,9 +81,7 @@ const hook: Hook<'init'> = async function (opts) {
         this.log(chalk.blue('bf config:telemetry:enable'))
       }
 
-      createConfigDir(this.config.configDir)
-
-      await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
+      await writeUserConfig(userConfig)
     }
 
     this.config.pjson.telemetry = userConfig.telemetry
