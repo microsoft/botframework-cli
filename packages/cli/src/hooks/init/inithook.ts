@@ -38,24 +38,20 @@ const hook: Hook<'init'> = async function (opts) {
       fs.writeFileSync(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
 
-    const isToday = (dateObj: Date, today: Date) => {
-      return dateObj.getDate() === today.getDate() &&
+    const isToday = (dateObj: Date | null, today: Date) => {
+      return dateObj && dateObj.getDate() === today.getDate() &&
         dateObj.getMonth() === today.getMonth() &&
         dateObj.getFullYear() === today.getFullYear()
     }
 
     // if there's no timestamp in config, create one and check for updates
-    if (!userConfig.lastVersionCheck) {
-      await checkForUpdate()
-      updateUserConfig(curDateTime)
-    } else {
-      // if there is a timestamp in config and it's not from today, check for updates
-      const lastCheck = new Date(userConfig.lastVersionCheck)
+    // if there is a timestamp in config and it's not from today, check for updates
+    const lastCheck = userConfig.lastVersionCheck ? new Date(userConfig.lastVersionCheck) : null
       if (!isToday(lastCheck, curDateTime)) {
         await checkForUpdate()
         updateUserConfig(curDateTime)
-      }
     }
+
   /* tslint:disable:no-unused */
   } catch (err) {
       // swallow the exception; we don't want to crash the app
