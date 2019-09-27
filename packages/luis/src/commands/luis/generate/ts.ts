@@ -47,7 +47,6 @@ export default class LuisGenerateTs extends Command {
       )
 
       await LuisToTsConverter.writeFromLuisJson(app, flags.className, outputPath)
-      throw Error(`File was outputed at:${outputPath}`)
     } catch (err) {
       throw new CLIError(err)
     }

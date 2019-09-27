@@ -8,7 +8,7 @@ export namespace Utils {
     const containingDir = dirname(completePath)
 
     // If the cointaining folder doesnt exist
-    if (!existsSync(containingDir)) throw new CLIError("Path doesn't exist")
+    if (!existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
 
     const baseElement = basename(completePath)
     const pathAlreadyExist = existsSync(completePath)
@@ -19,7 +19,7 @@ export namespace Utils {
     }
 
     // If the last element in the path is a folder
-    if (!pathAlreadyExist) throw new CLIError("Path doesn't exist")
+    if (!pathAlreadyExist) throw new CLIError(`Target directory path doesn't exist: ${completePath}`)
     completePath = join(completePath, defaultFileName)
     return existsSync(completePath) ? enumerateFileName(completePath) : completePath
   }
@@ -28,7 +28,7 @@ export namespace Utils {
     const fileName = basename(filePath)
     const containingDir = dirname(filePath)
 
-    if (!existsSync(containingDir)) throw new CLIError("Path doesn't exist")
+    if (!existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
 
     const extension = extname(fileName)
     const baseName = basename(fileName, extension)

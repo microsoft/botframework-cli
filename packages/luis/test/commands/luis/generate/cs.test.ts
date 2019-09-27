@@ -11,84 +11,88 @@ const compareSourceFiles = async function (file1: string, file2: string) {
 }
 
 describe('luis:generate:cs', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, '../../../fixtures/generate/results'))
+  })
+
   after(async function () {
-    await fs.emptyDir(path.join(__dirname, 'test_data/result_cs'))
+    await fs.emptyDir(path.join(__dirname, '../../../fixtures/generate/results'))
   })
 
   test
     .stdout()
     .command(['luis:generate:cs',
       '--in',
-      `${path.join(__dirname, 'test_data/Intents.json')}`,
+      `${path.join(__dirname, '../../../fixtures/generate/Intents.json')}`,
       '--out',
-      `${path.join(__dirname, 'test_data/result_cs/Intents.cs')}`])
+      `${path.join(__dirname, '../../../fixtures/generate/results/Intents.cs')}`])
     .it('Generates intents correctly', async () => {
-      await compareSourceFiles('test_data/Intents.cs', 'test_data/result_cs/Intents.cs')
+      await compareSourceFiles('../../../fixtures/generate/Intents.cs', '../../../fixtures/generate/results/Intents.cs')
     })
 
   test
     .stdout()
     .command(['luis:generate:cs',
       '--in',
-      `${path.join(__dirname, 'test_data/SimpleEntities.json')}`,
+      `${path.join(__dirname, '../../../fixtures/generate/SimpleEntities.json')}`,
       '--out',
-      `${path.join(__dirname, 'test_data/result_cs/SimpleEntities.cs')}`])
+      `${path.join(__dirname, '../../../fixtures/generate/results/SimpleEntities.cs')}`])
     .it('Generates simple entities correctly', async () => {
-      await compareSourceFiles('test_data/SimpleEntities.cs', 'test_data/result_cs/SimpleEntities.cs')
+      await compareSourceFiles('../../../fixtures/generate/SimpleEntities.cs', '../../../fixtures/generate/results/SimpleEntities.cs')
     })
 
   test
     .stdout()
     .command(['luis:generate:cs',
       '--in',
-      `${path.join(__dirname, 'test_data/CompositeEntities.json')}`,
+      `${path.join(__dirname, '../../../fixtures/generate/CompositeEntities.json')}`,
       '--out',
-      `${path.join(__dirname, 'test_data/result_cs/CompositeEntities.cs')}`])
+      `${path.join(__dirname, '../../../fixtures/generate/results/CompositeEntities.cs')}`])
     .it('Generates composites entities correctly', async () => {
-      await compareSourceFiles('test_data/CompositeEntities.cs', 'test_data/result_cs/CompositeEntities.cs')
+      await compareSourceFiles('../../../fixtures/generate/CompositeEntities.cs', '../../../fixtures/generate/results/CompositeEntities.cs')
     })
 
   test
     .stdout()
     .command(['luis:generate:cs',
       '--in',
-      `${path.join(__dirname, 'test_data/ClosedLists.json')}`,
+      `${path.join(__dirname, '../../../fixtures/generate/ClosedLists.json')}`,
       '--out',
-      `${path.join(__dirname, 'test_data/result_cs/ClosedLists.cs')}`])
+      `${path.join(__dirname, '../../../fixtures/generate/results/ClosedLists.cs')}`])
     .it('Generates closed lists entities correctly', async () => {
-      await compareSourceFiles('test_data/ClosedLists.cs', 'test_data/result_cs/ClosedLists.cs')
+      await compareSourceFiles('../../../fixtures/generate/ClosedLists.cs', '../../../fixtures/generate/results/ClosedLists.cs')
     })
 
   test
     .stdout()
     .command(['luis:generate:cs',
       '--in',
-      `${path.join(__dirname, 'test_data/PatternEntities.json')}`,
+      `${path.join(__dirname, '../../../fixtures/generate/PatternEntities.json')}`,
       '--out',
-      `${path.join(__dirname, 'test_data/result_cs/PatternEntities.cs')}`])
+      `${path.join(__dirname, '../../../fixtures/generate/results/PatternEntities.cs')}`])
     .it('Generates pattern entities correctly', async () => {
-      await compareSourceFiles('test_data/PatternEntities.cs', 'test_data/result_cs/PatternEntities.cs')
+      await compareSourceFiles('../../../fixtures/generate/PatternEntities.cs', '../../../fixtures/generate/results/PatternEntities.cs')
     })
 
   test
     .stdout()
     .command(['luis:generate:cs',
       '--in',
-      `${path.join(__dirname, 'test_data/RegexEntities.json')}`,
+      `${path.join(__dirname, '../../../fixtures/generate/RegexEntities.json')}`,
       '--out',
-      `${path.join(__dirname, 'test_data/result_cs/RegexEntities.cs')}`])
+      `${path.join(__dirname, '../../../fixtures/generate/results/RegexEntities.cs')}`])
     .it('Generates regex entities correctly', async () => {
-      await compareSourceFiles('test_data/RegexEntities.cs', 'test_data/result_cs/RegexEntities.cs')
+      await compareSourceFiles('../../../fixtures/generate/RegexEntities.cs', '../../../fixtures/generate/results/RegexEntities.cs')
     })
 
   test
     .stdout()
     .command(['luis:generate:cs',
       '--in',
-      `${path.join(__dirname, 'test_data/PrebuiltEntities.json')}`,
+      `${path.join(__dirname, '../../../fixtures/generate/PrebuiltEntities.json')}`,
       '--out',
-      `${path.join(__dirname, 'test_data/result_cs/PrebuiltEntities.cs')}`])
+      `${path.join(__dirname, '../../../fixtures/generate/results/PrebuiltEntities.cs')}`])
     .it('Generates prebuilt entities correctly', async () => {
-      await compareSourceFiles('test_data/PrebuiltEntities.cs', 'test_data/result_cs/PrebuiltEntities.cs')
+      await compareSourceFiles('../../../fixtures/generate/PrebuiltEntities.cs', '../../../fixtures/generate/results/PrebuiltEntities.cs')
     })
 })
