@@ -2,20 +2,14 @@ const fs = require('fs-extra')
 const path = require('path')
 const cc = require('camelcase');
 
-function getServiceManifest(verb, target, json) {
+function getServiceManifest(json) {
     for (let iOperation in json.operations) {
         let operation = json.operations[iOperation];
-
-        if ((operation.methodAlias == verb) &&
-            ((operation.target.length == 0 && !target) ||
-            (target && operation.target.indexOf(target.toLowerCase()) >= 0))) {
-                return Object.assign({
-                    operation: operation,
-                    identifier: cc(json.className),
-                }, json.name)
-        }
+        return Object.assign({
+            operation: operation,
+            identifier: cc(json.className),
+        }, json.name)
     }
-    return null;
 }
 
 async function validateArguments(serviceManifest, args) {
@@ -48,27 +42,17 @@ async function validateArguments(serviceManifest, args) {
             body = await getFileInput(args);
         }
         else {
-            switch (serviceManifest.operation.name) {
-                case 'generateAnswer':
-                    body = {
-                        question: args.question,
-                        top: args.top
-                    };
-                    break;
-                default:
-                    error.message = `The ${operation.name} requires an input of type: ${operation.entityType}`;
-                    throw error;
-            }
+            error.message = `The ${operation.name} requires an input of type: ${operation.entityType}`;
+            throw error;
         }
     }
 
     if (serviceManifest.operation.params) {
         for (let param of serviceManifest.operation.params) {
-            if (param.required) {
-                if (!args[param.name] && !args[param.alias || param.name]) {
+            if (param.required 
+                && (!args[param.name] && !args[param.alias || param.name])) {
                     error.message = `The --${param.name} argument is missing and required`;
                     throw error;
-                }
             }
         }
     }

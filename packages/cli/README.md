@@ -8,10 +8,6 @@ botframework-cli
 [![Downloads/week](https://img.shields.io/npm/dw/botframework-cli.svg)](https://www.npmjs.com/package/@microsoft/botframework-cli)
 [![License](https://img.shields.io/npm/l/botframework-cli.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
 # Usage
 <!-- usage -->
 ```sh-session
@@ -31,17 +27,26 @@ USAGE
 * [`bf `](#bf-)
 * [`bf chatdown`](#bf-chatdown)
 * [`bf config`](#bf-config)
-* [`bf config:get`](#bf-configget)
-* [`bf config:qnamaker:set`](#bf-configqnamakerset)
-* [`bf config:telemetry`](#bf-configtelemetry)
-* [`bf config:telemetry:disable`](#bf-configtelemetrydisable)
-* [`bf config:telemetry:enable`](#bf-configtelemetryenable)
+* [`bf config:set:qnamaker`](#bf-configsetqnamaker)
+* [`bf config:set:telemetry`](#bf-configsettelemetry)
+* [`bf config:show`](#bf-configshow)
+* [`bf config:show:qnamaker`](#bf-configshowqnamaker)
+* [`bf config:show:telemetry`](#bf-configshowtelemetry)
 * [`bf help [COMMAND]`](#bf-help-command)
+* [`bf luis:convert`](#bf-luisconvert)
+* [`bf luis:translate`](#bf-luistranslate)
+* [`bf plugins`](#bf-plugins)
+* [`bf plugins:install PLUGIN...`](#bf-pluginsinstall-plugin)
+* [`bf plugins:link PLUGIN`](#bf-pluginslink-plugin)
+* [`bf plugins:uninstall PLUGIN...`](#bf-pluginsuninstall-plugin)
+* [`bf plugins:update`](#bf-pluginsupdate)
 * [`bf qnamaker`](#bf-qnamaker)
+* [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:create:kb`](#bf-qnamakercreatekb)
 * [`bf qnamaker:delete:kb`](#bf-qnamakerdeletekb)
 * [`bf qnamaker:export:kb`](#bf-qnamakerexportkb)
 * [`bf qnamaker:get`](#bf-qnamakerget)
+* [`bf qnamaker:get:endpointsettings`](#bf-qnamakergetendpointsettings)
 * [`bf qnamaker:get:kb`](#bf-qnamakergetkb)
 * [`bf qnamaker:get:operationdetails`](#bf-qnamakergetoperationdetails)
 * [`bf qnamaker:init`](#bf-qnamakerinit)
@@ -55,6 +60,9 @@ USAGE
 * [`bf qnamaker:replace`](#bf-qnamakerreplace)
 * [`bf qnamaker:replace:alterations`](#bf-qnamakerreplacealterations)
 * [`bf qnamaker:replace:kb`](#bf-qnamakerreplacekb)
+* [`bf qnamaker:train`](#bf-qnamakertrain)
+* [`bf qnamaker:translate`](#bf-qnamakertranslate)
+* [`bf qnamaker:update:endpointsettings`](#bf-qnamakerupdateendpointsettings)
 * [`bf qnamaker:update:kb`](#bf-qnamakerupdatekb)
 
 ## `bf `
@@ -80,26 +88,23 @@ USAGE
   $ bf chatdown
 
 OPTIONS
-  -c, --chat=chat              The path of the chat file to be parsed. If omitted, stdin will be used.
+  -h, --help     Chatdown command help
 
-  -f, --folder=folder          Path to directory and/or all subdirectories containing chat files to be processed all at
-                               once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the
-                               output to the current working directory.
+  -i, --in=in    The path of the chat file or directory to be parsed. A glob expression may be passed containing chat
+                 files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an
+                 output directory is not present (-o), it will default the output to the current working directory.
 
-  -h, --help                   Chatdown command help
+  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-o) will be placed.
 
-  -o, --out_folder=out_folder  Path to the directory where the output of the multiple chat file processing (-f) will be
-                               placed.
+  -p, --prefix   Prefix stdout with package name.
 
-  -p, --prefix                 Prefix stdout with package name.
-
-  -s, --static                 Use static timestamps when generating timestamps on activities.
+  -s, --static   Use static timestamps when generating timestamps on activities.
 
 EXAMPLE
 
      $ bf chatdown
-     $ bf chatdown --chat=./path/to/file/sample.chat
-     $ bf chatdown -f ./test/utils/*.sample.chat -o ./
+     $ bf chatdown --in=./path/to/file/sample.chat
+     $ bf chatdown --in ./test/utils/*.sample.chat -o ./
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
@@ -119,76 +124,79 @@ OPTIONS
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/index.ts)_
 
-## `bf config:get`
-
-Displays the config file
-
-```
-USAGE
-  $ bf config:get
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/get.ts)_
-
-## `bf config:qnamaker:set`
+## `bf config:set:qnamaker`
 
 Set the QnAMaker config data
 
 ```
 USAGE
-  $ bf config:qnamaker:set
+  $ bf config:set:qnamaker
 
 OPTIONS
-  --kbid=kbid                        QnAMaker kbid to be set
-  --subscriptionkey=subscriptionkey  QnAMaker subscriptionkey to be set
+  --endpointKey=endpointKey          QnAMaker endpointKey to be set
+  --hostname=hostname                QnAMaker hostname to be set
+  --kbId=kbId                        QnAMaker kbId to be set
+  --subscriptionKey=subscriptionKey  QnAMaker subscriptionkey to be set
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/qnamaker/set.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/set/qnamaker.ts)_
 
-## `bf config:telemetry`
+## `bf config:set:telemetry`
 
-The telemetry commands allow the user to enable and disable telemetry
+Enable or disable telemetry
 
 ```
 USAGE
-  $ bf config:telemetry
+  $ bf config:set:telemetry
+
+OPTIONS
+  -d, --disable  Disable tlemetry
+  -h, --help     show CLI help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/set/telemetry.ts)_
+
+## `bf config:show`
+
+Displays the config file
+
+```
+USAGE
+  $ bf config:show
 
 OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/telemetry/index.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/show.ts)_
 
-## `bf config:telemetry:disable`
+## `bf config:show:qnamaker`
 
-Disable telemetry
+Display QnAMaker settings
 
 ```
 USAGE
-  $ bf config:telemetry:disable
+  $ bf config:show:qnamaker
 
 OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/telemetry/disable.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/show/qnamaker.ts)_
 
-## `bf config:telemetry:enable`
+## `bf config:show:telemetry`
 
-Enable Telemetry
+Display telemetry settings
 
 ```
 USAGE
-  $ bf config:telemetry:enable
+  $ bf config:show:telemetry
 
 OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/telemetry/enable.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/show/telemetry.ts)_
 
 ## `bf help [COMMAND]`
 
@@ -207,6 +215,167 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
+## `bf luis:convert`
+
+Convert .lu file(s) to a LUIS application JSON model or vice versa
+
+```
+USAGE
+  $ bf luis:convert
+
+OPTIONS
+  --culture=culture              Lang code for the LUIS application
+  --description=description      Text describing the LUIS applicaion
+  --in=in                        (required) Source .lu file(s) or LUIS application JSON model
+  --log                          Enables log messages
+  --name=name                    Name of the LUIS application
+  --out=out                      Output file or folder name. If not specified stdout will be used as output
+  --recurse                      Indicates if sub-folders need to be considered to file .lu file(s)
+  --schemaversion=schemaversion  Schema version of the LUIS application
+  --sort                         When set, intent, utterances, entities are alphabetically sorted in .lu files
+  --versionid=versionid          Version ID of the LUIS application
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/convert.ts)_
+
+## `bf luis:translate`
+
+Translate given LUIS application JSON model or lu file(s)
+
+```
+USAGE
+  $ bf luis:translate
+
+OPTIONS
+  --in=in                                    (required) Source .lu file(s) or LUIS application JSON model
+  --out=out                                  Output folder name. If not specified stdout will be used as output
+  --recurse                                  Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+  --translate_comments=translate_comments    When set, machine translate comments found in .lu or .qna file
+  --translate_link_text=translate_link_text  When set, machine translate link description in .lu or .qna file
+  --translatekey=translatekey                (required) Machine translation endpoint key.
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
+
+## `bf plugins`
+
+list installed plugins
+
+```
+USAGE
+  $ bf plugins
+
+OPTIONS
+  --core  show core plugins
+
+EXAMPLE
+  $ bf plugins
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/index.ts)_
+
+## `bf plugins:install PLUGIN...`
+
+installs a plugin into the CLI
+
+```
+USAGE
+  $ bf plugins:install PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to install
+
+OPTIONS
+  -f, --force    yarn install with force flag
+  -h, --help     show CLI help
+  -v, --verbose
+
+DESCRIPTION
+  Can be installed from npm or a git url.
+
+  Installation of a user-installed plugin will override a core plugin.
+
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command 
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in 
+  the CLI without the need to patch and update the whole CLI.
+
+ALIASES
+  $ bf plugins:add
+
+EXAMPLES
+  $ bf plugins:install myplugin 
+  $ bf plugins:install https://github.com/someuser/someplugin
+  $ bf plugins:install someuser/someplugin
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/install.ts)_
+
+## `bf plugins:link PLUGIN`
+
+links a plugin into the CLI for development
+
+```
+USAGE
+  $ bf plugins:link PLUGIN
+
+ARGUMENTS
+  PATH  [default: .] path to plugin
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+
+DESCRIPTION
+  Installation of a linked plugin will override a user-installed or core plugin.
+
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' 
+  command will override the user-installed or core plugin implementation. This is useful for development work.
+
+EXAMPLE
+  $ bf plugins:link myplugin
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/link.ts)_
+
+## `bf plugins:uninstall PLUGIN...`
+
+removes a plugin from the CLI
+
+```
+USAGE
+  $ bf plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+
+ALIASES
+  $ bf plugins:unlink
+  $ bf plugins:remove
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/uninstall.ts)_
+
+## `bf plugins:update`
+
+update installed plugins
+
+```
+USAGE
+  $ bf plugins:update
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/update.ts)_
+
 ## `bf qnamaker`
 
 QnA Maker CLI (Preview version)
@@ -221,6 +390,26 @@ OPTIONS
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/index.ts)_
 
+## `bf qnamaker:convert`
+
+Convert .lu file(s) to a QnA application JSON model or vice versa
+
+```
+USAGE
+  $ bf qnamaker:convert
+
+OPTIONS
+  --alterations  Indicates if files is QnA Alterations
+  --in=in        (required) Source .qna file(s) or QnA KB JSON file
+  --log          Enables log messages
+  --name=name    Name of the QnA KB
+  --out=out      Output file or folder name. If not specified stdout will be used as output
+  --recurse      Indicates if sub-folders need to be considered to file .qna file(s)
+  --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .lu files
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
+
 ## `bf qnamaker:create:kb`
 
 Creates a new knowledgebase
@@ -231,29 +420,16 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:create:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
   --in=in                            (required) The CreateKbDTO object to send in the body of the request.
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
+  --name=name                        Name of the kb you want to create. This will override the name of KB that might be
+                                     present in the CreateKb DTO
 
-  --name=name                        Name of the kb you want to create.
+  --save                             Save the kbId in config.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
-
-  --wait                             Wait for the operation to complete.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/create/kb.ts)_
@@ -268,24 +444,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:delete:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
   --force                            Do not prompt for confirmation, force the operation
+  --kbId=kbId                        Knowledgebase id to be deleted
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        (required) Knowledgebase id to be deleted
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/delete/kb.ts)_
@@ -300,26 +464,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:export:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
   --environment=environment          (required) Specifies whether environment is Test or Prod.
+  --kbId=kbId                        Knowledgebase id to be exported.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        (required) Knowledgebase id to be exported.
-
-  --legacy                           Specifies if is a legacy knowlegebase.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/export/kb.ts)_
@@ -338,6 +488,25 @@ OPTIONS
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/index.ts)_
 
+## `bf qnamaker:get:endpointsettings`
+
+Gets endpoint settings for an endpoint.
+
+```
+USAGE
+  $ bf qnamaker:get:endpointsettings
+
+OPTIONS
+  -h, --help                         qnamaker:get:endpointsettings command help
+  --kbId=kbId                        Knowledgebase id to get metadata.
+
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
+```
+
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/endpointsettings.ts)_
+
 ## `bf qnamaker:get:kb`
 
 Get metadata about a knowledgebase
@@ -348,24 +517,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:kb command help
+  --kbId=kbId                        Knowledgebase id to get metadata.
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --environment=environment          Specifies whether environment is Test or Prod.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        (required) Knowledgebase id to get metadata.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/kb.ts)_
@@ -380,25 +536,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:operationdetails command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
   --operationId=operationId          (required) Operation id.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/operationdetails.ts)_
@@ -433,7 +575,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:list:alterations`
 
-Downloads all word alterations (synonyms) that have been automatically mined or added by the user.
+Downloads all word alterations (synonyms) that have been added by the user.
 
 ```
 USAGE
@@ -442,22 +584,9 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:list:alterations command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/alterations.ts)_
@@ -473,22 +602,9 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:list:endpointkeys command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/endpointkeys.ts)_
@@ -504,22 +620,9 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:list:kbs command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/kbs.ts)_
@@ -534,55 +637,42 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:publish:kb command help
+  --kbId=kbId                        Knowledgebase id to pubish.
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        (required) Knowledgebase id to pubish.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/publish/kb.ts)_
 
 ## `bf qnamaker:query`
 
-Query model for prediction
+Query model for fetching the answer from Kb for a query
 
 ```
 USAGE
   $ bf qnamaker:query
 
 OPTIONS
-  -h, --help                         qnamaker:query command help
+  -h, --help                       qnamaker:query command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
+  --endpointKey=endpointKey        Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal user
+                                   settings page). Overrides the value present in config.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname              Specifies the url for your private QnA service. Overrides the value present in
+                                   config.
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
+  --isTest                         Query against the test index.
 
-  --question=question                (required) Query to get a prediction for.
+  --kbId=kbId                      Specifies the active qnamaker knowledgebase id. Overrides the value present in the
+                                   config
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
+  --question=question              (required) Query to get a prediction for.
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --scoreThreshold=scoreThreshold  Query to get a prediction for.
+
+  --top=top                        Query to get a prediction for.
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/query.ts)_
@@ -597,25 +687,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:refresh:endpoints command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
   --keyType=keyType                  (required) Type of Key.
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/refresh/endpointkeys.ts)_
@@ -644,25 +720,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:replace:alterations command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
   --in=in                            (required) The WordAlterationsDTO object to send in the body of the request
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_KBID environment variable.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/alterations.ts)_
@@ -677,27 +739,84 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:replace:kb command help
+  --in=in                            (required) The ReplaceKbDTO object to send in the body of the request
+  --kbId=kbId                        Knowledgebase id.
+
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
+```
+
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/kb.ts)_
+
+## `bf qnamaker:train`
+
+Train call to add suggestions to the knowledgebase.
+
+```
+USAGE
+  $ bf qnamaker:train
+
+OPTIONS
+  -h, --help                         qnamaker:get:kb command help
 
   --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
+                                     user settings page). Overrides the value present in config.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
+  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in
+                                     config.
 
-  --in=in                            (required) The ReplaceKbDTO object to send in the body of the request
+  --in=in                            (required) The FeedbackRecordDTO object to send in the body of the request.
 
-  --kbId=kbId                        (required) Knowledgebase id.
+  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the value present in the
+                                     config
 
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
+```
+
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/train.ts)_
+
+## `bf qnamaker:translate`
+
+Translate given LUIS application JSON model or lu file(s)
+
+```
+USAGE
+  $ bf qnamaker:translate
+
+OPTIONS
+  --in=in                                    (required) Source .lu file(s) or LUIS application JSON model
+  --out=out                                  Output folder name. If not specified stdout will be used as output
+  --recurse                                  Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+  --translate_comments=translate_comments    When set, machine translate comments found in .lu or .qna file
+  --translate_link_text=translate_link_text  When set, machine translate link description in .lu or .qna file
+  --translatekey=translatekey                (required) Machine translation endpoint key.
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/translate.ts)_
+
+## `bf qnamaker:update:endpointsettings`
+
+Updates endpoint settings for an endpoint.
+
+```
+USAGE
+  $ bf qnamaker:update:endpointsettings
+
+OPTIONS
+  -h, --help                         qnamaker:update:endpointsettings command help
+  --activelearning                   Enable active learning. Disables if flag not set
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
                                      Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
                                      and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/kb.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/update/endpointsettings.ts)_
 
 ## `bf qnamaker:update:kb`
 
@@ -709,24 +828,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:update:kb command help
-
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the .qnamakerrc value and the QNAMAKER_ENDPOINTKEY
-                                     environment variable.
-
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the .qnamakerrc value and
-                                     the QNAMAKER_HOSTNAME environment variable.
-
   --in=in                            (required) The UpdateKbOperationDTO object to send in the body of the request.
+  --kbId=kbId                        Knowledgebase id.
 
-  --kbId=kbId                        (required) Knowledgebase id.
-
-  --stdin                            Specifies qnamaker configuration is being passed via stdin. Overrides the
-                                     .qnamakerrc value and the QNAMAKER_KBID environment variable.
-
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in config
 
   --wait                             Wait for the operation to complete.
 ```

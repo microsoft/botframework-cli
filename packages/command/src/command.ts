@@ -4,9 +4,9 @@ import { Command as Base } from '@oclif/command'
 import { CLIError } from '@oclif/errors'
 export { flags } from '@oclif/command'
 export { CLIError } from '@oclif/errors'
-const chalk = require('chalk')
 import ReadPipedData from './readpipeddata'
 import Telemetry from './telemetry'
+const chalk = require('chalk')
 const pjson = require('../package.json')
 
 export abstract class Command extends Base {
@@ -29,7 +29,7 @@ export abstract class Command extends Base {
 
   warn(input: string | Error): void {
     /* tslint:disable:no-console */
-    console.warn(chalk.yellow(input))
+    console.error(chalk.yellow(input))
   }
 
   async catch(err: any) {
@@ -48,15 +48,18 @@ export abstract class Command extends Base {
 
   // Flush telemetry to avoid performance issues
   async finally(_: Error | undefined) {
-    Telemetry.flushTelemetry()
+    /* tslint:disable:strict-type-predicates */
+    if (this.telemetryEnabled !== null && this.telemetryEnabled) {
+      Telemetry.flushTelemetry()
+    }
     process.stdin.destroy()
   }
 
-  readStdin() {
+  async readStdin(): Promise<string> {
     try {
-      return ReadPipedData.read()
+      return await ReadPipedData.read()
     } catch (error) {
-      throw new CLIError(error)
+      return ''
     }
   }
 

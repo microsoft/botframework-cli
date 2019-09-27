@@ -56,7 +56,7 @@ describe('luis:convert', () => {
 
     test
     .stdout()
-    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/3.lu')}`, '--out', 'root.json', '--name', '3'])
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/3.lu')}`, '--out', `${path.join(__dirname, './../../../root.json')}`, '--name', '3'])
     .it('luis:convert Multiple intent and utterance definition sections are parsed correctly', async () => {
       let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/3.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
@@ -413,14 +413,14 @@ describe('luis:convert VA skill lu files', () => {
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])})
 })
 
-xdescribe('luis:convert sort option enabled', () => {
+describe('luis:convert sort option enabled', () => {
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../root.lu'))
   })
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all.json')}`, '--out', 'root.lu', '--sort'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all.json')}`, '--out', 'root.lu', '--sort'])
   .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model', async () => {
     expect(await compareLuFiles('./../../../root.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
   })

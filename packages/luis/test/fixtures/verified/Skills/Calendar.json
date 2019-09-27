@@ -14435,11 +14435,6 @@
       ]
     },
     {
-      "text": "^[(show|display)] next [page] [please]^",
-      "intent": "ShowNextCalendar",
-      "entities": []
-    },
-    {
       "text": "bring the previous one",
       "intent": "ShowPreviousCalendar",
       "entities": [
@@ -17619,6 +17614,10 @@
     {
       "pattern": "^is (this|the|that) (meeting|conference) room (available|booked) [(at|on|for)] [{FromDate}] [(at|on|for)] [{FromTime}]^",
       "intent": "FindMeetingRoom"
+    },
+    {
+      "pattern": "^[(show|display)] next [page] [please]^",
+      "intent": "ShowNextCalendar"
     },
     {
       "pattern": "^i (want to|need to|would like to) (attend|join) {Subject}, [please] add it.^",

@@ -22,12 +22,12 @@ describe('chatdown', () => {
         });
     });
 
-    it('should output an error if no stdin data passed', done => {
-        cp.exec(`node ./bin/run chatdown`, (error, stdout, stderr) => {
-            assert(stderr.includes('No input'));
-            done();
-        });
-    });
+    test
+    .stdout()
+    .command(['chatdown'])
+    .it('should print the help contents when no input is passed', ctx => {
+      expect(ctx.stdout).to.contain('Converts chat dialog files in <filename>.')
+    })
 
     it('should throw when a malformed config options is encountered in the input', done => {
         cp.exec(`echo bot=LuliBot=joe | node ./bin/run chatdown`, (error, stdout, stderr) => {
