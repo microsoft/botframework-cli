@@ -13,9 +13,6 @@ import * as path from 'path'
 // TODO:
 // Support numbered tokens in order to support **ASK1**, etc.
 // Add --multiple for lists of properties to bind
-// Write templates for set
-// Hook up to testbot.json
-// Revamp utterance to only support if in expected and add to clarify if it overlaps other entities.
 export enum FeedbackType {
     info,
     warning,
@@ -406,6 +403,11 @@ export async function generate(form: s.FormSchema, outDir: string, schema?: stri
     feedback(FeedbackType.info, `Schema: ${schema}`)
     try {
         await fs.ensureDir(outDir)
+        // For each property
+        // For each template
+        // Try to find in template directories in order.  
+        // If .lg then pattern is template/property.lg 
+        // If .lu then pattern is entity.lu and we should only add it once
         for (let templateDir of templateDirs) {
             for (let locale of locales) {
                 try {
