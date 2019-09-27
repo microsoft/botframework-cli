@@ -11,6 +11,8 @@
 # Commands
 <!-- commands -->
 * [`bf luis:convert`](#bf-luisconvert)
+* [`bf luis:generate:cs`](#bf-luisgeneratecs)
+* [`bf luis:generate:ts`](#bf-luisgeneratets)
 * [`bf luis:translate`](#bf-luistranslate)
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:translate`](#bf-qnamakertranslate)
@@ -37,6 +39,38 @@ OPTIONS
 ```
 
 _See code: [src/commands/luis/convert.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/convert.ts)_
+
+## `bf luis:generate:cs`
+
+Generate:cs generates a strongly typed C# source code from an exported (json) LUIS model.
+
+```
+USAGE
+  $ bf luis:generate:cs
+
+OPTIONS
+  --className=className  Name of the class
+  --in=in                Source .lu file(s) or LUIS application JSON model
+  --out=out              Output file or folder name. If not specified stdout will be used as output
+```
+
+_See code: [src/commands/luis/generate/cs.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/generate/cs.ts)_
+
+## `bf luis:generate:ts`
+
+Generate:ts generates a strongly typed typescript source code from an exported (json) LUIS model.
+
+```
+USAGE
+  $ bf luis:generate:ts
+
+OPTIONS
+  --className=className  Name of the class
+  --in=in                Source .lu file(s) or LUIS application JSON model
+  --out=out              Output file or folder name. If not specified stdout will be used as output
+```
+
+_See code: [src/commands/luis/generate/ts.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/generate/ts.ts)_
 
 ## `bf luis:translate`
 
