@@ -41,7 +41,7 @@ nameIdentifier
     ;
 
 nestedIntentBodyDefinition
-    : (subIntentDefinition newline*)+
+    : (subIntentDefinition newline)+
     ;
 
 subIntentDefinition
@@ -49,7 +49,7 @@ subIntentDefinition
     ;
 
 simpleIntentSection
-    : intentDefinition newline* (entitySection newline*)*
+    : intentDefinition newline? (entitySection newline)*
     ;
 
 intentDefinition

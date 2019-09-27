@@ -177,9 +177,9 @@ class LUParser {
             .map(x => x.modelInfoSection())
             .filter(x => x !== undefined && x != null);
 
-        let modelInfoSections = modelInfoSections.map(x => new ModelInfoSection(x));
+        let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
 
-        return modelInfoSections;
+        return modelInfoSectionList;
     }
 }
 
