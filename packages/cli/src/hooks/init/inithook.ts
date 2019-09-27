@@ -7,14 +7,56 @@ const latestVersion = require('latest-version')
 const semver = require('semver')
 
 const hook: Hook<'init'> = async function (opts) {
-  // Look for updates
+  // get config settings
+  let userConfig: any
+  const curDateTime = new Date()
+  const configFileExists = fs.existsSync(path.join(this.config.configDir, 'config.json'))
+
+  const writeUserConfig = async (userconfig: any) => {
+    await fs.mkdirp(this.config.configDir)
+    await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userconfig, null, 2))
+  }
+
   try {
-    const latest = await latestVersion(opts.config.name, {version: `>${opts.config.version}`})
-    if (semver.gt(latest, opts.config.version)) {
-      this.log('Update available ')
-      this.log('     Run ')
-      this.log(`npm i -g ${opts.config.name} `)
+    // if config file exists, load settings
+    if (configFileExists) {
+      userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
+    } else {
+      // otherwise create in-memory config
+      userConfig = {
+        telemetry: null,
+        lastVersionCheck: null
+      }
     }
+
+    const checkForUpdate = async () => {
+      const latest = await latestVersion(opts.config.name, {version: `>${opts.config.version}`})
+      if (semver.gt(latest, opts.config.version)) {
+        this.log('Update available ')
+        this.log('     Run ')
+        this.log(`npm i -g ${opts.config.name} `)
+      }
+    }
+
+    const updateUserConfig = async (curVersionCheck: Date) => {
+      userConfig.lastVersionCheck = curVersionCheck
+      await writeUserConfig(userConfig)
+    }
+
+    const isToday = (dateObj: Date | null, today: Date) => {
+      return dateObj && dateObj.getDate() === today.getDate() &&
+        dateObj.getMonth() === today.getMonth() &&
+        dateObj.getFullYear() === today.getFullYear()
+    }
+
+    // if there's no timestamp in config, create one and check for updates
+    // if there is a timestamp in config and it's not from today, check for updates
+    const lastCheck = userConfig.lastVersionCheck ? new Date(userConfig.lastVersionCheck) : null
+    if (!isToday(lastCheck, curDateTime)) {
+      await checkForUpdate()
+      await updateUserConfig(curDateTime)
+    }
+
   /* tslint:disable:no-unused */
   } catch (err) {
       // swallow the exception; we don't want to crash the app
@@ -23,15 +65,6 @@ const hook: Hook<'init'> = async function (opts) {
 
   // Ensure telemetry is set
   try {
-    let userConfig: any = ''
-    if (fs.existsSync(path.join(this.config.configDir, 'config.json'))) {
-      userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
-    } else {
-      userConfig = {
-        telemetry: null,
-      }
-    }
-
     if (userConfig.telemetry === null) {
       const disableTelemetry = await cli.prompt(chalk.red('Telemetry is disabled. Would you like to opt in?. Only command and flags usage will be sent. (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
@@ -48,9 +81,7 @@ const hook: Hook<'init'> = async function (opts) {
         this.log(chalk.blue('bf config:telemetry:enable'))
       }
 
-      await fs.mkdirp(this.config.configDir)
-
-      await fs.writeFileSync(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
+      await writeUserConfig(userConfig)
     }
 
     this.config.pjson.telemetry = userConfig.telemetry

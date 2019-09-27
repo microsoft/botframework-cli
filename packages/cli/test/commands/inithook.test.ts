@@ -5,6 +5,7 @@ const path = require('path')
 const semver = require('semver')
 const os = require('os')
 
+const lastversioncheck = path.join(__dirname, '../fixtures/lastversioncheck')
 const upgradeavailable = path.join(__dirname, '../fixtures/upgradeavailable')
 const rootTelemetryNull = path.join(__dirname, '../fixtures/telemetrynull')
 
@@ -89,13 +90,13 @@ describe('Check if telemetry is not changed if config is not null', () => {
 })
 
 describe('Update available to stdout', () => {
-  before(function() {
+  beforeEach(function() {
     // runs before all tests in this block
     fs.mkdirSync(pathToConfigJsonUpdate)
-    fs.writeFileSync(path.join(pathToConfigJsonUpdate, 'config.json'), JSON.stringify({telemetry: true,}, null, 2))
+    fs.writeFileSync(path.join(pathToConfigJsonUpdate, 'config.json'), JSON.stringify({telemetry: true}, null, 2))
   });
 
-  after(function() {
+  afterEach(function() {
     // runs after all tests in this block
     fs.removeSync(pathToConfigJsonUpdate)
   });
@@ -110,11 +111,50 @@ describe('Update available to stdout', () => {
     })
     .it('it should output to stdout if update is available')
 
-    test
+  test
     .loadConfig({root: upgradeavailable})
     .stub(semver, 'gt', () => false)
     .stdout()
     .hook('init', {argv: ['arg']}, {root: upgradeavailable})
     .do(output => expect(output.stdout).to.equal(''))
     .it('it should not output anything if no update is available')
+
+  test
+    .loadConfig({root: lastversioncheck})
+    .stub(semver, 'gt', () => true)
+    .stdout()
+    .hook('init', {argv: ['arg']}, {root: lastversioncheck})
+    .do(output => {
+      expect(output.stdout).to.contain('Update available')
+    })
+    .it('it should write to message stdout if update is available and last checked timestamp is expired')
+
 })
+
+describe('bypass version update if it\'s already been checked today', async () => {
+  beforeEach(async () => {
+    // runs before all tests in this block
+    const today = new Date()
+    let userConfig = await fs.readJSON(path.join(lastversioncheck, 'package.json'))
+    userConfig.lastversioncheck = today
+    fs.writeFileSync(path.join(lastversioncheck, 'package.json'), JSON.stringify(userConfig, null, 2))
+    fs.mkdirSync(pathToConfigJsonUpdate)
+    fs.writeFileSync(path.join(pathToConfigJsonUpdate, 'config.json'), JSON.stringify({telemetry: true}, null, 2))
+  });
+
+  afterEach(function() {
+    // runs after all tests in this block
+    fs.removeSync(pathToConfigJsonUpdate)
+  });
+
+  test
+    .loadConfig({root: lastversioncheck})
+    .stub(semver, 'gt', () => true)
+    .stdout()
+    .hook('init', {argv: ['arg']}, {root: lastversioncheck})
+    .do(output => {
+      expect(output.stdout).to.contain('')
+    })
+    .it('it should not output anything if last upgrade check was today')
+
+});
