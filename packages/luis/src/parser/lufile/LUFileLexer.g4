@@ -120,7 +120,7 @@ NEW_REGEX_ENTITY
   ;
 
 NEW_TEXT
-  : ~[ \t\r\n{}=,]+ 
+  : ~[ \t\r\n.,;]+ 
   ;
 
 mode INTENT_NAME_MODE;

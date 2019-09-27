@@ -402,19 +402,66 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
 }
 
 /**
+ * Helper function to get entity type based on a name match
+ * @param {String} entityName name of entity to look up type for.
+ * @param {Object[]} entities collection of entities in the current application
+ */
+const getEntityType = function(entityName, entities) {
+    let entityFound = (entities || []).find(item => item.Name == entityName);
+    return entityFound ? entityFound.Type : undefined;
+};
+
+/**
+ * Helper function to validate that new roles being added are unique at the application level.
+ * @param {Object} parsedContent with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
+ * @param {String[]} roles string array of new roles to be added
+ * @param {String} line current line being parsed.
+ * @param {String} entityName name of the entity being added.
+ */
+const validateAndGetRoles = function(parsedContent, roles, line, entityName) {
+    let newRoles = roles ? roles.split(',').map(item => item.trim()) : [];
+
+    // entity roles need to unique within the application
+    if(parsedContent.LUISJsonStructure.allRoles) {
+        newRoles.forEach(role => {
+            if (parsedContent.LUISJsonStructure.allRoles.includes(role)) {
+                let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}"`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: line
+                })
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            }
+        })
+    } else {
+        parsedContent.LUISJsonStructure.allRoles = newRoles;
+    }
+    return newRoles;
+};
+
+/**
  * 
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleEntityV2 = async function (parsedContent, luResource) {
+const parseAndHandleEntityV2 = function (parsedContent, luResource) {
     // handle new entity definitions.
     let entities = luResource.NewEntities;
     if (entities && entities.length > 0) {
         for (const entity of entities) {
-            let entityName = entity.Name;
-            let entityType = entity.Type;
-            let entityRoles = entity.Roles ? entity.Roles.split(',').map(item => item.trim()) : [];
+            let entityName = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
+            let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
+            if (!entityType) {
+                let errorMsg = `No type definition found for entity "${entityName}"`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: entity.ParseTree.newEntityLine()
+                })
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            };
+            let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.ParseTree.newEntityLine(), entityName);
+            
             // CompositeDefinition
             // Features
             // RegexDefinition
@@ -439,6 +486,7 @@ const parseAndHandleEntityV2 = async function (parsedContent, luResource) {
                 case EntityTypeEnum.PREBUILT:
                     break;
                 case EntityTypeEnum.REGEX:
+                    handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityLine());
                     break;
                 case EntityTypeEnum.ML:
                     break;
@@ -448,7 +496,15 @@ const parseAndHandleEntityV2 = async function (parsedContent, luResource) {
             }
         }
     }
-}
+};
+
+/**
+ * Helper function to remove duplicate pattern any definitions.
+ * @param {Object} parsedContent Object containing current parsed content - LUIS, QnA, QnA alterations.
+ * @param {String} pEntityName name of entity
+ * @param {String} entityType type of entity
+ * @param {String} entityLine current line being parsed
+ */
 const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, entityType, entityLine) {
     // see if we already have this as Pattern.Any entity
     // see if we already have this in patternAny entity collection; if so, remove it but remember the roles (if any)
@@ -723,7 +779,7 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
                     // handle regex entity 
                     let regex = entityType.slice(1).slice(0, entityType.length - 2);
                     if (regex === '') {
-                        let errorMsg = `RegEx entity: ${regExEntity.name} has empty regex pattern defined.`;
+                        let errorMsg = `RegEx entity: ${entityName} has empty regex pattern defined.`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
                             context: entity.ParseTree.entityLine()
@@ -762,6 +818,61 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
             } else {
                 // TODO: handle other entity types
             }
+        }
+    }
+}
+/**
+ * 
+ * @param {Object} parsedContent Object containing the parsed structure - LUIS, QnA, QnA alterations
+ * @param {String} entityName name of entity
+ * @param {String} entityType type of entity
+ * @param {String []} entityRoles array of entity roles found
+ * @param {String} entityLine current line being parsed/ handled.
+ */
+const handleRegExEntity = function(parsedContent, entityName, entityType, entityRoles, entityLine) {
+    // check if this regex entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
+    try {
+        let rolesImport = VerifyAndUpdateSimpleEntityCollection(parsedContent, entityName, 'RegEx');
+        if (rolesImport.length !== 0) {
+            rolesImport.forEach(role => !entityRoles.includes(role) ? entityRoles.push(role) : undefined);
+        }
+    } catch (err) {
+        throw (err);
+    }
+    let regex = '';
+    // handle regex entity 
+    if (entityType) {
+        regex = entityType.slice(1).slice(0, entityType.length - 2);
+        if (regex === '') {
+            let errorMsg = `RegEx entity: ${entityName} has empty regex pattern defined.`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                context: entityLine
+            })
+
+            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+        }
+    }
+    
+    // add this as a regex entity if it does not exist
+    let regExEntity = (parsedContent.LUISJsonStructure.regex_entities || []).find(item => item.name == entityName);
+    if (regExEntity === undefined) {
+        parsedContent.LUISJsonStructure.regex_entities.push(new helperClass.regExEntity(entityName, regex, entityRoles))
+    } else {
+        // throw an error if the pattern is different for the same entity
+        if (regExEntity.regexPattern !== '' && regExEntity.regexPattern !== regex) {
+            let errorMsg = `RegEx entity: ${regExEntity.name} has multiple regex patterns defined. \n 1. /${regex}/\n 2. /${regExEntity.regexPattern}/`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                context: entityLine
+            })
+
+            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+        } else {
+            // update roles
+            addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.REGEX, regExEntity.name, entityRoles);
+            // add regex pattern
+            if (regExEntity.regexPattern === '') regExEntity.regexPattern = regex;
         }
     }
 }

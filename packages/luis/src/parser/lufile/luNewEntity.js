@@ -29,7 +29,9 @@ class LUNewEntity {
     }
 
     ExtractType(parseTree) {
-        return parseTree.newEntityLine().newEntityType().getText().trim();
+        if (parseTree.newEntityLine().newEntityType()) {
+            return parseTree.newEntityLine().newEntityType().getText().trim();
+        } 
     }
 
     ExtractRoles(parseTree) {
@@ -67,7 +69,7 @@ class LUNewEntity {
             }
         }
 
-        if (this.Type.indexOf('=') > -1 && synonymsOrPhraseList.length === 0) {
+        if (this.Type && this.Type.indexOf('=') > -1 && synonymsOrPhraseList.length === 0) {
             let errorMsg = `no synonyms list found for list entity definition: "${parseTree.entityLine().getText()}"`;
             let error = BuildDiagnostic({
                 message: errorMsg,

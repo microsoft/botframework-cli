@@ -25,7 +25,7 @@ class LUParser {
 
         let { fileContent, errors } = this.getFileContent(text);
         if (errors.length > 0) {
-            return new LUResource(luIntents, luEntities, luImports, qnas, modelInfos, errors);
+            return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
         }
 
         luIntents = this.extractLUIntents(fileContent);

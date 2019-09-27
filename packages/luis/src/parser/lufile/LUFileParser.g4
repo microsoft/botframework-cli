@@ -57,11 +57,11 @@ newEntityDefinition
     ;
 
 newEntityListbody
-    : (normalItemString newline)+
+    : (newNormalItemString newline)+
     ;
 
 newEntityLine
-    : AT newEntityType (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
+    : AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
     ;
 
 newCompositeDefinition
@@ -93,7 +93,7 @@ text
     ;
 
 newEntityName
-    : NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_TYPE_IDENTIFIER | NEW_ENTITY_IDENTIFIER
     ;
 
 newEntityNameWithWS
@@ -130,6 +130,10 @@ entityIdentifier
 
 entityListBody
     : (normalItemString newline)+
+    ;
+
+newNormalItemString
+    : DASH (WS|NEW_TEXT)*
     ;
 
 normalItemString
