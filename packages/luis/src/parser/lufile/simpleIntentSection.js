@@ -16,6 +16,7 @@ class SimpleIntentSection {
         this.Name = this.ExtractName(parseTree);
         const result = this.ExtractUtteranceAndEntitiesMap(parseTree);
         this.UtteranceAndEntitiesMap = result.utteranceAndEntitiesMap;
+        this.Entities = this.ExtractEntities(parseTree);
         this.Errors = result.errors;
     }
 

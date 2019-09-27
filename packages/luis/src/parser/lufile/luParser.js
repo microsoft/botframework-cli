@@ -3,7 +3,7 @@ const LUFileLexer = require('./generated/LUFileLexer').LUFileLexer;
 const LUFileParser = require('./generated/LUFileParser').LUFileParser;
 const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext;
 const LUResource = require('./luResource');
-const NestIntentSection = require('./nestIntentSection');
+const NestedIntentSection = require('./nestedIntentSection');
 const SimpleIntentSection = require('./simpleIntentSection');
 const EntitySection = require('./entitySection');
 const ImportSection = require('./importSection');
@@ -87,7 +87,7 @@ class LUParser {
             .map(x => x.nestedIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let nestedIntentSectionList = nestedIntentSections.map(x => new NestIntentSection(x));
+        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x));
 
         return nestedIntentSectionList;
     }

@@ -7,6 +7,7 @@ require('./utils');
 const LUISObjNameEnum = require('./enums/luisobjenum');
 const PARSERCONSTS = require('./enums/parserconsts');
 const builtInTypes = require('./enums/luisbuiltintypes');
+const SectionType = require('./enums/lusectiontypes');
 const helpers = require('./helpers');
 const chalk = require('chalk');
 const url = require('url');
@@ -122,7 +123,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     }
 
     // parse model info section
-    [enableSections, enableMergeIntents] = parseAndHandleModelInfo(parsedContent, luResource, log);
+    [enableSections, enableMergeIntents] = parseAndHandleModelInfoSection(parsedContent, luResource, log);
 
     if (!enableSections && luResource.Sections && luResource.length > 0) {
         let errorMsg = `Section defintion '${luResource.Sections[0].Name}' is detected. Please enable @Sections = true in comments at the beginning of lu file`;
@@ -135,19 +136,19 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     }
 
     // parse reference section
-    await parseAndHandleReference(parsedContent, luResource);
+    await parseAndHandleImportSection(parsedContent, luResource);
 
-    // parse section section
-    parseAndHandleSection(luResource, enableMergeIntents);
+    // parse nested intent section
+    parseAndHandleNestedIntentSection(luResource, enableMergeIntents);
 
-    // parse intent section
-    parseAndHandleIntent(parsedContent, luResource);
+    // parse simple intent section
+    parseAndHandleSimpleIntentSection(parsedContent, luResource);
 
     // parse entity section
-    parseAndHandleEntity(parsedContent, luResource, log, locale);
+    parseAndHandleEntitySection(parsedContent, luResource, log, locale);
 
     // parse qna section
-    parseAndHandleQna(parsedContent, luResource);
+    parseAndHandleQnaSection(parsedContent, luResource);
 }
 
 /**
@@ -156,9 +157,9 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleReference = async function (parsedContent, luResource) {
+const parseAndHandleImportSection = async function (parsedContent, luResource) {
     // handle reference
-    let luImports = luResource.Imports;
+    let luImports = luResource.Imports.filter(s => s.SectionType === SectionType.IMPORTSECTION);
     if (luImports && luImports.length > 0) {
         for (const luImport of luImports) {
             let linkValueText = luImport.Description.replace('[', '').replace(']', '');
@@ -210,43 +211,43 @@ const parseAndHandleReference = async function (parsedContent, luResource) {
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleSection = function (luResource, enableMergeIntents) {
-    // handle sections
-    let entitiesFromSections = [];
-    let sections = luResource.Sections;
+const parseAndHandleNestedIntentSection = function (luResource, enableMergeIntents) {
+    // handle nested intent section
+    let entitySectionsFromNestedIntent = [];
+    let sections = luResource.Sections.filter(s => s.SectionType === SectionType.NESTEDINTENTSECTION);
     if (sections && sections.length > 0) {
         sections.forEach(section => {
             if (enableMergeIntents) {
-                let mergedIntent = section.SubSections[0].Intent;
-                mergedIntent.ParseTree = section.ParseTree;
-                mergedIntent.Name = section.Name;
-                for (let idx = 1; idx < section.SubSections.length; idx++) {
-                    mergedIntent.UtteranceAndEntitiesMap = mergedIntent.UtteranceAndEntitiesMap.concat(section.SubSections[idx].Intent.UtteranceAndEntitiesMap);
-                    mergedIntent.Errors = mergedIntent.Errors.concat(section.SubSections[idx].Intent.Errors);
+                let mergedIntentSection = section.SimpleIntentSections[0];
+                mergedIntentSection.ParseTree = section.ParseTree;
+                mergedIntentSection.Name = section.Name;
+                for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
+                    mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
+                    mergedIntentSection.Errors = mergedIntent.Errors.concat(section.SimpleIntentSections[idx].Errors);
                 }
 
-                luResource.Intents.push(mergedIntent);
+                luResource.Sections.push(mergedIntentSection);
             } else {
-                section.SubSections.forEach(subSection => {
-                    subSection.Intent.Name = section.Name + '.' + subSection.Intent.Name;
-                    luResource.Intents.push(subSection.Intent);
+                section.SimpleIntentSections.forEach(subSection => {
+                    subSection.Name = section.Name + '.' + subSection.Name;
+                    luResource.Sections.push(subSection);
                 })
             }
 
-            section.SubSections.forEach(subSection => {
+            section.SimpleIntentSections.forEach(subSection => {
                 if (subSection.Entities && subSection.Entities.length > 0) {
-                    entitiesFromSections = entitiesFromSections.concat(subSection.Entities);
+                    entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.concat(subSection.Entities);
                 }
             })
 
             // remove dups as sections may define same entities several times
-            entitiesFromSections = entitiesFromSections.filter((entity, index, self) =>
+            entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.filter((entity, index, self) =>
                 index === self.findIndex((t) => (
                     t.Name === entity.Name
                 ))
             )
 
-            luResource.Entities = luResource.Entities.concat(entitiesFromSections);
+            luResource.Sections.push(entitySectionsFromNestedIntent);
         })
     }
 }
@@ -257,9 +258,9 @@ const parseAndHandleSection = function (luResource, enableMergeIntents) {
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleIntent = function (parsedContent, luResource) {
+const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
     // handle intent
-    let intents = luResource.Intents;
+    let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
     if (intents && intents.length > 0) {
         for (const intent of intents) {
             let intentName = intent.Name;
@@ -465,9 +466,9 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
  * @param {string} locale LUIS locale code
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
+const parseAndHandleEntitySection = function (parsedContent, luResource, log, locale) {
     // handle entity
-    let entities = luResource.Entities;
+    let entities = luResource.Sections.filter(s => s.SectionType === SectionType.ENTITYSECTION);
     if (entities && entities.length > 0) {
         for (const entity of entities) {
             let entityName = entity.Name;
@@ -761,9 +762,9 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleQna = function (parsedContent, luResource) {
+const parseAndHandleQnaSection = function (parsedContent, luResource) {
     // handle QNA
-    let qnas = luResource.Qnas;
+    let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
             let questions = qna.Questions;
@@ -786,11 +787,11 @@ const parseAndHandleQna = function (parsedContent, luResource) {
  * @param {boolean} log indicates if we need verbose logging.
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleModelInfo = function (parsedContent, luResource, log) {
+const parseAndHandleModelInfoSection = function (parsedContent, luResource, log) {
     // handle model info
     let enableSections = false;
     let enableMergeIntents = true;
-    let modelInfos = luResource.ModelInfos;
+    let modelInfos = luResource.Sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
