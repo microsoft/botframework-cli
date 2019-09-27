@@ -1,4 +1,4 @@
-// Generated from LUFileLexer.g4 by ANTLR 4.7.2
+// Generated from ../LUFileLexer.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -470,7 +470,7 @@ LUFileLexer.NEW_TEXT = 25;
 LUFileLexer.WS_IN_NAME_IGNORED = 26;
 LUFileLexer.IDENTIFIER = 27;
 LUFileLexer.DOT = 28;
-LUFileLexer.WS_IN_BODY_IGNORED = 29;
+LUFileLexer.WS_IN_LIST_BODY_IGNORED = 29;
 LUFileLexer.ESCAPE_CHARACTER = 30;
 LUFileLexer.EXPRESSION = 31;
 LUFileLexer.TEXT = 32;
@@ -485,14 +485,14 @@ LUFileLexer.QNA_TEXT = 40;
 
 LUFileLexer.NEW_ENTITY_MODE = 1;
 LUFileLexer.INTENT_NAME_MODE = 2;
-LUFileLexer.INTENT_BODY_MODE = 3;
+LUFileLexer.LIST_BODY_MODE = 3;
 LUFileLexer.ENTITY_MODE = 4;
 LUFileLexer.QNA_MODE = 5;
 
 LUFileLexer.prototype.channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
 
 LUFileLexer.prototype.modeNames = [ "DEFAULT_MODE", "NEW_ENTITY_MODE", "INTENT_NAME_MODE", 
-                                    "INTENT_BODY_MODE", "ENTITY_MODE", "QNA_MODE" ];
+                                    "LIST_BODY_MODE", "ENTITY_MODE", "QNA_MODE" ];
 
 LUFileLexer.prototype.literalNames = [ null, null, null, null, null, null, 
                                        null, null, null, null, null, null, 
@@ -512,7 +512,7 @@ LUFileLexer.prototype.symbolicNames = [ null, "MODEL_INFO", "COMMENT", "WS",
                                         "NEW_ENTITY_IDENTIFIER", "NEW_ENTITY_IDENTIFIER_WITH_WS", 
                                         "NEW_COMPOSITE_ENTITY", "NEW_REGEX_ENTITY", 
                                         "NEW_TEXT", "WS_IN_NAME_IGNORED", 
-                                        "IDENTIFIER", "DOT", "WS_IN_BODY_IGNORED", 
+                                        "IDENTIFIER", "DOT", "WS_IN_LIST_BODY_IGNORED", 
                                         "ESCAPE_CHARACTER", "EXPRESSION", 
                                         "TEXT", "WS_IN_ENTITY_IGNORED", 
                                         "ENTITY_IDENTIFIER", "COMPOSITE_ENTITY", 
@@ -531,8 +531,8 @@ LUFileLexer.prototype.ruleNames = [ "LETTER", "NUMBER", "WHITESPACE", "UTTERANCE
                                     "NEW_ENTITY_IDENTIFIER_WITH_WS", "NEW_COMPOSITE_ENTITY", 
                                     "NEW_REGEX_ENTITY", "NEW_TEXT", "WS_IN_NAME_IGNORED", 
                                     "WS_IN_NAME", "NEWLINE_IN_NAME", "IDENTIFIER", 
-                                    "DOT", "WS_IN_BODY_IGNORED", "WS_IN_BODY", 
-                                    "NEWLINE_IN_BODY", "ESCAPE_CHARACTER", 
+                                    "DOT", "WS_IN_LIST_BODY_IGNORED", "WS_IN_LIST_BODY", 
+                                    "NEWLINE_IN_LIST_BODY", "ESCAPE_CHARACTER", 
                                     "EXPRESSION", "TEXT", "WS_IN_ENTITY_IGNORED", 
                                     "WS_IN_ENTITY", "NEWLINE_IN_ENTITY", 
                                     "ENTITY_IDENTIFIER", "COMPOSITE_ENTITY", 
@@ -570,7 +570,7 @@ LUFileLexer.prototype.action = function(localctx, ruleIndex, actionIndex) {
 		this.IDENTIFIER_action(localctx, actionIndex);
 		break;
 	case 38:
-		this.NEWLINE_IN_BODY_action(localctx, actionIndex);
+		this.NEWLINE_IN_LIST_BODY_action(localctx, actionIndex);
 		break;
 	case 39:
 		this.ESCAPE_CHARACTER_action(localctx, actionIndex);
@@ -669,7 +669,7 @@ LUFileLexer.prototype.IDENTIFIER_action = function(localctx , actionIndex) {
 	}
 };
 
-LUFileLexer.prototype.NEWLINE_IN_BODY_action = function(localctx , actionIndex) {
+LUFileLexer.prototype.NEWLINE_IN_LIST_BODY_action = function(localctx , actionIndex) {
 	switch (actionIndex) {
 	case 7:
 		this.ignoreWS = true;
@@ -755,7 +755,7 @@ LUFileLexer.prototype.sempred = function(localctx, ruleIndex, predIndex) {
 		case 31:
 			return this.WS_IN_NAME_IGNORED_sempred(localctx, predIndex);
 		case 36:
-			return this.WS_IN_BODY_IGNORED_sempred(localctx, predIndex);
+			return this.WS_IN_LIST_BODY_IGNORED_sempred(localctx, predIndex);
 		case 42:
 			return this.WS_IN_ENTITY_IGNORED_sempred(localctx, predIndex);
 		case 50:
@@ -783,7 +783,7 @@ LUFileLexer.prototype.WS_IN_NAME_IGNORED_sempred = function(localctx, predIndex)
 	}
 };
 
-LUFileLexer.prototype.WS_IN_BODY_IGNORED_sempred = function(localctx, predIndex) {
+LUFileLexer.prototype.WS_IN_LIST_BODY_IGNORED_sempred = function(localctx, predIndex) {
 	switch(predIndex) {
 		case 2:
 			return this.ignoreWS;

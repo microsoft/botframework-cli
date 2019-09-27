@@ -57,7 +57,7 @@ newEntityDefinition
     ;
 
 newEntityListbody
-    : (newNormalItemString newline)+
+    : (normalItemString newline)+
     ;
 
 newEntityLine
@@ -132,12 +132,8 @@ entityListBody
     : (normalItemString newline)+
     ;
 
-newNormalItemString
-    : DASH (WS|NEW_TEXT)*
-    ;
-
 normalItemString
-    : DASH (WS|TEXT)*
+    : DASH (WS|TEXT|EXPRESSION)*
     ;
 
 importDefinition

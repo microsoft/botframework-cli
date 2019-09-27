@@ -113,7 +113,10 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     if (luResource.Errors && luResource.Errors.length > 0) {
         if (log) {
-            process.stdout.write(luResource.Errors.filter(error => error.Severity === DiagnosticSeverity.WARN).map(warn => warn.toString()).join('\n').concat('\n'));
+            var warns = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.WARN));
+            if (warns.length > 0) {
+                process.stdout.write(warns.map(warn => warn.toString()).join('\n').concat('\n'));
+            }
         }
 
         var errors = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR));
@@ -460,6 +463,15 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource) {
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
             };
+
+            if (entityType === entityName) {
+                let errorMsg = `Entity name "${entityName}" cannot be the same as entity type "${entityType}"`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: entity.ParseTree.newEntityLine()
+                })
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            }
             let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.ParseTree.newEntityLine(), entityName);
             
             // CompositeDefinition
@@ -486,7 +498,11 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource) {
                 case EntityTypeEnum.PREBUILT:
                     break;
                 case EntityTypeEnum.REGEX:
-                    handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityLine());
+                    if (entity.ListBody[0]) {
+                        handleRegExEntity(parsedContent, entityName, entity.ListBody[0], entityRoles, entity.ParseTree.newEntityLine());
+                    } else {
+                        handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityLine());
+                    } 
                     break;
                 case EntityTypeEnum.ML:
                     break;
@@ -842,7 +858,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
     let regex = '';
     // handle regex entity 
     if (entityType) {
-        regex = entityType.slice(1).slice(0, entityType.length - 2);
+        regex = entityType.slice(1, entityType.length - 1);
         if (regex === '') {
             let errorMsg = `RegEx entity: ${entityName} has empty regex pattern defined.`;
             let error = BuildDiagnostic({
@@ -860,7 +876,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
         parsedContent.LUISJsonStructure.regex_entities.push(new helperClass.regExEntity(entityName, regex, entityRoles))
     } else {
         // throw an error if the pattern is different for the same entity
-        if (regExEntity.regexPattern !== '' && regExEntity.regexPattern !== regex) {
+        if (regExEntity.regexPattern !== '' && regex !== '' && regExEntity.regexPattern !== regex) {
             let errorMsg = `RegEx entity: ${regExEntity.name} has multiple regex patterns defined. \n 1. /${regex}/\n 2. /${regExEntity.regexPattern}/`;
             let error = BuildDiagnostic({
                 message: errorMsg,

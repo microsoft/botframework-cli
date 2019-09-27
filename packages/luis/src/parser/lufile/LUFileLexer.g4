@@ -38,7 +38,7 @@ HASH
   ;
 
 DASH
-  : UTTERANCE_MARK {this.ignoreWS = true;} -> pushMode(INTENT_BODY_MODE)
+  : UTTERANCE_MARK {this.ignoreWS = true;} -> pushMode(LIST_BODY_MODE)
   ;
 
 DOLLAR
@@ -145,18 +145,18 @@ DOT
   : '.'
   ;
 
-mode INTENT_BODY_MODE;
+mode LIST_BODY_MODE;
 
 // a little tedious on the rules, a big improvement on portability
-WS_IN_BODY_IGNORED
+WS_IN_LIST_BODY_IGNORED
   : WHITESPACE+  {this.ignoreWS}? -> skip
   ;
 
-WS_IN_BODY
+WS_IN_LIST_BODY
   : WHITESPACE+  -> type(WS)
   ;
 
-NEWLINE_IN_BODY
+NEWLINE_IN_LIST_BODY
   : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
   ;
 

@@ -16,7 +16,7 @@ class LUNewEntity {
         this.CompositeDefinition = this.ExtractCompositeDefinition(parseTree);
         this.RegexDefinition = this.ExtractRegexDefinition(parseTree);
         const result = this.ExtractSynonymsOrPhraseList(parseTree);
-        this.SynonymsOrPhraseList = result.synonymsOrPhraseList;
+        this.ListBody = result.synonymsOrPhraseList;
         this.Errors = result.errors;
     }
 
