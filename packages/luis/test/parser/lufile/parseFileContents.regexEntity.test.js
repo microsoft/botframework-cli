@@ -4,15 +4,15 @@
  */
 const chai = require('chai');
 const assert = chai.assert;
-const parseFile = require('./../../../parser/lufile/parseFileContents').parseFile;
-const retCode = require('./../../../parser/lufile/enums/CLI-errors').errorCode;
-const hClasses = require('./../../../parser/lufile/classes/hclasses');
-const collateLUISFiles = require('./../../../parser/converters/lutoluisconverter').collateLUISFiles;
-const translateHelpers = require('./../../../parser/lufile/translate-helpers');
+const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
+const retCode = require('./../../../src/parser/lufile/enums/CLI-errors').errorCode;
+const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
+const collateLUISFiles = require('./../../../src/parser/converters/lutoluisconverter').collateLUISFiles;
+const translateHelpers = require('./../../../src/parser/lufile/translate-helpers');
 const TRANSLATE_KEY = process.env.TRANSLATOR_KEY;
-const helpers = require('./../../../parser/lufile/helpers');
+const helpers = require('./../../../src/parser/lufile/helpers');
 const NEWLINE = require('os').EOL;
-const validateLUISModel = require('./../../../parser/luisfile/parseLuisFile').validateLUISBlob;
+const validateLUISModel = require('./../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
 function sanitizeContent(fileContent) {
     let escapedExampleNewLine = JSON.stringify('\r\n').replace(/"/g, '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
     let escapedNewLine = JSON.stringify(NEWLINE).replace(/"/g, '');

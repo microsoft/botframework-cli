@@ -4,7 +4,7 @@
  */
 const chai = require('chai');
 const assert = chai.assert;
-const helpers = require('./../../../parser/lufile/helpers');
+const helpers = require('./../../../src/parser/lufile/helpers');
 const path = require('path');
 
 const LUDOWN_ROOT = path.join(__dirname, './../../fixtures/');

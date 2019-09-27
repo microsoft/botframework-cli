@@ -12,7 +12,6 @@ export default class QnamakerQuery extends Command {
     top: flags.integer({description: 'Query to get a prediction for.'}),
     isTest: flags.boolean({description: 'Query against the test index.', default: false}),
     scoreThreshold: flags.integer({description: 'Query to get a prediction for.'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
     hostname: flags.string({description: 'Specifies the url for your private QnA service. Overrides the value present in config.'}),
     endpointKey: flags.string({description: 'Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal user settings page). Overrides the value present in config.'}),
     kbId: flags.string({description: 'Specifies the active qnamaker knowledgebase id. Overrides the value present in the config'}),
