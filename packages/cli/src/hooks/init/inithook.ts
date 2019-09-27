@@ -47,9 +47,9 @@ const hook: Hook<'init'> = async function (opts) {
     // if there's no timestamp in config, create one and check for updates
     // if there is a timestamp in config and it's not from today, check for updates
     const lastCheck = userConfig.lastVersionCheck ? new Date(userConfig.lastVersionCheck) : null
-      if (!isToday(lastCheck, curDateTime)) {
-        await checkForUpdate()
-        updateUserConfig(curDateTime)
+    if (!isToday(lastCheck, curDateTime)) {
+      await checkForUpdate()
+      updateUserConfig(curDateTime)
     }
 
   /* tslint:disable:no-unused */
@@ -78,7 +78,7 @@ const hook: Hook<'init'> = async function (opts) {
 
       await fs.mkdirp(this.config.configDir)
 
-      fs.writeFileSync(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
+      await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
 
     this.config.pjson.telemetry = userConfig.telemetry
