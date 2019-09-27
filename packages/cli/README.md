@@ -8,10 +8,6 @@ botframework-cli
 [![Downloads/week](https://img.shields.io/npm/dw/botframework-cli.svg)](https://www.npmjs.com/package/@microsoft/botframework-cli)
 [![License](https://img.shields.io/npm/l/botframework-cli.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
 # Usage
 <!-- usage -->
 ```sh-session
@@ -37,7 +33,15 @@ USAGE
 * [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
 * [`bf help [COMMAND]`](#bf-help-command)
+* [`bf luis:convert`](#bf-luisconvert)
+* [`bf luis:translate`](#bf-luistranslate)
+* [`bf plugins`](#bf-plugins)
+* [`bf plugins:install PLUGIN...`](#bf-pluginsinstall-plugin)
+* [`bf plugins:link PLUGIN`](#bf-pluginslink-plugin)
+* [`bf plugins:uninstall PLUGIN...`](#bf-pluginsuninstall-plugin)
+* [`bf plugins:update`](#bf-pluginsupdate)
 * [`bf qnamaker`](#bf-qnamaker)
+* [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:create:kb`](#bf-qnamakercreatekb)
 * [`bf qnamaker:delete:kb`](#bf-qnamakerdeletekb)
 * [`bf qnamaker:export:kb`](#bf-qnamakerexportkb)
@@ -57,6 +61,7 @@ USAGE
 * [`bf qnamaker:replace:alterations`](#bf-qnamakerreplacealterations)
 * [`bf qnamaker:replace:kb`](#bf-qnamakerreplacekb)
 * [`bf qnamaker:train`](#bf-qnamakertrain)
+* [`bf qnamaker:translate`](#bf-qnamakertranslate)
 * [`bf qnamaker:update:endpointsettings`](#bf-qnamakerupdateendpointsettings)
 * [`bf qnamaker:update:kb`](#bf-qnamakerupdatekb)
 
@@ -89,7 +94,7 @@ OPTIONS
                  files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an
                  output directory is not present (-o), it will default the output to the current working directory.
 
-  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-f) will be placed.
+  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-o) will be placed.
 
   -p, --prefix   Prefix stdout with package name.
 
@@ -210,6 +215,167 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
+## `bf luis:convert`
+
+Convert .lu file(s) to a LUIS application JSON model or vice versa
+
+```
+USAGE
+  $ bf luis:convert
+
+OPTIONS
+  --culture=culture              Lang code for the LUIS application
+  --description=description      Text describing the LUIS applicaion
+  --in=in                        (required) Source .lu file(s) or LUIS application JSON model
+  --log                          Enables log messages
+  --name=name                    Name of the LUIS application
+  --out=out                      Output file or folder name. If not specified stdout will be used as output
+  --recurse                      Indicates if sub-folders need to be considered to file .lu file(s)
+  --schemaversion=schemaversion  Schema version of the LUIS application
+  --sort                         When set, intent, utterances, entities are alphabetically sorted in .lu files
+  --versionid=versionid          Version ID of the LUIS application
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/convert.ts)_
+
+## `bf luis:translate`
+
+Translate given LUIS application JSON model or lu file(s)
+
+```
+USAGE
+  $ bf luis:translate
+
+OPTIONS
+  --in=in                                    (required) Source .lu file(s) or LUIS application JSON model
+  --out=out                                  Output folder name. If not specified stdout will be used as output
+  --recurse                                  Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+  --translate_comments=translate_comments    When set, machine translate comments found in .lu or .qna file
+  --translate_link_text=translate_link_text  When set, machine translate link description in .lu or .qna file
+  --translatekey=translatekey                (required) Machine translation endpoint key.
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
+
+## `bf plugins`
+
+list installed plugins
+
+```
+USAGE
+  $ bf plugins
+
+OPTIONS
+  --core  show core plugins
+
+EXAMPLE
+  $ bf plugins
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/index.ts)_
+
+## `bf plugins:install PLUGIN...`
+
+installs a plugin into the CLI
+
+```
+USAGE
+  $ bf plugins:install PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to install
+
+OPTIONS
+  -f, --force    yarn install with force flag
+  -h, --help     show CLI help
+  -v, --verbose
+
+DESCRIPTION
+  Can be installed from npm or a git url.
+
+  Installation of a user-installed plugin will override a core plugin.
+
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command 
+  will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in 
+  the CLI without the need to patch and update the whole CLI.
+
+ALIASES
+  $ bf plugins:add
+
+EXAMPLES
+  $ bf plugins:install myplugin 
+  $ bf plugins:install https://github.com/someuser/someplugin
+  $ bf plugins:install someuser/someplugin
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/install.ts)_
+
+## `bf plugins:link PLUGIN`
+
+links a plugin into the CLI for development
+
+```
+USAGE
+  $ bf plugins:link PLUGIN
+
+ARGUMENTS
+  PATH  [default: .] path to plugin
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+
+DESCRIPTION
+  Installation of a linked plugin will override a user-installed or core plugin.
+
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' 
+  command will override the user-installed or core plugin implementation. This is useful for development work.
+
+EXAMPLE
+  $ bf plugins:link myplugin
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/link.ts)_
+
+## `bf plugins:uninstall PLUGIN...`
+
+removes a plugin from the CLI
+
+```
+USAGE
+  $ bf plugins:uninstall PLUGIN...
+
+ARGUMENTS
+  PLUGIN  plugin to uninstall
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+
+ALIASES
+  $ bf plugins:unlink
+  $ bf plugins:remove
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/uninstall.ts)_
+
+## `bf plugins:update`
+
+update installed plugins
+
+```
+USAGE
+  $ bf plugins:update
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+```
+
+_See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/v1.7.8/src/commands/plugins/update.ts)_
+
 ## `bf qnamaker`
 
 QnA Maker CLI (Preview version)
@@ -223,6 +389,26 @@ OPTIONS
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/index.ts)_
+
+## `bf qnamaker:convert`
+
+Convert .lu file(s) to a QnA application JSON model or vice versa
+
+```
+USAGE
+  $ bf qnamaker:convert
+
+OPTIONS
+  --alterations  Indicates if files is QnA Alterations
+  --in=in        (required) Source .qna file(s) or QnA KB JSON file
+  --log          Enables log messages
+  --name=name    Name of the QnA KB
+  --out=out      Output file or folder name. If not specified stdout will be used as output
+  --recurse      Indicates if sub-folders need to be considered to file .qna file(s)
+  --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .lu files
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
 
 ## `bf qnamaker:create:kb`
 
@@ -239,11 +425,11 @@ OPTIONS
   --name=name                        Name of the kb you want to create. This will override the name of KB that might be
                                      present in the CreateKb DTO
 
+  --save                             Save the kbId in config.
+
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
                                      subscriptionkey value present in config
-
-  --wait                             Wait for the operation to complete.
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/create/kb.ts)_
@@ -331,7 +517,7 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:kb command help
-  --kbId=kbId                        (required) Knowledgebase id to get metadata.
+  --kbId=kbId                        Knowledgebase id to get metadata.
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
@@ -469,28 +655,24 @@ USAGE
   $ bf qnamaker:query
 
 OPTIONS
-  -h, --help                         qnamaker:query command help
+  -h, --help                       qnamaker:query command help
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the value present in config.
+  --endpointKey=endpointKey        Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal user
+                                   settings page). Overrides the value present in config.
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in
-                                     config.
+  --hostname=hostname              Specifies the url for your private QnA service. Overrides the value present in
+                                   config.
 
-  --isTest                           Query against the test index.
+  --isTest                         Query against the test index.
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the value present in the
-                                     config
+  --kbId=kbId                      Specifies the active qnamaker knowledgebase id. Overrides the value present in the
+                                   config
 
-  --question=question                (required) Query to get a prediction for.
+  --question=question              (required) Query to get a prediction for.
 
-  --scoreThreshold=scoreThreshold    Query to get a prediction for.
+  --scoreThreshold=scoreThreshold  Query to get a prediction for.
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
-                                     Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
-
-  --top=top                          Query to get a prediction for.
+  --top=top                        Query to get a prediction for.
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/query.ts)_
@@ -595,6 +777,27 @@ OPTIONS
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/train.ts)_
+
+## `bf qnamaker:translate`
+
+Translate given LUIS application JSON model or lu file(s)
+
+```
+USAGE
+  $ bf qnamaker:translate
+
+OPTIONS
+  --in=in                                    (required) Source .lu file(s) or LUIS application JSON model
+  --out=out                                  Output folder name. If not specified stdout will be used as output
+  --recurse                                  Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+  --translate_comments=translate_comments    When set, machine translate comments found in .lu or .qna file
+  --translate_link_text=translate_link_text  When set, machine translate link description in .lu or .qna file
+  --translatekey=translatekey                (required) Machine translation endpoint key.
+```
+
+_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/translate.ts)_
 
 ## `bf qnamaker:update:endpointsettings`
 

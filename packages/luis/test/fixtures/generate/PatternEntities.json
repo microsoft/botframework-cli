@@ -1,0 +1,36 @@
+{
+  "luis_schema_version": "3.2.0",
+  "versionId": "GeoPeople",
+  "name": "Contoso App",
+  "desc": "Default Intents for Azure Bot Service V2",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [
+    {
+      "name": "person",
+      "roles": [
+        "from",
+        "to"
+      ],
+      "explicitList": []
+    },
+    {
+      "name": "subject",
+      "roles": [
+        "extra"
+      ],
+      "explicitList": []
+    }
+  ],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [],
+  "settings": []
+}

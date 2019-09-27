@@ -31,7 +31,7 @@ describe('luis:translate', () => {
   test
     .stdout()
     .command(['luis:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/file.lu')}`, '--tgtlang', 'fr', '--out', './'])
-    .it('runs luis:translate --translatekey xxxxxx --in file.lu --to_lang fr', async (ctx) => {
+    .it('runs luis:translate --translatekey xxxxxx --in file.lu --tgtlang fr --out ./', async (ctx) => {
       expect(await compareLuFiles('./../../../fr/file.lu', './../../fixtures/fr/file.lu')).to.be.true
     })
 })

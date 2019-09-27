@@ -83,7 +83,7 @@ describe('qnamaker:convert', () => {
   })
 })
 
-xdescribe('qnamaker:convert with --sort option', () => {
+describe('qnamaker:convert with --sort option', () => {
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../qna.lu'))
   })
@@ -97,7 +97,7 @@ xdescribe('qnamaker:convert with --sort option', () => {
 
   test
   .stderr()
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-alterations_Alterations.json')}`, '--out', 'qna.lu', '--sort'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-alterations_Alterations.json')}`, '--out', 'qna.lu', '--sort', '--alterations'])
   .it('qnamaker:convert With -r/ --sort option, correctly sorts a QnA Alteration model', async () => {
     expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/qna_a_sorted.lu')).to.be.true
   })
