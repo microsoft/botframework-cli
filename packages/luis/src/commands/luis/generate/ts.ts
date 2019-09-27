@@ -1,9 +1,9 @@
-import { CLIError, Command, flags } from '@microsoft/bf-cli-command'
-import { camelCase, kebabCase, upperFirst } from 'lodash'
+import {Command, flags} from '@microsoft/bf-cli-command'
+import {camelCase, kebabCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
-import { LuisToTsConverter } from '../../../parser/converters/luis-to-ts-converter'
-import { Utils } from '../../../utils'
+import {LuisToTsConverter} from '../../../parser/converters/luis-to-ts-converter'
+import {Utils} from '../../../utils'
 
 const fs = require('fs-extra')
 
@@ -11,9 +11,9 @@ export default class LuisGenerateTs extends Command {
   static description = 'Generate:ts generates a strongly typed typescript source code from an exported (json) LUIS model.'
 
   static flags: flags.Input<any> = {
-    in: flags.string({ description: 'Source .lu file(s) or LUIS application JSON model' }),
-    out: flags.string({ description: 'Output file or folder name. If not specified stdout will be used as output', default: '' }),
-    className: flags.string({ description: 'Name of the class' }),
+    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
+    out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output', default: ''}),
+    className: flags.string({description: 'Name of the class'}),
   }
 
   reorderEntities(app: any, name: string): void {
@@ -23,7 +23,7 @@ export default class LuisGenerateTs extends Command {
   }
 
   async run() {
-    const { flags } = this.parse(LuisGenerateTs)
+    const {flags} = this.parse(LuisGenerateTs)
     let stdInput = await this.readStdin()
 
     const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()

@@ -1,9 +1,9 @@
-import { CLIError, Command, flags } from '@microsoft/bf-cli-command'
-import { camelCase, upperFirst } from 'lodash'
+import {Command, flags} from '@microsoft/bf-cli-command'
+import {camelCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
-import { LuisToCsConverter } from '../../../parser/converters/luis-to-cs-converter'
-import { Utils } from '../../../utils'
+import {LuisToCsConverter} from '../../../parser/converters/luis-to-cs-converter'
+import {Utils} from '../../../utils'
 
 const fs = require('fs-extra')
 
@@ -11,9 +11,9 @@ export default class LuisGenerateCs extends Command {
   static description = 'Generate:cs generates a strongly typed C# source code from an exported (json) LUIS model.'
 
   static flags: flags.Input<any> = {
-    in: flags.string({ description: 'Source .lu file(s) or LUIS application JSON model' }),
-    out: flags.string({ description: 'Output file or folder name. If not specified stdout will be used as output', default: '' }),
-    className: flags.string({ description: 'Name of the class' }),
+    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
+    out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output', default: ''}),
+    className: flags.string({description: 'Name of the class'}),
   }
 
   reorderEntities(app: any, name: string): void {
@@ -23,7 +23,7 @@ export default class LuisGenerateCs extends Command {
   }
 
   async run() {
-    const { flags } = this.parse(LuisGenerateCs)
+    const {flags} = this.parse(LuisGenerateCs)
     let space = 'Luis'
     let stdInput = await this.readStdin()
 
