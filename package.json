@@ -1,5 +1,6 @@
 {
   "name": "root",
+  "version": "1.0.0",
   "scripts": {
     "build": "lerna run build && lerna bootstrap",
     "test": "lerna run test",
