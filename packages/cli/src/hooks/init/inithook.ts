@@ -12,6 +12,10 @@ const hook: Hook<'init'> = async function (opts) {
   const curDateTime = new Date()
   const configFileExists = fs.existsSync(path.join(this.config.configDir, 'config.json'))
 
+  const createConfigDir = async (path: string) => {
+    await fs.mkdirp(this.config.configDir)
+  }
+
   try {
     // if config file exists, load settings
     if (configFileExists) {
@@ -35,6 +39,7 @@ const hook: Hook<'init'> = async function (opts) {
 
     const updateUserConfig = (curVersionCheck: Date) => {
       userConfig.lastVersionCheck = curVersionCheck
+      createConfigDir(this.config.configDir)
       fs.writeFileSync(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
 
@@ -76,7 +81,7 @@ const hook: Hook<'init'> = async function (opts) {
         this.log(chalk.blue('bf config:telemetry:enable'))
       }
 
-      await fs.mkdirp(this.config.configDir)
+      createConfigDir(this.config.configDir)
 
       await fs.writeFile(path.join(this.config.configDir, 'config.json'), JSON.stringify(userConfig, null, 2))
     }
