@@ -54,7 +54,7 @@ const hook: Hook<'init'> = async function (opts) {
     const lastCheck = userConfig.lastVersionCheck ? new Date(userConfig.lastVersionCheck) : null
     if (!isToday(lastCheck, curDateTime)) {
       await checkForUpdate()
-      updateUserConfig(curDateTime)
+      await updateUserConfig(curDateTime)
     }
 
   /* tslint:disable:no-unused */
