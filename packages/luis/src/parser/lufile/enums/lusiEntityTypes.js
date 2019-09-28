@@ -9,5 +9,6 @@ module.exports = {
     PREBUILT: 'prebuilt',
     COMPOSITE: 'composite',
     ML: 'machine-learned',
-    PATTERNANY:'patternany'
+    PATTERNANY:'patternany',
+    PHRASELIST: 'phraselist'
 };

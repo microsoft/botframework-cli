@@ -400,6 +400,306 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         });
 
+        it('Empty regex definition throws', function(done){
+            let luFile = `
+                @regex foo = //
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+    });
+
+    describe('Phrase lists are handled correctly', function(done){
+        it('Basic phrase list definition is handled correctly', function(done) {
+            let luFile = `
+                @phraselist xyz
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    done();assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                })
+                .catch(err => done(err))
+        });
+
+        it('Inline phrase list definition throws', function(done) {
+            let luFile = `
+                @phraselist xyz = abc
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(err))
+                .catch(err => done())
+        });
+
+        it('Phrase list modelled as interchangeable is handled correctly', function(done) {
+            let luFile = `
+                @phraselist xyz(interchangeable)
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase list with list of values is handled correctly', function(done) {
+            let luFile = `
+                @phraselist xyz = 
+                    - one
+                    - two
+                    - three
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'one,two,three');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase list with list of values is handled correctly with interchangeable', function(done) {
+            let luFile = `
+                @phraselist xyz(interchangeable) = 
+                    - one
+                    - two
+                    - three
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'one,two,three');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase lists cannot have roles', function(done) {
+            let luFile = `
+                @phraselist xyz(interchangeable) hasRoles r1 = 
+                    - one
+                    - two
+                    - three
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('Phrase lists cannot have roles', function(done) {
+            let luFile = `
+                @phraselist xyz(interchangeable)
+                @xyz hasRoles r1
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('Phrase list with comma separated values is handled correctly', function(done) {
+            let luFile = `
+                @phraselist xyz = 
+                    - one, two
+                    - three, four
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'one,two,three,four');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase list values can be segregated', function(done) {
+            let luFile = `
+                @phraselist xyz = 
+                    - one, two
+                @phraselist xyz = 
+                    - three, four
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'one,two,three,four');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase list with semi-colon separated values is handled correctly', function(done) {
+            let luFile = `
+                @phraselist xyz = 
+                    - one;two
+                    - three, four
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'one,two,three,four');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase list definition can be separated', function(done) {
+            let luFile = `
+                @phraselist xyz
+                @xyz =
+                    - one;two
+                @xyz =
+                    - three, four
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'one,two,three,four');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('missing entity name for phrase list throws', function(done) {
+            let luFile = `
+                @xyz = 
+                    - one, two
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+    });
+
+    describe('Prebuilt entity types', function(done) {
+        it('Basic prebuilt entity definition works', function(done){
+            let luFile = `
+                @prebuilt number
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'number');
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it('Basic prebuilt entity definition with roles works', function(done){
+            let luFile = `
+                @prebuilt number age
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles.length, 1);
+                    assert.deepEqual(res.LUISJsonStructure.prebuiltEntities[0].roles, ['age']);
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it('Basic prebuilt entity definition with roles works', function(done){
+            let luFile = `
+                @prebuilt number
+                @number hasRole age
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles.length, 1);
+                    assert.deepEqual(res.LUISJsonStructure.prebuiltEntities[0].roles, ['age']);
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it('Basic prebuilt entity definition with roles works', function(done){
+            let luFile = `
+                @prebuilt number
+                @number hasRole age
+                @number hasRoles r1, r2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles.length, 3);
+                    assert.deepEqual(res.LUISJsonStructure.prebuiltEntities[0].roles, ['age', 'r1', 'r2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Prebuilt explicitly labelled in an utterance throws', function(done){
+            let luFile = `
+                # test
+                - this is a {number=one}
+
+                @prebuilt number
+                @number hasRole age
+                @number hasRoles r1, r2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('Invalid prebuilt entity throws', function(done){
+            let luFile = `
+                @prebuilt xyz
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('Valid prebuilt entity not available for a specific locale throws', function(done){
+            let luFile = `
+                @prebuilt personName
+            `;
+
+            parseFile.parseFile(luFile, false, 'de-de')
+                .then(res => done(res))
+                .catch(err => done())
+        });
     })
     
 });
