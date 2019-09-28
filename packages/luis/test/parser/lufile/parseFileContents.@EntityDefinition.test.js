@@ -700,6 +700,137 @@ describe('V2 Entity definitions using @ notation', function () {
                 .then(res => done(res))
                 .catch(err => done())
         });
+    });
+
+    describe('Composite entity definitions', function(){
+        it('Basic definition is handled correctly', function(done) {
+            let luFile = `
+                @composite name
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Basic definition with roles is handled correctly', function(done) {
+            let luFile = `
+                @composite name hasRoles r1, r2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    assert.equal(res.LUISJsonStructure.composites[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].roles, ['r1', 'r2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Basic inline child definition with roles is handled correctly', function(done) {
+            let luFile = `
+                @composite name hasRoles r1, r2 = [child1, child2]
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    assert.equal(res.LUISJsonStructure.composites[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].roles, ['r1', 'r2']);
+                    assert.equal(res.LUISJsonStructure.composites[0].children.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].children, ['child1', 'child2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Basic list child definition with roles is handled correctly [variation 1]', function(done) {
+            let luFile = `
+                @composite name hasRoles r1, r2 = 
+                    - [child1, child2]
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    assert.equal(res.LUISJsonStructure.composites[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].roles, ['r1', 'r2']);
+                    assert.equal(res.LUISJsonStructure.composites[0].children.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].children, ['child1', 'child2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Basic list child definition with roles is handled correctly [variation 2]', function(done) {
+            let luFile = `
+                @composite name hasRoles r1, r2 = 
+                    - child1;child2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    assert.equal(res.LUISJsonStructure.composites[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].roles, ['r1', 'r2']);
+                    assert.equal(res.LUISJsonStructure.composites[0].children.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].children, ['child1', 'child2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Basic list child definition with roles is handled correctly [variation 3]', function(done) {
+            let luFile = `
+                @composite name hasRoles r1, r2 = 
+                    - child1
+                    - child2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    assert.equal(res.LUISJsonStructure.composites[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].roles, ['r1', 'r2']);
+                    assert.equal(res.LUISJsonStructure.composites[0].children.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].children, ['child1', 'child2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Definition can be split up in various ways', function(done) {
+            let luFile = `
+                @composite name
+                @name r1
+                @name r2
+                @name = 
+                    - child1
+                    - child2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    assert.equal(res.LUISJsonStructure.composites[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].roles, ['r1', 'r2']);
+                    assert.equal(res.LUISJsonStructure.composites[0].children.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].children, ['child1', 'child2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
     })
     
 });

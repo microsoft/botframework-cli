@@ -491,6 +491,16 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
                     break;
                 case EntityTypeEnum.COMPOSITE:
+                    let candidateChildren = [];
+                    if (entity.CompositeDefinition) {
+                        entity.CompositeDefinition.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                    }
+                    if (entity.ListBody) {
+                        entity.ListBody.forEach(line => {
+                            line.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                        })
+                    }
+                    handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.ParseTree.newEntityLine());
                     break;
                 case EntityTypeEnum.LIST:
                     break;
@@ -660,6 +670,68 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
         // add to prebuiltEntities if it does not exist there.
         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.PREBUILT, entityType, entityRoles);
     }
+};
+/**
+ * Helper function to handle composite entity definition.
+ * @param {Object} parsedContent Object representing parsed content
+ * @param {String} entityName entity name
+ * @param {String} entityType entity type
+ * @param {String []} entityRoles collection of roles
+ * @param {String} currentLine current line being parsed 
+ * @param {Boolean} inlineChildRequired boolean to indicate if children definition must be defined inline.
+ */
+const handleComposite = function(parsedContent, entityName, entityType, entityRoles, currentLine, inlineChildRequired) {
+    // remove simple entity definitions for composites but carry forward roles.
+    // Find this entity if it exists in the simple entity collection
+    let simpleEntityExists = (parsedContent.LUISJsonStructure.entities || []).find(item => item.name == entityName);
+    if (simpleEntityExists !== undefined) {
+        // take and add any roles into the roles list
+        (simpleEntityExists.roles || []).forEach(role => !entityRoles.includes(role) ? entityRoles.push(role) : undefined);
+        // remove this simple entity definition
+        for (var idx = 0; idx < parsedContent.LUISJsonStructure.entities.length; idx++) {
+            if (parsedContent.LUISJsonStructure.entities[idx].name === simpleEntityExists.name) {
+                parsedContent.LUISJsonStructure.entities.splice(idx, 1);
+            }
+        }
+    }
+    // handle composite entity definition
+    // drop [] and trim
+    let childDefinition = entityType.trim().replace('[', '').replace(']', '').trim();
+    if (childDefinition.length === 0 && inlineChildRequired) {
+        let errorMsg = `Composite entity: ${entityName} is missing child entity definitions. Child entities are denoted via [entity1, entity2] notation.`;
+        let error = BuildDiagnostic({
+            message: errorMsg,
+            context: currentLine
+        })
+
+        throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+    }
+    // split the children based on ',' or ';' delimiter. Trim each child to remove white spaces.
+    let compositeChildren = childDefinition !== "" ? childDefinition.split(new RegExp(/[,;]/g)).map(item => item.trim()) : [];
+    // add this composite entity if it does not exist
+    let compositeEntity = (parsedContent.LUISJsonStructure.composites || []).find(item => item.name == entityName);
+    if (compositeEntity === undefined) {
+        // add new composite entity
+        parsedContent.LUISJsonStructure.composites.push(new helperClass.compositeEntity(entityName, compositeChildren, entityRoles));
+
+        // remove composite that might have been tagged as a simple entity due to inline entity definition in an utterance
+        parsedContent.LUISJsonStructure.entities = (parsedContent.LUISJsonStructure.entities || []).filter(entity => entity.name != entityName);
+    } else {
+        if (compositeEntity.children.length !== 0 && JSON.stringify(compositeChildren.sort()) !== JSON.stringify(compositeEntity.children.sort())) {
+            let errorMsg = `Composite entity: ${entityName} has multiple definition with different children. \n 1. ${compositeChildren.join(', ')}\n 2. ${compositeEntity.children.join(', ')}`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                context: currentLine
+            })
+
+            throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+        } else {
+            // update roles
+            // update children
+            compositeChildren.forEach(item => compositeEntity.children.push(item));
+            addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.COMPOSITES, compositeEntity.name, entityRoles);
+        }
+    }
 }
 /**
  * Reference parser code to parse reference section.
@@ -755,55 +827,57 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
             } else if (entityType.toLowerCase().trim().indexOf('phraselist') === 0) {
                 handlePhraseList(parsedContent, entityName, entityType, entityRoles, entity.SynonymsOrPhraseList, entity.ParseTree.entityLine());
             } else if (entityType.startsWith('[')) {
-                // remove simple entity definitions for composites but carry forward roles.
-                // Find this entity if it exists in the simple entity collection
-                let simpleEntityExists = (parsedContent.LUISJsonStructure.entities || []).find(item => item.name == entityName);
-                if (simpleEntityExists !== undefined) {
-                    // take and add any roles into the roles list
-                    (simpleEntityExists.roles || []).forEach(role => !entityRoles.includes(role) ? entityRoles.push(role) : undefined);
-                    // remove this simple entity definition
-                    for (var idx = 0; idx < parsedContent.LUISJsonStructure.entities.length; idx++) {
-                        if (parsedContent.LUISJsonStructure.entities[idx].name === simpleEntityExists.name) {
-                            parsedContent.LUISJsonStructure.entities.splice(idx, 1);
-                        }
-                    }
-                }
-                // handle composite entity definition
-                // drop [] and trim
-                let childDefinition = entityType.trim().replace('[', '').replace(']', '').trim();
-                if (childDefinition.length === 0) {
-                    let errorMsg = `Composite entity: ${entityName} is missing child entity definitions. Child entities are denoted via [entity1, entity2] notation.`;
-                    let error = BuildDiagnostic({
-                        message: errorMsg,
-                        context: entity.ParseTree.entityLine()
-                    })
+                handleComposite(parsedContent, entityName, entityType, entityRoles, entity.ParseTree.entityLine(), true);
 
-                    throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
-                }
-                // split the children based on ',' or ';' delimiter. Trim each child to remove white spaces.
-                let compositeChildren = childDefinition.split(new RegExp(/[,;]/g)).map(item => item.trim());
-                // add this composite entity if it does not exist
-                let compositeEntity = (parsedContent.LUISJsonStructure.composites || []).find(item => item.name == entityName);
-                if (compositeEntity === undefined) {
-                    // add new composite entity
-                    parsedContent.LUISJsonStructure.composites.push(new helperClass.compositeEntity(entityName, compositeChildren, entityRoles));
+                // // remove simple entity definitions for composites but carry forward roles.
+                // // Find this entity if it exists in the simple entity collection
+                // let simpleEntityExists = (parsedContent.LUISJsonStructure.entities || []).find(item => item.name == entityName);
+                // if (simpleEntityExists !== undefined) {
+                //     // take and add any roles into the roles list
+                //     (simpleEntityExists.roles || []).forEach(role => !entityRoles.includes(role) ? entityRoles.push(role) : undefined);
+                //     // remove this simple entity definition
+                //     for (var idx = 0; idx < parsedContent.LUISJsonStructure.entities.length; idx++) {
+                //         if (parsedContent.LUISJsonStructure.entities[idx].name === simpleEntityExists.name) {
+                //             parsedContent.LUISJsonStructure.entities.splice(idx, 1);
+                //         }
+                //     }
+                // }
+                // // handle composite entity definition
+                // // drop [] and trim
+                // let childDefinition = entityType.trim().replace('[', '').replace(']', '').trim();
+                // if (childDefinition.length === 0) {
+                //     let errorMsg = `Composite entity: ${entityName} is missing child entity definitions. Child entities are denoted via [entity1, entity2] notation.`;
+                //     let error = BuildDiagnostic({
+                //         message: errorMsg,
+                //         context: entity.ParseTree.entityLine()
+                //     })
 
-                    // remove composite that might have been tagged as a simple entity due to inline entity definition in an utterance
-                    parsedContent.LUISJsonStructure.entities = (parsedContent.LUISJsonStructure.entities || []).filter(entity => entity.name != entityName);
-                } else {
-                    if (JSON.stringify(compositeChildren.sort()) !== JSON.stringify(compositeEntity.children.sort())) {
-                        let errorMsg = `Composite entity: ${entityName} has multiple definition with different children. \n 1. ${compositeChildren.join(', ')}\n 2. ${compositeEntity.children.join(', ')}`;
-                        let error = BuildDiagnostic({
-                            message: errorMsg,
-                            context: entity.ParseTree.entityLine()
-                        })
+                //     throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+                // }
+                // // split the children based on ',' or ';' delimiter. Trim each child to remove white spaces.
+                // let compositeChildren = childDefinition.split(new RegExp(/[,;]/g)).map(item => item.trim());
+                // // add this composite entity if it does not exist
+                // let compositeEntity = (parsedContent.LUISJsonStructure.composites || []).find(item => item.name == entityName);
+                // if (compositeEntity === undefined) {
+                //     // add new composite entity
+                //     parsedContent.LUISJsonStructure.composites.push(new helperClass.compositeEntity(entityName, compositeChildren, entityRoles));
 
-                        throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
-                    } else {
-                        // update roles
-                        addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.COMPOSITES, compositeEntity.name, entityRoles);
-                    }
-                }
+                //     // remove composite that might have been tagged as a simple entity due to inline entity definition in an utterance
+                //     parsedContent.LUISJsonStructure.entities = (parsedContent.LUISJsonStructure.entities || []).filter(entity => entity.name != entityName);
+                // } else {
+                //     if (JSON.stringify(compositeChildren.sort()) !== JSON.stringify(compositeEntity.children.sort())) {
+                //         let errorMsg = `Composite entity: ${entityName} has multiple definition with different children. \n 1. ${compositeChildren.join(', ')}\n 2. ${compositeEntity.children.join(', ')}`;
+                //         let error = BuildDiagnostic({
+                //             message: errorMsg,
+                //             context: entity.ParseTree.entityLine()
+                //         })
+
+                //         throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+                //     } else {
+                //         // update roles
+                //         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.COMPOSITES, compositeEntity.name, entityRoles);
+                //     }
+                // }
             } else if (entityType.startsWith('/')) {
                 if (entityType.endsWith('/')) {
                     handleRegExEntity(parsedContent, entityName, entityType, entityRoles, entity.ParseTree.entityLine());
