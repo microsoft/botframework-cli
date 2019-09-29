@@ -10,9 +10,9 @@
 
 > # Entity definitions
 
-$EntityOne:simple
+@ simple EntityOne
 
-$EntityTwo:simple
+@ simple EntityTwo
 
 
 > # PREBUILT Entity definitions

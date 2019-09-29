@@ -53,41 +53,41 @@
 
 > # Entity definitions
 
-$userName:simple
+@ simple userName
 
 
 > # PREBUILT Entity definitions
 
-$PREBUILT:datetimeV2
+@ prebuilt datetimeV2
 
 
 > # Phrase list definitions
 
-$ChocolateType:phraseList
-- m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
-$question:phraseList interchangeable
-- are you,you are
+@ phraselist ChocolateType = 
+	- m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
+
+@ phraselist question(interchangeable) = 
+	- are you,you are
+
 
 > # List entities
 
-$commPreference:call=
-- phone call
-- give me a ring
-- ring
-- call
-- cell phone
-- phone
-
-$commPreference:text=
-- message
-- text
-- sms
-- text message
-
-$commPreference:fax=
-- fax
-- fascimile
-
+@ list commPreference = 
+	- call :
+		- phone call
+		- give me a ring
+		- ring
+		- call
+		- cell phone
+		- phone
+	- text :
+		- message
+		- text
+		- sms
+		- text message
+	- fax :
+		- fax
+		- fascimile
 
 
 > # RegEx entities

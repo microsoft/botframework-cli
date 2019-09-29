@@ -1,0 +1,53 @@
+
+> # Intent definitions
+
+> # Entity definitions
+
+@ simple s1 hasRole sr1
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt datetimeV2 hasRole dr1
+
+@ prebuilt number hasRole nr1
+
+@ prebuilt personName hasRoles userName,firstName,lastName
+
+
+> # Phrase list definitions
+
+@ phraselist pl1 = 
+	- cheese,tomato,potato
+
+@ phraselist pl2(interchangeable) = 
+	- I want,I have
+
+
+> # List entities
+
+@ list l1 hasRole lr1 = 
+	- 1 :
+		- one
+		- uno
+	- 2 :
+		- two
+		- duo
+
+
+@ list l2 = 
+	- one :
+		- cheese
+	- two :
+		- tomato
+
+
+> # RegEx entities
+
+@ regex r1 hasRole rr1 = /[0-9]{6}/
+@ regex r2 = /abc/
+
+> # Composite entities
+
+@ composite c1 hasRole cc1 = [l1, l2]
+@ composite c2 hasRoles cr1,cr2 = [l1, l2]

@@ -192,6 +192,21 @@ describe('V2 Entity definitions using @ notation', function () {
                 })
                 .catch(err => done(err))
         });
+        
+        it('Entity names can have spaces', function (done) {
+            let luFile = `
+                @regex "foo bar"
+                @regex 'a b'
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.regex_entities.length, 2);
+                    assert.equal(res.LUISJsonStructure.regex_entities[0].name, 'foo bar');
+                    assert.equal(res.LUISJsonStructure.regex_entities[1].name, 'a b');
+                    done();
+                })
+                .catch(err => done(err))
+        });
 
         it('Basic definition (without space) is handled correctly', function (done) {
             let luFile = `
@@ -422,6 +437,21 @@ describe('V2 Entity definitions using @ notation', function () {
                     assert.equal(res.LUISJsonStructure.model_features.length, 1);
                     assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
                     done();assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                })
+                .catch(err => done(err))
+        });
+
+        it('Entity names can have spaces', function (done) {
+            let luFile = `
+                @phraselist "foo bar"
+                @phraselist 'a b'
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 2);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'foo bar');
+                    assert.equal(res.LUISJsonStructure.model_features[1].name, 'a b');
+                    done();
                 })
                 .catch(err => done(err))
         });
@@ -717,6 +747,21 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         });
 
+        it('Entity names can have spaces', function (done) {
+            let luFile = `
+                @composite "foo bar"
+                @composite 'a b'
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 2);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'foo bar');
+                    assert.equal(res.LUISJsonStructure.composites[1].name, 'a b');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
         it('Basic definition with roles is handled correctly', function(done) {
             let luFile = `
                 @composite name hasRoles r1, r2
@@ -848,6 +893,21 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         });
 
+        it('Entity names can have spaces', function (done) {
+            let luFile = `
+                @list "foo bar"
+                @list 'a b'
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists.length, 2);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'foo bar');
+                    assert.equal(res.LUISJsonStructure.closedLists[1].name, 'a b');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
         it('definition with roles is handled correctly', function(done){
             let luFile = `
                 @list x1 r1, r2
@@ -965,7 +1025,23 @@ describe('V2 Entity definitions using @ notation', function () {
                     done();
                 })
                 .catch(err => done(err));
-        })
+        });
+
+        
+        it('Entity names can have spaces', function (done) {
+            let luFile = `
+                @patternany "foo bar"
+                @patternany 'a b'
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 2);
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities[0].name, 'foo bar');
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities[1].name, 'a b');
+                    done();
+                })
+                .catch(err => done(err))
+        });
 
         it('basic definition with roles', function(done){
             let luFile = `

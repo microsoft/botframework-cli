@@ -902,8 +902,8 @@ $test:[fromTime]`;
             .then(res => {
                 assert.isTrue(res.includes(`- my name is {userName:firstName=vishwac}`));
                 assert.isTrue(res.includes(`- book a flight to {location:toCity=london}`));
-                assert.isTrue(res.includes(`$userName:simple Roles=firstName`));
-                assert.isTrue(res.includes(`$location:[city] Roles=fromCity, toCity`));
+                assert.isTrue(res.includes(`@ simple userName hasRole firstName`));
+                assert.isTrue(res.includes(`@ composite location hasRoles fromCity,toCity = [city]`));
                 done();
             })
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))

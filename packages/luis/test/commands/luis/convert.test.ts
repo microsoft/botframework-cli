@@ -410,3 +410,23 @@ describe('luis:convert sort option enabled', () => {
   })
 })
 
+describe('luis:convert new entity format', () => {
+  after(async function() {
+    await fs.remove(path.join(__dirname, './../../../newEntity.lu'))
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/newEntity1.json')}`, '--out', 'newEntity.lu'])
+  .it('luis:convert with new entity format correctly produces a LU file', async () => {
+    expect(await compareLuFiles('./../../../newEntity.lu', './../../fixtures/verified/newEntity1.lu')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/newEntity2.json')}`, '--out', 'newEntity.lu'])
+  .it('luis:convert with new entity format and single roles correctly produces a LU file', async () => {
+    expect(await compareLuFiles('./../../../newEntity.lu', './../../fixtures/verified/newEntity2.lu')).to.be.true
+  })
+})
+

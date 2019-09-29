@@ -208,7 +208,7 @@ $deviceTemperature:simple`;
           }`
           LUFromLUISJson(JSON.parse(inputLUISJSON))
             .then(res => {
-                assert(res.includes(`$deviceTemperature:[p1, child2]`));
+                assert(res.includes(`@ composite deviceTemperature = [p1, child2]`));
                 done();
             })
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))

@@ -525,6 +525,12 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
     }
 };
 
+/**
+ * Helper function to handle pattern.any entity
+ * @param {Object} parsedContent parsed LUIS, QnA and QnA alteration object
+ * @param {String} entityName entity name
+ * @param {String} entityRoles collection of entity roles
+ */
 const handlePatternAny = function(parsedContent, entityName, entityRoles) {
      // check if this patternAny entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
      try {
