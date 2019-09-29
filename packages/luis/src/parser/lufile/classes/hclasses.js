@@ -108,6 +108,13 @@ const readerObj = {
             this.role = role ? role : '';
             this.parent = parent ? parent : undefined;
         }
+    },
+    patternAnyEntity: class{
+        constructor(name, explicitList, roles) {
+            this.name = name ? name : '';
+            this.explicitList = explicitList ? explicitList : [];
+            this.roles = roles ? roles : [];
+        }
     }
 };
 

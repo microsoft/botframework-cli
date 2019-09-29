@@ -498,8 +498,10 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.ParseTree.newEntityLine());
                     break;
                 case EntityTypeEnum.LIST:
+                    handleClosedList(parsedContent, entityName, entity.ListBody, entityRoles, entity.ParseTree.newEntityLine());
                     break;
                 case EntityTypeEnum.PATTERNANY:
+                    handlePatternAny(parsedContent, entityName, entityRoles, entity.ParseTree.newEntityLine());
                     break;
                 case EntityTypeEnum.PREBUILT:
                     handlePrebuiltEntity(parsedContent, 'prebuilt', entityName, entityRoles, locale, log, entity.ParseTree.newEntityLine());
@@ -523,6 +525,26 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
     }
 };
 
+const handlePatternAny = function(parsedContent, entityName, entityRoles) {
+     // check if this patternAny entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
+     try {
+        let rolesImport = VerifyAndUpdateSimpleEntityCollection(parsedContent, entityName, 'Pattern.Any');
+        if (rolesImport.length !== 0) {
+            rolesImport.forEach(role => !entityRoles.includes(role) ? entityRoles.push(role) : undefined);
+        }
+    } catch (err) {
+        throw (err);
+    }
+
+    let PAExists = parsedContent.LUISJsonStructure.patternAnyEntities.find(item => item.name == entityName);
+    if (PAExists === undefined) {
+        parsedContent.LUISJsonStructure.patternAnyEntities.push(new helperClass.patternAnyEntity(entityName, [], entityRoles));
+    } else {
+        entityRoles.forEach(item => {
+            if (!PAExists.roles.includes) PAExists.roles.push(item);
+        })
+    }
+}
 /**
  * Helper function to remove duplicate pattern any definitions.
  * @param {Object} parsedContent Object containing current parsed content - LUIS, QnA, QnA alterations.
@@ -619,6 +641,16 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
     }
 }
 
+/**
+ * 
+ * @param {Object} parsedContent parsed LUIS, QnA and QnA alternations
+ * @param {String} entityName entity name
+ * @param {String} entityType entity type
+ * @param {String []} entityRoles list of entity roles
+ * @param {String} locale current locale
+ * @param {Boolean} log boolean to indicate if errors should be sent to stdout
+ * @param {String} currentLine current line being parsed.
+ */
 const handlePrebuiltEntity = function(parsedContent, entityName, entityType, entityRoles, locale, log, currentLine) {
     locale = locale ? locale.toLowerCase() : 'en-us';
     // check if this pre-built entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
@@ -727,18 +759,25 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
             addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.COMPOSITES, compositeEntity.name, entityRoles);
         }
     }
-}
+};
+
+/**
+ * Helper function to handle list entity definition
+ * @param {Object} parsedContent parsed LUIS, QnA and QnA alternations content
+ * @param {String} entityName entity name
+ * @param {String []} listLines lines to parse for the list entity
+ * @param {String []} entityRoles collection of roles found
+ * @param {String} currentLine current line being parsed.
+ */
 const handleClosedList = function (parsedContent, entityName, listLines, entityRoles, currentLine) {
     // check if this list entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
         let rolesImport = VerifyAndUpdateSimpleEntityCollection(parsedContent, entityName, 'List');
-        if (rolesImport.length !== 0) {
-            rolesImport.forEach(role => {
-                if (!entityRoles.includes(role)) {
-                    entityRoles.push(role)
-                }
-            })
-        }
+        rolesImport.forEach(role => {
+            if (!entityRoles.includes(role)) {
+                entityRoles.push(role)
+            }
+        });
     } catch (err) {
         throw (err);
     }
@@ -749,31 +788,50 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
         closedListExists = new helperClass.closedLists(entityName);
         addCL = true;
     }
-    
+    let addNV = false;    
+    let nvExists;
     listLines.forEach(line => {
         if (line.toLowerCase().endsWith(':')) {
-            // find the matchind sublist and if none exists, create one. 
-            
-        }
-    })
-    // get normalized value
-    let normalizedValue = entityType.substring(0, entityType.length - 1).trim();
-    let synonymsList = entity.SynonymsOrPhraseList;
-    let closedListExists = helpers.filterMatch(parsedContent.LUISJsonStructure.closedLists, 'name', entityName);
-    if (closedListExists.length === 0) {
-        parsedContent.LUISJsonStructure.closedLists.push(new helperClass.closedLists(entityName, [new helperClass.subList(normalizedValue, synonymsList)], entityRoles));
-    } else {
-        // closed list with this name already exists
-        let subListExists = helpers.filterMatch(closedListExists[0].subLists, 'canonicalForm', normalizedValue);
-        if (subListExists.length === 0) {
-            closedListExists[0].subLists.push(new helperClass.subList(normalizedValue, synonymsList));
+            // close if we are in the middle of a sublist.
+            if (addNV) {
+                closedListExists.subLists.push(nvExists);
+                addNV = false;
+                nvExists = undefined;
+            }
+            // find the matching sublist and if none exists, create one. 
+            let normalizedValue = line.replace(/:$/g, '').trim();
+            nvExists = closedListExists.subLists.find(item => item.canonicalForm == normalizedValue);
+            if (nvExists === undefined) {
+                nvExists = new helperClass.subList(normalizedValue);
+                addNV = true;
+            }
         } else {
-            synonymsList.forEach(function (listItem) {
-                if (!subListExists[0].list.includes(listItem)) subListExists[0].list.push(listItem);
+            line.split(/[,;]/g).map(item => item.trim()).forEach(item => {
+                if (!nvExists || !nvExists.list) {
+                    let errorMsg = `Closed list ${entityName} has synonyms list "${line}" without a normalized value.`;
+                    let error = BuildDiagnostic({
+                        message: errorMsg,
+                        context: currentLine
+                    })
+
+                    throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString()));
+                }
+                if (!nvExists.list.includes(item)) nvExists.list.push(item);
             })
         }
-        // see if the roles all exist and if not, add them
-        mergeRoles(closedListExists[0].roles, entityRoles);
+    });
+
+    if (addNV) {
+        closedListExists.subLists.push(nvExists);
+    }
+
+    // merge roles
+    entityRoles.forEach(item => {
+        if(!closedListExists.roles.includes(item)) closedListExists.roles.push(item);
+    });
+
+    if (addCL) {
+        parsedContent.LUISJsonStructure.closedLists.push(closedListExists);
     }
 }
 /**
@@ -888,7 +946,7 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
             }
         }
     }
-}
+};
 /**
  * 
  * @param {Object} parsedContent Object containing the parsed structure - LUIS, QnA, QnA alterations

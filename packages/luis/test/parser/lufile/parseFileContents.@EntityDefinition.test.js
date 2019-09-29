@@ -831,6 +831,169 @@ describe('V2 Entity definitions using @ notation', function () {
                 })
                 .catch(err => done(err))
         });
+    });
+
+    describe('Closed list definitions', function() {
+        it('Simple defintion is handled correctly', function(done) {
+            let luFile = `
+                @list x1
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists.length, 1);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'x1');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('definition with roles is handled correctly', function(done){
+            let luFile = `
+                @list x1 r1, r2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists.length, 1);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'x1');
+                    assert.equal(res.LUISJsonStructure.closedLists[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].roles, ['r1', 'r2']);
+                    done();
+                })
+                .catch(err => done(err))     
+        });
+
+        it('definition with roles and list is handled correctly', function(done){
+            let luFile = `
+                @list x1 r1, r2 = 
+                    - a1:
+                        - one
+                        - two
+                    - a2:
+                        -three
+                        -four
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists.length, 1);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'x1');
+                    assert.equal(res.LUISJsonStructure.closedLists[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].roles, ['r1', 'r2']);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists.length, 2);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists[0].canonicalForm, 'a1');
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].subLists[0].list, ['one', 'two']);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists[1].canonicalForm, 'a2');
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].subLists[1].list, ['three', 'four']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('definition can be separated', function(done){
+            let luFile = `
+                @list x1
+                @x1 r1
+                @ x1 r2
+                @ x1 =  
+                    - a1:
+                        - one
+                @ x1 = 
+                    - a1:
+                        - one
+                        - two
+                @x1 =
+                    - a2:
+                        -three, four
+                @ x1 = 
+                    - a2:
+                        - three; four
+                @x1 hasRoles a1, a2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists.length, 1);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'x1');
+                    assert.equal(res.LUISJsonStructure.closedLists[0].roles.length, 4);
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].roles, ['r1', 'r2', 'a1', 'a2']);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists.length, 2);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists[0].canonicalForm, 'a1');
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].subLists[0].list, ['one', 'two']);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists[1].canonicalForm, 'a2');
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].subLists[1].list, ['three', 'four']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Invalid list definition throws', function(done){
+            let luFile = `
+                @list x1 = 
+                    - red
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('Explicitly labelled list entity in an utterance throws', function(done){
+            let luFile = `
+                # test
+                - this is a {x1 = test}
+                @list x1
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+    });
+
+    describe('Pattern.Any entity definition', function(){
+        it('basic definition', function(done){
+            let luFile = `
+                @patternany p1
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities[0].name, 'p1');
+                    done();
+                })
+                .catch(err => done(err));
+        })
+
+        it('basic definition with roles', function(done){
+            let luFile = `
+                @patternany p1 hasRoles r1, r2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities[0].name, 'p1');
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.patternAnyEntities[0].roles, ['r1', 'r2']);
+                    done();
+                })
+                .catch(err => done(err));
+        })
+
+        it('pattern any entity explicitly labelled throws', function(done){
+            let luFile = `
+                # test
+                - this is {p1=tomato}
+                @patternany p1 hasRoles r1, r2
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done());
+        })
     })
     
 });
