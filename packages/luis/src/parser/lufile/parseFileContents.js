@@ -128,14 +128,14 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // parse reference section
     await parseAndHandleReference(parsedContent, luResource);
 
+    // parse entity definition v2 section
+    parseAndHandleEntityV2(parsedContent, luResource, log, locale);
+
     // parse intent section
     parseAndHandleIntent(parsedContent, luResource);
 
     // parse entity section
     parseAndHandleEntity(parsedContent, luResource, log, locale);
-
-    // parse entity definition v2 section
-    parseAndHandleEntityV2(parsedContent, luResource, log, locale);
 
     // parse qna section
     parseAndHandleQna(parsedContent, luResource);
@@ -197,7 +197,54 @@ const parseAndHandleReference = async function (parsedContent, luResource) {
         }
     }
 }
+/**
+ * Helper function to handle @ reference in patterns
+ * @param {String} utterance 
+ * @param {String []} entitiesFound 
+ * @param {Object []} flatEntityAndRoles 
+ */
+const handleAtForPattern = function(utterance, entitiesFound, flatEntityAndRoles) {
+    if (utterance.match(/{@/g)) {
+        utterance = utterance.replace(/{@/g, '{');
+        entitiesFound.forEach(entity => {
+            if (entity.entity.match(/^@/g)) {
+                entity = handleAtPrefix(entity, flatEntityAndRoles);
+                if (entity.entity && entity.role) {
+                    utterance = utterance.replace(`{${entity.role}}`, `{${entity.entity}:${entity.role}}`);
+                }
+            }
+        });
+    }
+    return utterance;
+}
 
+/**
+ * Helper function to handle @ entity or @ role reference in utterances.
+ * @param {Object} entity 
+ * @param {Object []} flatEntityAndRoles 
+ */
+const handleAtPrefix = function(entity, flatEntityAndRoles) {
+    if (entity.entity.match(/^@/g)) {
+        entity.entity = entity.entity.replace(/^@/g, '').trim();
+        if (flatEntityAndRoles) {
+            // find the entity as a match by name
+            let entityMatch = flatEntityAndRoles.find(item => item.entityName == entity.entity);
+            if (entityMatch !== undefined) {
+                return entity;
+            }
+            // find the entity as a match by role
+            let roleMatch = flatEntityAndRoles.find(item => item.roles.includes(entity.entity));
+            if (roleMatch !== undefined) {
+                // we have a role match. 
+                entity.role = entity.entity;
+                entity.entity = roleMatch.name;
+                return entity;
+            }
+        }
+    }
+    
+    return entity;
+}
 /**
  * Intent parser code to parse intent section.
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
@@ -227,6 +274,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                     let entitiesFound = utteranceAndEntities.entities;
                     let havePatternAnyEntity = entitiesFound.find(item => item.type == LUISObjNameEnum.PATTERNANYENTITY);
                     if (havePatternAnyEntity !== undefined) {
+                        utterance = handleAtForPattern(utterance, entitiesFound, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles);
                         let mixedEntity = entitiesFound.filter(item => item.type != LUISObjNameEnum.PATTERNANYENTITY);
                         if (mixedEntity.length !== 0) {
                             let errorMsg = `Utterance "${utteranceAndEntities.context.getText()}" has mix of entites with labelled values and ones without. Please update utterance to either include labelled values for all entities or remove labelled values from all entities.`;
@@ -246,10 +294,25 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                         // add all entities to pattern.Any only if they do not have another type.
                         entitiesFound.forEach(entity => {
                             let simpleEntityInMaster = parsedContent.LUISJsonStructure.entities.find(item => item.name == entity.entity);
+                            if (simpleEntityInMaster && entity.role) {
+                                addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entity.entity, [entity.role.trim()]);
+                            }
                             let compositeInMaster = parsedContent.LUISJsonStructure.composites.find(item => item.name == entity.entity);
+                            if (compositeInMaster && entity.role) {
+                                addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.COMPOSITES, entity.entity, [entity.role.trim()]);
+                            }
                             let listEntityInMaster = parsedContent.LUISJsonStructure.closedLists.find(item => item.name == entity.entity);
+                            if (listEntityInMaster && entity.role) {
+                                addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.CLOSEDLISTS, entity.entity, [entity.role.trim()]);
+                            }
                             let regexEntityInMaster = parsedContent.LUISJsonStructure.regex_entities.find(item => item.name == entity.entity);
+                            if (regexEntityInMaster && entity.role) {
+                                addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.REGEX, entity.entity, [entity.role.trim()]);
+                            }
                             let prebuiltInMaster = parsedContent.LUISJsonStructure.prebuiltEntities.find(item => item.name == entity.entity);
+                            if (prebuiltInMaster && entity.role) {
+                                addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.PREBUILT, entity.entity, [entity.role.trim()]);
+                            }
                             if (!simpleEntityInMaster &&
                                 !compositeInMaster &&
                                 !listEntityInMaster &&
@@ -260,10 +323,12 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                 } else {
                                     addItemIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.PATTERNANYENTITY, entity.entity);
                                 }
-                            }
+                            }                             
                         });
                     } else {
                         entitiesFound.forEach(entity => {
+                            // handle at prefix
+                            entity = handleAtPrefix(entity, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles);
                             // throw an error if phraselist entity is explicitly labelled in an utterance
                             let nonAllowedPhrseListEntityInUtterance = (parsedContent.LUISJsonStructure.model_features || []).find(item => item.name == entity.entity);
                             if (nonAllowedPhrseListEntityInUtterance !== undefined) {
