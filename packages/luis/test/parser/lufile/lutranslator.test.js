@@ -5,9 +5,9 @@
 var chai = require('chai');
 var assert = chai.assert;
 const testData = require('./../../fixtures/testcases/translate-testcase-data');
-const translate = require('./../../../parser/lufile/translate-helpers');
-const retCode = require('./../../../parser/lufile/enums/CLI-errors');
-const helpers = require('./../../../parser/lufile/helpers');
+const translate = require('./../../../src/parser/lufile/translate-helpers');
+const retCode = require('./../../../src/parser/lufile/enums/CLI-errors');
+const helpers = require('./../../../src/parser/lufile/helpers');
 const NEWLINE = require('os').EOL;
 const TRANSLATE_KEY2 = process.env.TRANSLATOR_KEY;
 const TRANSLATE_KEY = null;
@@ -214,5 +214,17 @@ describe('With the parseAndTranslate method', function() {
             })
             .catch(err => done(err))
     }); 
+
+    it('BF CLI #121 - For list entities, normalized value is added as synonym', function(done){
+        if (!TRANSLATE_KEY) {
+            this.skip();
+        }
+        translate.parseAndTranslate(`$ simple : one =`, TRANSLATE_KEY, 'fr-fr', 'en-us', true, false, true)
+            .then(function(res) {
+                assert.equal('$ simple : one =' + NEWLINE + '- un' + NEWLINE, res);
+                done();
+            })
+            .catch(err => done(err))
+    })
     
 });

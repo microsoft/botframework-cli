@@ -8,24 +8,6 @@
 [![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-cli-config.svg)](https://www.npmjs.com/package/@microsoft/bf-cli-config)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-cli-config.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/config/package.json)
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @microsoft/bf-cli-config
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/bf-cli-config/1.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
-```
-<!-- usagestop -->
 # Commands
 <!-- commands -->
 * [`bf `](#bf-)
@@ -33,7 +15,7 @@ USAGE
 * [`bf config:set:qnamaker`](#bf-configsetqnamaker)
 * [`bf config:set:telemetry`](#bf-configsettelemetry)
 * [`bf config:show`](#bf-configshow)
-* [`bf config:show:qnamaker [FILE]`](#bf-configshowqnamaker-file)
+* [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
 
 ## `bf `
@@ -73,8 +55,10 @@ USAGE
   $ bf config:set:qnamaker
 
 OPTIONS
-  --kbid=kbid                        QnAMaker kbid to be set
-  --subscriptionkey=subscriptionkey  QnAMaker subscriptionkey to be set
+  --endpointKey=endpointKey          QnAMaker endpointKey to be set
+  --hostname=hostname                QnAMaker hostname to be set
+  --kbId=kbId                        QnAMaker kbId to be set
+  --subscriptionKey=subscriptionKey  QnAMaker subscriptionkey to be set
 ```
 
 _See code: [src/commands/config/set/qnamaker.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/set/qnamaker.ts)_
@@ -108,18 +92,16 @@ OPTIONS
 
 _See code: [src/commands/config/show.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/show.ts)_
 
-## `bf config:show:qnamaker [FILE]`
+## `bf config:show:qnamaker`
 
-describe the command here
+Display QnAMaker settings
 
 ```
 USAGE
-  $ bf config:show:qnamaker [FILE]
+  $ bf config:show:qnamaker
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help  show CLI help
 ```
 
 _See code: [src/commands/config/show/qnamaker.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/config/show/qnamaker.ts)_
