@@ -115,6 +115,21 @@ const readerObj = {
             this.explicitList = explicitList ? explicitList : [];
             this.roles = roles ? roles : [];
         }
+    },
+    entityAndRoles: class {
+        constructor(name, type, roles) {
+            this.name = name ? name : '';
+            this.type = type ? type : '';
+            this.roles = roles ? roles : [];
+        }
+        addRoles(roles) {
+            (roles || []).forEach(role => {
+                if (!this.roles.includes(role)) this.roles.push(role)
+            })
+        }
+        hasRole(value) {
+            return this.roles.includes(value);
+        }
     }
 };
 

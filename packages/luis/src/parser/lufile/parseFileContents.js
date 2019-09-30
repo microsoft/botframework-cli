@@ -421,23 +421,54 @@ const getEntityType = function(entityName, entities) {
  * @param {String} line current line being parsed.
  * @param {String} entityName name of the entity being added.
  */
-const validateAndGetRoles = function(parsedContent, roles, line, entityName) {
+const validateAndGetRoles = function(parsedContent, roles, line, entityName, entityType) {
     let newRoles = roles ? roles.split(',').map(item => item.trim()) : [];
-
+    // de-dupe roles
+    newRoles = [...new Set(newRoles)];
     // entity roles need to unique within the application
-    if(parsedContent.LUISJsonStructure.allRoles) {
+    if(parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) {
+        let matchType = '';
+        // Duplicate entity names are not allowed
+        // Entity name cannot be same as a role name
+        let entityFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => {
+            if (item.name === entityName && item.type !== entityType) {
+                matchType = `Entity names must be unique. Duplicate definition found for "${entityName}".`;
+                return true;
+            } else if (item.roles.includes(entityName)) {
+                matchType = `Entity name cannot be the same as a role name. Duplicate definition found for "${entityName}".`;
+                return true;
+            }
+        })
+        if (entityFound !== undefined) {
+            let errorMsg = `${matchType} Prior definition - '@ ${entityFound.type} ${entityFound.name}${entityFound.roles.length > 0 ? ` hasRoles ${entityFound.roles.join(',')}` : ``}'`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                context: line
+            })
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        }
         newRoles.forEach(role => {
-            if (parsedContent.LUISJsonStructure.allRoles.includes(role)) {
-                let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}"`;
+            let roleFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.roles.includes(role) || item.name === role);
+            if (roleFound !== undefined) {
+                let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}". Prior definition - '@ ${roleFound.type} ${roleFound.name}${roleFound.roles.length > 0 ? ` hasRoles ${roleFound.roles.join(',')}` : ``}'`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
                     context: line
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-            }
-        })
+            } 
+        });
+
+        let oldEntity = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.name === entityName && item.type === entityType);
+        if (oldEntity !== undefined) {
+            oldEntity.addRoles(newRoles);
+        } else {
+            parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.push(new helperClass.entityAndRoles(entityName, entityType, newRoles))
+        }
+
     } else {
-        parsedContent.LUISJsonStructure.allRoles = newRoles;
+        parsedContent.LUISJsonStructure.flatListOfEntityAndRoles = new Array();
+        parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.push(new helperClass.entityAndRoles(entityName, entityType, newRoles));
     }
     return newRoles;
 };
@@ -474,7 +505,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
             }
-            let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.ParseTree.newEntityLine(), entityName);
+            let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.ParseTree.newEntityLine(), entityName, entityType);
             let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, entityName, entityType, entity.ParseTree.newEntityLine());
             if (PAEntityRoles.length > 0) {
                 PAEntityRoles.forEach(role => {

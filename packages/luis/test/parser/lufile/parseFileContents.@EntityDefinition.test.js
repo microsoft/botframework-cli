@@ -76,6 +76,40 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         });
 
+        it('Role definitions are de-duped', function(done){
+            let luFile = `
+                @simple s1 r1, r1
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.entities[0].roles.length, 1);
+                    assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ['r1']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Duplicate entity definitions is not allowed', function(done) {
+            let luFile = `
+                @simple a1 r1
+                @regex a1 r2
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('Role names cannot be the same as entity name', function(done) {
+            let luFile = `
+                @simple a1 r1
+                @regex re1 a1
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
         it('Pattern any entities are removed correctly', function(done){
             let luFile = `
                 # test
