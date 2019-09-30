@@ -16,12 +16,12 @@
 
 
 ## AskForUserName
-- {userName=vishwac}
-- I'm {userName=vishwac}
-- call me {userName=vishwac}
-- my name is {userName=vishwac}
-- {userName=vishwac} is my name
-- you can call me {userName=vishwac}
+- {@userName=vishwac}
+- I'm {@userName=vishwac}
+- call me {@userName=vishwac}
+- my name is {@userName=vishwac}
+- {@userName=vishwac} is my name
+- you can call me {@userName=vishwac}
 
 
 ## CreateAlarm
@@ -31,8 +31,8 @@
 
 
 ## DeleteAlarm
-- delete the {alarmTime} alarm
-- remove the {alarmTime} alarm
+- delete the {@alarmTime} alarm
+- remove the {@alarmTime} alarm
 
 
 ## CommunicationPreference

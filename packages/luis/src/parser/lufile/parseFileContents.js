@@ -366,11 +366,11 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                 }
                             } else {
                                 if (compositeExists !== undefined) {
-                                    if (entity.role != '') {
+                                    if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.COMPOSITES, entity.entity, [entity.role.trim()]);
                                     }
                                 } else if (listExists !== undefined) {
-                                    if (entity.role != '') {
+                                    if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.CLOSEDLISTS, entity.entity, [entity.role.trim()]);
                                     } else {
                                         let errorMsg = `${entity.entity} has been defined as a LIST entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
@@ -382,7 +382,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
                                     }
                                 } else if (prebuiltExists !== undefined) {
-                                    if (entity.role != '') {
+                                    if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.PREBUILT, entity.entity, [entity.role.trim()]);
                                     } else {
                                         let errorMsg = `${entity.entity} has been defined as a PREBUILT entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
@@ -394,7 +394,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
                                     }
                                 } else if (regexExists !== undefined) {
-                                    if (entity.role != '') {
+                                    if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.REGEX, entity.entity, [entity.role.trim()]);
                                     } else {
                                         let errorMsg = `${entity.entity} has been defined as a Regex entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
@@ -422,7 +422,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                         // delete pattern any entity
                                         if (patternAnyIdx > -1) parsedContent.LUISJsonStructure.patternAnyEntities.splice(patternAnyIdx, 1);
 
-                                    } else if (entity.role != '') {
+                                    } else if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.PATTERNANYENTITY, entity.entity, [entity.role.trim()]);
                                     }
                                 }

@@ -900,8 +900,8 @@ $test:[fromTime]`;
           }`;
           toLU(JSON.parse(testModel))
             .then(res => {
-                assert.isTrue(res.includes(`- my name is {userName:firstName=vishwac}`));
-                assert.isTrue(res.includes(`- book a flight to {location:toCity=london}`));
+                assert.isTrue(res.includes(`- my name is {@firstName=vishwac}`));
+                assert.isTrue(res.includes(`- book a flight to {@toCity=london}`));
                 assert.isTrue(res.includes(`@ simple userName hasRole firstName`));
                 assert.isTrue(res.includes(`@ composite location hasRoles fromCity,toCity = [city]`));
                 done();

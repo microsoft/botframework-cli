@@ -59,18 +59,18 @@ module.exports = {
                         let nonCompositesInUtterance = sortedEntitiesList.filter(entity => LUISJSON.composites.find(composite => composite.name == entity.entity) == undefined);
                         nonCompositesInUtterance.forEach(entity => {
                             if (entity.role !== undefined) {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}:${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
                             } else {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
                             }
                             tokenizedText[parseInt(entity.endPos)] += `}`;
                         })
                         let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => LUISJSON.composites.find(composite => composite.name == entity.entity) != undefined);
                         compositeEntitiesInUtterance.forEach(entity => {
                             if (entity.role !== undefined) {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}:${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
                             } else {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
                             }
                             tokenizedText[parseInt(entity.endPos)] += `}`;
                         })
@@ -244,7 +244,7 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
     if(attribute === 'text') {
         matchInTarget.utterances.push(srcItem); 
     } else {
-        matchInTarget.utterances.push(new helperClasses.uttereances(srcItem.pattern,srcItem.intent,[]));
+        matchInTarget.utterances.push(new helperClasses.uttereances(srcItem.pattern.replace('{', '{@'),srcItem.intent,[]));
     }
 }
 
