@@ -48,7 +48,7 @@ export async function generateNewTranslatedFilePath(fileName: string, translated
     newPath = path.join(process.cwd(), '')
   }
 
-  newPath = path.join(newPath, translatedLanguage)
+  newPath = path.join(output, translatedLanguage)
   await fs.mkdirp(newPath)
   return path.join(newPath, fileName)
 }

@@ -66,7 +66,7 @@ export default class LuisTranslate extends Command {
       for (let file in translatedObject) {
         for (let lng in translatedObject[file]) {
           filePath = await fileHelper.generateNewTranslatedFilePath(file, lng, out)
-          await fs.writeFile(filePath, translatedObject[path.basename(file)][lng], 'utf-8')
+          await fs.writeFile(filePath, translatedObject[path.basename(file)][lng][0], 'utf-8')
         }
       }
     } catch (err) {

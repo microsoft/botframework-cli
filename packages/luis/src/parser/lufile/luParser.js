@@ -5,6 +5,7 @@ const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext
 const LUResource = require('./luResource');
 const LUIntent = require('./luIntent');
 const LUEntity = require('./luEntity');
+const LUNewEntity = require('./luNewEntity');
 const LUImport = require('./luImport');
 const LUQna = require('./luQna');
 const LUModelInfo = require('./luModelInfo');
@@ -17,13 +18,14 @@ class LUParser {
     static parse(text) {
         let luIntents;
         let luEntities;
+        let luNewEntities;
         let luImports;
         let qnas;
         let modelInfos;
 
         let { fileContent, errors } = this.getFileContent(text);
         if (errors.length > 0) {
-            return new LUResource(luIntents, luEntities, luImports, qnas, modelInfos, errors);
+            return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
         }
 
         luIntents = this.extractLUIntents(fileContent);
@@ -32,14 +34,19 @@ class LUParser {
         luEntities = this.extractLUEntities(fileContent);
         luEntities.forEach(luEntity => errors = errors.concat(luEntity.Errors));
 
+        luNewEntities = this.extractNewEntities(fileContent); 
+        luNewEntities.forEach(luNewEntity => errors = errors.concat(luNewEntities.Errors));
+
         luImports = this.extractLUImports(fileContent);
         luImports.forEach(luImport => errors = errors.concat(luImport.Errors));
         
         qnas = this.extractLUQnas(fileContent);
+        qnas.forEach(qna => errors = errors.concat(qna.Errors));
 
         modelInfos = this.extractLUModelInfos(fileContent);
-
-        return new LUResource(luIntents, luEntities, luImports, qnas, modelInfos, errors);
+        modelInfos.forEach(modelInfo => errors = errors.concat(modelInfo.Errors));
+        
+        return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
     }
 
     /**
@@ -85,6 +92,20 @@ class LUParser {
         return intents;
     }
 
+    static extractNewEntities(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let entityDefinitions = fileContext.paragraph()
+            .map(x => x.newEntityDefinition())
+            .filter(x => x !== undefined && x != null);
+
+        let entities = entityDefinitions.map(x => new LUNewEntity(x));
+
+        return entities;
+    }
     /**
      * @param {FileContext} fileContext 
      */
