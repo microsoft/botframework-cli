@@ -1,0 +1,110 @@
+**ENUMS
+$STATE:AL=
+-Alabama
+$STATE:AK=
+-Alaska
+$STATE:AZ=
+-Arizona
+$STATE:AR=
+-Arkansas
+$STATE:CA=
+-California
+$STATE:CO=
+-Colorado
+$STATE:CT=
+-Connecticut
+$STATE:DE=
+-Delaware
+$STATE:FL=
+-Florida
+$STATE:GA=
+-Georgia
+$STATE:HI=
+-Hawaii
+$STATE:ID=
+-Idaho
+$STATE:IL=
+-Illinois
+$STATE:IN=
+-Indiana
+$STATE:IA=
+-Iowa
+$STATE:KS=
+-Kansas
+$STATE:KY=
+-Kentucky
+$STATE:LA=
+-Louisiana
+$STATE:ME=
+-Maine
+$STATE:MD=
+-Maryland
+$STATE:MA=
+-Massachusetts
+$STATE:MI=
+-Michigan
+$STATE:MN=
+-Minnesota
+$STATE:MS=
+-Mississippi
+$STATE:MO=
+-Missouri
+$STATE:MT=
+-Montana
+$STATE:NE=
+-Nebraska
+$STATE:NV=
+-Nevada
+$STATE:NH=
+-New Hampshire
+$STATE:NJ=
+-New Jersey
+$STATE:NM=
+-New Mexico
+$STATE:NY=
+-New York
+$STATE:NC=
+-North Carolina
+$STATE:ND=
+-North Dakota
+$STATE:OH=
+-Ohio
+$STATE:OK=
+-Oklahoma
+$STATE:OR=
+-Oregon
+$STATE:PA=
+-Pennsylvania
+$STATE:RI=
+-Rhode Island
+$STATE:SC=
+-South Carolina
+$STATE:SD=
+-South Dakota
+$STATE:TN=
+-Tennessee
+$STATE:TX=
+-Texas
+$STATE:UT=
+-Utah
+$STATE:VT=
+-Vermont
+$STATE:VA=
+-Virginia
+$STATE:WA=
+-Washington
+$STATE:WV=
+-West Virginia
+$STATE:WI=
+-Wisconsin
+$STATE:WY=
+-Wyoming
+$STATE:DC=
+-District of Columbia
+$STATE:PR=
+-Puerto Rico
+$STATE:CNMI=
+-Northern Mariana Islands
+$STATE:USVI=
+-United States Virgin Islands
+ENUMS**
