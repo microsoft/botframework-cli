@@ -172,6 +172,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 let featuresList = section.Features.split(/[,;]/g).map(item => item.trim());
                 (featuresList || []).forEach(feature => {
                     let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
+                    let intentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
@@ -187,6 +188,9 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                         } else {
                             // de-dupe and add model to intent.
                         }
+                    } else if (intentExists) {
+                        // Add intent as a feature to another intent
+                        
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an intent. No definition found for feature "${feature}" in usesFeature definition for intent "${section.Name}"`;
