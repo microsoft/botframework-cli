@@ -652,6 +652,26 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         });
 
+        it('Interchangeable phrase list definition can be separated', function(done) {
+            let luFile = `
+                @phraselist xyz(interchangeable)
+                @xyz =
+                    - one;two
+                @xyz =
+                    - three, four
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'one,two,three,four');
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
         it('missing entity name for phrase list throws', function(done) {
             let luFile = `
                 @xyz = 
@@ -910,6 +930,20 @@ describe('V2 Entity definitions using @ notation', function () {
                 })
                 .catch(err => done(err))
         });
+
+        it('Duplicate composite entity definition throws', function(done){
+            let luFile = `
+                @composite x1 = [s1, number]
+                @simple s1
+                @prebuilt number
+                @composite x1 = [s1, age]
+                @prebuilt age
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        })
     });
 
     describe('Closed list definitions', function() {
