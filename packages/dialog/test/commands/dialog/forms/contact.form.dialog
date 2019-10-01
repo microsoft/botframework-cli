@@ -16,7 +16,8 @@
         "HomeLongitude": { "type": "number" },
         "HomePhone": { 
             "type": "string", 
-            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$"
+            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
+            "$mappings": [ "phonenumber" ]
         },
 
         "WorkStreet": { "type": "string" },
@@ -25,7 +26,7 @@
             "type": "string",
             "$mappings": [ "STATE" ]
         },
-        "WomeZip": { 
+        "WorkZip": { 
             "type": "string",
             "pattern": "^[0-9]{5}(?:-[0-9]{4})?$"
         },
@@ -33,7 +34,8 @@
         "WorkLongitude": { "type": "number" },
         "WorkPhone": { 
             "type": "string", 
-            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$"
+            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
+            "$mappings": [ "phonenumber" ]
         }
     }
 }
