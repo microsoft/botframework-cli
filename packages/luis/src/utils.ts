@@ -3,7 +3,7 @@ import {existsSync} from 'fs'
 import {basename, dirname, extname, isAbsolute, join} from 'path'
 
 export namespace Utils {
-  export function validatePath(outputPath: string, workingDirectory: string, defaultFileName: string): string {
+  export function validatePath(outputPath: string, workingDirectory: string, defaultFileName: string, forceWrite = false): string {
     let completePath = isAbsolute(outputPath) ? outputPath : join(workingDirectory, outputPath)
     const containingDir = dirname(completePath)
 
@@ -15,13 +15,13 @@ export namespace Utils {
 
     // If the last element in the path is a file
     if (baseElement.includes('.')) {
-      return pathAlreadyExist ? enumerateFileName(completePath) : completePath
+      return pathAlreadyExist && !forceWrite ? enumerateFileName(completePath) : completePath
     }
 
     // If the last element in the path is a folder
     if (!pathAlreadyExist) throw new CLIError(`Target directory path doesn't exist: ${completePath}`)
     completePath = join(completePath, defaultFileName)
-    return existsSync(completePath) ? enumerateFileName(completePath) : completePath
+    return existsSync(completePath) && !forceWrite ? enumerateFileName(completePath) : completePath
   }
 
   function enumerateFileName(filePath: string): string {
