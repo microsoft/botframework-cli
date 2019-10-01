@@ -12,7 +12,7 @@
       ? author: Microsoft
       ? version: 1.0.0
       ? license: MIT
-      ? Who is the GitHub owner of repository (https://github.com/OWNER/repo): microsoft
+      ? Who is the GitHub owner of repository (https://github.com/OWNER/repo): microsoft/Pragati
       ? What is the GitHub name of repository (https://github.com/owner/REPO): botframework-cli
       ? Select a package manager: npm
       ? TypeScript: Y
