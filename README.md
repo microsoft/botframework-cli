@@ -29,7 +29,7 @@ npm i -g @microsoft/botframework-cli
 To view detailed usage information see the [CLI ReadMe page](https://github.com/microsoft/botframework-cli/tree/master/packages/cli)
 
 ## Issues and Feature Requests
-Please file issues and feature requests [here](https://github.com/microsoft/botframework-cli/issues).
+Please file issues and feature requests [here](https://github.com/Fortschritt69/botframework-cli/issues).
 
 Thank you for your support.
 
