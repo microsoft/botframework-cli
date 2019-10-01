@@ -98,17 +98,7 @@ module.exports = {
                     fileContent += NEWLINE + NEWLINE;
                 }
                 fileContent += `@ simple ${entity.name}`;
-                if (entity.roles && entity.roles.length > 0) {
-                    fileContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`;
-                }
-                if (entity.features && entity.features.length > 0) {
-                    let featuresList = new Array();
-                    entity.features.forEach(item => {
-                        if (item.featureName) featuresList.push(item.featureName);
-                        if (item.modelName) featuresList.push(item.modelName);
-                    })
-                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
-                }
+                fileContent += addRolesAndFeatures(entity);
                 fileContent += NEWLINE + NEWLINE;
             });
             fileContent += NEWLINE;
@@ -118,17 +108,7 @@ module.exports = {
             fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
             LUISJSON.prebuiltEntities.forEach(function(entity) {
                 fileContent += `@ prebuilt ${entity.name}`;
-                if (entity.roles && entity.roles.length > 0) {
-                    fileContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`;
-                }
-                if (entity.features && entity.features.length > 0) {
-                    let featuresList = new Array();
-                    entity.features.forEach(item => {
-                        if (item.featureName) featuresList.push(item.featureName);
-                        if (item.modelName) featuresList.push(item.modelName);
-                    })
-                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
-                }
+                fileContent += addRolesAndFeatures(entity);
                 fileContent += NEWLINE + NEWLINE;
             });
             fileContent += NEWLINE;
@@ -149,17 +129,7 @@ module.exports = {
             fileContent += '> # List entities' + NEWLINE + NEWLINE;
             LUISJSON.closedLists.forEach(function(ListItem) {
                 fileContent += `@ list ${ListItem.name}`;
-                if (ListItem.roles && ListItem.roles.length > 0) {
-                    fileContent += ` ${ListItem.roles.length > 1 ? `hasRoles` : `hasRole`} ${ListItem.roles.join(',')}`;
-                }
-                if (ListItem.features && ListItem.features.length > 0) {
-                    let featuresList = new Array();
-                    ListItem.features.forEach(item => {
-                        if (item.featureName) featuresList.push(item.featureName);
-                        if (item.modelName) featuresList.push(item.modelName);
-                    })
-                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
-                }
+                fileContent += addRolesAndFeatures(ListItem);
                 if (ListItem.subLists.length !== 0) {
                     fileContent += ` = `;
                     fileContent += NEWLINE;
@@ -179,17 +149,7 @@ module.exports = {
             fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
             LUISJSON.regex_entities.forEach(function(regExEntity) {
                 fileContent += `@ regex ${regExEntity.name}`;
-                if (regExEntity.roles && regExEntity.roles.length > 0) {
-                    fileContent += ` ${regExEntity.roles.length > 1 ? `hasRoles` : `hasRole`} ${regExEntity.roles.join(',')}`;
-                }
-                if (regExEntity.features && regExEntity.features.length > 0) {
-                    let featuresList = new Array();
-                    regExEntity.features.forEach(item => {
-                        if (item.featureName) featuresList.push(item.featureName);
-                        if (item.modelName) featuresList.push(item.modelName);
-                    })
-                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
-                }
+                fileContent += addRolesAndFeatures(regExEntity);
                 if (regExEntity.regexPattern !== '') {
                     fileContent += ` = /${regExEntity.regexPattern}/`;
                 }
@@ -203,17 +163,7 @@ module.exports = {
             fileContent += '> # Composite entities' + NEWLINE + NEWLINE; 
             LUISJSON.composites.forEach(composite => {
                 fileContent += `@ composite ${composite.name}`;
-                if (composite.roles && composite.roles.length > 0) {
-                    fileContent += ` ${composite.roles.length > 1 ? `hasRoles` : `hasRole`} ${composite.roles.join(',')}`;
-                }
-                if (composite.features && composite.features.length > 0) {
-                    let featuresList = new Array();
-                    composite.features.forEach(item => {
-                        if (item.featureName) featuresList.push(item.featureName);
-                        if (item.modelName) featuresList.push(item.modelName);
-                    })
-                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
-                }
+                fileContent += addRolesAndFeatures(composite);
                 if (composite.children.length > 0) {
                     fileContent += ` = [${composite.children.join(', ')}]`;
                 }
@@ -222,6 +172,28 @@ module.exports = {
         }
         return fileContent;
     }
+}
+
+/**
+ * Helper to construt role and features list for an entity
+ * @param {Object} entity 
+ * @returns {String} file content to include.
+ */
+const addRolesAndFeatures = function(entity) {
+    let roleAndFeatureContent = ''
+    if (entity.roles && entity.roles.length > 0) {
+        roleAndFeatureContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`;
+    }
+    if (entity.features && entity.features.length > 0) {
+        let featuresList = new Array();
+        entity.features.forEach(item => {
+            if (item.featureName) featuresList.push(item.featureName);
+            if (item.modelName) featuresList.push(item.modelName);
+        })
+        roleAndFeatureContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
+    }
+
+    return roleAndFeatureContent
 }
 
 const parseLuis = async function(luisObject, src, sort){
