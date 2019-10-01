@@ -14,5 +14,6 @@ module.exports = {
     ANSWER: "```",
     FILTER: "**",
     QNAALTERATIONS: "qna-alterations",
-    MODELINFO: "!#"
+    MODELINFO: "!#",
+    NEWENTITY: "@"
 };

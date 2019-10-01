@@ -350,7 +350,7 @@ describe('luis:convert negative tests', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3.lu')}`])
   .it('luis:convert should show ERR message when no utterances are found for an intent', async (ctx) => {
-    expect(ctx.stderr).to.contain("[ERROR] line 4:0 - line 4:1: syntax error: invalid input 'i' detected. Expecting one of this - end of file, model description, new line, QnA definition, Intent definition, Entity definition, Import statement")
+    expect(ctx.stderr).to.contain("[ERROR] line 4:0 - line 4:1: syntax error: invalid input 'i' detected.")
   })
 
   test
@@ -364,7 +364,7 @@ describe('luis:convert negative tests', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad2.lu')}`])
   .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx) => {
-    expect(ctx.stderr).to.contain("[ERROR] line 1:0 - line 1:1: syntax error: invalid input 'f' detected. Expecting one of this - end of file, model description, new line, QnA definition, Intent definition, Entity definition, Import statement")
+    expect(ctx.stderr).to.contain("[ERROR] line 1:0 - line 1:1: syntax error: invalid input 'f' detected.")
   })
 })
 
@@ -407,6 +407,26 @@ describe('luis:convert sort option enabled', () => {
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all.json')}`, '--out', 'root.lu', '--sort'])
   .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model', async () => {
     expect(await compareLuFiles('./../../../root.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
+  })
+})
+
+describe('luis:convert new entity format', () => {
+  after(async function() {
+    await fs.remove(path.join(__dirname, './../../../newEntity.lu'))
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/newEntity1.json')}`, '--out', 'newEntity.lu'])
+  .it('luis:convert with new entity format correctly produces a LU file', async () => {
+    expect(await compareLuFiles('./../../../newEntity.lu', './../../fixtures/verified/newEntity1.lu')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/newEntity2.json')}`, '--out', 'newEntity.lu'])
+  .it('luis:convert with new entity format and single roles correctly produces a LU file', async () => {
+    expect(await compareLuFiles('./../../../newEntity.lu', './../../fixtures/verified/newEntity2.lu')).to.be.true
   })
 })
 

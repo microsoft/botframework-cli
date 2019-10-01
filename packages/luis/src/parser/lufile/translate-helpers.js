@@ -165,6 +165,21 @@ const translateHelpers = {
                     }
                 }
                 break;
+                case PARSERCONSTS.NEWENTITY:
+                    // if current line is a normalized value, add it to the list to localize// strip line of the list separator
+                    listSeparator = currentLine.charAt(0);
+                    content = currentLine.slice(1).trim();
+                    if (content.trim().endsWith(':')) {
+                        let normalizedValueAsSynonym = content.replace(/:$/g, '').trim();
+                        addSegment(linesToTranslate, `\t- ${normalizedValueAsSynonym}:`, false);
+                        addSegment(linesToTranslate, NEWLINE, false);
+                        addSegment(linesToTranslate, '\t\t- ', false);
+                        addSegment(linesToTranslate, normalizedValueAsSynonym, true);
+                    } else {
+                        addSegment(linesToTranslate, '\t\t- ', false);
+                        addSegment(linesToTranslate, content, true);
+                    }
+                    break;
                 case PARSERCONSTS.ENTITY:
                 case PARSERCONSTS.QNA:
                 default:
@@ -189,7 +204,7 @@ const translateHelpers = {
                     addSegment(linesToTranslate, '$', false);
                     addSegment(linesToTranslate, entityName.trim(), true);
                     addSegment(linesToTranslate, ' : ' + PARSERCONSTS.QNAALTERATIONS + ' = ', false);
-                    currentSectionType = PARSERCONSTS.ENTITY;
+                    c
                 } else {
                     // we would not localize entity line but remember we are under entity section for list entities
                     // FIX for BF CLI # 121
@@ -235,6 +250,10 @@ const translateHelpers = {
                     addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
+            } else if(currentLine.indexOf(PARSERCONSTS.NEWENTITY) === 0) {
+                // Nothing in the entity line should be localized.
+                addSegment(linesToTranslate, currentLine, false);
+                currentSectionType = PARSERCONSTS.NEWENTITY;
             } else {
                 if (inAnswer) {
                     addSegment(linesToTranslate, currentLine, true);
