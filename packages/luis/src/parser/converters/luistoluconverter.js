@@ -98,8 +98,16 @@ module.exports = {
                     fileContent += NEWLINE + NEWLINE;
                 }
                 fileContent += `@ simple ${entity.name}`;
-                if (entity.roles.length > 0) {
-                    fileContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`
+                if (entity.roles && entity.roles.length > 0) {
+                    fileContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`;
+                }
+                if (entity.features && entity.features.length > 0) {
+                    let featuresList = new Array();
+                    entity.features.forEach(item => {
+                        if (item.featureName) featuresList.push(item.featureName);
+                        if (item.modelName) featuresList.push(item.modelName);
+                    })
+                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
                 }
                 fileContent += NEWLINE + NEWLINE;
             });
@@ -110,8 +118,16 @@ module.exports = {
             fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
             LUISJSON.prebuiltEntities.forEach(function(entity) {
                 fileContent += `@ prebuilt ${entity.name}`;
-                if (entity.roles.length > 0) {
+                if (entity.roles && entity.roles.length > 0) {
                     fileContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`;
+                }
+                if (entity.features && entity.features.length > 0) {
+                    let featuresList = new Array();
+                    entity.features.forEach(item => {
+                        if (item.featureName) featuresList.push(item.featureName);
+                        if (item.modelName) featuresList.push(item.modelName);
+                    })
+                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
                 }
                 fileContent += NEWLINE + NEWLINE;
             });
@@ -122,7 +138,7 @@ module.exports = {
             fileContent += '> # Phrase list definitions' + NEWLINE + NEWLINE;
             LUISJSON.model_features.forEach(function(entity) {
                 fileContent += `@ phraselist ${entity.name}${(entity.mode ? `(interchangeable)` : ``)}`;
-                if (entity.words !== '') {
+                if (entity.words && entity.words !== '') {
                     fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
                 }
                 fileContent += NEWLINE + NEWLINE;
@@ -133,8 +149,16 @@ module.exports = {
             fileContent += '> # List entities' + NEWLINE + NEWLINE;
             LUISJSON.closedLists.forEach(function(ListItem) {
                 fileContent += `@ list ${ListItem.name}`;
-                if (ListItem.roles.length > 0) {
+                if (ListItem.roles && ListItem.roles.length > 0) {
                     fileContent += ` ${ListItem.roles.length > 1 ? `hasRoles` : `hasRole`} ${ListItem.roles.join(',')}`;
+                }
+                if (ListItem.features && ListItem.features.length > 0) {
+                    let featuresList = new Array();
+                    ListItem.features.forEach(item => {
+                        if (item.featureName) featuresList.push(item.featureName);
+                        if (item.modelName) featuresList.push(item.modelName);
+                    })
+                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
                 }
                 if (ListItem.subLists.length !== 0) {
                     fileContent += ` = `;
@@ -155,8 +179,16 @@ module.exports = {
             fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
             LUISJSON.regex_entities.forEach(function(regExEntity) {
                 fileContent += `@ regex ${regExEntity.name}`;
-                if (regExEntity.roles.length > 0) {
+                if (regExEntity.roles && regExEntity.roles.length > 0) {
                     fileContent += ` ${regExEntity.roles.length > 1 ? `hasRoles` : `hasRole`} ${regExEntity.roles.join(',')}`;
+                }
+                if (regExEntity.features && regExEntity.features.length > 0) {
+                    let featuresList = new Array();
+                    regExEntity.features.forEach(item => {
+                        if (item.featureName) featuresList.push(item.featureName);
+                        if (item.modelName) featuresList.push(item.modelName);
+                    })
+                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
                 }
                 if (regExEntity.regexPattern !== '') {
                     fileContent += ` = /${regExEntity.regexPattern}/`;
@@ -171,8 +203,16 @@ module.exports = {
             fileContent += '> # Composite entities' + NEWLINE + NEWLINE; 
             LUISJSON.composites.forEach(composite => {
                 fileContent += `@ composite ${composite.name}`;
-                if (composite.roles.length > 0) {
+                if (composite.roles && composite.roles.length > 0) {
                     fileContent += ` ${composite.roles.length > 1 ? `hasRoles` : `hasRole`} ${composite.roles.join(',')}`;
+                }
+                if (composite.features && composite.features.length > 0) {
+                    let featuresList = new Array();
+                    composite.features.forEach(item => {
+                        if (item.featureName) featuresList.push(item.featureName);
+                        if (item.modelName) featuresList.push(item.modelName);
+                    })
+                    fileContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
                 }
                 if (composite.children.length > 0) {
                     fileContent += ` = [${composite.children.join(', ')}]`;

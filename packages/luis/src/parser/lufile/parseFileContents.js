@@ -170,7 +170,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 // verify the list of features requested have all been defined.
                 let featuresList = section.Features.split(/[,;]/g).map(item => item.trim());
                 (featuresList || []).forEach(feature => {
-                    let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature);
+                    let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
@@ -212,7 +212,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == section.Name);
                     let entityType = undefined;
                     if (entityExists) entityType = entityExists.type;
-                    let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature);
+                    let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
                     if (featureExists) {
                         // find the entity based on its type.
                         let entityFound = (parsedContent.LUISJsonStructure[luisEntityTypeMap[entityType]] || []).find(item => item.name == section.Name);

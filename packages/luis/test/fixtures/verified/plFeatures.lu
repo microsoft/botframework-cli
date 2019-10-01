@@ -1,0 +1,33 @@
+
+> # Intent definitions
+
+## None
+
+
+## intent1
+
+
+> # Entity definitions
+
+@ simple simple1 usesFeature phraselist1
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt age usesFeature phraselist1
+
+
+> # Phrase list definitions
+
+@ phraselist phraselist1(interchangeable) = 
+	- who,why,where,what
+
+
+> # List entities
+
+> # RegEx entities
+
+
+> # Composite entities
+
+@ composite composite1 usesFeature phraselist1 = [simple1, age]
