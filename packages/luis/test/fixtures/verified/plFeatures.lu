@@ -14,7 +14,7 @@
 
 > # PREBUILT Entity definitions
 
-@ prebuilt age usesFeature phraselist1
+@ prebuilt age
 
 
 > # Phrase list definitions

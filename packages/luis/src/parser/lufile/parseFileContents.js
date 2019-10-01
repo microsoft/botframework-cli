@@ -27,6 +27,7 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./enums/lusiEntityTypes');
 const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
+const plAllowedTypes = ["simple", "composite", "machine-learned"];
 const INTENTTYPE = 'intent';
 const parseFileContentsModule = {
     /**
@@ -212,6 +213,14 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == section.Name);
                     let entityType = undefined;
                     if (entityExists) entityType = entityExists.type;
+                    if (!plAllowedTypes.includes(entityType)) {
+                        let errorMsg = `Phrase lists cannot be added as a feature to ${entityType}. Phrase list as feature is only available for the following entity types - ${plAllowedTypes.join(', ')}.`;
+                        let error = BuildDiagnostic({
+                            message: errorMsg,
+                            context: section.ParseTree.newEntityLine()
+                        })
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    }
                     let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
                     if (featureExists) {
                         // find the entity based on its type.
