@@ -1,9 +1,9 @@
-// tslint:disable:object-curly-spacing
+// tslint:disable:object-curly-spacing ordered-imports
 
 import { Command as Base } from '@oclif/command'
-import { CLIError } from '@oclif/errors'
 export { flags } from '@oclif/command'
-export { CLIError } from '@oclif/errors'
+import { CLIError } from './clierror'
+export { CLIError } from './clierror'
 import ReadPipedData from './readpipeddata'
 import Telemetry from './telemetry'
 const chalk = require('chalk')
