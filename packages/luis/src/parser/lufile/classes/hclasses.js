@@ -130,6 +130,11 @@ const readerObj = {
         hasRole(value) {
             return this.roles.includes(value);
         }
+    },
+    intentFeature: class {
+        constructor(name) {
+            this.featureName = name ? name : '';
+        }
     }
 };
 
