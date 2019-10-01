@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "Account": { "type": "string" },
+        "Topic": { "type": "string" },
+        "Territory": { "type": "string" },
+        "Description": { "type": "string" },
+        "ContactPhone": { 
+            "type": "string", 
+            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
+            "$mappings": [ "phonenumber" ]
+        },
+        "ContactEmail": { 
+            "type": "string", 
+            "pattern": "\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z",
+            "$mappings": [ "email" ]
+        },
+        "EstimatedCloseDate": { 
+            "type": "string",
+            "$mappings": [ "date" ]
+        },
+        "PurchaseTimeframe": { 
+            "type": "string",
+            "$mappings": [ "daterange" ]
+        }
+    }
+}
