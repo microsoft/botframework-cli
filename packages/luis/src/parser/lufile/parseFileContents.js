@@ -154,6 +154,14 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
         parseFeatureSections(parsedContent, featuresToProcess);
     }
 }
+/**
+ * Helper function to validate if the requested feature addition is valid.
+ * @param {String} srcItemType 
+ * @param {String} srcItemName 
+ * @param {String} tgtFeatureType 
+ * @param {String} tgtFeatureName 
+ * @param {String} line 
+ */
 const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureType, tgtFeatureName, line) {
     switch(srcItemType) {
         case INTENTTYPE:
