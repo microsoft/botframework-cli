@@ -1,12 +1,12 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
-    "$type": "Microsoft.OnChooseSlot",
+    "$type": "Microsoft.OnChooseProperty",
     "condition": "turn.dialogEvent.Value.Entity.Entity",
     "actions": [
         {
             "$type": "Microsoft.Ask",
             "activity": "[chooseSlot(turn.dialogEvent.Value.Entity.Entity)]",
-            "expectedSlots":["turn.dialogEvent.Value.Change.Slot"]
+            "expectedProperties":["turn.dialogEvent.Value.Change.Slot"]
         },
         {
             "$type": "Microsoft.SetProperty",

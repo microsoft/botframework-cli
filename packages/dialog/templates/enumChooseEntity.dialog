@@ -1,12 +1,12 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
-    "$type": "Microsoft.OnChooseSlotValue",
+    "$type": "Microsoft.OnChooseEntity",
     "condition": "!$**PROPERTY**",
     "actions": [
         {
             "$type": "Microsoft.Ask",
             "activity": "[Clarify**PROPERTY**]",
-            "expectedSlots": [
+            "expectedProperties": [
                 "**PROPERTY**"
             ]       
         }
