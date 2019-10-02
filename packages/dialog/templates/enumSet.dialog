@@ -1,12 +1,12 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
     "$type": "Microsoft.OnSetProperty",
-    "condition": "turn.dialogEvent.Value.Change.Slot == '**PROPERTY**'",
+    "property": "**PROPERTY**",
     "actions": [
         {
             "$type": "Microsoft.SetProperty",
             "property": "$**PROPERTY**",
-            "value": "turn.dialogEvent.Value.Entity.Entity"
+            "value": "@**PROPERTY**"
         }
     ]
 }
