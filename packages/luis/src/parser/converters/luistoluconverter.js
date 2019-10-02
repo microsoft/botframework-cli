@@ -79,6 +79,11 @@ module.exports = {
                     if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
                 });
                 fileContent += NEWLINE + NEWLINE;
+                if (intent.intent.features) {
+                    fileContent += `@ intent ${intent.intent.name}`;
+                    fileContent += addRolesAndFeatures(intent.intent);
+                    fileContent += NEWLINE + NEWLINE;
+                }
             });
         }
         
