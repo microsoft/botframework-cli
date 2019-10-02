@@ -2,8 +2,8 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-const parseFile = require('./../../../src/parser/lufile/parseFileContents');
-const validateLUISBlob = require('./../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
+const parseFile = require('../../../src/parser/lufile/parseFileContents');
+const validateLUISBlob = require('../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
 var chai = require('chai');
 var assert = chai.assert;
 describe('Model as feature definitions', function () {
