@@ -79,6 +79,19 @@
                     "white onions"
                 ]
             }
+        },
+        "Confirmation": {
+            "type": "string",
+            "enum": [
+                "yes",
+                "no"
+            ],
+            "$templates":[]
+        },
+        "CancelConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
         }
     }
 }

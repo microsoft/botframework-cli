@@ -4,7 +4,11 @@
     "intent": "Cancel",
     "actions": [
         {
-            "$type": "Microsoft.EndDialog" 
+            "$type": "Microsoft.Ask",
+            "activity": "[cancel]",
+            "expectedProperties": [
+                "CancelConfirmation"
+            ]
         }
     ]
 }
