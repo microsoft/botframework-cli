@@ -25,7 +25,7 @@ const fileToParse = require('./classes/filesToParse');
 const luParser = require('./luParser');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const EntityTypeEnum = require('./enums/lusiEntityTypes');
+const EntityTypeEnum = require('./enums/luisEntityTypes');
 const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
 const plAllowedTypes = ["simple", "composite", "machine-learned"];
 const featureTypeEnum = {
@@ -154,6 +154,33 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
         parseFeatureSections(parsedContent, featuresToProcess);
     }
 }
+const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureType, tgtFeatureName, line) {
+    switch(srcItemType) {
+        case INTENTTYPE:
+        case EntityTypeEnum.SIMPLE:
+        case EntityTypeEnum.ML:
+        case EntityTypeEnum.COMPOSITE:
+            // can use everything as a feature except pattern.any
+            if (tgtFeatureType === EntityTypeEnum.PATTERNANY) {
+                let errorMsg = `'patternany' entity cannot be added as a feature. Invalid definition found for "@ ${srcItemType} ${srcItemName} usesFeature ${tgtFeatureName}"`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: line
+                })
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            }
+            break;
+        default:
+            // cannot have any features assigned
+            let errorMsg = `Invalid definition found for "@ ${srcItemType} ${srcItemName} usesFeature ${tgtFeatureName}". usesFeature is only available for intent, ${plAllowedTypes.join(', ')}`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                context: line
+            })
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            break;
+    }
+}
 /**
  * Helper function to add features to the parsed content scope.
  * @param {Object} tgtItem 
@@ -224,16 +251,19 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
                             addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
                             addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
+                        validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
                         addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                     } else {
                         // Item must be defined before being added as a feature.
@@ -267,25 +297,20 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     let srcEntity = (parsedContent.LUISJsonStructure[luisEntityTypeMap[entityType]] || []).find(item => item.name == section.Name);
                     if (featureExists) {
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
-                            if (!plAllowedTypes.includes(entityType)) {
-                                let errorMsg = `Phrase lists cannot be added as a feature to ${entityType}. Phrase list as feature is only available for the following entity types - ${plAllowedTypes.join(', ')}.`;
-                                let error = BuildDiagnostic({
-                                    message: errorMsg,
-                                    context: section.ParseTree.newEntityLine()
-                                })
-                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                            }
                             // de-dupe and add features to intent.
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
                             addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
                             addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
+                        validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
                         addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                     } else {
                         // Item must be defined before being added as a feature.

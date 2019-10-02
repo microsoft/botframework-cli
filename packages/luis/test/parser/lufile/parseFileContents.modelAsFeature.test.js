@@ -529,5 +529,119 @@ describe('Model as feature definitions', function () {
                 .catch(err => done())
         })
         
-    })
+    });
+
+    describe('Negative tests', function(done) {
+        it('Intent cannot use patternany as a feature', function(done) {
+            let luFile = `
+                @ patternany p1
+                # test
+                - one
+                @ intent test usesFeature p1
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('simple entity cannot use patternany as a feature', function(done) {
+            let luFile = `
+                @ patternany p1
+                @ simple s1 usesFeature p1
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('composite entity cannot use patternany as a feature', function(done) {
+            let luFile = `
+                @ patternany p1
+                @ composite c1 usesFeature p1
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+
+        });
+
+        it('phrase lists cannot have any features', function(done) {
+            let luFile = `
+                @ simple c1
+                @ phraselist p1 usesFeature c1
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+        });
+
+        it('regex entity cannot have any features', function(done) {
+            let luFile = `
+                @ simple s1
+                @ regex r1 usesFeature s1
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+
+        })
+
+        it('list entity cannot have any features', function(done) {
+            let luFile = `
+                @ simple s1
+                @ list r1 usesFeature s1
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+
+        })
+
+        it('prebuilt entity cannot have any features', function(done) {
+            let luFile = `
+                @ simple s1
+                @ prebuilt number usesFeature s1
+            `;
+            parseFile.parseFile(luFile)
+                .then(res => done(res))
+                .catch(err => done())
+
+        })
+
+
+    });
+    it('Intent, simple entity, composite entity can use anything as a feature except for patternany', function(done) {
+        let luFile = `
+            @ simple s1
+            @ list l1
+            @ composite c1
+            @ prebuilt number
+            @ regex r1
+            @ phraselist PL1
+            # test
+            - one
+            @ intent test usesFeatures s1, l1, c1, number, r1, PL1
+            # test2
+            - one
+            @ s1 usesFeature test2, l1, c1, number, r1, PL1
+            @ c1 usesFeature test2, l1, number, r1, PL1, s1
+        `;
+
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.intents[0].features.length, 6);
+                assert.equal(res.LUISJsonStructure.intents[0].features.filter(item => item.modelName).length, 5);
+                assert.equal(res.LUISJsonStructure.intents[0].features.filter(item => item.featureName).length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].features.length, 6);
+                assert.equal(res.LUISJsonStructure.entities[0].features.filter(item => item.modelName).length, 5);
+                assert.equal(res.LUISJsonStructure.entities[0].features.filter(item => item.featureName).length, 1);
+                assert.equal(res.LUISJsonStructure.composites[0].features.length, 6);
+                assert.equal(res.LUISJsonStructure.composites[0].features.filter(item => item.modelName).length, 5);
+                assert.equal(res.LUISJsonStructure.composites[0].features.filter(item => item.featureName).length, 1);
+                done();
+            })
+            .catch(err => done(err))
+    });
 });
