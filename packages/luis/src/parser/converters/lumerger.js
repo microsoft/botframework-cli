@@ -7,7 +7,7 @@ const retCode = require('./../lufile/enums/CLI-errors');
 const helpers = require('./../lufile/helpers');
 const hClasses = require('./../lufile/classes/hclasses');
 const exception = require('./../lufile/classes/exception');
-const filesToParseClass = require('./../lufile/classes/filesToParse');
+const luObject = require('./../lufile/classes/luObject');
 const parserObject = require('./../lufile/classes/parserObject');
 const txtfile = require('./../lufile/read-text-file');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
@@ -16,77 +16,53 @@ const luisJSON = require('./../luisfile/parseLuisFile');
 
 
 module.exports = {
-    mergeAndResolveReferences: async function (files, verbose, luis_culture){
-        let allParsedContent = await getAgregatedDataFromLuFiles(files, verbose, luis_culture)
+    mergeAndResolveReferences: async function (luObjArray, verbose, luis_culture){
+        let allParsedContent = await buildLuObject(luObjArray, verbose, luis_culture)
         await resolveReferencesInUtterances(allParsedContent)
         return allParsedContent
     }
 }
 
-const getAgregatedDataFromLuFiles = async function (filesToParse, log, luis_culture) {
-    let parsedContent = '';
-    let allParsedLUISContent = [];
-    let allParsedQnAContent = [];
-    let allParsedAlterationsContent = [];
- 
-    filesToParse = filesToParseClass.stringArrayToFileToParseList(filesToParse);
-    let parsedFiles = [];
+const buildLuObject = async function(luObjArray, log, luis_culture, luSearchFn = findLuFilesInDir){
+    let allParsedLUISContent = []
+    let allParsedQnAContent = []
+    let allParsedAlterationsContent = []
+    let filesToParse = luObjArray
+    let parsedFiles = []
     while (filesToParse.length > 0) {
-        let file = filesToParse[0].filePath;
+        let luOb = filesToParse[0]
         // skip this file if we have parsed it already
-        if (parsedFiles.includes(file)) {
+        if (parsedFiles.includes(luOb.id)) {
             filesToParse.splice(0,1)
-            continue;
+            continue
         }
-        parsedContent = await parseLuFile(file, log, luis_culture)
-        parsedFiles.push(file);
-        try {
-            if (haveLUISContent(parsedContent.LUISJsonStructure)
-                && await luisJSON.validateLUISBlob(parsedContent.LUISJsonStructure)) {
-                allParsedLUISContent.push(parserObject.create(parsedContent.LUISJsonStructure, undefined, undefined, file, filesToParse[0].includeInCollate));
-            }
-        } catch (err) {
-            throw (err);
+        parsedContent = await parseLuFile(luOb.content, log, luis_culture)
+        parsedFiles.push(luOb.id)
+
+        if (haveLUISContent(parsedContent.LUISJsonStructure)
+            && await luisJSON.validateLUISBlob(parsedContent.LUISJsonStructure)) {
+            allParsedLUISContent.push(parserObject.create(parsedContent.LUISJsonStructure, undefined, undefined, luOb.id, luOb.includeInCollate))
         }
-        allParsedQnAContent.push(parserObject.create(undefined, parsedContent.qnaJsonStructure, undefined, file, filesToParse[0].includeInCollate));
-        allParsedAlterationsContent.push(parserObject.create(undefined, undefined, parsedContent.qnaAlterations, file, filesToParse[0].includeInCollate));
+
+        allParsedQnAContent.push(parserObject.create(undefined, parsedContent.qnaJsonStructure, undefined, luOb.id, luOb.includeInCollate))
+        allParsedAlterationsContent.push(parserObject.create(undefined, undefined, parsedContent.qnaAlterations, luOb.id, luOb.includeInCollate))
         // remove this file from the list
-        let parentFile = filesToParse.splice(0,1);
-        let parentFilePath = path.parse(path.resolve(parentFile[0].filePath)).dir;
+        filesToParse.splice(0,1)
+        
         // add additional files to parse to the list
         if(parsedContent.additionalFilesToParse.length <= 0) {
             continue
         }
-        parsedContent.additionalFilesToParse.forEach(function(file) {
-            // Support wild cards at the end of a relative .LU file path. 
-            // './bar/*' should look for all .lu files under the specified folder.
-            // './bar/**' should recursively look for .lu files under sub-folders as well.
-            if(file.filePath.endsWith('*')) {
-                const isRecursive = file.filePath.endsWith('**');
-                const rootFolder = file.filePath.replace(/\*/g, '');
-                let rootPath = rootFolder;
-                if(!path.isAbsolute(rootFolder)) {
-                    rootPath = path.resolve(parentFilePath, rootFolder);
-                } 
-                // Get LU files in this location
-                const luFilesToAdd = helpers.findLUFiles(rootPath, isRecursive);
-                if(luFilesToAdd.length !== 0) {
-                    // add these to filesToParse
-                    luFilesToAdd.forEach(addFile => filesToParse.push(new filesToParseClass(addFile, file.includeInCollate)));
-                }
-            } else {
-                if(!path.isAbsolute(file.filePath)) {
-                    file.filePath = path.resolve(parentFilePath, file.filePath);
-                } 
-                // avoid parsing files that have been parsed already
-                if(parsedFiles.includes(file.filePath)) {
-                    // find matching parsed files and ensure includeInCollate is updated if needed.
-                    updateParsedFiles(allParsedLUISContent, allParsedQnAContent, allParsedAlterationsContent, file);
-                } else {
-                    filesToParse.push(new filesToParseClass(file.filePath, file.includeInCollate));
-                }
+        let parentDir = luOb.id === 'stdin' ? process.cwd() : path.parse(path.resolve(luOb.id)).dir
+        let foundLuFiles = await luSearchFn(parsedContent.additionalFilesToParse, parentDir)    
+        for( let i = 0; i < foundLuFiles.length; i++){ 
+            if (parsedFiles.includes(foundLuFiles[i].id)) {
+                let duplicated = foundLuFiles.splice(i, 1); 
+                updateParsedFiles(allParsedLUISContent, allParsedQnAContent, allParsedAlterationsContent, duplicated);
             }
-        });     
+        }
+
+        filesToParse = filesToParse.concat(foundLuFiles)
     }
     return {
         LUISContent: allParsedLUISContent,
@@ -95,49 +71,55 @@ const getAgregatedDataFromLuFiles = async function (filesToParse, log, luis_cult
     }
 }
 
-const updateParsedFiles = function(allParsedLUISContent, allParsedQnAContent, allParsedAlterationsContent, file) {
-    // find the instance and ensure includeInCollate property is set correctly 
-    let matchInLUIS = allParsedLUISContent.find(item => item.srcFile == file.filePath);
-    if(matchInLUIS && (matchInLUIS.includeInCollate === false && file.includeInCollate === true)) matchInLUIS.includeInCollate = true;
-    let matchInQnA = allParsedQnAContent.find(item => item.srcFile == file.filePath);
-    if(matchInQnA && (matchInQnA.includeInCollate === false && file.includeInCollate === true)) matchInQnA.includeInCollate = true;
-    let matchInAlterations = allParsedAlterationsContent.find(item => item.srcFile == file.filePath);
-    if(matchInAlterations && (matchInAlterations.includeInCollate === false && file.includeInCollate === true)) matchInAlterations.includeInCollate = true;
-} 
+const findLuFilesInDir = async function(idsToFind, parentFilePath){
+    let luObjects = []
+    parentFilePath = parentFilePath === 'stdin' ? process.cwd() : parentFilePath
+    for(let idx = 0; idx < idsToFind.length; idx++ ) {
+        // Support wild cards at the end of a relative .LU file path. 
+        // './bar/*' should look for all .lu files under the specified folder.
+        // './bar/**' should recursively look for .lu files under sub-folders as well.
+        let file = idsToFind[idx]
+        if(file.filePath.endsWith('*')) {
+            const isRecursive = file.filePath.endsWith('**')
+            const rootFolder = file.filePath.replace(/\*/g, '')
+            let rootPath = rootFolder;
+            if(!path.isAbsolute(rootFolder)) {
+                rootPath = path.resolve(parentFilePath, rootFolder);
+            } 
+            // Get LU files in this location
+            const luFilesToAdd = helpers.findLUFiles(rootPath, isRecursive);
+            if(luFilesToAdd.length !== 0) {
+                // add these to filesToParse
+                for(let f = 0; f < luFilesToAdd.length; f++){
+                    luObjects.push(new luObject(luFilesToAdd[f], readLuFile(luFilesToAdd[f]), file.includeInCollate))
+                }
+            }
+        } else {
+            if(!path.isAbsolute(file.filePath)) {
+                file.filePath = path.resolve(parentFilePath, file.filePath)
+            } 
 
-const parseLuFile = async function(file, log, luis_culture) {
-    if(!fs.existsSync(path.resolve(file))) {
-        let error = BuildDiagnostic({
-            message: `Sorry unable to open [${file}]`
-        });
-        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, error.toString()));     
+            let luContent = readLuFile(file.filePath)
+            // find matching parsed files and ensure includeInCollate is updated if needed.
+            luObjects.push(new luObject(file.filePath, luContent, file.includeInCollate))
+        }
     }
-    
-    let fileContent = txtfile.readSync(file);
-    if (!fileContent) {
-        let error = BuildDiagnostic({
-            message: `Sorry, error reading file: ${file}`
-        });
-        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, error.toString()));
-    }
-    if(log) {
-        process.stdout.write(chalk.default.whiteBright('Parsing file: ' + file + '\n'));
-    }
-
-    let parsedContent = '';
-    try {
-        parsedContent = await parseFileContents.parseFile(fileContent, log, luis_culture);
-    } catch (err) {
-        throw(err);
-    }
-    if (!parsedContent) {
-        let error = BuildDiagnostic({
-            message: `Sorry, file ${file} had invalid content`
-        });
-        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, error.toString()));
-    } 
-    return parsedContent
+    return luObjects
 }
+
+const updateParsedFiles = function(allParsedLUISContent, allParsedQnAContent, allParsedAlterationsContent, luobject) {
+    // find the instance and ensure includeInCollate property is set correctly 
+    if(luobject.includeInCollate) {
+        let matchInLUIS = allParsedLUISContent.find(item => item.srcFile == luobject.id);
+        if(matchInLUIS) matchInLUIS.includeInCollate = true;
+
+        let matchInQnA = allParsedQnAContent.find(item => item.srcFile == luobject.id);
+        if(matchInQnA) matchInQnA.includeInCollate = true;
+
+        let matchInAlterations = allParsedAlterationsContent.find(item => item.srcFile == luobject.id);
+        if(matchInAlterations) matchInAlterations.includeInCollate = true;
+    }
+} 
 
 const haveLUISContent = function(blob) {
     if(!blob) return false;
@@ -299,5 +281,39 @@ const resolveReferencesInUtterances = async function(allParsedContent) {
             }
         })
     })
+}
+
+const readLuFile = function(file) {
+    if(!fs.existsSync(path.resolve(file))) {
+        let error = BuildDiagnostic({
+            message: `Sorry unable to open [${file}]`
+        });
+        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, error.toString()));     
+    }
+    
+    let fileContent = txtfile.readSync(file);
+    if (!fileContent) {
+        let error = BuildDiagnostic({
+            message: `Sorry, error reading file: ${file}`
+        });
+        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, error.toString()));
+    }
+    return fileContent
+}
+
+const parseLuFile = async function(file, log, luis_culture) {
+    let parsedContent = '';
+    try {
+        parsedContent = await parseFileContents.parseFile(file, log, luis_culture);
+    } catch (err) {
+        throw(err);
+    }
+    if (!parsedContent) {
+        let error = BuildDiagnostic({
+            message: `Sorry, file ${file} had invalid content`
+        });
+        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, error.toString()));
+    } 
+    return parsedContent
 }
 

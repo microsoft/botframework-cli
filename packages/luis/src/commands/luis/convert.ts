@@ -33,7 +33,7 @@ export default class LuisConvert extends Command {
        // Parse the object depending on the input
       let result: any
       if (isLu) {
-        const luFiles = await file.getLuFiles(flags.in, flags.recurse)
+        const luFiles = await file.getLuObjects(flags.in, flags.recurse)
         result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
       } else {
         result = await luisConverter.parseLuisFileToLu(flags.in, flags.sort)

@@ -1,7 +1,9 @@
-import {CLIError} from '@microsoft/bf-cli-command'
+import {CLIError, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/lufile/helpers')
+const luObject = require('./../parser/lufile/classes/luObject')
+/* tslint:disable:prefer-for-of no-unused */
 
 export async function getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
   let filesToParse = []
@@ -21,6 +23,18 @@ export async function getLuFiles(input: string | undefined, recurse = false): Pr
     throw new CLIError('Sorry, no .lu files found in the specified folder.')
   }
   return filesToParse
+}
+
+export async function getLuObjects(input: string | undefined, recurse = false) {
+  let luFiles = await getLuFiles(input, recurse)
+  let luObjects: any = []
+
+  for (let i = 0; i < luFiles.length; i++) {
+    let luContent = await readLuFile(luFiles[i])
+    luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
+  }
+
+  return luObjects
 }
 
 export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = ''): Promise<string> {
@@ -51,4 +65,17 @@ export async function generateNewTranslatedFilePath(fileName: string, translated
   newPath = path.join(newPath, translatedLanguage)
   await fs.mkdirp(newPath)
   return path.join(newPath, fileName)
+}
+
+async function readLuFile(file: string) {
+  if (!fs.existsSync(path.resolve(file))) {
+    throw new CLIError(`Sorry unable to open [${file}]`)
+  }
+  let fileContent
+  try {
+    fileContent = await utils.readTextFile(file)
+  } catch (err) {
+    throw new CLIError(`Sorry, error reading file: ${file}`)
+  }
+  return fileContent
 }
