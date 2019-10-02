@@ -1,12 +1,12 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
-    "$type": "Microsoft.OnClarifyEntity",
+    "$type": "Microsoft.OnClarifySlotValue",
     "condition":"turn.dialogEvent.Value.Change.Slot == '**PROPERTY**'",
     "actions": [
         {
             "$type": "Microsoft.Ask",
             "activity": "[Clarify**PROPERTY**]",
-            "expectedProperties": [
+            "expectedSlots": [
                 "**PROPERTY**"
             ]
         }

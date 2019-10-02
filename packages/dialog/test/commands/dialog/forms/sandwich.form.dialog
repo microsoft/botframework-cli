@@ -56,13 +56,6 @@
             "type": "string",
             "$mappings": ["utterance"]
         },
-        "CancelConfirmation": {
-            "type": "string",
-            "enum": [
-                "yes",
-                "no"
-            ]
-        },
         "Toppings": {
             "type": "array",
             "items": {

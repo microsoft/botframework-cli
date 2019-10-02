@@ -1,14 +1,10 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
     "$type": "Microsoft.OnIntent",
-    "intent": "cancel",
+    "intent": "Cancel",
     "actions": [
         {
-            "$type": "Microsoft.Ask",
-            "activity": "[cancel]",
-            "expectedProperties": [
-                "CancelConfirmation"
-            ]
+            "$type": "Microsoft.EndDialog" 
         }
     ]
 }
