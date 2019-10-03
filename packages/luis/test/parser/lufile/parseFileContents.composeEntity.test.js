@@ -208,7 +208,7 @@ $deviceTemperature:simple`;
           }`
           LUFromLUISJson(JSON.parse(inputLUISJSON))
             .then(res => {
-                assert(res.includes(`$deviceTemperature:[p1, child2]`));
+                assert(res.includes(`@ composite deviceTemperature = [p1, child2]`));
                 done();
             })
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
@@ -328,10 +328,10 @@ $deviceTemperature:simple`;
           }`;
       LUFromLUISJson(JSON.parse(inputLUISJSON))
           .then(res => {
-              assert(res.includes(`- this is another {c1={simple1=test}}`));
-              assert(res.includes(`- this is {c1=five degrees}`));
-              assert(res.includes(`- this is {c1=one {simple1=and} five degrees}`));
-              assert(res.includes(`- {c1=this is one}`));
+              assert(res.includes(`- this is another {@c1={@simple1=test}}`));
+              assert(res.includes(`- this is {@c1=five degrees}`));
+              assert(res.includes(`- this is {@c1=one {@simple1=and} five degrees}`));
+              assert(res.includes(`- {@c1=this is one}`));
               done();
           })
           .catch(err => done(`Test failed - ${JSON.stringify(err)}`))

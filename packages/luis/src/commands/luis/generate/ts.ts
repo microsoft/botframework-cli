@@ -1,4 +1,4 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import {camelCase, kebabCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
@@ -14,6 +14,7 @@ export default class LuisGenerateTs extends Command {
     in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
     out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output', default: ''}),
     className: flags.string({description: 'Name of the class'}),
+    force: flags.boolean({description: 'If --in flag provided with the path to an existing file, overwrites it', default: false}),
   }
 
   reorderEntities(app: any, name: string): void {
@@ -27,7 +28,12 @@ export default class LuisGenerateTs extends Command {
     let stdInput = await this.readStdin()
 
     const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()
-    const app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+    let app: any
+    try {
+      app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+    } catch (err) {
+      throw new CLIError(err)
+    }
 
     flags.className = flags.className || app.name
     flags.className = upperFirst(camelCase(flags.className))
@@ -39,7 +45,7 @@ export default class LuisGenerateTs extends Command {
     this.reorderEntities(app, 'patternAnyEntities')
     this.reorderEntities(app, 'composites')
 
-    const outputPath = Utils.validatePath(flags.out, process.cwd(), kebabCase(flags.className) + '.ts')
+    const outputPath = Utils.validatePath(flags.out, process.cwd(), kebabCase(flags.className) + '.ts', flags.force)
 
     this.log(
       `Generating file at ${outputPath || ''} that contains class ${flags.className}.`

@@ -1,0 +1,18 @@
+{
+  "name": "botbuilder",
+  "version": "1.0.0",
+  "lastVersionCheck": "2019-09-23T19:27:24.987Z",
+  "files": [],
+  "oclif": {
+    "commands": "../../../src/commands",
+    "bin": "bf",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@microsoft/bf-chatdown"
+    ],
+    "hooks": {
+      "init": "../../../src/hooks/init/inithook"
+    }
+  },
+  "lastversioncheck": "2019-09-27T23:36:07.377Z"
+}

@@ -52,6 +52,7 @@ export default class LuisConvert extends Command {
         result.desc = flags.desc || result.desc || ''
         result.culture = flags.culture || result.culture || 'en-us'
         result.culture = result.culture.toLowerCase()
+        if (result.flatListOfEntityAndRoles) delete result.flatListOfEntityAndRoles
         result = JSON.stringify(result, null, 2)
       }
 

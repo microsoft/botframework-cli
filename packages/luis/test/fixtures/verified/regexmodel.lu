@@ -14,5 +14,5 @@
 
 > # RegEx entities
 
-$HRF-number:/hrf-[0-9]{6}/
+@ regex HRF-number = /hrf-[0-9]{6}/
 
