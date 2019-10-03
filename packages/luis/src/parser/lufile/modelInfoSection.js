@@ -9,7 +9,7 @@ class LUModelInfo {
     constructor(parseTree) {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.MODELINFOSECTION;
-        this.ModelInfo = parseTree.modelInfoSection().getText();
+        this.ModelInfo = parseTree.modelInfoDefinition().getText();
     }
 }
 

@@ -159,7 +159,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
  */
 const parseAndHandleImportSection = async function (parsedContent, luResource) {
     // handle reference
-    let luImports = luResource.Imports.filter(s => s.SectionType === SectionType.IMPORTSECTION);
+    let luImports = luResource.Sections.filter(s => s.SectionType === SectionType.IMPORTSECTION);
     if (luImports && luImports.length > 0) {
         for (const luImport of luImports) {
             let linkValueText = luImport.Description.replace('[', '').replace(']', '');
@@ -485,7 +485,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                         let errorMsg = `Phrase lists cannot be used as an entity in a pattern "${pEntityName}"`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: entity.ParseTree.entityLine()
+                            context: entity.ParseTree.entityDefinition().entityLine()
                         })
 
                         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
@@ -541,7 +541,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                         let errorMsg = `QnA alteration section: "${alterationlist}" does not have list decoration. Prefix line with "-" or "+" or "*"`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: entity.ParseTree.entityLine()
+                            context: entity.ParseTree.entityDefinition().entityLine()
                         })
 
                         throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString()));
@@ -590,7 +590,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                     let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: entity.ParseTree.entityLine()
+                        context: entity.ParseTree.entityDefinition().entityLine()
                     })
 
                     throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
@@ -637,7 +637,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                             let errorMsg = `Phrase list: "${entityName}" has conflicting definitions. One marked interchangeable and another not interchangeable`;
                             let error = BuildDiagnostic({
                                 message: errorMsg,
-                                context: entity.ParseTree.entityLine()
+                                context: entity.ParseTree.entityDefinition().entityLine()
                             })
 
                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
@@ -670,7 +670,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                     let errorMsg = `Composite entity: ${entityName} is missing child entity definitions. Child entities are denoted via [entity1, entity2] notation.`;
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: entity.ParseTree.entityLine()
+                        context: entity.ParseTree.entityDefinition().entityLine()
                     })
 
                     throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
@@ -690,7 +690,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                         let errorMsg = `Composite entity: ${entityName} has multiple definition with different children. \n 1. ${compositeChildren.join(', ')}\n 2. ${compositeEntity.children.join(', ')}`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: entity.ParseTree.entityLine()
+                            context: entity.ParseTree.entityDefinition().entityLine()
                         })
 
                         throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
@@ -716,7 +716,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                         let errorMsg = `RegEx entity: ${regExEntity.name} has empty regex pattern defined.`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: entity.ParseTree.entityLine()
+                            context: entity.ParseTree.entityDefinition().entityLine()
                         })
 
                         throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
@@ -731,7 +731,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                             let errorMsg = `RegEx entity: ${regExEntity.name} has multiple regex patterns defined. \n 1. /${regex}/\n 2. /${regExEntity.regexPattern}/`;
                             let error = BuildDiagnostic({
                                 message: errorMsg,
-                                context: entity.ParseTree.entityLine()
+                                context: entity.ParseTree.entityDefinition().entityLine()
                             })
 
                             throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
@@ -744,7 +744,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                     let errorMsg = `RegEx entity: ${regExEntity.name} is missing trailing '/'. Regex patterns need to be enclosed in forward slashes. e.g. /[0-9]/`;
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: entity.ParseTree.entityLine()
+                        context: entity.ParseTree.entityDefinition().entityLine()
                     })
 
                     throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));

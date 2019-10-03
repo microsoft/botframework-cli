@@ -38,7 +38,7 @@ class EntitySection {
         }
 
         if (this.Type.indexOf('=') > -1 && synonymsOrPhraseList.length === 0) {
-            let errorMsg = `no synonyms list found for list entity definition: "${parseTree.entityLine().getText()}"`;
+            let errorMsg = `no synonyms list found for list entity definition: "${parseTree.entityDefinition().entityLine().getText()}"`;
             let error = BuildDiagnostic({
                 message: errorMsg,
                 context: parseTree.entityDefinition().entityLine(),
