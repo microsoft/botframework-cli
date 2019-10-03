@@ -7,6 +7,24 @@
             "$type": "Microsoft.SetProperty",
             "property": "$**PROPERTY**",
             "value": "@**PROPERTY**"
+        },
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$PropertyOnhold",
+            "value": "'$**PROPERTY**'"
+        },
+        {
+            "$type": "Microsoft.IfCondition",
+            "condition": "dialog.expectedProperties.First != '**PROPERTY**'",
+            "actions":[               
+                {
+                    "$type": "Microsoft.Ask",
+                    "activity": "[unexpectedPropertySet('**PROPERTY**', @**PROPERTY**, turn)]",
+                    "expectedProperties": [
+                        "SetPropertyConfirmation"
+                    ]
+                }                
+            ]           
         }
     ]
 }
