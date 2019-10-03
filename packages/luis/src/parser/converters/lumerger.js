@@ -213,7 +213,7 @@ const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, ne
         let filter = parsedUtterance.ref.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
 
         // find the parsed file
-        let result = filter(allParsedContent, parsedUtterance, luisModel)
+        let result = filter(allParsedContent, parsedUtterance, luisModel, utterance)
         
         result.utterances.forEach((utr) => newUtterancesToAdd.push(new hClasses.uttereances(utr, utterance.intent)))
         result.patterns.forEach((it) => newPatternsToAdd.push(new hClasses.pattern(it, utterance.intent)))
@@ -221,7 +221,7 @@ const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, ne
     });
 }
 
-const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisModel){
+const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisModel, utterance){
     let result = {
         utterances: [],
         patterns: []
@@ -231,22 +231,16 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisMo
         return result
     }
 
+    let parsedQnABlobs
     if( parsedUtterance.luFile.endsWith('*')) {
-        let parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.luFile.replace(/\*/g, '')));
-        if(!parsedQnABlobs) {
-            let error = BuildDiagnostic({
-                message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
-            });
+        parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.luFile.replace(/\*/g, '')));
+    } else {
+        // look for QnA
+        parsedQnABlobs = []
+        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.luFile));
+    }
 
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-        }
-
-        parsedQnABlobs.forEach(blob => blob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => result.utterances.push(question))));
-        return result
-    } 
-    // look for QnA
-    let parsedQnABlob = (allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.luFile);
-    if(!parsedQnABlob) {
+    if(!parsedQnABlobs || !parsedQnABlobs[0]) {
         let error = BuildDiagnostic({
             message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
         });
@@ -254,12 +248,11 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisMo
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
     }
 
-    // get questions list from .lu file and update list
-    parsedQnABlob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => result.utterances.push(question)));
+    parsedQnABlobs.forEach(blob => blob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => result.utterances.push(question))));
     return result
 }
 
-const filterLuisContent = function(allParsedContent, parsedUtterance, luisModel){
+const filterLuisContent = function(allParsedContent, parsedUtterance, luisModel, utterance){
     let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.luFile);
     if(!parsedLUISBlob ) {
         let error = BuildDiagnostic({
