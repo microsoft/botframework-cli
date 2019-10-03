@@ -14,7 +14,7 @@
             "actions": [
                 {
                     "$type": "Microsoft.DeleteProperty",
-                    "property": "$$PropertyOnHold"
+                    "property": "{$PropertyOnHold}"
                 }
             ]
         }
