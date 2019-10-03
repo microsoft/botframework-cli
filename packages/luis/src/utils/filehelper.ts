@@ -3,7 +3,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/lufile/helpers')
 const luObject = require('./../parser/lufile/classes/luObject')
-/* tslint:disable:prefer-for-of no-unused */
+/* tslint:disable:prefer-for-of no-unused*/
 
 export async function getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
   let filesToParse = []

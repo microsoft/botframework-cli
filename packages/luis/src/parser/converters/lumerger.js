@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
 const deepEqual = require('deep-equal')
 const parseFileContents = require('./../lufile/parseFileContents');
 const retCode = require('./../lufile/enums/CLI-errors');
@@ -16,8 +15,8 @@ const luisJSON = require('./../luisfile/parseLuisFile');
 
 
 module.exports = {
-    mergeAndResolveReferences: async function (luObjArray, verbose, luis_culture){
-        let allParsedContent = await buildLuObject(luObjArray, verbose, luis_culture)
+    mergeAndResolveReferences: async function (luObjArray, verbose, luis_culture, luSearchFn){
+        let allParsedContent = await buildLuObject(luObjArray, verbose, luis_culture, luSearchFn)
         await resolveReferencesInUtterances(allParsedContent)
         return allParsedContent
     }
@@ -53,12 +52,12 @@ const buildLuObject = async function(luObjArray, log, luis_culture, luSearchFn =
         if(parsedContent.additionalFilesToParse.length <= 0) {
             continue
         }
-        let parentDir = luOb.id === 'stdin' ? process.cwd() : path.parse(path.resolve(luOb.id)).dir
-        let foundLuFiles = await luSearchFn(parsedContent.additionalFilesToParse, parentDir)    
+
+        let foundLuFiles = await luSearchFn(luOb.id, parsedContent.additionalFilesToParse)    
         for( let i = 0; i < foundLuFiles.length; i++){ 
             if (parsedFiles.includes(foundLuFiles[i].id)) {
-                let duplicated = foundLuFiles.splice(i, 1); 
-                updateParsedFiles(allParsedLUISContent, allParsedQnAContent, allParsedAlterationsContent, duplicated);
+                let duplicated = foundLuFiles.splice(i--, 1)
+                updateParsedFiles(allParsedLUISContent, allParsedQnAContent, allParsedAlterationsContent, duplicated)
             }
         }
 
@@ -71,9 +70,9 @@ const buildLuObject = async function(luObjArray, log, luis_culture, luSearchFn =
     }
 }
 
-const findLuFilesInDir = async function(idsToFind, parentFilePath){
+const findLuFilesInDir = async function(srcId, idsToFind){
     let luObjects = []
-    parentFilePath = parentFilePath === 'stdin' ? process.cwd() : parentFilePath
+    let parentFilePath = srcId === 'stdin' ? process.cwd() : path.parse(path.resolve(srcId)).dir
     for(let idx = 0; idx < idsToFind.length; idx++ ) {
         // Support wild cards at the end of a relative .LU file path. 
         // './bar/*' should look for all .lu files under the specified folder.
@@ -88,21 +87,19 @@ const findLuFilesInDir = async function(idsToFind, parentFilePath){
             } 
             // Get LU files in this location
             const luFilesToAdd = helpers.findLUFiles(rootPath, isRecursive);
-            if(luFilesToAdd.length !== 0) {
-                // add these to filesToParse
-                for(let f = 0; f < luFilesToAdd.length; f++){
-                    luObjects.push(new luObject(luFilesToAdd[f], readLuFile(luFilesToAdd[f]), file.includeInCollate))
-                }
-            }
-        } else {
-            if(!path.isAbsolute(file.filePath)) {
-                file.filePath = path.resolve(parentFilePath, file.filePath)
+            // add these to filesToParse
+            for(let f = 0; f < luFilesToAdd.length; f++){
+                luObjects.push(new luObject(luFilesToAdd[f], readLuFile(luFilesToAdd[f]), file.includeInCollate))
             } 
+            continue
+        } 
 
-            let luContent = readLuFile(file.filePath)
-            // find matching parsed files and ensure includeInCollate is updated if needed.
-            luObjects.push(new luObject(file.filePath, luContent, file.includeInCollate))
-        }
+        if(!path.isAbsolute(file.filePath)) {
+            file.filePath = path.resolve(parentFilePath, file.filePath)
+        } 
+        // find matching parsed files and ensure includeInCollate is updated if needed.
+        luObjects.push(new luObject(file.filePath, readLuFile(file.filePath), file.includeInCollate))
+        
     }
     return luObjects
 }
@@ -142,81 +139,7 @@ const resolveReferencesInUtterances = async function(allParsedContent) {
         let newUtterancesToAdd = [];
         let newPatternsToAdd = [];
         let spliceList = [];
-        (luisModel.LUISJsonStructure.utterances || []).forEach((utterance,idx) => {
-            // Fix for BF-CLI #122. 
-            // Ensure only links are detected and passed on to be parsed.
-            if (helpers.isUtteranceLinkRef(utterance.text || '')) {
-                // we have stuff to parse and resolve
-                let parsedUtterance = helpers.parseLinkURI(utterance.text);
-                if (!path.isAbsolute(parsedUtterance.luFile)) parsedUtterance.luFile = path.resolve(path.dirname(luisModel.srcFile), parsedUtterance.luFile);
-                // see if we are in need to pull LUIS or QnA utterances
-                if (parsedUtterance.ref.endsWith('?')) {
-                    if( parsedUtterance.luFile.endsWith('*')) {
-                        let parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.luFile.replace(/\*/g, '')));
-                        if(parsedQnABlobs === undefined) {
-                            let error = BuildDiagnostic({
-                                message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
-                            });
-
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                        }
-
-                        parsedQnABlobs.forEach(blob => blob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => newUtterancesToAdd.push(new hClasses.uttereances(question, utterance.intent)))));
-                    } else {
-                        // look for QnA
-                        let parsedQnABlob = (allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.luFile);
-                        if(parsedQnABlob === undefined) {
-                            let error = BuildDiagnostic({
-                                message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
-                            });
-
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                        }
-
-                        // get questions list from .lu file and update list
-                        parsedQnABlob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => newUtterancesToAdd.push(new hClasses.uttereances(question, utterance.intent))));
-                    }
-                    spliceList.push(idx);
-                } else {
-                    // find the parsed file
-                    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.luFile);
-                    if(parsedLUISBlob === undefined) {
-                        let error = BuildDiagnostic({
-                            message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
-                        });
-
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                    }
-
-                    let utterances = [], patterns = [];
-                    if (parsedUtterance.ref.toLowerCase().includes('utterancesandpatterns')) {
-                        // get all utterances and add them
-                        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
-                        // Find all patterns and add them
-                        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => {
-                            let newUtterance = new hClasses.uttereances(item.pattern, item.intent);
-                            if (utterances.find(match => deepEqual(newUtterance, match)) !== undefined) utterances.push(new hClasses.uttereances(item.pattern, item.intent)) 
-                        });
-                    } else if (parsedUtterance.ref.toLowerCase().includes('utterances')) {
-                        // get all utterances and add them
-                        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
-                    } else if (parsedUtterance.ref.toLowerCase().includes('patterns')) {
-                        // Find all patterns and add them
-                        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => utterances.push(new hClasses.uttereances(item.pattern, item.intent)));
-                    } else {
-                        // get utterance list from reference intent and update list
-                        let referenceIntent = parsedUtterance.ref.replace(/-/g, ' ').trim();
-                        utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);
-                        // find and add any patterns for this intent
-                        patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);
-                    }
-                    (utterances || []).forEach(item => newUtterancesToAdd.push(new hClasses.uttereances(item.text, utterance.intent)));
-                    (patterns || []).forEach(item => newPatternsToAdd.push(new hClasses.pattern(item.pattern, utterance.intent)));
-                    // remove this reference utterance from the list
-                    spliceList.push(idx);
-                }
-            }
-        });
+        resolveNewUtterancesAndPatterns(luisModel, allParsedContent, newUtterancesToAdd, newPatternsToAdd, spliceList)
         // remove reference utterances from the list. The spliceList needs to be sorted so splice will actually work.
         spliceList.sort((a,b) => a-b).forEach((item, idx) => luisModel.LUISJsonStructure.utterances.splice((item - idx), 1));
         // add new utterances to the list
@@ -225,62 +148,171 @@ const resolveReferencesInUtterances = async function(allParsedContent) {
         newPatternsToAdd.forEach(item => luisModel.LUISJsonStructure.patterns.push(item));
 
         newPatternsToAdd.forEach(patternObject => {
-            if(patternObject.pattern.includes('{'))
-            {
-                let entityRegex = new RegExp(/\{(.*?)\}/g);
-                let entitiesFound = patternObject.pattern.match(entityRegex);
+            if(!patternObject.pattern.includes('{')) return 
+            let entityRegex = new RegExp(/\{(.*?)\}/g);
+            let entitiesFound = patternObject.pattern.match(entityRegex);
 
-                entitiesFound.forEach(function (entity) {
-                    entity = entity.replace("{", "").replace("}", "");
-                    let entityName = entity;
-                    let roleName = '';
-                    if (entity.includes(':')) {
-                        // this is an entity with role
-                        [entityName, roleName] = entity.split(':');
+            entitiesFound.forEach(function (entity) {
+                entity = entity.replace("{", "").replace("}", "");
+                let entityName = entity;
+                let roleName = '';
+                if (entity.includes(':')) {
+                    // this is an entity with role
+                    [entityName, roleName] = entity.split(':');
+                }
+                // insert the entity only if it does not already exist
+                let paIdx = -1;
+                let patternAnyInMaster = luisModel.LUISJsonStructure.patternAnyEntities.find((item, idx) => {
+                    if (item.name === entityName) {
+                        paIdx = idx;
+                        return true;
                     }
-                    // insert the entity only if it does not already exist
-                    let simpleEntityInMaster = luisModel.LUISJsonStructure.entities.find(item => item.name == entityName);
-                    let compositeInMaster = luisModel.LUISJsonStructure.composites.find(item => item.name == entityName);
-                    let listEntityInMaster = luisModel.LUISJsonStructure.closedLists.find(item => item.name == entityName);
-                    let regexEntityInMaster = luisModel.LUISJsonStructure.regex_entities.find(item => item.name == entityName);
-                    let prebuiltInMaster = luisModel.LUISJsonStructure.prebuiltEntities.find(item => item.name == entityName);
-                    let paIdx = -1;
-                    let patternAnyInMaster = luisModel.LUISJsonStructure.patternAnyEntities.find((item, idx) => {
-                        if (item.name === entityName) {
-                            paIdx = idx;
-                            return true;
-                        }
-                        return false;
-                    });
-                    if (!simpleEntityInMaster && 
-                        !compositeInMaster &&
-                        !listEntityInMaster &&
-                        !regexEntityInMaster &&
-                        !prebuiltInMaster) {
-                            if (!patternAnyInMaster) {
-                                // add a pattern.any entity
-                                if (roleName !== '') {
-                                    parseFileContents.addItemOrRoleIfNotPresent(luisModel.LUISJsonStructure, LUISObjNameEnum.PATTERNANYENTITY, entityName, [roleName])
-                                } else {
-                                    parseFileContents.addItemIfNotPresent(luisModel.LUISJsonStructure, LUISObjNameEnum.PATTERNANYENTITY, entity);
-                                }
-                            } else {
-                                // add the role if it does not exist already.
-                                if (roleName !== '') {
-                                    !patternAnyInMaster.roles.includes(roleName) ? patternAnyInMaster.roles.push(roleName) : undefined;
-                                }
-                            }
-                    } else {
-                        // we found this pattern.any entity as another type.
-                        if (patternAnyInMaster && paIdx !== -1) {
-                            // remove the patternAny entity from the list because it has been explicitly defined elsewhere.
-                            luisModel.LUISJsonStructure.patternAnyEntities.splice(paIdx, 1);
-                        }
+                    return false;
+                });
+                // insert the entity only if it does not already exist
+                if (isNewEntity(luisModel, entityName)) {
+                    if (!patternAnyInMaster && roleName !== '') {
+                        parseFileContents.addItemOrRoleIfNotPresent(luisModel.LUISJsonStructure, LUISObjNameEnum.PATTERNANYENTITY, entityName, [roleName])
+                        return
                     }
-                })
-            }
+
+                    if (!patternAnyInMaster) {
+                        parseFileContents.addItemIfNotPresent(luisModel.LUISJsonStructure, LUISObjNameEnum.PATTERNANYENTITY, entity);
+                        return
+                    }
+                    // add the role if it does not exist already.
+                    if (roleName !== '') {
+                        !patternAnyInMaster.roles.includes(roleName) ? patternAnyInMaster.roles.push(roleName) : undefined;    
+                    }
+                    return               
+                } 
+                // we found this pattern.any entity as another type.
+                if (patternAnyInMaster && paIdx !== -1) {
+                    // remove the patternAny entity from the list because it has been explicitly defined elsewhere.
+                    luisModel.LUISJsonStructure.patternAnyEntities.splice(paIdx, 1);
+                }
+            })
+            
         })
     })
+}
+
+const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, newUtterancesToAdd, newPatternsToAdd, spliceList){
+    (luisModel.LUISJsonStructure.utterances || []).forEach((utterance, idx) => {
+        // Fix for BF-CLI #122. 
+        // Ensure only links are detected and passed on to be parsed.
+        if (!helpers.isUtteranceLinkRef(utterance.text || '')) {
+            return
+        }
+
+        // we have stuff to parse and resolve
+        let parsedUtterance = helpers.parseLinkURI(utterance.text);
+
+        if (!path.isAbsolute(parsedUtterance.luFile)) parsedUtterance.luFile = path.resolve(path.dirname(luisModel.srcFile), parsedUtterance.luFile);
+        // see if we are in need to pull LUIS or QnA utterances
+        let filter = parsedUtterance.ref.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
+
+        // find the parsed file
+        let result = filter(allParsedContent, parsedUtterance, luisModel)
+        
+        result.utterances.forEach((utr) => newUtterancesToAdd.push(new hClasses.uttereances(utr, utterance.intent)))
+        result.patterns.forEach((it) => newPatternsToAdd.push(new hClasses.pattern(it, utterance.intent)))
+        spliceList.push(idx)
+    });
+}
+
+const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisModel){
+    let result = {
+        utterances: [],
+        patterns: []
+    }
+
+    if (!parsedUtterance.ref.endsWith('?')) {
+        return result
+    }
+
+    if( parsedUtterance.luFile.endsWith('*')) {
+        let parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.luFile.replace(/\*/g, '')));
+        if(!parsedQnABlobs) {
+            let error = BuildDiagnostic({
+                message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
+            });
+
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        }
+
+        parsedQnABlobs.forEach(blob => blob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => result.utterances.push(question))));
+        return result
+    } 
+    // look for QnA
+    let parsedQnABlob = (allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.luFile);
+    if(!parsedQnABlob) {
+        let error = BuildDiagnostic({
+            message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
+        });
+
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+    }
+
+    // get questions list from .lu file and update list
+    parsedQnABlob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => result.utterances.push(question)));
+    return result
+}
+
+const filterLuisContent = function(allParsedContent, parsedUtterance, luisModel){
+    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.luFile);
+    if(!parsedLUISBlob ) {
+        let error = BuildDiagnostic({
+            message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
+        });
+
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+    }
+
+    let utterances = [], patterns = [];
+    let result = {
+        utterances: [],
+        patterns: []
+    }
+    if (parsedUtterance.ref.toLowerCase().includes('utterancesandpatterns')) {
+        // get all utterances and add them
+        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
+        // Find all patterns and add them
+        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => {
+            let newUtterance = new hClasses.uttereances(item.pattern, item.intent);
+            if (utterances.find(match => deepEqual(newUtterance, match)) !== undefined) utterances.push(new hClasses.uttereances(item.pattern, item.intent)) 
+        });
+    } else if (parsedUtterance.ref.toLowerCase().includes('utterances')) {
+        // get all utterances and add them
+        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
+    } else if (parsedUtterance.ref.toLowerCase().includes('patterns')) {
+        // Find all patterns and add them
+        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => utterances.push(new hClasses.uttereances(item.pattern, item.intent)));
+    } else {
+        // get utterance list from reference intent and update list
+        let referenceIntent = parsedUtterance.ref.replace(/-/g, ' ').trim();
+        utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);
+        // find and add any patterns for this intent
+        patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);
+    }
+
+    (utterances || []).forEach(item => result.utterances.push(item.text));
+    (patterns || []).forEach(item => result.patterns.push(item.pattern));
+    return result
+}
+
+const isNewEntity = function(luisModel, entityName){
+    let simpleEntityInMaster = luisModel.LUISJsonStructure.entities.find(item => item.name == entityName);
+    let compositeInMaster = luisModel.LUISJsonStructure.composites.find(item => item.name == entityName);
+    let listEntityInMaster = luisModel.LUISJsonStructure.closedLists.find(item => item.name == entityName);
+    let regexEntityInMaster = luisModel.LUISJsonStructure.regex_entities.find(item => item.name == entityName);
+    let prebuiltInMaster = luisModel.LUISJsonStructure.prebuiltEntities.find(item => item.name == entityName);
+
+    return !simpleEntityInMaster && 
+    !compositeInMaster &&
+    !listEntityInMaster &&
+    !regexEntityInMaster &&
+    !prebuiltInMaster
 }
 
 const readLuFile = function(file) {
