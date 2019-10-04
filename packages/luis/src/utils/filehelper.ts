@@ -25,16 +25,36 @@ export async function getLuFiles(input: string | undefined, recurse = false): Pr
   return filesToParse
 }
 
-export async function getLuObjects(input: string | undefined, recurse = false) {
-  let luFiles = await getLuFiles(input, recurse)
+export async function getLuObjects(stdin: string, input: string | undefined, recurse = false) {
   let luObjects: any = []
-
-  for (let i = 0; i < luFiles.length; i++) {
-    let luContent = await readLuFile(luFiles[i])
-    luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
+  if (stdin) {
+    luObjects.push(new luObject('stdin', stdin))
+  } else {
+    let luFiles = await getLuFiles(input, recurse)
+    for (let i = 0; i < luFiles.length; i++) {
+      let luContent = await readLuFile(luFiles[i])
+      luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
+    }
   }
 
   return luObjects
+}
+
+export async function getContentFromFile(file: string) {
+  // catch if input file is a folder
+  if (fs.lstatSync(file).isDirectory()) {
+    throw new CLIError('Sorry, "' + file + '" is a directory! Please try a LUIS/ QnA Maker JSON file as input.')
+  }
+  if (!fs.existsSync(path.resolve(file))) {
+    throw new CLIError('Sorry unable to open [' + file + ']')
+  }
+  let fileContent
+  try {
+    fileContent = await utils.readTextFile(file)
+  } catch (err) {
+    throw new CLIError('Sorry, error reading file: ' + file)
+  }
+  return fileContent
 }
 
 export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = ''): Promise<string> {
@@ -78,4 +98,26 @@ async function readLuFile(file: string) {
     throw new CLIError(`Sorry, error reading file: ${file}`)
   }
   return fileContent
+}
+
+export async function detectLuContent(stdin: string, input: string) {
+  if (!stdin && !input) {
+    throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
+  }
+
+  if (!stdin) {
+    if (!fs.existsSync(path.resolve(input))) {
+      throw new CLIError(`Sorry unable to open [${input}]`)
+    }
+
+    let inputStat = await fs.stat(input)
+    return !inputStat.isFile() ? true : path.extname(input) === '.lu'
+  }
+
+  try {
+    await JSON.parse(stdin)
+  } catch (error) {
+    return true
+  }
+  return false
 }

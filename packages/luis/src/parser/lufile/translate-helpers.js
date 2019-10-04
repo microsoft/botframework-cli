@@ -3,7 +3,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-require('./utils');
+
 const fetch = require('node-fetch');
 const PARSERCONSTS = require('./enums/parserconsts');
 const retCode = require('./enums/CLI-errors');
