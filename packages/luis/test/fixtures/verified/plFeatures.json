@@ -72,12 +72,7 @@
   "prebuiltEntities": [
     {
       "name": "age",
-      "roles": [],
-      "features": [
-        {
-            "featureName": "phraselist1"
-        }
-      ]
+      "roles": []
     }
   ],
   "model_features": [

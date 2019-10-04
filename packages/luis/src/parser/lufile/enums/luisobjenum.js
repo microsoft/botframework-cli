@@ -11,5 +11,6 @@ module.exports = {
     UTTERANCE: "utterances",
     PATTERNS: "patterns",
     REGEX: "regex_entities",
-    COMPOSITES: "composites"
+    COMPOSITES: "composites",
+    MACHINELEARNED: "machine-learned"
 };

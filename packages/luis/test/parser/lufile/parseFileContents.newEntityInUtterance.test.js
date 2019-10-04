@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-const parseFile = require('./../../../src/parser/lufile/parseFileContents');
+const parseFile = require('../../../src/parser/lufile/parseFileContents');
 var chai = require('chai');
 var assert = chai.assert;
 describe('V2 Entity definitions in utterances', function () {

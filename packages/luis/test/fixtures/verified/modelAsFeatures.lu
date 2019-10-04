@@ -1,0 +1,28 @@
+
+# test1
+- one
+
+# test2
+- two
+
+# test3
+- three
+
+> model as feature to model
+@ intent test1 usesFeature test3
+@ intent test2 usesFeature simple1
+@ intent test3 usesFeature age
+@ simple simple1 usesFeature phraselist1
+@ simple1 usesFeature age
+
+@ list list1
+> pl as a feature to model
+
+@ prebuilt age
+
+@ phraselist phraselist1(interchangeable) = 
+	- who,why,where,what
+
+@ composite composite1 usesFeature phraselist1 = [simple1, age]
+@ composite1 usesFeature list1
+
