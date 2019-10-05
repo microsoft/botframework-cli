@@ -75,6 +75,10 @@ WS_IN_NAME
   : WHITESPACE+ -> type(WS)
   ;
 
+HASH_IN_NAME
+  : '#' -> type(HASH)
+  ;
+  
 NEWLINE_IN_NAME
   : '\r'? '\n' -> type(NEWLINE), popMode
   ;
