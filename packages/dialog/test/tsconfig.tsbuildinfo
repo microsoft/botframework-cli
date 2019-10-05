@@ -166,8 +166,8 @@
         "signature": "0096b80854aa269e2d6cb47d7d264cf376ee27f902f71406fb09faa0288432bb"
       },
       "../../command/node_modules/@oclif/config/lib/command.d.ts": {
-        "version": "e959961027053278d3c8bde65a01f7726697229ea3cb798b0d15ffdec888ec02",
-        "signature": "e959961027053278d3c8bde65a01f7726697229ea3cb798b0d15ffdec888ec02"
+        "version": "bf67e5f33b4258a5ac05488de04a86871df56175cfa36b0c66587284969a9749",
+        "signature": "bf67e5f33b4258a5ac05488de04a86871df56175cfa36b0c66587284969a9749"
       },
       "../../command/node_modules/@oclif/config/lib/hooks.d.ts": {
         "version": "b05352898b844a87fd8ef31b0420dfa584b2c058e39677bd51e0d942af1afe60",
@@ -238,24 +238,32 @@
         "signature": "ba093d7f1d0b2d57e2fc3059949eb8f65cfd6b08e1a9642917a6aa752029c7d7"
       },
       "../../command/lib/command.d.ts": {
-        "version": "c040e5271a6ff87ab510978e4d09254f44b9502e355caa3dcbd08c929ce5bd17",
-        "signature": "c040e5271a6ff87ab510978e4d09254f44b9502e355caa3dcbd08c929ce5bd17"
+        "version": "5d469c4fc613d74737248a661836d402eb40e449e624d63b1746bf849e35f2c2",
+        "signature": "5d469c4fc613d74737248a661836d402eb40e449e624d63b1746bf849e35f2c2"
+      },
+      "../../command/lib/utils.d.ts": {
+        "version": "015052332392a4736708722a1a39c23b514ee228a144381029a5be6b5d0a2c0d",
+        "signature": "015052332392a4736708722a1a39c23b514ee228a144381029a5be6b5d0a2c0d"
       },
       "../../command/lib/index.d.ts": {
-        "version": "349597634432a05c8a11619908091728913ca7c87087bfdb45ffddab690d1583",
-        "signature": "349597634432a05c8a11619908091728913ca7c87087bfdb45ffddab690d1583"
+        "version": "bd7430abf21e2a8ae7bce4a3a9622d620835672f7aba8c802477a2df5f60c2b3",
+        "signature": "bd7430abf21e2a8ae7bce4a3a9622d620835672f7aba8c802477a2df5f60c2b3"
       },
       "../src/commands/index.ts": {
         "version": "f76a30a9e60f70e5ec27ab58223f3bfd9cf94270724ddc894ea30f1d399705b6",
         "signature": "c60cc9d75be260a95ec7debb3492c777ac2ed9a5e270f2a267419a011fcfe446"
       },
-      "../src/library/formtracker.ts": {
-        "version": "f120e5ccf64364f3054ff3639b02c50faed6aa1959de72b0c562d730bf882667",
-        "signature": "f120e5ccf64364f3054ff3639b02c50faed6aa1959de72b0c562d730bf882667"
+      "../src/library/formschema.ts": {
+        "version": "304b3e4eb6acf70b4738e2bed1d5833dc624ad5e3e8406e58067466e7cb958c4",
+        "signature": "304b3e4eb6acf70b4738e2bed1d5833dc624ad5e3e8406e58067466e7cb958c4"
+      },
+      "../src/library/formgenerator.ts": {
+        "version": "fa6edc784cdf44193fa303e63fab0f0ff305406f75ed52082af93c67b86d44e9",
+        "signature": "fa6edc784cdf44193fa303e63fab0f0ff305406f75ed52082af93c67b86d44e9"
       },
       "../src/commands/dialog/form.ts": {
-        "version": "c362ac5109a8f2b9478b2f352fa040d26d55b29bc688ee258c70c08efe909f9f",
-        "signature": "8072ce845988a6fc6ad033c331acb7c1d7089fdee34774d5c7af0eb098694258"
+        "version": "cf7dd6c27580bf4baae6f5bd890b4e652a30f4cc90fa36b74d63c8194868f48a",
+        "signature": "602e48f54671a72a71fe32dae6433f824e12f65b8529686b1d1c165b91c95c8c"
       },
       "../node_modules/ajv/lib/ajv.d.ts": {
         "version": "b040cc8b4fd1b9d0a74b4dad292fb1554c66ccef626abca4798f532d084a3975",
@@ -490,7 +498,7 @@
         "signature": "51620afac1a5f9373a6eac2ce7f120a22df23e8540738dca1fc9d1ea0742eb5a"
       },
       "../src/commands/dialog/merge.ts": {
-        "version": "8764f3b3029f609a03ad15aafcec5416c3b77b5e34428c4cd84bfcb7e4a7bffd",
+        "version": "8307412e61824ab49d2b1e2a346195f0d26320213664de44ee08e8489759885a",
         "signature": "e5c865c2344576186a71508c64e05ea734a6c6a490d619c7e0f091b9ca1f6d8c"
       },
       "../node_modules/chalk/types/index.d.ts": {
@@ -506,7 +514,7 @@
         "signature": "68b7630b102c49bec55e483e2c37b142daa0579d6a5b9bcfa99ea741078df63e"
       },
       "../src/commands/dialog/verify.ts": {
-        "version": "e8b6eff408c1e413987748462bcba53e5b796e98c6db39e64868f2adf12d6902",
+        "version": "46ba23f8f2bd880c03439e6fc01d565dc6d9c87a965efa0124b5eb1e822d1430",
         "signature": "1bd1d07294469c8cb20732f933b4bd968bfffaaab853c8c3e17645501dba337f"
       },
       "../node_modules/@types/chai/index.d.ts": {
@@ -880,8 +888,13 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "../../command/lib/utils.d.ts": [
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "../../command/lib/index.d.ts": [
         "../../command/lib/command.d.ts",
+        "../../command/lib/utils.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -890,15 +903,22 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "../src/library/formtracker.ts": [
-        "../lib/library/formtracker.d.ts",
+      "../src/library/formschema.ts": [
+        "../lib/library/formschema.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../src/library/formgenerator.ts": [
+        "../lib/library/formgenerator.d.ts",
+        "../lib/library/formschema.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "../src/commands/dialog/form.ts": [
         "../../command/lib/index.d.ts",
-        "../node_modules/@types/node/os.d.ts",
-        "../lib/library/formtracker.d.ts",
+        "../lib/library/formschema.d.ts",
+        "../lib/library/formgenerator.d.ts",
+        "../node_modules/@types/node/path.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1792,16 +1812,12 @@
       ],
       "../../command/lib/index.d.ts": [
         "../../command/lib/command.d.ts",
+        "../../command/lib/utils.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "../src/commands/index.ts": [
         "../../command/lib/index.d.ts"
-      ],
-      "../src/library/formtracker.ts": [
-        "../lib/library/formtracker.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "../src/commands/dialog/form.ts": [
         "../../command/lib/index.d.ts"
@@ -2394,9 +2410,38 @@
       "../node_modules/@types/sinon/ts3.1/index.d.ts": [
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../../command/lib/utils.d.ts": [
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../src/library/formschema.ts": [
+        "../lib/library/formschema.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../src/library/formgenerator.ts": [
+        "../lib/library/formgenerator.d.ts",
+        "../lib/library/formschema.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
+      "../../command/node_modules/@oclif/config/lib/command.d.ts",
+      "../../command/node_modules/@oclif/config/lib/index.d.ts",
+      "../../command/node_modules/@oclif/config/lib/config.d.ts",
+      "../../command/node_modules/@oclif/config/lib/plugin.d.ts",
+      "../../command/node_modules/@oclif/config/lib/manifest.d.ts",
+      "../../command/lib/command.d.ts",
+      "../../command/lib/index.d.ts",
+      "../src/commands/dialog/verify.ts",
+      "../src/commands/dialog/merge.ts",
+      "../src/commands/dialog/form.ts",
+      "../src/commands/index.ts",
+      "../../command/lib/utils.d.ts",
+      "../src/library/formschema.ts",
+      "../src/library/formgenerator.ts",
       "../node_modules/typescript/lib/lib.es5.d.ts",
       "../node_modules/typescript/lib/lib.es2015.d.ts",
       "../node_modules/typescript/lib/lib.es2016.d.ts",
@@ -2438,14 +2483,9 @@
       "../../command/node_modules/@oclif/parser/lib/parse.d.ts",
       "../../command/node_modules/@oclif/parser/lib/help.d.ts",
       "../../command/node_modules/@oclif/parser/lib/index.d.ts",
-      "../../command/node_modules/@oclif/config/lib/command.d.ts",
       "../../command/node_modules/@oclif/config/lib/hooks.d.ts",
       "../../command/node_modules/@oclif/config/lib/pjson.d.ts",
-      "../../command/node_modules/@oclif/config/lib/manifest.d.ts",
       "../../command/node_modules/@oclif/config/lib/topic.d.ts",
-      "../../command/node_modules/@oclif/config/lib/plugin.d.ts",
-      "../../command/node_modules/@oclif/config/lib/config.d.ts",
-      "../../command/node_modules/@oclif/config/lib/index.d.ts",
       "../../command/node_modules/@oclif/command/lib/flags.d.ts",
       "../../command/node_modules/@oclif/command/lib/command.d.ts",
       "../../command/node_modules/@oclif/command/lib/main.d.ts",
@@ -2456,11 +2496,6 @@
       "../../command/node_modules/@oclif/errors/lib/logger.d.ts",
       "../../command/node_modules/@oclif/errors/lib/config.d.ts",
       "../../command/node_modules/@oclif/errors/lib/index.d.ts",
-      "../../command/lib/command.d.ts",
-      "../../command/lib/index.d.ts",
-      "../src/commands/index.ts",
-      "../src/library/formtracker.ts",
-      "../src/commands/dialog/form.ts",
       "../node_modules/ajv/lib/ajv.d.ts",
       "../node_modules/@types/node/globals.d.ts",
       "../node_modules/@types/node/assert.d.ts",
@@ -2519,11 +2554,9 @@
       "../node_modules/@types/semver/index.d.ts",
       "../node_modules/@types/xml2js/lib/processors.d.ts",
       "../node_modules/@types/xml2js/index.d.ts",
-      "../src/commands/dialog/merge.ts",
       "../node_modules/chalk/types/index.d.ts",
       "../src/library/schematracker.ts",
       "../src/library/dialogtracker.ts",
-      "../src/commands/dialog/verify.ts",
       "../node_modules/@types/chai/index.d.ts",
       "../node_modules/@types/lodash/ts3.1/common/common.d.ts",
       "../node_modules/@types/lodash/ts3.1/common/array.d.ts",

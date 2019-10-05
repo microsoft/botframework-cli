@@ -49,7 +49,7 @@ async function writeTemplate(template: string, outDir: string, prefix: string, t
     return outName
 }
 
-const TOKENS = ['**PROPERTY**', '**PROPERTIES', 'PROPERTIES**', '**ENTITY**', '**ENTITIES', 'ENTITIES**', '**ENUM**', '**ENUMS', 'ENUMS**', '**FORM**', '**REFERENCES**', '**LOCALE**',
+const TOKENS = ['**PROPERTY**', '**PROPERTIES', 'PROPERTIES**', '**ENTITY**', '**ENTITIES', 'ENTITIES**', '**ENUM**', '**ENUMS', 'ENUMS**', '**FORM**', '**REFERENCES**', '**LOCALE**', '**NAMES', 'NAMES**', '**NAME**',
     '**PROP0**', '**PROP1**', '**PROP2**', '**PROP3**', '**PROP4**', '**PROP5**', '**PROP6**', '**PROP7**', '**PROP8**', '**PROP9**']
 const PROPERTY = 0
 const STARTPROP = 1
@@ -63,7 +63,10 @@ const ENDENUM = 8
 const FORM = 9
 const REFERENCES = 10
 const LOCALE = 11
-const PROP = 12
+const STARTNAME = 12
+const ENDNAME = 13
+const NAME = 14
+const PROP = 15
 
 function scanForToken(template: string, pos: number, endToken: string): { newpos: number, block: string } | undefined {
     let current = ''
@@ -85,6 +88,7 @@ function scanForToken(template: string, pos: number, endToken: string): { newpos
  * \*\*PROPERTIES ... PROPERTIES\*\*: will duplicate the full block inside for each property and bound \*\*PROPERTY\*\* to the current property.
  * \*\*ENTITIES ... ENTITIES\*\*: will duplicate the full block inside for each entity name and bound \*\*ENTITY\*\* to the current entity.
  * \*\*ENUMS ... ENUMS\*\*: will duplicate the full block inside for each enum value and bound \*\*ENUM\*\* to the current enum.
+ * \*\*NAMES ... NAMES\*\*: will duplicate the full block inside for each name generated from the currrent property and bound \*\*NAME\*\* to the current name.
  * \*\*PROPERTY\*\* gets the current property name.
  * \*\*ENTITY\*\* gets the current entity name.
  * \*\*FORM\*\* gets the current form name.
@@ -96,7 +100,7 @@ function scanForToken(template: string, pos: number, endToken: string): { newpos
  * @param bindings Current bindings for tokens.
  * @param feedback Feedback function.
  */
-function expand(template: string, form: s.FormSchema, bindings: { property?: string, entity?: string, value?: string, references?: string, locale?: string, props?: string[] }, feedback?: Feedback): string {
+function expand(template: string, form: s.FormSchema, bindings: { property?: string, entity?: string, value?: string, references?: string, locale?: string, props?: string[], names?: string[], name?: string }, feedback?: Feedback): string {
     if (!feedback) {
         feedback = (_info: FeedbackType, _msg: string) => true
     }
@@ -162,7 +166,15 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
                         feedback(FeedbackType.error, `No definition for locale at ${startPos}.`)
                     }
                     current = ''
-                    break;
+                    break
+                case NAME:
+                    if (bindings.name) {
+                        newTemplate += bindings.name
+                    } else {
+                        feedback(FeedbackType.error, `No definition for name at ${startPos}.`)
+                    }
+                    current = ''
+                    break
                 case STARTPROP: {
                     let scan = scanForToken(template, pos + 1, TOKENS[ENDPROP])
                     if (scan) {
@@ -207,6 +219,23 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
                     current = ''
                     break
                 }
+                case STARTNAME: {
+                    let scan = scanForToken(template, pos + 1, TOKENS[ENDNAME])
+                    if (scan) {
+                        let { newpos, block } = scan
+                        if (!bindings.names) {
+                            bindings.names = Array.from(generateNames(bindings.property, bindings.locale))
+                        }
+                        for (let word of bindings.names) {
+                            newTemplate += expand(block, form, { name: word, ...bindings }, feedback)
+                        }
+                        pos = newpos
+                    } else {
+                        throw new Error(`${TOKENS[STARTENTITY]} at ${pos} missing end.`)
+                    }
+                    current = ''
+                    break
+                }
                 default:
                     if (match >= PROP) {
                         let num = current.substring(TOKENS[PROP].length - 1)
@@ -219,6 +248,46 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
         ++pos
     }
     return newTemplate
+}
+
+function* generateNames(property?: string, locale?: string): IterableIterator<string> {
+    if (property) {
+        switch (locale) {
+            default:
+                let current = 'lower'
+                let start = 0
+                let i = 0
+                let words: string[] = []
+                while (++i < property.length) {
+                    let ch = property.charAt(i)
+                    let split = false
+                    if (ch === ' ' || ch === '_' || ch === '-') {
+                        split = true
+                    } else if (ch === ch.toLowerCase()) {
+                        split = current === 'upper'
+                        current = 'lower'
+                    } else if (ch === ch.toUpperCase()) {
+                        split = current === 'lower'
+                        current = 'upper'
+                    }
+                    if (split) {
+                        words.push(property.substring(start, i).toLowerCase())
+                        start = i
+                    }
+                }
+                if (start < property.length) {
+                    words.push(property.substring(start).toLowerCase())
+                }
+                // Whole property
+                yield words.join(' ')
+                if (words.length > 1) {
+                    // Individual words
+                    for (let word of words) {
+                        yield word
+                    }
+                }
+        }
+    }
 }
 
 async function copyLibraryPattern(schema: s.FormSchema, pattern: string, outdir: string, force: boolean, feedback: Feedback): Promise<string[]> {
@@ -244,7 +313,7 @@ async function copyLibraries(schema: s.FormSchema, templateDir: string, ext: str
 async function generateLG(schema: s.FormSchema, templateDir: string, outDir: string, force: boolean, feedback: Feedback): Promise<void> {
     let libs = ''
     for (let ref of await copyLibraries(schema, templateDir, '.lg', outDir, force, feedback)) {
-        libs += `[${ref}](./${ref})${os.EOL}`
+        libs += `[${ref}](./${ref})${os.EOL} `
     }
 
     let refs = ''
@@ -255,7 +324,7 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outDir: str
                 let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
                 let outName = await writeTemplate(newTemplate + os.EOL + libs, outDir, schema.name, prop.path, '.lg', true, force, feedback)
                 if (outName) {
-                    refs += `[${outName}](./${outName})${os.EOL}`
+                    refs += `[${outName}](./${outName}) ${os.EOL} `
                 }
             }
         }
@@ -398,9 +467,9 @@ export async function generate(form: s.FormSchema, outDir: string, schema?: stri
         op = 'Generating'
     }
     feedback(FeedbackType.info, `${op} resources for ${form.name} in ${outDir}`)
-    feedback(FeedbackType.info, `Locales: ${JSON.stringify(locales)}`)
-    feedback(FeedbackType.info, `Templates: ${JSON.stringify(templateDirs)}`)
-    feedback(FeedbackType.info, `Schema: ${schema}`)
+    feedback(FeedbackType.info, `Locales: ${JSON.stringify(locales)} `)
+    feedback(FeedbackType.info, `Templates: ${JSON.stringify(templateDirs)} `)
+    feedback(FeedbackType.info, `Schema: ${schema} `)
     try {
         await fs.ensureDir(outDir)
         // For each property

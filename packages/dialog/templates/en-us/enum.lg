@@ -1,9 +1,13 @@
 # Ask**PROPERTY**
-- [askEnum('**PROPERTY**', turn)]
+- [askEnum('**PROPERTY**', **PROPERTY**Name())]
 
 # Clarify**PROPERTY**
-- [clarifyEnum('**PROPERTY**', turn)]
+- [clarifyEnum('**PROPERTY**', **PROPERTY**Name())]
 
 # Help**PROPERTY**
-- [helpProperty('**PROPERTY**', turn)]
+- [helpProperty('**PROPERTY**', **PROPERTY**Name())]
+
+# **PROPERTY**Name **NAMES 
+- **NAME** 
+NAMES**
 
