@@ -1,5 +1,6 @@
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
 const LUSectionTypes = require('./enums/lusectiontypes'); 
+const uuidv4 = require('uuid/v4');
 
 class QnaSection {
     /**
@@ -13,6 +14,7 @@ class QnaSection {
         this.Questions = this.Questions.concat(this.ExtractMoreQuestions(parseTree));
         this.FilterPairs = this.ExtractFilterPairs(parseTree);
         this.Answer = this.ExtractAnswer(parseTree);
+        this.Id = uuidv4();
     }
 
     ExtractQuestion(parseTree) {

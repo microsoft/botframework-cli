@@ -1,6 +1,7 @@
 const NestedIntentSectionContext = require('./generated/LUFileParser').LUFileParser.NestedIntentSectionContext
 const SimpleIntentSection = require('./simpleIntentSection');
 const LUSectionTypes = require('./enums/lusectiontypes'); 
+const uuidv4 = require('uuid/v4');
 
 class NestedIntentSection {
     /**
@@ -13,7 +14,8 @@ class NestedIntentSection {
         this.Name = this.ExtractName(parseTree);
         this.Body = this.ExtractBody(parseTree);
         this.SimpleIntentSections = this.ExtractSimpleIntentSections(parseTree);
-        this.Errors = this.SimpleIntentSections.flatMap(s => s.Errors)
+        this.Errors = this.SimpleIntentSections.flatMap(s => s.Errors);
+        this.Id = uuidv4();
     }
 
     ExtractName(parseTree) {
