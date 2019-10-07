@@ -25,31 +25,41 @@ export default class QnamakerTranslate extends Command {
   async run() {
     try {
       const {flags} = this.parse(QnamakerTranslate)
-      let inputStat = await fs.stat(flags.in)
+      // Check if data piped in stdin
+      let stdin = await this.readStdin()
       let outputStat = flags.out ? await fs.stat(flags.out) : null
 
       if (outputStat && outputStat.isFile()) {
         throw new CLIError('Output can only be writen to a folder')
       }
 
-      let isLu = !inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
+      let isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any
       if (isLu) {
-        const luFiles = await fileHelper.getLuFiles(flags.in, flags.recurse)
-        result = await luTranslator.translateLuFile(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse)
+        result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
-        let translation = await qnaConverter.parseQnAFileToLu(flags.in, false, false)
+        let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
+        let translation = await qnaConverter.parseQnAObjectToLu(json, false)
         translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
-        result = {}
-        Object.keys(translation).forEach(async idx => {
-          result[flags.in][idx] = await luConverter.parseFile(translation[idx][0], false)
-        })
+        let key = stdin ? 'stdin' : path.basename(flags.in)
+        result = {
+          [key] : {}
+        }
+        for (let lng in translation) {
+          let translatedJSON = await luConverter.parseFile(translation[lng], false)
+          result[key][lng] = await translatedJSON.qnaJsonStructure
+        }
       }
 
       if (flags.out) {
         await this.writeOutput(result, flags.out)
       } else {
-        this.log(JSON.stringify(result, null, 2))
+        if (isLu) {
+          this.log(result)
+        } else {
+          this.log(JSON.stringify(result, null, 2))
+        }
       }
 
     } catch (err) {

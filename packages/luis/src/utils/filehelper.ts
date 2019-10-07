@@ -5,7 +5,22 @@ const helpers = require('./../parser/lufile/helpers')
 const luObject = require('./../parser/lufile/classes/luObject')
 /* tslint:disable:prefer-for-of no-unused*/
 
-export async function getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
+export async function getLuObjects(stdin: string, input: string | undefined, recurse = false) {
+  let luObjects: any = []
+  if (stdin) {
+    luObjects.push(new luObject('stdin', stdin))
+  } else {
+    let luFiles = await getLuFiles(input, recurse)
+    for (let i = 0; i < luFiles.length; i++) {
+      let luContent = await getContentFromFile(luFiles[i])
+      luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
+    }
+  }
+
+  return luObjects
+}
+
+async function getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
   let filesToParse = []
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
@@ -25,28 +40,13 @@ export async function getLuFiles(input: string | undefined, recurse = false): Pr
   return filesToParse
 }
 
-export async function getLuObjects(stdin: string, input: string | undefined, recurse = false) {
-  let luObjects: any = []
-  if (stdin) {
-    luObjects.push(new luObject('stdin', stdin))
-  } else {
-    let luFiles = await getLuFiles(input, recurse)
-    for (let i = 0; i < luFiles.length; i++) {
-      let luContent = await readLuFile(luFiles[i])
-      luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
-    }
-  }
-
-  return luObjects
-}
-
 export async function getContentFromFile(file: string) {
   // catch if input file is a folder
   if (fs.lstatSync(file).isDirectory()) {
-    throw new CLIError('Sorry, "' + file + '" is a directory! Please try a LUIS/ QnA Maker JSON file as input.')
+    throw new CLIError('Sorry, "' + file + '" is a directory! Unable to read as a file')
   }
   if (!fs.existsSync(path.resolve(file))) {
-    throw new CLIError('Sorry unable to open [' + file + ']')
+    throw new CLIError('Sorry [' + file + '] does not exist')
   }
   let fileContent
   try {
@@ -58,7 +58,7 @@ export async function getContentFromFile(file: string) {
 }
 
 export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = ''): Promise<string> {
-  let base = !path.isAbsolute(outFileName) ? path.join(process.cwd(), outFileName) : outFileName
+  let base = path.resolve(outFileName)
   let extension = path.extname(base)
   if (extension) {
     let root = path.dirname(base)
@@ -77,27 +77,49 @@ export async function generateNewFilePath(outFileName: string, inputfile: string
 }
 
 export async function generateNewTranslatedFilePath(fileName: string, translatedLanguage: string, output: string): Promise<string> {
-  let newPath = ''
-  if (!path.isAbsolute(output)) {
-    newPath = path.join(process.cwd(), '')
-  }
-
+  let newPath = path.resolve(output)
   newPath = path.join(output, translatedLanguage)
   await fs.mkdirp(newPath)
   return path.join(newPath, fileName)
 }
 
-async function readLuFile(file: string) {
-  if (!fs.existsSync(path.resolve(file))) {
-    throw new CLIError(`Sorry unable to open [${file}]`)
+export function validatePath(outputPath: string, defaultFileName: string, forceWrite = false): string {
+  let completePath = path.resolve(outputPath)
+  const containingDir = path.dirname(completePath)
+
+  // If the cointaining folder doesnt exist
+  if (!fs.existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
+
+  const baseElement = path.basename(completePath)
+  const pathAlreadyExist = fs.existsSync(completePath)
+
+  // If the last element in the path is a file
+  if (baseElement.includes('.')) {
+    return pathAlreadyExist && !forceWrite ? enumerateFileName(completePath) : completePath
   }
-  let fileContent
-  try {
-    fileContent = await utils.readTextFile(file)
-  } catch (err) {
-    throw new CLIError(`Sorry, error reading file: ${file}`)
-  }
-  return fileContent
+
+  // If the last element in the path is a folder
+  if (!pathAlreadyExist) throw new CLIError(`Target directory path doesn't exist: ${completePath}`)
+  completePath = path.join(completePath, defaultFileName)
+  return fs.existsSync(completePath) && !forceWrite ? enumerateFileName(completePath) : completePath
+}
+
+function enumerateFileName(filePath: string): string {
+  const fileName = path.basename(filePath)
+  const containingDir = path.dirname(filePath)
+
+  if (!fs.existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
+
+  const extension = path.extname(fileName)
+  const baseName = path.basename(fileName, extension)
+  let nextNumber = 0
+  let newPath = ''
+
+  do {
+    newPath = path.join(containingDir, baseName + `(${++nextNumber})` + extension)
+  } while (fs.existsSync(newPath))
+
+  return newPath
 }
 
 export async function detectLuContent(stdin: string, input: string) {

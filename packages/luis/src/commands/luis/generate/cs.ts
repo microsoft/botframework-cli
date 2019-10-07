@@ -3,8 +3,8 @@ import {camelCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
 import {LuisToCsConverter} from '../../../parser/converters/luis-to-cs-converter'
-import {Utils} from '../../../utils'
 
+const file = require('./../../../utils/filehelper')
 const fs = require('fs-extra')
 
 export default class LuisGenerateCs extends Command {
@@ -52,7 +52,7 @@ export default class LuisGenerateCs extends Command {
     this.reorderEntities(app, 'patternAnyEntities')
     this.reorderEntities(app, 'composites')
 
-    const outputPath = Utils.validatePath(flags.out, process.cwd(), flags.className + '.cs', flags.force)
+    const outputPath = file.validatePath(flags.out, flags.className + '.cs', flags.force)
 
     this.log(
       `Generating file at ${outputPath || ''} that contains class ${space}.${flags.className}.`

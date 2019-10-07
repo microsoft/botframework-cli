@@ -25,31 +25,41 @@ export default class LuisTranslate extends Command {
   async run() {
     try {
       const {flags} = this.parse(LuisTranslate)
-      let inputStat = await fs.stat(flags.in)
+      // Check if data piped in stdin
+      let stdin = await this.readStdin()
       let outputStat = flags.out ? await fs.stat(flags.out) : null
 
       if (outputStat && outputStat.isFile()) {
         throw new CLIError('Output can only be writen to a folder')
       }
 
-      let isLu = !inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
+      let isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any
       if (isLu) {
-        let luFiles = await fileHelper.getLuFiles(flags.in, flags.recurse)
-        result = await luTranslator.translateLuFile(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse)
+        result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
-        let translation = await luisConverter.parseLuisFileToLu(flags.in, false)
-        translation = await luTranslator.translateLuObj(result, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
-        result = {}
-        Object.keys(translation).forEach(async idx => {
-          result[flags.in][idx] = await luConverter.parseFile(translation[idx][0], false)
-        })
+        let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
+        let translation = await luisConverter.parseLuisObjectToLu(json, false)
+        translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let key = stdin ? 'stdin' : path.basename(flags.in)
+        result = {
+          [key] : {}
+        }
+        for (let lng in translation) {
+          let translatedJSON = await luConverter.parseFile(translation[lng], false)
+          result[key][lng] = await translatedJSON.LUISJsonStructure
+        }
       }
 
       if (flags.out) {
         await this.writeOutput(result, flags.out)
       } else {
-        this.log(result)
+        if (isLu) {
+          this.log(result)
+        } else {
+          this.log(JSON.stringify(result, null, 2))
+        }
       }
 
     } catch (err) {
@@ -66,7 +76,7 @@ export default class LuisTranslate extends Command {
       for (let file in translatedObject) {
         for (let lng in translatedObject[file]) {
           filePath = await fileHelper.generateNewTranslatedFilePath(file, lng, out)
-          await fs.writeFile(filePath, translatedObject[path.basename(file)][lng][0], 'utf-8')
+          await fs.writeFile(filePath, translatedObject[file][lng], 'utf-8')
         }
       }
     } catch (err) {
