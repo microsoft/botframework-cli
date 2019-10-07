@@ -4,27 +4,31 @@
     "property": "**PROPERTY**",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
-            "property": "$**PROPERTY**",
-            "value": "@**PROPERTY**"
-        },
-        {
-            "$type": "Microsoft.SetProperty",
-            "property": "$PropertyOnhold",
-            "value": "$**PROPERTY**"
-        },
-        {
             "$type": "Microsoft.IfCondition",
             "condition": "!turn.dialogevent.value.expected",
             "actions":[               
                 {
-                    "$type": "Microsoft.Ask",
-                    "activity": "[unexpectedPropertySet('**PROPERTY**', @**PROPERTY**, turn)]",
-                    "expectedProperties": [
-                        "SetPropertyConfirmation"
+                    "$type": "Microsoft.IfCondition",
+                    "condition": "!$**PROPERTY**",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SendActivity",
+                            "activity": "[unexpectedPropertySet('**PROPERTY**', @**PROPERTY**, '**PROPERTY**')]"
+                        }
+                    ],
+                    "elseActions":[
+                        {
+                            "$type": "Microsoft.SendActivity",
+                            "activity": "[unexpectedPropertyChange('**PROPERTY**', @**PROPERTY**, '**PROPERTY**', $**PROPERTY**)]"
+                        }
                     ]
                 }                
             ]           
+        },
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$**PROPERTY**",
+            "value": "@**PROPERTY**"
         }
     ]
 }
