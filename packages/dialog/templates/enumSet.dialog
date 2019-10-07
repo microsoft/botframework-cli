@@ -19,7 +19,7 @@
             "actions":[               
                 {
                     "$type": "Microsoft.Ask",
-                    "activity": "[unexpectedPropertySet('**PROPERTY**', @**PROPERTY**, turn)]",
+                    "activity": "[unexpectedPropertySet('**PROPERTY**', @**PROPERTY**, '**PROPERTY**')]",
                     "expectedProperties": [
                         "SetPropertyConfirmation"
                     ]
