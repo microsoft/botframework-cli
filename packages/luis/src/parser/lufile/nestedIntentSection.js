@@ -14,7 +14,13 @@ class NestedIntentSection {
         this.Name = this.ExtractName(parseTree);
         this.Body = this.ExtractBody(parseTree);
         this.SimpleIntentSections = this.ExtractSimpleIntentSections(parseTree);
-        this.Errors = this.SimpleIntentSections.flatMap(s => s.Errors);
+        this.Errors = [];
+        if (this.SimpleIntentSections && this.SimpleIntentSections.length > 0) {
+            this.SimpleIntentSections.forEach(section => {
+                this.Errors = this.Errors.concat(section.Errors);
+            });
+        }
+        
         this.Id = uuidv4();
     }
 

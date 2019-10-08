@@ -125,16 +125,6 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // parse model info section
     [enableSections, enableMergeIntents] = parseAndHandleModelInfoSection(parsedContent, luResource, log);
 
-    if (!enableSections && luResource.Sections && luResource.length > 0) {
-        let errorMsg = `Section defintion '${luResource.Sections[0].Name}' is detected. Please enable @Sections = true in comments at the beginning of lu file`;
-        let error = BuildDiagnostic({
-            message: errorMsg,
-            context: luResource.Sections[0].ParseTree
-        })
-
-        throw (new exception(retCode.errorCode.INVALID_LINE, error.toString()));
-    }
-
     // parse reference section
     await parseAndHandleImportSection(parsedContent, luResource);
 
@@ -223,7 +213,6 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
                 mergedIntentSection.Name = section.Name;
                 for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
                     mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
-                    mergedIntentSection.Errors = mergedIntent.Errors.concat(section.SimpleIntentSections[idx].Errors);
                 }
 
                 luResource.Sections.push(mergedIntentSection);
@@ -247,7 +236,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
                 ))
             )
 
-            luResource.Sections.push(entitySectionsFromNestedIntent);
+            luResource.Sections = luResource.Sections.concat(entitySectionsFromNestedIntent);
         })
     }
 }
@@ -266,6 +255,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
             let intentName = intent.Name;
             // insert only if the intent is not already present.
             addItemIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.INTENT, intentName);
+            luResource.Sections = luResource.Sections.concat(intent.Entities);
             for (const utteranceAndEntities of intent.UtteranceAndEntitiesMap) {
                 // add utterance
                 let utterance = utteranceAndEntities.utterance.trim();
