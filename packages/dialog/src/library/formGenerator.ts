@@ -76,7 +76,7 @@ function scanForToken(template: string, pos: number, endToken: string): { newpos
         if (!endToken.startsWith(current)) {
             current = ''
         } else if (current === endToken) {
-            return { newpos: pos, block: template.substring(start, pos - endToken.length) }
+            return { newpos: pos, block: template.substring(start, pos - endToken.length + 1) }
         }
         ++pos
     }
@@ -95,14 +95,17 @@ function scanForToken(template: string, pos: number, endToken: string): { newpos
  * \*\*REFERENCES\*\*: list of references for generated files of that type.
  * \*\*LOCALE\*\* gets the locale name.
  * \*\*PROP<N>\*\* gets the nth prop name from an explicit list.
+ * @param path Original source of the template
  * @param template The template to substitute in.
  * @param form The schema of the current property or the whole schema.
  * @param bindings Current bindings for tokens.
  * @param feedback Feedback function.
  */
-function expand(template: string, form: s.FormSchema, bindings: { property?: string, entity?: string, value?: string, references?: string, locale?: string, props?: string[], names?: string[], name?: string }, feedback?: Feedback): string {
+function expand(path: string, template: string, form: s.FormSchema, bindings: { property?: string, entity?: string, value?: string, references?: string, locale?: string, props?: string[], names?: string[], name?: string }, feedback?: Feedback): string {
     if (!feedback) {
         feedback = (_info: FeedbackType, _msg: string) => true
+    } else {
+        feedback = (info: FeedbackType, msg: string) => (feedback as Feedback)(info, `In ${path} ${msg}`)
     }
     let newTemplate = ''
     let current = ''
@@ -180,11 +183,11 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
                     if (scan) {
                         let { newpos, block } = scan
                         for (let prop of form.schemaProperties()) {
-                            newTemplate += expand(block, prop, { property: prop.path, ...bindings }, feedback)
+                            newTemplate += expand(path, block, prop, { property: prop.path, names: Array.from(generateNames(prop.path, bindings.locale)), ...bindings }, feedback)
                         }
                         pos = newpos
                     } else {
-                        throw new Error(`${TOKENS[STARTPROP]} at ${startPos} missing end.`)
+                        throw new Error(`In ${path} ${TOKENS[STARTPROP]} at ${startPos} missing end.`)
                     }
                     current = ''
                     break
@@ -194,11 +197,11 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
                     if (scan) {
                         let { newpos, block } = scan
                         for (let entityName of form.mappings()) {
-                            newTemplate += expand(block, form, { entity: entityName, ...bindings }, feedback)
+                            newTemplate += expand(path, block, form, { entity: entityName, names: [], ...bindings }, feedback)
                         }
                         pos = newpos
                     } else {
-                        throw new Error(`${TOKENS[STARTENTITY]} at ${startPos} missing end.`)
+                        throw new Error(`In ${path} ${TOKENS[STARTENTITY]} at ${startPos} missing end.`)
                     }
                     current = ''
                     break
@@ -209,12 +212,12 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
                         let { newpos, block } = scan
                         if (form.schema.enum) {
                             for (let val of form.schema.enum) {
-                                newTemplate += expand(block, form, { value: val, ...bindings }, feedback)
+                                newTemplate += expand(path, block, form, { value: val, names: Array.from(generateNames(val, bindings.locale)), ...bindings }, feedback)
                             }
                         }
                         pos = newpos
                     } else {
-                        throw new Error(`${TOKENS[STARTENTITY]} at ${pos} missing end.`)
+                        throw new Error(`In ${path} ${TOKENS[STARTENUM]} at ${pos} missing end.`)
                     }
                     current = ''
                     break
@@ -223,15 +226,14 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
                     let scan = scanForToken(template, pos + 1, TOKENS[ENDNAME])
                     if (scan) {
                         let { newpos, block } = scan
-                        if (!bindings.names) {
-                            bindings.names = Array.from(generateNames(bindings.property, bindings.locale))
-                        }
-                        for (let word of bindings.names) {
-                            newTemplate += expand(block, form, { name: word, ...bindings }, feedback)
+                        if (bindings.names) {
+                            for (let word of bindings.names) {
+                                newTemplate += expand(path, block, form, { name: word, ...bindings }, feedback)
+                            }
                         }
                         pos = newpos
                     } else {
-                        throw new Error(`${TOKENS[STARTENTITY]} at ${pos} missing end.`)
+                        throw new Error(`In ${path} ${TOKENS[STARTNAME]} at ${pos} missing end.`)
                     }
                     current = ''
                     break
@@ -241,7 +243,7 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
                         let num = current.substring(TOKENS[PROP].length - 1)
                         newTemplate += Number(num)
                     } else if (match >= 0) {
-                        feedback(FeedbackType.error, `${TOKENS[match]} at ${pos} missing start.`)
+                        feedback(FeedbackType.error, `In ${path} ${TOKENS[match]} at ${pos} missing start.`)
                     }
             }
         }
@@ -250,42 +252,58 @@ function expand(template: string, form: s.FormSchema, bindings: { property?: str
     return newTemplate
 }
 
-function* generateNames(property?: string, locale?: string): IterableIterator<string> {
-    if (property) {
-        switch (locale) {
-            default:
-                let current = 'lower'
-                let start = 0
-                let i = 0
-                let words: string[] = []
-                while (++i < property.length) {
-                    let ch = property.charAt(i)
-                    let split = false
-                    if (ch === ' ' || ch === '_' || ch === '-') {
-                        split = true
-                    } else if (ch === ch.toLowerCase()) {
-                        split = current === 'upper'
-                        current = 'lower'
-                    } else if (ch === ch.toUpperCase()) {
-                        split = current === 'lower'
-                        current = 'upper'
-                    }
-                    if (split) {
-                        words.push(property.substring(start, i).toLowerCase())
-                        start = i
+function generateWords(name: string, locale?: string): string[] {
+    let words: string[] = []
+    switch (locale) {
+        default:
+            let current = 'lower'
+            let start = 0
+            let i = 0
+            // Skip first character and treat as lower
+            while (++i < name.length) {
+                let ch = name.charAt(i)
+                let split = false
+                let end = i
+                if (ch === ' ' || ch === '_' || ch === '-') {
+                    split = true
+                    while (i + 1 < name.length) {
+                        ch = name.charAt(i)
+                        if (ch === ' ' || ch === '_' || ch === '-') {
+                            ++i;
+                        } else {
+                            break;
+                        }
                     }
                 }
-                if (start < property.length) {
-                    words.push(property.substring(start).toLowerCase())
+                if (ch === ch.toLowerCase()) {
+                    split = split || current === 'upper'
+                    current = 'lower'
+                } else if (ch === ch.toUpperCase()) {
+                    split = split || current === 'lower'
+                    current = 'upper'
                 }
-                // Whole property
-                yield words.join(' ')
-                if (words.length > 1) {
-                    // Individual words
-                    for (let word of words) {
-                        yield word
-                    }
+                // Word is either all same case or initial case is different
+                if (split && end - start > 1) {
+                    words.push(name.substring(start, end).toLowerCase())
+                    start = i
                 }
+            }
+            if (start < name.length) {
+                words.push(name.substring(start).toLowerCase())
+            }
+    }
+    return words
+}
+
+function* generateNames(name?: string, locale?: string, minLen?: number, maxLen?: number): IterableIterator<string> {
+    if (name) {
+        let words = generateWords(name, locale)
+        minLen = minLen || 1
+        maxLen = maxLen || words.length
+        for (let len = minLen; len <= maxLen; ++len) {
+            for (let start = 0; start <= words.length - len; ++start) {
+                yield words.slice(start, start + len).join(' ')
+            }
         }
     }
 }
@@ -294,7 +312,7 @@ async function copyLibraryPattern(schema: s.FormSchema, pattern: string, outdir:
     let templates: string[] = []
     for (let templatePath of await glob(pattern)) {
         let template = await fs.readFile(templatePath, 'utf8')
-        let newTemplate = expand(template, schema, {}, feedback)
+        let newTemplate = expand(templatePath, template, schema, {}, feedback)
         let ext = path.extname(templatePath)
         let outName = await writeTemplate(newTemplate, outdir, schema.name, path.basename(templatePath, ext), ext, false, force, feedback)
         if (outName) {
@@ -321,7 +339,8 @@ async function generateLG(schema: s.FormSchema, templateDir: string, outDir: str
         for (let type of prop.templateNames()) {
             let template = await readTemplate(templateDir, type, '.lg', feedback)
             if (template) {
-                let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
+                let loc = path.basename(templateDir)
+                let newTemplate = expand(type + '.lg', template, prop, { property: prop.path, name: generateWords(prop.path, loc).join(' '), locale: loc }, feedback)
                 let outName = await writeTemplate(newTemplate + os.EOL + libs, outDir, schema.name, prop.path, '.lg', true, force, feedback)
                 if (outName) {
                     refs += `[${outName}](./${outName}) ${os.EOL} `
@@ -337,18 +356,20 @@ async function generateLU(schema: s.FormSchema, templateDir: string, outDir: str
     let templates = ''
     for (let entity of Object.values(schema.entities())) {
         if (entity.name !== 'utterance') {
+            let templateName = entity.name
             let template = await readTemplate(templateDir, entity.name, '.lu')
             let outName: string | undefined
             if (!template) {
                 if (entity.values) {
-                    template = await readTemplate(templateDir, 'enum', '.lu', feedback)
+                    templateName = 'enum'
                 } else {
-                    template = await readTemplate(templateDir, 'string', '.lu', feedback)
+                    templateName = 'string'
                 }
+                template = await readTemplate(templateDir, templateName, '.lu', feedback)
             }
             if (template) {
                 let valueSchema = new s.FormSchema('', { enum: entity.values })
-                template = expand(template, valueSchema, { entity: entity.name, locale: path.basename(templateDir) }, feedback)
+                template = expand(templateName + '.lu', template, valueSchema, { entity: entity.name, locale: path.basename(templateDir) }, feedback)
                 outName = await writeTemplate(template, outDir, schema.name, entity.name, '.lu', true, force, feedback)
             }
             if (outName) {
@@ -392,7 +413,8 @@ async function generateDialog(form: s.FormSchema, schema: string, templateDir: s
             for (let templateName of await glob(path.join(templateDir, type + '*.dialog'))) {
                 let template = await readTemplate(templateDir, path.basename(templateName, '.dialog'), '.dialog', feedback)
                 if (template) {
-                    let newTemplate = expand(template, prop, { property: prop.path, locale: path.basename(templateDir) }, feedback)
+                    let loc = path.basename(templateDir)
+                    let newTemplate = expand(path.basename(templateName), template, prop, { property: prop.path, name: generateWords(prop.path, loc).join(' '), locale: loc }, feedback)
                     let name = expandedName(path.basename(templateName, '.dialog'), prop.path)
                     let obj = JSON.parse(newTemplate)
                     obj.$schema = schema
@@ -413,7 +435,7 @@ async function generateDialog(form: s.FormSchema, schema: string, templateDir: s
 
     let root = await readTemplate(templateDir, 'Main', '.dialog', feedback)
     if (root) {
-        let newRoot = expand(root, form, { references: templates, locale: path.basename(templateDir) }, feedback)
+        let newRoot = expand('main.dialog', root, form, { references: templates, locale: path.basename(templateDir) }, feedback)
         await writeTemplate(newRoot, outDir, '', form.name + '.main', '.dialog', false, force, feedback)
     } else {
         throw new Error('Missing Main.dialog template')
@@ -430,7 +452,7 @@ async function generateMultiLanguage(schema: s.FormSchema, locales: string[], te
             }
             refs += `"${locale}/${schema.name}.${locale}.lu"`
         }
-        let newTemplate = expand(template, schema, { locale: locales[0], references: refs }, feedback)
+        let newTemplate = expand('luconfig.json', template, schema, { locale: locales[0], references: refs }, feedback)
         await writeTemplate(newTemplate, outDir, '', 'luconfig', '.json', false, true, feedback)
     }
 }

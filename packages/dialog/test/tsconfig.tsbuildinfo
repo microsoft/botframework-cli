@@ -1810,6 +1810,10 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "../../command/lib/utils.d.ts": [
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "../../command/lib/index.d.ts": [
         "../../command/lib/command.d.ts",
         "../../command/lib/utils.d.ts",
@@ -1818,6 +1822,17 @@
       ],
       "../src/commands/index.ts": [
         "../../command/lib/index.d.ts"
+      ],
+      "../src/library/formschema.ts": [
+        "../lib/library/formschema.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../src/library/formgenerator.ts": [
+        "../lib/library/formgenerator.d.ts",
+        "../lib/library/formschema.d.ts",
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "../src/commands/dialog/form.ts": [
         "../../command/lib/index.d.ts"
@@ -2410,38 +2425,9 @@
       "../node_modules/@types/sinon/ts3.1/index.d.ts": [
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "../../command/lib/utils.d.ts": [
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "../src/library/formschema.ts": [
-        "../lib/library/formschema.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts"
-      ],
-      "../src/library/formgenerator.ts": [
-        "../lib/library/formgenerator.d.ts",
-        "../lib/library/formschema.d.ts",
-        "../node_modules/@types/node/util.d.ts",
-        "../node_modules/@types/node/ts3.2/util.d.ts"
       ]
     },
     "semanticDiagnosticsPerFile": [
-      "../../command/node_modules/@oclif/config/lib/command.d.ts",
-      "../../command/node_modules/@oclif/config/lib/index.d.ts",
-      "../../command/node_modules/@oclif/config/lib/config.d.ts",
-      "../../command/node_modules/@oclif/config/lib/plugin.d.ts",
-      "../../command/node_modules/@oclif/config/lib/manifest.d.ts",
-      "../../command/lib/command.d.ts",
-      "../../command/lib/index.d.ts",
-      "../src/commands/dialog/verify.ts",
-      "../src/commands/dialog/merge.ts",
-      "../src/commands/dialog/form.ts",
-      "../src/commands/index.ts",
-      "../../command/lib/utils.d.ts",
-      "../src/library/formschema.ts",
-      "../src/library/formgenerator.ts",
       "../node_modules/typescript/lib/lib.es5.d.ts",
       "../node_modules/typescript/lib/lib.es2015.d.ts",
       "../node_modules/typescript/lib/lib.es2016.d.ts",
@@ -2483,9 +2469,14 @@
       "../../command/node_modules/@oclif/parser/lib/parse.d.ts",
       "../../command/node_modules/@oclif/parser/lib/help.d.ts",
       "../../command/node_modules/@oclif/parser/lib/index.d.ts",
+      "../../command/node_modules/@oclif/config/lib/command.d.ts",
       "../../command/node_modules/@oclif/config/lib/hooks.d.ts",
       "../../command/node_modules/@oclif/config/lib/pjson.d.ts",
+      "../../command/node_modules/@oclif/config/lib/manifest.d.ts",
       "../../command/node_modules/@oclif/config/lib/topic.d.ts",
+      "../../command/node_modules/@oclif/config/lib/plugin.d.ts",
+      "../../command/node_modules/@oclif/config/lib/config.d.ts",
+      "../../command/node_modules/@oclif/config/lib/index.d.ts",
       "../../command/node_modules/@oclif/command/lib/flags.d.ts",
       "../../command/node_modules/@oclif/command/lib/command.d.ts",
       "../../command/node_modules/@oclif/command/lib/main.d.ts",
@@ -2496,6 +2487,13 @@
       "../../command/node_modules/@oclif/errors/lib/logger.d.ts",
       "../../command/node_modules/@oclif/errors/lib/config.d.ts",
       "../../command/node_modules/@oclif/errors/lib/index.d.ts",
+      "../../command/lib/command.d.ts",
+      "../../command/lib/utils.d.ts",
+      "../../command/lib/index.d.ts",
+      "../src/commands/index.ts",
+      "../src/library/formschema.ts",
+      "../src/library/formgenerator.ts",
+      "../src/commands/dialog/form.ts",
       "../node_modules/ajv/lib/ajv.d.ts",
       "../node_modules/@types/node/globals.d.ts",
       "../node_modules/@types/node/assert.d.ts",
@@ -2554,9 +2552,11 @@
       "../node_modules/@types/semver/index.d.ts",
       "../node_modules/@types/xml2js/lib/processors.d.ts",
       "../node_modules/@types/xml2js/index.d.ts",
+      "../src/commands/dialog/merge.ts",
       "../node_modules/chalk/types/index.d.ts",
       "../src/library/schematracker.ts",
       "../src/library/dialogtracker.ts",
+      "../src/commands/dialog/verify.ts",
       "../node_modules/@types/chai/index.d.ts",
       "../node_modules/@types/lodash/ts3.1/common/common.d.ts",
       "../node_modules/@types/lodash/ts3.1/common/array.d.ts",

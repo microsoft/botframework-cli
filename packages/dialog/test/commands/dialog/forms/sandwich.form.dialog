@@ -21,9 +21,10 @@
         "Bread": {
             "type": "string",
             "enum": [
-                "multigrain",
+                "multiGrainWheat",
                 "rye",
-                "white"
+                "white",
+                "wholeWheat"
             ]
         },
         "Cheese": {
