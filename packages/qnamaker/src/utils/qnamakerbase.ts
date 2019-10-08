@@ -14,9 +14,10 @@ export async function processInputs(flags: any, payload: any, configfile: string
     ServiceBase.config = flags
     await qnaconfig.validateConfig(flags)
     const serviceManifest = srvMan.getServiceManifest(payload)
+    flags.in = stdin ? stdin : flags.in
     result.requestBody = await srvMan.validateArguments(serviceManifest, flags)
     if (stdin || flags.in) {
-      result.requestBody = stdin ? stdin : await getFileInput(flags.in)
+      result.requestBody = stdin ? JSON.parse(stdin) : await getFileInput(flags.in)
     }
     result.config = config
     result.serviceManifest = serviceManifest
