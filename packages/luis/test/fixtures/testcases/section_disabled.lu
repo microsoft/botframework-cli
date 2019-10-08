@@ -1,6 +1,3 @@
-> !# @enableSections = true
-> !# @enableMergeIntents = false
-
 # Greeting
 ## HelloGreeting
 - Hi {userName=vishwac}
@@ -15,9 +12,9 @@ $userName:simple
 - Good Bye {userName=vishwac}
 
 > # Entity definitions
-$userName:simple
+@ simple userName
 
-@ simple dateTime
+$dateTime:simple
 
 # Help
 - help

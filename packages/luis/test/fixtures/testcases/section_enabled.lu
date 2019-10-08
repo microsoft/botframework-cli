@@ -14,7 +14,7 @@ $userName:simple
 - Good Bye {userName=vishwac}
 
 > # Entity definitions
-$userName:simple
+@ simple userName
 
 $dateTime:simple
 

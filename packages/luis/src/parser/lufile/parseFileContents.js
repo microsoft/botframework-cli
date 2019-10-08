@@ -143,7 +143,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     let featuresToProcess = parseAndHandleEntityV2(parsedContent, luResource, log, locale);
 
     // parse nested intent section
-    parseAndHandleNestedIntentSection(luResource, enableMergeIntents);
+    parseAndHandleNestedIntentSection(luResource, enableSections, enableMergeIntents);
 
     // parse simple intent section
     parseAndHandleSimpleIntentSection(parsedContent, luResource);
@@ -509,14 +509,24 @@ const handleAtPrefix = function(entity, flatEntityAndRoles) {
 }
 /**
  * Intent parser code to parse intent section.
- * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
  * @param {LUResouce} luResource resources extracted from lu file content
+ * @param {boolean} enableSections enable functionality to parse nested intent section or not
+ * @param {boolean} enableMergeIntents enable functionality to merge intents in nested intent section or not
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleNestedIntentSection = function (luResource, enableMergeIntents) {
+const parseAndHandleNestedIntentSection = function (luResource, enableSections, enableMergeIntents) {
     // handle nested intent section
     let entitySectionsFromNestedIntent = [];
     let sections = luResource.Sections.filter(s => s.SectionType === SectionType.NESTEDINTENTSECTION);
+    if (!enableSections && sections && sections.length > 0) {
+        let errorMsg = `Nested intent section '${sections[0].Name}' is detected. Please enable @Sections = true in comments at the beginning of lu file`;
+        let error = BuildDiagnostic({
+            message: errorMsg,
+            context: sections[0].ParseTree
+        })
+
+        throw (new exception(retCode.errorCode.INVALID_LINE, error.toString()));
+    }
     if (sections && sections.length > 0) {
         sections.forEach(section => {
             if (enableMergeIntents) {

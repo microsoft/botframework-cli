@@ -396,6 +396,13 @@ describe('luis:convert negative tests', () => {
   .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx) => {
     expect(ctx.stderr).to.contain("[ERROR] line 1:0 - line 1:1: syntax error: invalid input 'f' detected.")
   })
+
+  test
+  .stderr()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_disabled.lu')}`])
+  .it('luis:convert should show ERR message when @Sections = true not marked in lu model information header', async (ctx) => {
+    expect(ctx.stderr).to.contain("[ERROR] line 1:0 - line 12:31: Nested intent section 'Greeting' is detected. Please enable @Sections = true in comments at the beginning of lu file")
+  })
 })
 
 describe('luis:convert VA skill lu files', () => {
