@@ -24,8 +24,13 @@ const fileToParse = require('./classes/filesToParse');
 const luParser = require('./luParser');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const EntityTypeEnum = require('./enums/lusiEntityTypes');
+const EntityTypeEnum = require('./enums/luisEntityTypes');
 const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
+const plAllowedTypes = ["simple", "composite", "machine-learned"];
+const featureTypeEnum = {
+    featureToModel: 'modelName',
+    modelToFeature: 'featureName'
+};
 const INTENTTYPE = 'intent';
 const parseFileContentsModule = {
     /**
@@ -148,7 +153,86 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
         parseFeatureSections(parsedContent, featuresToProcess);
     }
 }
-
+/**
+ * Helper function to validate if the requested feature addition is valid.
+ * @param {String} srcItemType 
+ * @param {String} srcItemName 
+ * @param {String} tgtFeatureType 
+ * @param {String} tgtFeatureName 
+ * @param {String} line 
+ */
+const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureType, tgtFeatureName, line) {
+    switch(srcItemType) {
+        case INTENTTYPE:
+        case EntityTypeEnum.SIMPLE:
+        case EntityTypeEnum.ML:
+        case EntityTypeEnum.COMPOSITE:
+            // can use everything as a feature except pattern.any
+            if (tgtFeatureType === EntityTypeEnum.PATTERNANY) {
+                let errorMsg = `'patternany' entity cannot be added as a feature. Invalid definition found for "@ ${srcItemType} ${srcItemName} usesFeature ${tgtFeatureName}"`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: line
+                })
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            }
+            break;
+        default:
+            // cannot have any features assigned
+            let errorMsg = `Invalid definition found for "@ ${srcItemType} ${srcItemName} usesFeature ${tgtFeatureName}". usesFeature is only available for intent, ${plAllowedTypes.join(', ')}`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                context: line
+            })
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            break;
+    }
+}
+/**
+ * Helper function to add features to the parsed content scope.
+ * @param {Object} tgtItem 
+ * @param {String} feature 
+ * @param {String} featureType 
+ * @param {Object} line 
+ */
+const addFeatures = function(tgtItem, feature, featureType, line) {
+    // target item cannot have the same name as the feature name
+    if (tgtItem.name === feature) {
+        // Item must be defined before being added as a feature.
+        let errorMsg = `Source and target cannot be the same for usesFeature. e.g. x usesFeature x  is invalid. "${tgtItem.name}" usesFeature "${feature}" is invalid.`;
+        let error = BuildDiagnostic({
+            message: errorMsg,
+            context: line
+        })
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+    }
+    let featureAlreadyDefined = (tgtItem.features || []).find(item => item.modelName == feature || item.featureName == feature);
+    switch (featureType) {
+        case featureTypeEnum.featureToModel: {
+            if (tgtItem.features) {
+                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.featureToModel(feature));
+            } else {
+                tgtItem.features = new Array(new helperClass.featureToModel(feature));
+            }
+            break;
+        }
+        case featureTypeEnum.modelToFeature: {
+            if (tgtItem.features) {
+                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.modelToFeature(feature));
+            } else {
+                tgtItem.features = new Array(new helperClass.modelToFeature(feature));
+            }
+            break;
+        }
+        default: 
+            break;
+    }
+}
+/**
+ * Helper function to handle usesFeature definitions
+ * @param {Object} parsedContent 
+ * @param {Object} featuresToProcess 
+ */
 const parseFeatureSections = function(parsedContent, featuresToProcess) {
     // We are only interested in extracting features and setting things up here.
     (featuresToProcess || []).forEach(section => {
@@ -170,21 +254,24 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 let featuresList = section.Features.split(/[,;]/g).map(item => item.trim());
                 (featuresList || []).forEach(feature => {
                     let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
+                    let featureIntentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-                            if (intentExists.features) {
-                                let featureAlreadyDefined = (intentExists.features || []).find(item => item.featureName == feature);
-                                if (!featureAlreadyDefined) intentExists.features.push(new helperClass.intentFeature(feature));
-                            } else {
-                                intentExists.features = [new helperClass.intentFeature(feature)];
-                            }
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                         }
+                    } else if (featureIntentExists) {
+                        // Add intent as a feature to another intent
+                        validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
+                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an intent. No definition found for feature "${feature}" in usesFeature definition for intent "${section.Name}"`;
@@ -207,28 +294,31 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
             // handle as entity
             if (section.Features) {
                 let featuresList = section.Features.split(/[,;]/g).map(item => item.trim());
+                // Find the source entity from the collection and get its type
+                let srcEntityInFlatList = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == section.Name);
+                let entityType = srcEntityInFlatList ? srcEntityInFlatList.type : undefined;
                 (featuresList || []).forEach(feature => {
-                    let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == section.Name);
-                    let entityType = undefined;
-                    if (entityExists) entityType = entityExists.type;
                     let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
+                    let featureIntentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
+                    // find the entity based on its type.
+                    let srcEntity = (parsedContent.LUISJsonStructure[luisEntityTypeMap[entityType]] || []).find(item => item.name == section.Name);
                     if (featureExists) {
-                        // find the entity based on its type.
-                        let entityFound = (parsedContent.LUISJsonStructure[luisEntityTypeMap[entityType]] || []).find(item => item.name == section.Name);
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-                            if (entityFound.features) {
-                                let featureAlreadyDefined = (entityFound.features || []).find(item => item.featureName == feature);
-                                if (!featureAlreadyDefined) entityFound.features.push(new helperClass.intentFeature(feature));
-                            } else {
-                                entityFound.features = [new helperClass.intentFeature(feature)];
-                            }
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                         }
+                    } else if (featureIntentExists) {
+                        // Add intent as a feature to another intent
+                        validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
+                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an entity. No definition found for feature "${feature}" in usesFeature definition for entity "${section.Name}"`;
@@ -241,8 +331,76 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 });
             }
         }
-    })
+    });
+
+    // Circular dependency for features is not allowed. E.g. A usesFeature B usesFeature A is not valid. 
+    verifyNoCircularDependencyForFeatures(parsedContent);
 }
+
+/**
+ * Helper function to update a list of dependencies for usesFeature
+ * @param {String} type 
+ * @param {Object} parsedContent 
+ * @param {Object} dependencyList 
+ */
+const updateDependencyList = function(type, parsedContent, dependencyList) {
+    // go through intents and capture dependency list
+    (parsedContent.LUISJsonStructure[type] || []).forEach(itemOfType => {
+        let srcName = itemOfType.name;
+        let copySrc, copyValue;
+        if (itemOfType.features) {
+            (itemOfType.features || []).forEach(feature => {
+                if (feature.modelName) feature = feature.modelName;
+                if (feature.featureName) feature = feature.featureName;
+                // find any items where this feature is the target
+                let featureDependencyEx = dependencyList.filter(item => srcName == (item.value ? item.value.slice(-1)[0] : undefined));
+                (featureDependencyEx || []).forEach(item => {
+                    item.key = `${item.key.split('::')[0]}::${feature}`;
+                    item.value.push(feature);
+                })
+                // find any items where this feature is the source
+                featureDependencyEx = dependencyList.find(item => feature == (item.value ? item.value.slice(0)[0] : undefined));
+                if (featureDependencyEx) {
+                    copySrc = featureDependencyEx.key.split('::')[1];
+                    copyValue = featureDependencyEx.value.slice(1);
+                }
+                let dependencyExists = dependencyList.find(item => item.key == `${srcName}::${feature}`);
+                if (!dependencyExists) {
+                    let lKey = copySrc ? `${srcName}::${copySrc}` : `${srcName}::${feature}`;
+                    let lValue = [srcName, feature];
+                    if (copyValue) copyValue.forEach(item => lValue.push(item));
+                    dependencyList.push({
+                        key : lKey,
+                        value : lValue
+                    })
+                } else {
+                    dependencyExists.key = `${dependencyExists.key.split('::')[0]}::${feature}`;
+                    dependencyExists.value.push(feature);
+                }
+                let circularItemFound = dependencyList.find(item => item.value && item.value.slice(0)[0] == item.value.slice(-1)[0]);
+                if (circularItemFound) {
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Circular dependency found for usesFeature. ${circularItemFound.value.join(' -> ')}`));
+                }
+                
+            })
+        }
+    });
+}
+/**
+ * Helper function to verify there are no circular dependencies in the parsed content.
+ * @param {Object} parsedContent 
+ */
+const verifyNoCircularDependencyForFeatures = function(parsedContent) {
+    let dependencyList = [];
+    updateDependencyList(LUISObjNameEnum.INTENT, parsedContent, dependencyList);
+    updateDependencyList(LUISObjNameEnum.ENTITIES, parsedContent, dependencyList);
+    updateDependencyList(LUISObjNameEnum.CLOSEDLISTS, parsedContent, dependencyList);
+    updateDependencyList(LUISObjNameEnum.COMPOSITES, parsedContent, dependencyList);
+    updateDependencyList(LUISObjNameEnum.PATTERNANYENTITY, parsedContent, dependencyList);
+    updateDependencyList(LUISObjNameEnum.PREBUILT, parsedContent, dependencyList);
+    updateDependencyList(LUISObjNameEnum.REGEX, parsedContent, dependencyList);
+}
+
 /**
  * Reference parser code to parse reference section.
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object

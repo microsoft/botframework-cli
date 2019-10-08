@@ -131,9 +131,14 @@ const readerObj = {
             return this.roles.includes(value);
         }
     },
-    intentFeature: class {
+    featureToModel: class {
         constructor(name) {
             this.featureName = name ? name : '';
+        }
+    },
+    modelToFeature: class {
+        constructor(name) {
+            this.modelName = name ? name : '';
         }
     }
 };

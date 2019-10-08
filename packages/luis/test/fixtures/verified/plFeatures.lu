@@ -7,6 +7,8 @@
 ## intent1
 
 
+@ intent intent1 usesFeature phraselist1
+
 > # Entity definitions
 
 @ simple simple1 usesFeature phraselist1
@@ -14,7 +16,7 @@
 
 > # PREBUILT Entity definitions
 
-@ prebuilt age usesFeature phraselist1
+@ prebuilt age
 
 
 > # Phrase list definitions

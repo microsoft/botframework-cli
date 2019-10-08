@@ -49,8 +49,15 @@ describe('luis:convert', () => {
     test
     .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/plFeatures.json')}`, '--out', 'root.lu'])
-    .it('luis:convert successfully reconstructs a markdown file from a LUIS input file', async () => {
+    .it('luis:convert successfully reconstructs a markdown file from a LUIS input file (phrase list as feature)', async () => {
       expect(await compareLuFiles('./../../../root.lu', './../../fixtures/verified/plFeatures.lu')).to.be.true
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/modelAsFeatures.json')}`, '--out', 'root.lu'])
+    .it('luis:convert successfully reconstructs a markdown file from a LUIS input file (model as features)', async () => {
+      expect(await compareLuFiles('./../../../root.lu', './../../fixtures/verified/modelAsFeatureGen.lu')).to.be.true
     })
 
     test
