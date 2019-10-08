@@ -13,15 +13,17 @@ class LUResource {
   }
 
   // TODO
-  // 1.After CRUD, section Ids will be Scrambled and regenerated.
-  // 2.Check section content, guarantee only one section exist in the section content.
+  // After CRUD, section Ids will be Scrambled and regenerated.
   addSection(sectionContent) {
+    this.checkSectionContent(sectionContent);
     var newContent = `${this.Content}\r\n${sectionContent}`;
 
     return luParser.parse(newContent);
   }
 
   updateSection(id, sectionContent) {
+    this.checkSectionContent(sectionContent);
+
     const section = this.Sections.find(u => u.Id === id);
     if (!section) {
        return this;
@@ -49,6 +51,27 @@ class LUResource {
     return luParser.parse(newContent);
   }
 
+  checkSectionContent(sectionContent) {
+    let findSection = false;
+    const originList = originString.split('\n');
+
+    for (let line of originList) {
+      if (this.isIntentSection(line) 
+        || this.isEntitySection(line) 
+        || this.isImportSection(line)
+        || this.isModelInfoSection(line)
+        || this.isQnaSection(line)) {
+          if (!findSection) {
+            findSection = true;
+            continue;
+          } else {
+            throw new Error("Please operate one section at a time.");
+          }
+        }
+    }
+
+  }
+
   replaceRangeContent(originString, startLine, stopLine, replaceString) {
 
     if (!originString) {
@@ -71,6 +94,28 @@ class LUResource {
     destList.push(...originList.slice(stopLine + 1));
 
     return destList.join('\n');
+  }
+
+  isIntentSection(line) {
+    return line && line.startsWith('#') && !line.startsWith('##');
+  }
+
+  isEntitySection(line) {
+    return line && line.startsWith('$');
+  }
+
+  isImportSection(line) {
+    const importPattern = /^\[[^\[]+\]\([^|]+\)$/gi;
+    return line && importPattern.test(line);
+  }
+
+  isModelInfoSection(line) {
+    return line && line.startsWith('> !#');
+  }
+
+  isQnaSection(line) {
+    const qnaPattern = /^#+ +\?/gi;
+    return line && qnaPattern.test(line);
   }
 }
 
