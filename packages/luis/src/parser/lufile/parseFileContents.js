@@ -248,7 +248,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 let errorMsg = `Intents can only have usesFeature and nothing else. Invalid definition for "${section.Name}".`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
-                    context: section.ParseTree.newEntityLine()
+                    context: section.ParseTree.newEntityDefinition().newEntityLine()
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
             }
@@ -263,26 +263,26 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine());
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
-                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
-                        validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                        validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an intent. No definition found for feature "${feature}" in usesFeature definition for intent "${section.Name}"`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: section.ParseTree.newEntityLine()
+                            context: section.ParseTree.newEntityDefinition().newEntityLine()
                         })
                         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
                     }
@@ -291,7 +291,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 let errorMsg = `Features can only be added to intents that have a definition. Invalid feature definition found for intent "${section.Name}".`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
-                    context: section.ParseTree.newEntityLine()
+                    context: section.ParseTree.newEntityDefinition().newEntityLine()
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
             }
@@ -310,26 +310,26 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     if (featureExists) {
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine());
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
-                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
-                        validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                        validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an entity. No definition found for feature "${feature}" in usesFeature definition for entity "${section.Name}"`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: section.ParseTree.newEntityLine()
+                            context: section.ParseTree.newEntityDefinition().newEntityLine()
                         })
                         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
                     }

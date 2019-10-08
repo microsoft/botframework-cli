@@ -38,7 +38,7 @@ class LUParser {
         sections = sections.concat(entitySections);
 
         let newEntitySections = this.extractNewEntitiesSections(fileContent);
-        newEntitiesSections.forEach(section => errors = errors.concat(section.Errors));
+        newEntitySections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(newEntitySections);
 
         let importSections = this.extractImportSections(fileContent);
