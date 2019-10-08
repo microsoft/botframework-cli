@@ -139,15 +139,15 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // parse reference section
     await parseAndHandleImportSection(parsedContent, luResource);
 
+    // parse entity definition v2 section
+    let featuresToProcess = parseAndHandleEntityV2(parsedContent, luResource, log, locale);
+
     // parse nested intent section
     parseAndHandleNestedIntentSection(luResource, enableMergeIntents);
 
     // parse simple intent section
     parseAndHandleSimpleIntentSection(parsedContent, luResource);
     
-    // parse entity definition v2 section
-    let featuresToProcess = parseAndHandleEntityV2(parsedContent, luResource, log, locale);
-
     // parse entity section
     parseAndHandleEntitySection(parsedContent, luResource, log, locale);
 

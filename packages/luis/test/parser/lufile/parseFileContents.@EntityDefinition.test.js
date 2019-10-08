@@ -206,7 +206,7 @@ describe('V2 Entity definitions using @ notation', function () {
                     assert.equal(res.LUISJsonStructure.entities.length, 1);
                     assert.equal(res.LUISJsonStructure.entities[0].name, 'value');
                     assert.equal(res.LUISJsonStructure.entities[0].roles.length, 2);
-                    assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ['r1', 'r2']);
+                    assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ['r2', 'r1']);
                     done();
                 })
                 .catch(err => done(err))
