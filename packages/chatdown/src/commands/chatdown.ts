@@ -70,6 +70,7 @@ export default class Chatdown extends Command {
       if (err.message.match(/EEXIT: 0/)) {
         process.exit(0);
       }
+      throw err
     }
   }
 
