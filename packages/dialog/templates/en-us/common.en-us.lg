@@ -48,3 +48,12 @@
 
 # chooseProperty(property)
 - "{property.entity.text}" as {property.property}
+
+# readForm
+- {join(foreach(dialog.requiredProperties, property, readingProperty(property)), ', ')}
+
+# readingProperty(property)
+- {toLower(property)}={dialog[property]}
+
+# changeSlot
+- Is there any slot you want to change? (yes/no)
