@@ -2,6 +2,7 @@
 
 import { Command as Base } from '@oclif/command'
 export { flags } from '@oclif/command'
+import { CLIError as OCLIFError}  from '@oclif/errors'
 import { CLIError } from './clierror'
 export { CLIError } from './clierror'
 import ReadPipedData from './readpipeddata'
@@ -33,7 +34,7 @@ export abstract class Command extends Base {
   }
 
   async catch(err: any) {
-    if (err instanceof CLIError) {
+    if (err instanceof CLIError || err instanceof OCLIFError) {
       if (!err.message.match(/EEXIT: 0/)) {
         this.error(err.message)
       }
@@ -71,7 +72,7 @@ export abstract class Command extends Base {
   }
 
   private extractError(input: string | Error): string {
-    return input instanceof Error ? input.message.concat(input.name) : input
+    return input instanceof Error ? input.name : input
   }
 
   private getTelemetryProperties(): Array<string> {
