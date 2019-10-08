@@ -2,8 +2,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import {camelCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
-import {LuisToCsConverter} from '../../../parser/converters/luis-to-cs-converter'
-
+const LuisToCsConverter = require('./../../../parser/converters/luistocsconverter')
 const file = require('./../../../utils/filehelper')
 const fs = require('fs-extra')
 
