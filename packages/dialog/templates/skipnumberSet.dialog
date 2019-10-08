@@ -13,13 +13,13 @@
                     "actions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "[unexpectedPropertySet('**PROPERTY**', @**PROPERTY**, **PROPERTY**Name())]"
+                            "activity": "[unexpectedPropertySet('**PROPERTY**', @number, **PROPERTY**Name)]"
                         }
                     ],
                     "elseActions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "[unexpectedPropertyChange('**PROPERTY**', @**PROPERTY**, **PROPERTY**Name(), $**PROPERTY**)]"
+                            "activity": "[unexpectedPropertyChange('**PROPERTY**', @number, **PROPERTY**Name, $**PROPERTY**)]"
                         }
                     ]
                 }                
@@ -28,7 +28,7 @@
         {
             "$type": "Microsoft.SetProperty",
             "property": "$**PROPERTY**",
-            "value": "@**PROPERTY**"
+            "value": "@number"
         }
     ]
 }
