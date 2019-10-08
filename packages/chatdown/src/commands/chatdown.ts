@@ -67,7 +67,9 @@ export default class Chatdown extends Command {
       if (err.message.match(/Malformed configurations options detected/)) {
         throw new CLIError(err.message)
       }
-      throw err
+      if (err.message.match(/EEXIT: 0/)) {
+        process.exit(0);
+      }
     }
   }
 
