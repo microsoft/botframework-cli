@@ -33,18 +33,12 @@ async function validateArguments(serviceManifest, args) {
 
     if (!entityRequired && entitySpecified) {
         error.message = `The ${operation.name} operation does not accept an input`;
-
         throw error;
     }
 
-    if (entityRequired) {
-        if (entitySpecified) {
-            body = await getFileInput(args);
-        }
-        else {
-            error.message = `The ${operation.name} requires an input of type: ${operation.entityType}`;
-            throw error;
-        }
+    if (entityRequired && !entitySpecified) {
+        error.message = `The ${operation.name} requires an input of type: ${operation.entityType}`;
+        throw error;
     }
 
     if (serviceManifest.operation.params) {
@@ -59,14 +53,6 @@ async function validateArguments(serviceManifest, args) {
 
     // Note that the ServiceBase will validate params that may be required.
     return body;
-}
-
-async function getFileInput(args) {
-    if (typeof args.in !== 'string') {
-        return null;
-    }
-    // Let any errors fall through to the runProgram() promise
-    return await fs.readJSON(path.resolve(args.in))
 }
 
 module.exports = {
