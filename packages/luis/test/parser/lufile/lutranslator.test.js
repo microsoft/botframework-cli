@@ -225,6 +225,49 @@ describe('With the parseAndTranslate method', function() {
                 done();
             })
             .catch(err => done(err))
+    });
+
+    it('Translate for new entity type is handled correctly', function(done){
+        if (!TRANSLATE_KEY) {
+            this.skip();
+        }
+        let luFile = `
+@ simple s1 sr1
+@ phraselist pl1 = 
+    - cheese
+    - tomato
+    - potato
+@ list l1 hasRoles lr1,lr2 = 
+- one :
+    - two
+    - three
+- four :
+    - five
+    - six
+`;
+
+        let trRes = `
+@ simple s1 sr1
+@ phraselist pl1 =
+        - fromage
+        - tomate
+        - pomme de terre
+@ list l1 hasRoles lr1,lr2 =
+        - one:
+            - un
+            - deux
+            - trois
+        - four:
+            - quatre
+            - cinq
+            - six
+`;
+        translate.parseAndTranslate(luFile, TRANSLATE_KEY, 'fr-fr', 'en-us', true, false, true)
+            .then(res => {
+                assert.equal(res.replace(/[\r\n\t ]/g, ''), trRes.replace(/[\r\n\t ]/g, ''));
+                done();
+            })
+            .catch(err => done(err))
     })
     
 });

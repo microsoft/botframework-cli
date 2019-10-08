@@ -2,12 +2,12 @@
 > # Intent definitions
 
 # AskForUserName
-- {userName=vishwac}
-- I'm {userName=vishwac}
-- call me {userName=vishwac}
-- my name is {userName=vishwac}
-- {userName=vishwac} is my name
-- you can call me {userName=vishwac}
+- {@userName=vishwac}
+- I'm {@userName=vishwac}
+- call me {@userName=vishwac}
+- my name is {@userName=vishwac}
+- {@userName=vishwac} is my name
+- you can call me {@userName=vishwac}
 
 
 # Buy chocolate
@@ -32,7 +32,7 @@
 
 # DeleteAlarm
 - delete the {alarmTime} alarm
-- remove the {alarmTime} alarm
+- remove the {@alarmTime} alarm
 
 
 # Greeting
@@ -58,77 +58,76 @@
 
 
 # setThermostat
-- Please set {deviceTemperature=thermostat to 72}
-- Set {deviceTemperature={customDevice=owen} to 72}
+- Please set {@deviceTemperature=thermostat to 72}
+- Set {@deviceTemperature={@customDevice=owen} to 72}
 
 
 # testIntent
-- I need a flight from {datetimeV2:fromDate=tomorrow} and returning on {datetimeV2:toDate=next thursday}
+- I need a flight from {@fromDate=tomorrow} and returning on {@toDate=next thursday}
 
 
 > # Entity definitions
 
-$customDevice:simple
+@ simple customDevice
 
-$userName:simple
+@ simple userName
 
 
 > # PREBUILT Entity definitions
 
-$PREBUILT:age
+@ prebuilt age
 
-$PREBUILT:datetimeV2 Roles=fromDate, toDate
+@ prebuilt datetimeV2 hasRoles fromDate,toDate
 
-$PREBUILT:temperature
+@ prebuilt temperature
 
 
 > # Phrase list definitions
 
-$ChocolateType:phraseList
-- m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
-$question:phraseList interchangeable
-- are you,you are
+@ phraselist ChocolateType = 
+	- m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
+
+@ phraselist question(interchangeable) = 
+	- are you,you are
+
 
 > # List entities
 
-$commPreference:call=
-- phone call
-- give me a ring
-- ring
-- call
-- cell phone
-- phone
-
-$commPreference:text=
-- message
-- text
-- sms
-- text message
-
-$commPreference:fax=
-- fax
-- fascimile
-
+@ list commPreference = 
+	- call :
+		- phone call
+		- give me a ring
+		- ring
+		- call
+		- cell phone
+		- phone
+	- text :
+		- message
+		- text
+		- sms
+		- text message
+	- fax :
+		- fax
+		- fascimile
 
 
-$device:thermostat=
-- Thermostat
-- Heater
-- AC
-- Air conditioner
-
-$device:refrigerator=
-- Fridge
-- Cooler
-
+@ list device = 
+	- thermostat :
+		- Thermostat
+		- Heater
+		- AC
+		- Air conditioner
+	- refrigerator :
+		- Fridge
+		- Cooler
 
 
 > # RegEx entities
 
-$HRF-number:/hrf-[0-9]{6}/
-$zander:/z-[0-9]{3}/
+@ regex HRF-number = /hrf-[0-9]{6}/
+@ regex zander = /z-[0-9]{3}/
 
 > # Composite entities
 
-$deviceTemperature:[device, customDevice, temperature]
-$units:[temperature]
+@ composite deviceTemperature = [device, customDevice, temperature]
+@ composite units = [temperature]

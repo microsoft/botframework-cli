@@ -6,6 +6,7 @@ const LUResource = require('./luResource');
 const NestedIntentSection = require('./nestedIntentSection');
 const SimpleIntentSection = require('./simpleIntentSection');
 const EntitySection = require('./entitySection');
+const NewEntitySection =  require('./newEntitySection');
 const ImportSection = require('./importSection');
 const QnaSection = require('./qnaSection');
 const ModelInfoSection = require('./modelInfoSection');
@@ -36,14 +37,20 @@ class LUParser {
         entitySections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(entitySections);
 
+        let newEntitySections = this.extractNewEntitiesSections(fileContent);
+        newEntitiesSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(newEntitySections);
+
         let importSections = this.extractImportSections(fileContent);
         importSections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(importSections);
         
         let qnaSections = this.extractQnaSections(fileContent);
+        qnaSections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(qnaSections);
 
         let modelInfoSections = this.extractModelInfoSections(fileContent);
+        modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(modelInfoSections);
 
         return new LUResource(sections, content, errors);
@@ -124,6 +131,24 @@ class LUParser {
             .filter(x => x !== undefined && x != null);
 
         let entitySectionList = entitySections.map(x => new EntitySection(x));
+
+        return entitySectionList;
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractNewEntitiesSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let entitySections = fileContext.paragraph()
+            .map(x => x.newEntitySection())
+            .filter(x => x !== undefined && x != null);
+
+        let entitySectionList = entitySections.map(x => new NewEntitySection(x));
 
         return entitySectionList;
     }

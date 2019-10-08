@@ -1,5 +1,5 @@
 import {Command} from '../src/command'
-import {CLIError} from '@oclif/errors' 
+import {CLIError} from './../src/clierror' 
 import {expect, fancy} from 'fancy-test'
 import ReadPipedStdin from '../src/readpipeddata'
 import * as path from 'path';

@@ -5,14 +5,14 @@
 
 
 # TestIntent
-- this is a {EntityOne=one} and a {EntityTwo=two} and a {EntityOne=one} again
+- this is a {@EntityOne=one} and a {@EntityTwo=two} and a {@EntityOne=one} again
 
 
 > # Entity definitions
 
-$EntityOne:simple
+@ simple EntityOne
 
-$EntityTwo:simple
+@ simple EntityTwo
 
 
 > # PREBUILT Entity definitions

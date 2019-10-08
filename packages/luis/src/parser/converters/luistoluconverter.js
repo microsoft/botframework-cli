@@ -59,18 +59,18 @@ module.exports = {
                         let nonCompositesInUtterance = sortedEntitiesList.filter(entity => LUISJSON.composites.find(composite => composite.name == entity.entity) == undefined);
                         nonCompositesInUtterance.forEach(entity => {
                             if (entity.role !== undefined) {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}:${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
                             } else {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
                             }
                             tokenizedText[parseInt(entity.endPos)] += `}`;
                         })
                         let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => LUISJSON.composites.find(composite => composite.name == entity.entity) != undefined);
                         compositeEntitiesInUtterance.forEach(entity => {
                             if (entity.role !== undefined) {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}:${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
                             } else {
-                                tokenizedText[parseInt(entity.startPos)] = `{${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
+                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
                             }
                             tokenizedText[parseInt(entity.endPos)] += `}`;
                         })
@@ -79,6 +79,11 @@ module.exports = {
                     if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
                 });
                 fileContent += NEWLINE + NEWLINE;
+                if (intent.intent.features) {
+                    fileContent += `@ intent ${intent.intent.name}`;
+                    fileContent += addRolesAndFeatures(intent.intent);
+                    fileContent += NEWLINE + NEWLINE;
+                }
             });
         }
         
@@ -97,10 +102,8 @@ module.exports = {
                     }
                     fileContent += NEWLINE + NEWLINE;
                 }
-                fileContent += '$' + entity.name + ':simple';
-                if (entity.roles.length > 0) {
-                    fileContent += ` Roles=${entity.roles.join(', ')}`;
-                }
+                fileContent += `@ simple ${entity.name}`;
+                fileContent += addRolesAndFeatures(entity);
                 fileContent += NEWLINE + NEWLINE;
             });
             fileContent += NEWLINE;
@@ -109,10 +112,8 @@ module.exports = {
         if(LUISJSON.prebuiltEntities && LUISJSON.prebuiltEntities.length >= 0){
             fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
             LUISJSON.prebuiltEntities.forEach(function(entity) {
-                fileContent += '$PREBUILT:' + entity.name;
-                if (entity.roles.length > 0) {
-                    fileContent += ` Roles=${entity.roles.join(', ')}`;
-                }
+                fileContent += `@ prebuilt ${entity.name}`;
+                fileContent += addRolesAndFeatures(entity);
                 fileContent += NEWLINE + NEWLINE;
             });
             fileContent += NEWLINE;
@@ -121,24 +122,29 @@ module.exports = {
         if(LUISJSON.model_features && LUISJSON.model_features.length >= 0) {
             fileContent += '> # Phrase list definitions' + NEWLINE + NEWLINE;
             LUISJSON.model_features.forEach(function(entity) {
-                fileContent += '$' + entity.name + ':phraseList' + (entity.mode ? ' interchangeable' : '') + NEWLINE;
-                fileContent += '- ' + entity.words + NEWLINE;
+                fileContent += `@ phraselist ${entity.name}${(entity.mode ? `(interchangeable)` : ``)}`;
+                if (entity.words && entity.words !== '') {
+                    fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
+                }
+                fileContent += NEWLINE + NEWLINE;
             });
             fileContent += NEWLINE;
         }
         if(LUISJSON.closedLists && LUISJSON.closedLists.length >= 0){
             fileContent += '> # List entities' + NEWLINE + NEWLINE;
             LUISJSON.closedLists.forEach(function(ListItem) {
+                fileContent += `@ list ${ListItem.name}`;
+                fileContent += addRolesAndFeatures(ListItem);
+                if (ListItem.subLists.length !== 0) {
+                    fileContent += ` = `;
+                    fileContent += NEWLINE;
+                }
                 ListItem.subLists.forEach(function(list) {
-                    fileContent += '$' + ListItem.name + ':' + list.canonicalForm + '=';
-                    if (ListItem.roles.length > 0) {
-                        fileContent += ` Roles=${ListItem.roles.join(', ')}`;
-                    }
+                    fileContent += `\t- ${list.canonicalForm} :`;
                     fileContent += NEWLINE;
                     list.list.forEach(function(listItem) {
-                        fileContent += '- ' + listItem + NEWLINE;
+                        fileContent += '\t\t- ' + listItem + NEWLINE;
                     });
-                    fileContent += NEWLINE;
                 });
                 fileContent += NEWLINE + NEWLINE;
             });
@@ -147,9 +153,10 @@ module.exports = {
         if(LUISJSON.regex_entities && LUISJSON.regex_entities.length >= 0) {
             fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
             LUISJSON.regex_entities.forEach(function(regExEntity) {
-                fileContent += '$' + regExEntity.name + ':/' + regExEntity.regexPattern + '/';
-                if (regExEntity.roles.length > 0) {
-                    fileContent += ` Roles=${regExEntity.roles.join(', ')}`;
+                fileContent += `@ regex ${regExEntity.name}`;
+                fileContent += addRolesAndFeatures(regExEntity);
+                if (regExEntity.regexPattern !== '') {
+                    fileContent += ` = /${regExEntity.regexPattern}/`;
                 }
                 fileContent += NEWLINE;
             });
@@ -160,15 +167,38 @@ module.exports = {
         if(LUISJSON.composites && LUISJSON.composites.length > 0) {
             fileContent += '> # Composite entities' + NEWLINE + NEWLINE; 
             LUISJSON.composites.forEach(composite => {
-                fileContent += '$' + composite.name + ':[' + composite.children.join(', ') + ']';
-                if (composite.roles.length > 0) {
-                    fileContent += ` Roles=${composite.roles.join(', ')}`;
+                fileContent += `@ composite ${composite.name}`;
+                fileContent += addRolesAndFeatures(composite);
+                if (composite.children.length > 0) {
+                    fileContent += ` = [${composite.children.join(', ')}]`;
                 }
                 fileContent += NEWLINE;
             })
         }
         return fileContent;
     }
+}
+
+/**
+ * Helper to construt role and features list for an entity
+ * @param {Object} entity 
+ * @returns {String} file content to include.
+ */
+const addRolesAndFeatures = function(entity) {
+    let roleAndFeatureContent = ''
+    if (entity.roles && entity.roles.length > 0) {
+        roleAndFeatureContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`;
+    }
+    if (entity.features && entity.features.length > 0) {
+        let featuresList = new Array();
+        entity.features.forEach(item => {
+            if (item.featureName) featuresList.push(item.featureName);
+            if (item.modelName) featuresList.push(item.modelName);
+        })
+        roleAndFeatureContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
+    }
+
+    return roleAndFeatureContent
 }
 
 const parseLuis = async function(luisObject, src, sort){
@@ -231,7 +261,7 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
     if(attribute === 'text') {
         matchInTarget.utterances.push(srcItem); 
     } else {
-        matchInTarget.utterances.push(new helperClasses.uttereances(srcItem.pattern,srcItem.intent,[]));
+        matchInTarget.utterances.push(new helperClasses.uttereances(srcItem.pattern.replace('{', '{@'),srcItem.intent,[]));
     }
 }
 

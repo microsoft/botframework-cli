@@ -16,12 +16,12 @@
 
 
 # AskForUserName
-- {userName=vishwac}
-- I'm {userName=vishwac}
-- call me {userName=vishwac}
-- my name is {userName=vishwac}
-- {userName=vishwac} is my name
-- you can call me {userName=vishwac}
+- {@userName=vishwac}
+- I'm {@userName=vishwac}
+- call me {@userName=vishwac}
+- my name is {@userName=vishwac}
+- {@userName=vishwac} is my name
+- you can call me {@userName=vishwac}
 
 
 # CreateAlarm
@@ -31,8 +31,8 @@
 
 
 # DeleteAlarm
-- delete the {alarmTime} alarm
-- remove the {alarmTime} alarm
+- delete the {@alarmTime} alarm
+- remove the {@alarmTime} alarm
 
 
 # CommunicationPreference
@@ -53,41 +53,41 @@
 
 > # Entity definitions
 
-$userName:simple
+@ simple userName
 
 
 > # PREBUILT Entity definitions
 
-$PREBUILT:datetimeV2
+@ prebuilt datetimeV2
 
 
 > # Phrase list definitions
 
-$ChocolateType:phraseList
-- m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
-$question:phraseList interchangeable
-- are you,you are
+@ phraselist ChocolateType = 
+	- m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
+
+@ phraselist question(interchangeable) = 
+	- are you,you are
+
 
 > # List entities
 
-$commPreference:call=
-- phone call
-- give me a ring
-- ring
-- call
-- cell phone
-- phone
-
-$commPreference:text=
-- message
-- text
-- sms
-- text message
-
-$commPreference:fax=
-- fax
-- fascimile
-
+@ list commPreference = 
+	- call :
+		- phone call
+		- give me a ring
+		- ring
+		- call
+		- cell phone
+		- phone
+	- text :
+		- message
+		- text
+		- sms
+		- text message
+	- fax :
+		- fax
+		- fascimile
 
 
 > # RegEx entities
