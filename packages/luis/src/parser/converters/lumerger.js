@@ -16,21 +16,13 @@ const luisJSON = require('./../luisfile/parseLuisFile');
 
 module.exports = {
     mergeAndResolveReferences: async function (luObjArray, verbose, luis_culture, luSearchFn){
-<<<<<<< HEAD
-        let allParsedContent = await buildJsonObject(luObjArray, verbose, luis_culture, luSearchFn)
-=======
         let allParsedContent = await buildLuJsonObject(luObjArray, verbose, luis_culture, luSearchFn)
->>>>>>> master
         await resolveReferencesInUtterances(allParsedContent)
         return allParsedContent
     }
 }
 
-<<<<<<< HEAD
-const buildJsonObject = async function(luObjArray, log, luis_culture, luSearchFn = findLuFilesInDir){
-=======
 const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearchFn = findLuFilesInDir){
->>>>>>> master
     let allParsedLUISContent = []
     let allParsedQnAContent = []
     let allParsedAlterationsContent = []

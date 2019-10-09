@@ -10,11 +10,7 @@ module.exports = {
         try {
             LUISJSON = await JSON.parse(LUISFileContent);
         } catch (err) {
-<<<<<<< HEAD
-            throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, error parsing file as LUIS JSON'));
-=======
             throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, error parsing content as LUIS JSON'));
->>>>>>> master
         }
         await validateLUISJSON(LUISJSON)
         return LUISJSON;
