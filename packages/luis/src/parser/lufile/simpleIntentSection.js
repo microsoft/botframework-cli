@@ -14,11 +14,14 @@ class SimpleIntentSection {
     constructor(parseTree) {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.SIMPLEINTENTSECTION;
-        this.Name = this.ExtractName(parseTree);
-        const result = this.ExtractUtteranceAndEntitiesMap(parseTree);
-        this.UtteranceAndEntitiesMap = result.utteranceAndEntitiesMap;
-        this.Entities = this.ExtractEntities(parseTree);
-        this.Errors = result.errors;
+
+        if (parseTree) {
+            this.Name = this.ExtractName(parseTree);
+            const result = this.ExtractUtteranceAndEntitiesMap(parseTree);
+            this.UtteranceAndEntitiesMap = result.utteranceAndEntitiesMap;
+            this.Entities = this.ExtractEntities(parseTree);
+            this.Errors = result.errors;
+        }
     }
 
     ExtractName(parseTree) {

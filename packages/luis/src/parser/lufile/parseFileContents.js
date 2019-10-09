@@ -27,6 +27,7 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./enums/luisEntityTypes');
 const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
+const SimpleIntentSection = require('./simpleIntentSection');
 const plAllowedTypes = ["simple", "composite", "machine-learned"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -518,33 +519,38 @@ const handleAtPrefix = function(entity, flatEntityAndRoles) {
 const parseAndHandleNestedIntentSection = function (luResource, enableSections, enableMergeIntents) {
     // handle nested intent section
     let sections = luResource.Sections.filter(s => s.SectionType === SectionType.NESTEDINTENTSECTION);
-    if (!enableSections && sections && sections.length > 0) {
-        let errorMsg = `Nested intent section '${sections[0].Name}' is detected. Please enable @Sections = true in comments at the beginning of lu file`;
-        let error = BuildDiagnostic({
-            message: errorMsg,
-            context: sections[0].ParseTree
-        })
-
-        throw (new exception(retCode.errorCode.INVALID_LINE, error.toString()));
-    }
-
     if (sections && sections.length > 0) {
         sections.forEach(section => {
-            if (enableMergeIntents) {
-                let mergedIntentSection = section.SimpleIntentSections[0];
-                mergedIntentSection.ParseTree = section.ParseTree;
-                mergedIntentSection.Name = section.Name;
-                for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
-                    mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
-                    mergedIntentSection.Entities = mergedIntentSection.Entities.concat(section.SimpleIntentSections[idx].Entities);
-                }
+            if (!enableSections) {
+                // if enableSections not set true
+                // treat section name line as an intent without utterances and
+                // treat subIntentSection as standalone simpleIntentSection
+                let emptyIntentSection = new SimpleIntentSection();
+                emptyIntentSection.Name = section.Name;
+                emptyIntentSection.Entities = [];
+                emptyIntentSection.UtteranceAndEntitiesMap = [];
+                luResource.Sections.push(emptyIntentSection);
 
-                luResource.Sections.push(mergedIntentSection);
-            } else {
                 section.SimpleIntentSections.forEach(subSection => {
-                    subSection.Name = section.Name + '.' + subSection.Name;
                     luResource.Sections.push(subSection);
                 })
+            } else {
+                if (enableMergeIntents) {
+                    let mergedIntentSection = section.SimpleIntentSections[0];
+                    mergedIntentSection.ParseTree = section.ParseTree;
+                    mergedIntentSection.Name = section.Name;
+                    for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
+                        mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
+                        mergedIntentSection.Entities = mergedIntentSection.Entities.concat(section.SimpleIntentSections[idx].Entities);
+                    }
+
+                    luResource.Sections.push(mergedIntentSection);
+                } else {
+                    section.SimpleIntentSections.forEach(subSection => {
+                        subSection.Name = section.Name + '.' + subSection.Name;
+                        luResource.Sections.push(subSection);
+                    })
+                }
             }
         })
     }
@@ -850,7 +856,7 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
 const GetEntitySectionsFromSimpleIntentSections = function(luResource) {
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
     if (intents && intents.length > 0) {
-        intents.forEach(intent => luResource.Sections = luResource.Sections.concat(intent.Entities))
+        intents.forEach(intent => luResource.Sections = luResource.Sections.concat(intent.Entities));
     }
 }
 
