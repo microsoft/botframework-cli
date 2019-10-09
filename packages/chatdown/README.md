@@ -1,4 +1,4 @@
-bf-chatdown
+@microsoft/bf-chatdown
 ========
 
 Tool for parsing chat files and outputting replayable activities
@@ -8,23 +8,6 @@ Tool for parsing chat files and outputting replayable activities
 [![Downloads/week](https://img.shields.io/npm/dw/chatdown.svg)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
 [![License](https://img.shields.io/npm/l/chatdown.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/chatdown/package.json)
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/bf-chatdown/0.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
-```
-<!-- usagestop -->
 # Commands
 <!-- commands -->
 * [`bf chatdown`](#bf-chatdown)
@@ -38,15 +21,13 @@ USAGE
   $ bf chatdown
 
 OPTIONS
-  -c, --chat=chat              The path of the chat file to be parsed. If omitted, stdin will be used.
-
-  -f, --folder=folder          Path to directory and/or all subdirectories containing chat files to be processed all at
-                               once, ex. ./**/*.chat. If an output directory is not present (-o), it will default the
-                               output to the current working directory.
+  -i, --in=in                  The path of the chat file or directory to be parsed. A glob expression may be passed containing 
+                               chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. 
+                               If an output directory is not present (-o), it will default the output to the current working directory.
 
   -h, --help                   Chatdown command help
 
-  -o, --out_folder=out_folder  Path to the directory where the output of the multiple chat file processing (-f) will be
+  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-f) will be
                                placed.
 
   -p, --prefix                 Prefix stdout with package name.
@@ -56,8 +37,8 @@ OPTIONS
 EXAMPLE
 
      $ bf chatdown
-     $ bf chatdown --chat=./path/to/file/sample.chat
-     $ bf chatdown -f ./test/utils/*.sample.chat -o ./
+     $ bf chatdown --in=./path/to/file/sample.chat
+     $ bf chatdown --in ./test/utils/*.sample.chat -o ./
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
