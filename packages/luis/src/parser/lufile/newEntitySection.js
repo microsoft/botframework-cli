@@ -2,7 +2,6 @@ const NewEntitySectionContext = require('./generated/LUFileParser').LUFileParser
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./enums/lusectiontypes');
-const uuidv4 = require('uuid/v4');
 
 class NewEntitySection {
     /**

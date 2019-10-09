@@ -6,14 +6,13 @@ const retCode = require('./../lufile/enums/CLI-errors')
 const translateHelpers = require('./../lufile/translate-helpers')
 
 module.exports = {
-    translateLuFile: async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+    translateLuList: async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
         let translation = {}
         let i = 0
         while(files.length > i) {
-            let file = files[i++] + ''       
+            let luObject = files[i++]
             try {
-                let luObject = await parseFile(file)
-                translation[path.basename(file)] = await this.translateLuObj(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
+                translation[path.basename(luObject.id)] = await this.translateLuObj(luObject.content, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
             } catch (err) {
                 throw(err);
             }
@@ -71,11 +70,8 @@ async function translateLuObject(luObject, translate_key, to_lang, src_lang, tra
         if (!parsedLocContent) {
             throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, file : ' + file + 'had invalid content'));
         } 
-        if (!result[tgt_lang]) {
-            result[tgt_lang] = []
-        }
-        result[tgt_lang].push(parsedLocContent)
-        
+
+        result[tgt_lang] = parsedLocContent   
     }
     return result
 }

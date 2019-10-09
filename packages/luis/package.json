@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
-  "main": "parser/index.js",
+  "main": "src/parser/index.js",
   "dependencies": {
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/config": "~1.13.3",
@@ -17,8 +17,7 @@
     "lodash": "^4.17.15",
     "node-fetch": "^2.1.2",
     "semver": "^5.5.1",
-    "tslib": "^1.10.0",
-    "uuid": "^3.3.3"
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -42,7 +41,7 @@
   },
   "files": [
     "/lib",
-    "/parser",
+    "/src/parser",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
