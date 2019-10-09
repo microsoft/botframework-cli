@@ -33,9 +33,9 @@ describe('qnamaker:translate qna.lu', () => {
 })
 
 describe('qnamaker:translate qna.json', () => {
-    // after(async function(){
-    //   await fs.remove(path.join(__dirname, './../../../fr/'))
-    // })
+    after(async function(){
+      await fs.remove(path.join(__dirname, './../../../fr/'))
+    })
   
     before(function(){
       nock('https://api.cognitive.microsofttranslator.com')

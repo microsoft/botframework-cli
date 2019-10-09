@@ -76,7 +76,7 @@ export default class QnamakerTranslate extends Command {
       for (let file in translatedObject) {
         for (let lng in translatedObject[file]) {
           filePath = await fileHelper.generateNewTranslatedFilePath(file, lng, out)
-          let content = isLu ? translatedObject[path.basename(file)][lng] : JSON.stringify(translatedObject[path.basename(file)][lng], null, 2)
+          let content = isLu ? translatedObject[file][lng] : JSON.stringify(translatedObject[file][lng], null, 2)
           await fs.writeFile(filePath, content, 'utf-8')
         }
       }
