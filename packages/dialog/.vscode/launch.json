@@ -96,6 +96,69 @@
                 "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
             ],
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Activity Form",
+            "program": "${workspaceFolder}/bin/run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:form",
+                "${workspaceFolder}/test/commands/dialog/forms/activity.form.dialog",
+                "-o",
+                "${env:TEMP}/activity.out",
+                "--force",
+                "--verbose",
+                "--schema",
+                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Contact Form",
+            "program": "${workspaceFolder}/bin/run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:form",
+                "${workspaceFolder}/test/commands/dialog/forms/contact.form.dialog",
+                "-o",
+                "${env:TEMP}/contact.out",
+                "--force",
+                "--verbose",
+                "--schema",
+                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Opportunity Form",
+            "program": "${workspaceFolder}/bin/run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:form",
+                "${workspaceFolder}/test/commands/dialog/forms/opportunity.form.dialog",
+                "-o",
+                "${env:TEMP}/opportunity.out",
+                "--force",
+                "--verbose",
+                "--schema",
+                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

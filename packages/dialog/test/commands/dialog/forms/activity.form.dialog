@@ -13,6 +13,36 @@
         "StartDate": { 
             "type": "string",
             "$mappings": [ "datetime" ]
-        }
-    }
+        },
+        "Confirmation": {
+            "type": "string",
+            "enum": [
+                "yes",
+                "no"
+            ],
+            "$templates":[]
+        },
+        "CancelConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "CompleteConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "PropertyToChange": {
+            "type": "string",
+            "enum": [
+                "Meat",
+                "Bread",
+                "Cheese",
+                "Toppings"
+            ],
+            "$templates":[]
+        }     
+    },
+    "required":["Subject", "ActivityType", "StartDate"]
 }
+    

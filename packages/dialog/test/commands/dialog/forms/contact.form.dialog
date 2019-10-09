@@ -36,6 +36,35 @@
             "type": "string", 
             "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
             "$mappings": [ "phonenumber" ]
-        }
-    }
+        },
+        "Confirmation": {
+            "type": "string",
+            "enum": [
+                "yes",
+                "no"
+            ],
+            "$templates":[]
+        },
+        "CancelConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "CompleteConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "PropertyToChange": {
+            "type": "string",
+            "enum": [
+                "Meat",
+                "Bread",
+                "Cheese",
+                "Toppings"
+            ],
+            "$templates":[]
+        }     
+    },
+    "required":["HomeStreet", "HomeCity", "HomeState", "HomePhone"]
 }
