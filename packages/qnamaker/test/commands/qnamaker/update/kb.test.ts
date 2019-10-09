@@ -45,4 +45,11 @@ describe('qnamaker:update:kb', () => {
     .it('Updates knowledgebase', ctx => {
       expect(ctx.stdout).to.contain('"operationId": "4f2d3e54-e53e-471c-86bf-ef94bc562267"')
     })
+
+    test
+    .stderr()
+    .command(['qnamaker:update:kb'])
+    .it('Updates knowledgebase no input', ctx => {
+      expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
+    })
 })

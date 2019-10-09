@@ -119,3 +119,12 @@ describe('qnamaker:create:kb --save', () => {
     expect(config.qnamaker.kbId).to.contain('8600c573-2acf-4466-97e8-999ad4cecbc2')
   })
 })
+
+describe('qnamaker:create:kb No input', () => {
+  test
+  .stderr()
+  .command(['qnamaker:create:kb'])
+  .it('Creates kb qnamaker:create:kb --in', ctx => {
+    expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
+  })
+})

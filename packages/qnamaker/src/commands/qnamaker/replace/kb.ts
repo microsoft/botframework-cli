@@ -8,7 +8,7 @@ export default class QnamakerReplaceKb extends Command {
   static description = 'Replace a knowledgebase contents with new contents'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'The ReplaceKbDTO object to send in the body of the request', required: true}),
+    in: flags.string({description: 'File path to the ReplaceKbDTO object to send in the body of the request'}),
     kbId: flags.string({description: 'Knowledgebase id.'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
     help: flags.help({char: 'h', description: 'qnamaker:replace:kb command help'}),
@@ -16,7 +16,12 @@ export default class QnamakerReplaceKb extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerReplaceKb)
-    let input: Inputs = await processInputs(flags, replaceKbJSON, this.config.configDir)
+    const stdin = await this.readStdin()
+    if (!stdin && !flags.in) {
+      throw new CLIError('No input. Please set file path with --in or pipe required data to the command')
+    }
+
+    let input: Inputs = await processInputs(flags, replaceKbJSON, this.config.configDir, stdin)
     // hack to map incorrect export property from expected import.  Export uses qnaDocuments, create/update/replace qnaList :(
     if (input.requestBody.qnaDocuments && !input.requestBody.qnaList) {
       input.requestBody.qnaList = input.requestBody.qnaDocuments
