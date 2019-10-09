@@ -395,16 +395,14 @@ const batchTranslateText = async function(linesToTranslate, subscriptionKey, to_
 const translateAndMap = async function (batchRequest, subscriptionKey, to_lang, src_lang, linesToTranslateCopy) {
     if (batchRequest.length === 0) return;
     let data;
-    try {
-        data = await translateHelpers.translateText(batchRequest, subscriptionKey, to_lang, src_lang);
-    } catch (err) {
-        throw (err);
-    }
+    data = await translateHelpers.translateText(batchRequest, subscriptionKey, to_lang, src_lang);
     data.forEach((item, idx) => {
         // find the correponding item in linesToTranslate
         let itemInLine = linesToTranslateCopy.find(item => item.idx === idx);
-        itemInLine.text = item.translations[0].text;
-        itemInLine.idx = -1;
+        if (itemInLine) {
+            itemInLine.text = item.translations[0].text;
+            itemInLine.idx = -1;        
+        }
     });
 };
 

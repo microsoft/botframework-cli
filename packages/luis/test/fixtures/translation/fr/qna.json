@@ -1,0 +1,34 @@
+{
+  "urls": [],
+  "qnaList": [
+    {
+      "id": 0,
+      "answer": "Vous pouvez modifier le message par défaut si vous utilisez le QnAMakerDialog.\nVoir [ce lien] (https://docs.botframework.com/fr-us/azure-bot-service/templates/qnamaker/#navtitle) pour plus de détails.",
+      "source": "custom editorial",
+      "questions": [
+        "qui est le ceo?"
+      ],
+      "metadata": []
+    },
+    {
+      "id": 0,
+      "answer": "Vous pouvez utiliser notre apis REST pour gérer votre KB.\n\\#1. Voir ici pour plus de détails: https://westus.dev.cognitive.microsoft.com/docs/services/58994a073d9e04097c7ba6fe/operations/58994a073d9e041ad42d9baa",
+      "source": "custom editorial",
+      "questions": [
+        "Comment puis-je mettre à jour programmatiquement mon KB ?"
+      ],
+      "metadata": []
+    },
+    {
+      "id": 0,
+      "answer": "Vishwac Vishwac",
+      "source": "custom editorial",
+      "questions": [
+        "Qui est ton ceo ?",
+        "m'obtenir votre info ceo"
+      ],
+      "metadata": []
+    }
+  ],
+  "files": []
+}

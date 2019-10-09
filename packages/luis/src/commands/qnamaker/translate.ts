@@ -40,7 +40,7 @@ export default class QnamakerTranslate extends Command {
         result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
-        let translation = await qnaConverter.parseQnAObjectToLu(json, false)
+        let translation = await qnaConverter.parseQnAObjectToLu(json, false, false)
         translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         let key = stdin ? 'stdin' : path.basename(flags.in)
         result = {
@@ -53,7 +53,7 @@ export default class QnamakerTranslate extends Command {
       }
 
       if (flags.out) {
-        await this.writeOutput(result, flags.out)
+        await this.writeOutput(result, flags.out, isLu)
       } else {
         if (isLu) {
           this.log(result)
@@ -70,13 +70,14 @@ export default class QnamakerTranslate extends Command {
     }
   }
 
-  private async writeOutput(translatedObject: any, out: string) {
+  private async writeOutput(translatedObject: any, out: string, isLu: boolean) {
     let filePath = ''
     try {
       for (let file in translatedObject) {
         for (let lng in translatedObject[file]) {
           filePath = await fileHelper.generateNewTranslatedFilePath(file, lng, out)
-          await fs.writeFile(filePath, translatedObject[path.basename(file)][lng], 'utf-8')
+          let content = isLu ? translatedObject[file][lng] : JSON.stringify(translatedObject[file][lng], null, 2)
+          await fs.writeFile(filePath, content, 'utf-8')
         }
       }
     } catch (err) {
