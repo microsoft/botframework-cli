@@ -9,7 +9,7 @@ export default class QnamakerUpdateKb extends Command {
   static description = 'Add or delete QnA Pairs and / or URLs to an existing knowledge base'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'The UpdateKbOperationDTO object to send in the body of the request.', required: true}),
+    in: flags.string({description: 'The file path to the UpdateKbOperationDTO object to send in the body of the request.'}),
     kbId: flags.string({description: 'Knowledgebase id.'}),
     wait: flags.boolean({description: 'Wait for the operation to complete.'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
@@ -18,7 +18,11 @@ export default class QnamakerUpdateKb extends Command {
 
   async run() {
     const {flags} = this.parse(QnamakerUpdateKb)
-    let input: Inputs = await processInputs(flags, updateKbJSON, this.config.configDir)
+    const stdin = await this.readStdin()
+    if (!stdin && !flags.in) {
+      throw new CLIError('No input. Please set file path with --in or pipe required data to the command')
+    }
+    let input: Inputs = await processInputs(flags, updateKbJSON, this.config.configDir, stdin)
     // hack to map incorrect export property from expected import.  Export uses qnaDocuments, create/update/replace qnaList :(
     if (input.requestBody.qnaDocuments && !input.requestBody.qnaList) {
       input.requestBody.qnaList = input.requestBody.qnaDocuments

@@ -1,7 +1,6 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
-const path = require('path')
 const file = require('./../../utils/filehelper')
 const luConverter = require('./../../parser/converters/lutoluisconverter')
 const luisConverter = require('./../../parser/converters/luistoluconverter')
@@ -10,7 +9,7 @@ export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model', required: true}),
+    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
     recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
     sort: flags.boolean({description: 'When set, intent, utterances, entities are alphabetically sorted in .lu files', default: false}),
@@ -25,18 +24,21 @@ export default class LuisConvert extends Command {
   async run() {
     try {
       const {flags} = this.parse(LuisConvert)
+      // Check if data piped in stdin
+      let stdin = await this.readStdin()
+
       //Check if file or folder
       //if folder, only lu to luis is supported
-      let inputStat = await fs.stat(flags.in)
-      let isLu = !inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
+      let isLu = await file.detectLuContent(stdin, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isLu) {
-        const luFiles = await file.getLuObjects(flags.in, flags.recurse)
+        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
         result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
       } else {
-        result = await luisConverter.parseLuisFileToLu(flags.in, flags.sort)
+        const luisFile = stdin ? stdin : await file.getContentFromFile(flags.in)
+        result = await luisConverter.parseLuisObjectToLu(luisFile, flags.sort, flags.in)
       }
 
       // If result is null or undefined return

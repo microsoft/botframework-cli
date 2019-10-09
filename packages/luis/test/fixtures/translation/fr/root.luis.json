@@ -1,0 +1,174 @@
+{
+  "intents": [
+    {
+      "name": "Calendar.Add"
+    },
+    {
+      "name": "Calendar.Find"
+    },
+    {
+      "name": "None"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "ajouter un nouvel événement le 27 - avr",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter une nouvelle tâche d'affectation de finition",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter un événement à lire sur adam lambert nouvelles",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter un événement pour visiter 209 nashville gym",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter du théâtre imax à mes événements à venir",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "calendrier i ' ll être au garage de 8 à 3 ce samedi",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "dunmore pa sons sonores vendredi matin s'il vous plaît",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "rencontrer mon manager",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "enregistrer la date mai 17 photos partie",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "rendez-vous pour demain s'il vous plaît",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "la réunion durera une heure",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "calendrier pour novembre 1948",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "afficher les plans de week-end",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "ai-je quelque chose le mercredi?",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "Combien de jours y a-t-il entre le 13 mars 2015 et aujourd'hui ?",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "tirer vers le haut de mon rendez-vous savoir combien de temps j'ai avant mon prochain rendez-vous",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "recherche de rencontres avec Chris",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "montrez-moi l'heure de la fête de mariage de demain",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "dites-moi les détails de l'événement",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "voix activée lecture des rendez-vous cette semaine",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "suis-je libre d'être avec des amis samedi ?",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "rendez-vous avec Johnson doit être la semaine prochaine",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "appeler papa mike",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "changer la réunion avec Chris à 9: 00 h",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "email cloney john",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "prolonger la réunion du déjeuner 30 minutes de plus",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "Je veux reprogrammer la réuni on au club de l'armée de l'air",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "réunions de marketing le mardi sera maintenant tous les mercredis s'il vous plaît changer sur mon calendrier",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "déplacer la fête bbq à vendredi",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "l'atelier durera 10 heures",
+      "intent": "None",
+      "entities": []
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": []
+}
