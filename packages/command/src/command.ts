@@ -2,7 +2,7 @@
 
 import { Command as Base } from '@oclif/command'
 export { flags } from '@oclif/command'
-import { CLIError as OCLIFError}  from '@oclif/errors'
+import { CLIError as OCLIFError } from '@oclif/errors'
 import { CLIError } from './clierror'
 export { CLIError } from './clierror'
 import ReadPipedData from './readpipeddata'
