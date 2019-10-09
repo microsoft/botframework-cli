@@ -7,11 +7,11 @@ const Delay = require('await-delay');
 const {cli} = require('cli-ux')
 
 const config = {
-    buildConfig: function(flags, serviceIn, config) {
-        flags.kbId = (flags.kbId || serviceIn.kbId || config.kbId),
-        flags.subscriptionKey = (flags.subscriptionKey || serviceIn.subscriptionKey || config.subscriptionKey),
-        flags.endpointKey = (flags.endpointKey || serviceIn.endpointKey || config.endpointKey),
-        flags.hostname = (flags.hostname || serviceIn.hostname || config.hostname)
+    buildConfig: function(flags, config) {
+        flags.kbId = (flags.kbId || config.kbId),
+        flags.subscriptionKey = (flags.subscriptionKey || config.subscriptionKey),
+        flags.endpointKey = (flags.endpointKey || config.endpointKey),
+        flags.hostname = (flags.hostname || config.hostname)
     },
 
     composeConfig: async function (args, configfile) {

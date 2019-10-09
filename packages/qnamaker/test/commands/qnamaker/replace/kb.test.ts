@@ -22,4 +22,13 @@ describe('qnamaker:replace:kb', () => {
     .it('runs qnamaker:replace:kb --kbId xxxxxxxxxx --in replace.json', ctx => {
       expect(ctx.stdout).to.equal('')
     })
+
+    test
+    .stderr()
+    .command(['qnamaker:replace:kb'])
+    .it('runs qnamaker:replace:kb', ctx => {
+      expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
+    })
+
+    
 })
