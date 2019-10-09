@@ -2,8 +2,8 @@ import {expect, test} from '@oclif/test'
 const fs = require('fs-extra')
 const path = require('path')
 const nock = require('nock')
-const response = require('./../../fixtures/translateresponse.json')
-const response2 = require('./../../fixtures/translateresponsesecond.json')
+const response = require('./../../fixtures/translation/translateresponse.json')
+const response2 = require('./../../fixtures/translation/translateresponsesecond.json')
 
 const compareLuFiles = async function(file1: string, file2: string) {
   let result = await fs.readFile(path.join(__dirname, file1))
