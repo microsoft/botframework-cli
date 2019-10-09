@@ -3,7 +3,6 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-require('./utils');
 const fs = require('fs');
 const path = require('path');
 const retCode = require('./enums/CLI-errors');
