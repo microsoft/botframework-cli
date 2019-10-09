@@ -58,7 +58,7 @@ intentDefinition
 	;
 
 intentNameLine
-	: HASH intentName
+	: HASH HASH? intentName
 	;
 
 intentName

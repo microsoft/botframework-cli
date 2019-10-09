@@ -1,21 +1,21 @@
 
 > # Intent definitions
 
-# Greeting
+## Greeting
 - Hi
 - Hello
 - Good morning
 - Good evening
 
 
-# Help
+## Help
 - help
 - I need help
 - please help
 - can you help
 
 
-# AskForUserName
+## AskForUserName
 - {userName=vishwac}
 - I'm {userName=vishwac}
 - call me {userName=vishwac}
@@ -24,19 +24,19 @@
 - you can call me {userName=vishwac}
 
 
-# CreateAlarm
+## CreateAlarm
 - create an alarm
 - create an alarm for 7AM
 - set an alarm for 7AM next thursday
 
 
-# DeleteAlarm
+## DeleteAlarm
 - delete the {alarmTime} alarm
 - delete alarm
 - remove the {alarmTime} alarm
 
 
-# CommunicationPreference
+## CommunicationPreference
 - set phone call as my communication preference
 - I prefer to receive text message
 - set call as my communication preference
@@ -45,28 +45,28 @@
 - I prefer to receive {commPreference}
 
 
-# Buy chocolate
+## Buy chocolate
 - can I get some m&m
 - I want some twix
 - I would like to buy some kit kat
 
 
-# changeAlarm
+## changeAlarm
 - change an alarm
 - change {remTime} to {newTime}
 
 
-# None
+## None
 - who is your ceo?
 - santa wants a blue ribbon
 
 
-# addAlarm
+## addAlarm
 - create an alarm for 7AM
 - create an alarm for {datetimeV2}
 
 
-# Menu
+## Menu
 - I want {foodType=sandwich}
 - can you get me some {foodType}
 - please get me a {drinkType}

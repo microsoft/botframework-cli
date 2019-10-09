@@ -1,6 +1,6 @@
 > # Intent definitions
 
-# Calendar.Add
+## Calendar.Add
 - añadir un nuevo evento el 27 - apr
 - añadir una nueva tarea de terminar la asignación
 - añadir un evento para leer sobre las noticias de Adam Lambert
@@ -14,7 +14,7 @@
 - la reunión durará una hora
 
 
-# Calendar.Find
+## Calendar.Find
 - calendario para noviembre de 1948
 - mostrar planes de fin de semana
 - ¿Tengo algo el miércoles?
@@ -26,7 +26,7 @@
 - voz activada lectura de citas esta semana
 
 
-# None
+## None
 - soy libre de estar con amigos sábado ?
 - cita con Johnson tiene que ser la próxima semana
 - llamar a papá Mike

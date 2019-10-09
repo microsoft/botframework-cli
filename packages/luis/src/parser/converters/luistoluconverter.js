@@ -48,7 +48,7 @@ module.exports = {
                     }
                     fileContent += NEWLINE + NEWLINE;
                 }
-                fileContent += '# ' + intent.intent.name + NEWLINE;
+                fileContent += '## ' + intent.intent.name + NEWLINE;
                 intent.utterances.forEach(function(utterance) {
                     let updatedText = utterance.text;
                     if(utterance.entities.length >= 0) {

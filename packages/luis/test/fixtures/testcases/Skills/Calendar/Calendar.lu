@@ -1,6 +1,6 @@
 > # Intent definitions
 
-# AcceptEventEntry
+## AcceptEventEntry
 - accept all meetings for {Subject=christmas party} {FromDate=next week}.
 - accept an appointment
 - accept {Subject=dinner}
@@ -32,7 +32,7 @@
 - ^i (want to|would like to|'d like to) (join|attend) the {Subject}^
 
 
-# Cancel
+## Cancel
 - abort edition
 - can i cancel this
 - can you cancel it
@@ -100,7 +100,7 @@
 - will you cancel it please
 
 
-# ChangeCalendarEntry
+## ChangeCalendarEntry
 - bring forward my {FromTime=4 o'clock} appointment {MoveEarlierTimeSpan=2 hours}
 - can you change it to {ToTime=5 pm}
 - can you move this appointment to {ToTime=5pm}
@@ -220,7 +220,7 @@
 - ^[(would|can|could) you] [please] (change|reschedule) [the] ({Subject}|meeting) to {ToTime}^
 
 
-# CheckAvailability
+## CheckAvailability
 - am i available
 - am i available at {FromTime=10 am} on {FromDate=monday}
 - am i available on {FromDate=monday} at {FromTime=9 pm}
@@ -279,7 +279,7 @@
 - ^is {personName} (available|free) from {FromTime} to {ToTime} [on {FromDate}]
 
 
-# Confirm
+## Confirm
 - alright
 - confirm
 - correct
@@ -327,7 +327,7 @@
 - yup
 
 
-# ConnectToMeeting
+## ConnectToMeeting
 - add me to conference call
 - add me to the conference call
 - call conference
@@ -386,7 +386,7 @@
 - ^i ('d|would like to|want to) join the ({Subject}|meeting) now^
 
 
-# ContactMeetingAttendees
+## ContactMeetingAttendees
 - alert attendees {Message=meeting is at 8 30}
 - alert attendees of {Subject=dinner meeting} that {Message=i will be late}
 - alert {Subject=quality control meeting} participants that {Message=i am 15 minutes late}
@@ -443,7 +443,7 @@
 - ^(remind|inform|tell) (the|all) attendees {Message}^
 
 
-# CreateCalendarEntry
+## CreateCalendarEntry
 - {Duration=2 hours} meeting with ladawn padilla at {FromTime=5} on {FromDate=tuesday}
 - add a meeting with herman to my calendar
 - add an appointment on {FromDate=may 8th} at {Location=shanghai}
@@ -683,7 +683,7 @@
 - (create|book|schedule) (a|an) (meeting|appointment|event) [with {personName}] between {FromTime} and {ToTime}
 
 
-# DeleteCalendarEntry
+## DeleteCalendarEntry
 - can you cancel the {PositionReference=1st} one
 - cancel {FromTime=1 pm} {Subject=staff meeting}
 - cancel all events
@@ -759,7 +759,7 @@
 - ^(remove|cancel|delete) (the|my) {Subject} [at {FromTime}] [{FromDate}]^
 
 
-# FindCalendarDetail
+## FindCalendarDetail
 - can you tell me about {Subject=master chief}
 - can you tell me something about {Subject=shakespeare}
 - detail about {FromDate=tomorrow}'s meeting
@@ -788,7 +788,7 @@
 - what is the meeting with daniel robert regarding
 
 
-# FindCalendarEntry
+## FindCalendarEntry
 - at {FromTime=10 am} do i have a {Duration=30 minutes} meeting
 - calendar for {FromDate=today}
 - check janice 's calendar for {FromDate=this weekend}
@@ -904,7 +904,7 @@
 - which will be my {OrderReference=next} {Subject=flight}
 
 
-# FindCalendarWhen
+## FindCalendarWhen
 - my {OrderReference=next} meeting with emily is when
 - what day is {Subject=lego land} scheduled for
 - what time do i have {Subject=work} {FromDate=tomorrow}
@@ -962,7 +962,7 @@
 - which {FromDate=weekend} am i {Subject=shopping} with sarah
 
 
-# FindCalendarWhere
+## FindCalendarWhere
 - location of {FromTime=11 am} meeting
 - location of the {OrderReference=next} appointment
 - meeting at {FromTime=3 pm} {FromDate=today} locations
@@ -1019,7 +1019,7 @@
 - where's my {OrderReference=next} meeting
 
 
-# FindCalendarWho
+## FindCalendarWho
 - {FromTime=2 pm} meeting {FromDate=tomorrow} - who else is going
 - {FromTime=2 pm} meeting with who
 - attendees who will join the {FromTime=5 pm} meeting
@@ -1090,7 +1090,7 @@
 - will virginia be attending my {OrderReference=next} meeting
 
 
-# FindDuration
+## FindDuration
 - about how long will the meeting last
 - duration of {Subject=machine learning talk}
 - how long do i have for {Subject=lunch}
@@ -1131,7 +1131,7 @@
 - what allotted time is for {Subject=hair dresser}
 
 
-# FindMeetingRoom
+## FindMeetingRoom
 - find a new meeting location
 - bing find me a conference room in the {Location=bravern} {FromTime=this afternoon}
 - book a conference room
@@ -1166,7 +1166,7 @@
 - ^is (this|the|that) (meeting|conference) room (available|booked) [(at|on|for)] [{FromDate}] [(at|on|for)] [{FromTime}]^
 
 
-# GoBack
+## GoBack
 - back
 - back one step
 - back the {OrderReference=last} step
@@ -1192,7 +1192,7 @@
 - we should go back
 
 
-# None
+## None
 - hello world
 - how's the weather today
 - what can you do
@@ -1208,7 +1208,7 @@
 - the {PositionReference=third} one
 
 
-# Reject
+## Reject
 - abort that
 - i cannot
 - i cannot make it
@@ -1266,7 +1266,7 @@
 - wrong place
 
 
-# ShowNextCalendar
+## ShowNextCalendar
 - could you show the {OrderReference=next} one
 - go to the {OrderReference=next} one please
 - i need to go to the {OrderReference=next} one
@@ -1284,7 +1284,7 @@
 - ^i (want to|need to|would like to) (attend|join) {Subject}, [please] add it.^
 
 
-# ShowPreviousCalendar
+## ShowPreviousCalendar
 - bring the {OrderReference=previous} one
 - i need to check the {OrderReference=previous} appointment
 - {OrderReference=previous} one
@@ -1296,7 +1296,7 @@
 - what is the {OrderReference=previous}
 
 
-# TimeRemaining
+## TimeRemaining
 - can you show me the time remaining before my {OrderReference=next} appointment
 - check on the time to see when i {Subject=go to school and pick up mark}
 - do i have any spare time before {OrderReference=next} appointment

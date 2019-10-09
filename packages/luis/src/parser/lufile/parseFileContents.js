@@ -517,7 +517,6 @@ const handleAtPrefix = function(entity, flatEntityAndRoles) {
  */
 const parseAndHandleNestedIntentSection = function (luResource, enableSections, enableMergeIntents) {
     // handle nested intent section
-    //let entitySectionsFromNestedIntent = [];
     let sections = luResource.Sections.filter(s => s.SectionType === SectionType.NESTEDINTENTSECTION);
     if (!enableSections && sections && sections.length > 0) {
         let errorMsg = `Nested intent section '${sections[0].Name}' is detected. Please enable @Sections = true in comments at the beginning of lu file`;
@@ -528,6 +527,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableSections, 
 
         throw (new exception(retCode.errorCode.INVALID_LINE, error.toString()));
     }
+
     if (sections && sections.length > 0) {
         sections.forEach(section => {
             if (enableMergeIntents) {
@@ -546,21 +546,6 @@ const parseAndHandleNestedIntentSection = function (luResource, enableSections, 
                     luResource.Sections.push(subSection);
                 })
             }
-
-            // section.SimpleIntentSections.forEach(subSection => {
-            //     if (subSection.Entities && subSection.Entities.length > 0) {
-            //         entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.concat(subSection.Entities);
-            //     }
-            // })
-
-            // // remove dups as sections may define same entities several times
-            // entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.filter((entity, index, self) =>
-            //     index === self.findIndex((t) => (
-            //         t.Name === entity.Name
-            //     ))
-            // )
-
-            // luResource.Sections = luResource.Sections.concat(entitySectionsFromNestedIntent);
         })
     }
 }

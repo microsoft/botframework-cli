@@ -413,7 +413,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
         });
 
         it('Test for #1164 (with roles)', function (done) {
-                let luFile = `# None
+                let luFile = `## None
                 - here's an utterance {aListEntity:ThisIsARole=avalue} with a role in it
                 
                 $aListEntity:some value= Roles=ThisIsARole
@@ -431,7 +431,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
         });
 
         it('Test for #1165 (with roles)', function(done) {
-                let luFile = `# None
+                let luFile = `## None
                 - here's an utterance avalue with a role in it
                 
                 $aListEntity:some value= Roles=ThisIsARole
@@ -783,7 +783,7 @@ describe('parseFile correctly parses utterances', function () {
         });
 
         it ('Roles specified in composite nested simple child entities are parsed correcly', function(done){
-                let testLU = `# None
+                let testLU = `## None
                 - {MyComposite:c1=here's an {Entity2:t1=utterance {Entity1:t2=avalue}}} with a composite in it
                 > here's an utterance avalue with a composite in it
                 > MyComposite:0,25; Entity2:10,25, Entity1:20,25
@@ -830,7 +830,7 @@ describe('parseFile correctly parses utterances', function () {
         });
 
         it ('test for #1167', function(done){
-                let testLU = `# None
+                let testLU = `## None
                 - {MyComposite=here's an {Entity2=utterance {Entity1=avalue}}} with a composite in it
                 > here's an utterance avalue with a composite in it
                 > MyComposite:0,25; Entity2:10,25, Entity1:20,25
@@ -874,7 +874,7 @@ describe('parseFile correctly parses utterances', function () {
         })
 
         it ('Test for 1151, phrase list can have same name as labelled simple entity', function(done){
-                let testLu = `# RequestItem
+                let testLu = `## RequestItem
                 - i need more {Item=water}
                 
                 $Item:simple

@@ -10,7 +10,7 @@
 
 > !# @intent.inherits = name : Calendar.FindCalendarWhen; domain_name : Calendar; model_name : FindCalendarWhen
 
-# Calendar.FindCalendarWhen
+## Calendar.FindCalendarWhen
 - which {Calendar.StartDate=weekend} am i {Calendar.Subject=shopping} with sarah
 - what day is {Calendar.Subject=lego land} scheduled for
 - my next meeting with emily is when
@@ -70,7 +70,7 @@
 
 > !# @intent.inherits = name : Calendar.AcceptEventEntry; domain_name : Calendar; model_name : AcceptEventEntry
 
-# Calendar.AcceptEventEntry
+## Calendar.AcceptEventEntry
 - accept all meetings for {Calendar.Subject=christmas party} {Calendar.StartDate=next week}.
 - accept an appointment
 - accept {Calendar.Subject=dinner}
@@ -104,7 +104,7 @@
 
 > !# @intent.inherits = name : Calendar.FindCalendarWhere; domain_name : Calendar; model_name : FindCalendarWhere
 
-# Calendar.FindCalendarWhere
+## Calendar.FindCalendarWhere
 - meeting at {Calendar.StartTime=3 pm} {Calendar.StartDate=today} locations
 - show me the place of the {Calendar.Subject=work smart training}
 - show me where my next appointment is
@@ -163,7 +163,7 @@
 
 > !# @intent.inherits = name : Calendar.ChangeCalendarEntry; domain_name : Calendar; model_name : ChangeCalendarEntry
 
-# Calendar.ChangeCalendarEntry
+## Calendar.ChangeCalendarEntry
 - update {Calendar.Subject=party}
 - update my tomorrow 6pm meeting to {Calendar.StartTime=7pm}
 - update my next appointment
@@ -284,7 +284,7 @@
 
 > !# @intent.inherits = name : Calendar.Cancel; domain_name : Calendar; model_name : Cancel
 
-# Calendar.Cancel
+## Calendar.Cancel
 - abort edition
 - will you cancel it please
 - stop finding it
@@ -354,7 +354,7 @@
 
 > !# @intent.inherits = name : Calendar.FindCalendarWho; domain_name : Calendar; model_name : FindCalendarWho
 
-# Calendar.FindCalendarWho
+## Calendar.FindCalendarWho
 - {Calendar.StartTime=2 pm} meeting {Calendar.StartDate=tomorrow} - who else is going
 - {Calendar.StartTime=2 pm} meeting with who
 - did hellen come to {Calendar.StartTime=3 pm}'s meeting
@@ -427,7 +427,7 @@
 
 > !# @intent.inherits = name : Calendar.ConnectToMeeting; domain_name : Calendar; model_name : ConnectToMeeting
 
-# Calendar.ConnectToMeeting
+## Calendar.ConnectToMeeting
 - dial into conference call
 - dial {Calendar.Subject=marketing meeting}
 - add me to conference call
@@ -487,7 +487,7 @@
 
 > !# @intent.inherits = name : Calendar.CheckAvailability; domain_name : Calendar; model_name : CheckAvailability
 
-# Calendar.CheckAvailability
+## Calendar.CheckAvailability
 - will tyler be free on {Calendar.StartDate=friday}
 - when will jordan be free
 - when is samuel available {Calendar.StartDate=tomorrow}
@@ -548,7 +548,7 @@
 
 > !# @intent.inherits = name : Calendar.Confirm; domain_name : Calendar; model_name : Confirm
 
-# Calendar.Confirm
+## Calendar.Confirm
 - yup
 - yes yes
 - yes that ' s fine
@@ -598,7 +598,7 @@
 
 > !# @intent.inherits = name : Calendar.FindMeetingRoom; domain_name : Calendar; model_name : FindMeetingRoom
 
-# Calendar.FindMeetingRoom
+## Calendar.FindMeetingRoom
 - reserve the conference room for {Calendar.StartTime=3pm} {Calendar.StartDate=tomorrow}
 - find a free meeting room for {Calendar.StartDate=next tuesday}
 - schedule conference room with mary cooper for {Calendar.StartDate=thursday} at {Calendar.StartTime=one}
@@ -635,7 +635,7 @@
 
 > !# @intent.inherits = name : Calendar.FindCalendarDetail; domain_name : Calendar; model_name : FindCalendarDetail
 
-# Calendar.FindCalendarDetail
+## Calendar.FindCalendarDetail
 - tell me about my {Calendar.StartDate=sunday} schedule
 - can you tell me something about {Calendar.Subject=shakespeare}
 - detail about {Calendar.StartDate=tomorrow}'s meeting
@@ -666,7 +666,7 @@
 
 > !# @intent.inherits = name : Calendar.DeleteCalendarEntry; domain_name : Calendar; model_name : DeleteCalendarEntry
 
-# Calendar.DeleteCalendarEntry
+## Calendar.DeleteCalendarEntry
 - delete meeting
 - cancel an appointment
 - cancel all events
@@ -744,7 +744,7 @@
 
 > !# @intent.inherits = name : Calendar.CreateCalendarEntry; domain_name : Calendar; model_name : CreateCalendarEntry
 
-# Calendar.CreateCalendarEntry
+## Calendar.CreateCalendarEntry
 - 2 hours meeting with ladawn padilla at {Calendar.StartTime=5} on {Calendar.StartDate=tuesday}
 - add a meeting with herman to my calendar
 - add an appointment on {Calendar.StartDate=may 8th} at shanghai
@@ -987,7 +987,7 @@
 
 > !# @intent.inherits = name : Calendar.ContactMeetingAttendees; domain_name : Calendar; model_name : ContactMeetingAttendees
 
-# Calendar.ContactMeetingAttendees
+## Calendar.ContactMeetingAttendees
 - tell next meeting that {Calendar.Message=i'm running late}
 - tell everyone {Calendar.Message=the meeting is now in room 204}
 - tell attendees {Calendar.Message=i am late}
@@ -1045,7 +1045,7 @@
 
 > !# @intent.inherits = name : Calendar.FindCalendarEntry; domain_name : Calendar; model_name : FindCalendarEntry
 
-# Calendar.FindCalendarEntry
+## Calendar.FindCalendarEntry
 - next meeting
 - calendar for {Calendar.StartDate=today}
 - which will be my next {Calendar.Subject=flight}
@@ -1163,7 +1163,7 @@
 
 > !# @intent.inherits = name : Calendar.FindDuration; domain_name : Calendar; model_name : FindDuration
 
-# Calendar.FindDuration
+## Calendar.FindDuration
 - about how long will the meeting last
 - minutes in {Calendar.Subject=lunch break}
 - how long will my {Calendar.Subject=dentist appointment} last
@@ -1206,7 +1206,7 @@
 
 > !# @intent.inherits = name : Calendar.GoBack; domain_name : Calendar; model_name : GoBack
 
-# Calendar.GoBack
+## Calendar.GoBack
 - please go back
 - go back to the previous step
 - go back to the main menu
@@ -1234,7 +1234,7 @@
 
 > !# @intent.inherits = name : Calendar.Reject; domain_name : Calendar; model_name : Reject
 
-# Calendar.Reject
+## Calendar.Reject
 - nope
 - of course not
 - not at this time
@@ -1294,7 +1294,7 @@
 
 > !# @intent.inherits = name : Calendar.ShowNext; domain_name : Calendar; model_name : ShowNext
 
-# Calendar.ShowNext
+## Calendar.ShowNext
 - could you show the next one
 - i need to go to the next one
 - show the next
@@ -1314,7 +1314,7 @@
 
 > !# @intent.inherits = name : Calendar.ShowPrevious; domain_name : Calendar; model_name : ShowPrevious
 
-# Calendar.ShowPrevious
+## Calendar.ShowPrevious
 - what is the previous
 - i need to check the previous appointment
 - show the previous one
@@ -1328,7 +1328,7 @@
 
 > !# @intent.inherits = name : Calendar.TimeRemaining; domain_name : Calendar; model_name : TimeRemaining
 
-# Calendar.TimeRemaining
+## Calendar.TimeRemaining
 - tell me how much free time i have before next appt
 - how much longer until my next meeting
 - time before my next appointment
@@ -1386,7 +1386,7 @@
 - ^how long do i have (until|before|till) the [next] (meeting|appointment|{Calendar.Subject})
 
 
-# None
+## None
 - running late for the {Calendar.Subject=board meeting} alert catherine dennis and all the other attendees
 
 

@@ -1,6 +1,6 @@
 > # Intent definitions
 
-# Calendar.Add
+## Calendar.Add
 - add a new event on 27 - apr
 - add a new task finish assignment
 - add an event to read about adam lambert news
@@ -14,7 +14,7 @@
 - the meeting will last for one hour
 
 
-# Calendar.Find
+## Calendar.Find
 - calendar for november 1948
 - display weekend plans
 - do i have anything on wednesday ?
@@ -26,7 +26,7 @@
 - voice activated reading of appointments this week
 
 
-# None
+## None
 - am i free to be with friends saturday ?
 - appointment with johnson needs to be next week
 - call dad mike
