@@ -368,6 +368,14 @@ describe('luis:convert', () => {
 
     test
     .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_enabled2.lu')}`, '--out', 'root.json',])
+    .it('luis:convert section enabled lu file with new entity inside and outside section', async () => {
+      let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/section_enabled2.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
+
+    test
+    .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/merge_intents_disabled.lu')}`, '--out', 'root.json',])
     .it('luis:convert section enabled lu file', async () => {
       let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/merge_intents_disabled.json')
@@ -395,13 +403,6 @@ describe('luis:convert negative tests', () => {
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad2.lu')}`])
   .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx) => {
     expect(ctx.stderr).to.contain("[ERROR] line 1:0 - line 1:1: syntax error: invalid input 'f' detected.")
-  })
-
-  test
-  .stderr()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_disabled.lu')}`])
-  .it('luis:convert should show ERR message when @Sections = true not marked in lu model information header', async (ctx) => {
-    expect(ctx.stderr).to.contain("[ERROR] line 1:0 - line 12:31: Nested intent section 'Greeting' is detected. Please enable @Sections = true in comments at the beginning of lu file")
   })
 })
 

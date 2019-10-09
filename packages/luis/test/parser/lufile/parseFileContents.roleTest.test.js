@@ -421,7 +421,7 @@ $test:[fromTime]`;
                 let LUISJSon = res.LUISJsonStructure;
                 assert.equal(LUISJSon.entities.length, 1);
                 assert.equal(LUISJSon.entities[0].roles.length, 3);
-                assert.deepEqual(LUISJSon.entities[0].roles, ['middlename', 'firstname', 'lastname']);
+                assert.deepEqual(LUISJSon.entities[0].roles, ["firstname","lastname","middlename"]);
                 done();
             })
             .catch (err => done(`Test failed - ${JSON.stringify(err)}`))
@@ -440,7 +440,7 @@ $test:[fromTime]`;
                 let LUISJSon = res.LUISJsonStructure;
                 assert.equal(LUISJSon.entities.length, 1);
                 assert.equal(LUISJSon.entities[0].roles.length, 3);
-                assert.deepEqual(LUISJSon.entities[0].roles, ['middlename', 'firstname', 'lastname']);
+                assert.deepEqual(LUISJSon.entities[0].roles, ["firstname","lastname","middlename"]);
                 done();
             })
             .catch (err => done(`Test failed - ${JSON.stringify(err)}`))

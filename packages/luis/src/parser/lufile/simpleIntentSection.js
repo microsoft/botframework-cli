@@ -1,5 +1,6 @@
 const SimpleIntentSectionContext = require('./generated/LUFileParser').LUFileParser.SimpleIntentSectionContext;
 const EntitySection = require('./entitySection');
+const NewEntitySection = require('./newEntitySection');
 const visitor = require('./visitor');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
@@ -60,6 +61,12 @@ class SimpleIntentSection {
         if (parseTree.entitySection) {
             for (const entitySection of parseTree.entitySection()) {
                 entitySections.push(new EntitySection(entitySection));
+            }
+        }
+
+        if (parseTree.newEntitySection) {
+            for (const entitySection of parseTree.newEntitySection()) {
+                entitySections.push(new NewEntitySection(entitySection));
             }
         }
 

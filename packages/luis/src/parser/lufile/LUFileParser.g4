@@ -50,7 +50,7 @@ subIntentDefinition
     ;
 
 simpleIntentSection
-    : intentDefinition entitySection*
+    : intentDefinition (entitySection | newEntitySection)*
     ;
 
 intentDefinition

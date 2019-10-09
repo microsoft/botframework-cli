@@ -139,17 +139,19 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // parse reference section
     await parseAndHandleImportSection(parsedContent, luResource);
 
-    // parse entity definition v2 section
-    let featuresToProcess = parseAndHandleEntityV2(parsedContent, luResource, log, locale);
-
     // parse nested intent section
     parseAndHandleNestedIntentSection(luResource, enableSections, enableMergeIntents);
 
-    // parse simple intent section
-    parseAndHandleSimpleIntentSection(parsedContent, luResource);
+    GetEntitySectionsFromSimpleIntentSections(luResource);
+
+    // parse entity definition v2 section
+    let featuresToProcess = parseAndHandleEntityV2(parsedContent, luResource, log, locale);
     
     // parse entity section
     parseAndHandleEntitySection(parsedContent, luResource, log, locale);
+
+    // parse simple intent section
+    parseAndHandleSimpleIntentSection(parsedContent, luResource);
 
     // parse qna section
     parseAndHandleQnaSection(parsedContent, luResource);
@@ -516,7 +518,7 @@ const handleAtPrefix = function(entity, flatEntityAndRoles) {
  */
 const parseAndHandleNestedIntentSection = function (luResource, enableSections, enableMergeIntents) {
     // handle nested intent section
-    let entitySectionsFromNestedIntent = [];
+    //let entitySectionsFromNestedIntent = [];
     let sections = luResource.Sections.filter(s => s.SectionType === SectionType.NESTEDINTENTSECTION);
     if (!enableSections && sections && sections.length > 0) {
         let errorMsg = `Nested intent section '${sections[0].Name}' is detected. Please enable @Sections = true in comments at the beginning of lu file`;
@@ -535,6 +537,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableSections, 
                 mergedIntentSection.Name = section.Name;
                 for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
                     mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
+                    mergedIntentSection.Entities = mergedIntentSection.Entities.concat(section.SimpleIntentSections[idx].Entities);
                 }
 
                 luResource.Sections.push(mergedIntentSection);
@@ -545,20 +548,20 @@ const parseAndHandleNestedIntentSection = function (luResource, enableSections, 
                 })
             }
 
-            section.SimpleIntentSections.forEach(subSection => {
-                if (subSection.Entities && subSection.Entities.length > 0) {
-                    entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.concat(subSection.Entities);
-                }
-            })
+            // section.SimpleIntentSections.forEach(subSection => {
+            //     if (subSection.Entities && subSection.Entities.length > 0) {
+            //         entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.concat(subSection.Entities);
+            //     }
+            // })
 
-            // remove dups as sections may define same entities several times
-            entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.filter((entity, index, self) =>
-                index === self.findIndex((t) => (
-                    t.Name === entity.Name
-                ))
-            )
+            // // remove dups as sections may define same entities several times
+            // entitySectionsFromNestedIntent = entitySectionsFromNestedIntent.filter((entity, index, self) =>
+            //     index === self.findIndex((t) => (
+            //         t.Name === entity.Name
+            //     ))
+            // )
 
-            luResource.Sections = luResource.Sections.concat(entitySectionsFromNestedIntent);
+            // luResource.Sections = luResource.Sections.concat(entitySectionsFromNestedIntent);
         })
     }
 }
@@ -577,7 +580,6 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
             let intentName = intent.Name;
             // insert only if the intent is not already present.
             addItemIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.INTENT, intentName);
-            luResource.Sections = luResource.Sections.concat(intent.Entities);
             for (const utteranceAndEntities of intent.UtteranceAndEntitiesMap) {
                 // add utterance
                 let utterance = utteranceAndEntities.utterance.trim();
@@ -859,12 +861,23 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
 
 /**
  * 
+ * @param {LUResouce} luResource resources extracted from lu file content
+ */
+const GetEntitySectionsFromSimpleIntentSections = function(luResource) {
+    let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
+    if (intents && intents.length > 0) {
+        intents.forEach(intent => luResource.Sections = luResource.Sections.concat(intent.Entities))
+    }
+}
+
+/**
+ * 
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
  * @param {LUResouce} luResource resources extracted from lu file content
  * @param {boolean} log indicates where verbose flag is set 
  * @param {String} locale current target locale
  * @throws {exception} Throws on errors. exception object includes errCode and text.
- * @returns {LUNewEntity[]} collection of LUNewEntity to process after all other sections are processed.
+ * @returns {NewEntitySection[]} collection of NewEntitySection to process after all other sections are processed.
  */
 const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale) {
     let featuresToProcess = [];
