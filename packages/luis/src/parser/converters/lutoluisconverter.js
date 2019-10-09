@@ -8,7 +8,7 @@ const LUISObjNameEnum = require('./../lufile/enums/luisobjenum')
 
 module.exports = {
     /**
-     * Parses a list of luObject into a LUIS JSON
+     * Parses a list of luObject to a LUIS JSON
      * @param {luObject []} luArray luObject list to be parsed
      * @param {boolean} verbose verbose logging
      * @param {string} luis_culture luis culture
