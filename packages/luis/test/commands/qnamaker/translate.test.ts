@@ -33,7 +33,7 @@ describe('qnamaker:translate qna.lu', () => {
     })
 })
 
-describe('qnamaker:translate qna.json', () => {
+xdescribe('qnamaker:translate qna.json', () => {
     after(async function(){
       await fs.remove(path.join(__dirname, './../../../fr/'))
     })
