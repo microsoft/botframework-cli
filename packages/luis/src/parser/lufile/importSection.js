@@ -1,7 +1,6 @@
 const ImportSectionContext = require('./generated/LUFileParser').LUFileParser.ImportSectionContext;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./enums/lusectiontypes'); 
-const uuidv4 = require('uuid/v4');
 
 class ImportSection {
     /**
@@ -15,7 +14,6 @@ class ImportSection {
         let result = this.ExtractPath(parseTree);
         this.Path = result.importPath;
         this.Errors = result.errors;
-        this.Id = uuidv4();
     }
 
     ExtractDescription(parseTree) {
