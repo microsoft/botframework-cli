@@ -12,7 +12,7 @@ module.exports = {
         let QnAFileContent = await openFileAndReadContent(file)
         return await this.parseQnAObjectToLu(QnAFileContent, sort, isAlterations, file)
     },
-    parseQnAObjectToLu: async function(qnaObjectString, sort, isAlterations, src) {
+    parseQnAObjectToLu: async function(qnaObjectString, sort, isAlterations, src = '') {
         let QnAJSON  = await parseQnA(qnaObjectString, src, sort, isAlterations)
 
         if (!isAlterations) {

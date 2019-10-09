@@ -7,10 +7,19 @@ const exception = require('./../lufile/classes/exception')
 const LUISObjNameEnum = require('./../lufile/enums/luisobjenum')
 
 module.exports = {
-    parseLuToLuis: async function(files, verbose, luis_culture) {
+    /**
+     * Parses a list of luObject to a LUIS JSON
+     * @param {luObject []} luArray luObject list to be parsed
+     * @param {boolean} verbose verbose logging
+     * @param {string} luis_culture luis culture
+     * @param {function} luSearchFn function to search for lu references: function search(source: string, additionalFilesToParse: Array<string>): Array<luObject>
+     * @returns {LUIS} Collated LUIS json contents
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    parseLuToLuis: async function(luArray, verbose, luis_culture, luSearchFn) {
         try {
             // Extract all lu files and merge all into and object
-            let allParsedContent = await lu.mergeAndResolveReferences(files, verbose, luis_culture)
+            let allParsedContent = await lu.mergeAndResolveReferences(luArray, verbose, luis_culture, luSearchFn)
             // pass only files that need to be collated.
             let finalLUISJSON  = await this.collateLUISFiles(allParsedContent.LUISContent.filter(item => item.includeInCollate))
             if (haveLUISContent(finalLUISJSON)) {

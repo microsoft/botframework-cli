@@ -1,7 +1,6 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
-const path = require('path')
 const file = require('./../../utils/filehelper')
 const luConverter = require('./../../parser/converters/qnatoqnajsonconverter')
 const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
@@ -23,18 +22,21 @@ export default class QnamakerConvert extends Command {
     try {
       const {flags} = this.parse(QnamakerConvert)
 
-      // Check if file or folder
-      // If folder, only lu to luis is supported
-      let inputStat = await fs.stat(flags.in)
-      let isQnA = !inputStat.isFile() ? true : path.extname(flags.in) === '.lu'
+      // Check if data piped in stdin
+      let stdin = await this.readStdin()
+
+      //Check if file or folder
+      //if folder, only lu to luis is supported
+      let isQnA = await file.detectLuContent(stdin, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isQnA) {
-        const luFiles = await file.getLuObjects(flags.in, flags.recurse)
+        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
         result = await luConverter.parseQnaToJson(luFiles, false, flags.luis_culture)
       } else {
-        result = await qnaConverter.parseQnAFileToLu(flags.in, flags.sort, flags.alterations)
+        const qnAFile = stdin ? stdin : await file.getContentFromFile(flags.in)
+        result = await qnaConverter.parseQnAObjectToLu(qnAFile, flags.sort, flags.alterations)
       }
 
       // If result is null or undefined return

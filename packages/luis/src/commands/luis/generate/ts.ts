@@ -2,9 +2,8 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import {camelCase, kebabCase, upperFirst} from 'lodash'
 import * as path from 'path'
 
-import {LuisToTsConverter} from '../../../parser/converters/luis-to-ts-converter'
-import {Utils} from '../../../utils'
-
+const LuisToTsConverter = require('./../../../parser/converters/luistotsconverter')
+const file = require('./../../../utils/filehelper')
 const fs = require('fs-extra')
 
 export default class LuisGenerateTs extends Command {
@@ -45,7 +44,7 @@ export default class LuisGenerateTs extends Command {
     this.reorderEntities(app, 'patternAnyEntities')
     this.reorderEntities(app, 'composites')
 
-    const outputPath = Utils.validatePath(flags.out, process.cwd(), kebabCase(flags.className) + '.ts', flags.force)
+    const outputPath = file.validatePath(flags.out, kebabCase(flags.className) + '.ts', flags.force)
 
     this.log(
       `Generating file at ${outputPath || ''} that contains class ${flags.className}.`
