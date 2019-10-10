@@ -8,15 +8,46 @@
       },
       {
         "name": "Greeting"
+      },
+      {
+        "name": "HelloGreeting"
+      },
+      {
+        "name": "ByeGreeting"
       }
     ],
     "entities": [
+      {
+        "name": "none",
+        "roles": []
+      },
+      {
+        "name": "help",
+        "roles": []
+      },
+      {
+        "name": "hello",
+        "roles": [
+          "hr1"
+        ]
+      },
+      {
+        "name": "world",
+        "roles": [
+          "wr1",
+          "wr2"
+        ]
+      },
+      {
+        "name": "cityLocation",
+        "roles": []
+      },
       {
         "name": "userName",
         "roles": []
       },
       {
-        "name": "dateTime",
+        "name": "cityName",
         "roles": []
       }
     ],
@@ -43,7 +74,7 @@
       },
       {
         "text": "Hi vishwac",
-        "intent": "Greeting",
+        "intent": "HelloGreeting",
         "entities": [
           {
             "entity": "userName",
@@ -54,7 +85,7 @@
       },
       {
         "text": "Hello my name is vishwac",
-        "intent": "Greeting",
+        "intent": "HelloGreeting",
         "entities": [
           {
             "entity": "userName",
@@ -64,45 +95,24 @@
         ]
       },
       {
-        "text": "Bye vishwac, see you tomorrow",
-        "intent": "Greeting",
+        "text": "Bye Seattle",
+        "intent": "ByeGreeting",
         "entities": [
           {
-            "entity": "userName",
+            "entity": "cityName",
             "startPos": 4,
             "endPos": 10
-          },
-          {
-            "entity": "dateTime",
-            "startPos": 21,
-            "endPos": 28
           }
         ]
       },
       {
-        "text": "Bye Bye vishwac, see you at the same time tomorrow",
-        "intent": "Greeting",
+        "text": "Bye bye Beijing",
+        "intent": "ByeGreeting",
         "entities": [
           {
-            "entity": "userName",
+            "entity": "cityName",
             "startPos": 8,
             "endPos": 14
-          },
-          {
-            "entity": "dateTime",
-            "startPos": 42,
-            "endPos": 49
-          }
-        ]
-      },
-      {
-        "text": "Good Bye vishwac",
-        "intent": "Greeting",
-        "entities": [
-          {
-            "entity": "userName",
-            "startPos": 9,
-            "endPos": 15
           }
         ]
       }

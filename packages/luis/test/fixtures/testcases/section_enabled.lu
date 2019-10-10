@@ -1,4 +1,7 @@
 > !# @enableSections = true
+> !# @enableMergeIntents = true
+
+# Cancel
 
 # Greeting
 ## HelloGreeting

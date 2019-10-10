@@ -384,6 +384,14 @@ describe('luis:convert', () => {
 
     test
     .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_disabled2.lu')}`, '--out', 'root.json',])
+    .it('luis:convert section disabled lu file with enableSections set to false', async () => {
+      let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/section_disabled2.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
+
+    test
+    .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/merge_intents_disabled.lu')}`, '--out', 'root.json',])
     .it('luis:convert section enabled lu file', async () => {
       let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/merge_intents_disabled.json')
