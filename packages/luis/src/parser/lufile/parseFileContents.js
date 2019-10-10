@@ -526,6 +526,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableSections, 
                 // treat section name line as an intent without utterances and
                 // treat subIntentSection as standalone simpleIntentSection
                 let emptyIntentSection = new SimpleIntentSection();
+                emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
                 emptyIntentSection.Name = section.Name;
                 emptyIntentSection.Entities = [];
                 emptyIntentSection.UtteranceAndEntitiesMap = [];
