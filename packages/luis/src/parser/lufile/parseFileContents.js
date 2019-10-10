@@ -838,6 +838,9 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     })
                 }
                 switch(entityType) {
+                    case EntityTypeEnum.ML:
+                        handleNDepthEntity(parsedContent, entityName, entityRoles, entity.ListBody, entity.ParseTree.newEntityLine());
+                        break;
                     case EntityTypeEnum.SIMPLE: 
                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
                         break;
@@ -891,7 +894,9 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
 
     return featuresToProcess;
 };
-
+const handleNDepthEntity = function(parsedContent, entityName, entityRoles, entityLines, line) {
+    addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
+}
 /**
  * Helper function to handle pattern.any entity
  * @param {Object} parsedContent parsed LUIS, QnA and QnA alteration object
