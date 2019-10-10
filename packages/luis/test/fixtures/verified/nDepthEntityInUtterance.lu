@@ -13,9 +13,9 @@
 
 > # Entity definitions
 
-@ machine-learned nDepth
+@ ml nDepth
     - @ age nDepth_child1
-    - @ machine-learned nDepth_child2
+    - @ ml nDepth_child2
         - @ simple nDepth_child2.1
 
 

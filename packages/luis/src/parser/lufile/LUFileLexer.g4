@@ -100,7 +100,7 @@ HAS_FEATURES_LABEL
   ;
 
 NEW_ENTITY_TYPE_IDENTIFIER
-  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'machine-learned'|'patternany'|'phraselist'|'intent'
+  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'ml'|'patternany'|'phraselist'|'intent'
   ;
 
 NEW_ENTITY_IDENTIFIER

@@ -26,7 +26,7 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./enums/luisEntityTypes');
 const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
-const plAllowedTypes = ["simple", "composite", "machine-learned"];
+const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
     modelToFeature: 'featureName'
@@ -171,16 +171,12 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                 let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
                 throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
             }
-            // base type cannot be a phrase list
-            if (baseEntityFound.type === EntityTypeEnum.PHRASELIST) {
-                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${EntityTypeEnum.PHRASELIST}" in child entity definition "${child.context.definition}". Child cannot be an instance of a "${EntityTypeEnum.PHRASELIST}".`;
+            // base type can only be a list or regex or prebuilt.
+            if (![EntityTypeEnum.LIST, EntityTypeEnum.REGEX, EntityTypeEnum.PREBUILT].includes(baseEntityFound.type)) {
+                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
                 throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
             }
-            // base type cannot be pattern.any
-            if (baseEntityFound.type == EntityTypeEnum.PATTERNANY) {
-                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot be an instance of a "${EntityTypeEnum.PATTERNANY}".`;
-                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
-            }
+
         }
 
         if (child.features) {

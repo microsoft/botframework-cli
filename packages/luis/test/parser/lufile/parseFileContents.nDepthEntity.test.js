@@ -9,7 +9,7 @@ var helperclasses = require('./../../../src/parser/lufile/classes/hclasses');
 describe('V2 NDepth definitions using @ notation', function () {
     it('Basic definition is handled correctly', function (done) {
         let luFile = `
-            @ machine-learned fooBar
+            @ ml fooBar
         `;
         parseFile.parseFile(luFile)
             .then(res => {
@@ -22,7 +22,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Entity name can have spaces in them', function (done) {
         let luFile = `
-            @ machine-learned 'foo Bar'
+            @ ml 'foo Bar'
         `;
         parseFile.parseFile(luFile)
             .then(res => {
@@ -35,11 +35,11 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('inline roles definitions is handled correctly', function (done) {
         let luFile = `
-            @ machine-learned fooBar r1
-            @ machine-learned fooBar2 2r1, 2r2
-            @ machine-learned fooBar3 hasRole 3r1
-            @ machine-learned fooBar4 hasRoles 4r1, 4r2
-            @ machine-learned fooBar5
+            @ ml fooBar r1
+            @ ml fooBar2 2r1, 2r2
+            @ ml fooBar3 hasRole 3r1
+            @ ml fooBar4 hasRoles 4r1, 4r2
+            @ ml fooBar5
             @ fooBar5 5r1
         `;
         parseFile.parseFile(luFile)
@@ -67,8 +67,8 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Roles need to be unique', function (done) {
         let luFile = `
-            @ machine-learned fooBar r1
-            @ machine-learned fooBar2 fooBar
+            @ ml fooBar r1
+            @ ml fooBar2 fooBar
         `;
         parseFile.parseFile(luFile)
             .then(res => done(res))
@@ -77,7 +77,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('intent can be assigned as a feature', function (done) {
         let luFile = `
-            @ machine-learned fooBar
+            @ ml fooBar
             # intent1
             - test
             @fooBar usesFeature intent1
@@ -94,7 +94,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('intent can be assigned as a feature', function (done) {
         let luFile = `
-            @ machine-learned fooBar
+            @ ml fooBar
             # intent1
             - test
             @fooBar usesFeature intent1
@@ -111,7 +111,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('all entity types can be assigned as a feature', function (done) {
         let luFile = `
-            @ machine-learned fooBar
+            @ ml fooBar
             @ simple x1
             @ prebuilt number
             @ list l1
@@ -131,7 +131,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     
     it('Phrase list can be assigned as a feature', function (done) {
         let luFile = `
-            @ machine-learned fooBar
+            @ ml fooBar
             @ phraselist p1
             @fooBar usesFeatures p1
         `;
@@ -148,7 +148,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Pattern.any cannot be used as a feature', function (done) {
         let luFile = `
-            @ machine-learned fooBar r1
+            @ ml fooBar r1
             @ patternany p1
             @ fooBar usesFeature p1
         `;
@@ -159,9 +159,9 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Invalid child definition throws (missing @)', function (done) {
         let luFile = `
-            @machine-learned xyz = 
+            @ml xyz = 
                 - @ simple x1
-                - @ machine-learned abc =
+                - @ ml abc =
                     - number p1
         `;
         parseFile.parseFile(luFile)
@@ -171,9 +171,9 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Invalid child definition throws (missing -)', function (done) {
         let luFile = `
-            @machine-learned xyz = 
+            @ml xyz = 
                 - @ simple x1
-                - @ machine-learned abc =
+                - @ ml abc =
                     @number p1
         `;
         parseFile.parseFile(luFile)
@@ -183,9 +183,9 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Invalid child definition throws (missing type or name)', function (done) {
         let luFile = `
-            @machine-learned xyz = 
+            @ml xyz = 
                 - @ simple x1
-                - @ machine-learned abc =
+                - @ ml abc =
                    - @number
         `;
         parseFile.parseFile(luFile)
@@ -195,9 +195,9 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Invalid child definition throws (mis-spelled usesFeature)', function (done) {
         let luFile = `
-            @machine-learned xyz = 
+            @ml xyz = 
                 - @ simple x1
-                - @ machine-learned abc =
+                - @ ml abc =
                    - @ number r1 usesFeaturex p1
         `;
         parseFile.parseFile(luFile)
@@ -208,7 +208,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Entity names must be unique', function (done) {
         let luFile = `
             @simple xyz
-            @machine-learned xyz = 
+            @ml xyz = 
                 - @ simple x1
         `;
         parseFile.parseFile(luFile)
@@ -219,7 +219,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child entity names must be unique', function (done) {
         let luFile = `
             @simple xyz
-            @machine-learned xyz1 = 
+            @ml xyz1 = 
                 - @ simple xyz
 
         `;
@@ -230,7 +230,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Simple child entity is handled correctly', function (done) {
         let luFile = `
-            @machine-learned xyz1 = 
+            @ml xyz1 = 
                 - @ simple xyz
 
         `;
@@ -246,7 +246,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Child entity name can have spaces in them', function (done) {
         let luFile = `
-            @machine-learned xyz1 = 
+            @ml xyz1 = 
                 - @ simple 'x y z'
 
         `;
@@ -262,7 +262,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Non ML entities cannot have children', function (done) {
         let luFile = `
-        @machine-learned xyz1 = 
+        @ml xyz1 = 
         - @ simple xyz
             - @simple xyz2
 
@@ -274,7 +274,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Multiple children at level 1 is handled correctly', function (done) {
         let luFile = `
-            @machine-learned xyz1 = 
+            @ml xyz1 = 
                 - @ simple xyz
                 - @ simple xyz2
 
@@ -293,7 +293,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Instance of a type is handled correctly', function (done) {
         let luFile = `
         @prebuilt number
-        @machine-learned xyz1 = 
+        @ml xyz1 = 
         - @ simple xyz
         - @ number abc
 
@@ -316,20 +316,18 @@ describe('V2 NDepth definitions using @ notation', function () {
         @ list list2
         @ list list3
         @ list list4
-        @ composite composite1
         @ regex regex1
         @ regex regex2
         @ prebuilt number
-        @machine-learned 1 = 
+        @ml 1 = 
         - @ simple s1
-        - @ machine-learned 2 =
+        - @ ml 2 =
             - @ number n2
-            - @machine-learned 3 =
+            - @ml 3 =
                 - @ list1 l3
-                - @machine-learned 4 =
+                - @ml 4 =
                     - @ regex1 r4
-                    - @ machine-learned 5 =
-                        - @ composite1 c5
+                    - @ ml 5 =
                         - @ regex2 r5
                         - @ list2 l5
                         - @ number n5
@@ -379,20 +377,18 @@ describe('V2 NDepth definitions using @ notation', function () {
 @ list list2
 @ list list3
 @ list list4
-@ composite composite1
 @ regex regex1
 @ regex regex2
 @ prebuilt number
-@machine-learned 1 = 
+@ml 1 = 
     - @ simple s1
-    - @ machine-learned 2 =
+    - @ ml 2 =
         - @ number n2
-        - @machine-learned 3 =
+        - @ml 3 =
             - @ list1 l3
-            - @machine-learned 4 =
+            - @ml 4 =
                 - @ regex1 r4
-                - @ machine-learned 5 =
-                    - @ composite1 c5
+                - @ ml 5 =
                     - @ regex2 r5
                     - @ list2 l5
                     - @ number n5
@@ -441,20 +437,18 @@ describe('V2 NDepth definitions using @ notation', function () {
 @ list list2
 @ list list3
 @ list list4
-@ composite composite1
 @ regex regex1
 @ regex regex2
 @ prebuilt number
-@machine-learned 1 = 
+@ml 1 = 
     - @ simple s1
-    - @ machine-learned 2 =
+    - @ ml 2 =
         - @ number n2
-        - @machine-learned 3 =
+        - @ml 3 =
             - @ list1 l3
-            - @machine-learned 4 =
+            - @ml 4 =
                 - @ regex1 r4
-                - @ machine-learned 5 =
-                    - @ composite1 c5
+                - @ ml 5 =
                     - @ regex2 r5
                     - @ list2 l5
                     - @ number n5
@@ -499,7 +493,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Child can include one feature', function(done) {
         let luFile = `
-    @machine-learned 1 = 
+    @ml 1 = 
         - @ simple s1 usesFeature x1
     @regex x1
         
@@ -517,7 +511,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Child can include one or more features', function(done) {
         let luFile = `
-    @machine-learned 1 = 
+    @ml 1 = 
         - @ simple s1 usesFeature x1, x2
     @regex x1
     @regex x2
@@ -535,7 +529,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('instanceOf must be defined', function(done) {
         let luFile = `
-        @machine-learned 1 = 
+        @ml 1 = 
         - @ list1 l1
         `;
 
@@ -547,9 +541,9 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('instanceOf must be defined immaterial of child depth', function(done) {
         let luFile = `
         @ list list1
-        @machine-learned 1 = 
+        @ml 1 = 
         - @ list1 l1
-        - @ machine-learned 
+        - @ ml 
         `;
 
         parseFile.parseFile(luFile)
@@ -559,7 +553,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     
     it('instanceOf cannot be to a phrase list', function(done) {
         let luFile = `
-@ machine-learned fooBar
+@ ml fooBar
     - @ pl1 x1
 @ phraselist pl1`;
 
@@ -570,7 +564,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('instanceOf cannot be to a pattern.any', function(done) {
         let luFile = `
-@ machine-learned fooBar
+@ ml fooBar
     - @ pa1 x1
 @ patternany pa1`;
 
@@ -581,7 +575,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('instanceOf cannot be to a role', function(done) {
         let luFile = `
-@ machine-learned fooBar
+@ ml fooBar
     - @ r1 x1
 @ simple pl1 r1
     `;
@@ -593,7 +587,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('usesFeature cannot be to a pattern.any entity', function(done) {
         let luFile = `
-@ machine-learned fooBar
+@ ml fooBar
     - @ simple x1 usesFeature pa1
 @ patternany pa1
     `;
@@ -605,7 +599,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Features must be defined before they can be added to a child.', function(done) {
         let luFile = `
-@ machine-learned fooBar
+@ ml fooBar
 - @ simple x1 usesFeature pa1
     `;
 
@@ -616,7 +610,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     
     it('Child can include intent as a feature', function(done) {
         let luFile = `
-    @ machine-learned fooBar
+    @ ml fooBar
         - @ simple x1 usesFeature pa1
     # pa1
     - one  
@@ -636,7 +630,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Child can include phrase list as a feature', function(done) {
         let luFile = `
-    @ machine-learned fooBar
+    @ ml fooBar
         - @ simple x1 usesFeature pl1
     @ phraselist pl1
     `;
@@ -655,7 +649,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Child can include multiple, valid features', function(done) {
         let luFile = `
-    @ machine-learned fooBar
+    @ ml fooBar
         - @ simple x1 usesFeature pl1, i1, s1, number
     @ phraselist pl1
     @ simple s1
@@ -684,9 +678,9 @@ describe('V2 NDepth definitions using @ notation', function () {
         let luFile = `
 ## None
 ## intent1
-@ machine-learned nDepth usesFeatures intent1,phraselist1
+@ ml nDepth usesFeatures intent1,phraselist1
     - @ age nDepth_child1
-    - @ machine-learned nDepth_child2 usesFeatures intent1,phraselist1
+    - @ ml nDepth_child2 usesFeatures intent1,phraselist1
         - @ simple nDepth_child2.1
 @ prebuilt age
 @ phraselist phraselist1(interchangeable) = 

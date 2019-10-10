@@ -8,7 +8,7 @@ module.exports = {
     'list': 'closedLists',
     'regex': 'regex_entities',
     'composite': 'composites',
-    'machine-learned': 'entities',
+    'ml': 'entities',
     'patternany':'patternAnyEntities',
     'phraselist': 'model_features'
 };

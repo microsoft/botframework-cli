@@ -8,7 +8,7 @@ module.exports = {
     REGEX: 'regex',
     PREBUILT: 'prebuilt',
     COMPOSITE: 'composite',
-    ML: 'machine-learned',
+    ML: 'ml',
     PATTERNANY:'patternany',
     PHRASELIST: 'phraselist'
 };
