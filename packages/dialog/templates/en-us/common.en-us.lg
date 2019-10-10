@@ -24,6 +24,9 @@
 # helpProperty(property, name)
 - Possible values for {name} include: \[{join(turn.schema.properties[property].enum, ',')}\]
 
+# contextHelp
+- {join(foreach(dialog.expectedProperties, prop, helpProperty(prop, prop)), '\n')}
+
 # clarifyEnum(property, name)
 - Please choose a value for {name} from \[{join(foreach(turn.dialogEvent.value.entity.value, val, bread(val)), ',')}\]
 

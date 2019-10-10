@@ -45,10 +45,9 @@
         "PropertyToChange": {
             "type": "string",
             "enum": [
-                "Meat",
-                "Bread",
-                "Cheese",
-                "Toppings"
+                "Account",
+                "Topic",
+                "Territory"
             ],
             "$templates":[]
         }     
