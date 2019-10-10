@@ -1,0 +1,41 @@
+
+> # Intent definitions
+
+## None
+
+
+## intent1
+
+
+@ intent intent1 usesFeatures simple1,phraselist1
+
+> # Entity definitions
+
+@ machine-learned nDepth usesFeatures intent1,phraselist1
+    - @ age nDepth_child1
+    - @ machine-learned nDepth_child2 usesFeatures intent1,phraselist1
+        - @ simple nDepth_child2.1
+
+
+@ simple simple1
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt age
+
+
+> # Phrase list definitions
+
+@ phraselist phraselist1(interchangeable) = 
+	- who,why,where,what
+
+
+> # List entities
+
+> # RegEx entities
+
+
+> # Composite entities
+
+@ composite composite1 usesFeatures simple1,phraselist1 = [simple1]

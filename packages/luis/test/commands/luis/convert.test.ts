@@ -62,6 +62,13 @@ describe('luis:convert', () => {
 
     test
     .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/nDepthEntityInUtterance.json')}`, '--out', 'root.lu'])
+    .it('luis:convert successfully reconstructs a markdown file from a LUIS input file (with nDepth entity definitions in utterances)', async () => {
+      expect(await compareLuFiles('./../../../root.lu', './../../fixtures/verified/nDepthEntityInUtterance.lu')).to.be.true
+    })
+
+    test
+    .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/1.lu')}`, '--out', 'root.json', '--name', '1'])
     .it('luis:convert Simple intent and utterances are parsed correctly', async () => {
       let parsedObjects = await parseJsonFiles('./../../../root.json', './../../fixtures/verified/1.json')

@@ -188,7 +188,7 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
             (child.features || []).forEach((feature, idx) => {
                 if (typeof feature === "object") return;
                 featureHandled = false;
-                let featureExists = entitiesAndRoles.find(i => i.name == feature);
+                let featureExists = entitiesAndRoles.find(i => (i.name == feature || i.name == `${feature}(interchangeable)`));
                 if (featureExists) {
                     // is feature phrase list?
                     if (featureExists.type == EntityTypeEnum.PHRASELIST) {

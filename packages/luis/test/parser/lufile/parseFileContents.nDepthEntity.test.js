@@ -679,5 +679,27 @@ describe('V2 NDepth definitions using @ notation', function () {
             })
             .catch(err => done(err))
     });
+
+    it('interchangeable phrase list can be added as a feature', function(done){
+        let luFile = `
+## None
+## intent1
+@ machine-learned nDepth usesFeatures intent1,phraselist1
+    - @ age nDepth_child1
+    - @ machine-learned nDepth_child2 usesFeatures intent1,phraselist1
+        - @ simple nDepth_child2.1
+@ prebuilt age
+@ phraselist phraselist1(interchangeable) = 
+    - who,why,where,what
+        `;
+
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].features[1].featureName, 'phraselist1');
+                done();
+            })
+            .catch(err => done(err))
+    })
     
 });
