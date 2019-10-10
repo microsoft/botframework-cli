@@ -749,26 +749,10 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
     newRoles = [...new Set(newRoles)];
     // entity roles need to unique within the application
     if(parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) {
-        let matchType = '';
         // Duplicate entity names are not allowed
         // Entity name cannot be same as a role name
-        let entityFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => {
-            if (item.name === entityName && item.type !== entityType) {
-                matchType = `Entity names must be unique. Duplicate definition found for "${entityName}".`;
-                return true;
-            } else if (item.roles.includes(entityName)) {
-                matchType = `Entity name cannot be the same as a role name. Duplicate definition found for "${entityName}".`;
-                return true;
-            }
-        })
-        if (entityFound !== undefined) {
-            let errorMsg = `${matchType} Prior definition - '@ ${entityFound.type} ${entityFound.name}${entityFound.roles.length > 0 ? ` hasRoles ${entityFound.roles.join(',')}` : ``}'`;
-            let error = BuildDiagnostic({
-                message: errorMsg,
-                context: line
-            })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-        }
+        verifyUniqueEntityName(parsedContent, entityName, entityType, line);
+
         newRoles.forEach(role => {
             let roleFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.roles.includes(role) || item.name === role);
             if (roleFound !== undefined) {
@@ -895,7 +879,119 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
     return featuresToProcess;
 };
 const handleNDepthEntity = function(parsedContent, entityName, entityRoles, entityLines, line) {
+    const SPACEASTABS = 4;
     addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
+    let rootEntity = parsedContent.LUISJsonStructure.entities.find(item => item.name == entityName);
+    let defLine = line.start.line;
+    let baseTabLevel = 0;
+    let entityIdxByLevel = [];
+    let currentParentEntity = undefined;
+    // process each entity line
+    entityLines.forEach(child => {
+        currentParentEntity = undefined;
+        defLine++;
+        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>[^\s]+) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
+        let groupsFound = captureGroups.exec(child);
+        if (!groupsFound) {
+            let errorMsg = `[ERROR] line ${defLine}: Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
+            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+        }
+        let childEntityName = groupsFound.groups.entityName;
+        let childEntityType = groupsFound.groups.instanceOf.toLowerCase().trim();
+
+        // Verify that the entity name is unique
+        let entityIsUnique = verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
+        
+        // Get current tab level
+        let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : undefined) || (groupsFound.groups.leadingTabs ? groupsFound.groups.leadingTabs.length : undefined);
+        if (defLine === line.start.line + 1) {
+            // remember the tab level at the first line of child definition
+            baseTabLevel = tabLevel;
+            // Push the ID of the parent since we are proessing the first child entity
+            entityIdxByLevel.push({level : baseTabLevel, entity : rootEntity});
+        } 
+        
+        currentParentEntity = entityIdxByLevel.reverse().find(item => item.level == tabLevel);
+        if (!currentParentEntity) {
+            let errorMsg = `[ERROR] line ${defLine}: Invalid definition found for child "${child.trim()}". Parent of each child entity must be of type "${EntityTypeEnum.ML}".`;
+            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+        }
+        let context = {line : defLine, definition: child.trim()};
+        switch(groupsFound.groups.instanceOf.toLowerCase().trim()) {
+            case EntityTypeEnum.SIMPLE:
+                if (!currentParentEntity.entity.children) {
+                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName));
+                } else {
+                    // de-dupe and push this child entity    
+                    let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
+                    if (!childExists) {
+                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName));
+                    } 
+                }
+                break;
+            case EntityTypeEnum.ML:
+                let newParent;
+                if (!currentParentEntity.entity.children) {
+                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName));
+                } else {
+                    // de-dupe and push this child entity    
+                    let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
+                    if (!childExists) {
+                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName));
+                    } 
+                }
+                break;
+            default:
+                // TODO: instance of can only be to any other entity type that is not a pattern.any entity
+                if (!currentParentEntity.entity.children) {
+                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName, childEntityType, context));
+                } else {
+                    // de-dupe and push this child entity    
+                    let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
+                    if (!childExists) {
+                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName, childEntityType, context));
+                    } 
+                }
+                break;
+        }
+        
+    });
+};
+/**
+ * Helper function to verify that the requested entity is unique.
+ * @param {Object} parsedContent 
+ * @param {String} entityName 
+ * @param {String} entityType 
+ * @param {Object} line 
+ * @param {Boolean} checkTypesAlignment
+ */
+const verifyUniqueEntityName = function(parsedContent, entityName, entityType, line, checkTypesAlignment) {
+    // Duplicate entity names are not allowed
+    // Entity name cannot be same as a role name
+    let matchType = "";
+    let entityFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => {
+        if (item.name === entityName) {
+            if (!checkTypesAlignment && item.type !== entityType) {
+                matchType = `Entity names must be unique. Duplicate definition found for "${entityName}".`;
+                return true;
+            } else if (checkTypesAlignment) {
+                matchType = `Child entity names must be unique. Duplicate definition found for child entity "${entityName}".`;
+                return true;
+            }
+        } else if (item.roles.includes(entityName)) {
+            matchType = `Entity name cannot be the same as a role name. Duplicate definition found for "${entityName}".`;
+            return true;
+        }
+    });
+    if (entityFound !== undefined) {
+        let errorMsg = `${matchType} Prior definition - '@ ${entityFound.type} ${entityFound.name}${entityFound.roles.length > 0 ? ` hasRoles ${entityFound.roles.join(',')}` : ``}'`;
+        let error = BuildDiagnostic({
+            message: errorMsg,
+            context: line
+        })
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+    }
+    return {matchType, entityFound}
 }
 /**
  * Helper function to handle pattern.any entity

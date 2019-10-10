@@ -142,5 +142,143 @@ describe('V2 NDepth definitions using @ notation', function () {
             .then(res => done(res))
             .catch(err => done())
     });
+
+    it('Invalid child definition throws (missing @)', function (done) {
+        let luFile = `
+            @machine-learned xyz = 
+                - @ simple x1
+                - @ machine-learned abc =
+                    - number p1
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    });
+
+    it('Invalid child definition throws (missing -)', function (done) {
+        let luFile = `
+            @machine-learned xyz = 
+                - @ simple x1
+                - @ machine-learned abc =
+                    @number p1
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    });
+
+    it('Invalid child definition throws (missing type or name)', function (done) {
+        let luFile = `
+            @machine-learned xyz = 
+                - @ simple x1
+                - @ machine-learned abc =
+                   - @number
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    });
+
+    it('Invalid child definition throws (mis-spelled usesFeature)', function (done) {
+        let luFile = `
+            @machine-learned xyz = 
+                - @ simple x1
+                - @ machine-learned abc =
+                   - @ number r1 usesFeaturex p1
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    });
+
+    it('Entity names must be unique', function (done) {
+        let luFile = `
+            @simple xyz
+            @machine-learned xyz = 
+                - @ simple x1
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    });
+
+    it('Child entity names must be unique', function (done) {
+        let luFile = `
+            @simple xyz
+            @machine-learned xyz1 = 
+                - @ simple xyz
+
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    });
+
+    it('Simple child entity is handled correctly', function (done) {
+        let luFile = `
+            @machine-learned xyz1 = 
+                - @ simple xyz
+
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "xyz");
+                done();
+            })
+            .catch(err => done(err))
+    });
+
+    it('Non ML entities cannot have children', function (done) {
+        let luFile = `
+        @machine-learned xyz1 = 
+        - @ simple xyz
+            - @simple xyz2
+
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    });
+
+    it('Multiple children at level 1 is handled correctly', function (done) {
+        let luFile = `
+            @machine-learned xyz1 = 
+                - @ simple xyz
+                - @ simple xyz2
+
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].children.length, 2);
+                assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "xyz");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].name, "xyz2");
+                done();
+            })
+            .catch(err => done(err))
+    });
+
+    it('Instance of a type is handled correctly', function (done) {
+        let luFile = `
+        @prebuilt number
+        @machine-learned xyz1 = 
+        - @ simple xyz
+        - @ number abc
+
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].children.length, 2);
+                assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "xyz");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].name, "abc");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].instanceOf, "number");
+                done();
+            })
+            .catch(err => done(err))
+    });
+    
     
 });
