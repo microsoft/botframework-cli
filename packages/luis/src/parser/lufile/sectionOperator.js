@@ -57,26 +57,31 @@ class SectionOperator {
         const originList = sectionContent.split('\n');
 
         for (let line of originList) {
-        if (this.isIntentSection(line) 
-            || this.isEntitySection(line) 
-            || this.isImportSection(line)
-            || this.isModelInfoSection(line)
-            || this.isQnaSection(line)) {
-            if (!findSection) {
-                findSection = true;
+            if (!line) {
                 continue;
-            } else {
-                throw new Error("Please operate one section at a time.");
             }
-            }
-        }
 
+            line = line.trim();
+            if (this.isIntentSection(line) 
+                || this.isEntitySection(line) 
+                || this.isImportSection(line)
+                || this.isModelInfoSection(line)
+                || this.isQnaSection(line)
+                || this.isNewEntitySection(line)) {
+                    if (!findSection) {
+                        findSection = true;
+                        continue;
+                    } else {
+                        throw new Error("Please operate one section at a time.");
+                    }
+                }
+        }
     }
 
     replaceRangeContent(originString, startLine, stopLine, replaceString) {
 
         if (!originString) {
-        throw new Error('replace content with error parameters.');
+            throw new Error('replace content with error parameters.');
         }
 
         const originList = originString.split('\n');
@@ -98,25 +103,38 @@ class SectionOperator {
     }
 
     isIntentSection(line) {
-        return line && line.trim().startsWith('#') && !line.trim().startsWith('##');
+        if (isSectionEnabled) {
+            return line.startsWith('#') && !line.startsWith('##');
+        } else {
+            return line.startsWith('#') || line.startsWith('##');
+        }
     }
 
     isEntitySection(line) {
-        return line && line.trim().startsWith('$');
+        return line.startsWith('$');
     }
 
     isImportSection(line) {
         const importPattern = /^\[[^\[]+\]\([^|]+\)$/gi;
-        return line && importPattern.test(line.trim());
+        return importPattern.test(line);
     }
 
     isModelInfoSection(line) {
-        return line && line.trim().startsWith('> !#');
+        return line.startsWith('> !#');
     }
 
     isQnaSection(line) {
         const qnaPattern = /^#+ +\?/gi;
-        return line && qnaPattern.test(line.trim());
+        return qnaPattern.test(line);
+    }
+
+    isNewEntitySection(line) {
+        return line && line.trim().startsWith('@');
+    }
+
+    // TODO. Get it from luparser? or get it from luresource?
+    isSectionEnabled() {
+        return true;
     }
 }
 
