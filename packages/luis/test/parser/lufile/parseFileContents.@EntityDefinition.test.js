@@ -409,7 +409,7 @@ describe('V2 Entity definitions using @ notation', function () {
                     assert.equal(res.LUISJsonStructure.regex_entities[0].regexPattern, '[0-9]{6}');
                     done(); 
                 })
-                .catch(err => done(res))
+                .catch(err => done(err))
         });
 
         it('Regex role definition can be delayed', function(done) {

@@ -14,15 +14,15 @@ fragment WHITESPACE
 fragment UTTERANCE_MARK: '-' | '*' | '+';
 
 MODEL_INFO
-  : '>' WHITESPACE* '!#' ~('\r'|'\n')+
+  : WS* '>' WHITESPACE* '!#' ~('\r'|'\n')+
   ;
 
 COMMENT
-  : '>' ~('\r'|'\n')+ -> skip
+  : WS* '>' ~('\r'|'\n')+ -> skip
   ;
 
 WS
-  : WHITESPACE+ -> skip
+  : WHITESPACE+
   ;
 
 NEWLINE

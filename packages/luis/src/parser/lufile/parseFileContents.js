@@ -848,7 +848,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         }
                         if (entity.ListBody) {
                             entity.ListBody.forEach(line => {
-                                line.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                                line.substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
                             })
                         }
                         handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.ParseTree.newEntityLine(), false, entity.Type !== undefined);
@@ -864,7 +864,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         break;
                     case EntityTypeEnum.REGEX:
                         if (entity.ListBody[0]) {
-                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0], entityRoles, entity.ParseTree.newEntityLine());
+                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].substr(1).trim(), entityRoles, entity.ParseTree.newEntityLine());
                         } else {
                             handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityLine());
                         } 
@@ -872,7 +872,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     case EntityTypeEnum.ML:
                         break;
                     case EntityTypeEnum.PHRASELIST:
-                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody, entity.ParseTree.newEntityLine());
+                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.substr(1).trim()), entity.ParseTree.newEntityLine());
                     default:
                         //Unknown entity type
                         break;
@@ -1167,6 +1167,7 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
     let addNV = false;    
     let nvExists;
     listLines.forEach(line => {
+        line = line.substr(1).trim();
         if (line.toLowerCase().endsWith(':')) {
             // close if we are in the middle of a sublist.
             if (addNV) {
