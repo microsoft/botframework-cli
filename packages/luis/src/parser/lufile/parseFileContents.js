@@ -152,7 +152,80 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     if (featuresToProcess && featuresToProcess.length > 0) {
         parseFeatureSections(parsedContent, featuresToProcess);
     }
+
+    validateNDepthEntities(parsedContent.LUISJsonStructure.entities, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles, parsedContent.LUISJsonStructure.intents);
+    if (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) delete parsedContent.LUISJsonStructure.flatListOfEntityAndRoles
+
 }
+/**
+ * Helper function to validate and update nDepth entities
+ * @param {Object[]} collection 
+ * @param {Object[]} entitiesAndRoles 
+ * @param {Object[]} intentsCollection 
+ */
+const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCollection) {
+    (collection || []).forEach(child => {
+        if(child.instanceOf) {
+            let baseEntityFound = entitiesAndRoles.find(i => i.name == child.instanceOf);
+            if (!baseEntityFound) {
+                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
+                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            }
+            // base type cannot be a phrase list
+            if (baseEntityFound.type === EntityTypeEnum.PHRASELIST) {
+                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${EntityTypeEnum.PHRASELIST}" in child entity definition "${child.context.definition}". Child cannot be an instance of a "${EntityTypeEnum.PHRASELIST}".`;
+                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            }
+            // base type cannot be pattern.any
+            if (baseEntityFound.type == EntityTypeEnum.PATTERNANY) {
+                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot be an instance of a "${EntityTypeEnum.PATTERNANY}".`;
+                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            }
+        }
+
+        if (child.features) {
+            let featureHandled = false;
+            (child.features || []).forEach((feature, idx) => {
+                if (typeof feature === "object") return;
+                featureHandled = false;
+                let featureExists = entitiesAndRoles.find(i => i.name == feature);
+                if (featureExists) {
+                    // is feature phrase list?
+                    if (featureExists.type == EntityTypeEnum.PHRASELIST) {
+                        child.features[idx] = new helperClass.featureToModel(feature);
+                        featureHandled = true;
+                    } else if (featureExists.type == EntityTypeEnum.PATTERNANY) {
+                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                    } else {
+                        child.features[idx] = new helperClass.modelToFeature(feature);
+                        featureHandled = true;
+                    }
+                }
+                if (!featureHandled) {
+                    // find feature as intent
+                    let intentFeatureExists = intentsCollection.find(i => i.name == feature);
+                    if (intentFeatureExists) {
+                        child.features[idx] = new helperClass.modelToFeature(feature);
+                        featureHandled = true;
+                    }
+                }
+                if (!featureHandled) {
+                    let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                }
+            })
+        }
+
+        if (child.children) {
+            validateNDepthEntities(child.children, entitiesAndRoles, intentsCollection);
+        }
+
+        if (child.context) {
+            delete child.context
+        }
+    })
+};
 /**
  * Helper function to validate if the requested feature addition is valid.
  * @param {String} srcItemType 
@@ -865,9 +938,6 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         break;
                 }
                 if (entity.Features !== undefined) {
-                    if (entity.Type === EntityTypeEnum.PHRASELIST) {
-                        // TODO: throw: phrase list cannot have features.
-                    }
                     featuresToProcess.push(entity);
                 }
             } else {
@@ -878,6 +948,14 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
 
     return featuresToProcess;
 };
+/**
+ * Helper to handle ndepth entity definition.
+ * @param {Object} parsedContent 
+ * @param {String} entityName 
+ * @param {String[]} entityRoles 
+ * @param {String[]} entityLines 
+ * @param {Object} line 
+ */
 const handleNDepthEntity = function(parsedContent, entityName, entityRoles, entityLines, line) {
     const SPACEASTABS = 4;
     addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
@@ -896,9 +974,9 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             let errorMsg = `[ERROR] line ${defLine}: Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
             throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
         }
-        let childEntityName = groupsFound.groups.entityName;
+        let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childEntityType = groupsFound.groups.instanceOf.toLowerCase().trim();
-
+        let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()) : undefined;
         // Verify that the entity name is unique
         let entityIsUnique = verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
         
@@ -908,10 +986,10 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             // remember the tab level at the first line of child definition
             baseTabLevel = tabLevel;
             // Push the ID of the parent since we are proessing the first child entity
-            entityIdxByLevel.push({level : baseTabLevel, entity : rootEntity});
+            entityIdxByLevel.push({level : 0, entity : rootEntity});
         } 
         
-        currentParentEntity = entityIdxByLevel.reverse().find(item => item.level == tabLevel);
+        currentParentEntity = entityIdxByLevel.reverse().find(item => item.level == tabLevel - baseTabLevel);
         if (!currentParentEntity) {
             let errorMsg = `[ERROR] line ${defLine}: Invalid definition found for child "${child.trim()}". Parent of each child entity must be of type "${EntityTypeEnum.ML}".`;
             throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
@@ -920,36 +998,37 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         switch(groupsFound.groups.instanceOf.toLowerCase().trim()) {
             case EntityTypeEnum.SIMPLE:
                 if (!currentParentEntity.entity.children) {
-                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName));
+                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
                 } else {
                     // de-dupe and push this child entity    
                     let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
                     if (!childExists) {
-                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName));
+                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
                     } 
                 }
                 break;
             case EntityTypeEnum.ML:
-                let newParent;
                 if (!currentParentEntity.entity.children) {
-                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName));
+                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
                 } else {
                     // de-dupe and push this child entity    
                     let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
                     if (!childExists) {
-                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName));
+                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
                     } 
                 }
+                let newParent = currentParentEntity.entity.children.find(item => item.name == childEntityName);
+                // Push the ID of the parent since we are proessing the first child entity
+                entityIdxByLevel.push({level : tabLevel - baseTabLevel + 1, entity : newParent});
                 break;
             default:
-                // TODO: instance of can only be to any other entity type that is not a pattern.any entity
                 if (!currentParentEntity.entity.children) {
-                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName, childEntityType, context));
+                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName, childEntityType, context, [], childFeatures));
                 } else {
                     // de-dupe and push this child entity    
                     let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
                     if (!childExists) {
-                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName, childEntityType, context));
+                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName, childEntityType, context, [], childFeatures));
                     } 
                 }
                 break;
