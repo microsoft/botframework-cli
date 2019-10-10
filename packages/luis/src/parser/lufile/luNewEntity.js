@@ -64,7 +64,7 @@ class LUNewEntity {
 
         if (parseTree.newEntityListbody()) {
             for (const normalItemStr of parseTree.newEntityListbody().normalItemString()) {
-                synonymsOrPhraseList.push(normalItemStr.getText().trim());
+                synonymsOrPhraseList.push(normalItemStr.getText());
             }
         }
 

@@ -848,13 +848,13 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         }
                         if (entity.ListBody) {
                             entity.ListBody.forEach(line => {
-                                line.substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                                line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
                             })
                         }
                         handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.ParseTree.newEntityLine(), false, entity.Type !== undefined);
                         break;
                     case EntityTypeEnum.LIST:
-                        handleClosedList(parsedContent, entityName, entity.ListBody, entityRoles, entity.ParseTree.newEntityLine());
+                        handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.ParseTree.newEntityLine());
                         break;
                     case EntityTypeEnum.PATTERNANY:
                         handlePatternAny(parsedContent, entityName, entityRoles, entity.ParseTree.newEntityLine());
@@ -864,7 +864,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         break;
                     case EntityTypeEnum.REGEX:
                         if (entity.ListBody[0]) {
-                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].substr(1).trim(), entityRoles, entity.ParseTree.newEntityLine());
+                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].trim().substr(1).trim(), entityRoles, entity.ParseTree.newEntityLine());
                         } else {
                             handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityLine());
                         } 
@@ -872,7 +872,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     case EntityTypeEnum.ML:
                         break;
                     case EntityTypeEnum.PHRASELIST:
-                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.substr(1).trim()), entity.ParseTree.newEntityLine());
+                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.trim().substr(1).trim()), entity.ParseTree.newEntityLine());
                     default:
                         //Unknown entity type
                         break;
