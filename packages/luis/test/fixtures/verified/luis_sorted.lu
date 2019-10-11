@@ -62,9 +62,9 @@
 
 > # Entity definitions
 
-@ simple customDevice
+@ ml customDevice
 
-@ simple userName
+@ ml userName
 
 
 > # PREBUILT Entity definitions

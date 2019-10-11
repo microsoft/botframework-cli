@@ -12,8 +12,8 @@
 @ intent test1 usesFeature test3
 @ intent test2 usesFeature simple1
 @ intent test3 usesFeature age
-@ simple simple1 usesFeature phraselist1
-@ simple1 usesFeature age
+@ ml simple1 usesFeature phraselist1
+@ ml usesFeature age
 
 @ list list1
 > pl as a feature to model

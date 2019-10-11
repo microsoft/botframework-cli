@@ -3,7 +3,7 @@
 
 > # Entity definitions
 
-@ simple s1 hasRole sr1
+@ ml s1 hasRole sr1
 
 
 > # PREBUILT Entity definitions
