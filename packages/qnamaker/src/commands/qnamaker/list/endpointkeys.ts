@@ -8,7 +8,7 @@ export default class QnamakerListEndpointkeys extends Command {
   static description = 'List all the currently valid endpointKeys for querying your private endpoint'
 
   static flags: flags.Input<any> = {
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
     help: flags.help({char: 'h', description: 'qnamaker:list:endpointkeys command help'}),
   }
 
