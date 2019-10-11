@@ -103,7 +103,7 @@ class SectionOperator {
     }
 
     isIntentSection(line) {
-        if (isSectionEnabled) {
+        if (this.isSectionEnabled()) {
             return line.startsWith('#') && !line.startsWith('##');
         } else {
             return line.startsWith('#') || line.startsWith('##');
@@ -132,7 +132,7 @@ class SectionOperator {
         return line && line.trim().startsWith('@');
     }
 
-    // TODO. Get it from luparser? or get it from luresource?
+    // TODO. Get it from luparser? or get it from luresource? or get it from Modelinfo section?
     isSectionEnabled() {
         return true;
     }
