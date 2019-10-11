@@ -57,7 +57,7 @@ describe('Model as feature definitions', function () {
         it('Simple entity can be added as a feature to an intent', function(done) {
             let luFile = `
                 @ intent abc usesFeature simple1
-                @ simple simple1
+                @ ml simple1
                 # abc 
                 - test
             `;
@@ -164,7 +164,7 @@ describe('Model as feature definitions', function () {
                 # test
                 - one
 
-                @ simple simple1
+                @ ml simple1
                 @ intent test usesFeature simple1
                 
                 @ regex regex1
@@ -205,7 +205,7 @@ describe('Model as feature definitions', function () {
                 # test
                 - one
 
-                @ simple simple1
+                @ ml simple1
                 @ intent test usesFeature simple1
                 
                 @ regex regex1
@@ -247,7 +247,7 @@ describe('Model as feature definitions', function () {
     describe('Entity as feature to entity', function() {
         it('Entity cannot add itself as a feature', function(done) {
             let luFile = `
-                @ simple s1
+                @ ml s1
                 @ s1 usesFeature s1
             `;
 
@@ -257,8 +257,8 @@ describe('Model as feature definitions', function () {
         })
         it('Simple entity can be added as a feature to a simple', function(done) {
             let luFile = `
-                @ simple abc usesFeature simple1
-                @ simple simple1
+                @ ml abc usesFeature simple1
+                @ ml simple1
             `;
 
             parseFile.parseFile(luFile)
@@ -275,7 +275,7 @@ describe('Model as feature definitions', function () {
 
         it('Simple entity can be added as a feature to a regex entity', function(done) {
             let luFile = `
-                @ simple abc usesFeature simple1
+                @ ml abc usesFeature simple1
                 @ regex simple1
             `;
 
@@ -292,7 +292,7 @@ describe('Model as feature definitions', function () {
 
         it('Simple entity can be added as a feature to a list entity', function(done) {
             let luFile = `
-                @ simple abc usesFeature simple1
+                @ ml abc usesFeature simple1
                 @ list simple1
             `;
 
@@ -309,7 +309,7 @@ describe('Model as feature definitions', function () {
 
         it('Simple entity can be added as a feature to a composite entity', function(done) {
             let luFile = `
-                @ simple abc usesFeature simple1
+                @ ml abc usesFeature simple1
                 @ composite simple1
             `;
 
@@ -326,7 +326,7 @@ describe('Model as feature definitions', function () {
 
         it('Simple entity can be added as a feature to a prebuilt entity', function(done) {
             let luFile = `
-                @ simple abc usesFeature number
+                @ ml abc usesFeature number
                 @ prebuilt number
             `;
 
@@ -344,7 +344,7 @@ describe('Model as feature definitions', function () {
     it('Circular dependency for usesFeature is not allowed - simple case', function(done) {
         let luFile = `
             @ list l1 usesFeature s2
-            @ simple s2 usesFeature l1
+            @ ml s2 usesFeature l1
         `;
 
         parseFile.parseFile(luFile)
@@ -373,7 +373,7 @@ describe('Model as feature definitions', function () {
             @ intent test2 usesFeature s1
             
             > s1::test s1 -> test
-            @ simple s1
+            @ ml s1
             @ s1 usesFeature test
         `;
 

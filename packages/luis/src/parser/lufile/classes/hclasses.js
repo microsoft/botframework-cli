@@ -140,6 +140,15 @@ const readerObj = {
         constructor(name) {
             this.modelName = name ? name : '';
         }
+    },
+    childEntity: class {
+        constructor(name, instanceOf, context, children, features) {
+            this.name = name ? name : '';
+            this.instanceOf = instanceOf ? instanceOf : '';
+            this.children = children ? children : [];
+            this.features = features ? features : '';
+            this.context = context ? context : '';
+        }
     }
 };
 

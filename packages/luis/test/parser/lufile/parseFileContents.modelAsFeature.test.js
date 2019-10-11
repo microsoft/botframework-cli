@@ -169,7 +169,7 @@ describe('Model as feature definitions', function () {
         describe('Simple entity', function() {
             it('Features must be defined before they can be added.', function(done) {
                 let luFile = `
-                    @ simple x1
+                    @ ml x1
                     @ x1 usesFeature city3
                 `;
     
@@ -200,7 +200,7 @@ describe('Model as feature definitions', function () {
                         - portland
                         - PDX
                     
-                    @ simple x1
+                    @ ml x1
                     @ x1 usesFeature city
                 `;
     
@@ -238,7 +238,7 @@ describe('Model as feature definitions', function () {
                         - portland
                         - PDX
                     
-                    @ simple x1
+                    @ ml x1
                     @ x1 usesFeature city, city2
                 `;
     
@@ -277,7 +277,7 @@ describe('Model as feature definitions', function () {
                         - portland
                         - PDX
                     
-                    @ simple number hasRoles r1 usesFeature city 
+                    @ ml number hasRoles r1 usesFeature city 
                     @ number usesFeature city
                 `;
     
@@ -317,7 +317,7 @@ describe('Model as feature definitions', function () {
                         - portland
                         - PDX
                     
-                    @ simple number hasRoles r1, r2 usesFeatures city, city2 
+                    @ ml number hasRoles r1, r2 usesFeatures city, city2 
                     @ number usesFeature city
                 `;
     
@@ -444,7 +444,7 @@ describe('Model as feature definitions', function () {
                     
                     @ composite x1 = [s1, number]
                     @ x1 usesFeature city
-                    @ simple s1
+                    @ ml s1
                     @ prebuilt number
                 `;
     
@@ -484,7 +484,7 @@ describe('Model as feature definitions', function () {
                     
                     @ composite x1 = [s1, number]
                     @ x1 usesFeatures city, city2
-                    @ simple s1
+                    @ ml s1
                     @ prebuilt number
                 `;
     
@@ -548,7 +548,7 @@ describe('Model as feature definitions', function () {
         it('simple entity cannot use patternany as a feature', function(done) {
             let luFile = `
                 @ patternany p1
-                @ simple s1 usesFeature p1
+                @ ml s1 usesFeature p1
             `;
 
             parseFile.parseFile(luFile)
@@ -569,7 +569,7 @@ describe('Model as feature definitions', function () {
 
         it('phrase lists cannot have any features', function(done) {
             let luFile = `
-                @ simple c1
+                @ ml c1
                 @ phraselist p1 usesFeature c1
             `;
             parseFile.parseFile(luFile)
@@ -579,7 +579,7 @@ describe('Model as feature definitions', function () {
 
         it('regex entity cannot have any features', function(done) {
             let luFile = `
-                @ simple s1
+                @ ml s1
                 @ regex r1 usesFeature s1
             `;
             parseFile.parseFile(luFile)
@@ -590,7 +590,7 @@ describe('Model as feature definitions', function () {
 
         it('list entity cannot have any features', function(done) {
             let luFile = `
-                @ simple s1
+                @ ml s1
                 @ list r1 usesFeature s1
             `;
             parseFile.parseFile(luFile)
@@ -601,7 +601,7 @@ describe('Model as feature definitions', function () {
 
         it('prebuilt entity cannot have any features', function(done) {
             let luFile = `
-                @ simple s1
+                @ ml s1
                 @ prebuilt number usesFeature s1
             `;
             parseFile.parseFile(luFile)
@@ -614,7 +614,7 @@ describe('Model as feature definitions', function () {
     });
     it('Intent, simple entity, composite entity can use anything as a feature except for patternany', function(done) {
         let luFile = `
-            @ simple s1
+            @ ml s1
             @ list l1
             @ composite c1
             @ prebuilt number
