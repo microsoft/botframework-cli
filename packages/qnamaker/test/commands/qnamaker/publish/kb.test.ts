@@ -20,6 +20,6 @@ describe('qnamaker:publish:kb', () => {
     .stdout()
     .command(['qnamaker:publish:kb', '--kbId', 'xxxx-xxxxxxx-xxxxxxx-xxxxx'])
     .it('Publishes kb to production endpoint', ctx => {
-      expect(ctx.stdout).to.equal('\n')
+      expect(ctx.stdout).to.equal('Successs\n')
     })
 })

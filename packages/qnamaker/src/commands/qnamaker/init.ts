@@ -8,7 +8,7 @@ const fs = require('fs-extra')
 const path = require('path')
 
 export default class QnamakerInit extends Command {
-  static description = 'Initializes the .qnamakerrc file with settings.'
+  static description = 'Initializes the config file with settings.'
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'qnamaker:init command help'}),

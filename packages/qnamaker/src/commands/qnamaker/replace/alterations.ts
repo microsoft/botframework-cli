@@ -8,7 +8,7 @@ export default class QnamakerReplaceAlterations extends Command {
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'File path to the WordAlterationsDTO object to send in the body of the request'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
     help: flags.help({char: 'h', description: 'qnamaker:replace:alterations command help'}),
   }
 
