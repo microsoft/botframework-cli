@@ -445,11 +445,11 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:delete:kb command help
   --force                            Do not prompt for confirmation, force the operation
-  --kbId=kbId                        Knowledgebase id to be deleted
+  --kbId=kbId                        Knowledgebase id to be deleted. Overrides the knowledge base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/delete/kb.ts)_
@@ -465,11 +465,11 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:export:kb command help
   --environment=environment          (required) Specifies whether environment is Test or Prod.
-  --kbId=kbId                        Knowledgebase id to be exported.
+  --kbId=kbId                        Knowledgebase id to be exported.Overrides the knowledge base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/export/kb.ts)_
@@ -517,7 +517,7 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:kb command help
-  --kbId=kbId                        Knowledgebase id to get metadata.
+  --kbId=kbId                        Knowledgebase id to get metadata. Overrides the Knowledge Base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
@@ -547,7 +547,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:init`
 
-Initializes the .qnamakerrc file with settings.
+Initializes the config file with settings.
 
 ```
 USAGE
@@ -637,18 +637,18 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:publish:kb command help
-  --kbId=kbId                        Knowledgebase id to pubish.
+  --kbId=kbId                        Knowledgebase id to pubish. Overrides the Knowledge Base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/publish/kb.ts)_
 
 ## `bf qnamaker:query`
 
-Query model for fetching the answer from Kb for a query
+Generate Answer for fetching the answer from Kb for a query
 
 ```
 USAGE
@@ -670,9 +670,9 @@ OPTIONS
 
   --question=question              (required) Query to get a prediction for.
 
-  --scoreThreshold=scoreThreshold  Query to get a prediction for.
+  --scoreThreshold=scoreThreshold  Specifies the confidence score threshold for the returned answer.
 
-  --top=top                        Query to get a prediction for.
+  --top=top                        Specific the number of matching results.
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/query.ts)_
@@ -740,7 +740,7 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:replace:kb command help
   --in=in                            (required) The ReplaceKbDTO object to send in the body of the request
-  --kbId=kbId                        Knowledgebase id.
+  --kbId=kbId                        Knowledgebase id.Overrides the one present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
@@ -829,7 +829,7 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:update:kb command help
   --in=in                            (required) The UpdateKbOperationDTO object to send in the body of the request.
-  --kbId=kbId                        Knowledgebase id.
+  --kbId=kbId                        Knowledgebase id. Overrides the one present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
