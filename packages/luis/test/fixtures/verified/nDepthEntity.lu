@@ -14,10 +14,10 @@
 @ ml nDepth usesFeatures intent1,phraselist1
     - @ age nDepth_child1
     - @ ml nDepth_child2 usesFeatures intent1,phraselist1
-        - @ simple nDepth_child2.1
+        - @ ml nDepth_child2.1
 
 
-@ simple simple1
+@ ml simple1
 
 
 > # PREBUILT Entity definitions

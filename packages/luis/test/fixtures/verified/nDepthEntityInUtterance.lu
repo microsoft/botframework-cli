@@ -16,12 +16,12 @@
 @ ml nDepth
     - @ age nDepth_child1
     - @ ml nDepth_child2
-        - @ simple nDepth_child2.1
+        - @ ml nDepth_child2.1
 
 
-@ simple simple1
+@ ml simple1
 
-@ simple nDepth_child1
+@ ml nDepth_child1
 
 
 > # PREBUILT Entity definitions

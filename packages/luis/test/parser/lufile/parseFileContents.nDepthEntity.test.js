@@ -112,7 +112,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('all entity types can be assigned as a feature', function (done) {
         let luFile = `
             @ ml fooBar
-            @ simple x1
+            @ ml x1
             @ prebuilt number
             @ list l1
             @ composite c1
@@ -160,7 +160,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Invalid child definition throws (missing @)', function (done) {
         let luFile = `
             @ml xyz = 
-                - @ simple x1
+                - @ ml x1
                 - @ ml abc =
                     - number p1
         `;
@@ -172,7 +172,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Invalid child definition throws (missing -)', function (done) {
         let luFile = `
             @ml xyz = 
-                - @ simple x1
+                - @ ml x1
                 - @ ml abc =
                     @number p1
         `;
@@ -184,7 +184,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Invalid child definition throws (missing type or name)', function (done) {
         let luFile = `
             @ml xyz = 
-                - @ simple x1
+                - @ ml x1
                 - @ ml abc =
                    - @number
         `;
@@ -196,7 +196,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Invalid child definition throws (mis-spelled usesFeature)', function (done) {
         let luFile = `
             @ml xyz = 
-                - @ simple x1
+                - @ ml x1
                 - @ ml abc =
                    - @ number r1 usesFeaturex p1
         `;
@@ -207,9 +207,9 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Entity names must be unique', function (done) {
         let luFile = `
-            @simple xyz
+            @list xyz
             @ml xyz = 
-                - @ simple x1
+                - @ ml x1
         `;
         parseFile.parseFile(luFile)
             .then(res => done(res))
@@ -218,9 +218,9 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Child entity names must be unique', function (done) {
         let luFile = `
-            @simple xyz
+            @ml xyz
             @ml xyz1 = 
-                - @ simple xyz
+                - @ ml xyz
 
         `;
         parseFile.parseFile(luFile)
@@ -231,7 +231,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Simple child entity is handled correctly', function (done) {
         let luFile = `
             @ml xyz1 = 
-                - @ simple xyz
+                - @ ml xyz
 
         `;
         parseFile.parseFile(luFile)
@@ -247,7 +247,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child entity name can have spaces in them', function (done) {
         let luFile = `
             @ml xyz1 = 
-                - @ simple 'x y z'
+                - @ ml 'x y z'
 
         `;
         parseFile.parseFile(luFile)
@@ -262,9 +262,10 @@ describe('V2 NDepth definitions using @ notation', function () {
 
     it('Non ML entities cannot have children', function (done) {
         let luFile = `
+        @regex r1
         @ml xyz1 = 
-        - @ simple xyz
-            - @simple xyz2
+        - @r1 xyz
+            - @ml xyz2
 
         `;
         parseFile.parseFile(luFile)
@@ -275,8 +276,8 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Multiple children at level 1 is handled correctly', function (done) {
         let luFile = `
             @ml xyz1 = 
-                - @ simple xyz
-                - @ simple xyz2
+                - @ ml xyz
+                - @ ml xyz2
 
         `;
         parseFile.parseFile(luFile)
@@ -294,7 +295,7 @@ describe('V2 NDepth definitions using @ notation', function () {
         let luFile = `
         @prebuilt number
         @ml xyz1 = 
-        - @ simple xyz
+        - @ ml xyz
         - @ number abc
 
         `;
@@ -313,31 +314,31 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Arbitrary depth entities are handled correctly', function (done) {
         let luFile = `
         @ list list1
-        @ list list2
-        @ list list3
-        @ list list4
-        @ regex regex1
-        @ regex regex2
-        @ prebuilt number
-        @ml 1 = 
-        - @ simple s1
-        - @ ml 2 =
-            - @ number n2
-            - @ml 3 =
-                - @ list1 l3
-                - @ml 4 =
-                    - @ regex1 r4
-                    - @ ml 5 =
-                        - @ regex2 r5
-                        - @ list2 l5
-                        - @ number n5
-                        - @ simple s5
-                    - @ list3 l4
-                    - @ number n4
-                    - @ simple s4
-                - @ number n3
-                - @ simple s3
-            - @ simple s2
+@ list list2
+@ list list3
+@ list list4
+@ regex regex1
+@ regex regex2
+@ prebuilt number
+@ml 1 = 
+    - @ ml s1
+    - @ ml 2 =
+        - @ number n2
+        - @ml 3 =
+            - @ list1 l3
+            - @ml 4 =
+                - @ regex1 r4
+                - @ ml 5 =
+                    - @ regex2 r5
+                    - @ list2 l5
+                    - @ number n5
+                    - @ ml s5
+                - @ list3 l4
+                - @ number n4
+                - @ ml s4
+            - @ number n3
+            - @ ml s3
+        - @ ml s2
         `;
         parseFile.parseFile(luFile)
             .then(res => {
@@ -345,7 +346,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 2);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "s1");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].name, "2");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children.length, "3");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children.length, 3);
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].name, "n2");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].instanceOf, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].name, "3");
@@ -381,7 +382,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 @ regex regex2
 @ prebuilt number
 @ml 1 = 
-    - @ simple s1
+    - @ ml s1
     - @ ml 2 =
         - @ number n2
         - @ml 3 =
@@ -392,13 +393,13 @@ describe('V2 NDepth definitions using @ notation', function () {
                     - @ regex2 r5
                     - @ list2 l5
                     - @ number n5
-                    - @ simple s5
+                    - @ ml s5
                 - @ list3 l4
                 - @ number n4
-                - @ simple s4
+                - @ ml s4
             - @ number n3
-            - @ simple s3
-        - @ simple s2`;
+            - @ ml s3
+        - @ ml s2`;
         parseFile.parseFile(luFile)
             .then(res => {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
@@ -441,7 +442,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 @ regex regex2
 @ prebuilt number
 @ml 1 = 
-    - @ simple s1
+    - @ ml s1
     - @ ml 2 =
         - @ number n2
         - @ml 3 =
@@ -452,13 +453,13 @@ describe('V2 NDepth definitions using @ notation', function () {
                     - @ regex2 r5
                     - @ list2 l5
                     - @ number n5
-                    - @ simple s5
+                    - @ ml s5
                 - @ list3 l4
                 - @ number n4
-                - @ simple s4
+                - @ ml s4
             - @ number n3
-            - @ simple s3
-        - @ simple s2`;
+            - @ ml s3
+        - @ ml s2`;
         parseFile.parseFile(luFile)
             .then(res => {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
@@ -494,7 +495,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child can include one feature', function(done) {
         let luFile = `
     @ml 1 = 
-        - @ simple s1 usesFeature x1
+        - @ ml s1 usesFeature x1
     @regex x1
         
     `;
@@ -512,7 +513,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child can include one or more features', function(done) {
         let luFile = `
     @ml 1 = 
-        - @ simple s1 usesFeature x1, x2
+        - @ ml s1 usesFeature x1, x2
     @regex x1
     @regex x2
     `;
@@ -577,7 +578,7 @@ describe('V2 NDepth definitions using @ notation', function () {
         let luFile = `
 @ ml fooBar
     - @ r1 x1
-@ simple pl1 r1
+@ ml pl1 r1
     `;
 
         parseFile.parseFile(luFile)
@@ -588,7 +589,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('usesFeature cannot be to a pattern.any entity', function(done) {
         let luFile = `
 @ ml fooBar
-    - @ simple x1 usesFeature pa1
+    - @ ml x1 usesFeature pa1
 @ patternany pa1
     `;
 
@@ -600,7 +601,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Features must be defined before they can be added to a child.', function(done) {
         let luFile = `
 @ ml fooBar
-- @ simple x1 usesFeature pa1
+- @ ml x1 usesFeature pa1
     `;
 
         parseFile.parseFile(luFile)
@@ -611,7 +612,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child can include intent as a feature', function(done) {
         let luFile = `
     @ ml fooBar
-        - @ simple x1 usesFeature pa1
+        - @ ml x1 usesFeature pa1
     # pa1
     - one  
     `;
@@ -631,7 +632,7 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child can include phrase list as a feature', function(done) {
         let luFile = `
     @ ml fooBar
-        - @ simple x1 usesFeature pl1
+        - @ ml x1 usesFeature pl1
     @ phraselist pl1
     `;
     parseFile.parseFile(luFile)
@@ -650,9 +651,9 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child can include multiple, valid features', function(done) {
         let luFile = `
     @ ml fooBar
-        - @ simple x1 usesFeature pl1, i1, s1, number
+        - @ ml x1 usesFeature pl1, i1, s1, number
     @ phraselist pl1
-    @ simple s1
+    @ ml s1
     @ prebuilt number
     # i1
     - test    
@@ -681,7 +682,7 @@ describe('V2 NDepth definitions using @ notation', function () {
 @ ml nDepth usesFeatures intent1,phraselist1
     - @ age nDepth_child1
     - @ ml nDepth_child2 usesFeatures intent1,phraselist1
-        - @ simple nDepth_child2.1
+        - @ ml nDepth_child2.1
 @ prebuilt age
 @ phraselist phraselist1(interchangeable) = 
     - who,why,where,what
@@ -694,6 +695,27 @@ describe('V2 NDepth definitions using @ notation', function () {
                 done();
             })
             .catch(err => done(err))
-    })
+    });
+
+    it('ml entity definition can be delayed', function(done){
+        let luFile = `
+@ml 1
+@prebuilt number
+@list list1
+@1 =
+- @ number from
+- @ list1 myList
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].name, '1');
+                assert.equal(res.LUISJsonStructure.entities[0].children.length, 2);
+                done();
+            })
+            .catch(err => done(err))
+        
+
+    });
     
 });

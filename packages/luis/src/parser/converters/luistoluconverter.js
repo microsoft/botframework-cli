@@ -103,7 +103,7 @@ module.exports = {
                         }
                         fileContent += NEWLINE + NEWLINE;
                     }
-                    fileContent += `@ simple ${entity.name}`;
+                    fileContent += `@ ml ${entity.name}`;
                     fileContent += addRolesAndFeatures(entity);
                     fileContent += NEWLINE + NEWLINE;
                 } else {
@@ -187,6 +187,10 @@ module.exports = {
         return fileContent;
     }
 }
+/**
+ * Helper function to handle nDepth entity definition
+ * @param {Object} entity 
+ */
 const handleNDepthEntity = function(entity) {
     let fileContent = '';
     const BASE_TAB_STOP = 1;
@@ -196,6 +200,12 @@ const handleNDepthEntity = function(entity) {
     fileContent += addNDepthChildDefinitions(entity.children, BASE_TAB_STOP, fileContent) + NEWLINE + NEWLINE
     return fileContent;
 }
+/**
+ * Recursive helper function to add child definitions. 
+ * @param {Object[]} childCollection 
+ * @param {number} tabStop 
+ * @param {string} fileContent 
+ */
 const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent) {
     let myFileContent = '';
     (childCollection || []).forEach(child => {
@@ -206,7 +216,7 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
         } else if (child.children && child.children.length !== 0){
             myFileContent += EntityTypeEnum.ML;
         } else {
-            myFileContent += EntityTypeEnum.SIMPLE;
+            myFileContent += EntityTypeEnum.ML;
         }
         myFileContent += ` ${child.name}`;
         myFileContent += addRolesAndFeatures(child);

@@ -10,7 +10,7 @@ describe('V2 Entity definitions using @ notation', function () {
     describe('Simple entity definition', function(){
         it('Basic definition is handled correctly', function (done) {
             let luFile = `
-                @ simple fooBar
+                @ ml fooBar
             `;
             parseFile.parseFile(luFile)
                 .then(res => {
@@ -23,7 +23,7 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Basic definition (without space) is handled correctly', function (done) {
             let luFile = `
-                @simple fooBar
+                @ml fooBar
             `;
             parseFile.parseFile(luFile)
                 .then(res => {
@@ -36,8 +36,8 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Entity names can have spaces', function (done) {
             let luFile = `
-                @simple "foo bar"
-                @simple 'a b'
+                @ml "foo bar"
+                @ml 'a b'
             `;
             parseFile.parseFile(luFile)
                 .then(res => {
@@ -51,10 +51,10 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Entity with role definition', function(done){
             let luFile = `
-                @simple "foo bar" r1
-                @simple 'a b' r2, r3
-                @simple xyz hasRole r4
-                @simple 123 hasRoles r5,r6
+                @ml "foo bar" r1
+                @ml 'a b' r2, r3
+                @ml xyz hasRole r4
+                @ml 123 hasRoles r5,r6
             `;
             parseFile.parseFile(luFile)
                 .then(res => {
@@ -78,7 +78,7 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Role definitions are de-duped', function(done){
             let luFile = `
-                @simple s1 r1, r1
+                @ml s1 r1, r1
             `;
 
             parseFile.parseFile(luFile)
@@ -92,7 +92,7 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Duplicate entity definitions is not allowed', function(done) {
             let luFile = `
-                @simple a1 r1
+                @ml a1 r1
                 @regex a1 r2
             `;
             parseFile.parseFile(luFile)
@@ -102,7 +102,7 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Role names cannot be the same as entity name', function(done) {
             let luFile = `
-                @simple a1 r1
+                @ml a1 r1
                 @regex re1 a1
             `;
             parseFile.parseFile(luFile)
@@ -115,7 +115,7 @@ describe('V2 Entity definitions using @ notation', function () {
                 # test
                 - this is a {foodType:r2}
 
-                @ simple foodType r1
+                @ ml foodType r1
             `;
             parseFile.parseFile(luFile)
                 .then(res => {
@@ -130,7 +130,7 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Entity name cannot be the same as entity type', function(done){
             let luFile = `
-                @simple simple
+                @ml ml
             `;
             parseFile.parseFile(luFile)
                 .then(res => done(res))
@@ -139,16 +139,16 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Entity definition can be split across lines', function(done){
             let luFile = `
-                @simple entity1
+                @ml entity1
                 @entity1 r1
 
-                @simple entity2
+                @ml entity2
                 @entity2 hasRole r2
 
-                @simple entity3
+                @ml entity3
                 @entity3 hasRoles r3
 
-                @simple entity4
+                @ml entity4
                 @entity4 hasRoles r4,r5
                 @entity4 r6
             `;
@@ -184,8 +184,8 @@ describe('V2 Entity definitions using @ notation', function () {
 
         it('Roles are unique', function(done) {
             let luFile = `
-                @simple entity1 r1
-                @simple entity2 r1
+                @ml entity1 r1
+                @ml entity2 r1
             `;
 
             parseFile.parseFile(luFile)
@@ -198,7 +198,7 @@ describe('V2 Entity definitions using @ notation', function () {
                 # test
                 - this is a {value:r1 = test}
 
-                @simple value r2
+                @ml value r2
             `;
 
             parseFile.parseFile(luFile)
@@ -934,7 +934,7 @@ describe('V2 Entity definitions using @ notation', function () {
         it('Duplicate composite entity definition throws', function(done){
             let luFile = `
                 @composite x1 = [s1, number]
-                @simple s1
+                @ml s1
                 @prebuilt number
                 @composite x1 = [s1, age]
                 @prebuilt age

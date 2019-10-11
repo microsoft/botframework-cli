@@ -977,7 +977,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         let entityIsUnique = verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
         
         // Get current tab level
-        let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : undefined) || (groupsFound.groups.leadingTabs ? groupsFound.groups.leadingTabs.length : undefined);
+        let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces !== undefined ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : 0) || (groupsFound.groups.leadingTabs !== undefined ? groupsFound.groups.leadingTabs.length : 0);
         if (defLine === line.start.line + 1) {
             // remember the tab level at the first line of child definition
             baseTabLevel = tabLevel;
@@ -986,6 +986,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         } 
         
         currentParentEntity = entityIdxByLevel.reverse().find(item => item.level == tabLevel - baseTabLevel);
+        entityIdxByLevel.reverse();
         if (!currentParentEntity) {
             let errorMsg = `[ERROR] line ${defLine}: Invalid definition found for child "${child.trim()}". Parent of each child entity must be of type "${EntityTypeEnum.ML}".`;
             throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
