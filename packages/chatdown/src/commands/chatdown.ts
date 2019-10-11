@@ -37,12 +37,14 @@ export default class Chatdown extends Command {
         })
       }
 
+      let outputDir = (flags.out) ? flags.out.trim() : './'
+      if (outputDir.substr(0, 2) === './') {
+        outputDir = path.resolve(process.cwd(), outputDir.substr(2))
+      }
+
       if (inputIsDirectory) {
         let inputDir = flags.in ? flags.in.trim() : ''
-        let outputDir = (flags.out) ? flags.out.trim() : './'
-        if (outputDir.substr(0, 2) === './') {
-          outputDir = path.resolve(process.cwd(), outputDir.substr(2))
-        }
+        
         const len = await this.processFiles(inputDir, outputDir)
         if (len === 0) {
           throw new CLIError('No chat files found at: ' + flags.in)
@@ -51,9 +53,10 @@ export default class Chatdown extends Command {
         return
       } else {
         const fileContents = await this.getInput(flags.in)
+        const fileName = flags.in ? this.getFileName(flags.in) : ''
         if (fileContents) {
           const activities = await chatdown(fileContents, flags)
-          const writeConfirmation = await this.writeOut(activities)
+          const writeConfirmation = await this.writeOut(activities, fileName, outputDir)
           /* tslint:disable:strict-type-predicates */
           if (typeof writeConfirmation === 'string') {
             process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${writeConfirmation}\n`)
@@ -91,21 +94,24 @@ export default class Chatdown extends Command {
     }
   }
 
+  private getFileName(file: any) {
+    let fileName = file
+    if (file.lastIndexOf('/') !== -1) {
+      fileName = file.substr(file.lastIndexOf('/') + 1)
+    }
+    fileName = fileName.substring(0, fileName.lastIndexOf('.'))
+    return fileName
+  }
+
   private async processFiles(inputDir: any, outputDir: any) {
     return new Promise(async (resolve, reject) => {
       let files = glob.sync(inputDir, {ignore: ['**/node_modules/**']})
       /* tslint:disable:prefer-for-of */
       for (let i = 0; i < files.length; i++) {
         try {
-          let fileName = files[i]
-          if (files[i].lastIndexOf('/') !== -1) {
-            fileName = files[i].substr(files[i].lastIndexOf('/'))
-          }
-          fileName = fileName.split('.')[0]
+          const fileName = this.getFileName(files[i])
           let activities = await chatdown(await utils.readTextFile(files[i]))
-          let writeFile = `${outputDir}/${fileName}.transcript`
-          await fs.ensureFile(writeFile)
-          await fs.writeJson(writeFile, activities, {spaces: 2})
+          this.writeOut(activities, fileName, outputDir)
         } catch (e) {
           if (e.message.match(/no such file or directory/)) {
             reject(new CLIError(e.message))
@@ -119,9 +125,15 @@ export default class Chatdown extends Command {
     })
   }
 
-  private async writeOut(activities: any) {
+  private async writeOut(activities: any, fileName: string, outputDir: any) {
+    if (fileName && outputDir) {
+      let writeFile = `${outputDir}/${fileName}.transcript`
+      await fs.ensureFile(writeFile)
+      return await fs.writeJson(writeFile, activities, {spaces: 2})
+    }
     const output = JSON.stringify(activities, null, 2)
     await new Promise(done => process.stdout.write(output, 'utf-8', () => done()))
     return true
   }
 }
+
