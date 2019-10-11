@@ -9,8 +9,6 @@ class LUResource {
     this.Content = content;
     this.Errors = errors;
   }
-
-  // TODO Add CRUD
 }
 
 module.exports = LUResource;
