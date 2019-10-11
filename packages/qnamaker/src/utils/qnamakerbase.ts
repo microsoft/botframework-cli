@@ -28,7 +28,7 @@ export async function processInputs(flags: any, payload: any, configfile: string
   return result
 }
 
-async function getFileInput(file: string) {
+export async function getFileInput(file: string) {
   // Let any errors fall through to the runProgram() promise
   let body = await fs.readJSON(path.resolve(file))
   return body
