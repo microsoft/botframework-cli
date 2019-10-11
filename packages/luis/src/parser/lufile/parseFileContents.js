@@ -971,7 +971,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
-        let childEntityType = groupsFound.groups.instanceOf.toLowerCase().trim();
+        let childEntityType = groupsFound.groups.instanceOf.trim();
         let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()) : undefined;
         // Verify that the entity name is unique
         let entityIsUnique = verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
