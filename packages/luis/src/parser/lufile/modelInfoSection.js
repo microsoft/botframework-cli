@@ -11,6 +11,7 @@ class LUModelInfo {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.MODELINFOSECTION;
         this.ModelInfo = parseTree.modelInfoDefinition().getText();
+        this.Errors = [];
         this.Id = uuidv4();
     }
 }

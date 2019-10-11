@@ -14,6 +14,7 @@ class QnaSection {
         this.Questions = this.Questions.concat(this.ExtractMoreQuestions(parseTree));
         this.FilterPairs = this.ExtractFilterPairs(parseTree);
         this.Answer = this.ExtractAnswer(parseTree);
+        this.Errors = [];
         this.Id = uuidv4();
     }
 

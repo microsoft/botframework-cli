@@ -16,6 +16,9 @@ class SimpleIntentSection {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.SIMPLEINTENTSECTION;
         this.Id = uuidv4();
+        this.UtteranceAndEntitiesMap = [];
+        this.Entities = [];
+        this.Errors = [];
         
         if (parseTree) {
             this.Name = this.ExtractName(parseTree);

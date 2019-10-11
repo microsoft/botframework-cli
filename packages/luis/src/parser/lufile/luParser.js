@@ -41,8 +41,6 @@ class LUParser {
                 let emptyIntentSection = new SimpleIntentSection();
                 emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
                 emptyIntentSection.Name = section.Name;
-                emptyIntentSection.Entities = [];
-                emptyIntentSection.UtteranceAndEntitiesMap = [];
                 sections.push(emptyIntentSection);
 
                 section.SimpleIntentSections.forEach(subSection => {
