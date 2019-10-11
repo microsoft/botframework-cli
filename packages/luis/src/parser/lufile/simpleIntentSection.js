@@ -5,6 +5,7 @@ const visitor = require('./visitor');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./enums/lusectiontypes'); 
+const uuidv4 = require('uuid/v4');
 
 class SimpleIntentSection {
     /**
@@ -14,7 +15,8 @@ class SimpleIntentSection {
     constructor(parseTree) {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.SIMPLEINTENTSECTION;
-
+        this.Id = uuidv4();
+        
         if (parseTree) {
             this.Name = this.ExtractName(parseTree);
             const result = this.ExtractUtteranceAndEntitiesMap(parseTree);

@@ -11,6 +11,7 @@ const ImportSection = require('./importSection');
 const QnaSection = require('./qnaSection');
 const ModelInfoSection = require('./modelInfoSection');
 const LUErrorListener = require('./luErrorListener');
+const SectionType = require('./enums/lusectiontypes');
 
 class LUParser {
     /**
@@ -25,9 +26,30 @@ class LUParser {
             return new LUResource(sections, content, errors);
         }
 
+        let modelInfoSections = this.extractModelInfoSections(fileContent);
+        modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(modelInfoSections);
+
+        let isSectionEnabled = this.isSectionEnabled(sections);
+
         let nestedIntentSections = this.extractNestedIntentSections(fileContent);
         nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(nestedIntentSections);
+        if (isSectionEnabled) {
+            sections = sections.concat(nestedIntentSections);
+        } else {
+            nestedIntentSections.forEach(section => {
+                let emptyIntentSection = new SimpleIntentSection();
+                emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
+                emptyIntentSection.Name = section.Name;
+                emptyIntentSection.Entities = [];
+                emptyIntentSection.UtteranceAndEntitiesMap = [];
+                sections.push(emptyIntentSection);
+
+                section.SimpleIntentSections.forEach(subSection => {
+                    sections.push(subSection);
+                })
+            });
+        }
 
         let simpleIntentSections = this.extractSimpleIntentSections(fileContent);
         simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
@@ -48,10 +70,6 @@ class LUParser {
         let qnaSections = this.extractQnaSections(fileContent);
         qnaSections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(qnaSections);
-
-        let modelInfoSections = this.extractModelInfoSections(fileContent);
-        modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(modelInfoSections);
 
         return new LUResource(sections, content, errors);
     }
@@ -205,6 +223,25 @@ class LUParser {
         let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
 
         return modelInfoSectionList;
+    }
+
+    static isSectionEnabled(sections) {
+        let modelInfoSections = sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
+        let enableSections = false;
+        if (modelInfoSections && modelInfoSections.length > 0) {
+            for (const modelInfo of modelInfoSections) {
+                let line = modelInfo.ModelInfo
+                let kvPair = line.split(/@(enableSections).(.*)=/g).map(item => item.trim());
+                if (kvPair.length === 4) {
+                    if (kvPair[1] === 'enableSections' && kvPair[3] === 'true') {
+                        enableSections = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return enableSections;
     }
 }
 

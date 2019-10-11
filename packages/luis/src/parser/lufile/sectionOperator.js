@@ -103,11 +103,7 @@ class SectionOperator {
     }
 
     isIntentSection(line) {
-        if (isSectionEnabled) {
-            return line.startsWith('#') && !line.startsWith('##');
-        } else {
-            return line.startsWith('#') || line.startsWith('##');
-        }
+        return line.startsWith('#') || line.startsWith('##');
     }
 
     isEntitySection(line) {
@@ -130,11 +126,6 @@ class SectionOperator {
 
     isNewEntitySection(line) {
         return line && line.trim().startsWith('@');
-    }
-
-    // TODO. Get it from luparser? or get it from luresource?
-    isSectionEnabled() {
-        return true;
     }
 }
 

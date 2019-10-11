@@ -134,13 +134,13 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     }
 
     // parse model info section
-    [enableSections, enableMergeIntents] = parseAndHandleModelInfoSection(parsedContent, luResource, log);
+    let enableMergeIntents = parseAndHandleModelInfoSection(parsedContent, luResource, log);
 
     // parse reference section
     await parseAndHandleImportSection(parsedContent, luResource);
 
     // parse nested intent section
-    parseAndHandleNestedIntentSection(luResource, enableSections, enableMergeIntents);
+    parseAndHandleNestedIntentSection(luResource, enableMergeIntents);
 
     GetEntitySectionsFromSimpleIntentSections(luResource);
 
@@ -512,46 +512,29 @@ const handleAtPrefix = function(entity, flatEntityAndRoles) {
 /**
  * Intent parser code to parse intent section.
  * @param {LUResouce} luResource resources extracted from lu file content
- * @param {boolean} enableSections enable functionality to parse nested intent section or not
  * @param {boolean} enableMergeIntents enable functionality to merge intents in nested intent section or not
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleNestedIntentSection = function (luResource, enableSections, enableMergeIntents) {
+const parseAndHandleNestedIntentSection = function (luResource, enableMergeIntents) {
     // handle nested intent section
     let sections = luResource.Sections.filter(s => s.SectionType === SectionType.NESTEDINTENTSECTION);
     if (sections && sections.length > 0) {
         sections.forEach(section => {
-            if (!enableSections) {
-                // if enableSections not set true
-                // treat section name line as an intent without utterances and
-                // treat subIntentSection as standalone simpleIntentSection
-                let emptyIntentSection = new SimpleIntentSection();
-                emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
-                emptyIntentSection.Name = section.Name;
-                emptyIntentSection.Entities = [];
-                emptyIntentSection.UtteranceAndEntitiesMap = [];
-                luResource.Sections.push(emptyIntentSection);
+            if (enableMergeIntents) {
+                let mergedIntentSection = section.SimpleIntentSections[0];
+                mergedIntentSection.ParseTree = section.ParseTree;
+                mergedIntentSection.Name = section.Name;
+                for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
+                    mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
+                    mergedIntentSection.Entities = mergedIntentSection.Entities.concat(section.SimpleIntentSections[idx].Entities);
+                }
 
+                luResource.Sections.push(mergedIntentSection);
+            } else {
                 section.SimpleIntentSections.forEach(subSection => {
+                    subSection.Name = section.Name + '.' + subSection.Name;
                     luResource.Sections.push(subSection);
                 })
-            } else {
-                if (enableMergeIntents) {
-                    let mergedIntentSection = section.SimpleIntentSections[0];
-                    mergedIntentSection.ParseTree = section.ParseTree;
-                    mergedIntentSection.Name = section.Name;
-                    for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
-                        mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
-                        mergedIntentSection.Entities = mergedIntentSection.Entities.concat(section.SimpleIntentSections[idx].Entities);
-                    }
-
-                    luResource.Sections.push(mergedIntentSection);
-                } else {
-                    section.SimpleIntentSections.forEach(subSection => {
-                        subSection.Name = section.Name + '.' + subSection.Name;
-                        luResource.Sections.push(subSection);
-                    })
-                }
             }
         })
     }
@@ -1479,19 +1462,13 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
  */
 const parseAndHandleModelInfoSection = function (parsedContent, luResource, log) {
     // handle model info
-    let enableSections = false;
     let enableMergeIntents = true;
     let modelInfos = luResource.Sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableMergeIntents).(.*)=/g).map(item => item.trim());
             if (kvPair.length === 4) {
-                if (kvPair[1] === 'enableSections' && kvPair[3] === 'true') {
-                    enableSections = true;
-                    continue;
-                }
-
                 if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
                     enableMergeIntents = false;
                     continue;
@@ -1579,7 +1556,7 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
         }
     }
 
-    return [enableSections, enableMergeIntents];
+    return enableMergeIntents;
 }
 
 

@@ -1,12 +1,6 @@
 {
     "intents": [
       {
-        "name": "Cancel"
-      },
-      {
-        "name": "Help"
-      },
-      {
         "name": "Greeting"
       },
       {
@@ -14,15 +8,17 @@
       },
       {
         "name": "ByeGreeting"
+      },
+      {
+        "name": "Cancel"
+      },
+      {
+        "name": "Help"
       }
     ],
     "entities": [
       {
         "name": "none",
-        "roles": []
-      },
-      {
-        "name": "help",
         "roles": []
       },
       {
@@ -43,6 +39,10 @@
         "roles": []
       },
       {
+        "name": "help",
+        "roles": []
+      },
+      {
         "name": "userName",
         "roles": []
       },
@@ -57,21 +57,6 @@
     "model_features": [],
     "regex_features": [],
     "utterances": [
-      {
-        "text": "help",
-        "intent": "Help",
-        "entities": []
-      },
-      {
-        "text": "I need help",
-        "intent": "Help",
-        "entities": []
-      },
-      {
-        "text": "please help",
-        "intent": "Help",
-        "entities": []
-      },
       {
         "text": "Hi vishwac",
         "intent": "HelloGreeting",
@@ -115,6 +100,21 @@
             "endPos": 14
           }
         ]
+      },
+      {
+        "text": "help",
+        "intent": "Help",
+        "entities": []
+      },
+      {
+        "text": "I need help",
+        "intent": "Help",
+        "entities": []
+      },
+      {
+        "text": "please help",
+        "intent": "Help",
+        "entities": []
       }
     ],
     "patterns": [],

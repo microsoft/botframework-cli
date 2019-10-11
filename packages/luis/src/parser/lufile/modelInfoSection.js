@@ -1,5 +1,6 @@
 const ModelInfoSectionContext = require('./generated/LUFileParser').LUFileParser.ModelInfoSectionContext;
 const LUSectionTypes = require('./enums/lusectiontypes'); 
+const uuidv4 = require('uuid/v4');
 
 class LUModelInfo {
     /**
@@ -10,6 +11,7 @@ class LUModelInfo {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.MODELINFOSECTION;
         this.ModelInfo = parseTree.modelInfoDefinition().getText();
+        this.Id = uuidv4();
     }
 }
 
