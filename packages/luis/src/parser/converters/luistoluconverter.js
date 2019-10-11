@@ -213,8 +213,6 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
         myFileContent += '- @ ';
         if (child.instanceOf) {
             myFileContent += child.instanceOf;
-        } else if (child.children && child.children.length !== 0){
-            myFileContent += EntityTypeEnum.ML;
         } else {
             myFileContent += EntityTypeEnum.ML;
         }

@@ -204,11 +204,10 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                     if (intentFeatureExists) {
                         child.features[idx] = new helperClass.modelToFeature(feature);
                         featureHandled = true;
+                    } else {
+                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
                     }
-                }
-                if (!featureHandled) {
-                    let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
                 }
             })
         }
@@ -974,7 +973,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         let childEntityType = groupsFound.groups.instanceOf.trim();
         let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()) : undefined;
         // Verify that the entity name is unique
-        let entityIsUnique = verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
+        verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
         
         // Get current tab level
         let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces !== undefined ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : 0) || (groupsFound.groups.leadingTabs !== undefined ? groupsFound.groups.leadingTabs.length : 0);
@@ -992,47 +991,38 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
         }
         let context = {line : defLine, definition: child.trim()};
-        switch(groupsFound.groups.instanceOf.toLowerCase().trim()) {
-            case EntityTypeEnum.SIMPLE:
-                if (!currentParentEntity.entity.children) {
-                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
-                } else {
-                    // de-dupe and push this child entity    
-                    let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
-                    if (!childExists) {
-                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
-                    } 
-                }
-                break;
-            case EntityTypeEnum.ML:
-                if (!currentParentEntity.entity.children) {
-                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
-                } else {
-                    // de-dupe and push this child entity    
-                    let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
-                    if (!childExists) {
-                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName,"", context, [], childFeatures));
-                    } 
-                }
-                let newParent = currentParentEntity.entity.children.find(item => item.name == childEntityName);
-                // Push the ID of the parent since we are proessing the first child entity
-                entityIdxByLevel.push({level : tabLevel - baseTabLevel + 1, entity : newParent});
-                break;
-            default:
-                if (!currentParentEntity.entity.children) {
-                    currentParentEntity.entity.children = new Array(new helperClass.childEntity(childEntityName, childEntityType, context, [], childFeatures));
-                } else {
-                    // de-dupe and push this child entity    
-                    let childExists = (currentParentEntity.entity.children || []).find(item => item.name == childEntityName);
-                    if (!childExists) {
-                        currentParentEntity.entity.children.push(new helperClass.childEntity(childEntityName, childEntityType, context, [], childFeatures));
-                    } 
-                }
-                break;
+        if (groupsFound.groups.instanceOf.toLowerCase().trim() === EntityTypeEnum.SIMPLE) {
+            pushNDepthChild(currentParentEntity.entity, childEntityName, context, childFeatures);
+        } else if (groupsFound.groups.instanceOf.toLowerCase().trim() === EntityTypeEnum.ML) {
+            pushNDepthChild(currentParentEntity.entity, childEntityName, context, childFeatures);
+            let newParent = currentParentEntity.entity.children.find(item => item.name == childEntityName);
+            // Push the ID of the parent since we are proessing the first child entity
+            entityIdxByLevel.push({level : tabLevel - baseTabLevel + 1, entity : newParent});
+        } else {
+            pushNDepthChild(currentParentEntity.entity, childEntityName, context, childFeatures, childEntityType);
         }
-        
     });
 };
+/**
+ * Helper to add an nDepth child entity to the collection.
+ * @param {Object} entity 
+ * @param {String} childEntityName 
+ * @param {Object} context 
+ * @param {String []} childFeatures 
+ * @param {String} childEntityType 
+ * @param {Object []} children 
+ */
+const pushNDepthChild = function(entity, childEntityName, context, childFeatures, childEntityType = "", children = []) {
+    if (!entity.children) {
+        entity.children = new Array(new helperClass.childEntity(childEntityName,childEntityType, context, children, childFeatures));
+    } else {
+        // de-dupe and push this child entity    
+        let childExists = (entity.children || []).find(item => item.name == childEntityName);
+        if (!childExists) {
+            entity.children.push(new helperClass.childEntity(childEntityName, childEntityType, context, children, childFeatures));
+        } 
+    }
+}
 /**
  * Helper function to verify that the requested entity is unique.
  * @param {Object} parsedContent 
@@ -1067,7 +1057,6 @@ const verifyUniqueEntityName = function(parsedContent, entityName, entityType, l
         })
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
     }
-    return {matchType, entityFound}
 }
 /**
  * Helper function to handle pattern.any entity
