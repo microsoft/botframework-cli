@@ -12,7 +12,8 @@ describe('Section CRUD test', () => {
     let luresource = undefined;
     
     it('init section test', () => {
-        let fileContent = `# Greeting
+        let fileContent = 
+        `# Greeting
         - hi
         - hello`;
 
@@ -30,7 +31,8 @@ describe('Section CRUD test', () => {
 
 
     it('add simpleIntentSection test', () => {
-        let newFileConent = `# CheckEmail
+        let newFileConent = 
+        `# CheckEmail
         - check my email
         - show my emails`;
 
@@ -48,7 +50,8 @@ describe('Section CRUD test', () => {
 
     it('update section test', () => {
 
-        let newFileConent = `# CheckEmail
+        let newFileConent = 
+        `# CheckEmail
         - check my email
         - show my emails
         - check my mail box please`;
@@ -93,7 +96,7 @@ describe('Section CRUD test', () => {
 
         luresource = new SectionOperator(luresource).addSection(newFileConent);
 
-        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Errors.length, 1);
         assert.equal(luresource.Sections.length, 4);
         assert.equal(luresource.Sections[0].Errors.length, 0);
         assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);

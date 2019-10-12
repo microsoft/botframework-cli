@@ -940,7 +940,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                 }
                 switch(entityType) {
                     case EntityTypeEnum.ML:
-                        handleNDepthEntity(parsedContent, entityName, entityRoles, entity.ListBody, entity.ParseTree.newEntityLine());
+                        handleNDepthEntity(parsedContent, entityName, entityRoles, entity.ListBody, entity.ParseTree.newEntityDefinition().newEntityLine());
                         break;
                     case EntityTypeEnum.SIMPLE: 
                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);

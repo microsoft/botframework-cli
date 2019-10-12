@@ -29,7 +29,7 @@ nestedIntentSection
     ;
 
 nestedIntentNameLine
-    : HASH nestedIntentName
+    : WS* HASH nestedIntentName
     ;
 
 nestedIntentName
@@ -45,7 +45,7 @@ nestedIntentBodyDefinition
     ;
 
 subIntentDefinition
-    : HASH simpleIntentSection
+    : WS* HASH simpleIntentSection
     ;
 
 simpleIntentSection

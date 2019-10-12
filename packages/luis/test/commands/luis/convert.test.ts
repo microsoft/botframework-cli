@@ -179,6 +179,13 @@ describe('luis:convert', () => {
     })
 
     test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/missing-utterance2.lu')}`, '--log'])
+    .it('luis:convert writes out a warning when no utterances are found for an intent from nestedIntentSection name', async (ctx) => {
+      expect(ctx.stdout).to.contain('[WARN] line 1:0 - line 1:10: no utterances found for intent definition: "# Greeting"')
+    })
+
+    test
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
     .it('luis:convert writes out an error when invalid entity definition is found', async (ctx) => {

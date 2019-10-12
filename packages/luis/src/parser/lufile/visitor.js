@@ -50,7 +50,7 @@ class Visitor {
             }
         }
 
-        return { utterance, entities, errorMsgs };
+        return { utterance: utterance.trim(), entities, errorMsgs };
     }
 
     /**

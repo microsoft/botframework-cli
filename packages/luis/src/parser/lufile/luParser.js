@@ -12,6 +12,8 @@ const QnaSection = require('./qnaSection');
 const ModelInfoSection = require('./modelInfoSection');
 const LUErrorListener = require('./luErrorListener');
 const SectionType = require('./enums/lusectiontypes');
+const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
+const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 
 class LUParser {
     /**
@@ -41,10 +43,19 @@ class LUParser {
                 let emptyIntentSection = new SimpleIntentSection();
                 emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
                 emptyIntentSection.Name = section.Name;
+                let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: emptyIntentSection.ParseTree,
+                    severity: DiagnosticSeverity.WARN
+                })
+
+                errors.push(error);
                 sections.push(emptyIntentSection);
 
                 section.SimpleIntentSections.forEach(subSection => {
                     sections.push(subSection);
+                    errors = errors.concat(subSection.Errors);
                 })
             });
         }
