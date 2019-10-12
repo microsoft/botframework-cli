@@ -1,0 +1,8 @@
+@ml xyz1 = 
+    - @ ml xyz
+@ phraselist abc = 
+    - one
+    - two
+    - three
+@ prebuilt number
+@ composite 1 = [number]
