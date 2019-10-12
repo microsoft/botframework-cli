@@ -68,8 +68,7 @@ class NewEntitySection {
 
         if (parseTree.newEntityDefinition().newEntityListbody()) {
             for (const normalItemStr of parseTree.newEntityDefinition().newEntityListbody().normalItemString()) {
-                var itemStr = normalItemStr.getText().trim();
-                synonymsOrPhraseList.push(itemStr.substr(1).trim());
+                synonymsOrPhraseList.push(normalItemStr.getText());
             }
         }
 

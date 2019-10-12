@@ -10,9 +10,9 @@ export default class QnamakerUpdateKb extends Command {
 
   static flags: flags.Input<any> = {
     in: flags.string({description: 'The file path to the UpdateKbOperationDTO object to send in the body of the request.'}),
-    kbId: flags.string({description: 'Knowledgebase id.'}),
+    kbId: flags.string({description: 'Knowledgebase id. Overrides the knowledge base id present in the config'}),
     wait: flags.boolean({description: 'Wait for the operation to complete.'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
     help: flags.help({char: 'h', description: 'qnamaker:update:kb command help'}),
   }
 

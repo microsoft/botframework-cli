@@ -28,7 +28,7 @@ const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./enums/luisEntityTypes');
 const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
 const SimpleIntentSection = require('./simpleIntentSection');
-const plAllowedTypes = ["simple", "composite", "machine-learned"];
+const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
     modelToFeature: 'featureName'
@@ -159,7 +159,75 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     if (featuresToProcess && featuresToProcess.length > 0) {
         parseFeatureSections(parsedContent, featuresToProcess);
     }
+
+    validateNDepthEntities(parsedContent.LUISJsonStructure.entities, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles, parsedContent.LUISJsonStructure.intents);
+    if (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) delete parsedContent.LUISJsonStructure.flatListOfEntityAndRoles
+
 }
+/**
+ * Helper function to validate and update nDepth entities
+ * @param {Object[]} collection 
+ * @param {Object[]} entitiesAndRoles 
+ * @param {Object[]} intentsCollection 
+ */
+const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCollection) {
+    (collection || []).forEach(child => {
+        if(child.instanceOf) {
+            let baseEntityFound = entitiesAndRoles.find(i => i.name == child.instanceOf);
+            if (!baseEntityFound) {
+                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
+                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            }
+            // base type can only be a list or regex or prebuilt.
+            if (![EntityTypeEnum.LIST, EntityTypeEnum.REGEX, EntityTypeEnum.PREBUILT].includes(baseEntityFound.type)) {
+                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
+                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            }
+
+        }
+
+        if (child.features) {
+            let featureHandled = false;
+            (child.features || []).forEach((feature, idx) => {
+                if (typeof feature === "object") return;
+                featureHandled = false;
+                let featureExists = entitiesAndRoles.find(i => (i.name == feature || i.name == `${feature}(interchangeable)`));
+                if (featureExists) {
+                    // is feature phrase list?
+                    if (featureExists.type == EntityTypeEnum.PHRASELIST) {
+                        child.features[idx] = new helperClass.featureToModel(feature);
+                        featureHandled = true;
+                    } else if (featureExists.type == EntityTypeEnum.PATTERNANY) {
+                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                    } else {
+                        child.features[idx] = new helperClass.modelToFeature(feature);
+                        featureHandled = true;
+                    }
+                }
+                if (!featureHandled) {
+                    // find feature as intent
+                    let intentFeatureExists = intentsCollection.find(i => i.name == feature);
+                    if (intentFeatureExists) {
+                        child.features[idx] = new helperClass.modelToFeature(feature);
+                        featureHandled = true;
+                    } else {
+                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                    }
+                }
+            })
+        }
+
+        if (child.children) {
+            validateNDepthEntities(child.children, entitiesAndRoles, intentsCollection);
+        }
+
+        if (child.context) {
+            delete child.context
+        }
+    })
+};
 /**
  * Helper function to validate if the requested feature addition is valid.
  * @param {String} srcItemType 
@@ -787,26 +855,10 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
     newRoles = [...new Set(newRoles)];
     // entity roles need to unique within the application
     if(parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) {
-        let matchType = '';
         // Duplicate entity names are not allowed
         // Entity name cannot be same as a role name
-        let entityFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => {
-            if (item.name === entityName && item.type !== entityType) {
-                matchType = `Entity names must be unique. Duplicate definition found for "${entityName}".`;
-                return true;
-            } else if (item.roles.includes(entityName)) {
-                matchType = `Entity name cannot be the same as a role name. Duplicate definition found for "${entityName}".`;
-                return true;
-            }
-        })
-        if (entityFound !== undefined) {
-            let errorMsg = `${matchType} Prior definition - '@ ${entityFound.type} ${entityFound.name}${entityFound.roles.length > 0 ? ` hasRoles ${entityFound.roles.join(',')}` : ``}'`;
-            let error = BuildDiagnostic({
-                message: errorMsg,
-                context: line
-            })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-        }
+        verifyUniqueEntityName(parsedContent, entityName, entityType, line);
+
         newRoles.forEach(role => {
             let roleFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.roles.includes(role) || item.name === role);
             if (roleFound !== undefined) {
@@ -887,6 +939,9 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     })
                 }
                 switch(entityType) {
+                    case EntityTypeEnum.ML:
+                        handleNDepthEntity(parsedContent, entityName, entityRoles, entity.ListBody, entity.ParseTree.newEntityLine());
+                        break;
                     case EntityTypeEnum.SIMPLE: 
                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
                         break;
@@ -897,13 +952,13 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         }
                         if (entity.ListBody) {
                             entity.ListBody.forEach(line => {
-                                line.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                                line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
                             })
                         }
                         handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine(), false, entity.Type !== undefined);
                         break;
                     case EntityTypeEnum.LIST:
-                        handleClosedList(parsedContent, entityName, entity.ListBody, entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
+                        handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
                         break;
                     case EntityTypeEnum.PATTERNANY:
                         handlePatternAny(parsedContent, entityName, entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
@@ -913,7 +968,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         break;
                     case EntityTypeEnum.REGEX:
                         if (entity.ListBody[0]) {
-                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0], entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
+                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].trim().substr(1).trim(), entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
                         } else {
                             handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
                         } 
@@ -921,15 +976,12 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     case EntityTypeEnum.ML:
                         break;
                     case EntityTypeEnum.PHRASELIST:
-                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody, entity.ParseTree.newEntityDefinition().newEntityLine());
+                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.trim().substr(1).trim()), entity.ParseTree.newEntityDefinition().newEntityLine());
                     default:
                         //Unknown entity type
                         break;
                 }
                 if (entity.Features !== undefined) {
-                    if (entity.Type === EntityTypeEnum.PHRASELIST) {
-                        // TODO: throw: phrase list cannot have features.
-                    }
                     featuresToProcess.push(entity);
                 }
             } else {
@@ -940,7 +992,121 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
 
     return featuresToProcess;
 };
-
+/**
+ * Helper to handle ndepth entity definition.
+ * @param {Object} parsedContent 
+ * @param {String} entityName 
+ * @param {String[]} entityRoles 
+ * @param {String[]} entityLines 
+ * @param {Object} line 
+ */
+const handleNDepthEntity = function(parsedContent, entityName, entityRoles, entityLines, line) {
+    const SPACEASTABS = 4;
+    addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
+    let rootEntity = parsedContent.LUISJsonStructure.entities.find(item => item.name == entityName);
+    let defLine = line.start.line;
+    let baseTabLevel = 0;
+    let entityIdxByLevel = [];
+    let currentParentEntity = undefined;
+    // process each entity line
+    entityLines.forEach(child => {
+        currentParentEntity = undefined;
+        defLine++;
+        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>[^\s]+) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
+        let groupsFound = captureGroups.exec(child);
+        if (!groupsFound) {
+            let errorMsg = `[ERROR] line ${defLine}: Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
+            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+        }
+        let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
+        let childEntityType = groupsFound.groups.instanceOf.trim();
+        let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()) : undefined;
+        // Verify that the entity name is unique
+        verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
+        
+        // Get current tab level
+        let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces !== undefined ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : 0) || (groupsFound.groups.leadingTabs !== undefined ? groupsFound.groups.leadingTabs.length : 0);
+        if (defLine === line.start.line + 1) {
+            // remember the tab level at the first line of child definition
+            baseTabLevel = tabLevel;
+            // Push the ID of the parent since we are proessing the first child entity
+            entityIdxByLevel.push({level : 0, entity : rootEntity});
+        } 
+        
+        currentParentEntity = entityIdxByLevel.reverse().find(item => item.level == tabLevel - baseTabLevel);
+        entityIdxByLevel.reverse();
+        if (!currentParentEntity) {
+            let errorMsg = `[ERROR] line ${defLine}: Invalid definition found for child "${child.trim()}". Parent of each child entity must be of type "${EntityTypeEnum.ML}".`;
+            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+        }
+        let context = {line : defLine, definition: child.trim()};
+        if (groupsFound.groups.instanceOf.toLowerCase().trim() === EntityTypeEnum.SIMPLE) {
+            pushNDepthChild(currentParentEntity.entity, childEntityName, context, childFeatures);
+        } else if (groupsFound.groups.instanceOf.toLowerCase().trim() === EntityTypeEnum.ML) {
+            pushNDepthChild(currentParentEntity.entity, childEntityName, context, childFeatures);
+            let newParent = currentParentEntity.entity.children.find(item => item.name == childEntityName);
+            // Push the ID of the parent since we are proessing the first child entity
+            entityIdxByLevel.push({level : tabLevel - baseTabLevel + 1, entity : newParent});
+        } else {
+            pushNDepthChild(currentParentEntity.entity, childEntityName, context, childFeatures, childEntityType);
+        }
+    });
+};
+/**
+ * Helper to add an nDepth child entity to the collection.
+ * @param {Object} entity 
+ * @param {String} childEntityName 
+ * @param {Object} context 
+ * @param {String []} childFeatures 
+ * @param {String} childEntityType 
+ * @param {Object []} children 
+ */
+const pushNDepthChild = function(entity, childEntityName, context, childFeatures, childEntityType = "", children = []) {
+    if (!entity.children) {
+        entity.children = new Array(new helperClass.childEntity(childEntityName,childEntityType, context, children, childFeatures));
+    } else {
+        // de-dupe and push this child entity    
+        let childExists = (entity.children || []).find(item => item.name == childEntityName);
+        if (!childExists) {
+            entity.children.push(new helperClass.childEntity(childEntityName, childEntityType, context, children, childFeatures));
+        } 
+    }
+}
+/**
+ * Helper function to verify that the requested entity is unique.
+ * @param {Object} parsedContent 
+ * @param {String} entityName 
+ * @param {String} entityType 
+ * @param {Object} line 
+ * @param {Boolean} checkTypesAlignment
+ */
+const verifyUniqueEntityName = function(parsedContent, entityName, entityType, line, checkTypesAlignment) {
+    // Duplicate entity names are not allowed
+    // Entity name cannot be same as a role name
+    let matchType = "";
+    let entityFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => {
+        if (item.name === entityName) {
+            if (!checkTypesAlignment && item.type !== entityType) {
+                matchType = `Entity names must be unique. Duplicate definition found for "${entityName}".`;
+                return true;
+            } else if (checkTypesAlignment) {
+                matchType = `Child entity names must be unique. Duplicate definition found for child entity "${entityName}".`;
+                return true;
+            }
+        } else if (item.roles.includes(entityName)) {
+            matchType = `Entity name cannot be the same as a role name. Duplicate definition found for "${entityName}".`;
+            return true;
+        }
+    });
+    if (entityFound !== undefined) {
+        let errorMsg = `${matchType} Prior definition - '@ ${entityFound.type} ${entityFound.name}${entityFound.roles.length > 0 ? ` hasRoles ${entityFound.roles.join(',')}` : ``}'`;
+        let error = BuildDiagnostic({
+            message: errorMsg,
+            context: line
+        })
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+    }
+}
 /**
  * Helper function to handle pattern.any entity
  * @param {Object} parsedContent parsed LUIS, QnA and QnA alteration object
@@ -1216,6 +1382,7 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
     let addNV = false;    
     let nvExists;
     listLines.forEach(line => {
+        line = line.substr(1).trim();
         if (line.toLowerCase().endsWith(':')) {
             // close if we are in the middle of a sublist.
             if (addNV) {

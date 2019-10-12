@@ -8,7 +8,7 @@ export default class QnamakerGetEndpointsettings extends Command {
 
   static flags: flags.Input<any> = {
     kbId: flags.string({description: 'Knowledgebase id to get metadata.'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
     help: flags.help({char: 'h', description: 'qnamaker:get:endpointsettings command help'}),
   }
 

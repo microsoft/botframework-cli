@@ -10,9 +10,9 @@
 
 > # Entity definitions
 
-@ simple EntityOne
+@ ml EntityOne
 
-@ simple EntityTwo
+@ ml EntityTwo
 
 
 > # PREBUILT Entity definitions

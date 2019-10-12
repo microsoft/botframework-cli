@@ -11,7 +11,7 @@
 
 > # Entity definitions
 
-@ simple simple1 usesFeature phraselist1
+@ ml simple1 usesFeature phraselist1
 
 
 > # PREBUILT Entity definitions

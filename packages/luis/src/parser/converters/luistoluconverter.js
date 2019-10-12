@@ -6,7 +6,7 @@ const luisFile = require('./../luisfile/parseLuisFile')
 const helperClasses = require('./../lufile/classes/hclasses')
 const exception = require('./../lufile/classes/exception')
 const retCode = require('./../lufile/enums/CLI-errors')
-
+const EntityTypeEnum = require('./../lufile/enums/luisEntityTypes');
 module.exports = {
     parseLuisFileToLu: async function(file, sort) {
         let LUISFileContent = await openFileAndReadContent(file)
@@ -90,21 +90,26 @@ module.exports = {
         if(LUISJSON.entities && LUISJSON.entities.length >= 0) {
             fileContent += '> # Entity definitions' + NEWLINE + NEWLINE;
             LUISJSON.entities.forEach(function(entity) {
-                // Add inherits information if any
-                if (entity.inherits !== undefined) {
-                    // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
-                    fileContent += '> !# @entity.inherits = name : ' + entity.name;
-                    if (entity.inherits.domain_name !== undefined) {
-                        fileContent += '; domain_name : ' + entity.inherits.domain_name;
+                if (!entity.children || entity.children.length === 0) {
+                    // Add inherits information if any
+                    if (entity.inherits !== undefined) {
+                        // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
+                        fileContent += '> !# @entity.inherits = name : ' + entity.name;
+                        if (entity.inherits.domain_name !== undefined) {
+                            fileContent += '; domain_name : ' + entity.inherits.domain_name;
+                        }
+                        if (entity.inherits.model_name !== undefined) {
+                            fileContent += '; model_name : ' + entity.inherits.model_name;
+                        }
+                        fileContent += NEWLINE + NEWLINE;
                     }
-                    if (entity.inherits.model_name !== undefined) {
-                        fileContent += '; model_name : ' + entity.inherits.model_name;
-                    }
+                    fileContent += `@ ml ${entity.name}`;
+                    fileContent += addRolesAndFeatures(entity);
                     fileContent += NEWLINE + NEWLINE;
+                } else {
+                    // handle n-depth entity
+                    fileContent += handleNDepthEntity(entity);
                 }
-                fileContent += `@ simple ${entity.name}`;
-                fileContent += addRolesAndFeatures(entity);
-                fileContent += NEWLINE + NEWLINE;
             });
             fileContent += NEWLINE;
         }
@@ -170,7 +175,11 @@ module.exports = {
                 fileContent += `@ composite ${composite.name}`;
                 fileContent += addRolesAndFeatures(composite);
                 if (composite.children.length > 0) {
-                    fileContent += ` = [${composite.children.join(', ')}]`;
+                    if (typeof composite.children[0] == "object") {
+                        fileContent += ` = [${composite.children.map(item => item.name).join(', ')}]`;
+                    } else {
+                        fileContent += ` = [${composite.children.join(', ')}]`;
+                    }
                 }
                 fileContent += NEWLINE;
             })
@@ -178,7 +187,44 @@ module.exports = {
         return fileContent;
     }
 }
-
+/**
+ * Helper function to handle nDepth entity definition
+ * @param {Object} entity 
+ */
+const handleNDepthEntity = function(entity) {
+    let fileContent = '';
+    const BASE_TAB_STOP = 1;
+    fileContent += `@ ${EntityTypeEnum.ML} ${entity.name}`;
+    fileContent += addRolesAndFeatures(entity);
+    fileContent += NEWLINE;
+    fileContent += addNDepthChildDefinitions(entity.children, BASE_TAB_STOP, fileContent) + NEWLINE + NEWLINE
+    return fileContent;
+}
+/**
+ * Recursive helper function to add child definitions. 
+ * @param {Object[]} childCollection 
+ * @param {number} tabStop 
+ * @param {string} fileContent 
+ */
+const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent) {
+    let myFileContent = '';
+    (childCollection || []).forEach(child => {
+        myFileContent += "".padStart(tabStop * 4, ' ');
+        myFileContent += '- @ ';
+        if (child.instanceOf) {
+            myFileContent += child.instanceOf;
+        } else {
+            myFileContent += EntityTypeEnum.ML;
+        }
+        myFileContent += ` ${child.name}`;
+        myFileContent += addRolesAndFeatures(child);
+        myFileContent += NEWLINE;
+        if (child.children && child.children.length !== 0) {
+            myFileContent += addNDepthChildDefinitions(child.children, ++tabStop, myFileContent);
+        }
+    });
+    return myFileContent;
+}
 /**
  * Helper to construt role and features list for an entity
  * @param {Object} entity 

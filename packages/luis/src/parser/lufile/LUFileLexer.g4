@@ -14,15 +14,15 @@ fragment WHITESPACE
 fragment UTTERANCE_MARK: '-' | '*' | '+';
 
 MODEL_INFO
-  : '>' WHITESPACE* '!#' ~('\r'|'\n')+
+  : WS* '>' WHITESPACE* '!#' ~('\r'|'\n')+
   ;
 
 COMMENT
-  : '>' ~('\r'|'\n')+ -> skip
+  : WS* '>' ~('\r'|'\n')+ -> skip
   ;
 
 WS
-  : WHITESPACE+ -> skip
+  : WHITESPACE+
   ;
 
 NEWLINE
@@ -100,7 +100,7 @@ HAS_FEATURES_LABEL
   ;
 
 NEW_ENTITY_TYPE_IDENTIFIER
-  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'machine-learned'|'patternany'|'phraselist'|'intent'
+  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'ml'|'patternany'|'phraselist'|'intent'
   ;
 
 NEW_ENTITY_IDENTIFIER
