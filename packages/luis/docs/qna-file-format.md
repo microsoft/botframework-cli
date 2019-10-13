@@ -1,6 +1,8 @@
 # .qna File Format
 .qna files contain markdown-like, simple text based definitions for [QnAmaker.ai](http://qnamaker.ai) concepts. 
 
+See [here](./lu-file-format.md) to learn more about the .lu file format.
+
 Supported concepts: 
 
 - [Comments](#Adding-comments)
