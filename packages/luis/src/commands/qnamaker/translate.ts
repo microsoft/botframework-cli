@@ -6,6 +6,7 @@ const exception = require('./../../parser/lufile/classes/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
 const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
 const luConverter = require('./../../parser/lufile/parseFileContents')
+const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
 
 export default class QnamakerTranslate extends Command {
   static description = 'Translate given LUIS application JSON model or lu file(s)'
@@ -36,7 +37,7 @@ export default class QnamakerTranslate extends Command {
       let isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any
       if (isLu) {
-        let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse)
+        let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
         result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)

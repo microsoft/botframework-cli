@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
 const luConverter = require('./../../parser/converters/qnatoqnajsonconverter')
 const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
+const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
 
 export default class QnamakerConvert extends Command {
   static description = 'Convert .lu file(s) to a QnA application JSON model or vice versa'
@@ -32,7 +33,7 @@ export default class QnamakerConvert extends Command {
       // Parse the object depending on the input
       let result: any
       if (isQnA) {
-        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
+        let luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
         result = await luConverter.parseQnaToJson(luFiles, false, flags.luis_culture)
       } else {
         const qnAFile = stdin ? stdin : await file.getContentFromFile(flags.in)
