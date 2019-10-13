@@ -9,17 +9,17 @@ const luConverter = require('./../../parser/lufile/parseFileContents')
 const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
 
 export default class QnamakerTranslate extends Command {
-  static description = 'Translate given LUIS application JSON model or lu file(s)'
+  static description = 'Translate given QnA maker application JSON model or qna file(s)'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model', required: true}),
-    recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)'}),
+    in: flags.string({description: 'Source .qna file(s) or QnA maker application JSON model', required: true}),
+    recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to find .qna file(s)'}),
     out: flags.string({description: 'Output folder name. If not specified stdout will be used as output'}),
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
     tgtlang: flags.string({description: 'Comma separated list of target languages.', required: true}),
     translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
-    translate_comments: flags.string({description: 'When set, machine translate comments found in .lu or .qna file'}),
-    translate_link_text: flags.string({description: 'When set, machine translate link description in .lu or .qna file'}),
+    translate_comments: flags.string({description: 'When set, machine translate comments found in .qna file'}),
+    translate_link_text: flags.string({description: 'When set, machine translate link description in .qna file'}),
   }
 
   /* tslint:disable:forin no-for-in*/

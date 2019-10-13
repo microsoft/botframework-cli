@@ -58,7 +58,7 @@ export async function getContentFromFile(file: string) {
   return fileContent
 }
 
-export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = ''): Promise<string> {
+export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = '', extType: string = helpers.FileExtTypeEnum.LUFile): Promise<string> {
   let base = path.resolve(outFileName)
   let extension = path.extname(base)
   if (extension) {
@@ -70,9 +70,9 @@ export async function generateNewFilePath(outFileName: string, inputfile: string
   let name = ''
   let inputStat = await fs.stat(inputfile)
   if (inputStat.isFile()) {
-    name += path.basename(inputfile, path.extname(inputfile)) + (isLu ? '.json' : '.lu')
+    name += path.basename(inputfile, path.extname(inputfile)) + (isLu ? '.json' : extType)
   } else {
-    name += isLu ? 'converted.json' : 'converted.lu'
+    name += isLu ? 'converted.json' : `converted.${extType}`
   }
   return path.join(base, prefix + name)
 }
