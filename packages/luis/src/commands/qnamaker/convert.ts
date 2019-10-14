@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
 const luConverter = require('./../../parser/converters/qnatoqnajsonconverter')
 const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
+const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
 
 export default class QnamakerConvert extends Command {
   static description = 'Convert .lu file(s) to a QnA application JSON model or vice versa'
@@ -12,7 +13,7 @@ export default class QnamakerConvert extends Command {
     in: flags.string({description: 'Source .qna file(s) or QnA KB JSON file', required: true}),
     alterations: flags.boolean({description: 'Indicates if files is QnA Alterations'}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
-    sort: flags.boolean({description: 'When set, questions collections are alphabetically sorted are alphabetically sorted in .lu files', default: false}),
+    sort: flags.boolean({description: 'When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files', default: false}),
     recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .qna file(s)'}),
     out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output'}),
     name: flags.string({description: 'Name of the QnA KB'}),
@@ -32,7 +33,7 @@ export default class QnamakerConvert extends Command {
       // Parse the object depending on the input
       let result: any
       if (isQnA) {
-        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
+        let luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
         result = await luConverter.parseQnaToJson(luFiles, false, flags.luis_culture)
       } else {
         const qnAFile = stdin ? stdin : await file.getContentFromFile(flags.in)
@@ -69,12 +70,12 @@ export default class QnamakerConvert extends Command {
   }
 
   private async writeOutput(convertedObject: any, flags: any, isQnA: boolean) {
-    let filePath = await file.generateNewFilePath(flags.out, flags.in, isQnA)
+    let filePath = await file.generateNewFilePath(flags.out, flags.in, isQnA, '', fileExtEnum.QnAFile)
     try {
       if (isQnA) {
         await fs.writeFile(filePath, JSON.stringify(convertedObject.finalQnAJSON, null, 2), 'utf-8')
         if (convertedObject.finalQnAAlterations) {
-          let filePathAlterations = await file.generateNewFilePath(flags.out, flags.in, isQnA, 'alterations_')
+          let filePathAlterations = await file.generateNewFilePath(flags.out, flags.in, isQnA, 'alterations_', fileExtEnum.QnAFile)
           await fs.writeFile(filePathAlterations, JSON.stringify(convertedObject.finalQnAAlterations, null, 2), 'utf-8')
         }
       } else {

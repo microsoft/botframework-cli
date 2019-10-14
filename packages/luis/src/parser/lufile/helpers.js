@@ -20,23 +20,29 @@ const helpers = {
     sanitizeNewLines(fileContent) {
         return fileContent.replace(ANY_NEWLINE, NEWLINE);
     },
-
+    /**
+     * Enumeration of supported file extension types
+     */
+    FileExtTypeEnum: {
+        LUFile : '.lu',
+        QnAFile : '.qna'
+    },
     /**
      * Helper function to recursively get all .lu files
      * @param {string} inputfolder input folder name
      * @param {boolean} getSubFolder indicates if we should recursively look in sub-folders as well
+     * @param {FileExtTypeEnum} extType indicates if we should look for LUFile or QnAFile
      * @returns {Array} Array of .lu files found
     */
-   findLUFiles: function(inputFolder, getSubFolders) {
+   findLUFiles: function(inputFolder, getSubFolders, extType = this.FileExtTypeEnum.LUFile) {
         let results = [];
-        const luExt = '.lu';
         fs.readdirSync(inputFolder).forEach(function(dirContent) {
             dirContent = path.resolve(inputFolder,dirContent);
             if(getSubFolders && fs.statSync(dirContent).isDirectory()) {
                 results = results.concat(helpers.findLUFiles(dirContent, getSubFolders));
             }
             if(fs.statSync(dirContent).isFile()) {
-                if(dirContent.endsWith(luExt)) {
+                if(dirContent.endsWith(extType)) {
                     results.push(dirContent);
                 }
             }
