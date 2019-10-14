@@ -463,7 +463,7 @@ OPTIONS
   --name=name                        Name of the kb you want to create. This will override the name of KB that might be
                                      present in the CreateKb DTO
 
-  --save                             Save the kbId in config. (Only public API)
+  --save                             Save the kbId in config.
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
