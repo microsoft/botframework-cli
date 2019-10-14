@@ -19,6 +19,7 @@ export async function processInputs(flags: any, payload: any, configfile: string
     if (stdin || flags.in) {
       result.requestBody = stdin ? JSON.parse(stdin) : await getFileInput(flags.in)
     }
+    config.endpoint = flags.endpoint
     result.config = config
     result.serviceManifest = serviceManifest
   } catch (e) {
