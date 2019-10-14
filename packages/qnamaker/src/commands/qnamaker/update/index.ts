@@ -5,7 +5,6 @@ export default class QnamakerUpdateIndex extends Command {
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'display qnamaker:update available commands'}),
-
   }
 
   async run() {

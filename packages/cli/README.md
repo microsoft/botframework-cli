@@ -415,7 +415,7 @@ _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/
 
 ## `bf qnamaker`
 
-QnA Maker CLI (Preview version)
+QnA Maker
 
 ```
 USAGE

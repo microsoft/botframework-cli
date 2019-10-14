@@ -36,7 +36,7 @@
 
 ## `bf qnamaker`
 
-QnA Maker CLI (Preview version)
+QnA Maker
 
 ```
 USAGE
