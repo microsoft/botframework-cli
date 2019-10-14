@@ -13,10 +13,11 @@ See [here](./qna-file-format.md) to learn more about the .qna file format.
 	- [Composite entity](#Composite-entity)
 	- [Regex entity](#Regex-entity)
 - [Roles](#Roles)
+- [Patterns](#Patterns)
 - [Phrase lists features](#Phrase-list-definition)
 - [Model as a feature](#Model-as-feature)
 - [Tie features to a specific model](#Tie-features-to-a-specific-model)
-- [Patterns](#Patterns)
+- [Machine learned with children](#Machine-learned-entity-with-children)
 - [Model description](#Model-description)
 - [References](#External-references)
 
@@ -102,7 +103,7 @@ Here's an example:
 @ ml 'this is a simple entity' hasRoles role1, role2
 ```
 
-## Machine learned entity
+### Machine learned entity
 
 ```markdown
 @ ml name firstName, lastName
@@ -117,7 +118,7 @@ Here's an example:
 > Without an explicit entity definition, 'userName' defaults to 'ml' entity type.
 ```
 
-## Prebuilt entity
+### Prebuilt entity
 
 The following LUIS prebuilt entity types are supported - 
 - age
@@ -145,7 +146,7 @@ The following LUIS prebuilt entity types are supported -
 
 **Note:** Not all prebuilt entity types are available across all locales. See [here](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities) for prebuilt entity support by locale.
 
-## List entity
+### List entity
 
 ```markdown
 @ list color favColor, screenColor
@@ -165,7 +166,7 @@ The following LUIS prebuilt entity types are supported -
 
 **Note::** When using list entity, you should include a value from the list directly in the utterance, not an entity label or any other value. 
 
-## Composite entity
+### Composite entity
 
 ```markdown
 @ composite deviceTemperature from, to
@@ -204,7 +205,7 @@ Example definition:
 @ prebuilt temperature
 ```
 
-## Regex entity
+### Regex entity
 
 ```markdown
 @ regex hrf-number from, to
@@ -214,24 +215,8 @@ Example definition:
 @ regex hrf-number from, to = /hrf-[0-9]{6}/
 ```
 
-## Machine learned entity with n-depth support
 
-Here's a definition of an `address` n-depth entity with `fromAddress` and `toAddress` as two roles.
-
-```markdown
-@ list listCity
-@ prebuilt number
-@ prebuilt geographyV2
-@ regex regexZipcode = /[0-9]{5}/
-@ ml address hasRoles fromAddress, toAddress 
-@ address =
-    - @ number 'door number'
-    - @ ml streetName
-    - @ ml location usesFeature geographyV2
-        - @ listCity city
-        - @ regexZipcode zipcode
-```
-### Roles
+## Roles
 
 Roles](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-roles) are named, contextual subtypes of an entity.
 
@@ -305,6 +290,23 @@ $city:Portland=
 - Portland
 - PDX
 ```
+## Patterns
+Patterns allow you to define a set of rules that augment the machine learned model. You can define patterns in the .lu file simply by defining an entity in an utterance without a labelled value. 
+
+As an example, this would be treated as a pattern with alarmTime set as a Pattern.Any entity type:
+```markdown
+# DeleteAlarm
+- delete the {alarmTime} alarm
+``` 
+This example would be treated as an utterance since it has a labelled value with 7AM being the labelled value for entity alarmTime:
+```markdown
+# DeleteAlarm
+- delete the {alarmTime=7AM} alarm
+```
+
+**Notes:**
+1. Any utterance without at least one labelled value will be treated as a pattern
+2. Any entity without an explicit labelled value will default to a Pattern.Any entity type. 
 
 ## Phrase list definition
 
@@ -414,24 +416,23 @@ Here's how you define phrase list as a feature to another model
         - @ ml city usesFeture PLCity
         - @ regexZipcode zipcode
 ```
+## Machine learned entity with children
 
-## Patterns
-Patterns allow you to define a set of rules that augment the machine learned model. You can define patterns in the .lu file simply by defining an entity in an utterance without a labelled value. 
+Here's a definition of an `address` ml entity with `fromAddress` and `toAddress` as two roles as well as children.
 
-As an example, this would be treated as a pattern with alarmTime set as a Pattern.Any entity type:
 ```markdown
-# DeleteAlarm
-- delete the {alarmTime} alarm
-``` 
-This example would be treated as an utterance since it has a labelled value with 7AM being the labelled value for entity alarmTime:
-```markdown
-# DeleteAlarm
-- delete the {alarmTime=7AM} alarm
+@ list listCity
+@ prebuilt number
+@ prebuilt geographyV2
+@ regex regexZipcode = /[0-9]{5}/
+@ ml address hasRoles fromAddress, toAddress 
+@ address =
+    - @ number 'door number'
+    - @ ml streetName
+    - @ ml location usesFeature geographyV2
+        - @ listCity city
+        - @ regexZipcode zipcode
 ```
-
-**Notes:**
-1. Any utterance without at least one labelled value will be treated as a pattern
-2. Any entity without an explicit labelled value will default to a Pattern.Any entity type. 
 
 ## Model description
 You can include configuration information for your LUIS application or QnA Maker KB in the .lu file using this notation. This will help direct the parser to handle the LU content correctly -
