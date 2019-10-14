@@ -1,4 +1,11 @@
 
+> LUIS application information
+> !# @app.name = AppName
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 5.0.0
+
+
 > # Intent definitions
 
 ## None
@@ -11,7 +18,7 @@
 
 > # Entity definitions
 
-@ simple simple1 usesFeature phraselist1
+@ ml simple1 usesFeature phraselist1
 
 
 > # PREBUILT Entity definitions

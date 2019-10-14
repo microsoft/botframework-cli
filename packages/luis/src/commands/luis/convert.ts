@@ -4,6 +4,7 @@ const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
 const luConverter = require('./../../parser/converters/lutoluisconverter')
 const luisConverter = require('./../../parser/converters/luistoluconverter')
+const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
 
 export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
@@ -34,7 +35,7 @@ export default class LuisConvert extends Command {
       // Parse the object depending on the input
       let result: any
       if (isLu) {
-        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
+        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
         result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
       } else {
         const luisFile = stdin ? stdin : await file.getContentFromFile(flags.in)
@@ -54,7 +55,6 @@ export default class LuisConvert extends Command {
         result.desc = flags.desc || result.desc || ''
         result.culture = flags.culture || result.culture || 'en-us'
         result.culture = result.culture.toLowerCase()
-        if (result.flatListOfEntityAndRoles) delete result.flatListOfEntityAndRoles
         result = JSON.stringify(result, null, 2)
       }
 

@@ -1,4 +1,11 @@
 
+> LUIS application information
+> !# @app.name = all
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
 > # Intent definitions
 
 ## AskForUserName
@@ -62,9 +69,9 @@
 
 > # Entity definitions
 
-@ simple customDevice
+@ ml customDevice
 
-@ simple userName
+@ ml userName
 
 
 > # PREBUILT Entity definitions

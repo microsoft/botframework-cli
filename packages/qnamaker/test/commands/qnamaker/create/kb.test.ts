@@ -43,7 +43,7 @@ describe('qnamaker:create:kb', () => {
   .stdout()
   .command(['qnamaker:create:kb','--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`])
   .it('Creates kb qnamaker:create:kb --in', ctx => {
-    expect(ctx.stdout).to.contain('"resourceLocation": "/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2",\n ')
+    expect(ctx.stdout).to.contain('Knowledge Base id: 8600c573-2acf-4466-97e8-999ad4cecbc2')
   })
 })
 

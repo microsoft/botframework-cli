@@ -8,6 +8,10 @@
 [![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-luis.svg)](https://npmjs.org/package/@microsoft/bf-luis)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-luis.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
 
+# Relevant file formats
+* [`lu file format`](./docs/lu-file-format.md)
+* [`QnA file format`](./docs/qna-file-format.md)
+
 # Commands
 <!-- commands -->
 * [`bf luis:convert`](#bf-luisconvert)

@@ -20,8 +20,7 @@ paragraph
 // It's possible that parser doesn't even have to handle NEWLINE, 
 // but before the syntax is finalized, we still keep the NEWLINE in grammer 
 newline
-    : NEWLINE
-    | EOF
+    : WS* (NEWLINE | EOF)
     ;
 
 intentDefinition
@@ -29,7 +28,7 @@ intentDefinition
 	;
 
 intentNameLine
-	: HASH intentName
+	: WS* HASH intentName
 	;
 
 intentName
@@ -41,15 +40,15 @@ intentNameIdentifier
     ;
 
 intentBody
-	: normalIntentBody
+	: WS* normalIntentBody
 	;
 
 normalIntentBody
-    : (normalIntentString newline)+
+    : WS* (normalIntentString newline)+
     ;
 
 normalIntentString
-	: DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
+	: WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
 
 newEntityDefinition
@@ -61,7 +60,7 @@ newEntityListbody
     ;
 
 newEntityLine
-    : AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
+    : WS* AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
     ;
 
 newCompositeDefinition
@@ -105,7 +104,7 @@ entityDefinition
     ;
     
 entityLine
-    : DOLLAR entityName COLON_MARK entityType
+    : WS* DOLLAR entityName COLON_MARK entityType
     ;
 
 entityName
@@ -133,7 +132,7 @@ entityListBody
     ;
 
 normalItemString
-    : DASH (WS|TEXT|EXPRESSION)*
+    : WS* DASH (WS|TEXT|EXPRESSION)*
     ;
 
 importDefinition
@@ -145,7 +144,7 @@ qnaDefinition
     ;
 
 qnaQuestion
-    : QNA questionText newline
+    : WS* QNA questionText newline
     ;
 
 questionText
@@ -153,7 +152,7 @@ questionText
     ;
 
 moreQuestionsBody
-    : (moreQuestion newline)*
+    : WS* (moreQuestion newline)*
     ;
 
 moreQuestion
@@ -165,17 +164,17 @@ qnaAnswerBody
     ;
 
 filterSection
-    : FILTER_MARK filterLine+
+    : WS* FILTER_MARK filterLine+
     ;
 
 filterLine
-    : DASH (WS|TEXT)* newline
+    : WS* DASH (WS|TEXT)* newline
     ;
 
 multiLineAnswer
-    : MULTI_LINE_TEXT
+    : WS* MULTI_LINE_TEXT
     ;
 
 modelInfoDefinition
-    : MODEL_INFO
+    : WS* MODEL_INFO
     ;

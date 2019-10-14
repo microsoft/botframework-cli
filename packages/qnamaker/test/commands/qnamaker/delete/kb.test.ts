@@ -41,7 +41,7 @@ describe('qnamaker:delete:kb', () => {
 
 
   test
-  .stub(cli, 'prompt', () => async () => 'n')
+  .stub(cli, 'confirm', () => async () => Promise.resolve(false))
   .stdout()
   .command(['qnamaker:delete:kb', '--kbId', '3bfa5f79-466e-460f-9261-106e26f2d3c7'])
   .it('Promts the user to confirm the deletion', ctx => {
@@ -52,7 +52,7 @@ describe('qnamaker:delete:kb', () => {
   .stdout()
   .command(['qnamaker:delete:kb', '--kbId', '3bfa5f79-466e-460f-9261-106e26f2d3c7', '--force'])
   .it('Deletes kb', ctx => {
-    expect(ctx.stdout).to.empty
+    expect(ctx.stdout).to.contain('Success')
   })
 
 })
