@@ -44,8 +44,8 @@ describe('chatdown', () => {
     });
 
     it('should read from file when chat file is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --in ${path.join(__dirname, '../utils/cli.sample.chat')}`, (error, stdout) => {
-            assert.doesNotThrow(() => JSON.parse(stdout));
+        cp.exec(`node ./bin/run chatdown --in ./test/utils/cli.sample.chat`, (error, stdout) => {
+            assert(stdout.includes('Successfully wrote'));
             done();
         });
     });

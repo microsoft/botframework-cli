@@ -44,7 +44,7 @@ export default class Chatdown extends Command {
 
       if (inputIsDirectory) {
         let inputDir = flags.in ? flags.in.trim() : ''
-        
+
         const len = await this.processFiles(inputDir, outputDir)
         if (len === 0) {
           throw new CLIError('No chat files found at: ' + flags.in)
@@ -111,7 +111,7 @@ export default class Chatdown extends Command {
         try {
           const fileName = this.getFileName(files[i])
           let activities = await chatdown(await utils.readTextFile(files[i]))
-          this.writeOut(activities, fileName, outputDir)
+          await this.writeOut(activities, fileName, outputDir)
         } catch (e) {
           if (e.message.match(/no such file or directory/)) {
             reject(new CLIError(e.message))
@@ -127,13 +127,13 @@ export default class Chatdown extends Command {
 
   private async writeOut(activities: any, fileName: string, outputDir: any) {
     if (fileName && outputDir) {
-      let writeFile = `${outputDir}/${fileName}.transcript`
+      let writeFile = `${outputDir}\\${fileName}.transcript`
       await fs.ensureFile(writeFile)
-      return await fs.writeJson(writeFile, activities, {spaces: 2})
+      await fs.writeJson(writeFile, activities, {spaces: 2})
+      return writeFile
     }
     const output = JSON.stringify(activities, null, 2)
     await new Promise(done => process.stdout.write(output, 'utf-8', () => done()))
     return true
   }
 }
-
