@@ -902,7 +902,7 @@ $test:[fromTime]`;
             .then(res => {
                 assert.isTrue(res.includes(`- my name is {@firstName=vishwac}`));
                 assert.isTrue(res.includes(`- book a flight to {@toCity=london}`));
-                assert.isTrue(res.includes(`@ simple userName hasRole firstName`));
+                assert.isTrue(res.includes(`@ ml userName hasRole firstName`));
                 assert.isTrue(res.includes(`@ composite location hasRoles fromCity,toCity = [city]`));
                 done();
             })
