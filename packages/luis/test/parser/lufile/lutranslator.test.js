@@ -232,7 +232,7 @@ describe('With the parseAndTranslate method', function() {
             this.skip();
         }
         let luFile = `
-@ simple s1 sr1
+@ ml s1 sr1
 @ phraselist pl1 = 
     - cheese
     - tomato
@@ -247,7 +247,7 @@ describe('With the parseAndTranslate method', function() {
 `;
 
         let trRes = `
-@ simple s1 sr1
+@ ml s1 sr1
 @ phraselist pl1 =
         - fromage
         - tomate

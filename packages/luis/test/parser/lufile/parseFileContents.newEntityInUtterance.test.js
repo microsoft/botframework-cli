@@ -9,7 +9,7 @@ describe('V2 Entity definitions in utterances', function () {
     describe('@entityName in labelled utterance', function(){
         it('direct entity reference is handled correctly', function(done) {
             let luFile = `
-                @ simple test
+                @ ml test
                 # test
                 - this is a {@test = one}
             `;
@@ -28,7 +28,7 @@ describe('V2 Entity definitions in utterances', function () {
 
         it('direct role reference is handled correctly', function(done) {
             let luFile = `
-                @ simple test r1
+                @ ml test r1
                 # test
                 - this is another one {@r1 = one}
             `;
@@ -50,7 +50,7 @@ describe('V2 Entity definitions in utterances', function () {
 
         it('Explicit role definition continues to work', function(done) {
             let luFile = `
-                @simple test r1, r2
+                @ml test r1, r2
                 # test
                 - this is another {test:r1 = one}
             `;
@@ -72,7 +72,7 @@ describe('V2 Entity definitions in utterances', function () {
 
         it('Roles can be added on the fly', function(done) {
             let luFile = `
-                @simple test r1
+                @ml test r1
                 # test
                 - this is another {test:r2 = one}
             `;
@@ -115,7 +115,7 @@ describe('V2 Entity definitions in utterances', function () {
                 # test
                 - this is another {@from = one} from {@to = tokyo}
                 
-                @ simple x1 from, to
+                @ ml x1 from, to
             `;
 
             parseFile.parseFile(luFile)
@@ -200,7 +200,7 @@ describe('V2 Entity definitions in utterances', function () {
                 # test
                 - this is a {@r1}
                 
-                @simple test r1
+                @ml test r1
             `;
 
             parseFile.parseFile(luFile)
@@ -221,7 +221,7 @@ describe('V2 Entity definitions in utterances', function () {
                 # test
                 - this is a {@r1} from {@list1}
                 
-                @simple test r1
+                @ml test r1
                 @list list1 r2 =
                     - one:
                         - uno
@@ -249,7 +249,7 @@ describe('V2 Entity definitions in utterances', function () {
                 # test
                 - this is a {@r1} from {@r2}
                 
-                @simple test r1
+                @ml test r1
                 @list list1 r2 =
                     - one:
                         - uno

@@ -21,7 +21,7 @@
 
 > # Entity definitions
 
-@ simple simple1 usesFeatures phraselist1,age
+@ ml simple1 usesFeatures phraselist1,age
 
 
 > # PREBUILT Entity definitions

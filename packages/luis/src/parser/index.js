@@ -4,7 +4,6 @@
  */
 const modules = {
     parser: {
-        parseLuList: require('./converters/lutoluisconverter').parseLuToLuis,
         parseFile: require('./lufile/parseFileContents').parseFile,
         validateLUISBlob: require('./luisfile/parseLuisFile').validateLUISBlob
     },
