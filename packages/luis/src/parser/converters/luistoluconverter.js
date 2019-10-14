@@ -33,6 +33,7 @@ module.exports = {
         updateUtterancesList(LUISJSON.patterns, luisObj.intents, 'pattern');
         if(luisObj.intents.length >= 0) {
             fileContent += NEWLINE;
+            fileContent += addAppMetaData(LUISJSON);
             fileContent += '> # Intent definitions' + NEWLINE + NEWLINE;
             // write out intents and utterances..
             luisObj.intents.forEach(function(intent) {
@@ -188,6 +189,19 @@ module.exports = {
     }
 }
 /**
+ * Helper to add application inforamtion metadata
+ * @param {Object} LUISJSON 
+ */
+const addAppMetaData = function(LUISJSON) {
+    let fileContent = '';
+    if (LUISJSON.name) fileContent += `> !# @app.name = ${LUISJSON.name}` + NEWLINE;
+    if (LUISJSON.desc) fileContent += `> !# @app.desc = ${LUISJSON.desc}` + NEWLINE;
+    if (LUISJSON.versionId) fileContent += `> !# @app.versionId = ${LUISJSON.versionId}` + NEWLINE;
+    if (LUISJSON.culture) fileContent += `> !# @app.culture = ${LUISJSON.culture}` + NEWLINE;
+    if (LUISJSON.luis_schema_version) fileContent += `> !# @app.luis_schema_version = ${LUISJSON.luis_schema_version}` + NEWLINE;
+    return fileContent === '' ? fileContent : `> LUIS application information` + NEWLINE + fileContent + NEWLINE + NEWLINE;
+}
+/**
  * Helper function to handle nDepth entity definition
  * @param {Object} entity 
  */
@@ -322,17 +336,6 @@ const objectSortByStartPos = function (objectArray) {
         return a.startPos - b.startPos;
     });
     return ObjectByStartPos;
-}
-
-constructModelDescFromLUISJSON = async function(LUISJSON) {
-    let modelDesc = NEWLINE;
-    modelDesc += '> LUIS application information' + NEWLINE;
-    modelDesc += '> !# @app.name = ' + LUISJSON.name + NEWLINE;
-    modelDesc += '> !# @app.desc = ' + LUISJSON.desc + NEWLINE;
-    modelDesc += '> !# @app.culture = ' + LUISJSON.culture + NEWLINE;
-    modelDesc += '> !# @app.versionId = ' + LUISJSON.versionId + NEWLINE;
-    modelDesc += '> !# @app.luis_schema_version = ' + LUISJSON.luis_schema_version + NEWLINE;
-    return modelDesc;
 }
 
 /**

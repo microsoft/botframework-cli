@@ -366,6 +366,15 @@ describe('luis:convert', () => {
     })
 })   
 
+describe('luis:convert version 5 upgrade test', () => {
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/v5UpgradeTest.lu')}`, '--out', 'root.json'])
+  .it('luis:convert successfully reconstructs a markdown file from a LUIS input file with out of order entity references', async () => {
+    expect(await compareLuFiles('./../../../root.json', './../../fixtures/verified/v5Upgrade.json')).to.be.true
+  })
+})
+
 describe('luis:convert negative tests', () => {
   test
   .stderr()
