@@ -20,10 +20,10 @@ Commands invoked by BF [New Command] as follows:
 
 | New Command                   | Old Tool(s) | Status  |
 | ----------------------------- | ----------- | ------- |
-| Chatdown                      | Chatdown    | Preview |
-| QnAMaker                      | QnAMaker    | Preview |
-| luis:convert, luis:translate  | LuDown      | Preview |
-| luis:convert                  | LuisGen     | Preview |
+| Chatdown                      | Chatdown    | GA      |
+| QnAMaker                      | QnAMaker    | GA      |
+| luis:convert, luis:translate  | LuDown      | GA      |
+| luis:convert                  | LuisGen     | GA      |
 | LUIS                          | LUIS (api)  | TBD     |
 | LG                            | MSLG        | TBD     |
 | Dispatch                      | Dispatch    | TBD     |
