@@ -97,7 +97,10 @@ export default class Chatdown extends Command {
   private getFileName(file: any) {
     let fileName = file
     if (file.lastIndexOf('/') !== -1) {
-      fileName = file.substr(file.lastIndexOf('/') + 1)
+      fileName = fileName.substr(fileName.lastIndexOf('/') + 1)
+    }
+    if (file.lastIndexOf('\\') !== -1) {
+      fileName = fileName.substr(fileName.lastIndexOf('\\') + 1)
     }
     fileName = fileName.substring(0, fileName.lastIndexOf('.'))
     return fileName
