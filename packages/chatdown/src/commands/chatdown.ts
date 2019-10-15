@@ -37,10 +37,11 @@ export default class Chatdown extends Command {
         })
       }
 
-      let outputDir = (flags.out) ? flags.out.trim() : './'
-      if (outputDir.substr(0, 2) === './') {
-        outputDir = path.resolve(process.cwd(), outputDir.substr(2))
-      }
+      // let outputDir = (flags.out) ? flags.out.trim() : './'
+      // if (outputDir.substr(0, 2) === './') {
+      //   outputDir = path.resolve(process.cwd(), outputDir.substr(2))
+      // }
+      let outputDir = flags.out ? path.resolve(flags.out) : path.resolve(process.cwd())
 
       if (inputIsDirectory) {
         let inputDir = flags.in ? flags.in.trim() : ''
@@ -95,14 +96,7 @@ export default class Chatdown extends Command {
   }
 
   private getFileName(file: any) {
-    let fileName = file
-    if (file.lastIndexOf('/') !== -1) {
-      fileName = fileName.substr(fileName.lastIndexOf('/') + 1)
-    }
-    if (file.lastIndexOf('\\') !== -1) {
-      fileName = fileName.substr(fileName.lastIndexOf('\\') + 1)
-    }
-    fileName = fileName.substring(0, fileName.lastIndexOf('.'))
+    let fileName = path.basename(file, path.extname(file))
     return fileName
   }
 
@@ -130,7 +124,7 @@ export default class Chatdown extends Command {
 
   private async writeOut(activities: any, fileName: string, outputDir: any) {
     if (fileName && outputDir) {
-      let writeFile = `${outputDir}\\${fileName}.transcript`
+      let writeFile = path.join(outputDir, `${fileName}.transcript`)
       await fs.ensureFile(writeFile)
       await fs.writeJson(writeFile, activities, {spaces: 2})
       return writeFile
