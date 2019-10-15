@@ -37,10 +37,6 @@ export default class Chatdown extends Command {
         })
       }
 
-      // let outputDir = (flags.out) ? flags.out.trim() : './'
-      // if (outputDir.substr(0, 2) === './') {
-      //   outputDir = path.resolve(process.cwd(), outputDir.substr(2))
-      // }
       let outputDir = flags.out ? path.resolve(flags.out) : path.resolve(process.cwd())
 
       if (inputIsDirectory) {
