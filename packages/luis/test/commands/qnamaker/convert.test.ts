@@ -46,7 +46,7 @@ describe('qnamaker:convert', () => {
   })
 
   test
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/all.lu')}`, '--out', 'qna.json', '--name', 'all-qna'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/all.qna')}`, '--out', 'qna.json', '--name', 'all-qna'])
   .it('qnamaker:convert all concepts of lu file definition is parsed correctly  [QnA]', async () => {
     let parsedObjects = await parseJsonFiles('./../../../qna.json', './../../fixtures/verified/all-qna.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
