@@ -31,6 +31,11 @@ const featureTypeEnum = {
     featureToModel: 'modelName',
     modelToFeature: 'featureName'
 };
+const featureProperties = {
+    entityFeatureToModel: 'Entity Extractor',
+    intentFeatureToModel: 'Intent Classifier',
+    phraseListFeature: 'phraselist'
+}
 const INTENTTYPE = 'intent';
 const parseFileContentsModule = {
     /**
@@ -188,13 +193,13 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                 if (featureExists) {
                     // is feature phrase list?
                     if (featureExists.type == EntityTypeEnum.PHRASELIST) {
-                        child.features[idx] = new helperClass.featureToModel(feature);
+                        child.features[idx] = new helperClass.featureToModel(feature, featureProperties.phraseListFeature);
                         featureHandled = true;
                     } else if (featureExists.type == EntityTypeEnum.PATTERNANY) {
                         let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
                         throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
                     } else {
-                        child.features[idx] = new helperClass.modelToFeature(feature);
+                        child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.entityFeatureToModel);
                         featureHandled = true;
                     }
                 }
@@ -202,7 +207,7 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                     // find feature as intent
                     let intentFeatureExists = intentsCollection.find(i => i.name == feature);
                     if (intentFeatureExists) {
-                        child.features[idx] = new helperClass.modelToFeature(feature);
+                        child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.intentFeatureToModel);
                         featureHandled = true;
                     } else {
                         let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
@@ -263,7 +268,7 @@ const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureT
  * @param {String} featureType 
  * @param {Object} line 
  */
-const addFeatures = function(tgtItem, feature, featureType, line) {
+const addFeatures = function(tgtItem, feature, featureType, line, featureProperties) {
     // target item cannot have the same name as the feature name
     if (tgtItem.name === feature) {
         // Item must be defined before being added as a feature.
@@ -278,17 +283,17 @@ const addFeatures = function(tgtItem, feature, featureType, line) {
     switch (featureType) {
         case featureTypeEnum.featureToModel: {
             if (tgtItem.features) {
-                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.featureToModel(feature));
+                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.featureToModel(feature, featureProperties));
             } else {
-                tgtItem.features = new Array(new helperClass.featureToModel(feature));
+                tgtItem.features = new Array(new helperClass.featureToModel(feature, featureProperties));
             }
             break;
         }
         case featureTypeEnum.modelToFeature: {
             if (tgtItem.features) {
-                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.modelToFeature(feature));
+                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.modelToFeature(feature, featureProperties));
             } else {
-                tgtItem.features = new Array(new helperClass.modelToFeature(feature));
+                tgtItem.features = new Array(new helperClass.modelToFeature(feature, featureProperties));
             }
             break;
         }
@@ -327,19 +332,19 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
                         validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.intentFeatureToModel);
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an intent. No definition found for feature "${feature}" in usesFeature definition for intent "${section.Name}"`;
@@ -374,19 +379,19 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
                         validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine());
+                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.intentFeatureToModel);
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an entity. No definition found for feature "${feature}" in usesFeature definition for entity "${section.Name}"`;

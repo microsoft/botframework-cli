@@ -126,16 +126,13 @@ module.exports = {
         }
         
         if(LUISJSON.model_features && LUISJSON.model_features.length >= 0) {
-            fileContent += '> # Phrase list definitions' + NEWLINE + NEWLINE;
-            LUISJSON.model_features.forEach(function(entity) {
-                fileContent += `@ phraselist ${entity.name}${(entity.mode ? `(interchangeable)` : ``)}`;
-                if (entity.words && entity.words !== '') {
-                    fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
-                }
-                fileContent += NEWLINE + NEWLINE;
-            });
-            fileContent += NEWLINE;
+            fileContent += handlePhraseLists(LUISJSON.model_features);
         }
+
+        if(LUISJSON.phraselists && LUISJSON.phraselists.length >= 0) {
+            fileContent += handlePhraseLists(LUISJSON.phraselists);
+        }
+
         if(LUISJSON.closedLists && LUISJSON.closedLists.length >= 0){
             fileContent += '> # List entities' + NEWLINE + NEWLINE;
             LUISJSON.closedLists.forEach(function(ListItem) {
@@ -187,6 +184,24 @@ module.exports = {
         }
         return fileContent;
     }
+}
+
+/**
+ * Helper to handle phrase lists both in the new and old property.
+ * @param {Object[]} collection 
+ */
+const handlePhraseLists = function(collection) {
+    let fileContent = '> # Phrase list definitions' + NEWLINE + NEWLINE;
+    collection.forEach(function(entity) {
+        fileContent += `@ phraselist ${entity.name}${(entity.mode ? `(interchangeable)` : ``)}`;
+        if (entity.words && entity.words !== '') {
+            fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
+        }
+        fileContent += NEWLINE + NEWLINE;
+    });
+    fileContent += NEWLINE;
+
+    return fileContent;
 }
 /**
  * Helper to add application inforamtion metadata
