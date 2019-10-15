@@ -2,10 +2,22 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "properties": {
-        "Account": { "type": "string" },
-        "Topic": { "type": "string" },
-        "Territory": { "type": "string" },
-        "Description": { "type": "string" },
+        "Account":{ 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "Topic": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "Territory": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "Description": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
         "ContactPhone": { 
             "type": "string", 
             "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
@@ -47,10 +59,15 @@
             "enum": [
                 "Account",
                 "Topic",
-                "Territory"
+                "Territory",
+                "Description",
+                "ContactPhone",
+                "ContactEmail",
+                "EstimatedCloseDate",
+                "PurchaseTimeframe"
             ],
             "$templates":[]
         }     
     },
-    "required":["Account", "Topic", "Territory"]
+    "required":["Account", "Topic", "Territory","Description","ContactPhone","ContactEmail","EstimatedCloseDate","PurchaseTimeframe"]
 }

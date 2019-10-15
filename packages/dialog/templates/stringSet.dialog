@@ -4,33 +4,35 @@
     "property": "**PROPERTY**",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
-            "condition": "contains(turn.schema.properties['**PROPERTY**'].$mappings, 'utterance')",
-            "actions":[
+            "$type": "Microsoft.SwitchCondition",
+            "condition": "turn.schema.properties['**PROPERTY**'].$mappings[0]",
+            "cases":[
                 {
-                    "$type": "Microsoft.SetProperty",
-                    "property": "$**PROPERTY**",
-                    "value": "@utterance"
-                }
-            ],
-            "elseActions":[
+                    "value":"'utterance'",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$**PROPERTY**",
+                            "value": "@utterance"
+                        }
+                    ]                   
+                },
                 {
-                    "$type": "Microsoft.IfCondition",
-                    "condition": "or(contains(turn.schema.properties['**PROPERTY**'].$mappings, 'datetime'),contains(turn.schema.properties['**PROPERTY**'].$mappings, 'datetimeV2'))",
+                    "value":"or('datetime', 'datetimeV2')",
                     "actions":[
                         {
                             "$type": "Microsoft.SetProperty",
                             "property": "$**PROPERTY**",
                             "value": "join(@datetime.timex,', ')"
-                        }                        
-                    ],
-                    "elseActions":[
-                        {
-                            "$type": "Microsoft.SetProperty",
-                            "property": "$**PROPERTY**",
-                            "value": "@turn.schema.properties['**PROPERTY**'].$mappings[0]"
                         }
-                    ]
+                    ]  
+                }                
+            ],
+            "default":[
+                {
+                    "$type": "Microsoft.SetProperty",
+                    "property": "$**PROPERTY**",
+                    "value": "@turn.schema.properties['**PROPERTY**'].$mappings[0]"                   
                 }
             ]
         }
