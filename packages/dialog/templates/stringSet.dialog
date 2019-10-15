@@ -1,0 +1,39 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
+    "$type": "Microsoft.OnSetProperty",
+    "property": "**PROPERTY**",
+    "actions": [
+        {
+            "$type": "Microsoft.IfCondition",
+            "condition": "contains(turn.schema.properties['**PROPERTY**'].$mappings, 'utterance')",
+            "actions":[
+                {
+                    "$type": "Microsoft.SetProperty",
+                    "property": "$**PROPERTY**",
+                    "value": "@utterance"
+                }
+            ],
+            "elseActions":[
+                {
+                    "$type": "Microsoft.IfCondition",
+                    "condition": "or(contains(turn.schema.properties['**PROPERTY**'].$mappings, 'datetime'),contains(turn.schema.properties['**PROPERTY**'].$mappings, 'datetimeV2'))",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$**PROPERTY**",
+                            "value": "join(@datetime.timex,', ')"
+                        }                        
+                    ],
+                    "elseActions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$**PROPERTY**",
+                            "value": "@turn.schema.properties['**PROPERTY**'].$mappings[0]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
