@@ -3,13 +3,23 @@
 [![Build Status](https://fuselabs.visualstudio.com/SDK_v4/_apis/build/status/CLI/Botframework-CLI-CI-PR?branchName=master)](https://fuselabs.visualstudio.com/SDK_v4/_build/latest?definitionId=537&branchName=master)
 [![Coverage Status](https://coveralls.io/repos/github/microsoft/botframework-cli/badge.svg?branch=master)](https://coveralls.io/github/microsoft/botframework-cli?branch=master)
 
-As part of the effort to improve Bot Framework SDK toolset we are happy to announce the introduction of a new Command Line Interface tool which will eventually replace the suite of tools currently used during Bot development. The new CLI, called BF is being released as an early preview. We have migrated Chatdown as a first proof of concept plugin. The new Chatdown plugin is fully functional and identical to the standalone tool (with some minor usage bug fixes). Early adopters are welcome to switch to the new CLI. In the meantime the old and new tools will exist side by side for at least a full release cycle.
+The new BF Command Line Interface (CLI) tool replaces the collection of standalone tools used to manage Bot Framework bots and related services. We have ported most tools and are in process of porting the rest. The new tool provides a one-stop tool that embeds the functionality of the old tools.
 
 ## Available Commands
 The following commands are currently available:
-* [Chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-chatdown) 
-* [QnAMaker (Preview)](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
-* [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
+* [Chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown) 
+* [QnAMaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker)
+* [Luis](https://github.com/microsoft/botframework-cli/tree/master/packages/luis)
+* [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/config)
+
+### Future Commands
+The following commands will be ported in upcoming releases:
+* Dispatch
+* Language Generation tools
+* Adaptive dialogs management tools
+* Bot skills management
+
+See [Porting Map](https://github.com/microsoft/botframework-cli/blob/master/PortingMap.md) for a mapping reference between old and new tools
 
 ## Plugin Architecture
 BF CLI is based on [OClif](https://github.com/oclif/oclif) Framework and inherits its command line parsing style, and plugin architecture. 
@@ -38,10 +48,7 @@ Privacy is very important to us. BF CLI contains optional instrumentation that i
 * Command group calls
 * Flags used **excluding** specific values (i.e. if used parameter _--folder:name_, we will only gather the use of _--folder_ but will not capture _name_).
 
-At any time you may disable data collection by changing the configuration using command:
-~~~ 
-bf config:telemetry:disable
-~~~
+To disable data collection see the  __*bf config*__ command.
 
 Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.  
 
