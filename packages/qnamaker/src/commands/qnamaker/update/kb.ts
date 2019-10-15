@@ -13,6 +13,7 @@ export default class QnamakerUpdateKb extends Command {
     kbId: flags.string({description: 'Knowledgebase id. Overrides the knowledge base id present in the config'}),
     wait: flags.boolean({description: 'Wait for the operation to complete.'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:update:kb command help'}),
   }
 

@@ -11,6 +11,7 @@ export default class QnamakerReplaceKb extends Command {
     in: flags.string({description: 'File path to the ReplaceKbDTO object to send in the body of the request'}),
     kbId: flags.string({description: 'Knowledgebase id. Overrides the knowledge base id present in the config'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:replace:kb command help'}),
   }
 
