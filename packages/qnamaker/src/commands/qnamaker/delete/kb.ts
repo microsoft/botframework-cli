@@ -13,7 +13,8 @@ export default class QnamakerDeleteKb extends Command {
   static flags: flags.Input<any> = {
     kbId: flags.string({description: 'Knowledgebase id to be deleted. Overrides the knowledge base id present in the config'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
-    force: flags.boolean({description: 'Do not prompt for confirmation, force the operation  '}),
+    force: flags.boolean({description: 'Do not prompt for confirmation, force the operation'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:delete:kb command help'}),
   }
 
