@@ -37,7 +37,7 @@ export default class Chatdown extends Command {
         })
       }
 
-      let outputDir = flags.out ? path.resolve(flags.out) : path.resolve(process.cwd())
+      let outputDir = flags.out ? path.resolve(flags.out) : null
 
       if (inputIsDirectory) {
         let inputDir = flags.in ? flags.in.trim() : ''
