@@ -6,6 +6,7 @@ const exception = require('./../../parser/lufile/classes/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
 const luisConverter = require('./../../parser/converters/luistoluconverter')
 const luConverter = require('./../../parser/lufile/parseFileContents')
+const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
 
 export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'
@@ -17,8 +18,8 @@ export default class LuisTranslate extends Command {
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
     tgtlang: flags.string({description: 'Comma separated list of target languages.', required: true}),
     translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
-    translate_comments: flags.string({description: 'When set, machine translate comments found in .lu or .qna file'}),
-    translate_link_text: flags.string({description: 'When set, machine translate link description in .lu or .qna file'}),
+    translate_comments: flags.string({description: 'When set, machine translate comments found in .lu file'}),
+    translate_link_text: flags.string({description: 'When set, machine translate link description in .lu file'}),
   }
 
   /* tslint:disable:forin no-for-in*/
@@ -36,7 +37,7 @@ export default class LuisTranslate extends Command {
       let isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any
       if (isLu) {
-        let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse)
+        let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
         result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)

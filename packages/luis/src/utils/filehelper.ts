@@ -3,14 +3,15 @@ const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/lufile/helpers')
 const luObject = require('./../parser/lufile/classes/luObject')
+
 /* tslint:disable:prefer-for-of no-unused*/
 
-export async function getLuObjects(stdin: string, input: string | undefined, recurse = false) {
+export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
     luObjects.push(new luObject('stdin', stdin))
   } else {
-    let luFiles = await getLuFiles(input, recurse)
+    let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
       luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
@@ -20,7 +21,7 @@ export async function getLuObjects(stdin: string, input: string | undefined, rec
   return luObjects
 }
 
-async function getLuFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
+async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
   let filesToParse = []
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
@@ -32,10 +33,10 @@ async function getLuFiles(input: string | undefined, recurse = false): Promise<A
     throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
   }
 
-  filesToParse = helpers.findLUFiles(input, recurse)
+  filesToParse = helpers.findLUFiles(input, recurse, extType)
 
   if (filesToParse.length === 0) {
-    throw new CLIError('Sorry, no .lu files found in the specified folder.')
+    throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
   }
   return filesToParse
 }
@@ -57,7 +58,7 @@ export async function getContentFromFile(file: string) {
   return fileContent
 }
 
-export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = ''): Promise<string> {
+export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = '', extType: string = helpers.FileExtTypeEnum.LUFile): Promise<string> {
   let base = path.resolve(outFileName)
   let extension = path.extname(base)
   if (extension) {
@@ -69,9 +70,9 @@ export async function generateNewFilePath(outFileName: string, inputfile: string
   let name = ''
   let inputStat = await fs.stat(inputfile)
   if (inputStat.isFile()) {
-    name += path.basename(inputfile, path.extname(inputfile)) + (isLu ? '.json' : '.lu')
+    name += path.basename(inputfile, path.extname(inputfile)) + (isLu ? '.json' : extType)
   } else {
-    name += isLu ? 'converted.json' : 'converted.lu'
+    name += isLu ? 'converted.json' : `converted.${extType}`
   }
   return path.join(base, prefix + name)
 }
@@ -133,7 +134,7 @@ export async function detectLuContent(stdin: string, input: string) {
     }
 
     let inputStat = await fs.stat(input)
-    return !inputStat.isFile() ? true : path.extname(input) === '.lu'
+    return !inputStat.isFile() ? true : (path.extname(input) === '.lu' || path.extname(input) === '.qna')
   }
 
   try {
