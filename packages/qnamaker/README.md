@@ -311,23 +311,25 @@ USAGE
 
 OPTIONS
   -h, --help                       qnamaker:query command help
+  --context=context                Path to Context object json file with previous QnA
 
   --endpointKey=endpointKey        Specifies the endpoint key for your private QnA service (From qnamaker.ai portal user
-                                   settings page). Overrides the value present in config.
+                                   settings page). Overrides the value present in config
 
-  --hostname=hostname              Specifies the url for your private QnA service. Overrides the value present in
-                                   config.
+  --hostname=hostname              Specifies the url for your private QnA service. Overrides the value present in config
 
   --kbId=kbId                      Specifies the active qnamaker knowledgebase id. Overrides the value present in the
                                    config
 
-  --question=question              (required) Query to get a prediction for.
+  --qnaId=qnaId                    Exact qnaId to fetch from the knowledgebase, this field takes priority over question
+
+  --question=question              (required) Query to get a prediction for
 
   --scorethreshold=scorethreshold  Specifies the confidence score threshold for the returned answer.
 
-  --strictfilters=strictfilters    Path to json file {"strictfilters": MetadataDTO[]}
+  --strictfilters=strictfilters    Path to json file with MetadataDTO[] e.g {"strictfilters": MetadataDTO[]}
 
-  --test                           Query against the test index.
+  --test                           Query against the test index
 
   --top=top                        Specifies the number of matching results
 ```

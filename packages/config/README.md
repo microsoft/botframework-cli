@@ -73,6 +73,7 @@ USAGE
 
 OPTIONS
   -d, --disable  Disable tlemetry
+  -e, --enable   Enable tlemetry
   -h, --help     show CLI help
 ```
 

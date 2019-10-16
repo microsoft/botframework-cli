@@ -12,7 +12,7 @@ export default class QnamakerTranslate extends Command {
   static description = 'Translate given QnA maker application JSON model or qna file(s)'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .qna file(s) or QnA maker application JSON model', required: true}),
+    in: flags.string({description: 'Source .qna file(s) or QnA maker application JSON model'}),
     recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to find .qna file(s)'}),
     out: flags.string({description: 'Output folder name. If not specified stdout will be used as output'}),
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
