@@ -3,7 +3,9 @@
 [![Build Status](https://fuselabs.visualstudio.com/SDK_v4/_apis/build/status/CLI/Botframework-CLI-CI-PR?branchName=master)](https://fuselabs.visualstudio.com/SDK_v4/_build/latest?definitionId=537&branchName=master)
 [![Coverage Status](https://img.shields.io/coveralls/github/microsoft/botframework-cli/master)](https://coveralls.io/github/microsoft/botframework-cli?branch=master)
 
-As part of the effort to improve Bot Framework SDK toolset we are happy to announce the introduction of a new Command Line Interface tool which will eventually replace the suite of tools currently used during Bot development. The new CLI, called BF is being released as an early preview. We have migrated Chatdown as a first proof of concept plugin. The new Chatdown plugin is fully functional and identical to the standalone tool (with some minor usage bug fixes). Early adopters are welcome to switch to the new CLI. In the meantime the old and new tools will exist side by side for at least a full release cycle.
+The new BF Command Line Interface (CLI) tool replaces the collection of standalone tools used to manage Bot Framework bots and related services. We have ported most tools and are in process of porting the rest. The new BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
+
+The old tools will be deprecated in subsequent releases. All new investments, bug fixes, and new features will be implemented in the new consolided BF CLI alone.
 
 ## Available Commands
 The following commands are currently available:
@@ -11,6 +13,14 @@ The following commands are currently available:
 * [QnAMaker](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
 * [Luis](https://github.com/microsoft/botframework-cli/tree/emimunoz/luis/packages/cli#bf-luis)
+
+### Future Commands
+The following commands will be ported in upcoming releases:
+* LUIS (API)
+* Dispatch
+
+See [Porting Map](https://github.com/microsoft/botframework-cli/blob/master/PortingMap.md) for a mapping reference between old and new tools
+
 
 ## Plugin Architecture
 BF CLI is based on [OClif](https://github.com/oclif/oclif) Framework and inherits its command line parsing style, and plugin architecture. 
