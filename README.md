@@ -49,10 +49,7 @@ Privacy is very important to us. BF CLI contains optional instrumentation that i
 * Command group calls
 * Flags used **excluding** specific values (i.e. if used parameter _--folder:name_, we will only gather the use of _--folder_ but will not capture _name_).
 
-At any time you may disable data collection by changing the configuration using command:
-~~~ 
-bf config:telemetry:disable
-~~~
+To disable data collection see the  __*bf config*__ command.
 
 Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.  
 
