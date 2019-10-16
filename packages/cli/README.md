@@ -5,7 +5,7 @@ botframework-cli
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/botframework-cli.svg)](![npm (scoped)](https://img.shields.io/npm/v/@microsoft/botframework-cli))
-[![Downloads](https://img.shields.io/npm/dw/botframework-cli.svg)](![npm](https://img.shields.io/npm/dt/@microsoft/botframework-cli))
+[![Downloads](https://img.shields.io/npm/dt/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli)
 [![License](https://img.shields.io/npm/l/botframework-cli.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
 # Usage
