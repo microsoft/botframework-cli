@@ -120,18 +120,4 @@ describe('With the parseAndTranslate method', function() {
                 done('Test Fail! Threw when not expected');
             })
     });
-
-    
-
-    xit('References are translated correctly', function(done) {
-        if (!TRANSLATE_KEY) {
-            this.skip();
-        }
-        translate.parseAndTranslate(testData.tests.fileRef.luFile, TRANSLATE_KEY, testData.tests.fileRef.langCode, '', false, true, false)
-            .then(function(res) {
-                assert.equal(helpers.sanitizeNewLines(res), helpers.sanitizeNewLines(testData.tests.fileRef.translatedContent + NEWLINE));    
-                done();
-            })
-            .catch(err => done(err))
-    });
 })

@@ -198,3 +198,23 @@ describe('luis:translate For list entities, normalized value is added as synonym
       await compareLuFiles('./../../../fr/normalizedValue.lu', './../../fixtures/translation/translatedfiles/normalizedValue.lu')
     })
 })
+
+describe('luis:translate Options in utterance are translated correctly', async () => {
+  const response = require('./../../fixtures/translation/serviceresponses/options.json')
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../de/'))
+  })
+
+  before(function(){
+    nock('https://api.cognitive.microsofttranslator.com')
+    .post(/.*/)
+    .reply(200, response)
+
+  })
+
+  test
+    .command(['luis:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/translation/files/options.lu')}`, '--tgtlang', 'de', '--out', './'])
+    .it('', async () => {
+      await compareLuFiles('./../../../de/options.lu', './../../fixtures/translation/translatedfiles/options.lu')
+    })
+})
