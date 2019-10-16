@@ -1,27 +1,18 @@
 botframework-cli
 ================
 
-
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/botframework-cli.svg)](https://www.npmjs.com/package/@microsoft/botframework-cli)
-[![Downloads/week](https://img.shields.io/npm/dw/botframework-cli.svg)](https://www.npmjs.com/package/@microsoft/botframework-cli)
-[![License](https://img.shields.io/npm/l/botframework-cli.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/botframework-cli)](https://www.npmjs.com/package/@microsoft/botframework-cli)
+[![Downloads](https://img.shields.io/npm/dt/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli)
+[![License](https://img.shields.io/npm/l/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
 # Usage
-<!-- usage -->
+
 ```sh-session
 $ npm install -g @microsoft/botframework-cli
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/botframework-cli/1.0.0 darwin-x64 node-v12.3.1
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
+
 ```
-<!-- usagestop -->
+
 # Commands
 <!-- commands -->
 * [`bf `](#bf-)
@@ -33,6 +24,7 @@ USAGE
 * [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
 * [`bf help [COMMAND]`](#bf-help-command)
+* [`bf luis`](#bf-luis)
 * [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
@@ -154,6 +146,7 @@ USAGE
 
 OPTIONS
   -d, --disable  Disable tlemetry
+  -e, --enable   Enable tlemetry
   -h, --help     show CLI help
 ```
 
@@ -218,6 +211,20 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
+## `bf luis`
+
+Convert, translate luis/lu files or generate source code
+
+```
+USAGE
+  $ bf luis
+
+OPTIONS
+  -h, --help  Display Luis available commnads
+```
+
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/index.ts)_
+
 ## `bf luis:convert`
 
 Convert .lu file(s) to a LUIS application JSON model or vice versa
@@ -239,7 +246,7 @@ OPTIONS
   --versionid=versionid          Version ID of the LUIS application
 ```
 
-_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/convert.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/convert.ts)_
 
 ## `bf luis:generate:cs`
 
@@ -256,7 +263,7 @@ OPTIONS
   --out=out              Output file or folder name. If not specified stdout will be used as output
 ```
 
-_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/generate/cs.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/generate/cs.ts)_
 
 ## `bf luis:generate:ts`
 
@@ -273,7 +280,7 @@ OPTIONS
   --out=out              Output file or folder name. If not specified stdout will be used as output
 ```
 
-_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/generate/ts.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/generate/ts.ts)_
 
 ## `bf luis:translate`
 
@@ -284,17 +291,17 @@ USAGE
   $ bf luis:translate
 
 OPTIONS
-  --in=in                                    (required) Source .lu file(s) or LUIS application JSON model
-  --out=out                                  Output folder name. If not specified stdout will be used as output
-  --recurse                                  Indicates if sub-folders need to be considered to file .lu file(s)
-  --srclang=srclang                          Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
-  --translate_comments=translate_comments    When set, machine translate comments found in .lu file
-  --translate_link_text=translate_link_text  When set, machine translate link description in .lu file
-  --translatekey=translatekey                (required) Machine translation endpoint key.
+  --in=in                      Source .lu file(s) or LUIS application JSON model
+  --out=out                    Output folder name. If not specified stdout will be used as output
+  --recurse                    Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         When set, machine translate comments found in .lu file
+  --translate_link_text        When set, machine translate link description in .lu file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
 ```
 
-_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
 
 ## `bf plugins`
 
@@ -437,7 +444,7 @@ USAGE
 
 OPTIONS
   --alterations  Indicates if files is QnA Alterations
-  --in=in        (required) Source .qna file(s) or QnA KB JSON file
+  --in=in        Source .qna file(s) or QnA KB JSON file
   --log          Enables log messages
   --name=name    Name of the QnA KB
   --out=out      Output file or folder name. If not specified stdout will be used as output
@@ -445,7 +452,7 @@ OPTIONS
   --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files
 ```
 
-_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/convert.ts)_
 
 ## `bf qnamaker:create:kb`
 
@@ -710,23 +717,25 @@ USAGE
 
 OPTIONS
   -h, --help                       qnamaker:query command help
+  --context=context                Path to Context object json file with previous QnA
 
   --endpointKey=endpointKey        Specifies the endpoint key for your private QnA service (From qnamaker.ai portal user
-                                   settings page). Overrides the value present in config.
+                                   settings page). Overrides the value present in config
 
-  --hostname=hostname              Specifies the url for your private QnA service. Overrides the value present in
-                                   config.
+  --hostname=hostname              Specifies the url for your private QnA service. Overrides the value present in config
 
   --kbId=kbId                      Specifies the active qnamaker knowledgebase id. Overrides the value present in the
                                    config
 
-  --question=question              (required) Query to get a prediction for.
+  --qnaId=qnaId                    Exact qnaId to fetch from the knowledgebase, this field takes priority over question
+
+  --question=question              (required) Query to get a prediction for
 
   --scorethreshold=scorethreshold  Specifies the confidence score threshold for the returned answer.
 
-  --strictfilters=strictfilters    Path to json file {"strictfilters": MetadataDTO[]}
+  --strictfilters=strictfilters    Path to json file with MetadataDTO[] e.g {"strictfilters": MetadataDTO[]}
 
-  --test                           Query against the test index.
+  --test                           Query against the test index
 
   --top=top                        Specifies the number of matching results
 ```
@@ -846,17 +855,17 @@ USAGE
   $ bf qnamaker:translate
 
 OPTIONS
-  --in=in                                    (required) Source .qna file(s) or QnA maker application JSON model
-  --out=out                                  Output folder name. If not specified stdout will be used as output
-  --recurse                                  Indicates if sub-folders need to be considered to find .qna file(s)
-  --srclang=srclang                          Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
-  --translate_comments=translate_comments    When set, machine translate comments found in .qna file
-  --translate_link_text=translate_link_text  When set, machine translate link description in .qna file
-  --translatekey=translatekey                (required) Machine translation endpoint key.
+  --in=in                      Source .qna file(s) or QnA maker application JSON model
+  --out=out                    Output folder name. If not specified stdout will be used as output
+  --recurse                    Indicates if sub-folders need to be considered to find .qna file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         When set, machine translate comments found in .qna file
+  --translate_link_text        When set, machine translate link description in .qna file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
 ```
 
-_See code: [@microsoft/bf-luis](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/translate.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/translate.ts)_
 
 ## `bf qnamaker:update`
 

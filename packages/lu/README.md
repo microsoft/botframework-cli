@@ -4,9 +4,8 @@
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@microsoft/bf-luis.svg)](https://npmjs.org/package/@microsoft/bf-luis)
-[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-luis.svg)](https://npmjs.org/package/@microsoft/bf-luis)
-[![License](https://img.shields.io/npm/l/@microsoft/bf-luis.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-lu)](https://npmjs.org/package/@microsoft/bf-lu)
+
 
 # Relevant file formats
 * [`lu file format`](./docs/lu-file-format.md)
@@ -14,12 +13,27 @@
 
 # Commands
 <!-- commands -->
+* [`bf luis`](#bf-luis)
 * [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
 * [`bf luis:translate`](#bf-luistranslate)
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:translate`](#bf-qnamakertranslate)
+
+## `bf luis`
+
+Convert, translate luis/lu files or generate source code
+
+```
+USAGE
+  $ bf luis
+
+OPTIONS
+  -h, --help  Display Luis available commnads
+```
+
+_See code: [src/commands/luis/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/index.ts)_
 
 ## `bf luis:convert`
 
@@ -87,14 +101,14 @@ USAGE
   $ bf luis:translate
 
 OPTIONS
-  --in=in                                    (required) Source .lu file(s) or LUIS application JSON model
-  --out=out                                  Output folder name. If not specified stdout will be used as output
-  --recurse                                  Indicates if sub-folders need to be considered to file .lu file(s)
-  --srclang=srclang                          Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
-  --translate_comments=translate_comments    When set, machine translate comments found in .lu file
-  --translate_link_text=translate_link_text  When set, machine translate link description in .lu file
-  --translatekey=translatekey                (required) Machine translation endpoint key.
+  --in=in                      Source .lu file(s) or LUIS application JSON model
+  --out=out                    Output folder name. If not specified stdout will be used as output
+  --recurse                    Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         When set, machine translate comments found in .lu file
+  --translate_link_text        When set, machine translate link description in .lu file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
 ```
 
 _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/translate.ts)_
@@ -109,7 +123,7 @@ USAGE
 
 OPTIONS
   --alterations  Indicates if files is QnA Alterations
-  --in=in        (required) Source .qna file(s) or QnA KB JSON file
+  --in=in        Source .qna file(s) or QnA KB JSON file
   --log          Enables log messages
   --name=name    Name of the QnA KB
   --out=out      Output file or folder name. If not specified stdout will be used as output
@@ -128,14 +142,14 @@ USAGE
   $ bf qnamaker:translate
 
 OPTIONS
-  --in=in                                    (required) Source .qna file(s) or QnA maker application JSON model
-  --out=out                                  Output folder name. If not specified stdout will be used as output
-  --recurse                                  Indicates if sub-folders need to be considered to find .qna file(s)
-  --srclang=srclang                          Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
-  --translate_comments=translate_comments    When set, machine translate comments found in .qna file
-  --translate_link_text=translate_link_text  When set, machine translate link description in .qna file
-  --translatekey=translatekey                (required) Machine translation endpoint key.
+  --in=in                      Source .qna file(s) or QnA maker application JSON model
+  --out=out                    Output folder name. If not specified stdout will be used as output
+  --recurse                    Indicates if sub-folders need to be considered to find .qna file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         When set, machine translate comments found in .qna file
+  --translate_link_text        When set, machine translate link description in .qna file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
 ```
 
 _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/translate.ts)_

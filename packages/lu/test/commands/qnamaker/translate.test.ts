@@ -92,3 +92,23 @@ xdescribe('qnamaker:translate qna.json', () => {
         await compareLuFiles('./../../../de/qnaContent.lu', './../../fixtures/translation/translatedfiles/qnaContent.lu')
       })
   })
+
+  describe('qnamaker:translate QnA link references are translated correctly', async () => {
+    const response = require('./../../fixtures/translation/serviceresponses/fileRef.json')
+    after(async function(){
+      await fs.remove(path.join(__dirname, './../../../de/'))
+    })
+  
+    before(function(){
+      nock('https://api.cognitive.microsofttranslator.com')
+      .post(/.*/)
+      .reply(200, response)
+  
+    })
+  
+    test
+      .command(['qnamaker:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/translation/files/fileRef.lu')}`, '--tgtlang', 'de', '--out', './', '--translate_link_text'])
+      .it('', async () => {
+        await compareLuFiles('./../../../de/fileRef.lu', './../../fixtures/translation/translatedfiles/fileRef.lu')
+      })
+  })

@@ -1,15 +1,16 @@
 # BF Command Line Interface
 
 [![Build Status](https://fuselabs.visualstudio.com/SDK_v4/_apis/build/status/CLI/Botframework-CLI-CI-PR?branchName=master)](https://fuselabs.visualstudio.com/SDK_v4/_build/latest?definitionId=537&branchName=master)
-[![Coverage Status](https://coveralls.io/repos/github/microsoft/botframework-cli/badge.svg?branch=master)](https://coveralls.io/github/microsoft/botframework-cli?branch=master)
+[![Coverage Status](https://img.shields.io/coveralls/github/microsoft/botframework-cli/master)](https://coveralls.io/github/microsoft/botframework-cli?branch=master)
 
 As part of the effort to improve Bot Framework SDK toolset we are happy to announce the introduction of a new Command Line Interface tool which will eventually replace the suite of tools currently used during Bot development. The new CLI, called BF is being released as an early preview. We have migrated Chatdown as a first proof of concept plugin. The new Chatdown plugin is fully functional and identical to the standalone tool (with some minor usage bug fixes). Early adopters are welcome to switch to the new CLI. In the meantime the old and new tools will exist side by side for at least a full release cycle.
 
 ## Available Commands
 The following commands are currently available:
 * [Chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-chatdown) 
-* [QnAMaker (Preview)](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
+* [QnAMaker](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
+* [Luis](https://github.com/microsoft/botframework-cli/tree/emimunoz/luis/packages/cli#bf-luis)
 
 ## Plugin Architecture
 BF CLI is based on [OClif](https://github.com/oclif/oclif) Framework and inherits its command line parsing style, and plugin architecture. 
