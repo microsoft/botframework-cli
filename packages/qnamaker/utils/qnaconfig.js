@@ -23,8 +23,8 @@ const config = {
 
         try {
             if (fs.existsSync(path.join(configfile, 'config.json'))) {
-                config = await fs.readJSON(path.join(configfile, 'config.json'))
-                qnamakerrcJson = config.qnamaker === undefined ? {} : config.qnamaker
+                qnamakerrcJson = await fs.readJSON(path.join(configfile, 'config.json'))
+                qnamakerrcJson = (!qnamakerrcJson || !qnamakerrcJson.qnamaker) ? {} : qnamakerrcJson.qnamaker
             } 
         } catch (e) {
             // Do nothing
@@ -52,9 +52,10 @@ const config = {
         while (true) {
             let opResult = await new Operations().getOperationDetails({
                 subscriptionKey: config.subscriptionKey,
-                operationId: result.operationId
+                operationId: result.operationId,
+                endpoint: config.endpoint
             });
-
+            
             if (opResult.error)
                 throw new Error(JSON.stringify(opResult.error, null, 4));
 
