@@ -142,14 +142,14 @@ USAGE
   $ bf qnamaker:translate
 
 OPTIONS
-  --in=in                                    Source .qna file(s) or QnA maker application JSON model
-  --out=out                                  Output folder name. If not specified stdout will be used as output
-  --recurse                                  Indicates if sub-folders need to be considered to find .qna file(s)
-  --srclang=srclang                          Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
-  --translate_comments=translate_comments    When set, machine translate comments found in .qna file
-  --translate_link_text=translate_link_text  When set, machine translate link description in .qna file
-  --translatekey=translatekey                (required) Machine translation endpoint key.
+  --in=in                      Source .qna file(s) or QnA maker application JSON model
+  --out=out                    Output folder name. If not specified stdout will be used as output
+  --recurse                    Indicates if sub-folders need to be considered to find .qna file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         When set, machine translate comments found in .qna file
+  --translate_link_text        When set, machine translate link description in .qna file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
 ```
 
 _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/translate.ts)_
