@@ -16,8 +16,7 @@
         "HomeLongitude": { "type": "number" },
         "HomePhone": { 
             "type": "string", 
-            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
-            "$mappings": [ "phonenumber" ]
+            "$mappings": [ "utterance" ]
         },
 
         "WorkStreet": { "type": "string" },
@@ -34,8 +33,7 @@
         "WorkLongitude": { "type": "number" },
         "WorkPhone": { 
             "type": "string", 
-            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
-            "$mappings": [ "phonenumber" ]
+            "$mappings": [ "utterance" ]
         },
         "Confirmation": {
             "type": "string",

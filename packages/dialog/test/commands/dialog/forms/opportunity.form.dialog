@@ -20,21 +20,19 @@
         },
         "ContactPhone": { 
             "type": "string", 
-            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
-            "$mappings": [ "phonenumber" ]
+            "$mappings": [ "utterance" ]
         },
         "ContactEmail": { 
             "type": "string", 
-            "pattern": "\\A[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\z",
             "$mappings": [ "email" ]
         },
         "EstimatedCloseDate": { 
             "type": "string",
-            "$mappings": [ "date" ]
+            "$mappings": [ "datetime" ]
         },
         "PurchaseTimeframe": { 
             "type": "string",
-            "$mappings": [ "daterange" ]
+            "$mappings": [ "datetime" ]
         },
         "Confirmation": {
             "type": "string",
@@ -61,13 +59,11 @@
                 "Topic",
                 "Territory",
                 "Description",
-                "ContactPhone",
-                "ContactEmail",
                 "EstimatedCloseDate",
                 "PurchaseTimeframe"
             ],
             "$templates":[]
         }     
     },
-    "required":["Account", "Topic", "Territory","Description","ContactPhone","ContactEmail","EstimatedCloseDate","PurchaseTimeframe"]
+    "required":["Account", "Topic", "Territory","Description","EstimatedCloseDate","PurchaseTimeframe"]
 }

@@ -8,7 +8,7 @@
             "condition": "turn.schema.properties['**PROPERTY**'].$mappings[0]",
             "cases":[
                 {
-                    "value":"'utterance'",
+                    "value":"utterance",
                     "actions":[
                         {
                             "$type": "Microsoft.SetProperty",
@@ -18,7 +18,7 @@
                     ]                   
                 },
                 {
-                    "value":"or('datetime', 'datetimeV2')",
+                    "value":"datetime",
                     "actions":[
                         {
                             "$type": "Microsoft.SetProperty",
@@ -26,13 +26,33 @@
                             "value": "join(@datetime.timex,', ')"
                         }
                     ]  
-                }                
+                },
+                {
+                    "value":"datetimeV2",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$**PROPERTY**",
+                            "value": "join(@datetime.timex,', ')"
+                        }
+                    ]  
+                },
+                {
+                    "value":"email",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$**PROPERTY**",
+                            "value": "@email"
+                        }
+                    ]  
+                }                  
             ],
             "default":[
                 {
                     "$type": "Microsoft.SetProperty",
                     "property": "$**PROPERTY**",
-                    "value": "@turn.schema.properties['**PROPERTY**'].$mappings[0]"                   
+                    "value": "concat('@',turn.schema.properties['**PROPERTY**'].$mappings[0])"                   
                 }
             ]
         }
