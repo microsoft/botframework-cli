@@ -7,19 +7,12 @@ botframework-cli
 [![License](https://img.shields.io/npm/l/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
 # Usage
-<!-- usage -->
+
 ```sh-session
 $ npm install -g @microsoft/botframework-cli
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/botframework-cli/1.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
+
 ```
-<!-- usagestop -->
+
 # Commands
 <!-- commands -->
 * [`bf `](#bf-)

@@ -10,7 +10,7 @@ The following commands are currently available:
 * [Chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-chatdown) 
 * [QnAMaker](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
-* [Luis](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-luis)
+* [Luis](https://github.com/microsoft/botframework-cli/tree/emimunoz/luis/packages/cli#bf-luis)
 
 ## Plugin Architecture
 BF CLI is based on [OClif](https://github.com/oclif/oclif) Framework and inherits its command line parsing style, and plugin architecture. 
