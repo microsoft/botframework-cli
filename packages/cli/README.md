@@ -1,9 +1,8 @@
 botframework-cli
 ================
 
-
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](![npm (scoped)](https://img.shields.io/npm/v/@microsoft/botframework-cli))](https://www.npmjs.com/package/@microsoft/botframework-cli)
+[![Version](https://img.shields.io/npm/v/@microsoft/botframework-cli)](https://www.npmjs.com/package/@microsoft/botframework-cli)
 [![Downloads](https://img.shields.io/npm/dt/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli)
 [![License](https://img.shields.io/npm/l/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
@@ -12,6 +11,13 @@ botframework-cli
 ```sh-session
 $ npm install -g @microsoft/botframework-cli
 $ bf COMMAND
+running command...
+$ bf (-v|--version|version)
+@microsoft/botframework-cli/1.0.0 darwin-x64 node-v12.1.0
+$ bf --help [COMMAND]
+USAGE
+  $ bf COMMAND
+...
 ```
 <!-- usagestop -->
 # Commands
@@ -25,6 +31,7 @@ $ bf COMMAND
 * [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
 * [`bf help [COMMAND]`](#bf-help-command)
+* [`bf luis`](#bf-luis)
 * [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
@@ -210,6 +217,20 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
+
+## `bf luis`
+
+Convert, translate luis/lu files or generate source code
+
+```
+USAGE
+  $ bf luis
+
+OPTIONS
+  -h, --help  Display Luis available commnads
+```
+
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/index.ts)_
 
 ## `bf luis:convert`
 

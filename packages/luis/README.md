@@ -4,9 +4,8 @@
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@microsoft/bf-luis.svg)](https://npmjs.org/package/@microsoft/bf-luis)
-[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-luis.svg)](https://npmjs.org/package/@microsoft/bf-luis)
-[![License](https://img.shields.io/npm/l/@microsoft/bf-luis.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-lu)](https://npmjs.org/package/@microsoft/bf-lu)
+
 
 # Relevant file formats
 * [`lu file format`](./docs/lu-file-format.md)
@@ -14,12 +13,27 @@
 
 # Commands
 <!-- commands -->
+* [`bf luis`](#bf-luis)
 * [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
 * [`bf luis:translate`](#bf-luistranslate)
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:translate`](#bf-qnamakertranslate)
+
+## `bf luis`
+
+Convert, translate luis/lu files or generate source code
+
+```
+USAGE
+  $ bf luis
+
+OPTIONS
+  -h, --help  Display Luis available commnads
+```
+
+_See code: [src/commands/luis/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/index.ts)_
 
 ## `bf luis:convert`
 

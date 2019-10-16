@@ -4,9 +4,7 @@
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@microsoft/bf-qnamaker.svg)](https://npmjs.org/package/@microsoft/bf-qnamaker)
-[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-qnamaker.svg)](https://npmjs.org/package/@microsoft/bf-qnamaker)
-[![License](https://img.shields.io/npm/l/@microsoft/bf-qnamaker.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-qnamaker)](https://npmjs.org/package/@microsoft/bf-qnamaker)
 
 # Commands
 <!-- commands -->
