@@ -1,0 +1,9 @@
+> # Intent definitions
+
+##FindDoc
+- finden {DocType=wort}  Doc in Ordnerarbeit
+- [((zeigen|finden)|offen)]  {DocType}  Doc im Ordner {FolderName}
+
+$FoldeName:work=
+- arbeit
+- Funktioniert
