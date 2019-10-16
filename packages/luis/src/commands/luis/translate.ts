@@ -12,7 +12,7 @@ export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model', required: true}),
+    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
     recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)'}),
     out: flags.string({description: 'Output folder name. If not specified stdout will be used as output'}),
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
