@@ -27,7 +27,7 @@ OPTIONS
 
   -h, --help                   Chatdown command help
 
-  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-f) will be
+  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-o) will be
                                placed.
 
   -p, --prefix                 Prefix stdout with package name.

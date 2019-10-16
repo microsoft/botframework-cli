@@ -35,7 +35,7 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
             filesToParse.splice(0,1)
             continue
         }
-        parsedContent = await parseLuFile(luOb.content, log, luis_culture)
+        let parsedContent = await parseLuFile(luOb.content, log, luis_culture)
         parsedFiles.push(luOb.id)
 
         if (haveLUISContent(parsedContent.LUISJsonStructure)

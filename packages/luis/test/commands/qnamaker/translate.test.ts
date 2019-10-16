@@ -10,7 +10,7 @@ const compareLuFiles = async function(file1: string, file2: string) {
   let fixtureFile = await fs.readFile(path.join(__dirname, file2))
   result = result.toString().replace(/\r\n/g, "\n")
   fixtureFile = fixtureFile.toString().replace(/\r\n/g, "\n")
-  return result === fixtureFile
+  expect(result).to.deep.equal(fixtureFile)
 }
 
 describe('qnamaker:translate qna.lu', () => {
@@ -29,7 +29,7 @@ describe('qnamaker:translate qna.lu', () => {
     .stdout()
     .command(['qnamaker:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/translation/en/qna.lu')}`, '--tgtlang', 'fr', '--out', './'])
     .it('runs qnamaker:translate --translatekey xxxxxx --in file.lu --tgtlang fr --out ./', async (ctx) => {
-      expect(await compareLuFiles('./../../../fr/qna.lu', './../../fixtures/translation/fr/qna.lu')).to.be.true
+      await compareLuFiles('./../../../fr/qna.lu', './../../fixtures/translation/fr/qna.lu')
     })
 })
 
@@ -48,7 +48,47 @@ xdescribe('qnamaker:translate qna.json', () => {
     test
       .stdout()
       .command(['qnamaker:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/translation/en/qna.json')}`, '--tgtlang', 'fr', '--out', './'])
-      .it('runs qnamaker:translate --translatekey xxxxxx --in file.lu --tgtlang fr --out ./', async (ctx) => {
-        expect(await compareLuFiles('./../../../fr/qna.json', './../../fixtures/translation/fr/qna.json')).to.be.true
+      .it('', async (ctx) => {
+        await compareLuFiles('./../../../fr/qna.json', './../../fixtures/translation/fr/qna.json')
+      })
+  })
+
+  describe('qnamaker:translate QnA content is translated correctly', async () => {
+    const response = require('./../../fixtures/translation/serviceresponses/qna.json')
+    after(async function(){
+      await fs.remove(path.join(__dirname, './../../../de/'))
+    })
+  
+    before(function(){
+      nock('https://api.cognitive.microsofttranslator.com')
+      .post(/.*/)
+      .reply(200, response)
+  
+    })
+  
+    test
+      .command(['qnamaker:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/translation/files/qna.lu')}`, '--tgtlang', 'de', '--out', './'])
+      .it('', async () => {
+        await compareLuFiles('./../../../de/qna.lu', './../../fixtures/translation/translatedfiles/qna.lu')
+      })
+  })
+
+  describe('qnamaker:translate QnA content is translated correctly', async () => {
+    const response = require('./../../fixtures/translation/serviceresponses/qnaContent.json')
+    after(async function(){
+      await fs.remove(path.join(__dirname, './../../../de/'))
+    })
+  
+    before(function(){
+      nock('https://api.cognitive.microsofttranslator.com')
+      .post(/.*/)
+      .reply(200, response)
+  
+    })
+  
+    test
+      .command(['qnamaker:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/translation/files/qnaContent.lu')}`, '--tgtlang', 'de', '--out', './'])
+      .it('', async () => {
+        await compareLuFiles('./../../../de/qnaContent.lu', './../../fixtures/translation/translatedfiles/qnaContent.lu')
       })
   })
