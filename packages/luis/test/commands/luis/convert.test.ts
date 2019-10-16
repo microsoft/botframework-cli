@@ -332,37 +332,47 @@ describe('luis:convert', () => {
 
     test
     .stdout()
+    .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_2.lu')}`])
     .it('luis:convert Invalid entity inherits information is skipped (prebuilt 2)', async (ctx) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @entity.inherits = name : Web.WebSearch"`)
+      expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
 
     test
     .stdout()
+    .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_1.lu')}`])
     .it('luis:convert Invalid intent inherits information is skipped (prebuilt 1)', async (ctx) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @intent.inherits = name : Web.WebSearch"`)
+      expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
 
     test
     .stdout()
+    .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_3.lu')}`, '--log'])
     .it('luis:convert Invalid entity inherits information is skipped (prebuilt 3)', async (ctx) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @entity.inherits2 = name : Web.WebSearch"`)
+      expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
 
     test
     .stdout()
+    .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_4.lu')}`, '--log'])
     .it('luis:convert Invalid intent inherits information is skipped (prebuilt 4)', async (ctx) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @intent.inherits2 = name : Web.WebSearch"`)
+      expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
 
     test
     .stdout()
+    .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_model.lu')}`, '--log'])
     .it('luis:convert Invalid intent inherits information is skipped (invalid model)', async (ctx) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @app = test"`)
+      expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
 })   
 
