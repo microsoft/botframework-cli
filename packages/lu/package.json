@@ -41,7 +41,6 @@
   },
   "files": [
     "/lib",
-    "/src/parser",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
@@ -57,7 +56,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "microsoft/botframework-cli",
+  "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
