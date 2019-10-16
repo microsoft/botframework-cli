@@ -37,11 +37,7 @@
         },
         "PropertyToChange": {
             "type": "string",
-            "enum": [
-                "Subject",
-                "ActivityType",
-                "StartDate"
-            ],
+            "$mappings":["PROPERTYNAME"], 
             "$templates":[]
         }     
     },

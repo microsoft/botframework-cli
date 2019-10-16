@@ -9,8 +9,7 @@
         },
         "Directions": {
             "type": "string",
-            "$comment": "This indicates the whole string is what maps to this.",
-            "$templates":[]
+            "$comment": "This indicates the whole string is what maps to this."
         },
         "Length": {
             "type": "string",
@@ -19,8 +18,7 @@
                 "number"
             ],
             "$comment": "This is used by the mapping to convert underlying dimensions to inches.",
-            "$units": "inches",
-            "$templates":[]
+            "$units": "inches"
         },
         "Bread": {
             "type": "string",
@@ -59,8 +57,7 @@
         },
         "Name": {
             "type": "string",
-            "$mappings": ["utterance"],
-            "$templates":[]
+            "$mappings": ["utterance"]
         },
         "Toppings": {
             "type": "array",
@@ -106,12 +103,7 @@
         },
         "PropertyToChange": {
             "type": "string",
-            "enum": [
-                "Meat",
-                "Bread",
-                "Cheese",
-                "Toppings"
-            ],
+            "$mappings":["PROPERTYNAME"],           
             "$templates":[]
         }     
     },

@@ -10,7 +10,7 @@
                 {
                     "$type": "Microsoft.SetProperty",
                     "property": "$PropertyToChange",
-                    "value": "concat('dialog.',@PropertyToChange)"
+                    "value": "concat('dialog.',@PROPERTYNAME)"
                 },
                 {
                     "$type": "Microsoft.DeleteProperty",

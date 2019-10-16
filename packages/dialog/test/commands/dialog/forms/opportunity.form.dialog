@@ -54,16 +54,9 @@
         },
         "PropertyToChange": {
             "type": "string",
-            "enum": [
-                "Account",
-                "Topic",
-                "Territory",
-                "Description",
-                "EstimatedCloseDate",
-                "PurchaseTimeframe"
-            ],
+            "$mappings":["PROPERTYNAME"],  
             "$templates":[]
         }     
     },
-    "required":["Account", "Topic", "Territory","Description","EstimatedCloseDate","PurchaseTimeframe"]
+    "required":["Account", "Topic", "Territory","Description","ContactEmail","ContactPhone","EstimatedCloseDate","PurchaseTimeframe"]
 }

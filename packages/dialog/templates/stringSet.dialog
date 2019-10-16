@@ -46,13 +46,13 @@
                             "value": "@email"
                         }
                     ]  
-                }                  
+                }           
             ],
             "default":[
                 {
                     "$type": "Microsoft.SetProperty",
                     "property": "$**PROPERTY**",
-                    "value": "concat('@',turn.schema.properties['**PROPERTY**'].$mappings[0])"                   
+                    "value": "turn.recognized.entities[turn.schema.properties['**PROPERTY**'].$mappings[0]]"
                 }
             ]
         }
