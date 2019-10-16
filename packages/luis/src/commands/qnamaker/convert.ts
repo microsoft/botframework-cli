@@ -10,7 +10,7 @@ export default class QnamakerConvert extends Command {
   static description = 'Convert .lu file(s) to a QnA application JSON model or vice versa'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .qna file(s) or QnA KB JSON file', required: true}),
+    in: flags.string({description: 'Source .qna file(s) or QnA KB JSON file'}),
     alterations: flags.boolean({description: 'Indicates if files is QnA Alterations'}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
     sort: flags.boolean({description: 'When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files', default: false}),
