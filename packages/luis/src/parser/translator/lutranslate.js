@@ -30,28 +30,6 @@ module.exports = {
     }
 }
 
-/**
- * Helper function to parse, translate and write out localized lu files
- * @param {string} file file name
- * @param {string} translate_key translate text API key
- * @param {string} to_lang language code to translate content to
- * @param {string} src_lang language code for source content
- * @param {boolean} translate_comments translate comments in .lu files if this is set to true
- * @param {boolean} translate_link_text translate URL or LU reference link text in .lu files if this is set to true
- * @returns {void} nothing
- * @throws {exception} Throws on errors. exception object includes errCode and text. 
- */
-async function parseFile(file) {
-    if(!fs.existsSync(path.resolve(file))) {
-        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry unable to open [' + file + ']'));
-    }
-    let fileContent = txtfile.readSync(file);
-    if (!fileContent) {
-        throw(new exception(retCode.errorCode.FILE_OPEN_ERROR, 'Sorry, error reading file:' + file));
-    }
-    return fileContent
-}
-
 async function translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
     let parsedLocContent = ''
     let result = {}
@@ -59,7 +37,7 @@ async function translateLuObject(luObject, translate_key, to_lang, src_lang, tra
     // Accepted formats are space or comma separated list of target language codes.
     // Tokenize to_lang
     let toLang = to_lang.split(/[, ]/g)
-    for (idx in toLang) {
+    for (let idx in toLang) {
         let tgt_lang = toLang[idx].trim();
         if (tgt_lang === '') continue;
         try {
