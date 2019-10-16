@@ -74,7 +74,7 @@ export default class QnamakerCreateKb extends Command {
       userConfig.qnamaker = input.config
       await fs.writeJson(path.join(this.config.configDir, 'config.json'), userConfig, {spaces: 2})
     } else {
-      this.log('Knowledge Base id: ' + kbId)
+      this.log(JSON.stringify({kbId}, null, 2))
     }
   }
 
