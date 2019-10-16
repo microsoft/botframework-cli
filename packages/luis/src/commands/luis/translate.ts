@@ -18,8 +18,8 @@ export default class LuisTranslate extends Command {
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
     tgtlang: flags.string({description: 'Comma separated list of target languages.', required: true}),
     translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
-    translate_comments: flags.string({description: 'When set, machine translate comments found in .lu file'}),
-    translate_link_text: flags.string({description: 'When set, machine translate link description in .lu file'}),
+    translate_comments: flags.boolean({description: 'When set, machine translate comments found in .lu file'}),
+    translate_link_text: flags.boolean({description: 'When set, machine translate link description in .lu file'}),
   }
 
   /* tslint:disable:forin no-for-in*/

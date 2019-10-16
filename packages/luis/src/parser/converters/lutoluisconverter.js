@@ -258,6 +258,9 @@ const mergeResults_closedlists = function (blob, finalCollection, type) {
 const checkAndUpdateVersion = function(finalLUISJSON) {
     // Detect if there is content specific to 5.0.0 schema
     // any entity with children
+    if (!finalLUISJSON) {
+        return
+    }
     let v5DefFound = false;
     v5DefFound = (finalLUISJSON.entities || []).find(i => i.children || i.features) ||
                  (finalLUISJSON.intents || []).find(i => i.features) || 
