@@ -58,6 +58,8 @@ export default class Chatdown extends Command {
           if (typeof writeConfirmation === 'string') {
             process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${writeConfirmation}\n`)
           }
+        } else if (flags.in && !fileContents){
+          throw new CLIError('No file contents found in: ' + flags.in)
         } else {
           return this._help()
         }
