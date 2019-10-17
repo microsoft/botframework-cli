@@ -28,11 +28,6 @@ export default class QnamakerTranslate extends Command {
       const {flags} = this.parse(QnamakerTranslate)
       // Check if data piped in stdin
       let stdin = await this.readStdin()
-      let outputStat = flags.out ? await fs.stat(flags.out) : null
-
-      if (outputStat && outputStat.isFile()) {
-        throw new CLIError('Output can only be writen to a folder')
-      }
 
       let isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any

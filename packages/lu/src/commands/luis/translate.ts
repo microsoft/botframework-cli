@@ -28,14 +28,9 @@ export default class LuisTranslate extends Command {
       const {flags} = this.parse(LuisTranslate)
       // Check if data piped in stdin
       let stdin = await this.readStdin()
-      let outputStat = flags.out ? await fs.stat(flags.out) : null
-
-      if (outputStat && outputStat.isFile()) {
-        throw new CLIError('Output can only be writen to a folder')
-      }
-
       let isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any
+
       if (isLu) {
         let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
         result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)

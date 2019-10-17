@@ -82,9 +82,16 @@ export async function generateNewFilePath(outFileName: string, inputfile: string
 
 export async function generateNewTranslatedFilePath(fileName: string, translatedLanguage: string, output: string): Promise<string> {
   let newPath = path.resolve(output)
+
+  let extension = path.extname(newPath)
+  if (extension) {
+    throw new CLIError('Output can only be writen to a folder')
+  }
+
   if (!fs.existsSync(newPath)) {
     throw new CLIError('Path not found: ' + newPath)
   }
+
   newPath = path.join(output, translatedLanguage)
   await fs.mkdirp(newPath)
   return path.join(newPath, fileName)
