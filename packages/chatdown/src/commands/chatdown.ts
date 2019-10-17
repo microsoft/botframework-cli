@@ -119,7 +119,7 @@ export default class Chatdown extends Command {
         try {
           files = await this.getFiles(inputDir)
         } catch (err) {
-          console.log(`Failed to scan directory ${err}`)
+          reject(new CLIError(`Failed to scan directory ${err}`))
         }
       }
       /* tslint:disable:prefer-for-of */
