@@ -10,7 +10,7 @@ const ReadPipedStdin = {
       }
 
       const timer = setTimeout(async () => {
-        clearTimeout(timer)	
+        clearTimeout(timer)
         if (input) return resolve(input)
         reject(new Error('No input'))
       }, 1000)
