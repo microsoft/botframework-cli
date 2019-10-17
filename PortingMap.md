@@ -23,7 +23,7 @@ Commands invoked by BF [New Command] as follows:
 | Chatdown                      | Chatdown    | GA      |
 | QnAMaker                      | QnAMaker    | GA      |
 | luis:convert, luis:translate  | LuDown      | GA      |
-| luis:convert                  | LuisGen     | GA      |
+| luis:generate                 | LuisGen     | GA      |
 | LUIS                          | LUIS (api)  | TBD     |
 | LG                            | MSLG        | TBD     |
 | Dispatch                      | Dispatch    | TBD     |
