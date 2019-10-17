@@ -92,16 +92,16 @@ export default class Chatdown extends Command {
     }
   }
 
-  private getFiles (directoryPath: any) {
+  private getFiles(directoryPath: any) {
     return new Promise((resolve, reject) => {
-      let fileList: any = [];
+      let fileList: any = []
       fs.readdir(directoryPath, (err: any, files: any) => {
         if (err) {
           reject('Error scanning directory' + err)
         }
         fileList = files.map((file: any) => path.join(directoryPath, file))
         resolve(fileList)
-      });
+      })
     })
   }
 
