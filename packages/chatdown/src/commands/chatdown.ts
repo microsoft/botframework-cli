@@ -92,7 +92,7 @@ export default class Chatdown extends Command {
     }
   }
 
-  private getFiles (directoryPath: any): Promise<any> {
+  private getFiles (directoryPath: any) {
     return new Promise((resolve, reject) => {
       let fileList: any = [];
       fs.readdir(directoryPath, (err: any, files: any) => {
@@ -112,7 +112,7 @@ export default class Chatdown extends Command {
 
   private async processFiles(inputDir: any, outputDir: any) {
     return new Promise(async (resolve, reject) => {
-      let files: any = [];
+      let files: any = []
       if (inputDir.indexOf('*') > -1) {
         files = glob.sync(inputDir, {ignore: ['**/node_modules/**']})
       } else {
