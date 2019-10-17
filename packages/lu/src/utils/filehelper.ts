@@ -60,11 +60,14 @@ export async function getContentFromFile(file: string) {
 
 export async function generateNewFilePath(outFileName: string, inputfile: string, isLu: boolean, prefix = '', extType: string = helpers.FileExtTypeEnum.LUFile): Promise<string> {
   let base = path.resolve(outFileName)
+  let root = path.dirname(base)
+  if (!fs.existsSync(root)) {
+    throw new CLIError('Path not found: ' + root)
+  }
+
   let extension = path.extname(base)
   if (extension) {
-    let root = path.dirname(base)
-    let file = path.basename(base)
-    return path.join(root, prefix + file)
+    return path.join(root, prefix + path.basename(base))
   }
 
   let name = ''
@@ -79,6 +82,9 @@ export async function generateNewFilePath(outFileName: string, inputfile: string
 
 export async function generateNewTranslatedFilePath(fileName: string, translatedLanguage: string, output: string): Promise<string> {
   let newPath = path.resolve(output)
+  if (!fs.existsSync(newPath)) {
+    throw new CLIError('Path not found: ' + newPath)
+  }
   newPath = path.join(output, translatedLanguage)
   await fs.mkdirp(newPath)
   return path.join(newPath, fileName)
