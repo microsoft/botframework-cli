@@ -13,23 +13,19 @@ The principles guiding the tool include:
 * Extensible plug-in architecture for future tools
 
 
-
 ## Tool Command Map
 
 Commands invoked by BF [New Command] as follows:
 
 | New Command                   | Old Tool(s) | Status  |
 | ----------------------------- | ----------- | ------- |
-| Chatdown                      | Chatdown    | GA      |
-| QnAMaker                      | QnAMaker    | GA      |
-| luis:convert, luis:translate  | LuDown      | GA      |
+| chatdown                      | Chatdown    | GA      |
+| qnamaker                      | QnAMaker    | GA      |
+| luis/qnamaker:convert, luis/qnamaker:translate  | LuDown      | GA      |
 | luis:generate                 | LuisGen     | GA      |
-| LUIS                          | LUIS (api)  | TBD     |
-| LG                            | MSLG        | TBD     |
-| Dispatch                      | Dispatch    | TBD     |
-| Dialog                        | \<new\>     | TBD     |
-
-
+| luis                          | LUIS (api)  | TBD     |
+| lg                            | MSLG        | TBD     |
+| dispatch                      | Dispatch    | TBD     |
 
 
 
