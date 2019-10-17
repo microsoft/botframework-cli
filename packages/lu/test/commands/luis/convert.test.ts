@@ -470,3 +470,12 @@ describe('luis:convert new entity format', () => {
   })
 })
 
+describe('luis:convert file creation', () => {
+  test
+  .stderr()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/newEntity1.json')}`, '--out', './newfolder/newEntity.lu'])
+  .it('luis:convert throws error if path to write doesnt exist', async (ctx) => {
+    expect(ctx.stderr).to.contain('Path not found:')
+  })
+})
+

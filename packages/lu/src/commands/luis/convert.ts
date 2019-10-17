@@ -77,7 +77,6 @@ export default class LuisConvert extends Command {
     // write out the final file
     try {
       await fs.writeFile(filePath, convertedObject, 'utf-8')
-
     } catch (err) {
       throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
     }
