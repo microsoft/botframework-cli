@@ -1,108 +1,108 @@
-$STATE:AL=
+$USUSSTATE:AL=
 -Alabama
-$STATE:AK=
+$USSTATE:AK=
 -Alaska
-$STATE:AZ=
+$USSTATE:AZ=
 -Arizona
-$STATE:AR=
+$USSTATE:AR=
 -Arkansas
-$STATE:CA=
+$USSTATE:CA=
 -California
-$STATE:CO=
+$USSTATE:CO=
 -Colorado
-$STATE:CT=
+$USSTATE:CT=
 -Connecticut
-$STATE:DE=
+$USSTATE:DE=
 -Delaware
-$STATE:FL=
+$USSTATE:FL=
 -Florida
-$STATE:GA=
+$USSTATE:GA=
 -Georgia
-$STATE:HI=
+$USSTATE:HI=
 -Hawaii
-$STATE:ID=
+$USSTATE:ID=
 -Idaho
-$STATE:IL=
+$USSTATE:IL=
 -Illinois
-$STATE:IN=
+$USSTATE:IN=
 -Indiana
-$STATE:IA=
+$USSTATE:IA=
 -Iowa
-$STATE:KS=
+$USSTATE:KS=
 -Kansas
-$STATE:KY=
+$USSTATE:KY=
 -Kentucky
-$STATE:LA=
+$USSTATE:LA=
 -Louisiana
-$STATE:ME=
+$USSTATE:ME=
 -Maine
-$STATE:MD=
+$USSTATE:MD=
 -Maryland
-$STATE:MA=
+$USSTATE:MA=
 -Massachusetts
-$STATE:MI=
+$USSTATE:MI=
 -Michigan
-$STATE:MN=
+$USSTATE:MN=
 -Minnesota
-$STATE:MS=
+$USSTATE:MS=
 -Mississippi
-$STATE:MO=
+$USSTATE:MO=
 -Missouri
-$STATE:MT=
+$USSTATE:MT=
 -Montana
-$STATE:NE=
+$USSTATE:NE=
 -Nebraska
-$STATE:NV=
+$USSTATE:NV=
 -Nevada
-$STATE:NH=
+$USSTATE:NH=
 -New Hampshire
-$STATE:NJ=
+$USSTATE:NJ=
 -New Jersey
-$STATE:NM=
+$USSTATE:NM=
 -New Mexico
-$STATE:NY=
+$USSTATE:NY=
 -New York
-$STATE:NC=
+$USSTATE:NC=
 -North Carolina
-$STATE:ND=
+$USSTATE:ND=
 -North Dakota
-$STATE:OH=
+$USSTATE:OH=
 -Ohio
-$STATE:OK=
+$USSTATE:OK=
 -Oklahoma
-$STATE:OR=
+$USSTATE:OR=
 -Oregon
-$STATE:PA=
+$USSTATE:PA=
 -Pennsylvania
-$STATE:RI=
+$USSTATE:RI=
 -Rhode Island
-$STATE:SC=
+$USSTATE:SC=
 -South Carolina
-$STATE:SD=
+$USSTATE:SD=
 -South Dakota
-$STATE:TN=
+$USSTATE:TN=
 -Tennessee
-$STATE:TX=
+$USSTATE:TX=
 -Texas
-$STATE:UT=
+$USSTATE:UT=
 -Utah
-$STATE:VT=
+$USSTATE:VT=
 -Vermont
-$STATE:VA=
+$USSTATE:VA=
 -Virginia
-$STATE:WA=
+$USSTATE:WA=
 -Washington
-$STATE:WV=
+$USSTATE:WV=
 -West Virginia
-$STATE:WI=
+$USSTATE:WI=
 -Wisconsin
-$STATE:WY=
+$USSTATE:WY=
 -Wyoming
-$STATE:DC=
+$USSTATE:DC=
 -District of Columbia
-$STATE:PR=
+$USSTATE:PR=
 -Puerto Rico
-$STATE:CNMI=
+$USSTATE:CNMI=
 -Northern Mariana Islands
-$STATE:USVI=
--United States Virgin Islands
+$USSTATE:USVI=
+-United USSTATEs Virgin Islands
