@@ -4,13 +4,19 @@
     "property": "PropertyToChange",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
-            "property": "$PropertyToChange",
-            "value": "concat('dialog.',@PropertyToChange)"
-        },
-        {
-            "$type": "Microsoft.DeleteProperty",
-            "property": "{dialog.PropertyToChange}"            
-        }
+            "$type": "Microsoft.IfCondition",
+            "condition":"empty(where(dialog.requiredProperties, property, !dialog[property]))",
+            "actions":[
+                {
+                    "$type": "Microsoft.SetProperty",
+                    "property": "$PropertyToChange",
+                    "value": "concat('dialog.',@PROPERTYNAME)"
+                },
+                {
+                    "$type": "Microsoft.DeleteProperty",
+                    "property": "{dialog.PropertyToChange}"            
+                }
+            ]
+        }   
     ]
 }

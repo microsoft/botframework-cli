@@ -1,2 +1,5 @@
 # Ask**PROPERTY**
-- [askString('**PROPERTY**', **PROPERTY**Name)]
+- [askString('**PROPERTY**', **PROPERTY**Name())]
+
+# **PROPERTY**Name
+- **NAME** 

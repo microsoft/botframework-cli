@@ -2,7 +2,10 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "properties": {
-        "Subject": { "type": "string" },
+        "Subject": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
         "ActivityType": { 
             "type": "string",
             "enum": [
@@ -13,6 +16,31 @@
         "StartDate": { 
             "type": "string",
             "$mappings": [ "datetime" ]
-        }
-    }
+        },
+        "Confirmation": {
+            "type": "string",
+            "enum": [
+                "yes",
+                "no"
+            ],
+            "$templates":[]
+        },
+        "CancelConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "CompleteConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "PropertyToChange": {
+            "type": "string",
+            "$mappings":["PROPERTYNAME"], 
+            "$templates":[]
+        }     
+    },
+    "required":["Subject", "ActivityType", "StartDate"]
 }
+    

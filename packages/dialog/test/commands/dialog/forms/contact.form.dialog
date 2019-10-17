@@ -2,40 +2,76 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "properties": {
-        "HomeStreet": { "type": "string" },
-        "HomeCity": { "type": "string" },
+        "HomeStreet": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "HomeCity": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
         "HomeState": { 
             "type": "string",
-            "$mappings": [ "STATE" ]
+            "$mappings": [ "USSTATE" ]
         },
         "HomeZip": { 
             "type": "string",
-            "pattern": "^[0-9]{5}(?:-[0-9]{4})?$"
+            "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
+            "$mappings": ["utterance"]
         },
         "HomeLatitude": { "type": "number" },
         "HomeLongitude": { "type": "number" },
         "HomePhone": { 
             "type": "string", 
-            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
-            "$mappings": [ "phonenumber" ]
+            "$mappings": [ "utterance" ]
         },
 
-        "WorkStreet": { "type": "string" },
-        "WorkCity": { "type": "string" },
+        "WorkStreet": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "WorkCity": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
         "WorkState": { 
             "type": "string",
-            "$mappings": [ "STATE" ]
+            "$mappings": [ "USSTATE" ]
         },
         "WorkZip": { 
             "type": "string",
-            "pattern": "^[0-9]{5}(?:-[0-9]{4})?$"
+            "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
+            "$mappings": ["utterance"]
         },
         "WorkLatitude": { "type": "number" },
         "WorkLongitude": { "type": "number" },
         "WorkPhone": { 
             "type": "string", 
-            "pattern": "^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$",
-            "$mappings": [ "phonenumber" ]
-        }
-    }
+            "$mappings": [ "utterance" ]
+        },
+        "Confirmation": {
+            "type": "string",
+            "enum": [
+                "yes",
+                "no"
+            ],
+            "$templates":[]
+        },
+        "CancelConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "CompleteConfirmation": {
+            "type": "string",
+            "$mappings": ["Confirmation"],
+            "$templates":[]
+        },
+        "PropertyToChange": {
+            "type": "string",
+            "$mappings":["PROPERTYNAME"],  
+            "$templates":[]
+        }     
+    },
+    "required":["HomeStreet", "HomeCity", "HomeState", "HomeZip", "HomePhone", "WorkStreet", "WorkCity", "WorkState", "WorkZip", "WorkPhone"]
 }
