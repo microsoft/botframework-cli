@@ -16,8 +16,4 @@ class FileToParse {
     }
 }
 
-FileToParse.stringArrayToFileToParseList = function(obj) {
-    if(Array.isArray(obj)) return obj.map(item => new FileToParse(item));
-}
-
 module.exports = FileToParse;

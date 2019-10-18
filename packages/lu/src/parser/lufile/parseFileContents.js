@@ -32,7 +32,14 @@ const featureTypeEnum = {
     modelToFeature: 'featureName'
 };
 const featureProperties = {
-    entityFeatureToModel: 'Entity Extractor',
+    entityFeatureToModel : {
+        'simple': 'Entity Extractor',
+        'list' : 'Closed List Entity Extractor',
+        'prebuilt': 'Prebuilt Entity Extractor',
+        'composite': 'Composite Entity Extractor',
+        'regex': 'Regex Entity Extractor',
+        'ml': 'Entity Extractor'
+    },
     intentFeatureToModel: 'Intent Classifier',
     phraseListFeature: 'phraselist'
 }
@@ -159,8 +166,72 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     }
 
     validateNDepthEntities(parsedContent.LUISJsonStructure.entities, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles, parsedContent.LUISJsonStructure.intents);
+
+    // This nDepth child might have been labelled, if so, remove the duplicate simple entity.
+    // If utterances have this child, then all parents must be included in the label
+    updateModelBasedOnNDepthEntities(parsedContent.LUISJsonStructure.utterances, parsedContent.LUISJsonStructure.entities);
+
     if (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) delete parsedContent.LUISJsonStructure.flatListOfEntityAndRoles
 
+}
+
+/**
+ * Helper to update final LUIS model based on labelled nDepth entities.
+ * @param {Object []} utterances 
+ * @param {Object []} entities 
+ */
+const updateModelBasedOnNDepthEntities = function(utterances, entities) {
+    // filter to all utterances that have a labelled entity
+    let utterancesWithLabels = utterances.filter(utterance => utterance.entities && utterance.entities.length !== 0);
+    utterancesWithLabels.forEach(utterance => {
+        utterance.entities.forEach(entityInUtterance => {
+            // find this entity's root. There can be multiple and if there are, we need to delete the one that does not have children.
+            let entityFoundInMaster = [];
+            entities.forEach((entity, idx) => {
+                if (entity.name == entityInUtterance.entity) {
+                    entityFoundInMaster.push({id: idx, entityRoot: entity, path: '/'});
+                }
+                let entityPath = findEntityPath(entity, entityInUtterance.entity, "");
+                if (entityPath !== "") { 
+                    entityFoundInMaster.push({id: idx, entityRoot: entity, path: entityPath});
+                }
+            });
+            entityFoundInMaster.forEach(entityInMaster => {
+                let splitPath = entityInMaster.path.split("/").filter(item => item.trim() !== "");
+                if (entityFoundInMaster.length > 1 && splitPath.length === 0 && (!entityInMaster.entityRoot.children || entityInMaster.entityRoot.children.length === 0)) {
+                    // this child needs to be removed. Note: There can only be at most one more entity due to utterance validation rules.
+                    entities.splice(entityInMaster.id, 1);
+                } else { 
+                    splitPath.reverse().forEach(parent => {
+                        // Ensure each parent is also labelled in this utterance
+                        let parentLabelled = utterance.entities.find(entityUtt => entityUtt.entity == parent);
+                        if (!parentLabelled) {
+                            let errorMsg = `[ERROR]: Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                        }
+                    })
+                }
+            })
+        })
+    })
+}
+/**
+ * Helper function to recursively find the path to a child entity
+ * @param {Object} obj 
+ * @param {String} entityName 
+ * @param {String} path 
+ */
+const findEntityPath = function(obj, entityName, path) {
+    path = path || "";
+    var fullpath = "";
+    if (obj.name === entityName) {
+        return path;
+    } else if (obj.children && obj.children.length !== 0) {
+        obj.children.forEach(child => {
+            fullpath = findEntityPath(child, entityName, path + "/" + obj.name + "/" + child.name) || fullpath;
+        })
+    }
+    return fullpath;
 }
 /**
  * Helper function to validate and update nDepth entities
@@ -199,7 +270,7 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                         let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
                         throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
                     } else {
-                        child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.entityFeatureToModel);
+                        child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.entityFeatureToModel[featureExists.type]);
                         featureHandled = true;
                     }
                 }
@@ -223,6 +294,10 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
 
         if (child.context) {
             delete child.context
+        }
+
+        if (child.features === "") {
+            delete child.features
         }
     })
 };
@@ -332,14 +407,14 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel);
+                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
+                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel[entityExists.type]);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
@@ -379,14 +454,14 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel);
+                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
+                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel[featureExists.type]);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
