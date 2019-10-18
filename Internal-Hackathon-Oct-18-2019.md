@@ -15,8 +15,8 @@ Please file issues here: https://github.com/microsoft/botframework-cli/issues
   * Run npm i -g @microsoft/botframework-cli
 
 * Ensure Telemetry is enabled: 
-  * Accepting the promp after the installation OR 
-  * Run bf config:set:telemetry --enable
+  * Run bf. When/if prompted accept the prompt 
+  * AlternativelyRun bf config:set:telemetry --enable
 * Hack it: Use to create/manage bots
 * Hack it challenge: Use with Virtual Assistant
 
