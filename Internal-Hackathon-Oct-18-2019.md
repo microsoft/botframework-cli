@@ -115,8 +115,3 @@ bf chatdown --in ./test/utils/cli.sample.chat --out 'C:\Projects\cli\botframewor
 bf chatdown --in ./test/utils/cli.sample.chat --out ./test/doesntexist
 [should create a dir that doesnt exist and output transcipt file there ]
 
----
-<img src="https://github.com/microsoft/botframework-cli/blob/esbfclispec2/BF%20CLI%20Hackathon%20Flyer.jpg"
-     alt="Bot Framework CLI Hackathon"
-     style="float: left; margin-right: 10px;" />
-     
