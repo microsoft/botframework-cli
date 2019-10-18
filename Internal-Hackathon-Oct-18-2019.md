@@ -6,8 +6,8 @@ Who: You :)
 
 **Goal**: Get team’s assistance in flushing out last minute items to support smooth transition from legacy tools to new and improved BF CLI.
 
-
-Please file issues here: https://github.com/microsoft/botframework-cli/issues
+* Repo: https://github.com/microsoft/botframework-cli 
+* Please file issues here: https://github.com/microsoft/botframework-cli/issues
 
 ## Instructions
 * Download and install from: 
