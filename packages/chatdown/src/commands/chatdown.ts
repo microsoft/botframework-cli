@@ -41,7 +41,6 @@ export default class Chatdown extends Command {
 
       if (inputIsDirectory) {
         let inputDir = flags.in ? flags.in.trim() : ''
-
         const len = await this.processFiles(inputDir, outputDir)
         if (len === 0) {
           throw new CLIError('No chat files found at: ' + flags.in)
@@ -93,6 +92,19 @@ export default class Chatdown extends Command {
     }
   }
 
+  private getFiles(directoryPath: any) {
+    return new Promise((resolve, reject) => {
+      let fileList: any = []
+      fs.readdir(directoryPath, (err: any, files: any) => {
+        if (err) {
+          reject('Error scanning directory' + err)
+        }
+        fileList = files.map((file: any) => path.join(directoryPath, file))
+        resolve(fileList)
+      })
+    })
+  }
+
   private getFileName(file: any) {
     let fileName = path.basename(file, path.extname(file))
     return fileName
@@ -100,7 +112,16 @@ export default class Chatdown extends Command {
 
   private async processFiles(inputDir: any, outputDir: any) {
     return new Promise(async (resolve, reject) => {
-      let files = glob.sync(inputDir, {ignore: ['**/node_modules/**']})
+      let files: any = []
+      if (inputDir.indexOf('*') > -1) {
+        files = glob.sync(inputDir, {ignore: ['**/node_modules/**']})
+      } else {
+        try {
+          files = await this.getFiles(inputDir)
+        } catch (err) {
+          reject(new CLIError(`Failed to scan directory ${err}`))
+        }
+      }
       /* tslint:disable:prefer-for-of */
       for (let i = 0; i < files.length; i++) {
         try {
