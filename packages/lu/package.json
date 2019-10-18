@@ -63,5 +63,10 @@
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.**\"",
     "version": "oclif-dev readme && git add README.md"
+  },
+  "nyc": {
+    "exclude": [
+      "**/lufile/generated/**"
+    ]
   }
 }

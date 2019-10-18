@@ -102,3 +102,12 @@ describe('qnamaker:convert with --sort option', () => {
     expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/qna_a_sorted.lu')).to.be.true
   })
 })
+
+describe('qnamaker:convert file creation', () => {
+  test
+  .stderr()
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', '/testfolder/qna.lu'])
+  .it('qnamaker:convert refresh command successfully reconstructs a markdown file from QnA input file', async (ctx) => {
+    expect(ctx.stderr).to.contain('Path not found:')
+  })
+})

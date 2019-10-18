@@ -96,20 +96,6 @@ describe('command', () => {
   .it('Command should return empty string if no stdin')
 
   fancy
-  .stdin('test reading of piped data')
-  .stdout()
-  .do(async () => {
-    try {
-      const resp: any = await ReadPipedStdin.read()
-      if (resp) console.log(resp)
-    } catch (error) {
-      if (error) console.log(`Error: ${error}`)
-    }
-  })
-  .do(output => expect(output.stdout).to.equal('test reading of piped data\n'))
-  .it('should read and echo the stdin input')
-
-  fancy
   .stdin('')
   .stdout()
   .do(async () => {
