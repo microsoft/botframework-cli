@@ -1,0 +1,47 @@
+[
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
+          "to": "de",
+          "alignment": {
+            "proj": "0:41-0:41 43:57-43:57"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "Bist du",
+          "to": "de",
+          "alignment": {
+            "proj": "0:6-0:6"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "Du bist",
+          "to": "de",
+          "alignment": {
+            "proj": "0:6-0:6"
+          }
+        }
+      ]
+    }
+]

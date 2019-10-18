@@ -7,9 +7,10 @@ export default class QnamakerExportKb extends Command {
   static description = 'Export a knowledgebase to .json file'
 
   static flags: flags.Input<any> = {
-    kbId: flags.string({description: 'Knowledgebase id to be exported.'}),
+    kbId: flags.string({description: 'Knowledgebase id to be exported. Overrides the knowledge base id present in the config'}),
     environment: flags.string({description: 'Specifies whether environment is Test or Prod.', required: true}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:export:kb command help'}),
   }
 

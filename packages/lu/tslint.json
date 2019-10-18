@@ -1,0 +1,8 @@
+{
+  "extends": "@oclif/tslint",
+  "linterOptions": {
+    "exclude": [
+        "src/parser/**/**.js"
+    ]
+  }
+}

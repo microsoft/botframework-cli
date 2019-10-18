@@ -43,7 +43,8 @@ describe('qnamaker:create:kb', () => {
   .stdout()
   .command(['qnamaker:create:kb','--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`])
   .it('Creates kb qnamaker:create:kb --in', ctx => {
-    expect(ctx.stdout).to.contain('"resourceLocation": "/knowledgebases/8600c573-2acf-4466-97e8-999ad4cecbc2",\n ')
+    let response = JSON.parse(ctx.stdout)
+    expect(response.kbId).to.be.equal('8600c573-2acf-4466-97e8-999ad4cecbc2')
   })
 })
 
@@ -117,5 +118,14 @@ describe('qnamaker:create:kb --save', () => {
   .it('Creates kb and awaits for the creation of it', async () => {
     let config = await fs.readJSON(getConfigFile())
     expect(config.qnamaker.kbId).to.contain('8600c573-2acf-4466-97e8-999ad4cecbc2')
+  })
+})
+
+describe('qnamaker:create:kb No input', () => {
+  test
+  .stderr()
+  .command(['qnamaker:create:kb'])
+  .it('Creates kb qnamaker:create:kb --in', ctx => {
+    expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
   })
 })

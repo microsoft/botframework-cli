@@ -4,9 +4,7 @@
 
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@microsoft/bf-qnamaker.svg)](https://npmjs.org/package/@microsoft/bf-qnamaker)
-[![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-qnamaker.svg)](https://npmjs.org/package/@microsoft/bf-qnamaker)
-[![License](https://img.shields.io/npm/l/@microsoft/bf-qnamaker.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-qnamaker)](https://npmjs.org/package/@microsoft/bf-qnamaker)
 
 # Commands
 <!-- commands -->
@@ -30,12 +28,13 @@
 * [`bf qnamaker:replace:alterations`](#bf-qnamakerreplacealterations)
 * [`bf qnamaker:replace:kb`](#bf-qnamakerreplacekb)
 * [`bf qnamaker:train`](#bf-qnamakertrain)
+* [`bf qnamaker:update`](#bf-qnamakerupdate)
 * [`bf qnamaker:update:endpointsettings`](#bf-qnamakerupdateendpointsettings)
 * [`bf qnamaker:update:kb`](#bf-qnamakerupdatekb)
 
 ## `bf qnamaker`
 
-QnA Maker CLI (Preview version)
+QnA Maker
 
 ```
 USAGE
@@ -57,16 +56,17 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:create:kb command help
-  --in=in                            (required) The CreateKbDTO object to send in the body of the request.
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+  --in=in                            File path to the CreateKbDTO object to send in the body of the request.
 
   --name=name                        Name of the kb you want to create. This will override the name of KB that might be
                                      present in the CreateKb DTO
 
+  --save                             Save the kbId in config.
+
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
-
-  --wait                             Wait for the operation to complete.
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/create/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/create/kb.ts)_
@@ -81,12 +81,15 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:delete:kb command help
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
   --force                            Do not prompt for confirmation, force the operation
-  --kbId=kbId                        Knowledgebase id to be deleted
+
+  --kbId=kbId                        Knowledgebase id to be deleted. Overrides the knowledge base id present in the
+                                     config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/delete/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/delete/kb.ts)_
@@ -101,12 +104,15 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:export:kb command help
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
   --environment=environment          (required) Specifies whether environment is Test or Prod.
-  --kbId=kbId                        Knowledgebase id to be exported.
+
+  --kbId=kbId                        Knowledgebase id to be exported. Overrides the knowledge base id present in the
+                                     config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/export/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/export/kb.ts)_
@@ -135,11 +141,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:endpointsettings command help
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
   --kbId=kbId                        Knowledgebase id to get metadata.
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/get/endpointsettings.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/endpointsettings.ts)_
@@ -154,11 +161,14 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:kb command help
-  --kbId=kbId                        (required) Knowledgebase id to get metadata.
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+
+  --kbId=kbId                        Knowledgebase id to get metadata. Overrides the knowledge base id present in the
+                                     config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/get/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/kb.ts)_
@@ -173,25 +183,27 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:get:operationdetails command help
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
   --operationId=operationId          (required) Operation id.
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/get/operationdetails.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/get/operationdetails.ts)_
 
 ## `bf qnamaker:init`
 
-Initializes the .qnamakerrc file with settings.
+Initializes the config file with settings.
 
 ```
 USAGE
   $ bf qnamaker:init
 
 OPTIONS
-  -h, --help  qnamaker:init command help
+  -h, --help           qnamaker:init command help
+  --endpoint=endpoint  Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
 ```
 
 _See code: [src/commands/qnamaker/init.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/init.ts)_
@@ -220,10 +232,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:list:alterations command help
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/list/alterations.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/alterations.ts)_
@@ -238,10 +251,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:list:endpointkeys command help
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/list/endpointkeys.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/endpointkeys.ts)_
@@ -256,10 +270,11 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:list:kbs command help
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/list/kbs.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/list/kbs.ts)_
@@ -274,46 +289,47 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:publish:kb command help
-  --kbId=kbId                        Knowledgebase id to pubish.
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+  --kbId=kbId                        Knowledgebase id to pubish. Overrides the knowledge base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/publish/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/publish/kb.ts)_
 
 ## `bf qnamaker:query`
 
-Query model for fetching the answer from Kb for a query
+Generate Answer for fetching the answer from Kb for a query
 
 ```
 USAGE
   $ bf qnamaker:query
 
 OPTIONS
-  -h, --help                         qnamaker:query command help
+  -h, --help                       qnamaker:query command help
+  --context=context                Path to Context object json file with previous QnA
 
-  --endpointKey=endpointKey          Specifies the endpoint key for your private QnA service.(from qnamaker.ai portal
-                                     user settings page). Overrides the value present in config.
+  --endpointKey=endpointKey        Specifies the endpoint key for your private QnA service (From qnamaker.ai portal user
+                                   settings page). Overrides the value present in config
 
-  --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in
-                                     config.
+  --hostname=hostname              Specifies the url for your private QnA service. Overrides the value present in config
 
-  --isTest                           Query against the test index.
+  --kbId=kbId                      Specifies the active qnamaker knowledgebase id. Overrides the value present in the
+                                   config
 
-  --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the value present in the
-                                     config
+  --qnaId=qnaId                    Exact qnaId to fetch from the knowledgebase, this field takes priority over question
 
-  --question=question                (required) Query to get a prediction for.
+  --question=question              (required) Query to get a prediction for
 
-  --scoreThreshold=scoreThreshold    Query to get a prediction for.
+  --scorethreshold=scorethreshold  Specifies the confidence score threshold for the returned answer.
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
-                                     Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+  --strictfilters=strictfilters    Path to json file with MetadataDTO[] e.g {"strictfilters": MetadataDTO[]}
 
-  --top=top                          Query to get a prediction for.
+  --test                           Query against the test index
+
+  --top=top                        Specifies the number of matching results
 ```
 
 _See code: [src/commands/qnamaker/query.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/query.ts)_
@@ -328,11 +344,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:refresh:endpoints command help
-  --keyType=keyType                  (required) Type of Key.
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+  --keyType=keyType                  (required) Type of Key. (PrimaryKey/SecondaryKey)
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/refresh/endpointkeys.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/refresh/endpointkeys.ts)_
@@ -361,11 +378,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:replace:alterations command help
-  --in=in                            (required) The WordAlterationsDTO object to send in the body of the request
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+  --in=in                            File path to the WordAlterationsDTO object to send in the body of the request
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/replace/alterations.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/alterations.ts)_
@@ -380,12 +398,13 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:replace:kb command help
-  --in=in                            (required) The ReplaceKbDTO object to send in the body of the request
-  --kbId=kbId                        Knowledgebase id.
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+  --in=in                            File path to the ReplaceKbDTO object to send in the body of the request
+  --kbId=kbId                        Knowledgebase id. Overrides the knowledge base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/replace/kb.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/replace/kb.ts)_
@@ -407,7 +426,7 @@ OPTIONS
   --hostname=hostname                Specifies the url for your private QnA service. Overrides the value present in
                                      config.
 
-  --in=in                            (required) The FeedbackRecordDTO object to send in the body of the request.
+  --in=in                            File path to the FeedbackRecordDTO object to send in the body of the request.
 
   --kbId=kbId                        Specifies the active qnamaker knowledgebase id. Overrides the value present in the
                                      config
@@ -418,6 +437,20 @@ OPTIONS
 ```
 
 _See code: [src/commands/qnamaker/train.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/train.ts)_
+
+## `bf qnamaker:update`
+
+Updates KB or Endpoint settings
+
+```
+USAGE
+  $ bf qnamaker:update
+
+OPTIONS
+  -h, --help  display qnamaker:update available commands
+```
+
+_See code: [src/commands/qnamaker/update/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/update/index.ts)_
 
 ## `bf qnamaker:update:endpointsettings`
 
@@ -430,10 +463,11 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:update:endpointsettings command help
   --activelearning                   Enable active learning. Disables if flag not set
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
 
-  --subscriptionKey=subscriptionKey  Specifies the qnamaker subscription key/access keys (found on the Cognitive
-                                     Services Azure portal page under "access keys"). Overrides the .qnamakerrc value
-                                     and the QNAMAKER_SUBSCRIPTION_KEY environment variable.
+  --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
+                                     Management section for your Qna Maker cognitive service). Overrides the
+                                     subscriptionkey value present in the config
 ```
 
 _See code: [src/commands/qnamaker/update/endpointsettings.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/update/endpointsettings.ts)_
@@ -448,12 +482,16 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:update:kb command help
-  --in=in                            (required) The UpdateKbOperationDTO object to send in the body of the request.
-  --kbId=kbId                        Knowledgebase id.
+  --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+
+  --in=in                            The file path to the UpdateKbOperationDTO object to send in the body of the
+                                     request.
+
+  --kbId=kbId                        Knowledgebase id. Overrides the knowledge base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
-                                     subscriptionkey value present in config
+                                     subscriptionkey value present in the config
 
   --wait                             Wait for the operation to complete.
 ```

@@ -1,5 +1,6 @@
 import {Command} from '../src/command'
-import {CLIError} from '@oclif/errors' 
+import {CLIError} from './../src/clierror' 
+import { CLIError as OCLIFError } from '@oclif/errors'
 import {expect, fancy} from 'fancy-test'
 import ReadPipedStdin from '../src/readpipeddata'
 import * as path from 'path';
@@ -35,6 +36,20 @@ describe('command', () => {
   })
   .do(output => expect(output.stderr).to.equal('failure\n'))
   .it('Exits with error')
+
+  fancy
+  .stderr()
+  .do(async () => {
+    class Test extends Command {
+        async run() {
+          throw new OCLIFError('failure')
+        }
+      }
+
+    return Test.run([])
+  })
+  .do(output => expect(output.stderr).to.equal('failure\n'))
+  .it('Handles OCLIF Errors')
 
   fancy
   .stderr()
@@ -79,20 +94,6 @@ describe('command', () => {
   })
   .do(output => expect(output.stderr).to.equal(''))
   .it('Command should return empty string if no stdin')
-
-  fancy
-  .stdin('test reading of piped data')
-  .stdout()
-  .do(async () => {
-    try {
-      const resp: any = await ReadPipedStdin.read()
-      if (resp) console.log(resp)
-    } catch (error) {
-      if (error) console.log(`Error: ${error}`)
-    }
-  })
-  .do(output => expect(output.stdout).to.equal('test reading of piped data\n'))
-  .it('should read and echo the stdin input')
 
   fancy
   .stdin('')

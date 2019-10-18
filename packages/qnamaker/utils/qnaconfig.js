@@ -7,11 +7,11 @@ const Delay = require('await-delay');
 const {cli} = require('cli-ux')
 
 const config = {
-    buildConfig: function(flags, serviceIn, config) {
-        flags.kbId = (flags.kbId || serviceIn.kbId || config.kbId),
-        flags.subscriptionKey = (flags.subscriptionKey || serviceIn.subscriptionKey || config.subscriptionKey),
-        flags.endpointKey = (flags.endpointKey || serviceIn.endpointKey || config.endpointKey),
-        flags.hostname = (flags.hostname || serviceIn.hostname || config.hostname)
+    buildConfig: function(flags, config) {
+        flags.kbId = (flags.kbId || config.kbId),
+        flags.subscriptionKey = (flags.subscriptionKey || config.subscriptionKey),
+        flags.endpointKey = (flags.endpointKey || config.endpointKey),
+        flags.hostname = (flags.hostname || config.hostname)
     },
 
     composeConfig: async function (args, configfile) {
@@ -23,8 +23,8 @@ const config = {
 
         try {
             if (fs.existsSync(path.join(configfile, 'config.json'))) {
-                config = await fs.readJSON(path.join(configfile, 'config.json'))
-                qnamakerrcJson = config.qnamaker === undefined ? {} : config.qnamaker
+                qnamakerrcJson = await fs.readJSON(path.join(configfile, 'config.json'))
+                qnamakerrcJson = (!qnamakerrcJson || !qnamakerrcJson.qnamaker) ? {} : qnamakerrcJson.qnamaker
             } 
         } catch (e) {
             // Do nothing
@@ -52,9 +52,10 @@ const config = {
         while (true) {
             let opResult = await new Operations().getOperationDetails({
                 subscriptionKey: config.subscriptionKey,
-                operationId: result.operationId
+                operationId: result.operationId,
+                endpoint: config.endpoint
             });
-
+            
             if (opResult.error)
                 throw new Error(JSON.stringify(opResult.error, null, 4));
 

@@ -8,8 +8,9 @@ export default class QnamakerRefreshEndpointkeys extends Command {
   static description = 'Re-generates an endpoint key, in case you suspect your keys have been compromised'
 
   static flags: flags.Input<any> = {
-    keyType: flags.string({description: 'Type of Key.', required: true}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    keyType: flags.string({description: 'Type of Key. (PrimaryKey/SecondaryKey)', required: true}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:refresh:endpoints command help'}),
   }
 
@@ -21,10 +22,8 @@ export default class QnamakerRefreshEndpointkeys extends Command {
 
     if (result.error) {
       throw new CLIError(JSON.stringify(result.error, null, 4))
-    } else if (typeof result === 'string') {
-      this.log(result)
-    } else {
-      this.log(JSON.stringify(result, null, 2))
     }
+
+    this.log(JSON.stringify(result, null, 2))
   }
 }

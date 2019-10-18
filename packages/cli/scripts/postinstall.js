@@ -38,7 +38,7 @@ const getUserConfig = async () => {
     const userConfig = await getUserConfig()
     userConfig.lastVersionCheck = new Date()
     if (userConfig.telemetry === null) {
-      const disableTelemetry = await cli.prompt(chalk.red('Telemetry is disabled. Would you like to opt in? Only command and flags usage will be sent. (Y/N)'))
+      const disableTelemetry = await cli.prompt(chalk.red('Help us improve products by allowing Microsoft to collect anonymous command and flags usage: (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
         userConfig.telemetry = true
         console.log(chalk.blue('Telemetry has been enabled.'))
@@ -50,7 +50,7 @@ const getUserConfig = async () => {
         userConfig.telemetry = false
         console.log(chalk.blue('Telemetry will remain disabled'))
         console.log(chalk.blue('At any time you may enable data collection by changing the configuration using command:'))
-        console.log(chalk.blue('bf config:telemetry:enable'))
+        console.log(chalk.blue('bf config:set:telemetry --enable'))
       }
 
       await fs.mkdirp(pathToConfigJson)

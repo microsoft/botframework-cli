@@ -11,9 +11,10 @@ export default class QnamakerDeleteKb extends Command {
   static description = 'Delete a knowledgebase by id'
 
   static flags: flags.Input<any> = {
-    kbId: flags.string({description: 'Knowledgebase id to be deleted'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
-    force: flags.boolean({description: 'Do not prompt for confirmation, force the operation  '}),
+    kbId: flags.string({description: 'Knowledgebase id to be deleted. Overrides the knowledge base id present in the config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    force: flags.boolean({description: 'Do not prompt for confirmation, force the operation'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:delete:kb command help'}),
   }
 
@@ -24,8 +25,8 @@ export default class QnamakerDeleteKb extends Command {
     if (!flags.force) {
       let kbResult = await new Knowledgebase().getKnowledgebaseDetails(input.config)
       let kb = await JSON.parse(await kbResult.text())
-      let answer = await cli.prompt(`Are you sure you would like to delete ${kb.name} [${kb.id}]? [no] `, {default: 'no'})
-      if (answer.trim()[0] === 'n') {
+      let answer = await cli.confirm(`Are you sure you would like to delete ${kb.name} [${kb.id}]? (y/n)`)
+      if (!answer) {
         this.log('operation canceled')
         return
       }
@@ -36,5 +37,7 @@ export default class QnamakerDeleteKb extends Command {
     if (result.error) {
       throw new CLIError(JSON.stringify(result.error, null, 4))
     }
+
+    this.log('Success')
   }
 }

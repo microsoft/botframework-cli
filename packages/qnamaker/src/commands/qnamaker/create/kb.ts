@@ -16,28 +16,31 @@ export default class QnamakerCreateKb extends Command {
   static description = 'Creates a new knowledgebase'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'The CreateKbDTO object to send in the body of the request.', required: true}),
+    in: flags.string({description: 'File path to the CreateKbDTO object to send in the body of the request.'}),
     name: flags.string({description: 'Name of the kb you want to create. This will override the name of KB that might be present in the CreateKb DTO'}),
     save: flags.boolean({description: 'Save the kbId in config.'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:create:kb command help'}),
   }
 
   async run() {
     const {flags} = this.parse(QnamakerCreateKb)
+    const stdin = await this.readStdin()
+    if (!stdin && !flags.in) {
+      throw new CLIError('No input. Please set file path with --in or pipe required data to the command')
+    }
 
-    let input: Inputs = await processInputs(flags, createKbJSON, this.config.configDir)
+    let input: Inputs = await processInputs(flags, createKbJSON, this.config.configDir, stdin)
 
     if (flags.name) {
       input.requestBody.name = flags.name
     }
 
     if (!input.requestBody.name) {
-      if (!(flags.q || flags.quiet)) {
-        let answer = readlineSync.question('What would you like to name your new knowledgebase?')
-        if (answer && answer.length > 0) {
-          input.requestBody.name = answer.trim()
-        }
+      let answer = readlineSync.question('What would you like to name your new knowledgebase?')
+      if (answer && answer.length > 0) {
+        input.requestBody.name = answer.trim()
       }
     }
     // hack to map incorrect export property from expected import.  Export uses qnaDocuments, create/update/replace qnaList :(
@@ -54,8 +57,8 @@ export default class QnamakerCreateKb extends Command {
 
     result = await qnaconfig.waitForOperationSucceeded(input.config, result)
 
+    let kbId = result.resourceLocation.split('/')[2]
     if (flags.save) {
-      let kbId = result.resourceLocation.split('/')[2]
       input.config.kbId = kbId
       await this.updateKbId(input.config)
       let userConfig: any = {}
@@ -66,10 +69,12 @@ export default class QnamakerCreateKb extends Command {
         await fs.mkdirp(this.config.configDir)
       }
 
+      delete input.config.endpoint
+
       userConfig.qnamaker = input.config
       await fs.writeJson(path.join(this.config.configDir, 'config.json'), userConfig, {spaces: 2})
     } else {
-      this.log(JSON.stringify(result, null, 2))
+      this.log(JSON.stringify({kbId}, null, 2))
     }
   }
 

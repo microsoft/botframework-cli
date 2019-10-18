@@ -8,8 +8,9 @@ export default class QnamakerPublishKb extends Command {
   static description = 'Publish all unpublished in the knowledgebase to the prod endpoint.'
 
   static flags: flags.Input<any> = {
-    kbId: flags.string({description: 'Knowledgebase id to pubish.'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in config'}),
+    kbId: flags.string({description: 'Knowledgebase id to pubish. Overrides the knowledge base id present in the config'}),
+    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:publish:kb command help'}),
   }
 
@@ -21,10 +22,8 @@ export default class QnamakerPublishKb extends Command {
 
     if (result.error) {
       throw new CLIError(JSON.stringify(result.error, null, 4))
-    } else if (typeof result === 'string') {
-      this.log(result)
-    } else {
-      this.log(JSON.stringify(result, null, 2))
     }
+
+    this.log('Successs')
   }
 }
