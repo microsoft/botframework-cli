@@ -30,7 +30,7 @@ _Eyal, Emilio, Axel, and Jonathan_
 
 ### Global / Foundation
 Owner: **Emilio + Eyal**
-* Ensure documentation quality in MS DOCS and READMEs (links: a, b, c)
+* Ensure documentation quality in MS DOCS and READMEs (where? find it :) )
 * Ensure command line consistency across all tools
 * Ensure foundation & all command groups align to Contributing.md guideline (common flags, I/O ops, logging)
 * Ensure npm Installation paths, messaging (link)
