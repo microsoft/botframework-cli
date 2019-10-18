@@ -249,8 +249,7 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
         myFileContent += addRolesAndFeatures(child);
         myFileContent += NEWLINE;
         if (child.children && child.children.length !== 0) {
-            myFileContent += addNDepthChildDefinitions(child.children, ++tabStop, myFileContent);
-            --tabStop;
+            myFileContent += addNDepthChildDefinitions(child.children, tabStop + 1, myFileContent);
         }
     });
     return myFileContent;
