@@ -8,7 +8,6 @@
 
 # Commands
 <!-- commands -->
-* [`bf `](#bf-)
 * [`bf config`](#bf-config)
 * [`bf config:set:qnamaker`](#bf-configsetqnamaker)
 * [`bf config:set:telemetry`](#bf-configsettelemetry)
@@ -16,23 +15,9 @@
 * [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
 
-## `bf `
-
-The config plugin allows users to configure various settings within the cli.
-
-```
-USAGE
-  $ bf
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [src/commands/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/index.ts)_
-
 ## `bf config`
 
-The config plugin allows users to configure various settings within the cli.
+Allows users to configure various settings within the cli.
 
 ```
 USAGE

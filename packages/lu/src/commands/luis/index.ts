@@ -1,10 +1,10 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
 
 export default class LuisIndex extends Command {
-  static description = 'Convert, translate luis/lu files or generate source code'
+  static description = 'Converts, translates luis/lu files or generates source code.'
 
   static flags = {
-    help: flags.help({char: 'h', description: 'Display Luis available commnads'}),
+    help: flags.help({char: 'h', description: 'Display Luis available commands'}),
   }
 
   async run() {

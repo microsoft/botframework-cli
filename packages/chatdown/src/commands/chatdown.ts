@@ -8,7 +8,7 @@ const intercept = require('intercept-stdout')
 const path = require('path')
 
 export default class Chatdown extends Command {
-  static description = 'Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file'
+  static description = 'Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.'
 
   static examples = [`
   $ bf chatdown

@@ -76,7 +76,7 @@ _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-
 
 ## `bf chatdown`
 
-Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
 ```
 USAGE
@@ -107,7 +107,7 @@ _See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cl
 
 ## `bf config`
 
-The config plugin allows users to configure various settings within the cli.
+Configures various settings within the cli.
 
 ```
 USAGE
@@ -196,7 +196,7 @@ _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-
 
 ## `bf help [COMMAND]`
 
-display help for bf
+Displays help for bf.
 
 ```
 USAGE
@@ -213,14 +213,14 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `bf luis`
 
-Convert, translate luis/lu files or generate source code
+Converts, translates luis/lu files or generates source code.
 
 ```
 USAGE
   $ bf luis
 
 OPTIONS
-  -h, --help  Display Luis available commnads
+  -h, --help  Display Luis available commands
 ```
 
 _See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/luis/index.ts)_
@@ -429,14 +429,14 @@ USAGE
   $ bf qnamaker
 
 OPTIONS
-  -h, --help  Display QnA Maker CLI available commnads
+  -h, --help  Display QnA Maker CLI available commands
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/qnamaker/index.ts)_
 
 ## `bf qnamaker:convert`
 
-Convert .lu file(s) to a QnA application JSON model or vice versa
+Converts .lu file(s) to QnA application JSON models or vice versa.
 
 ```
 USAGE
