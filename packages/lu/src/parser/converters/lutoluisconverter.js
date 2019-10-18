@@ -266,7 +266,7 @@ const checkAndUpdateVersion = function(finalLUISJSON) {
                  (finalLUISJSON.intents || []).find(i => i.features) || 
                  (finalLUISJSON.composites || []).find(i => i.features);
     if (v5DefFound) {
-        finalLUISJSON.luis_schema_version = "5.0.0";
+        finalLUISJSON.luis_schema_version = "6.0.0";
         if (finalLUISJSON.model_features && finalLUISJSON.model_features.length !== 0) {
             finalLUISJSON.phraselists = [];
             finalLUISJSON.model_features.forEach(item => finalLUISJSON.phraselists.push(Object.assign({}, item)));
