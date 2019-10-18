@@ -132,19 +132,21 @@ const readerObj = {
         }
     },
     featureToModel: class {
-        constructor(name) {
+        constructor(name, featureType) {
             this.featureName = name ? name : '';
+            this.featureType = featureType ? featureType : '';
         }
     },
     modelToFeature: class {
-        constructor(name) {
+        constructor(name, featureType) {
             this.modelName = name ? name : '';
+            this.modelType = featureType ? featureType : '';
         }
     },
     childEntity: class {
         constructor(name, instanceOf, context, children, features) {
             this.name = name ? name : '';
-            this.instanceOf = instanceOf ? instanceOf : '';
+            this.instanceOf = instanceOf ? instanceOf : null;
             this.children = children ? children : [];
             this.features = features ? features : '';
             this.context = context ? context : '';

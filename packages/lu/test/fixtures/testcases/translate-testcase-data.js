@@ -23,7 +23,7 @@ $PREBUILT:money
 $PREBUILT:number
 $PREBUILT:ordinal
 $PREBUILT:percentage
-$PREBUILT:phoneNumber
+$PREBUILT:phonenumber
 $PREBUILT:temperature
 $PREBUILT:url
 $commPreference:call=
@@ -43,7 +43,7 @@ $PREBUILT:money
 $PREBUILT:number
 $PREBUILT:ordinal
 $PREBUILT:percentage
-$PREBUILT:phoneNumber
+$PREBUILT:phonenumber
 $PREBUILT:temperature
 $PREBUILT:url
 $commPreference:call=

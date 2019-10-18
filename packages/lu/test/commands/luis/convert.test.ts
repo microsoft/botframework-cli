@@ -380,8 +380,22 @@ describe('luis:convert version 5 upgrade test', () => {
   test
   .stdout()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/v5UpgradeTest.lu')}`, '--out', 'root.json'])
-  .it('luis:convert successfully reconstructs a markdown file from a LUIS input file with out of order entity references', async () => {
+  .it('luis:convert successfully reconstructs a markdown file from a LUIS input file with v5 constructs', async () => {
     expect(await compareLuFiles('./../../../root.json', './../../fixtures/verified/v5Upgrade.json')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/newEntityWithFeatures.lu')}`, '--out', 'root.json'])
+  .it('luis:convert successfully converts LU with ndepth entity and features to LUIS JSON model', async () => {
+    expect(await compareLuFiles('./../../../root.json', './../../fixtures/verified/newEntityWithFeatures.json')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/newEntityWithFeatures.json')}`, '--out', 'root.lu'])
+  .it('luis:convert successfully converts LUIS JSON model with nDepth entity and features to LU', async () => {
+    expect(await compareLuFiles('./../../../root.lu', './../../fixtures/verified/newEntityWithFeatures.lu')).to.be.true
   })
 })
 

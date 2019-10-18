@@ -504,7 +504,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "s1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.modelToFeature('x1')]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.modelToFeature('x1', "Regex Entity Extractor")]);
                 done();
             })
             .catch(err => done(err))
@@ -522,7 +522,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "s1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.modelToFeature('x1'), new helperclasses.modelToFeature('x2')]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.modelToFeature('x1', "Regex Entity Extractor"), new helperclasses.modelToFeature('x2', "Regex Entity Extractor")]);
                 done();
             })
             .catch(err => done(err))
@@ -621,7 +621,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "x1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.modelToFeature('pa1')]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features[0].modelName, 'pa1');
                 assert.equal(res.LUISJsonStructure.intents.length, 1);
                 assert.equal(res.LUISJsonStructure.intents[0].name, 'pa1');
                 done();
@@ -640,7 +640,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "x1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1')]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1', "phraselist")]);
                 assert.equal(res.LUISJsonStructure.model_features.length, 1);
                 assert.equal(res.LUISJsonStructure.model_features[0].name, 'pl1');
                 done();
@@ -651,23 +651,19 @@ describe('V2 NDepth definitions using @ notation', function () {
     it('Child can include multiple, valid features', function(done) {
         let luFile = `
     @ ml fooBar
-        - @ ml x1 usesFeature pl1, i1, s1, number
+        - @ ml x1 usesFeature pl1, s1, number
     @ phraselist pl1
     @ ml s1
     @ prebuilt number
-    # i1
-    - test    
     `;
     parseFile.parseFile(luFile)
             .then(res => {
                 assert.equal(res.LUISJsonStructure.entities.length, 2);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "x1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1'), new helperclasses.modelToFeature('i1'), new helperclasses.modelToFeature('s1'), new helperclasses.modelToFeature('number')]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1', "phraselist"), new helperclasses.modelToFeature('s1', "Entity Extractor"), new helperclasses.modelToFeature('number', "Prebuilt Entity Extractor")]);
                 assert.equal(res.LUISJsonStructure.model_features.length, 1);
                 assert.equal(res.LUISJsonStructure.model_features[0].name, 'pl1');
-                assert.equal(res.LUISJsonStructure.intents.length, 1);
-                assert.equal(res.LUISJsonStructure.intents[0].name, 'i1');
                 assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
                 assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, "number");
                 done();
@@ -717,5 +713,69 @@ describe('V2 NDepth definitions using @ notation', function () {
         
 
     });
+
+    it('labelled children in utterances are removed correctly', function(done) {
+        let luFile = `
+        # test
+        - my name is vishwac
+            - my {@userProfile = name is vishwac}
+            - my name is {@userName = vishwac}
+        - I'm 36
+            - I'm {@userProfile = {@userAge = 36}}
+
+        @ ml userProfile = 
+            - @ personName userName
+            - @ age userAge
+
+        @ prebuilt personName
+        @ prebuilt age`;
+        
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].name, 'userProfile');
+                assert.equal(res.LUISJsonStructure.entities[0].children.length, 2);
+                assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 2);
+                done();
+            })
+            .catch(err => done(err))
+    });
+
+    it('[level 1 child] Every child must have its parent labelled in an utterance', function(done) {
+        let luFile = `
+        # test
+        - my name is vishwac
+            - my name is {@userName = vishwac}
+
+        @ ml userProfile = 
+            - @ personName userName
+            - @ age userAge
+
+        @ prebuilt personName
+        @ prebuilt age`;
+
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    })
+
+    it('[level 2 child] Every child must have its parent labelled in an utterance', function(done) {
+        let luFile = `
+        # test
+        - my name is vishwac
+            - my name is {@firstName = vishwac}
+
+        @ ml userProfile = 
+            - @ ml userName
+                - @ personName firstName
+            - @ age userAge
+
+        @ prebuilt personName
+        @ prebuilt age`;
+
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    })
     
 });
