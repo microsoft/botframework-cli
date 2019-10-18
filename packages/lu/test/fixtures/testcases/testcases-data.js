@@ -52,7 +52,7 @@ module.exports.tests = {
         $PREBUILT:number
         $PREBUILT:ordinal
         $PREBUILT:percentage
-        $PREBUILT:phoneNumber
+        $PREBUILT:phonenumber
         $PREBUILT:temperature
         $PREBUILT:url
         $commPreference:call=
@@ -131,7 +131,7 @@ module.exports.tests = {
               "roles": []
             },
             {
-              "name": "phoneNumber",
+              "name": "phonenumber",
               "roles": []
             },
             {

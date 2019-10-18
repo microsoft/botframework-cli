@@ -50,9 +50,9 @@ export default class LuisConvert extends Command {
        // Add headers to Luis Json
       if (isLu) {
         result.luis_schema_version = flags.schemaversion || result.luis_schema_version || '3.2.0'
-        result.versionId = flags.versionId || result.versionId || '0.1'
+        result.versionId = flags.versionid || result.versionId || '0.1'
         result.name = flags.name || result.name || ''
-        result.desc = flags.desc || result.desc || ''
+        result.desc = flags.description || result.desc || ''
         result.culture = flags.culture || result.culture || 'en-us'
         result.culture = result.culture.toLowerCase()
         result = JSON.stringify(result, null, 2)

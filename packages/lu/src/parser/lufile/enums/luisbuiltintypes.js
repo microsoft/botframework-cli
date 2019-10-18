@@ -16,7 +16,7 @@ module.exports = {
         "ordinalV2",
         "percentage",
         "personName",
-        "phoneNumber",
+        "phonenumber",
         "temperature",
         "url",
         "datetime"
@@ -114,7 +114,7 @@ module.exports = {
             "ordinalV2": null,
             "percentage": null,
             "personName": null,
-            "phoneNumber": null,
+            "phonenumber": null,
             "temperature": null,
             "url": null,
             "datetime": null

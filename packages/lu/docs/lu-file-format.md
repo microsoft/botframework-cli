@@ -133,7 +133,7 @@ The following LUIS prebuilt entity types are supported -
 - ordinalV2
 - percentage
 - personName
-- phoneNumber
+- phonenumber
 - temperature
 - url
 - datetime
