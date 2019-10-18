@@ -50,7 +50,7 @@ const getUserConfig = async () => {
         userConfig.telemetry = false
         console.log(chalk.blue('Telemetry will remain disabled'))
         console.log(chalk.blue('At any time you may enable data collection by changing the configuration using command:'))
-        console.log(chalk.blue('bf config:telemetry:enable'))
+        console.log(chalk.blue('bf config:set:telemetry --enable'))
       }
 
       await fs.mkdirp(pathToConfigJson)
