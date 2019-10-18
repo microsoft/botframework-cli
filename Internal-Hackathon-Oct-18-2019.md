@@ -12,7 +12,7 @@ Please file issues here: https://github.com/microsoft/botframework-cli/issues
 ## Instructions
 * Download and install from: 
   * Run npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
-  * Run npm i -g @microsoft/botframework-cli@4.5.0-preview.84084
+  * Run npm i -g @microsoft/botframework-cli
 
 * Ensure Telemetry is enabled: 
   * Accepting the promp after the installation OR 
