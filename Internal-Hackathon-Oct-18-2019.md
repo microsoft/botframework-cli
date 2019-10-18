@@ -10,8 +10,11 @@ Who: You :)
 Please file issues here: https://github.com/microsoft/botframework-cli/issues
 
 ## Instructions
-* Download and install from: **TBD:Emilio**
-* Ensure Telemetry is enabled:  **TBD:Emilio**
+* Download and install from: 
+* Run npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
+* Run npm i -g @microsoft/botframework-cli@4.5.0-preview.84084
+
+* Ensure Telemetry is enabled: by accepting the promp after the installation or running bf config:set:telemetry --enable
 * Hack it: Use to create/manage bots
 * Hack it challenge: Use with Virtual Assistant
 
@@ -32,16 +35,34 @@ Owner: **Emilio + Eyal**
 * Ensure configuration management 
 * Enable/Disable telemetry & verify accuracy in telemetry logging
 * Security/Privacy pass complete (not hackathon per se)
+* Pipe data from one command to another if input/output matches
 
 ### Chatdown
 Owner: **Jonathan**
 * Ensure commands and flags work as expected, testing instructions below
 
 ### qnamaker
-Owner: **Emilio**
+
+* Create Kb
+* Export Kb
+* Check config file gets updated acordingly
+* Publish Kb
+* List Kbs
+* Get Kb info
+* Refresh endpoint keys
+* Delete kb
+* Set QnA Maker config file
 
 ### Ludown
 Owner: **Emilio**
+
+* Parse lu file to Luis Json
+* Parse Luis json to lu file
+* Parse lu file to QnA Json
+* Parse QnA json to lu file
+* Translate lu file
+* Translate Qna Json
+* Transalte Luis Json
  
 ### LuisGen
 Owner: **Axel**
