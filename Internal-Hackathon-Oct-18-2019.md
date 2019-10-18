@@ -11,10 +11,12 @@ Please file issues here: https://github.com/microsoft/botframework-cli/issues
 
 ## Instructions
 * Download and install from: 
-* Run npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
-* Run npm i -g @microsoft/botframework-cli@4.5.0-preview.84084
+  * Run npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
+  * Run npm i -g @microsoft/botframework-cli@4.5.0-preview.84084
 
-* Ensure Telemetry is enabled: by accepting the promp after the installation or running bf config:set:telemetry --enable
+* Ensure Telemetry is enabled: 
+  * Accepting the promp after the installation OR 
+  * Run bf config:set:telemetry --enable
 * Hack it: Use to create/manage bots
 * Hack it challenge: Use with Virtual Assistant
 
