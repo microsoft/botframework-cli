@@ -327,6 +327,7 @@ const readLuFile = function(file) {
 }
 
 const parseLuFile = async function(file, log, luis_culture) {
+    let parsedContent = ''
     if (!file) {
         let error = BuildDiagnostic({ message: `Sorry, empty file content` })
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, error.toString()));
