@@ -159,6 +159,7 @@ The following LUIS prebuilt entity types are supported -
         - \<synonym1>, \<synonym2>, ...
  
 > Alternate definition
+
 @ list color favColor, screenColor =
     - \<normalized-value>
         - \<synonym1>; \<synonym2>; ...
@@ -188,6 +189,7 @@ Example definition:
     - Set {deviceTemperature = {customDevice = owen} to 72}
 
 > Define a composite entity ‘deviceTemperature’ that has device (list entity), customDevice (ml entity), temperature (pre-built entity) as children
+
 @ composite deviceTemperature = [device, customDevice, temperature]
 
 @ list device = 
@@ -212,6 +214,7 @@ Example definition:
 @ hrf-number = /hrf-[0-9]{6}/
 
 > Alternate definition
+
 @ regex hrf-number from, to = /hrf-[0-9]{6}/
 ```
 
@@ -233,16 +236,20 @@ Roles in .lu file format can be explicitly or implicity defined.
 Explicit definition follow the following notation - @ \<entityType> \<entityName> [hasRole[s]] role1, role2, ...
 ```markdown
 > # ml entity definition with roles
+
 @ ml name role1, role2
 
 > this is the same as 
+
 @ ml name hasRoles role1, role2
 
 > this is also the same as 
+
 @ ml name
 @ name hasRoles role1, role2
 
 > Also same as 
+
 @ ml name
 @ name hasRole role1
 @ name hasRole role2
@@ -257,6 +264,7 @@ Implicit definition: You can refer to roles directly in patterns as well as in l
 - {userName=vishwac} is my name
 
 > This definition is same as including an explicit defintion for userName with 'lastName', 'firstName' as roles
+
 > @ ml userName hasRoles lastName, firstName
 ```
 
@@ -272,8 +280,9 @@ In patterns, you can use roles using the {\<entityName\>:\<roleName\>} notation.
 You can define multiple roles for an entity in patterns and the parser will do rest! 
 
 ```markdown
-# BookFlight
 > roles can be specified for list entity types as well - in this case fromCity and toCity are added as roles to the 'city' list entity defined further below
+
+# BookFlight
 - book flight from {city:fromCity} to {city:toCity}
 - [can you] get me a flight from {city:fromCity} to {city:toCity}
 - get me a flight to {city:toCity}
@@ -330,7 +339,7 @@ Here's an example of a phrase list definition:
 @ phraseList Want
 @ phraseList Want =
     - require, need, desire, know
-```
+
 
 > You can also break up the phrase list values into an actual list
 
@@ -340,6 +349,7 @@ Here's an example of a phrase list definition:
 	- desire
 	- know
 ```
+
 By default synonyms are set to be **not interchangeable** (matches with the portal experience). You can optionally set the synonyms to be **interchangeable** as part of the definition. Here's an example:
 
 ```markdown
@@ -354,26 +364,33 @@ Here's how you add a feature to a ml entity or an intent - with `usesFeature`.
 
 ```markdown
 > entity definition - <> \<entityType> \<entityName> [<roles>]
+  
 @ prebuilt personName
 @ prebuilt age
 
 > entity definition with roles
+  
 @ ml userName hasRoles fistName, lastName
 
 > add entity as feature to another entity
+  
 @ userName usesFeature personName
 
 > add entity as feature to intent
+  
 @ intent getUserNameIntent usesFeature personName
 
 > Intent definition
+  
 # getUserNameIntent
 - utterances
 
 > multiple entities as feature to a model
+  
 @ intent getUserNameIntent usesFeature age, personName
 
 > intent as feature to another intent
+  
 @ intent getUserProfileIntent usesFeature getUserNameIntent
 
 # getUserProfileIntent
@@ -392,6 +409,7 @@ Here's how you define phrase list as a feature to another model
 
 ```markdown
 > phrase list definition
+
 @ phraseList PLCity(interchangeable) = 
     - seattle
     - space needle
@@ -399,14 +417,17 @@ Here's how you define phrase list as a feature to another model
     - SEA
 
 > phrase list as feature to intent (also applicable to entities)
+
 @ intent getUserProfileIntent usesFeature PLCity
 
 > phrase list as a feature to an ml entity.
+
 @ ml myCity usesFeature PLCity
 
 @ regex regexZipcode = /[0-9]{5}/
 
 > phrase list as feature to n-depth entity with phrase list as a feature
+
 @ ml address fromAddress, toAddress
 @ address =
     - @ number 'door number'
@@ -536,16 +557,20 @@ Here's an example of those references:
 
 ```markdown
 > You can include references to other .lu files
+
 [All LU files](./all.lu)
 
 > References to other files can have wildcards in them
+
 [en-us](./en-us/*)
 
 > References to other lu files can include sub-folders as well. 
 > /** indicates to the parser to recursively look for .lu files in all subfolders as well.
+
 [all LU files](../**)
 
 > You can include deep references to intents defined in a .lu file in utterances
+
 # None
 - [None uttearnces](./all.lu#Help)
 
@@ -562,12 +587,14 @@ Here's an example of those references:
 > - [all.lu](./all.lu#*utterancesAndPatterns*)
 
 > You can include wild cards with deep references to QnA maker questions defined in a .qna file in utterances
+
 # None
 - [QnA questions](./*#?)
 
 > With the above statement, the parser will parse **all** .lu files under ./, extract out all questions from QnA pairs in those files and add them under 'None' intent as defined in this file.
 
 > You can include deep references to QnA maker questions defined in a .qna file in utterances
+
 # None
 - [QnA questions](./qna1.qna#?)
 
