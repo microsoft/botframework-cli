@@ -17,6 +17,8 @@ Who: You :)
 * Ensure Telemetry is enabled: 
   * Accepting the promp after the installation OR 
   * Run bf config:set:telemetry --enable
+  * To reset configuration state such as for re-propmt delete the following file (Windows): 
+    * %LOCALAPPDATA%\@microsoft\botframework-cli\config.json)
 * Hack it: Use to create/manage bots
 * Hack it challenge: Use with Virtual Assistant
 
