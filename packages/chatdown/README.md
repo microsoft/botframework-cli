@@ -4,9 +4,8 @@
 Tool for parsing chat files and outputting replayable activities
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/chatdown.svg)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
-[![Downloads/week](https://img.shields.io/npm/dw/chatdown.svg)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
-[![License](https://img.shields.io/npm/l/chatdown.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/chatdown/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-chatdown)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
+
 
 # Commands
 <!-- commands -->
@@ -27,18 +26,24 @@ OPTIONS
 
   -h, --help                   Chatdown command help
 
-  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-f) will be
+  -o, --out=out                Path to the directory where the output of the multiple chat file processing (-o) will be
                                placed.
 
   -p, --prefix                 Prefix stdout with package name.
 
   -s, --static                 Use static timestamps when generating timestamps on activities.
 
-EXAMPLE
+EXAMPLES
 
      $ bf chatdown
-     $ bf chatdown --in=./path/to/file/sample.chat
-     $ bf chatdown --in ./test/utils/*.sample.chat -o ./
+     $ bf chatdown -h
+     $ bf chatdown --in ./path/to/file/sample.chat
+     $ bf chatdown --in ./path/to/file/sample.chat --out ./
+     $ bf chatdown --in=./path/to/file/sample.chat --out=./
+     $ bf chatdown -i ./path/to/file/*.sample.chat -o ./
+     $ bf chatdown -i=./path/to/file/*.sample.chat -o=./
+     $ bf chatdown --in ./path/to/directory
+     $ bf chatdown --in ./path/to/directory/*
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 

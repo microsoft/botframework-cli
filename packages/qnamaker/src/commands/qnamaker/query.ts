@@ -7,13 +7,15 @@ export default class QnamakerQuery extends Command {
   static description = 'Generate Answer for fetching the answer from Kb for a query'
 
   static flags: flags.Input<any> = {
-    question: flags.string({description: 'Query to get a prediction for.', required: true}),
+    question: flags.string({description: 'Query to get a prediction for', required: true}),
     top: flags.integer({description: 'Specifies the number of matching results'}),
-    test: flags.boolean({description: 'Query against the test index.', default: false}),
+    test: flags.boolean({description: 'Query against the test index', default: false}),
     scorethreshold: flags.integer({description: 'Specifies the confidence score threshold for the returned answer.'}),
-    strictfilters: flags.string({description: 'Path to json file {"strictfilters": MetadataDTO[]}'}),
-    hostname: flags.string({description: 'Specifies the url for your private QnA service. Overrides the value present in config.'}),
-    endpointKey: flags.string({description: 'Specifies the endpoint key for your private QnA service (From qnamaker.ai portal user settings page). Overrides the value present in config.'}),
+    strictfilters: flags.string({description: 'Path to json file with MetadataDTO[] e.g {"strictfilters": MetadataDTO[]}'}),
+    qnaId: flags.integer({description: 'Exact qnaId to fetch from the knowledgebase, this field takes priority over question'}),
+    context: flags.string({description: 'Path to Context object json file with previous QnA'}),
+    hostname: flags.string({description: 'Specifies the url for your private QnA service. Overrides the value present in config'}),
+    endpointKey: flags.string({description: 'Specifies the endpoint key for your private QnA service (From qnamaker.ai portal user settings page). Overrides the value present in config'}),
     kbId: flags.string({description: 'Specifies the active qnamaker knowledgebase id. Overrides the value present in the config'}),
     help: flags.help({char: 'h', description: 'qnamaker:query command help'}),
   }
@@ -30,6 +32,10 @@ export default class QnamakerQuery extends Command {
       input.requestBody.top = flags.top
     }
 
+    if (flags.qnaId) {
+      input.requestBody.qnaId = flags.qnaId
+    }
+
     if (flags.scorethreshold) {
       input.requestBody.scoreThreshold = flags.scorethreshold
     }
@@ -38,6 +44,15 @@ export default class QnamakerQuery extends Command {
       try {
         let sf = await getFileInput(flags.strictfilters)
         input.requestBody.strictFilters = sf.strictfilters
+      } catch (error) {
+        throw new CLIError(error.message)
+      }
+    }
+
+    if (flags.context) {
+      try {
+        let ctx = await getFileInput(flags.context)
+        input.requestBody.context = ctx
       } catch (error) {
         throw new CLIError(error.message)
       }

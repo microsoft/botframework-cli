@@ -16,6 +16,7 @@ const ReadPipedStdin = {
       }, 1000)
 
       stdin.on('data', chunk => {
+        clearTimeout(timer)
         input += chunk
       })
 
