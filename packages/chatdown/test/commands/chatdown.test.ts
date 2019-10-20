@@ -44,21 +44,21 @@ describe('chatdown', () => {
     });
 
     it('should read from file when chat file is passed as an argument', done => {
-        cp.exec(`node ./bin/run chatdown --in ./test/utils/cli.sample.chat`, (error, stdout) => {
+        cp.exec(`node ./bin/run chatdown --in "./test/utils/cli.sample.chat"`, (error, stdout) => {
             assert.doesNotThrow(() => JSON.parse(stdout));
             done();
         });
     });
 
     it('should process all files when a glob is passed in with the -i argument, and the -o is passed in for the output directory', done => {
-        cp.exec(`node ./bin/run chatdown -i ./test/utils/*.sample.chat -o ./`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown -i "./test/utils/*.sample.chat" -o ./`, (error, stdout, stderr) => {
             assert(stdout.includes('Successfully wrote'));
             done();
         });
     });
 
     it('should process all files when a glob is passed in with the -i argument', done => {
-        cp.exec(`node ./bin/run chatdown -i ./test/utils/*.sample.chat`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown -i "./test/utils/*.sample.chat"`, (error, stdout, stderr) => {
             assert(stdout.includes('Successfully wrote'));
             done();
         });
@@ -79,7 +79,7 @@ describe('chatdown', () => {
     });
 
     it('throw error if invalid path in argument', done => {
-        cp.exec(`node ./bin/run chatdown --in aaaaa`, (error, stdout, stderr) => {
+        cp.exec(`node ./bin/run chatdown --in 'aaaaa'`, (error, stdout, stderr) => {
             assert(stderr.includes('no such file or directory') || stderr.includes('error'));
             done();
         });

@@ -42,6 +42,8 @@ EXAMPLES
      $ bf chatdown --in=./path/to/file/sample.chat --out=./
      $ bf chatdown -i ./path/to/file/*.sample.chat -o ./
      $ bf chatdown -i=./path/to/file/*.sample.chat -o=./
+     $ bf chatdown --in ./path/to/directory
+     $ bf chatdown --in ./path/to/directory/*
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
