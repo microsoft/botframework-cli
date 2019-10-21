@@ -21,6 +21,7 @@ export default class Chatdown extends Command {
     out: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-o) will be placed.'}),
     static: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
     prefix: flags.boolean({char: 'p', description: 'Prefix stdout with package name.'}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     help: flags.help({char: 'h', description: 'Chatdown command help'})
   }
 
@@ -41,7 +42,7 @@ export default class Chatdown extends Command {
 
       if (inputIsDirectory) {
         let inputDir = flags.in ? flags.in.trim() : ''
-        const len = await this.processFiles(inputDir, outputDir)
+        const len = await this.processFiles(inputDir, outputDir, flags.force)
         if (len === 0) {
           throw new CLIError('No chat files found at: ' + flags.in)
         }
@@ -52,7 +53,7 @@ export default class Chatdown extends Command {
         const fileName = flags.in ? this.getFileName(flags.in) : ''
         if (fileContents) {
           const activities = await chatdown(fileContents, flags)
-          const writeConfirmation = await this.writeOut(activities, fileName, outputDir)
+          const writeConfirmation = await this.writeOut(activities, fileName, outputDir, flags.force)
           /* tslint:disable:strict-type-predicates */
           if (typeof writeConfirmation === 'string') {
             process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${writeConfirmation}\n`)
@@ -110,7 +111,7 @@ export default class Chatdown extends Command {
     return fileName
   }
 
-  private async processFiles(inputDir: any, outputDir: any) {
+  private async processFiles(inputDir: any, outputDir: any, force: boolean) {
     return new Promise(async (resolve, reject) => {
       let files: any = []
       if (inputDir.indexOf('*') > -1) {
@@ -127,7 +128,7 @@ export default class Chatdown extends Command {
         try {
           const fileName = this.getFileName(files[i])
           let activities = await chatdown(await utils.readTextFile(files[i]))
-          await this.writeOut(activities, fileName, outputDir)
+          await this.writeOut(activities, fileName, outputDir, force)
         } catch (e) {
           if (e.message.match(/no such file or directory/)) {
             reject(new CLIError(e.message))
@@ -141,11 +142,12 @@ export default class Chatdown extends Command {
     })
   }
 
-  private async writeOut(activities: any, fileName: string, outputDir: any) {
+  private async writeOut(activities: any, fileName: string, outputDir: any, force: boolean) {
     if (fileName && outputDir) {
       let writeFile = path.join(outputDir, `${fileName}.transcript`)
       await fs.ensureFile(writeFile)
-      await fs.writeJson(writeFile, activities, {spaces: 2})
+      let validatedPath = utils.validatePath(writeFile, '', force)
+      await fs.writeJson(validatedPath, activities, {spaces: 2})
       return writeFile
     }
     const output = JSON.stringify(activities, null, 2)

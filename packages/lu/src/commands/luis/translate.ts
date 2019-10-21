@@ -1,4 +1,4 @@
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
 const fileHelper = require('./../../utils/filehelper')
@@ -12,14 +12,16 @@ export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
-    recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)'}),
-    out: flags.string({description: 'Output folder name. If not specified stdout will be used as output'}),
+    in: flags.string({char: 'i', description: 'Source .lu file(s) or LUIS application JSON model'}),
+    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lu file(s)'}),
+    out: flags.string({char: 'o', description: 'Output folder name. If not specified stdout will be used as output'}),
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
     tgtlang: flags.string({description: 'Comma separated list of target languages.', required: true}),
     translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
     translate_comments: flags.boolean({description: 'When set, machine translate comments found in .lu file'}),
     translate_link_text: flags.boolean({description: 'When set, machine translate link description in .lu file'}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: flags.help({char: 'h', description: 'luis:translate help'})
   }
 
   /* tslint:disable:forin no-for-in*/
@@ -49,7 +51,7 @@ export default class LuisTranslate extends Command {
       }
 
       if (flags.out) {
-        await this.writeOutput(result, flags.out, isLu)
+        await this.writeOutput(result, flags.out, isLu, flags.force)
       } else {
         if (isLu) {
           this.log(result)
@@ -66,14 +68,15 @@ export default class LuisTranslate extends Command {
     }
   }
 
-  private async writeOutput(translatedObject: any, out: string, isLu: boolean) {
+  private async writeOutput(translatedObject: any, out: string, isLu: boolean, force: boolean) {
     let filePath = ''
     try {
       for (let file in translatedObject) {
         for (let lng in translatedObject[file]) {
           filePath = await fileHelper.generateNewTranslatedFilePath(file, lng, out)
           let content = isLu ? translatedObject[file][lng] : JSON.stringify(translatedObject[file][lng], null, 2)
-          await fs.writeFile(filePath, content, 'utf-8')
+          const validatedPath = utils.validatePath(filePath, '', force)
+          await fs.writeFile(validatedPath, content, 'utf-8')
         }
       }
     } catch (err) {
