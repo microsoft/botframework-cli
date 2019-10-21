@@ -254,15 +254,15 @@
         "signature": "c60cc9d75be260a95ec7debb3492c777ac2ed9a5e270f2a267419a011fcfe446"
       },
       "../src/library/formschema.ts": {
-        "version": "304b3e4eb6acf70b4738e2bed1d5833dc624ad5e3e8406e58067466e7cb958c4",
-        "signature": "304b3e4eb6acf70b4738e2bed1d5833dc624ad5e3e8406e58067466e7cb958c4"
+        "version": "e24237c95e2ffdd8b89def0df0c7fa4ffc14e510e540a60992ec68db2bbb5654",
+        "signature": "e24237c95e2ffdd8b89def0df0c7fa4ffc14e510e540a60992ec68db2bbb5654"
       },
       "../src/library/formgenerator.ts": {
-        "version": "fa6edc784cdf44193fa303e63fab0f0ff305406f75ed52082af93c67b86d44e9",
-        "signature": "fa6edc784cdf44193fa303e63fab0f0ff305406f75ed52082af93c67b86d44e9"
+        "version": "a1074dc52b8ce2e39f1be9a3a48b6a9b24cecb6643edf6bf10e3cb0e0a801887",
+        "signature": "a1074dc52b8ce2e39f1be9a3a48b6a9b24cecb6643edf6bf10e3cb0e0a801887"
       },
       "../src/commands/dialog/form.ts": {
-        "version": "cf7dd6c27580bf4baae6f5bd890b4e652a30f4cc90fa36b74d63c8194868f48a",
+        "version": "64a3f22e9da6089bc46eeb4c940a8e2f654888b661ec068f4ec75b7c2c9bab65",
         "signature": "602e48f54671a72a71fe32dae6433f824e12f65b8529686b1d1c165b91c95c8c"
       },
       "../node_modules/ajv/lib/ajv.d.ts": {
@@ -572,6 +572,10 @@
       "../node_modules/@types/lodash/ts3.1/index.d.ts": {
         "version": "bbf144d4354e2aaa6439f32761f3ee798cc68d1600adab6e2a596f25269f106d",
         "signature": "bbf144d4354e2aaa6439f32761f3ee798cc68d1600adab6e2a596f25269f106d"
+      },
+      "../node_modules/@types/lru-cache/index.d.ts": {
+        "version": "db80fcbd0c9693ac9964c31c11979a3d33550a612981021d99e935c0e3d9c36c",
+        "signature": "db80fcbd0c9693ac9964c31c11979a3d33550a612981021d99e935c0e3d9c36c"
       },
       "../node_modules/@types/mocha/index.d.ts": {
         "version": "c4c03cf65951d980ba618ae9601d10438730803fc9c8a1f7b34af8739981e205",
@@ -910,7 +914,6 @@
       ],
       "../src/library/formgenerator.ts": [
         "../lib/library/formgenerator.d.ts",
-        "../lib/library/formschema.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -1507,6 +1510,10 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "../node_modules/@types/lru-cache/index.d.ts": [
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "../node_modules/@types/mocha/index.d.ts": [
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
@@ -1830,7 +1837,6 @@
       ],
       "../src/library/formgenerator.ts": [
         "../lib/library/formgenerator.d.ts",
-        "../lib/library/formschema.d.ts",
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -2410,6 +2416,10 @@
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "../node_modules/@types/lru-cache/index.d.ts": [
+        "../node_modules/@types/node/util.d.ts",
+        "../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "../node_modules/@types/mocha/index.d.ts": [
         "../node_modules/@types/node/util.d.ts",
         "../node_modules/@types/node/ts3.2/util.d.ts"
@@ -2571,6 +2581,7 @@
       "../node_modules/@types/lodash/ts3.1/common/string.d.ts",
       "../node_modules/@types/lodash/ts3.1/common/util.d.ts",
       "../node_modules/@types/lodash/ts3.1/index.d.ts",
+      "../node_modules/@types/lru-cache/index.d.ts",
       "../node_modules/@types/mocha/index.d.ts",
       "../node_modules/@types/nock/index.d.ts",
       "../node_modules/@types/sinon/ts3.1/index.d.ts"

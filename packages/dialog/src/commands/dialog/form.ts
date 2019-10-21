@@ -4,7 +4,6 @@
  */
 
 import { Command, flags } from '@microsoft/bf-cli-command';
-import * as fs from '../../library/formSchema'
 import * as gen from '../../library/formGenerator'
 import * as path from 'path'
 
@@ -32,8 +31,7 @@ export default class DialogForm extends Command {
             if (!outDir) {
                 outDir = path.join(formName + '-resources')
             }
-            let form = await fs.FormSchema.readSchema(args.form)
-            await gen.generate(form, outDir, flags.schema, flags.locale, flags.templates, flags.force,
+            await gen.generate(args.form, outDir, flags.schema, flags.locale, flags.templates, flags.force,
                 (type, msg) => {
                     if (type === gen.FeedbackType.error || (type === gen.FeedbackType.info && flags.verbose)) {
                         this.progress(msg)

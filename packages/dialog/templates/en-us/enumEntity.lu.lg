@@ -1,0 +1,11 @@
+# filename
+- {property}Entity-{locale}.lu
+
+# template
+-{join(foreach(schema.properties[property].enum, enum, concat('$', property, 'Entity:', enum, '=\n', synonyms(enum))), '\n')}
+
+# None
+- {join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
+
+# synonyms(value)
+- {join(foreach(phrases(value), name, concat('- ', name)), '\n')}

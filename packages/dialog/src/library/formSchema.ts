@@ -31,10 +31,11 @@ export class Entity {
 }
 
 type EntitySet = Record<string, Entity>
+type TemplateTypes = { property: string[], mappings: string[] }
 
 /**
  * Extra properties:
- * $mappings: [entity] defaults based on type, string -> [property], numbers -> [prooperty, number]
+ * $mappings: [entity] defaults based on type, string -> [property], numbers -> [property, number]
  * $templates: Template basenames to specialize for this property.
  * 
  * TODO: Add more like $units.
@@ -46,7 +47,7 @@ export class FormSchema {
      */
     static async readSchema(schemaPath: string): Promise<FormSchema> {
         let noref = await parser.dereference(schemaPath)
-        let schema = allof(noref)
+        let schema = allof(noref)      
         let validator = new Validator()
         if (!validator.validateSchema(schema)) {
             let message = ''
@@ -77,7 +78,7 @@ export class FormSchema {
     schema: any
 
     constructor(path: string, schema: any, name?: string) {
-        this.name = name || ''
+        this.name = name || ppath.basename(path, '.dialog')
         this.path = path
         this.schema = schema
     }
@@ -107,8 +108,15 @@ export class FormSchema {
         return type
     }
 
-    templateNames(): string[] {
-        return this.schema.$templates || [this.typeName()]
+    templates(): TemplateTypes {
+        let templates = this.schema.$templates
+        if (!templates) {
+            templates = {
+                property: [this.typeName() + 'Property.lg', this.typeName() + 'Entity.lu', this.typeName() + 'Entity.lg', this.typeName() + 'Ask.dialog'],
+                mappings: this.mappings()
+            }
+        }
+        return templates
     }
 
     mappings(): string[] {
@@ -117,7 +125,7 @@ export class FormSchema {
             if (this.schema.type === 'number') {
                 mappings = ['number']
             } else {
-                mappings = [this.path]
+                mappings = [this.path + 'Entity']
             }
         }
         if (!mappings) {
@@ -137,14 +145,9 @@ export class FormSchema {
 
     private addEntities(entities: EntitySet) {
         for (let mapping of this.mappings()) {
-            if (!entities.hasOwnProperty(mapping)) {
+            // Do not include entities generated from property
+            if (!entities.hasOwnProperty(mapping) && !mapping.startsWith(this.path) && !mapping.endsWith('Entity') && mapping !== 'utterance') {
                 let entity = new Entity(mapping)
-                if (mapping === this.path) {
-                    if (this.typeName() === 'enum') {
-                        // TODO: Do we want to enhance the schema with enum synonyms or leave that to the .lu files?
-                        entity.values = this.schema.enum
-                    }
-                }
                 entities[mapping] = entity
             }
         }

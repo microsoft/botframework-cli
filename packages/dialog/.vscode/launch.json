@@ -87,7 +87,7 @@
             ],
             "args": [
                 "dialog:form",
-                "${workspaceFolder}/test/commands/dialog/forms/sandwich.form.dialog",
+                "${workspaceFolder}/test/commands/dialog/forms/sandwich.form",
                 "-o",
                 "${env:TEMP}/sandwich.out",
                 "--force",

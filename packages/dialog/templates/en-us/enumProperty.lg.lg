@@ -1,0 +1,14 @@
+# filename
+- {property}-{locale}.lg
+
+# template
+- {AskTemplate()}\n{HelpTemplate()}\n{NameTemplate()}
+
+# AskTemplate
+- # Ask{property}\n- \{askEnum('{property}')\}\n
+
+# HelpTemplate
+- # Help{property}\n- \{helpProperty('{property}')\}\n
+
+# NameTemplate
+- # {property}Name\n- {phrase(property)}\n

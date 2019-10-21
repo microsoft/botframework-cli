@@ -16,11 +16,21 @@ import { fail } from 'assert';
 
 describe('dialog:form', async () => {
     let output = ppath.join(os.tmpdir(), 'sandwich.out')
-    let schemaPath = 'test/commands/dialog/forms/sandwich.form.dialog'
+    let schemaPath = 'test/commands/dialog/forms/sandwich.form'
     let badSchema = 'test/commands/dialog/forms/bad-schema.form.dialog'
     let notObject = 'test/commands/dialog/forms/not-object.form.dialog'
     beforeEach(async () => {
         await fs.remove(output)
+    })
+
+    it('Generation', async () => {
+        try {
+            await gen.generate(schemaPath, output, undefined, ['en-us'], undefined, false, (type, msg) => {
+                console.log(`${type}: ${msg}`)
+            })
+        } catch (e) {
+            fail(e.message)
+        }
     })
 
     it('Not object type', async () => {
@@ -38,15 +48,6 @@ describe('dialog:form', async () => {
             fail('Did not detect bad schema');
         } catch (e) {
             expect(e.message).to.contain('is not a valid JSON Schema')
-        }
-    })
-
-    it('Generation', async () => {
-        try {
-            let schema = await ft.FormSchema.readSchema(schemaPath)
-            await gen.generate(schema, output, undefined, ['en-us'])
-        } catch (e) {
-            fail(e.message)
         }
     })
 

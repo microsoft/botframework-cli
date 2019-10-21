@@ -1,0 +1,11 @@
+# filename
+- {property}Entity-{locale}.lg
+
+# template
+- ```
+# @{property}Entity(value)
+- SWITCH: {value}
+@{join(foreach(schema.properties[property].enum, enum, concat('CASE: {\'', enum, '\'}\n', foreach(phrases(enum), phrase, concat('- ', phrase, '\n')))), '\n')}
+- DEFAULT: I don't understand {value}
+
+```
