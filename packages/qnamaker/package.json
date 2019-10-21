@@ -34,16 +34,17 @@
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.7",
+    "@types/nock": "^11.1.0",
     "@types/node": "^10.14.13",
     "chai": "^4.2.0",
+    "fetch-mock": "^7.3.9",
     "globby": "^10.0.1",
     "mocha": "^5.2.0",
+    "nock": "^10.0.6",
     "nyc": "^13.3.0",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.3",
-    "fetch-mock": "^7.3.9",
-    "nock": "^10.0.6"
+    "typescript": "^3.5.3"
   },
   "engines": {
     "node": ">=8.0.0"
