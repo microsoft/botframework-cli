@@ -6,7 +6,7 @@
     2. Inside the project folder run 'npm run build'
     3. Inside the packages folder(https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
     4. Follow the wizard and set the prompts:
-
+    
       ? npm package: @microsoft/bf-<plugin-name>
       ? description: <Plugin brief description>
       ? author: Microsoft
@@ -19,15 +19,15 @@
       ? Use tslint (linter for TypeScript): Y
       ? Use mocha (testing framework): Y
       ? Add CI service config (Press <space> to select, <a> to toggle all, <i> to invert selection): select any
-
+    
     4. Go to the folder created by the previous command and add @microsoft/bf-cli-command as a dependency in your package.json file
-
+    
       "dependencies": {
         ...,
         "@microsoft/bf-cli-command": "1.0.0",
         ...
       }   
-
+    
     5. At the root level(https://github.com/microsoft/botframework-cli) run 'npm run build' to bootstrap the packages
 
 ## Steps to create a new command
@@ -35,16 +35,16 @@
     	a. To add a subcommand use a colon separated format as follows: 
     		<command-name:subcommand-name>
     2. Replace the import 'import {Command, flags} from '@oclif/command' line inside the newly created command with '@microsoft/bf-cli-command'
-
+    
       - import {Command, flags} from '@oclif/command'
       + import {Command, flags} from '@microsoft/bf-cli-command'
-
+    
     3. Add the typing to the flags property like this if needed:
-
+    
       static flags: flags.Input<any> = {
         help: flags.help({description: 'Display help'}),
       }
-
+    
     4. Implement the run method
 
 ## General Guidelines
@@ -89,7 +89,7 @@ Use the following verbs for standard commands
 * Commands and options are case SenSiTive, specified in lower case. *bf cmd:subcmd*.
 * Multi word options are lowcase, nohyphen, multiwords. Multi word commands are forbidden.
 * Prefer flags to args
-* Commands shall follow the *bf \[noun\]\[verb\]\[noun\]* form for example *bf qnamaker:create:kb*. 
+* Commands shall follow the *bf \[noun\]\[noun\]\[verb\]* form for example *bf qnamaker:create:kb*. 
 * FLags with specific units: 
   * In general, DO NOT put units in Flag names. ALWAYS put the expected units in the help text. Example: --durationinminutes should simply be --duration. This prevents the need to add more arguments later if more units are supported. 
   * Consider allowing a syntax that will let the user specify units. For example, even if the service requires a value in minutes, consider accepting 1h or 60m. It is fine to assume a default (i.e. 60 = 60 minutes).
