@@ -9,7 +9,7 @@ export default class QnamakerKbUpdate extends Command {
   static description = 'Add or delete QnA Pairs and / or URLs to an existing knowledge base'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'The file path to the UpdateKbOperationDTO object to send in the body of the request.'}),
+    in: flags.string({char: 'i', description: 'The file path to the UpdateKbOperationDTO object to send in the body of the request.'}),
     kbId: flags.string({description: 'Knowledgebase id. Overrides the knowledge base id present in the config'}),
     wait: flags.boolean({description: 'Wait for the operation to complete.'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
