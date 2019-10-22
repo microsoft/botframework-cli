@@ -8,6 +8,7 @@ export default class ConfigIndex extends Command {
   }
 
   async run() {
+    this.log(`\nConfig file location: ' ${this.config.configDir}/config.json \n `)
     this._help()
   }
 }
