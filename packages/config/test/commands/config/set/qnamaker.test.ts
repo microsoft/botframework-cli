@@ -16,7 +16,7 @@ describe('config:set:qnamaker', () => {
       .command(['config:set:qnamaker', '--kbId', 'aaaaaaaa'])
       .it('Sets kbid in config file', async ctx => {
         let config = await fs.readJSON(getConfigFile())
-        expect(config.qnamaker.kbId).to.contain('aaaaaaaa')
+        expect(config.qnamaker__kbId).to.contain('aaaaaaaa')
     })
   
     test
@@ -24,7 +24,7 @@ describe('config:set:qnamaker', () => {
       .command(['config:set:qnamaker', '--subscriptionKey', 'aaaaaaaa'])
       .it('Sets subscriptionkey in config file', async ctx => {
         let config = await fs.readJSON(getConfigFile())
-        expect(config.qnamaker.subscriptionKey).to.contain('aaaaaaaa')
+        expect(config.qnamaker__subscriptionKey).to.contain('aaaaaaaa')
     })
 
     test
@@ -32,7 +32,7 @@ describe('config:set:qnamaker', () => {
     .command(['config:set:qnamaker', '--endpointKey', 'aaaaaaaa'])
     .it('Sets endpointKey in config file', async ctx => {
       let config = await fs.readJSON(getConfigFile())
-      expect(config.qnamaker.subscriptionKey).to.contain('aaaaaaaa')
+      expect(config.qnamaker__endpointKey).to.contain('aaaaaaaa')
     })
 
     test
@@ -40,7 +40,7 @@ describe('config:set:qnamaker', () => {
     .command(['config:set:qnamaker', '--hostname', 'aaaaaaaa'])
     .it('Sets hostname in config file', async ctx => {
       let config = await fs.readJSON(getConfigFile())
-      expect(config.qnamaker.subscriptionKey).to.contain('aaaaaaaa')
+      expect(config.qnamaker__hostname).to.contain('aaaaaaaa')
     })
 
     test
@@ -62,7 +62,7 @@ describe('config:set:qnamaker empty config file', () => {
     .command(['config:set:qnamaker', '--kbId', 'aaaaaaaa'])
     .it('Sets kbid in config file', async ctx => {
       let config = await fs.readJSON(getConfigFile())
-      expect(config.qnamaker.kbId).to.contain('aaaaaaaa')
+      expect(config.qnamaker__kbId).to.contain('aaaaaaaa')
   })
 })
 

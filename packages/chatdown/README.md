@@ -10,6 +10,7 @@ Tool for parsing chat files and outputting replayable activities
 # Commands
 <!-- commands -->
 * [`bf chatdown`](#bf-chatdown)
+* [`bf chatdown:convert`](#bf-chatdownconvert)
 
 ## `bf chatdown`
 
@@ -18,6 +19,20 @@ Converts chat dialog files in <filename>.chat format into transcript file. Write
 ```
 USAGE
   $ bf chatdown
+
+OPTIONS
+  -h, --help  Chatdown command help
+```
+
+_See code: [src\commands\chatdown\index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
+
+## `bf chatdown:convert`
+
+Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+
+```
+USAGE
+  $ bf chatdown:convert
 
 OPTIONS
   -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
@@ -41,5 +56,5 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [src/commands/chatdown.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown.ts)_
+_See code: [src\commands\chatdown\convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
 <!-- commandsstop -->
