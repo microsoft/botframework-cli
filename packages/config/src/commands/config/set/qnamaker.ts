@@ -11,6 +11,15 @@ export default class ConfigSetQnamaker extends Command {
     endpointKey: flags.string({description: 'QnAMaker endpointKey to be set'}),
   }
 
+  static examples = [`
+  {
+    "kbId": "3bda64af-dddd-dddd-dddd-021906b093b1",
+    "subscriptionKey": "nnnnnnnnnnnnnnnnnnnnnnnnn",
+    "endpointKey": "6b5ecf9c-kkkk-kkkk-kkkk-761489817e5f",
+    "hostname": "https://{qnaservice-hostname}.azurewebsites.net"
+  }
+  `]
+
   async run() {
     const {flags} = this.parse(ConfigSetQnamaker)
     let userConfig: Config = await getConfigFile(this.config.configDir)
