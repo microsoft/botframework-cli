@@ -48,7 +48,7 @@ describe('qnamaker:init', () => {
     .command(['qnamaker:init'])
     .do(async output => {
       let config = await fs.readJSON(getConfigFile())
-      expect(config.qnamaker.subscriptionKey).to.contain('abcdefg')
+      expect(config.qnamaker__subscriptionKey).to.contain('abcdefg')
     })
     .it('Creates .qna.rc file')
 })

@@ -14,6 +14,6 @@ describe('config:show:qnamaker', () => {
       .stdout()
       .command(['config:show:qnamaker'])
       .it('Displays config file qnamaker data', ctx => {
-        expect(ctx.stdout).to.contain('"subscriptionKey": "222222cccccctttttth223kk3k33",\n  "hostname": "https://somehost.net",\n ')
+        expect(ctx.stdout).to.contain('"qnamaker__subscriptionKey": "222222cccccctttttth223kk3k33",\n  "qnamaker__hostname": "https://somehost.net",\n ')
     })
 })

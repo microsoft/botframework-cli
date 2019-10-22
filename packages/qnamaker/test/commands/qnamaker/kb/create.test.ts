@@ -116,7 +116,7 @@ describe('qnamaker:kb:create --save', () => {
     .command(['qnamaker:kb:create', '--in', `${path.join(__dirname, '../../../fixtures/kb.json')}`, '--save'])
     .it('Creates kb and awaits for the creation of it', async () => {
       let config = await fs.readJSON(getConfigFile())
-      expect(config.qnamaker.kbId).to.contain('8600c573-2acf-4466-97e8-999ad4cecbc2')
+      expect(config.qnamaker__kbId).to.contain('8600c573-2acf-4466-97e8-999ad4cecbc2')
     })
 })
 

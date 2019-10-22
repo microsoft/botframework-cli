@@ -23,12 +23,10 @@ const configFile = path.join(pathToConfigJson, 'config.json')
 
 export async function initTestConfigFile() {
   const config = {
-    qnamaker: {
-      subscriptionKey: '222222cccccctttttth223kk3k33',
-      hostname: 'https://somehost.net',
-      endpointKey: 'xxxxxxxxxxxxxxxxxxx',
-      kbId: 'xxxxxxxxxxxxxxxxxxxxxxx'
-    }
+    qnamaker__subscriptionKey: '222222cccccctttttth223kk3k33',
+    qnamaker__hostname: 'https://somehost.net',
+    qnamaker__endpointKey: 'xxxxxxxxxxxxxxxxxxx',
+    qnamaker__kbId: 'xxxxxxxxxxxxxxxxxxxxxxx'
   }
 
   await fs.mkdirp(pathToConfigJson)
