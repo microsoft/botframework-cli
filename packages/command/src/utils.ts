@@ -2,12 +2,7 @@ const fs = require('fs-extra')
 const path = require('path')
 import {CLIError} from './clierror'
 
-const utils = {
-  readTextFile,
-  validatePath
-}
-
-export async function readTextFile(file: any): Promise<string> {
+async function readTextFile(file: any): Promise<string> {
   return new Promise(async (resolve, reject) => {
     try {
       if (!fs.existsSync(file)) {
@@ -50,7 +45,7 @@ export async function readTextFile(file: any): Promise<string> {
   })
 }
 
-export function validatePath(outputPath: string, defaultFileName: string, forceWrite = false): string {
+function validatePath(outputPath: string, defaultFileName: string, forceWrite = false): string {
   let completePath = path.resolve(outputPath)
   const containingDir = path.dirname(completePath)
 
@@ -89,4 +84,7 @@ function enumerateFileName(filePath: string): string {
   return newPath
 }
 
-export default utils
+export default {
+  readTextFile,
+  validatePath
+}

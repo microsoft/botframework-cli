@@ -35,6 +35,10 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
             filesToParse.splice(0,1)
             continue
         }
+        if (!luOb.content) {
+            let error = BuildDiagnostic({ message: `Cannot parse empty ${luOb.id}. Please add content to the file or remove it.` })
+            throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, error.toString()));
+        }
         let parsedContent = await parseLuFile(luOb.content, log, luis_culture)
         parsedFiles.push(luOb.id)
 
