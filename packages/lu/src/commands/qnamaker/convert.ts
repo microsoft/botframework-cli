@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')

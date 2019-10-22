@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import {flags} from '@oclif/command'
 import {CLIError, Command, utils} from '@microsoft/bf-cli-command'
 const chalk = require('chalk')
