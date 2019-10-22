@@ -7,7 +7,7 @@ import {Command, flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfilehandler'
 
 export default class ConfigSetTelemetry extends Command {
-  static description = 'Enable or disable telemetry'
+  static description = 'Enable or disable anonymous data collection to improve the products. (Command group calls and flags usage)'
 
   static flags = {
     help: flags.help({char: 'h'}),

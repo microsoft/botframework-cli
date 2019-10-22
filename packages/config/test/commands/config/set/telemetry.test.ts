@@ -26,7 +26,7 @@ describe('config:set:telemetry', () => {
       .it('Shows help and keeps the same seetings', async ctx => {
         let config = await fs.readJSON(getConfigFile())
         expect(config.telemetry).to.be.true
-        expect(ctx.stdout).to.be.contain('Enable or disable telemetry')
+        expect(ctx.stdout).to.be.contain('Enable or disable anonymous data collection')
       })
 
       test
