@@ -1,4 +1,4 @@
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
@@ -10,16 +10,18 @@ export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
-    recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
+    in: flags.string({char: 'i', description: 'Source .lu file(s) or LUIS application JSON model'}),
+    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
     sort: flags.boolean({description: 'When set, intent, utterances, entities are alphabetically sorted in .lu files', default: false}),
-    out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     name: flags.string({description: 'Name of the LUIS application'}),
     description: flags.string({description: 'Text describing the LUIS applicaion'}),
     culture: flags.string({description: 'Lang code for the LUIS application'}),
     versionid: flags.string({description: 'Version ID of the LUIS application'}),
     schemaversion: flags.string({description: 'Schema version of the LUIS application'}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: flags.help({char: 'h', description: 'luis:convert help'})
   }
 
   async run() {
@@ -76,7 +78,8 @@ export default class LuisConvert extends Command {
     let filePath = await file.generateNewFilePath(flags.out, flags.in, isLu)
     // write out the final file
     try {
-      await fs.writeFile(filePath, convertedObject, 'utf-8')
+      const validatedPath = utils.validatePath(filePath, '', flags.force)
+      await fs.writeFile(validatedPath, convertedObject, 'utf-8')
     } catch (err) {
       throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
     }

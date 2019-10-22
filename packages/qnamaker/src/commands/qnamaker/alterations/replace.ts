@@ -7,7 +7,7 @@ export default class QnamakerAlterationsReplace extends Command {
   static description = 'Replaces word alterations (synonyms) for the KB with the give records.'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'File path to the WordAlterationsDTO object to send in the body of the request'}),
+    in: flags.string({char: 'i', description: 'File path to the WordAlterationsDTO object to send in the body of the request'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
     endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:alterations:replace command help'}),

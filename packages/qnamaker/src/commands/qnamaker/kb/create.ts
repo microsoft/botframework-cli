@@ -16,7 +16,7 @@ export default class QnamakerKbCreate extends Command {
   static description = 'Creates a new knowledgebase'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'File path to the CreateKbDTO object to send in the body of the request.'}),
+    in: flags.string({char: 'i', description: 'File path to the CreateKbDTO object to send in the body of the request.'}),
     name: flags.string({description: 'Name of the kb you want to create. This will override the name of KB that might be present in the CreateKb DTO'}),
     save: flags.boolean({description: 'Save the kbId in config.'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
