@@ -74,7 +74,7 @@ const hook: Hook<'init'> = async function (opts) {
       const disableTelemetry = await cli.prompt(chalk.red('Help us improve products by allowing Microsoft to collect anonymous command and flags usage: (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
         userConfig.telemetry = true
-        this.log(chalk.blue('Telemetry has been enabled.'))
+        this.log(chalk.blue('Telemetry has been enabled. You can disable at any time by running bf config:set:telemetry --disable'))
         this.log(chalk.blue('You can find Microsoft Privacy Statement at https://privacy.microsoft.com/en-US/privacystatement'))
         this.log(chalk.blue('we will gather some usage data as follows:'))
         this.log(chalk.blue('Command group calls'))
@@ -82,7 +82,7 @@ const hook: Hook<'init'> = async function (opts) {
       } else {
         userConfig.telemetry = false
         this.log(chalk.blue('Telemetry will remain disabled'))
-        this.log(chalk.blue('At any time you may enable data collection by changing the configuration using command:'))
+        this.log(chalk.blue('At any time you may enable collect anonymous command and flags usage by changing the configuration using command:'))
         this.log(chalk.blue('bf config:set:telemetry --enable'))
       }
 
