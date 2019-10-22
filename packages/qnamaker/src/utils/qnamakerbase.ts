@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import {CLIError} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
