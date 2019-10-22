@@ -24,7 +24,7 @@ OPTIONS
   -h, --help  Chatdown command help
 ```
 
-_See code: [src\commands\chatdown\index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/commands\chatdown\index.ts)_
+_See code: [src\commands\chatdown\index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
 
 ## `bf chatdown:convert`
 
@@ -56,5 +56,5 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [src\commands\chatdown\convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/commands/chatdown/convert.ts)_
+_See code: [src\commands\chatdown\convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
 <!-- commandsstop -->
