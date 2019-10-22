@@ -14,7 +14,7 @@ describe('config:show', () => {
       .stdout()
       .command(['config:show'])
       .it('Displays config file data', ctx => {
-        expect(ctx.stdout).to.contain('"subscriptionKey": "222222cccccctttttth223kk3k33"')
+        expect(ctx.stdout).to.contain('"qnamaker__subscriptionKey": "222222cccccctttttth223kk3k33"')
     })
 })
 

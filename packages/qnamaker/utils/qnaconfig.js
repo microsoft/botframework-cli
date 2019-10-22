@@ -24,15 +24,14 @@ const config = {
         try {
             if (fs.existsSync(path.join(configfile, 'config.json'))) {
                 qnamakerrcJson = await fs.readJSON(path.join(configfile, 'config.json'))
-                qnamakerrcJson = (!qnamakerrcJson || !qnamakerrcJson.qnamaker) ? {} : qnamakerrcJson.qnamaker
             } 
         } catch (e) {
             // Do nothing
         } finally {
-            config.subscriptionKey = (subscriptionKey || qnamakerrcJson.subscriptionKey || QNAMAKER_SUBSCRIPTION_KEY)
-            config.hostname = (hostname || qnamakerrcJson.hostname || QNAMAKER_HOSTNAME)
-            config.endpointKey = (endpointKey || qnamakerrcJson.endpointKey || QNAMAKER_ENDPOINTKEY)
-            config.kbId = (kbId || qnamakerrcJson.kbId || QNAMAKER_KBID)
+            config.subscriptionKey = (subscriptionKey || qnamakerrcJson.qnamaker__subscriptionKey || QNAMAKER_SUBSCRIPTION_KEY)
+            config.hostname = (hostname || qnamakerrcJson.qnamaker__hostname || QNAMAKER_HOSTNAME)
+            config.endpointKey = (endpointKey || qnamakerrcJson.qnamaker__endpointKey || QNAMAKER_ENDPOINTKEY)
+            config.kbId = (kbId || qnamakerrcJson.qnamaker__kbId || QNAMAKER_KBID)
 
         }
         return config;

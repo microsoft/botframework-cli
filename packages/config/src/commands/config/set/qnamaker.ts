@@ -21,19 +21,19 @@ export default class ConfigSetQnamaker extends Command {
     let userConfig: Config = await getConfigFile(this.config.configDir)
 
     if (flags.subscriptionKey) {
-      this.setValue('subscriptionKey', flags.subscriptionKey, userConfig)
+      this.setValue('qnamaker__subscriptionKey', flags.subscriptionKey, userConfig)
     }
 
     if (flags.kbId) {
-      this.setValue('kbId', flags.kbId, userConfig)
+      this.setValue('qnamaker__kbId', flags.kbId, userConfig)
     }
 
     if (flags.hostname) {
-      this.setValue('hostname', flags.hostname, userConfig)
+      this.setValue('qnamaker__hostname', flags.hostname, userConfig)
     }
 
     if (flags.endpointKey) {
-      this.setValue('endpointKey', flags.endpointKey, userConfig)
+      this.setValue('qnamaker__endpointKey', flags.endpointKey, userConfig)
     }
 
     if (flags.kbId || flags.subscriptionKey || flags.hostname || flags.endpointKey) {
@@ -45,12 +45,7 @@ export default class ConfigSetQnamaker extends Command {
   }
 
   setValue(key: string, value: string, userConfig: Config) {
-    let qnamaker = userConfig.qnamaker
-    if (!qnamaker) {
-      userConfig.qnamaker = {}
-    }
-
-    userConfig.qnamaker[key] = value
+    userConfig[key] = value
     this.log(`${key} set to ${value}`)
   }
 }
