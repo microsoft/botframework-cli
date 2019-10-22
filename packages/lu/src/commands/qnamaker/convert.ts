@@ -1,4 +1,9 @@
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
@@ -10,13 +15,15 @@ export default class QnamakerConvert extends Command {
   static description = 'Convert .lu file(s) to a QnA application JSON model or vice versa'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .qna file(s) or QnA KB JSON file'}),
+    in: flags.string({char: 'i', description: 'Source .qna file(s) or QnA KB JSON file'}),
     alterations: flags.boolean({description: 'Indicates if files is QnA Alterations'}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
     sort: flags.boolean({description: 'When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files', default: false}),
-    recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .qna file(s)'}),
-    out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .qna file(s)'}),
+    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     name: flags.string({description: 'Name of the QnA KB'}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: flags.help({char: 'h', description: 'qnamaker:convert help'})
   }
 
   async run() {
@@ -73,10 +80,12 @@ export default class QnamakerConvert extends Command {
     let filePath = await file.generateNewFilePath(flags.out, flags.in, isQnA, '', fileExtEnum.QnAFile)
     try {
       if (isQnA) {
-        await fs.writeFile(filePath, JSON.stringify(convertedObject.finalQnAJSON, null, 2), 'utf-8')
+        let validatedPath = utils.validatePath(filePath, '', flags.force)
+        await fs.writeFile(validatedPath, JSON.stringify(convertedObject.finalQnAJSON, null, 2), 'utf-8')
         if (convertedObject.finalQnAAlterations) {
           let filePathAlterations = await file.generateNewFilePath(flags.out, flags.in, isQnA, 'alterations_', fileExtEnum.QnAFile)
-          await fs.writeFile(filePathAlterations, JSON.stringify(convertedObject.finalQnAAlterations, null, 2), 'utf-8')
+          let validatedPath = utils.validatePath(filePathAlterations, '', flags.force)
+          await fs.writeFile(validatedPath, JSON.stringify(convertedObject.finalQnAAlterations, null, 2), 'utf-8')
         }
       } else {
         await fs.writeFile(filePath, convertedObject, 'utf-8')
