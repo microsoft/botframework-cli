@@ -69,7 +69,7 @@
       "init": "./lib/hooks/init/inithook"
     }
   },
-  "repository": "https://github.com/microsoft/botframework-cli",
+  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/cli",
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
     "postpack": "rimraf oclif.manifest.json",
