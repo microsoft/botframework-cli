@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import {Command, flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfilehandler'
 
@@ -10,6 +15,15 @@ export default class ConfigSetQnamaker extends Command {
     hostname: flags.string({description: 'QnAMaker hostname to be set'}),
     endpointKey: flags.string({description: 'QnAMaker endpointKey to be set'}),
   }
+
+  static examples = [`
+  {
+    "qnamaker_kbId": "3bda64af-dddd-dddd-dddd-021906b093b1",
+    "qnamaker_subscriptionKey": "nnnnnnnnnnnnnnnnnnnnnnnnn",
+    "qnamaker_endpointKey": "6b5ecf9c-kkkk-kkkk-kkkk-761489817e5f",
+    "qnamaker_hostname": "https://{qnaservice-hostname}.azurewebsites.net"
+  }
+  `]
 
   async run() {
     const {flags} = this.parse(ConfigSetQnamaker)

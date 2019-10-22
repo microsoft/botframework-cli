@@ -1,5 +1,5 @@
 # .lu File Format
-.lu files contain markdown-like, simple text based definitions for [LUIS](http://luis.ai) concepts. 
+.lu files contain markdown-like, simple text based definitions for [LUIS][1] concepts. 
 
 See [here](./qna-file-format.md) to learn more about the .qna file format.
 
@@ -32,7 +32,7 @@ You can add comments to your .lu document by prefixing the comment with >. Here'
 - hello
 ```
 
-## Intent
+## [Intent][2]
 An intent represents an action the user wants to perform. The intent is a purpose or goal expressed in a user's input, such as booking a flight, paying a bill, or finding a news article. You define and name intents that correspond to these actions. A travel app may define an intent named "BookFlight."
 
 Here's a simple .lu file that captures a simple 'Greeting' intent with a list of example utterances that capture ways users can express this intent. You can use - or + or * to denote lists. Numbered lists are not supported.
@@ -63,7 +63,7 @@ You can stitch together multiple intent definitions in a single file like this:
 ```
 Each section is identified by #\<intent name\> notation. Blank lines are skipped when parsing the file.
 
-## Entity
+## [Entity][3]
 An entity represents detailed information that is relevant in the utterance. For example, in the utterance "Book a ticket to Paris", "Paris" is a location. 
 
 |Sample user utterance|entity|
@@ -103,7 +103,7 @@ Here's an example:
 @ ml 'this is a simple entity' hasRoles role1, role2
 ```
 
-### Machine learned entity
+### [Machine learned entity][4]
 
 ```markdown
 @ ml name firstName, lastName
@@ -118,7 +118,7 @@ Here's an example:
 > Without an explicit entity definition, 'userName' defaults to 'ml' entity type.
 ```
 
-### Prebuilt entity
+### [Prebuilt entity][5]
 
 The following LUIS prebuilt entity types are supported - 
 - age
@@ -146,7 +146,7 @@ The following LUIS prebuilt entity types are supported -
 
 **Note:** Not all prebuilt entity types are available across all locales. See [here](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-prebuilt-entities) for prebuilt entity support by locale.
 
-### List entity
+### [List entity][6]
 
 ```markdown
 @ list color favColor, screenColor
@@ -159,6 +159,7 @@ The following LUIS prebuilt entity types are supported -
         - \<synonym1>, \<synonym2>, ...
  
 > Alternate definition
+
 @ list color favColor, screenColor =
     - \<normalized-value>
         - \<synonym1>; \<synonym2>; ...
@@ -166,7 +167,7 @@ The following LUIS prebuilt entity types are supported -
 
 **Note::** When using list entity, you should include a value from the list directly in the utterance, not an entity label or any other value. 
 
-### Composite entity
+### [Composite entity][7]
 
 ```markdown
 @ composite deviceTemperature from, to
@@ -188,6 +189,7 @@ Example definition:
     - Set {deviceTemperature = {customDevice = owen} to 72}
 
 > Define a composite entity ‘deviceTemperature’ that has device (list entity), customDevice (ml entity), temperature (pre-built entity) as children
+
 @ composite deviceTemperature = [device, customDevice, temperature]
 
 @ list device = 
@@ -205,18 +207,18 @@ Example definition:
 @ prebuilt temperature
 ```
 
-### Regex entity
+### [Regex entity][8]
 
 ```markdown
 @ regex hrf-number from, to
 @ hrf-number = /hrf-[0-9]{6}/
 
 > Alternate definition
+
 @ regex hrf-number from, to = /hrf-[0-9]{6}/
 ```
 
-
-## Roles
+## [Roles][9]
 
 Roles](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-roles) are named, contextual subtypes of an entity.
 
@@ -234,16 +236,20 @@ Roles in .lu file format can be explicitly or implicity defined.
 Explicit definition follow the following notation - @ \<entityType> \<entityName> [hasRole[s]] role1, role2, ...
 ```markdown
 > # ml entity definition with roles
+
 @ ml name role1, role2
 
 > this is the same as 
+
 @ ml name hasRoles role1, role2
 
 > this is also the same as 
+
 @ ml name
 @ name hasRoles role1, role2
 
 > Also same as 
+
 @ ml name
 @ name hasRole role1
 @ name hasRole role2
@@ -258,6 +264,7 @@ Implicit definition: You can refer to roles directly in patterns as well as in l
 - {userName=vishwac} is my name
 
 > This definition is same as including an explicit defintion for userName with 'lastName', 'firstName' as roles
+
 > @ ml userName hasRoles lastName, firstName
 ```
 
@@ -273,8 +280,9 @@ In patterns, you can use roles using the {\<entityName\>:\<roleName\>} notation.
 You can define multiple roles for an entity in patterns and the parser will do rest! 
 
 ```markdown
-# BookFlight
 > roles can be specified for list entity types as well - in this case fromCity and toCity are added as roles to the 'city' list entity defined further below
+
+# BookFlight
 - book flight from {city:fromCity} to {city:toCity}
 - [can you] get me a flight from {city:fromCity} to {city:toCity}
 - get me a flight to {city:toCity}
@@ -290,7 +298,7 @@ $city:Portland=
 - Portland
 - PDX
 ```
-## Patterns
+## [Patterns][10]
 Patterns allow you to define a set of rules that augment the machine learned model. You can define patterns in the .lu file simply by defining an entity in an utterance without a labelled value. 
 
 As an example, this would be treated as a pattern with alarmTime set as a Pattern.Any entity type:
@@ -308,7 +316,7 @@ This example would be treated as an utterance since it has a labelled value with
 1. Any utterance without at least one labelled value will be treated as a pattern
 2. Any entity without an explicit labelled value will default to a Pattern.Any entity type. 
 
-## Phrase list definition
+## [Phrase list definition][11]
 
 For phrase lists that need to be marked interchangeable, simply include that in the definition - 
 
@@ -331,7 +339,7 @@ Here's an example of a phrase list definition:
 @ phraseList Want
 @ phraseList Want =
     - require, need, desire, know
-```
+
 
 > You can also break up the phrase list values into an actual list
 
@@ -341,6 +349,7 @@ Here's an example of a phrase list definition:
 	- desire
 	- know
 ```
+
 By default synonyms are set to be **not interchangeable** (matches with the portal experience). You can optionally set the synonyms to be **interchangeable** as part of the definition. Here's an example:
 
 ```markdown
@@ -355,26 +364,33 @@ Here's how you add a feature to a ml entity or an intent - with `usesFeature`.
 
 ```markdown
 > entity definition - <> \<entityType> \<entityName> [<roles>]
+  
 @ prebuilt personName
 @ prebuilt age
 
 > entity definition with roles
+  
 @ ml userName hasRoles fistName, lastName
 
 > add entity as feature to another entity
+  
 @ userName usesFeature personName
 
 > add entity as feature to intent
+  
 @ intent getUserNameIntent usesFeature personName
 
 > Intent definition
+  
 # getUserNameIntent
 - utterances
 
 > multiple entities as feature to a model
+  
 @ intent getUserNameIntent usesFeature age, personName
 
 > intent as feature to another intent
+  
 @ intent getUserProfileIntent usesFeature getUserNameIntent
 
 # getUserProfileIntent
@@ -393,6 +409,7 @@ Here's how you define phrase list as a feature to another model
 
 ```markdown
 > phrase list definition
+
 @ phraseList PLCity(interchangeable) = 
     - seattle
     - space needle
@@ -400,14 +417,17 @@ Here's how you define phrase list as a feature to another model
     - SEA
 
 > phrase list as feature to intent (also applicable to entities)
+
 @ intent getUserProfileIntent usesFeature PLCity
 
 > phrase list as a feature to an ml entity.
+
 @ ml myCity usesFeature PLCity
 
 @ regex regexZipcode = /[0-9]{5}/
 
 > phrase list as feature to n-depth entity with phrase list as a feature
+
 @ ml address fromAddress, toAddress
 @ address =
     - @ number 'door number'
@@ -432,6 +452,69 @@ Here's a definition of an `address` ml entity with `fromAddress` and `toAddress`
     - @ ml location usesFeature geographyV2
         - @ listCity city
         - @ regexZipcode zipcode
+```
+
+## [Utterances][12]
+
+**Utterances** are input from the user that your app needs to interpret. To train LUIS to extract intents and entities from them, it's important to capture a variety of different example utterances for each intent. Active learning, or the process of continuing to train on new utterances, is essential to machine-learned intelligence that LUIS provides.
+
+Collect utterances that you think users will enter. Include utterances, which mean the same thing but are constructed in a variety of different ways:
+
+- Utterance length - short, medium, and long for your client-application
+- Word and phrase length
+- Word placement - entity at beginning, middle, and end of utterance
+- Grammar
+- Pluralization
+- Stemming
+- Noun and verb choice
+- Punctuation - a good variety using correct, incorrect, and no grammar
+
+You can label entities in utterances using the following notation: 
+
+```markdown
+# getUserProfile
+- my name is {@userName = vishwac}
+
+@ ml userName
+```
+
+You can label roles in utterances directly as well: 
+
+```markdown
+# getUserProfile
+- my name is {@firstName = vishwac}
+
+@ ml userName hasRoles firstName
+```
+
+You can label machine learned entity with children like this: 
+
+```markdown
+# getUserProfile
+- my name is {@userProfile = {@firstName = vishwac}}
+
+@ prebuilt personName
+
+@ ml userProfile
+    - @ personName firstName
+    - @ personName lastName
+```
+
+To help easily label child entities for both machine learned as well as composite entity types, you can break up your labels into how many ever per utterance: 
+
+```markdown
+# getUserProfile
+- my name is vishwac and I'm 36 years old
+    - my name is {@userProfile = vishwac and I'm 36 years old}
+    - my name is {@firstName = vishwac} and I'm 36 years old
+    - my name is vishwac and I'm {@userAge = 36} years old
+- i'm {@userProfile = {@firstName = vishwac}}
+
+@ ml userProfile
+    - @personName firstName
+    - @personName lastName
+
+@ prebuilt personName
 ```
 
 ## Model description
@@ -474,16 +557,20 @@ Here's an example of those references:
 
 ```markdown
 > You can include references to other .lu files
+
 [All LU files](./all.lu)
 
 > References to other files can have wildcards in them
+
 [en-us](./en-us/*)
 
 > References to other lu files can include sub-folders as well. 
 > /** indicates to the parser to recursively look for .lu files in all subfolders as well.
+
 [all LU files](../**)
 
 > You can include deep references to intents defined in a .lu file in utterances
+
 # None
 - [None uttearnces](./all.lu#Help)
 
@@ -500,14 +587,29 @@ Here's an example of those references:
 > - [all.lu](./all.lu#*utterancesAndPatterns*)
 
 > You can include wild cards with deep references to QnA maker questions defined in a .qna file in utterances
+
 # None
 - [QnA questions](./*#?)
 
 > With the above statement, the parser will parse **all** .lu files under ./, extract out all questions from QnA pairs in those files and add them under 'None' intent as defined in this file.
 
 > You can include deep references to QnA maker questions defined in a .qna file in utterances
+
 # None
 - [QnA questions](./qna1.qna#?)
 
 > With the above statement, the parser will parse qna1.lu and extract out all questions from QnA pairs in that file and add them under 'None' intent as defined in this file.
 ```
+
+[1]:https://luis.ai
+[2]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-intent
+[3]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-entity-types
+[4]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-entity-types#simple-entity
+[5]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-entity-types#prebuilt-entity
+[6]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-entity-types#list-entity
+[7]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-entity-types#composite-entity
+[8]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-entity-types#regular-expression-entity
+[9]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-roles
+[10]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-patterns
+[11]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-feature
+[12]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-utterance

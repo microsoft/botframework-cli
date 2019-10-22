@@ -35,7 +35,8 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
             filesToParse.splice(0,1)
             continue
         }
-        let parsedContent = await parseLuFile(luOb.content, log, luis_culture)
+
+        let parsedContent = await parseLuFile(luOb, log, luis_culture)
         parsedFiles.push(luOb.id)
 
         if (haveLUISContent(parsedContent.LUISJsonStructure)
@@ -326,19 +327,22 @@ const readLuFile = function(file) {
     return fileContent
 }
 
-const parseLuFile = async function(file, log, luis_culture) {
-    let parsedContent = '';
+const parseLuFile = async function(luOb, log, luis_culture) {
+    let parsedContent = ''
+    if (!luOb.content) {
+        let error = BuildDiagnostic({ message: `Cannot parse empty ${luOb.id}. Please add content to the file or remove it.` })
+        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, error.toString()));
+    } 
     try {
-        parsedContent = await parseFileContents.parseFile(file, log, luis_culture);
+        parsedContent = await parseFileContents.parseFile(luOb.content, log, luis_culture);
     } catch (err) {
         throw(err);
     }
     if (!parsedContent) {
         let error = BuildDiagnostic({
-            message: `Sorry, file ${file} had invalid content`
+            message: `Sorry, file ${luOb.id} had invalid content`
         });
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, error.toString()));
     } 
     return parsedContent
 }
-

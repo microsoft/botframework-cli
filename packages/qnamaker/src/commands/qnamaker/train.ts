@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const qnamaker = require('./../../../utils/index')
 const trainJSON = require('./../../../utils/payloads/train')
