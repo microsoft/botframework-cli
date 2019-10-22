@@ -54,12 +54,7 @@ export default class ConfigSetQnamaker extends Command {
   }
 
   setValue(key: string, value: string, userConfig: Config) {
-    let qnamaker = userConfig.qnamaker
-    if (!qnamaker) {
-      userConfig.qnamaker = {}
-    }
-
-    userConfig.qnamaker[key] = value
+    userConfig['qnamaker__' + key] = value
     this.log(`${key} set to ${value}`)
   }
 }
