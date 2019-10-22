@@ -47,7 +47,7 @@ export class FormSchema {
      */
     static async readSchema(schemaPath: string): Promise<FormSchema> {
         let noref = await parser.dereference(schemaPath)
-        let schema = allof(noref)      
+        let schema = allof(noref)
         let validator = new Validator()
         if (!validator.validateSchema(schema)) {
             let message = ''
@@ -115,6 +115,12 @@ export class FormSchema {
                 property: [this.typeName() + 'Property.lg', this.typeName() + 'Entity.lu', this.typeName() + 'Entity.lg', this.typeName() + 'Ask.dialog'],
                 mappings: this.mappings()
             }
+        } 
+        if (!templates.property) {
+            templates.property = []
+        }
+        if (!templates.mappings) {
+            templates.mappings = []
         }
         return templates
     }

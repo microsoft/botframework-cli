@@ -57,28 +57,17 @@
         },
         "Name": {
             "type": "string",
-            "$mappings": ["utterance"]
-        },
-        "CancelConfirmation": {
-            "type": "string",
-            "$mappings": ["Confirmation"],
-            "$templates":[]
-        },
-        "CompleteConfirmation": {
-            "type": "string",
-            "$mappings": ["Confirmation"],
-            "$templates":[]
-        },
-        "PropertyToChange": {
-            "type": "string",
-            "enum": [
-                "Meat",
-                "Bread",
-                "Cheese",
-                "Toppings"
-            ],
-            "$templates":[]
-        }     
+            "$mappings": [
+                "utterance"
+            ]
+        }
     },
-    "required":["Meat", "Bread", "Cheese"]
+    "required": [
+        "Meat",
+        "Bread",
+        "Cheese"
+    ],
+    "$requires": [
+        "standard.schema.dialog"
+    ]
 }

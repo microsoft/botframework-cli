@@ -1,0 +1,5 @@
+# template
+-{join(foreach(properties, prop, concat('$PROPERTY:', prop, '=\n', synonyms(prop))), '\n')}
+
+# synonyms(value)
+- {join(foreach(phrases(value), phrase, concat('- ', phrase)), '\n')}

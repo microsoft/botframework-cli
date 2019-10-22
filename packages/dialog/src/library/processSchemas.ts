@@ -20,9 +20,9 @@ function basename(loc: string): string {
 async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): Promise<idToSchema> {
     let map: idToSchema = {}
     for (let dir of templateDirs) {
-        for (let file of await glob(dir + '**/*.schema')) {
+        for (let file of await glob(path.join(dir, '**/*.schema*'))) {
             let schema = await getSchema(file, feedback)
-            let id: string = schema.$id || path.basename(file, '.schema')
+            let id: string = schema.$id || path.basename(file)
             if (!map[id]) {
                 map[id] = schema
             }
@@ -56,10 +56,10 @@ async function findRequires(schema: any, map: idToSchema, found: idToSchema, fee
 }
 
 // Get a schema after following all references and removing allOf
-async function getSchema(path: string, feedback: fg.Feedback): Promise<any> {
+async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): Promise<any> {
     let schema
     try {
-        let noref = await parser.dereference(path)
+        let noref = await parser.dereference(path, { template: resolver })
         schema = allof(noref)
     } catch (err) {
         feedback(fg.FeedbackType.error, err)
@@ -72,21 +72,32 @@ async function getSchema(path: string, feedback: fg.Feedback): Promise<any> {
 // 2) $requires:[] can be in a property or at the top.  This is handled by finding all of them and then merging
 //    properties, definition and required.  
 //    The assumption here is that the required properties are orthogonal to the form so unique names are important.
+export type Schemas = { form: s.FormSchema, schema: s.FormSchema }
 export async function processSchemas(formPath: string, templateDirs: string[], outDir: string, force: boolean, feedback: fg.Feedback)
-    : Promise<s.FormSchema> {
-    let formSchema = await getSchema(formPath, feedback)
+    : Promise<Schemas> {
     let allRequired = await templateSchemas(templateDirs, feedback)
+    let resolver: any = {
+        canRead: true,
+        read(file: string): any {
+            return allRequired[path.basename(file)]
+        }
+    }
+    let formSchema = await getSchema(formPath, feedback, resolver)
     let required = {}
     await findRequires(formSchema, allRequired, required, feedback)
     let allSchema = clone(formSchema)
+    if (!allSchema.required) allSchema.required = []
+    if (!allSchema.$expectedOnly) allSchema.$expectedOnly = []
+    if (!allSchema.$templates) allSchema.$templates = []
     for (let schema of Object.values(allRequired)) {
         allSchema.properties = { ...allSchema.properties, ...schema.properties }
         allSchema.definition = { ...allSchema.definition, ...schema.definition }
-        allSchema.required = { ...allSchema.required, ...schema.required }
-        allSchema.$expectedOnly = { ...allSchema.$expectedOnly, ...schema.$expectedOnly }
+        if (schema.required) allSchema.required = allSchema.required.concat(schema.required)
+        if (schema.$expectedOnly) allSchema.$expectedOnly = allSchema.$expectedOnly.concat(schema.$expectedOnly)
+        if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
     }
     let name = basename(formPath)
-    await fg.writeFile(path.join(outDir, name + '.form.dialog'), formSchema, force, feedback)
-    await fg.writeFile(path.join(outDir, `.${name}.schema.dialog`), allSchema, force, feedback)
-    return new s.FormSchema('', allSchema, name)
+    await fg.writeFile(path.join(outDir, `${name}.form.dialog`), formSchema, force, feedback)
+    await fg.writeFile(path.join(outDir, `${name}.schema.dialog`), allSchema, force, feedback)
+    return { form: new s.FormSchema(formPath, formSchema, name), schema: new s.FormSchema('', allSchema, name) }
 }

@@ -113,7 +113,9 @@ const expressionEngine = new ExpressionEngine((func: any) => {
 })
 
 // Given a template name we look for it or an .lg version of it in template dirs (or their locale sub dirs)
-async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<lg.TemplateEngine | string | undefined> {
+type Template = lg.TemplateEngine | string | undefined
+
+async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<Template> {
     let template
     for (let dir of templateDirs) {
         let loc = localePath(name, dir, locale)
@@ -137,51 +139,54 @@ function addLocale(name: string, locale: string): string {
     if (locale) {
         let base = path.basename(name, '.lg')
         let extStart = base.indexOf('.')
-        let filename = `${base.substring(0, extStart)}-${locale}${base.substring(extStart)}`
+        let filename
+        if (extStart < 0) {
+            filename = `${base}-${locale}.lg`
+        } else {
+            filename = `${base.substring(0, extStart)}-${locale}${base.substring(extStart)}`
+        }
         result = path.join(path.dirname(name), filename)
     }
     return result
 }
 
-type GeneratedTemplates = { lg: string[], lu: string[], dialog: string[], [id: string]: string[] }
+type GeneratedTemplates = { lg: string[], lu: string[], qna: string[], dialog: string[], [id: string]: string[] }
 async function processTemplate(
     templateName: string,
     templateDirs: string[],
     outDir: string,
     form: s.FormSchema,
-    prop: string,
-    loc: string,
+    scope: any,
     force: boolean,
     feedback: Feedback,
     generated: GeneratedTemplates) {
     try {
-        let template = await findTemplate(templateName, templateDirs, loc)
+        let template = await findTemplate(templateName, templateDirs, scope.locale)
         if (template !== undefined) {
             // NOTE: Ignore templates that are defined, but are empty
             if (template) {
-                let filename = addLocale(templateName, loc)
-                let result = template
-                if (typeof template === 'object') {
-                    let scope = {
-                        locale: loc,
-                        form: form.name,
-                        schema: form.schema,
-                        property: prop,
-                    }
-                    result = template.evaluateTemplate('template', scope)
-                    if (template.templates.some(f => f.Name === 'filename')) {
-                        filename = template.evaluateTemplate('filename', scope)
-                    }
+                scope.form = form.name
+                scope.schema = form.schema
+                let filename = addLocale(templateName, scope.locale)
+                if (typeof template === 'object' && template.templates.some(f => f.Name === 'filename')) {
+                    filename = template.evaluateTemplate('filename', scope)
                 }
-                let outPath = path.join(outDir, loc, filename)
+                let outPath = path.join(outDir, scope.locale, filename)
                 let ext = path.extname(templateName).substring(1)
                 if (!generated[ext].includes(outPath)) {
                     generated[ext].push(outPath)
+                    let result = template
+                    if (typeof template === 'object') {
+                        result = template.evaluateTemplate('template', scope)
+                        if (template.templates.some(f => f.Name === 'filename')) {
+                            filename = template.evaluateTemplate('filename', scope)
+                        }
+                    }
                     await writeFile(outPath, result, force, feedback)
                 }
             }
         } else {
-            feedback(FeedbackType.error, `Missing template ${templateName}` + (loc ? ` in locale ${loc}` : ''))
+            feedback(FeedbackType.error, `Missing template ${templateName}` + (scope.locale ? ` in locale ${scope.locale}` : ''))
         }
     } catch (e) {
         feedback(FeedbackType.error, e.message)
@@ -190,6 +195,7 @@ async function processTemplate(
 
 async function processTemplates(
     form: s.FormSchema,
+    schema: s.FormSchema,
     extensions: string[],
     templateDirs: string[],
     outDir: string,
@@ -203,22 +209,40 @@ async function processTemplates(
         qna: [],
         dialog: []
     }
-    // Want an .lu/.lg per mapping
-    // bread
-    // templates: 
-    // property: [enum.lg, enum.lu]
-    // propertyEntity: 
-    // mappings: [breadEntity]
-    for (let prop of form.schemaProperties()) {
-        for (let templateName of prop.templates().property) {
+
+    // Process templates found at the top
+    if (schema.schema.$templates) {
+        for (let templateName of schema.schema.$templates) {
             if (extensions.includes(path.extname(templateName))) {
-                await processTemplate(templateName, templateDirs, outDir, form, prop.name, loc, force, feedback, generated)
+                await processTemplate(templateName, templateDirs, outDir, form, { locale: loc, properties: Object.keys(form.schema.properties) }, force, feedback, generated)
             }
         }
+    }
+    for (let prop of schema.schemaProperties()) {
+        let scope: any = { property: prop.name, locale: loc }
+
+        // Property templates
+        for (let templateName of prop.templates().property) {
+            if (extensions.includes(path.extname(templateName))) {
+                await processTemplate(templateName, templateDirs, outDir, schema, scope, force, feedback, generated)
+            }
+        }
+
+        // PropertyEntity templates
+        for (let templateName of prop.templates().mappings) {
+            for (let entity of prop.mappings()) {
+                if (extensions.includes(path.extname(templateName))) {
+                    scope.entity = entity
+                    await processTemplate(templateName, templateDirs, outDir, schema, scope, force, feedback, generated)
+                }
+            }
+        }
+
         if (loc) {
-            for (let entity of Object.keys(form.entities())) {
-                await processTemplate(entity + '.lu', templateDirs, outDir, form, prop.name, loc, force, feedback, generated)
-                await processTemplate(entity + '.lg', templateDirs, outDir, form, prop.name, loc, force, feedback, generated)
+            // Entity templates
+            for (let entity of Object.keys(schema.entities())) {
+                await processTemplate(entity + '.lu', templateDirs, outDir, schema, scope, force, feedback, generated)
+                await processTemplate(entity + '.lg', templateDirs, outDir, schema, scope, force, feedback, generated)
             }
         }
     }
@@ -271,11 +295,11 @@ export async function generate(
     feedback(FeedbackType.info, `Schema: ${schema} `)
     try {
         await fs.ensureDir(outDir)
-        let form = await processSchemas(formPath, templateDirs, outDir, force, feedback)
+        let { form, schema } = await processSchemas(formPath, templateDirs, outDir, force, feedback)
         for (let currentLoc of locales) {
             let localeOut = path.join(outDir, currentLoc)
             await fs.ensureDir(localeOut)
-            await processTemplates(form, ['.lg', '.lu', '.qna'], templateDirs, outDir, currentLoc, force, feedback)
+            await processTemplates(form, schema, ['.lg', '.lu', '.qna'], templateDirs, outDir, currentLoc, force, feedback)
         }
         // On a property $templates has
         // property: [<all templates that apply to a property>]

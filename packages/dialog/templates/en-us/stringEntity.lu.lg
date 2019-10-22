@@ -1,2 +1,5 @@
+# filename
+- {property}Entity-{locale}.lg
+
 # template
 - ${property}Entity:Simple

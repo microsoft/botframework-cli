@@ -16,7 +16,7 @@ import { fail } from 'assert';
 
 describe('dialog:form', async () => {
     let output = ppath.join(os.tmpdir(), 'sandwich.out')
-    let schemaPath = 'test/commands/dialog/forms/sandwich.form'
+    let schemaPath = 'test/commands/dialog/forms/sandwich.form.dialog'
     let badSchema = 'test/commands/dialog/forms/bad-schema.form.dialog'
     let notObject = 'test/commands/dialog/forms/not-object.form.dialog'
     beforeEach(async () => {

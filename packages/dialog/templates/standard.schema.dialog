@@ -1,0 +1,42 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "CancelConfirmation": {
+            "type": "string",
+            "$mappings": [
+                "Confirmation"
+            ],
+            "$templates": {
+                "property": [
+                    "CancelConfirmation.dialog",
+                    "CancelConfirmationSet.dialog"
+                ]
+            }
+        },
+        "CompleteConfirmation": {
+            "type": "string",
+            "$mappings": [
+                "Confirmation"
+            ],
+            "$templates": {
+                "property": [
+                    "CompleteConfirmation.dialog",
+                    "CompleteConfirmationSet.dialog"
+                ]
+            }
+        },
+        "PropertyToChange": {
+            "type": "string",
+            "$mappings": [
+                "PROPERTY"
+            ],
+            "$templates": {
+                "property": [
+                    "PropertyToChangeSet.dialog"
+                ]
+            }
+        }
+    },
+    "$templates": ["PROPERTY.lg", "PROPERTY.lu"]
+}
