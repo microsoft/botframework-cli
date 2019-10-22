@@ -16,6 +16,7 @@ $ npm install -g @microsoft/botframework-cli
 # Commands
 <!-- commands -->
 * [`bf chatdown`](#bf-chatdown)
+* [`bf chatdown:convert`](#bf-chatdownconvert)
 * [`bf config`](#bf-config)
 * [`bf config:set:qnamaker`](#bf-configsetqnamaker)
 * [`bf config:set:telemetry`](#bf-configsettelemetry)
@@ -64,6 +65,20 @@ USAGE
   $ bf chatdown
 
 OPTIONS
+  -h, --help  Chatdown command help
+```
+
+_See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
+
+## `bf chatdown:convert`
+
+Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+
+```
+USAGE
+  $ bf chatdown:convert
+
+OPTIONS
   -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
   -h, --help     Chatdown command help
 
@@ -85,7 +100,7 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown.ts)_
+_See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
 
 ## `bf config`
 

@@ -6,13 +6,13 @@
 import {flags} from '@oclif/command'
 import {CLIError, Command, utils} from '@microsoft/bf-cli-command'
 const chalk = require('chalk')
-const chatdown = require('../../utils/index')
+const chatdown = require('../../../utils/index')
 const fs = require('fs-extra')
 const glob = require('glob')
 const intercept = require('intercept-stdout')
 const path = require('path')
 
-export default class Chatdown extends Command {
+export default class ChatdownConvert extends Command {
   static description = 'Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file'
 
   static examples = [`
@@ -32,7 +32,7 @@ export default class Chatdown extends Command {
 
   async run() {
     try {
-      const {flags} = this.parse(Chatdown)
+      const {flags} = this.parse(ChatdownConvert)
 
       let inputIsDirectory = flags.in ? (flags.in.includes('*') || this.isDir(flags.in)) : false
 
