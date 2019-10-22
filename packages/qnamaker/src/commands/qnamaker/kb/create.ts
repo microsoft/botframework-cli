@@ -11,11 +11,9 @@ const Knowledgebase = require('./../../../../utils/api/knowledgebase')
 const Endpointkeys = require('./../../../../utils/api/endpointkeys')
 const createKbJSON = require('./../../../../utils/payloads/createKb')
 
-const fs = require('fs-extra')
-const path = require('path')
 const readlineSync = require('readline-sync')
 
-import {Inputs, processInputs} from '../../../utils/qnamakerbase'
+import {Inputs, processInputs, updateQnAMakerConfig} from '../../../utils/qnamakerbase'
 
 export default class QnamakerKbCreate extends Command {
   static description = 'Creates a new knowledgebase'
@@ -66,18 +64,7 @@ export default class QnamakerKbCreate extends Command {
     if (flags.save) {
       input.config.kbId = kbId
       await this.updateKbId(input.config)
-      let userConfig: any = {}
-
-      if (fs.existsSync(path.join(this.config.configDir, 'config.json'))) {
-        userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
-      } else {
-        await fs.mkdirp(this.config.configDir)
-      }
-
-      delete input.config.endpoint
-
-      userConfig.qnamaker = input.config
-      await fs.writeJson(path.join(this.config.configDir, 'config.json'), userConfig, {spaces: 2})
+      await updateQnAMakerConfig(input.config, this.config.configDir)
     } else {
       this.log(JSON.stringify({kbId}, null, 2))
     }
