@@ -4,11 +4,11 @@ const fs = require('fs-extra')
 const updateUrls = async () => {
   let plugins = ['config', 'chatdown', 'dialog', 'lu', 'qnamaker', 'cli']
   for (let i = 0; i < plugins.length; i++) {
-      await compareCleanUrls(plugins[i])
+      await cleanUrls(plugins[i])
   }
 }
 
-const compareCleanUrls = async function(plugin) {
+const cleanUrls = async function(plugin) {
   let readmePath = path.join(__dirname, `./../packages/${plugin}/README.md`)
   let fileContent = await fs.readFile(readmePath)
   fileContent = fileContent.toString().replace(/\/blob\/v1\.0\.0/g, "")
