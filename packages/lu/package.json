@@ -56,7 +56,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "https://github.com/microsoft/botframework-cli",
+  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/lu",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
