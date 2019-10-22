@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import * as AppInsights from 'applicationinsights'
 
 const INSTRUMENTATION_KEY = 'cc91f74a-1abd-4be0-8a96-fddedbc08dd7'
