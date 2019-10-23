@@ -10,7 +10,7 @@ export default class ConfigShow extends Command {
   static description = 'Displays the config file'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({char: 'h', description: 'config:show help'})
   }
 
   async run() {
