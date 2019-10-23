@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "lerna run build && lerna bootstrap",
+    "generate-md": "npm run build && lerna run documentation && lerna run maindoc && node scripts/fixurls.js",
     "test": "lerna run test",
     "coverage": "nyc npm test",
     "coveralls": "npm run coverage",
@@ -10,6 +11,7 @@
   },
   "private": true,
   "devDependencies": {
+    "fs-extra": "^8.1.0",
     "lerna": "^3.2.1"
   }
 }
