@@ -40,8 +40,8 @@ describe('chatdown:convert', () => {
     });
   });
 
-  it('should generate static based timestamps when --static is passed as an argument', done => {
-    cp.exec(`(echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | node ./bin/run chatdown:convert --static`, (error, stdout) => {
+  it('should generate timestamps when --stamp is passed as an argument', done => {
+    cp.exec(`(echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | node ./bin/run chatdown:convert --stamp`, (error, stdout) => {
       assert.doesNotThrow(() => JSON.parse(stdout));
       done();
     });
