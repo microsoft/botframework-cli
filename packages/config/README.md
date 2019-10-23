@@ -17,14 +17,14 @@
 
 ## `bf config`
 
-Allows users to configure various settings within the cli.
+Configure various settings within the cli.
 
 ```
 USAGE
   $ bf config
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config help
 ```
 
 _See code: [src/commands/config/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/index.ts)_
@@ -38,6 +38,7 @@ USAGE
   $ bf config:set:qnamaker
 
 OPTIONS
+  -h, --help                         config:set:qnamaker help
   --endpointKey=endpointKey          QnAMaker endpointKey to be set
   --hostname=hostname                QnAMaker hostname to be set
   --kbId=kbId                        QnAMaker kbId to be set
@@ -66,7 +67,7 @@ USAGE
 OPTIONS
   -d, --disable  Disable tlemetry
   -e, --enable   Enable tlemetry
-  -h, --help     show CLI help
+  -h, --help     config:set:telemetry help
 ```
 
 _See code: [src/commands/config/set/telemetry.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/telemetry.ts)_
@@ -80,7 +81,7 @@ USAGE
   $ bf config:show
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config:show help
 ```
 
 _See code: [src/commands/config/show.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show.ts)_
@@ -94,7 +95,7 @@ USAGE
   $ bf config:show:qnamaker
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config:show:qnamaker help
 ```
 
 _See code: [src/commands/config/show/qnamaker.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/qnamaker.ts)_
@@ -108,7 +109,7 @@ USAGE
   $ bf config:show:telemetry
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config:show:telemetry help
 ```
 
 _See code: [src/commands/config/show/telemetry.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/telemetry.ts)_

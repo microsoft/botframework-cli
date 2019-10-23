@@ -72,7 +72,7 @@ _See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cl
 
 ## `bf chatdown:convert`
 
-Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
 ```
 USAGE
@@ -90,7 +90,7 @@ OPTIONS
 
   -p, --prefix   Prefix stdout with package name.
 
-  -s, --static   Use static timestamps when generating timestamps on activities.
+  -s, --stamp    Use static timestamps when generating timestamps on activities.
 
 EXAMPLE
 
@@ -104,14 +104,14 @@ _See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cl
 
 ## `bf config`
 
-The config plugin allows users to configure various settings within the cli.
+Configure various settings within the cli.
 
 ```
 USAGE
   $ bf config
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config help
 ```
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/index.ts)_
@@ -125,6 +125,7 @@ USAGE
   $ bf config:set:qnamaker
 
 OPTIONS
+  -h, --help                         config:set:qnamaker help
   --endpointKey=endpointKey          QnAMaker endpointKey to be set
   --hostname=hostname                QnAMaker hostname to be set
   --kbId=kbId                        QnAMaker kbId to be set
@@ -153,7 +154,7 @@ USAGE
 OPTIONS
   -d, --disable  Disable tlemetry
   -e, --enable   Enable tlemetry
-  -h, --help     show CLI help
+  -h, --help     config:set:telemetry help
 ```
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/telemetry.ts)_
@@ -167,7 +168,7 @@ USAGE
   $ bf config:show
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config:show help
 ```
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show.ts)_
@@ -181,7 +182,7 @@ USAGE
   $ bf config:show:qnamaker
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config:show:qnamaker help
 ```
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/qnamaker.ts)_
@@ -195,7 +196,7 @@ USAGE
   $ bf config:show:telemetry
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help  config:show:telemetry help
 ```
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/telemetry.ts)_
@@ -219,14 +220,14 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `bf luis`
 
-Convert, translate luis/lu files or generate source code
+Converts, translates luis/lu files or generates source code.
 
 ```
 USAGE
   $ bf luis
 
 OPTIONS
-  -h, --help  Display Luis available commnads
+  -h, --help  Display Luis available commands
 ```
 
 _See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/index.ts)_
@@ -324,7 +325,7 @@ USAGE
   $ bf qnamaker
 
 OPTIONS
-  -h, --help  Display QnA Maker CLI available commnads
+  -h, --help  Display QnA Maker CLI available commands
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/index.ts)_
@@ -384,7 +385,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:convert`
 
-Convert .lu file(s) to a QnA application JSON model or vice versa
+Converts .lu file(s) to QnA application JSON models or vice versa.
 
 ```
 USAGE
