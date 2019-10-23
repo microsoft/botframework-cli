@@ -42,7 +42,7 @@ USAGE
   $ bf qnamaker
 
 OPTIONS
-  -h, --help  Display QnA Maker CLI available commnads
+  -h, --help  Display QnA Maker CLI available commands
 ```
 
 _See code: [src/commands/qnamaker/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/index.ts)_

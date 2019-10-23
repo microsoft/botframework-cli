@@ -17,7 +17,7 @@
 
 ## `bf config`
 
-The config plugin allows users to configure various settings within the cli.
+Allows users to configure various settings within the cli.
 
 ```
 USAGE

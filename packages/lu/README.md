@@ -29,14 +29,14 @@
 
 ## `bf luis`
 
-Convert, translate luis/lu files or generate source code
+Converts, translates luis/lu files or generates source code.
 
 ```
 USAGE
   $ bf luis
 
 OPTIONS
-  -h, --help  Display Luis available commnads
+  -h, --help  Display Luis available commands
 ```
 
 _See code: [src/commands/luis/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/index.ts)_
@@ -127,7 +127,7 @@ _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botfram
 
 ## `bf qnamaker:convert`
 
-Convert .lu file(s) to a QnA application JSON model or vice versa
+Converts .lu file(s) to QnA application JSON models or vice versa.
 
 ```
 USAGE
