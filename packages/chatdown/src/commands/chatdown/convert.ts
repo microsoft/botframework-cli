@@ -6,7 +6,7 @@
 import {flags} from '@oclif/command'
 import {CLIError, Command, utils} from '@microsoft/bf-cli-command'
 const chalk = require('chalk')
-const chatdown = require('../../utils/index')
+const chatdown = require('../utils/index')
 const fs = require('fs-extra')
 const glob = require('glob')
 const intercept = require('intercept-stdout')
