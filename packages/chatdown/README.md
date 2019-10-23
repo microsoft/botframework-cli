@@ -14,7 +14,7 @@ Tool for parsing chat files and outputting replayable activities
 
 ## `bf chatdown`
 
-Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
 ```
 USAGE
