@@ -9,7 +9,7 @@ describe('chatdown:convert', () => {
 
   before(() => { 
     fs.mkdirSync('./testout');
-  })
+  });
 
   after(() => {
     rimraf('./testout', (err) => {
