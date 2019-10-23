@@ -1,11 +1,16 @@
 # Contribution guide
 
+
+## Build the project
+    1. Clone the repo by running 'git clone https://github.com/microsoft/botframework-cli.git'
+    2. Inside the project folder run 'npm install'
+    3. Run 'npm run build'
+
 ## Steps to create a new plugin
 
-    1. Clone the repo by running 'git clone https://github.com/microsoft/botframework-cli.git'
-    2. Inside the project folder run 'npm run build'
-    3. Inside the packages folder(https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
-    4. Follow the wizard and set the prompts:
+    1. Build the project
+    2. Inside the packages folder(https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
+    3. Follow the wizard and set the prompts:
     
       ? npm package: @microsoft/bf-<plugin-name>
       ? description: <Plugin brief description>
