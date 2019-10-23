@@ -3,8 +3,13 @@ import * as cp from 'child_process';
 import * as rimraf from 'rimraf';
 let pkg = require('../../../package.json');
 let assert = require('assert');
+const fs = require('fs-extra')
 
 describe('chatdown:convert', () => {
+
+  before(() => { 
+    fs.mkdirSync('./testout');
+  })
 
   after(() => {
     rimraf('./testout', (err) => {
