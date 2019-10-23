@@ -7,36 +7,40 @@
             "$mappings": [
                 "Confirmation"
             ],
-            "$templates": {
-                "property": [
-                    "CancelConfirmation.dialog",
-                    "CancelConfirmationSet.dialog"
-                ]
-            }
+            "$templates": [
+                "CancelConfirmation.dialog",
+                "CancelConfirmationSet.dialog"
+            ]
         },
         "CompleteConfirmation": {
             "type": "string",
             "$mappings": [
                 "Confirmation"
             ],
-            "$templates": {
-                "property": [
-                    "CompleteConfirmation.dialog",
-                    "CompleteConfirmationSet.dialog"
-                ]
-            }
+            "$templates": [
+                "CompleteConfirmation.dialog",
+                "CompleteConfirmationSet.dialog"
+            ]
         },
         "PropertyToChange": {
             "type": "string",
             "$mappings": [
-                "PROPERTY"
+                "PROPERTYName"
             ],
-            "$templates": {
-                "property": [
-                    "PropertyToChangeSet.dialog"
-                ]
-            }
+            "$templates": [
+                "PropertyToChangeSet.dialog"
+            ]
         }
     },
-    "$templates": ["PROPERTY.lg", "PROPERTY.lu"]
+    "$templates": [
+        "help.lu",
+        "BeginDialog.dialog",
+        "CancelConfirmation.dialog",
+        "CancelConfirmationSet.dialog",
+        "CompleteConfirmation.dialog",
+        "CompleteConfirmationSet.dialog",
+        "luconfig.json",
+        "lu.dialog",
+        "Main.dialog"
+    ]
 }

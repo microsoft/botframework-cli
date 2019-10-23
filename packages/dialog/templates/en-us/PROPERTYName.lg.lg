@@ -2,7 +2,7 @@
 - {join(createArray(namePlusSwitch(), cases(), default()), '\n')}
 
 # namePlusSwitch
-- # PROPERTY(value) \n- SWITCH: \{value\}
+- # PROPERTYName(value) \n- SWITCH: \{value\}
 
 # case(option)
 - - CASE: \{'{option}'\} \n - {phrase(option)}

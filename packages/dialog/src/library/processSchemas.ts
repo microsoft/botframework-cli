@@ -97,7 +97,7 @@ export async function processSchemas(formPath: string, templateDirs: string[], o
         if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
     }
     let name = basename(formPath)
-    await fg.writeFile(path.join(outDir, `${name}.form.dialog`), formSchema, force, feedback)
-    await fg.writeFile(path.join(outDir, `${name}.schema.dialog`), allSchema, force, feedback)
+    await fg.writeFile(path.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema), force, feedback)
+    await fg.writeFile(path.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema), force, feedback)
     return { form: new s.FormSchema(formPath, formSchema, name), schema: new s.FormSchema('', allSchema, name) }
 }

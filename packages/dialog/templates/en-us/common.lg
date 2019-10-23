@@ -8,38 +8,24 @@
 >>> Ask prompts <<<
 
 > TODO: We should look at the schema and if a few items list them or do cards or..
-# askEnum(property, name)
-- Which value do you want for {name}?
+# askEnum(property)
+- Which value do you want for {template(concat(property, 'Name'))}?
 
-# askNumber(property, name)
+# askNumber(property)
 - IF: {turn.schema.properties[property].minimum && turn.schema.properties[property].maximum}
-- Enter a number for {name} between {turn.schema.properties[property].minimum} and {turn.schema.properties[property].maximum}
+- Enter a number for {template(concat(property, 'Name'))} between {turn.schema.properties[property].minimum} and {turn.schema.properties[property].maximum}:
 - ELSE:
-- Enter a number for {name}
+- Enter a number for {template(concat(property, 'Name'))}:
 
-# askString(property, name)
-- Enter a value for {name}
+# askString(property)
+- Enter a value for {template(concat(property, 'Name'))}
 
 >>> Help messages <<<
-# helpProperty(property, name)
-- Possible values for {name} include: \[{join(turn.schema.properties[property].enum, ',')}\]
+# helpProperty(property)
+- Possible values for {template(concat(property, 'Name'))} include: \[{join(turn.schema.properties[property].enum, ',')}\]
 
-# clarifyEnum(property, name)
+# clarifyEnum(property)
 - Please choose a value for {name} from \[{join(foreach(turn.dialogEvent.value.entity.value, val, bread(val)), ',')}\]
-
-> TODO: Need to generate this
-> The challenge with doing so is the if/elseif/else structure
-# bread(val)
-- IF: {val == "multiGrainWheat"}
-- multi grain wheat
-- ELSEIF: {val == "rye"}
-- rye
-- ELSEIF: {val == "white"}
-- white
-- ELSEIF: {val == "wholeWheat"}
-- whole wheat
-- ELSE:
-- unknown value
 
 # cancel
 - Do you want to end the conversation? (yes/no)

@@ -31,7 +31,6 @@ export class Entity {
 }
 
 type EntitySet = Record<string, Entity>
-type TemplateTypes = { property: string[], mappings: string[] }
 
 /**
  * Extra properties:
@@ -108,19 +107,18 @@ export class FormSchema {
         return type
     }
 
-    templates(): TemplateTypes {
+    templates(): string[] {
         let templates = this.schema.$templates
         if (!templates) {
-            templates = {
-                property: [this.typeName() + 'Property.lg', this.typeName() + 'Entity.lu', this.typeName() + 'Entity.lg', this.typeName() + 'Ask.dialog'],
-                mappings: this.mappings()
+            let type = this.typeName()
+            templates = [type + 'Property.lg', type + 'Entity.lu', type + 'Entity.lg', type + 'Ask.dialog']
+            for (let mapping of this.mappings()) {
+                if (mapping === this.path + 'Entity') {
+                    templates.push(`${type}Set${type}.dialog`)
+                } else {
+                    templates.push(`${type}Set${mapping}.dialog`)
+                }
             }
-        } 
-        if (!templates.property) {
-            templates.property = []
-        }
-        if (!templates.mappings) {
-            templates.mappings = []
         }
         return templates
     }

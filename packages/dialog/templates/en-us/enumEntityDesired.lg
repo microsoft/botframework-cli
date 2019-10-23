@@ -5,7 +5,8 @@
 - ```
 # @{property}Entity(value)
 - SWITCH: {value}
-@{join(foreach(schema.properties[property].enum, enum, concat('CASE: {\'', enum, '\'}\n', foreach(phrases(enum), phrase, concat('- ', phrase, '\n')))), '\n')}
+@{join(foreach(schema.properties[property].enum, enum, concat('CASE: {\'', enum, '\'}\n', foreach(phrases(enum, locale), phrase, concat('- ', phrase, '\n')))), '\n')}
 - DEFAULT: I don't understand {value}
 
 ```
+>>> We should apply locale to all phrase/phrases call, but we cannot until node version catches up with C# in including global scope

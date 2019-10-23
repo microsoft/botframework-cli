@@ -5,13 +5,14 @@
  */
 export * from './formGenerator'
 import * as s from './formSchema'
-import { ExpressionEngine } from 'botbuilder-expression-parser';
-import * as expr from 'botbuilder-expression';
+import { ExpressionEngine } from 'botbuilder-expression-parser'
+import * as expr from 'botbuilder-expression'
 import * as fs from 'fs-extra'
 import * as lg from 'botbuilder-lg'
 import * as path from 'path'
 import * as ph from './generatePhrases'
 import { processSchemas } from './processSchemas'
+import { SSL_OP_EPHEMERAL_RSA } from 'constants'
 
 // TODO:
 // Support numbered tokens in order to support **ASK1**, etc.
@@ -134,10 +135,10 @@ async function findTemplate(name: string, templateDirs: string[], locale?: strin
     return template
 }
 
-function addLocale(name: string, locale: string): string {
+function addLocale(name: string, locale: string, formName: string): string {
     let result = name
     if (locale) {
-        let base = path.basename(name, '.lg')
+        let base = `${formName}-${path.basename(name, '.lg')}`
         let extStart = base.indexOf('.')
         let filename
         if (extStart < 0) {
@@ -150,7 +151,37 @@ function addLocale(name: string, locale: string): string {
     return result
 }
 
-type GeneratedTemplates = { lg: string[], lu: string[], qna: string[], dialog: string[], [id: string]: string[] }
+async function replaceAsync(str: string, re: RegExp, callback: (match: string) => Promise<string>): Promise<string> {
+    let parts = []
+    let i = 0
+    if (re.global) {
+        re.lastIndex = i
+    }
+    let match
+    while (match = re.exec(str)) {
+        parts.push(str.slice(i, match.index), callback(match[0]))
+        i = re.lastIndex
+        if (!re.global) {
+            break // for non-global regexes only take the first match
+        }
+        if (match[0].length === 0) {
+            re.lastIndex++
+        }
+    }
+    parts.push(str.slice(i))
+    const strings = await Promise.all(parts)
+    return strings.join('')
+}
+
+const RefPattern = /^\[[^\]]*\]/gm
+async function processLibraryTemplates(template: string, outPath: string, templateDirs: string[], outDir: string, form: any, scope: any, force: boolean, feedback: Feedback): Promise<string> {
+    return replaceAsync(template, RefPattern, async (match: string): Promise<string> => {
+        let replacement = await processTemplate(match.substring(1, match.length - 1), templateDirs, outDir, form, scope, force, feedback)
+        let local = path.relative(path.dirname(outPath), replacement)
+        return Promise.resolve(`[${path.basename(replacement)}](${local})`)
+    });
+}
+
 async function processTemplate(
     templateName: string,
     templateDirs: string[],
@@ -158,8 +189,8 @@ async function processTemplate(
     form: s.FormSchema,
     scope: any,
     force: boolean,
-    feedback: Feedback,
-    generated: GeneratedTemplates) {
+    feedback: Feedback): Promise<string> {
+    let outPath = ''
     try {
         let template = await findTemplate(templateName, templateDirs, scope.locale)
         if (template !== undefined) {
@@ -167,22 +198,28 @@ async function processTemplate(
             if (template) {
                 scope.form = form.name
                 scope.schema = form.schema
-                let filename = addLocale(templateName, scope.locale)
+                let filename = addLocale(templateName, scope.locale, scope.formName)
                 if (typeof template === 'object' && template.templates.some(f => f.Name === 'filename')) {
                     filename = template.evaluateTemplate('filename', scope)
                 }
-                let outPath = path.join(outDir, scope.locale, filename)
+                outPath = path.join(outDir, filename)
                 let ext = path.extname(templateName).substring(1)
-                if (!generated[ext].includes(outPath)) {
-                    generated[ext].push(outPath)
-                    let result = template
-                    if (typeof template === 'object') {
-                        result = template.evaluateTemplate('template', scope)
-                        if (template.templates.some(f => f.Name === 'filename')) {
-                            filename = template.evaluateTemplate('filename', scope)
+                if (!scope.templates[ext].includes(outPath)) {
+                    if (force || !await fs.pathExists(outPath)) {
+                        feedback(FeedbackType.info, `Generating ${outPath}`)
+                        let result = template
+                        if (typeof template === 'object') {
+                            result = template.evaluateTemplate('template', scope)
+                            if (template.templates.some(f => f.Name === 'filename')) {
+                                filename = template.evaluateTemplate('filename', scope)
+                            }
                         }
+                        result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, form, scope, force, feedback)
+                        await fs.writeFile(outPath, result)
+                        scope.templates[ext].push(outPath)
+                    } else {
+                        feedback(FeedbackType.info, `Skipping already existing ${outPath}`)
                     }
-                    await writeFile(outPath, result, force, feedback)
                 }
             }
         } else {
@@ -191,6 +228,7 @@ async function processTemplate(
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }
+    return outPath
 }
 
 async function processTemplates(
@@ -199,54 +237,49 @@ async function processTemplates(
     extensions: string[],
     templateDirs: string[],
     outDir: string,
-    loc: string,
+    scope: any,
     force: boolean,
-    feedback: Feedback)
-    : Promise<GeneratedTemplates> {
-    let generated: GeneratedTemplates = {
+    feedback: Feedback) {
+
+    scope.templates = {
         lg: [],
         lu: [],
         qna: [],
+        json: [],
         dialog: []
     }
+
+    // Process per property and entity templates
+    for (let prop of schema.schemaProperties()) {
+        scope.property = prop.name
+
+        // Property templates
+        for (let templateName of prop.templates()) {
+            if (extensions.includes(path.extname(templateName))) {
+                await processTemplate(templateName, templateDirs, outDir, schema, scope, force, feedback)
+            }
+        }
+
+        if (scope.locale) {
+            // Entity templates
+            for (let entity of Object.keys(schema.entities())) {
+                scope.entity = entity
+                await processTemplate(entity + '.lu', templateDirs, outDir, schema, scope, force, feedback)
+                await processTemplate(entity + '.lg', templateDirs, outDir, schema, scope, force, feedback)
+            }
+        }
+    }
+    scope.property = undefined
+    scope.entity = undefined
 
     // Process templates found at the top
     if (schema.schema.$templates) {
         for (let templateName of schema.schema.$templates) {
             if (extensions.includes(path.extname(templateName))) {
-                await processTemplate(templateName, templateDirs, outDir, form, { locale: loc, properties: Object.keys(form.schema.properties) }, force, feedback, generated)
+                await processTemplate(templateName, templateDirs, outDir, form, scope, force, feedback)
             }
         }
     }
-    for (let prop of schema.schemaProperties()) {
-        let scope: any = { property: prop.name, locale: loc }
-
-        // Property templates
-        for (let templateName of prop.templates().property) {
-            if (extensions.includes(path.extname(templateName))) {
-                await processTemplate(templateName, templateDirs, outDir, schema, scope, force, feedback, generated)
-            }
-        }
-
-        // PropertyEntity templates
-        for (let templateName of prop.templates().mappings) {
-            for (let entity of prop.mappings()) {
-                if (extensions.includes(path.extname(templateName))) {
-                    scope.entity = entity
-                    await processTemplate(templateName, templateDirs, outDir, schema, scope, force, feedback, generated)
-                }
-            }
-        }
-
-        if (loc) {
-            // Entity templates
-            for (let entity of Object.keys(schema.entities())) {
-                await processTemplate(entity + '.lu', templateDirs, outDir, schema, scope, force, feedback, generated)
-                await processTemplate(entity + '.lg', templateDirs, outDir, schema, scope, force, feedback, generated)
-            }
-        }
-    }
-    return generated
 }
 
 /**
@@ -254,7 +287,7 @@ async function processTemplates(
  * Each template file will map to <filename>_<property>.<ext>.
  * @param outDir Where to put generated files.
  * @param schema Schema to use when generating .dialog files
- * @param locales Locales to generate.
+ * @param allLocales Locales to generate.
  * @param templateDir Where templates are found.
  * @param force True to force overwriting existing files.
  * @param feedback Callback function for progress and errors.
@@ -263,7 +296,7 @@ export async function generate(
     formPath: string,
     outDir: string,
     schema?: string,
-    locales?: string[],
+    allLocales?: string[],
     templateDirs?: string[],
     force?: boolean,
     feedback?: Feedback)
@@ -277,8 +310,8 @@ export async function generate(
         // Adjust relative to outDir
         schema = path.relative(outDir, schema)
     }
-    if (!locales) {
-        locales = ['en-us']
+    if (!allLocales) {
+        allLocales = ['en-us']
     }
 
     if (!templateDirs) {
@@ -290,45 +323,27 @@ export async function generate(
         op = 'Generating'
     }
     feedback(FeedbackType.info, `${op} resources for ${path.basename(formPath, '.form')} in ${outDir}`)
-    feedback(FeedbackType.info, `Locales: ${JSON.stringify(locales)} `)
+    feedback(FeedbackType.info, `Locales: ${JSON.stringify(allLocales)} `)
     feedback(FeedbackType.info, `Templates: ${JSON.stringify(templateDirs)} `)
     feedback(FeedbackType.info, `Schema: ${schema} `)
     try {
         await fs.ensureDir(outDir)
         let { form, schema } = await processSchemas(formPath, templateDirs, outDir, force, feedback)
-        for (let currentLoc of locales) {
+        let scope: any = {
+            locales: allLocales,
+            form: form.schema,
+            formName: form.name,
+            schema: schema.schema,
+            properties: Object.keys(form.schema.properties),
+        }
+        for (let currentLoc of allLocales) {
             let localeOut = path.join(outDir, currentLoc)
             await fs.ensureDir(localeOut)
-            await processTemplates(form, schema, ['.lg', '.lu', '.qna'], templateDirs, outDir, currentLoc, force, feedback)
+            scope.locale = currentLoc
+            await processTemplates(form, schema, ['.lg', '.lu', '.qna'], templateDirs, localeOut, scope, force, feedback)
         }
-        // On a property $templates has
-        // property: [<all templates that apply to a property>]
-        // propertyEntity: [<all templates that apply to property/entity pair>]
-        // We bind:
-        // form: Name of form
-        // schema: Schema definition
-        // property: for both property specific template kinds
-        // entity: for propertyEntity needs
-        // locale: bound if in a template sub-directory
-        // NOTE: We do not bind locale because template itself knows
-        // Default $template has:
-        // property: [<type>Entity.lu, <type>Entity.lg, <type>.lg]
-        // propertyEntity: [Set<type>To<entity>.dialog, Ask<type>.dialog, ...]
-        // We also bind to templates of every entity name in mapping and track if we already generated
-        // 
-        // There is also a global $templates where we bind
-        // LG: All LG references
-        // LU: All LU references
-        // DIALOG: All .dialog references
-        // form: form name
-        // schema: schema definition
-        //
-        // Process is to loop over each property:
-        //   Loop over property templates and expand
-        //   Loop over propertyEntity templates and expand
-        //   Loop over entity and expand
-        // For each template we search the directories in order.  For .lg/.lu files we search in subdirectories.
-        //   
+        scope.locale = ''
+        await processTemplates(form, schema, ['.dialog', '.json'], templateDirs, outDir, scope, force, feedback)
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }

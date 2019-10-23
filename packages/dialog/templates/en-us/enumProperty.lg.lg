@@ -2,7 +2,7 @@
 - {property}-{locale}.lg
 
 # template
-- {AskTemplate()}\n{HelpTemplate()}\n{NameTemplate()}
+- {AskTemplate()}\n{HelpTemplate()}\n{NameTemplate()}\n\[common.lg]
 
 # AskTemplate
 - # Ask{property}\n- \{askEnum('{property}')\}\n
@@ -11,4 +11,4 @@
 - # Help{property}\n- \{helpProperty('{property}')\}\n
 
 # NameTemplate
-- # {property}Name\n- {phrase(property)}\n
+- # {property}Name\n- {phrase(property, locale)}\n

@@ -2,7 +2,4 @@
 - {property}-{locale}.lg
 
 # template
-- # Ask{property}\n- \{askString('{property}')\}\n{common()}
-
-# common
-- \[{form}-common.{locale}.lg\]\(./{form}-common.{locale}.lg\)
+- # Ask{property}\n- \{askString('{property}')\}\n\[common.lg]

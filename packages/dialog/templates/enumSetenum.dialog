@@ -1,7 +1,12 @@
+# filename
+- {property}Set{property}Entity.dialog
+
+# template
+- ```
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
     "$type": "Microsoft.OnSetProperty",
-    "property": "**PROPERTY**",
+    "property": "{property}",
     "actions": [
         {
             "$type": "Microsoft.IfCondition",
@@ -9,17 +14,17 @@
             "actions":[               
                 {
                     "$type": "Microsoft.IfCondition",
-                    "condition": "!$**PROPERTY**",
+                    "condition": "!${property}",
                     "actions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "[unexpectedPropertySet('**PROPERTY**', @**PROPERTY**, **PROPERTY**Name())]"
+                            "activity": "[unexpectedPropertySet('{property}'. @{property}Entity)]"
                         }
                     ],
                     "elseActions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "[unexpectedPropertyChange('**PROPERTY**', @**PROPERTY**, **PROPERTY**Name(), $**PROPERTY**)]"
+                            "activity": "[unexpectedPropertyChange('{property}', @{property}Entity)]"
                         }
                     ]
                 }                
@@ -27,8 +32,9 @@
         },
         {
             "$type": "Microsoft.SetProperty",
-            "property": "$**PROPERTY**",
-            "value": "@**PROPERTY**"
+            "property": "${property}",
+            "value": "@{property}Entity"
         }
     ]
 }
+```

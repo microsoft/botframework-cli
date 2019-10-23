@@ -12,7 +12,7 @@
             "$comment": "This indicates the whole string is what maps to this."
         },
         "Length": {
-            "type": "string",
+            "type": "number",
             "$mappings": [
                 "dimension",
                 "number"
@@ -56,10 +56,7 @@
             ]
         },
         "Name": {
-            "type": "string",
-            "$mappings": [
-                "utterance"
-            ]
+            "type": "string"
         }
     },
     "required": [
