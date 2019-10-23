@@ -3,18 +3,17 @@ Often times you might want to target a multi-lingual bot. You can of course use 
 
 In other cases, you might want to manage the translation and localization for the language understanding content for your bot independently. 
 
-Translate command in the ludown CLI takes advantage of the [Microsoft text translation API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/) to automatically machine translate .lu files to one or more than [60+ languages](https://aka.ms/translate-langs) supported by the Microsoft text translation cognitive service.
+Translate command in the @microsoft/bf-lu library takes advantage of the [Microsoft text translation API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/) to automatically machine translate .lu files to one or more than [60+ languages](https://aka.ms/translate-langs) supported by the Microsoft text translation cognitive service.
 
 You can learn more about language x locale support for [LUIS.ai](https://www.luis.ai/) [here](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-supported-languages) and [qnamaker.ai](https://www.qnamaker.ai/) [here](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/overview/languages-supported)
 
 ## What is translated? 
-With the ludown translate command you can translate: 
-- An .lu file and optionally translate
+- An .lu (or .qna) file and optionally translate
     - Comments in the lu file
     - LU and QnA reference link texts
-- List of .lu files under a specific path.
+- List of .lu/ .qna files under a specific path.
 
-When translating .lu file, 
+When translating .lu/ .qna file, 
 - [Intents](docs/lu-file-format.md#intent) are not translated
 - [Entity](docs/lu-file-format.md#entity) names are not translated
 
@@ -33,10 +32,10 @@ OPTIONS
 ```
 
 ## Getting keys
-Ludown translate expects a Machine translation subscription key. You can obtain one [here](https://aka.ms/translate-key)
+luis:translate command expects a Machine translation subscription key. You can obtain one [here](https://aka.ms/translate-key)
 
 ## Generating LUIS models from translated lu files
-You can follow instructions [here](https://aka.ms/translate-langs) to create LUIS models from lu files using ludown translate command. 
+You can follow instructions [here](./working-with-luis.md) to create LUIS models from lu files generated via luis:translate command. 
 
 **Note**: You need to explicitly provide the correct [LUIS lang code](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-supported-languages) to the bf luis:translate command.
 
