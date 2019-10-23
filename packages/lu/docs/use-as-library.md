@@ -1,15 +1,15 @@
-# Ludown as a library
-Ludown can be used within a Node.js application as an imported library. Install locally:
+# Consuming @microsoft/bf-lu as a library
+@microsoft/bf-lu can be used within a Node.js application as an imported library. Install locally:
 
 ```bash
-npm install @microsoft/bf-luis --save
+npm install @microsoft/bf-lu --save
 ```
 
 ## Parsing lu files
 To parse LU files, you can use the parseFile() method. 
 
 ```js
-const ludown = require('ludown');
+const ludown = require('@microsoft/bf-lu');
 const luContent1 = `# Greeting
 - hi`;
 const log = false;
@@ -19,7 +19,7 @@ ludown.parser.parseFile(luContent1, log, locale)
         // Parsed LUIS object
         console.log(JSON.stringify(parsedContent.LUISJsonStructure, 2, null));
         // Parsed QnA content
-        console.log(JSON.stringify(parsedContent.additionalFilesToParse, 2, null));
+        console.log(JSON.stringify(parsedContent.qnaJsonStructure, 2, null));
         // Additional files to parse
         console.log(JSON.stringify(parsedContent.additionalFilesToParse, 2, null));
     })
@@ -40,7 +40,7 @@ ludown.parser.parseFile(luContent1, log, locale)
 You can use the available validateLUISBlob() function to verify if the parsed LUIS blob is valid. This helps catch name conflicts, invalid labelled utterances etc. 
 
 ```js
-const ludown = require('ludown');
+const ludown = require('@microsoft/bf-lu');
 const luContent = `# Greeting
 - hi {userName=bob}
 $userName:first=
@@ -79,8 +79,7 @@ parseContent();
 You can generate lu content from LUIS and QnA maker JSON using constructMdFromLUIS() and constructMdFromQnA() methods. Here's an example code snippet. 
 
 ```js
-#!/usr/bin/env node
-const ludown = require('ludown');
+const ludown = require('@microsoft/bf-lu')
 const luContent = `# Greeting
 - hi
 $userName:first=
@@ -128,7 +127,7 @@ You can take advantage of the [Microsoft text translation API](https://docs.micr
 To translate lu file content, you can simply use the parseAndTranslate() method. Here's a code snippet.
 
 ```js
-const ludown = require('ludown');
+const ludown = require('@microsoft/bf-lu');
 const luContent = `# Greeting
 - hi
 $userName:first=

@@ -15,6 +15,12 @@ export default class ConfigShowQnamaker extends Command {
 
   async run() {
     const userConfig: Config = await getConfigFile(this.config.configDir)
-    this.log(JSON.stringify(userConfig.qnamaker, null, 2))
+    let qnaMaker: any = {}
+    Object.keys(userConfig).forEach((key: string) => {
+      if (key.startsWith('qnamaker__')) {
+        qnaMaker[key] = userConfig[key]
+      }
+    })
+    this.log(JSON.stringify(qnaMaker, null, 2))
   }
 }
