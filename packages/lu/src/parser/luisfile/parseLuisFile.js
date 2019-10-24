@@ -139,6 +139,7 @@ module.exports = {
 
                 // composite entity definitions must have valid child entity type definitions. 
                 composite.children.forEach(child => {
+                    if (child instanceof Object) child = child.name;
                     // Fix for #1165
                     // Current implementation does not account for explicit role included in a child
                     let childEntityName = child;
