@@ -150,14 +150,13 @@ export default class ChatdownConvert extends Command {
   private async writeOut(activities: any, fileName: string, outputDir: any, force: boolean) {
     if (fileName && outputDir) {
       let writeFile
-      let outFile = ''
       let outputIsDirectory = this.isDir(outputDir)
       if (!outputIsDirectory) {
         writeFile = outputDir
       } else {
         writeFile = path.join(outputDir, `${fileName}.transcript`)
       }
-      let validatedPath = utils.validatePath(writeFile, outFile, force)
+      let validatedPath = utils.validatePath(writeFile, '', force)
       await fs.ensureFile(writeFile)
       await fs.writeJson(validatedPath, activities, {spaces: 2})
       return writeFile
