@@ -153,8 +153,6 @@ export default class ChatdownConvert extends Command {
       let outFile = ''
       let outputIsDirectory = this.isDir(outputDir)
       if (!outputIsDirectory) {
-        outFile = path.basename(outputDir) || ''
-        outputDir.replace(outFile, '')
         writeFile = outputDir
       } else {
         writeFile = path.join(outputDir, `${fileName}.transcript`)
