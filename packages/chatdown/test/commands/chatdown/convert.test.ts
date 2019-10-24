@@ -94,11 +94,32 @@ describe('chatdown:convert', () => {
     });
   });
 
+  it('throw error if no chat files found', done => {
+    cp.exec(`node ./bin/run chatdown:convert --in './xyz/**/abc.chat'`, (error, stdout, stderr) => {
+      assert(stderr.includes('No chat files found at:') || stderr.includes('error'));
+      done();
+    });
+  });
+
   it('should display an error message when the out directory does not exist', done => {
     cp.exec(`node ./bin/run chatdown:convert -i "./test/utils/cli.sample.chat" -o ./xyz`, (error, stdout, stderr) => {
       assert(stderr.includes('no such file or directory'));
-        done();
-      });
+      done();
+    });
+  });
+
+  it('should successfully overwrite an existing transcript file', done => {
+    cp.exec(`node ./bin/run chatdown:convert -i "./test/utils/cli.sample.chat" -o ./testout/cli.sample.transcript --force`, (error, stdout, stderr) => {
+      assert(stdout.includes('Successfully wrote'));
+      done();
+    });
+  });
+
+  it('should display an error message when the specified output file does not exist', done => {
+    cp.exec(`node ./bin/run chatdown:convert -i "./test/utils/*.sample.chat" -o ./testout/cli.xxx.transcript --force`, (error, stdout, stderr) => {
+      assert(stderr.includes('no such file or directory'));
+      done();
+    });
   });
 
 })
