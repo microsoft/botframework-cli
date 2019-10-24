@@ -1,6 +1,7 @@
 {
   "name": "@microsoft/botframework-cli",
   "version": "1.0.0",
+  "description": "One-stop-shop CLI to manage your bot’s resources. BF CLI and AZ CLI together cover your end-to-end bot development workflow needs.",
   "author": "Microsoft",
   "bin": {
     "bf": "./bin/run"
@@ -14,7 +15,6 @@
     "@oclif/command": "~1.5.13",
     "@oclif/config": "~1.13.0",
     "@oclif/plugin-help": "~2.1.6",
-    "@oclif/plugin-plugins": "~1.7.8",
     "chalk": "2.4.1",
     "cli-ux": "^5.3.0",
     "fs-extra": "^7.0.1",
@@ -60,7 +60,6 @@
     "bin": "bf",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-plugins",
       "@microsoft/bf-chatdown",
       "@microsoft/bf-cli-config",
       "@microsoft/bf-qnamaker",
@@ -70,14 +69,15 @@
       "init": "./lib/hooks/init/inithook"
     }
   },
-  "repository": "https://github.com/microsoft/botframework-cli",
+  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/cli",
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "version": "oclif-dev readme && git add README.md",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.{ts,js}\""
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.{ts,js}\"",
+    "maindoc": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme && rimraf oclif.manifest.json"
   },
   "types": "lib/index.d.ts"
 }

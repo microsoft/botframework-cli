@@ -7,7 +7,7 @@ module.exports = {
         try {
             QnAJSON = JSON.parse(QnAFileContent);
         } catch (err) {
-            throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, error parsing file as QnA JSON: ' + file));
+            throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, error parsing QnA JSON content'))
         }
         return QnAJSON;
     }

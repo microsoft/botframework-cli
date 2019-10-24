@@ -1,11 +1,15 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import {Command, flags} from '@microsoft/bf-cli-command'
+import {updateQnAMakerConfig} from '../../utils/qnamakerbase'
 import cli from 'cli-ux'
 
 const Knowledgebase = require('./../../../utils/api/knowledgebase')
 const Endpointkeys = require('./../../../utils/api/endpointkeys')
 const chalk = require('chalk')
-const fs = require('fs-extra')
-const path = require('path')
 
 export default class QnamakerInit extends Command {
   static description = 'Initializes the config file with settings.'
@@ -40,7 +44,7 @@ export default class QnamakerInit extends Command {
 
     let [subscriptionKey, kbId] = answers
     /* tslint:disable: prefer-object-spread */
-    const config = Object.assign({}, {subscriptionKey, kbId, endpoint})
+    const config = Object.assign({}, {subscriptionKey, kbId, endpoint, endpointKey: '', hostname: ''})
 
     if (subscriptionKey && kbId) {
       cli.action.start('Updating config file hostname and endpoint key')
@@ -58,15 +62,7 @@ export default class QnamakerInit extends Command {
     }
 
     if (confirmation) {
-      let userConfig: any = {}
-      if (fs.existsSync(path.join(this.config.configDir, 'config.json'))) {
-        userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
-      } else {
-        await fs.mkdirp(this.config.configDir)
-      }
-
-      userConfig.qnamaker = config
-      await fs.writeJson(path.join(this.config.configDir, 'config.json'), userConfig, {spaces: 2})
+      await updateQnAMakerConfig(config, this.config.configDir)
     }
     return confirmation
   }

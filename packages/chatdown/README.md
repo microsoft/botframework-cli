@@ -10,42 +10,51 @@ Tool for parsing chat files and outputting replayable activities
 # Commands
 <!-- commands -->
 * [`bf chatdown`](#bf-chatdown)
+* [`bf chatdown:convert`](#bf-chatdownconvert)
 
 ## `bf chatdown`
 
-Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
 ```
 USAGE
   $ bf chatdown
 
 OPTIONS
-  -i, --in=in                  The path of the chat file or directory to be parsed. A glob expression may be passed containing 
-                               chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. 
-                               If an output directory is not present (-o), it will default the output to the current working directory.
+  -h, --help  Chatdown command help
+```
 
-  -h, --help                   Chatdown command help
+_See code: [src/commands/chatdown/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
 
-  -o, --out=out                Path to the directory where the output of the multiple chat file processing (-o) will be
-                               placed.
+## `bf chatdown:convert`
 
-  -p, --prefix                 Prefix stdout with package name.
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
-  -s, --static                 Use static timestamps when generating timestamps on activities.
+```
+USAGE
+  $ bf chatdown:convert
 
-EXAMPLES
+OPTIONS
+  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help     Chatdown command help
+
+  -i, --in=in    The path of the chat file or directory to be parsed. A glob expression may be passed containing chat
+                 files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an
+                 output directory is not present (-o), it will default the output to the current working directory.
+
+  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-o) will be placed.
+
+  -p, --prefix   Prefix stdout with package name.
+
+  -s, --stamp    Use static timestamps when generating timestamps on activities.
+
+EXAMPLE
 
      $ bf chatdown
-     $ bf chatdown -h
-     $ bf chatdown --in ./path/to/file/sample.chat
-     $ bf chatdown --in ./path/to/file/sample.chat --out ./
-     $ bf chatdown --in=./path/to/file/sample.chat --out=./
-     $ bf chatdown -i ./path/to/file/*.sample.chat -o ./
-     $ bf chatdown -i=./path/to/file/*.sample.chat -o=./
-     $ bf chatdown --in ./path/to/directory
-     $ bf chatdown --in ./path/to/directory/*
+     $ bf chatdown --in=./path/to/file/sample.chat
+     $ bf chatdown --in ./test/utils/*.sample.chat -o ./
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [src/commands/chatdown.ts](https://github.com/Microsoft/chatdown/blob/v0.0.0/src/commands/chatdown.ts)_
+_See code: [src/commands/chatdown/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
 <!-- commandsstop -->

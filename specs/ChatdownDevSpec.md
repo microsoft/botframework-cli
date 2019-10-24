@@ -1,7 +1,7 @@
 # ChatDown Dev Spec One-Pager
 
 ## Summary
-Converts chat dialog files in *.chat* format into transcript file. Writes corresponding *.transcript* for each .chat file.
+Converts chat dialog files in *.chat* format into transcript files. Writes corresponding *.transcript* for each .chat file.
 
 ## Requirements
 ### Prerequisites

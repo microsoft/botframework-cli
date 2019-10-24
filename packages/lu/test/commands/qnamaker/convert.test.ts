@@ -26,10 +26,12 @@ function sanitizeExampleJson(fileContent: string) {
 }
 
 describe('qnamaker:convert', () => {
+  before(async function(){
+    await fs.mkdirp(path.join(__dirname, './../../../results/'))
+  })
+
   after(async function(){
-    await fs.remove(path.join(__dirname, './../../../qna.lu'))
-    await fs.remove(path.join(__dirname, './../../../qna.json'))
-    await fs.remove(path.join(__dirname, './../../../alterations_qna.json'))
+    await fs.remove(path.join(__dirname, './../../../results/'))
   })
 
   test
@@ -40,15 +42,15 @@ describe('qnamaker:convert', () => {
   })
 
   test
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', 'qna.lu'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', './results/qna.lu'])
   .it('qnamaker:convert refresh command successfully reconstructs a markdown file from QnA input file', async () => {
-    expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/allGenQnA.lu')).to.be.true
+    expect(await compareLuFiles('./../../../results/qna.lu', './../../fixtures/verified/allGenQnA.lu')).to.be.true
   })
 
   test
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/all.qna')}`, '--out', 'qna.json', '--name', 'all-qna'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/all.qna')}`, '--out', './results/qna2.json', '--name', 'all-qna'])
   .it('qnamaker:convert all concepts of lu file definition is parsed correctly  [QnA]', async () => {
-    let parsedObjects = await parseJsonFiles('./../../../qna.json', './../../fixtures/verified/all-qna.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/qna2.json', './../../fixtures/verified/all-qna.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
   })
 
@@ -68,38 +70,42 @@ describe('qnamaker:convert', () => {
 
   test
   .stderr()
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', 'qna.json', '--name', 'collate-qna'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/qna3.json', '--name', 'collate-qna'])
   .it('qnamaker:convert Collate can correctly merge QnA content split across LU files', async () => {
-    let parsedObjects = await parseJsonFiles('./../../../qna.json', './../../fixtures/verified/collate-qna.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/qna3.json', './../../fixtures/verified/collate-qna.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
   })
 
   test
   .stderr()
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', 'qna.json'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/qna4.json'])
   .it('qnamaker:convert Collate can correctly merge QnA word alteration content split across LU files', async () => {
-    let parsedObjects = await parseJsonFiles('./../../../alterations_qna.json', './../../fixtures/verified/collate_Alterations.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/alterations_qna4.json', './../../fixtures/verified/collate_Alterations.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
   })
 })
 
 describe('qnamaker:convert with --sort option', () => {
+  before(async function(){
+    await fs.mkdirp(path.join(__dirname, './../../../results/'))
+  })
+
   after(async function(){
-    await fs.remove(path.join(__dirname, './../../../qna.lu'))
+    await fs.remove(path.join(__dirname, './../../../results/'))
   })
 
   test
   .stderr()
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all_qna.json')}`, '--out', 'qna.lu', '--sort'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all_qna.json')}`, '--out', './results/qna5.lu', '--sort'])
   .it('qnamaker:convert With -r/ --sort option, correctly sorts a QnA model', async () => {
-    expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/qna_sorted.lu')).to.be.true
+    expect(await compareLuFiles('./../../../results/qna5.lu', './../../fixtures/verified/qna_sorted.lu')).to.be.true
   })
 
   test
   .stderr()
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-alterations_Alterations.json')}`, '--out', 'qna.lu', '--sort', '--alterations'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-alterations_Alterations.json')}`, '--out', './results/qna6.lu', '--sort', '--alterations'])
   .it('qnamaker:convert With -r/ --sort option, correctly sorts a QnA Alteration model', async () => {
-    expect(await compareLuFiles('./../../../qna.lu', './../../fixtures/verified/qna_a_sorted.lu')).to.be.true
+    expect(await compareLuFiles('./../../../results/qna6.lu', './../../fixtures/verified/qna_a_sorted.lu')).to.be.true
   })
 })
 
@@ -109,5 +115,21 @@ describe('qnamaker:convert file creation', () => {
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', '/testfolder/qna.lu'])
   .it('qnamaker:convert refresh command successfully reconstructs a markdown file from QnA input file', async (ctx) => {
     expect(ctx.stderr).to.contain('Path not found:')
+  })
+})
+
+describe('qnamaker:convert empty file handling', () => {
+  test
+  .stderr()
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.lu')}`])
+  .it('qnamaker:convert errors out on empty lu file', async (ctx) => {
+    expect(ctx.stderr).to.contain('[ERROR] Cannot parse empty')
+  })
+
+  test
+  .stderr()
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
+  .it('qnamaker:convert errors out on empty json file', async (ctx) => {
+    expect(ctx.stderr).to.contain('Sorry, error parsing QnA JSON content')
   })
 })

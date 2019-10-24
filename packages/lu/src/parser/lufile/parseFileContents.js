@@ -171,7 +171,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // If utterances have this child, then all parents must be included in the label
     updateModelBasedOnNDepthEntities(parsedContent.LUISJsonStructure.utterances, parsedContent.LUISJsonStructure.entities);
 
-    if (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) delete parsedContent.LUISJsonStructure.flatListOfEntityAndRoles
+    helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
 
 }
 
