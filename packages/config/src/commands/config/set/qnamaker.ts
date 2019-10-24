@@ -14,6 +14,7 @@ export default class ConfigSetQnamaker extends Command {
     subscriptionKey: flags.string({description: 'QnAMaker subscriptionkey to be set'}),
     hostname: flags.string({description: 'QnAMaker hostname to be set'}),
     endpointKey: flags.string({description: 'QnAMaker endpointKey to be set'}),
+    help: flags.help({char: 'h', description: 'config:set:qnamaker help'})
   }
 
   static examples = [`

@@ -26,7 +26,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src/commands/index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/index.ts)_
+_See code: [src/commands/index.ts](https://github.com/microsoft/botframework-cli/src/commands/index.ts)_
 
 ## `bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`
 
@@ -45,7 +45,7 @@ OPTIONS
   --verbose            output verbose logging of files as they are processed
 ```
 
-_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/dialog/merge.ts)_
+_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/src/commands/dialog/merge.ts)_
 
 ## `bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`
 
@@ -58,7 +58,7 @@ OPTIONS
   --verbose   Show verbose output
 ```
 
-_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src/commands/dialog/verify.ts)_
+_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/src/commands/dialog/verify.ts)_
 <!-- commandsstop -->
 * [`bf dialog:merge [FILE]`](#bf-dialogmerge-file)
 * [`bf dialog:verify [FILE]`](#bf-dialogverify-file)

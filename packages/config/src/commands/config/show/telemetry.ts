@@ -10,7 +10,7 @@ export default class ConfigShowTelemetry extends Command {
   static description = 'Display telemetry settings'
 
   static flags = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({char: 'h', description: 'config:show:telemetry help'})
   }
 
   async run() {
