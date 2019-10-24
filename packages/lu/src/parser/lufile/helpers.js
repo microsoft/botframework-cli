@@ -148,6 +148,37 @@ const helpers = {
         // patterns must have at least one [optional] and or one (group | text)
         let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
         return detectPatternRegex.test(utterance);
+    },
+    /**
+     * Helper to detect luis schema version based on content and update the final payload as needed.
+     * @param {LUIS} finalLUISJSON 
+     */
+    checkAndUpdateVersion : function(finalLUISJSON) {
+        if (!finalLUISJSON) return;
+        // clean up house keeping
+        if (finalLUISJSON.flatListOfEntityAndRoles)  delete finalLUISJSON.flatListOfEntityAndRoles
+        // Detect if there is content specific to 5.0.0 schema
+        // any entity with children
+        if (!finalLUISJSON) {
+            return
+        }
+        let v5DefFound = false;
+        v5DefFound = (finalLUISJSON.entities || []).find(i => i.children || i.features) ||
+                    (finalLUISJSON.intents || []).find(i => i.features) || 
+                    (finalLUISJSON.composites || []).find(i => i.features);
+        if (v5DefFound) {
+            finalLUISJSON.luis_schema_version = "6.0.0";
+            if (finalLUISJSON.model_features && finalLUISJSON.model_features.length !== 0) {
+                finalLUISJSON.phraselists = [];
+                finalLUISJSON.model_features.forEach(item => finalLUISJSON.phraselists.push(Object.assign({}, item)));
+                delete finalLUISJSON.model_features;
+            }
+            (finalLUISJSON.composites || []).forEach(composite => {
+                let children = composite.children;
+                composite.children = [];
+                children.forEach(c => composite.children.push({name : c}));
+            })
+        }
     }
 }
 

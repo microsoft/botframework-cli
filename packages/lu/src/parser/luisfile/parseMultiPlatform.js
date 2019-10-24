@@ -1,3 +1,5 @@
+const {CLIError} = require('@microsoft/bf-cli-command')
+
 module.exports = {
     Composite: class {
         constructor() {
@@ -38,6 +40,7 @@ module.exports = {
         }
     },
     fromLuisApp: function(luisApp) {
+        try {
         const classData = new this.MultiPlatformLuis();
         classData.intents = this.processIntents(luisApp.intents);
         classData.simpleEntities = this.extractEntities(luisApp.entities);
@@ -47,6 +50,9 @@ module.exports = {
         classData.patternEntities = this.extractEntities(luisApp.patternAnyEntities);
         classData.composites = this.extractComposites(luisApp.composites);
         return classData;
+        } catch (err) {
+            throw new CLIError("Invalid LUIS JSON file content.")
+        }
     },
     normalizeName: function(name) {
         return name.replace(/\./g, '_').replace(/ /g, '_');
