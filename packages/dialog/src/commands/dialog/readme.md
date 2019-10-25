@@ -23,7 +23,7 @@ Schemas are specified using JSON Schema.  You can use the normal JSON Schema mec
   * **enum**
   * **number**, **string**
 * **\$expectedOnly** A list of properties that are only possible if they are expected.
-* **\$required** A list of JSON Schema to use for internal mechanisms.  You can use either actual paths or just the name of the schema to use if found in one of the template directories.  The standard schema is `standard.schema.dialog`.  The form schema and all of the required schemas will have the top-level `properties`, `definitions`, `required`, `$expectedOnly` and `$templates` merged.
+* **\$requires** A list of JSON Schema to use for internal mechanisms.  You can use either actual paths or just the name of the schema to use if found in one of the template directories.  The standard schema is `standard.schema.dialog`.  The form schema and all of the required schemas will have the top-level `properties`, `definitions`, `required`, `$expectedOnly` and `$templates` merged.
 
 `<form>.form.dialog` will be generated with the form schema in it.  `<form>.schema.dialog` will have the whole schema defined.
 
