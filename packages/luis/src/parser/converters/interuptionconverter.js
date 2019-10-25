@@ -111,5 +111,97 @@ module.exports = {
         } catch (err) {
             throw(err)
         }
+    },
+
+    /*
+    resource is array of below object
+    {
+        id: a.lu
+        content: LuResource
+        children: [ { intent: "b", target: "b.lu"} , {intent:  "c", target: "c.lu"}]
+    }
+    */
+    crossTrain: function(resources, intentName = 'interuption') {
+        const idToResourceMap = new Map();
+        for (const resource of resources) {
+            idToResourceMap.set(resource.id, resource);
+        }
+
+        for (const id of idToResourceMap.keys()) {
+            let resource = idToResourceMap.get(id);
+            let children = resource.children;
+            for (const child of children) {
+                let intent = child.intent;
+                if (idToResourceMap.has(child.target)) {
+                    let targetResource = idToResourceMap.get(child.target);
+                    let brothers = children.filter(child => child.intent !== intent && child.intent !== intentName);
+                    let brotherUtterances = [];
+                    if (brothes && brothers.length > 0) {
+                        brothers.forEach(x => {
+                            let intents = [];
+                            if (idToResourceMap.has(x.target)) {
+                                let brotherSections = idToResourceMap.get(x.target).content.Sections;
+                                for(const section of brotherSections) {
+                                    if (section.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+                                        intents.push(section);
+                                    }
+                                }
+                            }
+
+                            let utterancesTobeAdded = [];
+                            intents.forEach(intent => {
+                                if (intent.Name !== intentName) {
+                                    utterancesTobeAdded = utterancesTobeAdded.concat(intent.UtteranceAndEntitiesMap.map(y => y.context.getText().trim()));
+                                }
+                            })
+
+                            brotherUtterances = brotherUtterances.concat(utterancesTobeAdded);
+                        });
+                    }
+
+                    const interuptionIntents = targetResource.content.Sections.filter(section => section.Name === 'interuption');
+                    if (interuptionIntents && interuptionIntents.length > 0) {
+                        let interuptionIntent = interuptionIntents[0];
+                        let existingUtterances = interuptionIntent.UtteranceAndEntitiesMap.map(y => y.context.getText().trim().slice(1).trim());
+                        // construct new content here
+                        let newFileContent = '';
+                        brotherUtterances.forEach(utterance => {
+                            if (!existingUtterances.includes(utterance.trim().slice(1).trim())) {
+                                newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n';
+                            }
+                        });
+
+                        if (newFileContent !== '') {
+                            newFileContent = interuptionIntent.ParseTree.intentDefinition().getText().trim() + '\r\n' + newFileContent;
+                            let lines = newFileContent.split(/\r?\n/);
+                            let newLines = [];
+                            lines.forEach(line => {
+                                if (line.trim().startsWith('-')) {
+                                    newLines.push('- ' + line.trim().slice(1).trim());
+                                } else if (line.trim().startsWith('##')) {
+                                    newLines.push('## ' + line.trim().slice(2).trim());
+                                } else if (line.trim().startsWith('#')) {
+                                    newLines.push('# ' + line.trim().slice(1).trim());
+                                }
+                            })
+
+                            newFileContent = newLines.join('\r\n');
+
+                            // update section here
+                            targetResource.content = new SectionOperator(targetResource.content).updateSection(interuptionIntent.Id, newFileContent);
+                        }
+                    } else {
+                        // construct new content here
+                        let newFileContent = '\r\n# interuption\r\n';
+                        brotherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
+
+                        // add section here
+                        targetResource.content = new SectionOperator(targetResource.content).addSection(newFileContent);
+                    }
+
+                    idToResourceMap.set(targetResource.id, targetResource);
+                }
+            }
+        }
     }
 }
