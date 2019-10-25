@@ -1,17 +1,20 @@
 # filename
-- {form}.lu.dialog
+- {formName}.lu.dialog
 
 # template
 - ```
 {
     "$type": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
-        @{foreach(locales, locale, concat(locale, ': ', formName(), '-', locale, '.lu'))}
-        "en-us": "sandwich.en-us.lu",
-        "": "sandwich.en-us.lu"
+        @{join(foreach(locales, locale, entry(locale, formName)), ',\n')},
+        "": @{concat(file(locales[0], formName))}
     }
 }
 ```
 
-# formName
-- {form}
+# entry(locale, name)
+- {concat('"', locale, '": ', file(locale, name))}
+
+# file(locale, name)
+- {concat('"', name, '.', locale, '.lu"')}
+

@@ -3,10 +3,10 @@
 
 >>> This is because of issues around ' and } in strings--see enumEntityDesired.lg for a test case
 # template
-- {propertyEntity()}\n{clarifyEntity()}\n\[common.lg]\n
+- {propertyEntity()}\n{clarifyEntity()}\n\[common.lg]
 
 # clarifyEntity
-- # clarify{property}Entity\n- \{clarifyEnumEntity({concat("'", property, "'")})\}\n
+- # clarify{property}Entity\n- \{clarifyEnumEntity({concat('"', property, '"')})\}\n
 
 # propertyEntity
 - {join(createArray(namePlusSwitch(), cases(), default()), '\n')}\n

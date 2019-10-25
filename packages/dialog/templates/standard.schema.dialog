@@ -34,11 +34,14 @@
     },
     "$templates": [
         "help.lu",
+        "locale.lu",
+        "locale.lg",
         "BeginDialog.dialog",
         "CancelConfirmation.dialog",
         "CancelConfirmationSet.dialog",
         "CompleteConfirmation.dialog",
         "CompleteConfirmationSet.dialog",
+        "Help.dialog",
         "luconfig.json",
         "lu.dialog",
         "Main.dialog"

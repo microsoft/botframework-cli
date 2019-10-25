@@ -19,7 +19,7 @@
             "elseActions":[
                 {
                     "$type": "Microsoft.Ask",
-                    "activity": "Which slot do you want to change?",
+                    "activity": "{chooseProperty()}",
                     "expectedProperties": [
                         "PropertyToChange"
                     ]

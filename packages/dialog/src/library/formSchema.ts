@@ -111,10 +111,13 @@ export class FormSchema {
         let templates = this.schema.$templates
         if (!templates) {
             let type = this.typeName()
-            templates = [type + 'Property.lg', type + 'Entity.lu', type + 'Entity.lg', type + 'Ask.dialog']
+            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + 'Ask.dialog']
             for (let mapping of this.mappings()) {
                 if (mapping === this.path + 'Entity') {
                     templates.push(`${type}Set${type}.dialog`)
+                    if (type === 'enum') {
+                        templates.push(`${type}ClarifyEntity.dialog`)
+                    }
                 } else {
                     templates.push(`${type}Set${mapping}.dialog`)
                 }

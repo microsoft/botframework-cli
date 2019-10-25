@@ -1,7 +1,13 @@
+# filename
+- {formName}-{property}Set{property}Entity.dialog
+
+# template
+- ```
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
     "$type": "Microsoft.OnSetProperty",
-    "property": "**PROPERTY**",
+    "property": "@{property}",
+    "entity": "@{property}Entity",
     "actions": [
         {
             "$type": "Microsoft.IfCondition",
@@ -9,17 +15,17 @@
             "actions":[               
                 {
                     "$type": "Microsoft.IfCondition",
-                    "condition": "!$**PROPERTY**",
+                    "condition": "!${property}",
                     "actions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "[unexpectedPropertySet('**PROPERTY**', @number, **PROPERTY**Name)]"
+                            "activity": "@{unexpectedSet()}"
                         }
                     ],
                     "elseActions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "[unexpectedPropertyChange('**PROPERTY**', @number, **PROPERTY**Name, $**PROPERTY**)]"
+                            "activity": "@{unexpectedChange()}"
                         }
                     ]
                 }                
@@ -27,8 +33,15 @@
         },
         {
             "$type": "Microsoft.SetProperty",
-            "property": "$**PROPERTY**",
-            "value": "@number"
+            "property": "${property}",
+            "value": "@@{property}Entity"
         }
     ]
 }
+```
+
+# unexpectedSet
+- \{unexpectedPropertySet('{property}', @@{property}Entity)}
+
+# unexpectedChange
+- \{unexpectedPropertyChange('{property}', @@{property}Entity)}

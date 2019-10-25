@@ -5,7 +5,7 @@
     "actions": [
         {
             "$type": "Microsoft.Ask",
-            "activity": "[cancel]",
+            "activity": "{cancel()}",
             "expectedProperties": [
                 "CancelConfirmation"
             ]

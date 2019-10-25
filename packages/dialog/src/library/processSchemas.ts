@@ -12,6 +12,7 @@ let clone = require('clone')
 let parser: any = require('json-schema-ref-parser')
 
 type idToSchema = { [id: string]: any }
+
 function basename(loc: string): string {
     let name = path.basename(loc)
     return name.substring(0, name.indexOf('.'))
@@ -97,7 +98,7 @@ export async function processSchemas(formPath: string, templateDirs: string[], o
         if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
     }
     let name = basename(formPath)
-    await fg.writeFile(path.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema), force, feedback)
-    await fg.writeFile(path.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema), force, feedback)
+    await fg.writeFile(path.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema, undefined, 4), force, feedback)
+    await fg.writeFile(path.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema, undefined, 4), force, feedback)
     return { form: new s.FormSchema(formPath, formSchema, name), schema: new s.FormSchema('', allSchema, name) }
 }

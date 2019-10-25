@@ -4,7 +4,7 @@
     "actions": [
         {
             "$type": "Microsoft.Ask",
-            "activity": "[chooseProperties]"           
+            "activity": "{chooseProperties()}"           
         }
     ]
 }

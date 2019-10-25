@@ -1,5 +1,5 @@
 # filename
-- {property}Entity-{locale}.lg
+- {formName}-{property}Entity.{locale}.lg
 
 # template
 - ${property}Entity:Simple

@@ -1,5 +1,5 @@
 # filename
-- {property}-{locale}.lg
+- {formName}-{property}.{locale}.lg
 
 # template
-- # Ask{property}\n- \{askString('{property}')\}\n\[common.lg]
+- # Ask{property}\n- \{askString('{property}')\}\n\n\[common.lg]

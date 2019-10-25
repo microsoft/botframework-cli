@@ -5,11 +5,11 @@
     "actions": [
         {
             "$type": "Microsoft.SendActivity",
-            "activity": "[readForm]"
+            "activity": "{readForm()}"
         },
         {
             "$type": "Microsoft.Ask",
-            "activity": "[changeSlot]",
+            "activity": "{confirmChange()}",
             "expectedProperties": [
                 "CompleteConfirmation"
             ]
