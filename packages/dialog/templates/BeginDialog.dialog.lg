@@ -7,7 +7,7 @@
     "actions":  [
         {
             "$type": "Microsoft.SendActivity",
-            "activity": "@{callWelcome}"           
+            "activity": "@{callWelcome()}"           
         }
     ]
 }
