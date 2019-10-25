@@ -1,32 +1,29 @@
-import { CLIError, Command, flags } from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
-const path = require('path')
 const file = require('./../../utils/filehelper')
 const luConverter = require('./../../parser/converters/lutoluisconverter')
 const luisConverter = require('./../../parser/converters/luistoluconverter')
-const interuptionConverter = require('./../../parser/converters/interuptionconverter')
 
 export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
 
   static flags: flags.Input<any> = {
-    in: flags.string({ description: 'Source .lu file(s) or LUIS application JSON model' }),
-    recurse: flags.boolean({ description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false }),
-    log: flags.boolean({ description: 'Enables log messages', default: false }),
-    sort: flags.boolean({ description: 'When set, intent, utterances, entities are alphabetically sorted in .lu files', default: false }),
-    out: flags.string({ description: 'Output file or folder name. If not specified stdout will be used as output' }),
-    name: flags.string({ description: 'Name of the LUIS application' }),
-    description: flags.string({ description: 'Text describing the LUIS applicaion' }),
-    culture: flags.string({ description: 'Lang code for the LUIS application' }),
-    versionid: flags.string({ description: 'Version ID of the LUIS application' }),
-    schemaversion: flags.string({ description: 'Schema version of the LUIS application' }),
-    interuption: flags.boolean({ description: 'convert interuption intent' }),
+    in: flags.string({description: 'Source .lu file(s) or LUIS application JSON model'}),
+    recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
+    log: flags.boolean({description: 'Enables log messages', default: false}),
+    sort: flags.boolean({description: 'When set, intent, utterances, entities are alphabetically sorted in .lu files', default: false}),
+    out: flags.string({description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    name: flags.string({description: 'Name of the LUIS application'}),
+    description: flags.string({description: 'Text describing the LUIS applicaion'}),
+    culture: flags.string({description: 'Lang code for the LUIS application'}),
+    versionid: flags.string({description: 'Version ID of the LUIS application'}),
+    schemaversion: flags.string({description: 'Schema version of the LUIS application'}),
   }
 
   async run() {
     try {
-      const { flags } = this.parse(LuisConvert)
+      const {flags} = this.parse(LuisConvert)
       // Check if data piped in stdin
       let stdin = await this.readStdin()
 
@@ -38,11 +35,7 @@ export default class LuisConvert extends Command {
       let result: any
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
-        if (flags.interuption) {
-          result = await interuptionConverter.convertInteruption(luFiles, flags.log);
-        } else {
-          result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
-        }
+        result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
       } else {
         const luisFile = stdin ? stdin : await file.getContentFromFile(flags.in)
         result = await luisConverter.parseLuisObjectToLu(luisFile, flags.sort, flags.in)
@@ -53,26 +46,22 @@ export default class LuisConvert extends Command {
         throw new CLIError('No LU or Luis content parsed!')
       }
 
-      if (isLu && flags.interuption) {
-          await this.writeLuFiles(result, flags);
-      } else {
-        // Add headers to Luis Json
-        if (isLu) {
-          result.luis_schema_version = flags.schemaversion || result.luis_schema_version || '3.2.0'
-          result.versionId = flags.versionId || result.versionId || '0.1'
-          result.name = flags.name || result.name || ''
-          result.desc = flags.desc || result.desc || ''
-          result.culture = flags.culture || result.culture || 'en-us'
-          result.culture = result.culture.toLowerCase()
-          result = JSON.stringify(result, null, 2)
-        }
+       // Add headers to Luis Json
+      if (isLu) {
+        result.luis_schema_version = flags.schemaversion || result.luis_schema_version || '3.2.0'
+        result.versionId = flags.versionId || result.versionId || '0.1'
+        result.name = flags.name || result.name || ''
+        result.desc = flags.desc || result.desc || ''
+        result.culture = flags.culture || result.culture || 'en-us'
+        result.culture = result.culture.toLowerCase()
+        result = JSON.stringify(result, null, 2)
+      }
 
-        // Print or write the parsed object
-        if (flags.out) {
-          await this.writeOutput(result, flags, isLu)
-        } else {
-          this.log(result)
-        }
+      // Print or write the parsed object
+      if (flags.out) {
+        await this.writeOutput(result, flags, isLu)
+      } else {
+        this.log(result)
       }
     } catch (err) {
       if (err instanceof exception) {
@@ -92,35 +81,5 @@ export default class LuisConvert extends Command {
       throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
     }
     this.log('Successfully wrote LUIS model to ' + filePath)
-  }
-
-  private async writeLuFiles(fileIdToLuResourceMap: Map<string, any>, flags?: any) {
-    let newFolder;
-    if (flags && flags.out) {
-      newFolder = flags.out
-      if (!path.isAbsolute(flags.out)) {
-        newFolder = path.resolve(flags.out);
-      }
-
-      if (!fs.existsSync(newFolder)) {
-        fs.mkdirSync(newFolder);
-      }
-    }
-
-    for (const fileId of fileIdToLuResourceMap.keys()) {
-      try {
-        if (newFolder) {
-          const fileName = path.basename(fileId);
-          const newFileId = path.join(newFolder, fileName);
-          await fs.writeFile(newFileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8');
-          this.log('Successfully wrote LUIS model to ' + newFileId);
-        } else {
-          await fs.writeFile(fileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8');
-          this.log('Successfully wrote LUIS model to ' + fileId);
-        }
-      } catch (err) {
-        throw new CLIError('Unable to write file - ' + fileId + ' Error: ' + err.message);
-      }
-    }
   }
 }
