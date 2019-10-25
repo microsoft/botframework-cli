@@ -497,19 +497,3 @@ describe('luis:convert new entity format', () => {
     expect(await compareLuFiles('./../../../newEntity.lu', './../../fixtures/verified/newEntity2.lu')).to.be.true
   })
 })
-
-describe('luis:convert interuption intent among lu files', () => {
-  after(async function() {
-    await fs.remove(path.join(__dirname, './../../../interuptionGen'))
-  })
-
-  test
-  .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption')}`, '--out', 'interuptionGen', '--interuption'])
-  .it('luis:convert interuption intents when interuption intents are set', async () => {
-    expect(await compareLuFiles('./../../../interuptionGen/restaurant.lu', './../../fixtures/verified/interuption/restaurant.lu')).to.be.true;
-    expect(await compareLuFiles('./../../../interuptionGen/hotel.lu', './../../fixtures/verified/interuption/hotel.lu')).to.be.true;
-    expect(await compareLuFiles('./../../../interuptionGen/flight.lu', './../../fixtures/verified/interuption/flight.lu')).to.be.true;
-  })
-})
-
