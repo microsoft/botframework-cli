@@ -5,7 +5,14 @@
 # Verify
 
 # Form
-The form command generates .lu, .lg, .qna and .dialog assets from a schema defined using json.schema.
+The form command generates .lu, .lg, .qna and .dialog assets from a schema defined using JSON Schema.  The parameters to the command are:
+* **--force, -f** Force overwriting generated files.
+* **--help, -h** Generate help.
+* **--locale, -l** Locales to generate.  By default en-us.
+* **--output, -o** Output directory.
+* **--schema, -s** Path to your app.schema file. By default is the standard SDK app.schema.
+* **--templates, -t** Directories with templates to use for generating form assets.
+* **--verbose, -v** Verbose logging of generated files.
 
 ## Schema
 Schemas are specified using JSON Schema.  You can use the normal JSON Schema mechanisms including $ref and allOf which will be resolved into a single schema.  In addition there are a few extra keywords including:
@@ -25,6 +32,7 @@ Each entity or property can have associated .lu, .lg, .qna and .dialog files tha
 copying or instantiating templates found in the template directories.  If a template name matches exactly it is
 just copied.  If the template ends with .lg then it is analyzed to see if it has a template named 'template' and optionally one named 'filename'.  If 'filename' is specified, then the filename will be the result of generating generated file is the result of evaluating that template, otherwise it defaults to `<formName>-<templateName>[.<locale>].<extension>`.  When evaluating templates there are a number of variables defined in the scope including:
 * **formName** The name of the form being generated.
+* **appSchema** The path to the app.schema to use. 
 * **form** The JSON Schema defining the form.
 * **schema** The JSON Schema of the form + internal properties.
 * **locales** The list of all locales being generated.

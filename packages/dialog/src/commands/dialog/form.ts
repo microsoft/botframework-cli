@@ -5,7 +5,7 @@
 
 import { Command, flags } from '@microsoft/bf-cli-command';
 import * as gen from '../../library/formGenerator'
-import * as path from 'path'
+import * as ppath from 'path'
 
 export default class DialogForm extends Command {
 
@@ -26,10 +26,10 @@ export default class DialogForm extends Command {
     async run() {
         const { args, flags } = this.parse(DialogForm)
         try {
-            let formName = path.basename(args.form, '.schema.dialog')
+            let formName = ppath.basename(args.form, '.schema.dialog')
             let outDir = flags.output
             if (!outDir) {
-                outDir = path.join(formName + '-resources')
+                outDir = ppath.join(formName + '-resources')
             }
             await gen.generate(args.form, outDir, flags.schema, flags.locale, flags.templates, flags.force,
                 (type, msg) => {

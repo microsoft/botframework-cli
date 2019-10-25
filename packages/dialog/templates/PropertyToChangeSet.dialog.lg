@@ -1,16 +1,22 @@
+# template
+- ```
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
+    "$schema": "@{appSchema}",
     "$type": "Microsoft.OnSetProperty",
     "property": "PropertyToChange",
     "actions": [
         {
             "$type": "Microsoft.SetProperty",
             "property": "$PropertyToChange",
-            "value": "concat('dialog.',@PropertyToChange)"
+            "value": "concat('dialog.', @PROPERTYName)"
         },
         {
             "$type": "Microsoft.DeleteProperty",
-            "property": "{dialog.PropertyToChange}"            
+            "property": "@{callPropertyToChange()}"            
         }
     ]
 }
+```
+
+# callPropertyToChange
+- \{dialog.PropertyToChange}

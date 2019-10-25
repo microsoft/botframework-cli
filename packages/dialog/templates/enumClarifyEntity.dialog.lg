@@ -4,18 +4,18 @@
 # template
 - ```
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
+    "$schema": "@{appSchema}",
     "$type": "Microsoft.OnClarifyEntity",
     "entity": "@{property}Entity",
     "actions": [
         {
             "$type": "Microsoft.Ask",
-            "activity": "@{clarify()}",
+            "activity": "@{callClarify()}",
             "expectedProperties": ["@{property}"]
         }
     ]
 }
 ```
 
-# clarify
-- \{clarify{property}Entity()}
+# callClarify
+- @\{clarify{property}Entity()}

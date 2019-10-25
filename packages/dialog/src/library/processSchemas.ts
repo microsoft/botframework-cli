@@ -5,7 +5,7 @@
  */
 import * as fg from './formGenerator'
 import * as glob from 'globby'
-import * as path from 'path'
+import * as ppath from 'path'
 import * as s from './formSchema'
 let allof: any = require('json-schema-merge-allof')
 let clone = require('clone')
@@ -14,16 +14,16 @@ let parser: any = require('json-schema-ref-parser')
 type idToSchema = { [id: string]: any }
 
 function basename(loc: string): string {
-    let name = path.basename(loc)
+    let name = ppath.basename(loc)
     return name.substring(0, name.indexOf('.'))
 }
 
 async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): Promise<idToSchema> {
     let map: idToSchema = {}
     for (let dir of templateDirs) {
-        for (let file of await glob(path.join(dir, '**/*.schema*'))) {
+        for (let file of await glob(ppath.join(dir, '**/*.schema*'))) {
             let schema = await getSchema(file, feedback)
-            let id: string = schema.$id || path.basename(file)
+            let id: string = schema.$id || ppath.basename(file)
             if (!map[id]) {
                 map[id] = schema
             }
@@ -80,7 +80,7 @@ export async function processSchemas(formPath: string, templateDirs: string[], o
     let resolver: any = {
         canRead: true,
         read(file: string): any {
-            return allRequired[path.basename(file)]
+            return allRequired[ppath.basename(file)]
         }
     }
     let formSchema = await getSchema(formPath, feedback, resolver)
@@ -98,7 +98,7 @@ export async function processSchemas(formPath: string, templateDirs: string[], o
         if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
     }
     let name = basename(formPath)
-    await fg.writeFile(path.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema, undefined, 4), force, feedback)
-    await fg.writeFile(path.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema, undefined, 4), force, feedback)
+    await fg.writeFile(ppath.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema, undefined, 4), force, feedback)
+    await fg.writeFile(ppath.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema, undefined, 4), force, feedback)
     return { form: new s.FormSchema(formPath, formSchema, name), schema: new s.FormSchema('', allSchema, name) }
 }

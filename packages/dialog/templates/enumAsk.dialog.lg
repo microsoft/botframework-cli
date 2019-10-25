@@ -4,13 +4,13 @@
 # template
 - ```
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
+    "$schema": "@{appSchema}",
     "$type": "Microsoft.OnAsk",
     "condition":"!$@{property}",
     "actions": [
         {
             "$type": "Microsoft.Ask",
-            "activity": "@{ask()}",
+            "activity": "@{callAsk()}",
             "expectedProperties": [
                 "@{property}"
             ]
@@ -19,5 +19,5 @@
 }
 ```
 
-# ask
-- \{Ask{property}()}
+# callAsk
+- @\{Ask{property}()}

@@ -4,11 +4,11 @@
 # template
 - ```
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
+    "$schema": "@{appSchema}",
     "$type": "Microsoft.FormDialog",
     "recognizer": "@{formName}.lu",
     "generator": "@{formName}.lg",
-    "schema": "@{formName}.form",
+    "schema": "@{formName}.schema",
     "triggers": [ 
         @{join(foreach(where(templates.dialog, dialog, !contains(dialog.name, '.')), dialog, concat('"', dialog.name, '"')), ',\n')} 
         ]

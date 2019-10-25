@@ -4,7 +4,7 @@
 # template
 - ```
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
+    "$schema": "@{appSchema}",
     "$type": "Microsoft.OnSetProperty",
     "property": "@{property}",
     "entity": "@{property}Entity",
@@ -19,13 +19,13 @@
                     "actions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "@{unexpectedSet()}"
+                            "activity": "@{callUnexpectedSet()}"
                         }
                     ],
                     "elseActions":[
                         {
                             "$type": "Microsoft.SendActivity",
-                            "activity": "@{unexpectedChange()}"
+                            "activity": "@{callUnexpectedChange()}"
                         }
                     ]
                 }                
@@ -40,8 +40,8 @@
 }
 ```
 
-# unexpectedSet
-- \{unexpectedPropertySet('{property}', @@{property}Entity)}
+# callUnexpectedSet
+- @\{unexpectedPropertySet('@{property}', @@{property}Entity)}
 
-# unexpectedChange
-- \{unexpectedPropertyChange('{property}', @@{property}Entity)}
+# callUnexpectedChange
+- @\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}
