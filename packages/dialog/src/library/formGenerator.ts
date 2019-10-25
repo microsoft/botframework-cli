@@ -272,9 +272,7 @@ export async function generate(
     } else if (!metaSchema.startsWith('http')) {
         // Adjust relative to outDir
         metaSchema = ppath.relative(outDir, metaSchema)
-    } else {
-        metaSchema = ''
-    }
+    } 
 
     if (!allLocales) {
         allLocales = ['en-us']
