@@ -1,55 +1,52 @@
-bf-chatdown
+@microsoft/bf-chatdown
 ========
 
 Tool for parsing chat files and outputting replayable activities
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/chatdown.svg)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
-[![Downloads/week](https://img.shields.io/npm/dw/chatdown.svg)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
-[![License](https://img.shields.io/npm/l/chatdown.svg)](https://github.com/microsoft/botframework-cli/blob/master/packages/chatdown/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-chatdown)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/bf-chatdown/0.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
-```
-<!-- usagestop -->
+
 # Commands
 <!-- commands -->
 * [`bf chatdown`](#bf-chatdown)
+* [`bf chatdown:convert`](#bf-chatdownconvert)
 
 ## `bf chatdown`
 
-Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
 ```
 USAGE
   $ bf chatdown
 
 OPTIONS
-  -i, --in=in                  The path of the chat file or directory to be parsed. A glob expression may be passed containing 
-                               chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. 
-                               If an output directory is not present (-o), it will default the output to the current working directory.
+  -h, --help  Chatdown command help
+```
 
-  -h, --help                   Chatdown command help
+_See code: [src/commands/chatdown/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
 
-  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-f) will be
-                               placed.
+## `bf chatdown:convert`
 
-  -p, --prefix                 Prefix stdout with package name.
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
-  -s, --static                 Use static timestamps when generating timestamps on activities.
+```
+USAGE
+  $ bf chatdown:convert
+
+OPTIONS
+  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help     Chatdown command help
+
+  -i, --in=in    The path of the chat file or directory to be parsed. A glob expression may be passed containing chat
+                 files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an
+                 output directory is not present (-o), it will default the output to the current working directory.
+
+  -o, --out=out  Path to the directory where the output of the multiple chat file processing (-o) will be placed.
+
+  -p, --prefix   Prefix stdout with package name.
+
+  -s, --stamp    Use static timestamps when generating timestamps on activities.
 
 EXAMPLE
 
@@ -59,5 +56,5 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [src/commands/chatdown.ts](https://github.com/Microsoft/chatdown/blob/v0.0.0/src/commands/chatdown.ts)_
+_See code: [src/commands/chatdown/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
 <!-- commandsstop -->

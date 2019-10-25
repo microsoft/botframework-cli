@@ -24,6 +24,7 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
+    "@oclif/dev-cli": "^1.22.0",
     "@oclif/plugin-help": "^2.2.0",
     "@oclif/test": "^1.2.5",
     "@oclif/tslint": "^3.1.1",
@@ -65,6 +66,7 @@
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "posttest": "tslint -p test -t stylish",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "documentation": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme && rimraf oclif.manifest.json"
   }
 }

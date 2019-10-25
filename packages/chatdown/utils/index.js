@@ -37,7 +37,7 @@ let workingDirectory;
  * @returns {Promise<Array>} Resolves with an array of Activity objects.
  */
 module.exports = async function readContents(fileContents, args = {}) {
-    if (args.static || args.s) {
+    if (args.stamp || args.s) {
         now = new Date(2015, 9, 15, 12, 0, 0, 0).getTime();
     }
     // Resolve file paths based on the input file with a fallback to the cwd

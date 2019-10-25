@@ -8,29 +8,58 @@
 [​![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-dialog.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
 
-<!-- toc -->
-* [Usage](#usage)
-
-* [Commands](#commands)
-
-  <!-- tocstop -->
-# Usage
-<!-- usage -->
-
-```sh-session
-$ npm install -g @microsoft/bf-dialog
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/bf-dialog/0.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
-```
-<!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`bf `](#bf-)
+* [`bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogmerge-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
+* [`bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogverify-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
+
+## `bf `
+
+The dialog commands allow you to work with dialog schema.
+
+```
+USAGE
+  $ bf
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [src/commands/index.ts](https://github.com/microsoft/botframework-cli/src/commands/index.ts)_
+
+## `bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`
+
+```
+USAGE
+  $ bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
+
+OPTIONS
+  -b, --branch=branch  [default: 4.Future] The branch to use for the meta-schema component.schema.
+  -h, --help           show CLI help
+  -o, --output=output  [default: app.schema] Output path and filename for merged schema. [default: app.schema]
+
+  -u, --update         Update .schema files to point the <branch> component.schema and regenerate component.schema if
+                       baseComponent.schema is present.
+
+  --verbose            output verbose logging of files as they are processed
+```
+
+_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/src/commands/dialog/merge.ts)_
+
+## `bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`
+
+```
+USAGE
+  $ bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
+
+OPTIONS
+  -h, --help  show CLI help
+  --verbose   Show verbose output
+```
+
+_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/src/commands/dialog/verify.ts)_
+<!-- commandsstop -->
 * [`bf dialog:merge [FILE]`](#bf-dialogmerge-file)
 * [`bf dialog:verify [FILE]`](#bf-dialogverify-file)
 

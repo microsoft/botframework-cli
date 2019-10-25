@@ -1,9 +1,15 @@
-// tslint:disable:object-curly-spacing
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+// tslint:disable:object-curly-spacing ordered-imports
 
 import { Command as Base } from '@oclif/command'
-import { CLIError } from '@oclif/errors'
 export { flags } from '@oclif/command'
-export { CLIError } from '@oclif/errors'
+import { CLIError as OCLIFError } from '@oclif/errors'
+import { CLIError } from './clierror'
+export { CLIError } from './clierror'
 import ReadPipedData from './readpipeddata'
 import Telemetry from './telemetry'
 const chalk = require('chalk')
@@ -33,7 +39,7 @@ export abstract class Command extends Base {
   }
 
   async catch(err: any) {
-    if (err instanceof CLIError) {
+    if (err instanceof CLIError || err instanceof OCLIFError) {
       if (!err.message.match(/EEXIT: 0/)) {
         this.error(err.message)
       }
@@ -48,7 +54,10 @@ export abstract class Command extends Base {
 
   // Flush telemetry to avoid performance issues
   async finally(_: Error | undefined) {
-    Telemetry.flushTelemetry()
+    /* tslint:disable:strict-type-predicates */
+    if (this.telemetryEnabled !== null && this.telemetryEnabled) {
+      Telemetry.flushTelemetry()
+    }
     process.stdin.destroy()
   }
 
@@ -68,7 +77,7 @@ export abstract class Command extends Base {
   }
 
   private extractError(input: string | Error): string {
-    return input instanceof Error ? input.message.concat(input.name) : input
+    return input instanceof Error ? input.name : input
   }
 
   private getTelemetryProperties(): Array<string> {
