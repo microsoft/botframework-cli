@@ -1,0 +1,23 @@
+# filename
+- {formName}-{property}Ask.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnAsk",
+    "condition":"!$@{property}",
+    "actions": [
+        {
+            "$type": "Microsoft.Ask",
+            "activity": "@{callAsk()}",
+            "expectedProperties": [
+                "@{property}"
+            ]
+        }
+    ]
+}
+```
+
+# callAsk
+- @\{Ask{property}()}

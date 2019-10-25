@@ -34,7 +34,7 @@ type EntitySet = Record<string, Entity>
 
 /**
  * Extra properties:
- * $mappings: [entity] defaults based on type, string -> [property], numbers -> [prooperty, number]
+ * $mappings: [entity] defaults based on type, string -> [property], numbers -> [property, number]
  * $templates: Template basenames to specialize for this property.
  * 
  * TODO: Add more like $units.
@@ -77,7 +77,7 @@ export class FormSchema {
     schema: any
 
     constructor(path: string, schema: any, name?: string) {
-        this.name = name || ''
+        this.name = name || ppath.basename(path, '.dialog')
         this.path = path
         this.schema = schema
     }
@@ -107,8 +107,23 @@ export class FormSchema {
         return type
     }
 
-    templateNames(): string[] {
-        return this.schema.$templates || [this.typeName()]
+    templates(): string[] {
+        let templates = this.schema.$templates
+        if (!templates) {
+            let type = this.typeName()
+            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + 'Ask.dialog']
+            for (let mapping of this.mappings()) {
+                if (mapping === this.path + 'Entity') {
+                    templates.push(`${type}Set${type}.dialog`)
+                    if (type === 'enum') {
+                        templates.push(`${type}ClarifyEntity.dialog`)
+                    }
+                } else {
+                    templates.push(`${type}Set${mapping}.dialog`)
+                }
+            }
+        }
+        return templates
     }
 
     mappings(): string[] {
@@ -117,7 +132,7 @@ export class FormSchema {
             if (this.schema.type === 'number') {
                 mappings = ['number']
             } else {
-                mappings = [this.path]
+                mappings = [this.path + 'Entity']
             }
         }
         if (!mappings) {
@@ -137,14 +152,9 @@ export class FormSchema {
 
     private addEntities(entities: EntitySet) {
         for (let mapping of this.mappings()) {
-            if (!entities.hasOwnProperty(mapping)) {
+            // Do not include entities generated from property
+            if (!entities.hasOwnProperty(mapping) && !mapping.startsWith(this.path) && !mapping.endsWith('Entity') && mapping !== 'utterance') {
                 let entity = new Entity(mapping)
-                if (mapping === this.path) {
-                    if (this.typeName() === 'enum') {
-                        // TODO: Do we want to enhance the schema with enum synonyms or leave that to the .lu files?
-                        entity.values = this.schema.enum
-                    }
-                }
                 entities[mapping] = entity
             }
         }

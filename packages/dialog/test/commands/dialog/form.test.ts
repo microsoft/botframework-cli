@@ -23,6 +23,16 @@ describe('dialog:form', async () => {
         await fs.remove(output)
     })
 
+    it('Generation', async () => {
+        try {
+            await gen.generate(schemaPath, output, undefined, ['en-us'], undefined, false, (type, msg) => {
+                console.log(`${type}: ${msg}`)
+            })
+        } catch (e) {
+            fail(e.message)
+        }
+    })
+
     it('Not object type', async () => {
         try {
             await ft.FormSchema.readSchema(notObject)
@@ -38,15 +48,6 @@ describe('dialog:form', async () => {
             fail('Did not detect bad schema');
         } catch (e) {
             expect(e.message).to.contain('is not a valid JSON Schema')
-        }
-    })
-
-    it('Generation', async () => {
-        try {
-            let schema = await ft.FormSchema.readSchema(schemaPath)
-            await gen.generate(schema, output, undefined, ['en-us'])
-        } catch (e) {
-            fail(e.message)
         }
     })
 

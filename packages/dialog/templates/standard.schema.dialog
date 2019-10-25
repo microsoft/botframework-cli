@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "CancelConfirmation": {
+            "type": "string",
+            "$mappings": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "CancelConfirmation.dialog",
+                "CancelConfirmationSet.dialog"
+            ]
+        },
+        "CompleteConfirmation": {
+            "type": "string",
+            "$mappings": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "CompleteConfirmation.dialog",
+                "CompleteConfirmationSet.dialog"
+            ]
+        },
+        "PropertyToChange": {
+            "type": "string",
+            "$mappings": [
+                "PROPERTYName"
+            ],
+            "$templates": [
+                "PropertyToChangeSet.dialog"
+            ]
+        }
+    },
+    "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
+    "$templates": [
+        "help.lu",
+        "locale.lu",
+        "locale.lg",
+        "BeginDialog.dialog",
+        "ChooseProperty.dialog",
+        "Help.dialog",
+        "luconfig.json",
+        "lu.dialog",
+        "Main.dialog"
+    ]
+}

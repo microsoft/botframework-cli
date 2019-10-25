@@ -1,0 +1,36 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnSetProperty",
+    "property": "CompleteConfirmation",
+    "actions": [
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$CompleteConfirmation",
+            "value": "@Confirmation"
+        },
+        {
+            "$type": "Microsoft.IfCondition",
+            "condition":"$CompleteConfirmation == 'no'",
+            "actions": [
+                {
+                    "$type": "Microsoft.EndDialog"
+                }
+            ],
+            "elseActions":[
+                {
+                    "$type": "Microsoft.Ask",
+                    "activity": "@{callChooseProperty()}",
+                    "expectedProperties": [
+                        "PropertyToChange"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+# callChooseProperty
+- @\{chooseProperty()}
