@@ -35,7 +35,7 @@ You can add comments to your .lu document by prefixing the comment with >. Here'
     ```
 ```
 
-Here's an example of question and answer definitions. The LUDown tool will automatically separate question and answers into a qnamaker JSON file that you can then use to create your new [QnaMaker.ai](http://qnamaker.ai) knowledge base article.
+Here's an example of question and answer definitions. The bf qnamaker:convert command will automatically separate question and answers into a qnamaker JSON file that you can then use to create your new [QnaMaker.ai](http://qnamaker.ai) knowledge base article.
 
 ```markdown
 > # QnA Definitions
@@ -113,7 +113,7 @@ $botframework : qna-alterations=
 ```
 
 ## QnA Maker pdf file ingestion
-QnA Maker also supports ingesting pdf files during KB creation. You can add files for QnA maker to ingest using the URL reference scheme. If the URI's content-type is not text/html, then the ludown parser will add it to files collection for QnA Maker to ingest. 
+QnA Maker also supports ingesting pdf files during KB creation. You can add files for QnA maker to ingest using the URL reference scheme. If the URI's content-type is not text/html, then the parser will add it to files collection for QnA Maker to ingest. 
 
 ```markdown
 [SurfaceManual.pdf](https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf)
@@ -131,7 +131,7 @@ You can include configuration information for your LUIS application or QnA Maker
 **Note** Any information explicitly passed in via CLI arguments will override information in the .qna file.
 
 ```markdown
-> Parser instruction - this is optional; unless specified, ludown will default to the latest version.
+> Parser instruction - this is optional; unless specified, parser will default to the latest version.
 > !# @version = 1.0
 
 > QnA Maker KB description

@@ -1,4 +1,4 @@
-> ludown can also parse .md files as well! 
+> parser can handle .md files as well! 
 
 # Greeting
 - Hi

@@ -11,6 +11,12 @@
 * [`lu file format`](./docs/lu-file-format.md)
 * [`QnA file format`](./docs/qna-file-format.md)
 
+# Additional documentation
+* [Working with LUIS](./working-with-luis.md)
+* [Working with QnA Maker](./working-with-qna.md)
+* [Machine translating .lu/ .qna files](./translate-command.md)
+* [@microsoft/bf-lu as a library](./use-as-library.md)
+
 # Commands
 <!-- commands -->
 * [`bf luis`](#bf-luis)
@@ -23,14 +29,14 @@
 
 ## `bf luis`
 
-Convert, translate luis/lu files or generate source code
+Converts, translates luis/lu files or generates source code.
 
 ```
 USAGE
   $ bf luis
 
 OPTIONS
-  -h, --help  Display Luis available commnads
+  -h, --help  Display Luis available commands
 ```
 
 _See code: [src/commands/luis/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/index.ts)_
@@ -121,7 +127,7 @@ _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botfram
 
 ## `bf qnamaker:convert`
 
-Convert .lu file(s) to a QnA application JSON model or vice versa
+Converts .lu file(s) to QnA application JSON models or vice versa.
 
 ```
 USAGE

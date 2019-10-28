@@ -117,3 +117,19 @@ describe('qnamaker:convert file creation', () => {
     expect(ctx.stderr).to.contain('Path not found:')
   })
 })
+
+describe('qnamaker:convert empty file handling', () => {
+  test
+  .stderr()
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.lu')}`])
+  .it('qnamaker:convert errors out on empty lu file', async (ctx) => {
+    expect(ctx.stderr).to.contain('[ERROR] Cannot parse empty')
+  })
+
+  test
+  .stderr()
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
+  .it('qnamaker:convert errors out on empty json file', async (ctx) => {
+    expect(ctx.stderr).to.contain('Sorry, error parsing QnA JSON content')
+  })
+})

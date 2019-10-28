@@ -14,7 +14,7 @@ Tool for parsing chat files and outputting replayable activities
 
 ## `bf chatdown`
 
-Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
 ```
 USAGE
@@ -24,11 +24,11 @@ OPTIONS
   -h, --help  Chatdown command help
 ```
 
-_See code: [src\commands\chatdown\index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
+_See code: [src/commands/chatdown/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
 
 ## `bf chatdown:convert`
 
-Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file
+Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.
 
 ```
 USAGE
@@ -46,7 +46,7 @@ OPTIONS
 
   -p, --prefix   Prefix stdout with package name.
 
-  -s, --static   Use static timestamps when generating timestamps on activities.
+  -s, --stamp    Use static timestamps when generating timestamps on activities.
 
 EXAMPLE
 
@@ -56,5 +56,5 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [src\commands\chatdown\convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
+_See code: [src/commands/chatdown/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
 <!-- commandsstop -->

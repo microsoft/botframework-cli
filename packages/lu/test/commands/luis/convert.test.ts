@@ -516,3 +516,19 @@ describe('luis:convert file creation', () => {
   })
 })
 
+describe('luis:convert empty file handling', () => {
+  test
+  .stderr()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.lu')}`])
+  .it('luis:convert errors out on empty lu file', async (ctx) => {
+    expect(ctx.stderr).to.contain('[ERROR] Cannot parse empty')
+  })
+
+  test
+  .stderr()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
+  .it('luis:convert errors out on empty json file', async (ctx) => {
+    expect(ctx.stderr).to.contain('Sorry, error parsing content as LUIS JSON')
+  })
+})
+

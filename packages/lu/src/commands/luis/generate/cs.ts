@@ -58,10 +58,10 @@ export default class LuisGenerateCs extends Command {
     this.reorderEntities(app, 'patternAnyEntities')
     this.reorderEntities(app, 'composites')
 
-    const outputPath = file.validatePath(flags.out, flags.className + '.cs', flags.force)
+    const outputPath = flags.out ? file.validatePath(flags.out, flags.className + '.cs', flags.force) : flags.out
 
     this.log(
-      `Generating file at ${outputPath || ''} that contains class ${space}.${flags.className}.`
+      `Generating file at ${outputPath || 'stdout'} that contains class ${space}.${flags.className}.`
     )
 
     await LuisToCsConverter.writeFromLuisJson(app, flags.className, space, outputPath)

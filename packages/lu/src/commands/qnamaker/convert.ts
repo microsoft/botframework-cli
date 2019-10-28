@@ -12,7 +12,7 @@ const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
 const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
 
 export default class QnamakerConvert extends Command {
-  static description = 'Convert .lu file(s) to a QnA application JSON model or vice versa'
+  static description = 'Converts .lu file(s) to QnA application JSON models or vice versa.'
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Source .qna file(s) or QnA KB JSON file'}),

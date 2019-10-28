@@ -641,8 +641,8 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "x1");
                 assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1', "phraselist")]);
-                assert.equal(res.LUISJsonStructure.model_features.length, 1);
-                assert.equal(res.LUISJsonStructure.model_features[0].name, 'pl1');
+                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                assert.equal(res.LUISJsonStructure.phraselists[0].name, 'pl1');
                 done();
             })
             .catch(err => done(err))
@@ -662,8 +662,8 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "x1");
                 assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1', "phraselist"), new helperclasses.modelToFeature('s1', "Entity Extractor"), new helperclasses.modelToFeature('number', "Prebuilt Entity Extractor")]);
-                assert.equal(res.LUISJsonStructure.model_features.length, 1);
-                assert.equal(res.LUISJsonStructure.model_features[0].name, 'pl1');
+                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                assert.equal(res.LUISJsonStructure.phraselists[0].name, 'pl1');
                 assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
                 assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, "number");
                 done();

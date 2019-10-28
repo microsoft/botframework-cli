@@ -13,7 +13,7 @@ const intercept = require('intercept-stdout')
 const path = require('path')
 
 export default class ChatdownConvert extends Command {
-  static description = 'Converts chat dialog files in <filename>.chat format into transcript file. Writes corresponding <filename>.transcript for each .chat file'
+  static description = 'Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.'
 
   static examples = [`
   $ bf chatdown
@@ -24,7 +24,7 @@ export default class ChatdownConvert extends Command {
   static flags = {
     in: flags.string({char: 'i', description: 'The path of the chat file or directory to be parsed. A glob expression may be passed containing chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an output directory is not present (-o), it will default the output to the current working directory.'}),
     out: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-o) will be placed.'}),
-    static: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
+    stamp: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
     prefix: flags.boolean({char: 'p', description: 'Prefix stdout with package name.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     help: flags.help({char: 'h', description: 'Chatdown command help'})
@@ -150,8 +150,8 @@ export default class ChatdownConvert extends Command {
   private async writeOut(activities: any, fileName: string, outputDir: any, force: boolean) {
     if (fileName && outputDir) {
       let writeFile = path.join(outputDir, `${fileName}.transcript`)
-      await fs.ensureFile(writeFile)
       let validatedPath = utils.validatePath(writeFile, '', force)
+      await fs.ensureFile(writeFile)
       await fs.writeJson(validatedPath, activities, {spaces: 2})
       return writeFile
     }
