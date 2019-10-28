@@ -31,7 +31,7 @@ The following commands are currently available:
 * [Chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-chatdown) 
 * [QnAMaker](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
-* [Luis](https://github.com/microsoft/botframework-cli/tree/emimunoz/luis/packages/cli#bf-luis)
+* [Luis](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-luis)
 
 #### Future Commands
 The following commands will be ported in upcoming releases:
@@ -98,4 +98,3 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the [MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
 
 Copyright (c) Microsoft Corporation. All rights reserved.
-
