@@ -30,7 +30,7 @@ export default class LuisCrossTrian extends Command {
       let result: any
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
-        result = await interuptionConverter.convertInteruption(luFiles, flags.log);
+        result = await interuptionConverter.convertInteruption(luFiles, flags.intentname, flags.log);
       }
 
       // If result is null or undefined return

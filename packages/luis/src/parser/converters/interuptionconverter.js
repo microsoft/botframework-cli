@@ -15,7 +15,7 @@ module.exports = {
      * @returns {Map<string, LUResource>} Collated LUIS json contents
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    convertInteruption: async function(luArray, verbose) {
+    convertInteruption: async function(luArray, intentName, verbose) {
         try {
             let fileIdToLuResourceMap = new Map();
             for(const luFile of luArray) {
@@ -39,8 +39,15 @@ module.exports = {
                 fileIdToLuResourceMap.set(luFile.id, luResource);
             }
 
+            let resources = [];
             for (const fileId of fileIdToLuResourceMap.keys()) {
                 let luResource = fileIdToLuResourceMap.get(fileId);
+                let resource = {
+                    id: fileId,
+                    content: luResource,
+                    children: []
+                };
+
                 let intents = [];
                 for(const section of luResource.Sections) {
                     if (section.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
@@ -49,62 +56,25 @@ module.exports = {
                 }
 
                 for (const intent of intents) {
-                    const intentName = intent.Name;
-                    const fullPath = path.resolve(path.dirname(fileId) + '/' + intentName + '.lu');
-                    if (fileIdToLuResourceMap.has(fullPath)) {
-                        let targetLuResouce= fileIdToLuResourceMap.get(fullPath);
-                        const brotherIntents = intents.filter(intent => intent.Name !== intentName && intent.Name !== 'interuption');
-                        if (brotherIntents && brotherIntents.length > 0) {
-                            let utterancesTobeAdded = [];
-                            brotherIntents.forEach(x => {
-                                utterancesTobeAdded = utterancesTobeAdded.concat(x.UtteranceAndEntitiesMap.map(y => y.context.getText().trim()));
-                            });
-
-                            const interuptionIntents = targetLuResouce.Sections.filter(section => section.Name === 'interuption');
-                            if (interuptionIntents && interuptionIntents.length > 0) {
-                                let interuptionIntent = interuptionIntents[0];
-                                let existingUtterances = interuptionIntent.UtteranceAndEntitiesMap.map(y => y.context.getText().trim().slice(1).trim());
-                                // construct new content here
-                                let newFileContent = '';
-                                utterancesTobeAdded.forEach(utterance => {
-                                    if (!existingUtterances.includes(utterance.trim().slice(1).trim())) {
-                                        newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n';
-                                    }
-                                });
-                                
-                                if (newFileContent !== '') {
-                                    newFileContent = interuptionIntent.ParseTree.intentDefinition().getText().trim() + '\r\n' + newFileContent;
-                                    let lines = newFileContent.split(/\r?\n/);
-                                    let newLines = [];
-                                    lines.forEach(line => {
-                                        if (line.trim().startsWith('-')) {
-                                            newLines.push('- ' + line.trim().slice(1).trim());
-                                        } else if (line.trim().startsWith('##')) {
-                                            newLines.push('## ' + line.trim().slice(2).trim());
-                                        } else if (line.trim().startsWith('#')) {
-                                            newLines.push('# ' + line.trim().slice(1).trim());
-                                        }
-                                    })
-
-                                    newFileContent = newLines.join('\r\n');
-                                    
-                                    // update section here
-                                    targetLuResouce = new SectionOperator(targetLuResouce).updateSection(interuptionIntent.Id, newFileContent);
-                                }
-                            } else {
-                                // construct new content here
-                                let newFileContent = '\r\n# interuption\r\n';
-                                utterancesTobeAdded.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
-
-                                // add section here
-                                targetLuResouce = new SectionOperator(targetLuResouce).addSection(newFileContent);
-                            }
-
-                            // update fileIdToIntentsMap
-                            fileIdToLuResourceMap.set(fullPath, targetLuResouce);
+                    const name = intent.Name;
+                    if (name !== intentName) {
+                        const intentPath = path.resolve(path.dirname(fileId) + '/' + name + '.lu');
+                        if (fileIdToLuResourceMap.has(intentPath)) {
+                            resource.children.push({
+                                intent: name,
+                                target: intentPath
+                            })
                         }
                     }
                 }
+
+                resources.push(resource);
+            }
+
+            const result = this.crossTrain(resources, intentName)
+
+            for(const res of result) {
+                fileIdToLuResourceMap.set(res.id, res.content);
             }
 
             return fileIdToLuResourceMap;
@@ -114,7 +84,7 @@ module.exports = {
     },
 
     /*
-    resource is array of below object
+    resources is array of below object
     {
         id: a.lu
         content: LuResource
@@ -136,7 +106,7 @@ module.exports = {
                     let targetResource = idToResourceMap.get(child.target);
                     let brothers = children.filter(child => child.intent !== intent && child.intent !== intentName);
                     let brotherUtterances = [];
-                    if (brothes && brothers.length > 0) {
+                    if (brothers && brothers.length > 0) {
                         brothers.forEach(x => {
                             let intents = [];
                             if (idToResourceMap.has(x.target)) {
@@ -159,7 +129,7 @@ module.exports = {
                         });
                     }
 
-                    const interuptionIntents = targetResource.content.Sections.filter(section => section.Name === 'interuption');
+                    const interuptionIntents = targetResource.content.Sections.filter(section => section.Name === intentName);
                     if (interuptionIntents && interuptionIntents.length > 0) {
                         let interuptionIntent = interuptionIntents[0];
                         let existingUtterances = interuptionIntent.UtteranceAndEntitiesMap.map(y => y.context.getText().trim().slice(1).trim());
@@ -192,7 +162,7 @@ module.exports = {
                         }
                     } else {
                         // construct new content here
-                        let newFileContent = '\r\n# interuption\r\n';
+                        let newFileContent = `\r\n# ${intentName}\r\n`;
                         brotherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
 
                         // add section here
@@ -203,5 +173,7 @@ module.exports = {
                 }
             }
         }
+
+        return Array.from(idToResourceMap.values());
     }
 }
