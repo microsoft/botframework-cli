@@ -34,7 +34,11 @@ export default class LuisGenerateCs extends Command {
     let space = 'Luis'
     let stdInput = await this.readStdin()
 
-    const pathPrefix = path.isAbsolute(flags.in) ? '' : process.cwd()
+    if (!flags.in && !stdInput) {
+      throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
+    }
+
+    const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
     let app: any
     try {
       app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
