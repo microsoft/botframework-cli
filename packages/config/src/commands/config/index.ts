@@ -4,7 +4,7 @@
  */
 
 import {Command, flags} from '@oclif/command'
-
+const path = require('path')
 export default class ConfigIndex extends Command {
   static description = 'Configure various settings within the cli.'
 
@@ -13,7 +13,7 @@ export default class ConfigIndex extends Command {
   }
 
   async run() {
-    this.log(`\nConfig file location: ' ${this.config.configDir}/config.json \n `)
+    this.log(`\nConfig file location: ' ${path.join(this.config.configDir, 'config.json')} \n `)
     this._help()
   }
 }
