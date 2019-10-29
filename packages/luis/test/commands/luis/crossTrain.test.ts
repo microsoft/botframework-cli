@@ -17,7 +17,7 @@ describe('luis:convert interuption intent among lu files', () => {
 
   test
   .stdout()
-  .command(['luis:crossTrain', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption')}`, '--out', 'interuptionGen', '--intentname', 'interuptionGen'])
+  .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption')}`, '--out', 'interuptionGen', '--intentname', 'interuptionGen'])
   .it('luis:convert interuption intents when interuption intents are set', async () => {
     expect(await compareLuFiles('./../../../interuptionGen/restaurant.lu', './../../fixtures/verified/interuption/restaurant.lu')).to.be.true;
     expect(await compareLuFiles('./../../../interuptionGen/hotel.lu', './../../fixtures/verified/interuption/hotel.lu')).to.be.true;
