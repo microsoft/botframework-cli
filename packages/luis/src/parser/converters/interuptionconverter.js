@@ -58,12 +58,14 @@ module.exports = {
                 for (const intent of intents) {
                     const name = intent.Name;
                     if (name !== intentName) {
-                        const intentPath = path.resolve(path.dirname(fileId) + '/' + name + '.lu');
-                        if (fileIdToLuResourceMap.has(intentPath)) {
+                        const intentPaths = Array.from(fileIdToLuResourceMap.keys()).filter(x => x.endsWith(name + '.lu'));
+                        if (intentPaths && intentPaths.length === 1) {
                             resource.children.push({
                                 intent: name,
-                                target: intentPath
+                                target: intentPaths[0]
                             })
+                        } else if (intentPaths && intentPaths.length > 1) {
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, `Multiple files found for ${name}.lu`));
                         }
                     }
                 }
