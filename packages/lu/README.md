@@ -12,10 +12,10 @@
 * [`QnA file format`](./docs/qna-file-format.md)
 
 # Additional documentation
-* [Working with LUIS](./working-with-luis.md)
-* [Working with QnA Maker](./working-with-qna.md)
-* [Machine translating .lu/ .qna files](./translate-command.md)
-* [@microsoft/bf-lu as a library](./use-as-library.md)
+* [Working with LUIS](./docs/working-with-luis.md)
+* [Working with QnA Maker](./docs/working-with-qna.md)
+* [Machine translating .lu/ .qna files](./docs/translate-command.md)
+* [@microsoft/bf-lu as a library](./docs/use-as-library.md)
 
 # Commands
 <!-- commands -->

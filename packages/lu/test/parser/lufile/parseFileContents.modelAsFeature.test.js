@@ -75,12 +75,12 @@ describe('Model as feature definitions', function () {
 
             parseFile.parseFile(luFile)
                 .then(res => {
-                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
-                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                    assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
-                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                    assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                    assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
+                    assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].mode, true);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
                     assert.equal(res.LUISJsonStructure.intents.length, 1);
                     assert.equal(res.LUISJsonStructure.intents[0].name, 'getUserProfileIntent');
                     assert.equal(res.LUISJsonStructure.intents[0].features.length, 1);
@@ -107,12 +107,12 @@ describe('Model as feature definitions', function () {
 
             parseFile.parseFile(luFile)
                 .then(res => {
-                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
-                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                    assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                    assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                    assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
+                    assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
                     assert.equal(res.LUISJsonStructure.intents.length, 1);
                     assert.equal(res.LUISJsonStructure.intents[0].name, 'getUserProfileIntent');
                     assert.equal(res.LUISJsonStructure.intents[0].features.length, 1);
@@ -143,17 +143,17 @@ describe('Model as feature definitions', function () {
 
             parseFile.parseFile(luFile)
                 .then(res => {
-                    assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                    assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                    assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                    assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
-                    assert.equal(res.LUISJsonStructure.model_features[1].name, 'city2');
-                    assert.equal(res.LUISJsonStructure.model_features[1].mode, true);
-                    assert.equal(res.LUISJsonStructure.model_features[1].words, 'portland,PDX');
-                    assert.equal(res.LUISJsonStructure.model_features[1].activated, true);
-                    assert.equal(res.LUISJsonStructure.model_features[1].enabledForAllModels, false);
+                    assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
+                    assert.equal(res.LUISJsonStructure.phraselists[1].name, 'city2');
+                    assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
+                    assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
+                    assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
+                    assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, false);
                     assert.equal(res.LUISJsonStructure.intents.length, 1);
                     assert.equal(res.LUISJsonStructure.intents[0].name, 'getUserProfileIntent');
                     assert.equal(res.LUISJsonStructure.intents[0].features.length, 2);
@@ -210,17 +210,17 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.entities[0].name, 'x1');
                         assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
                         assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                        assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                        assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                        assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
-                        assert.equal(res.LUISJsonStructure.model_features[1].name, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features[1].mode, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].words, 'portland,PDX');
-                        assert.equal(res.LUISJsonStructure.model_features[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].enabledForAllModels, undefined);
+                        assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].name, 'city2');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, undefined);
                         done();
                     })
                     .catch(err => done(err))
@@ -249,17 +249,17 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.entities[0].features.length, 2);
                         assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'city');
                         assert.equal(res.LUISJsonStructure.entities[0].features[1].featureName, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                        assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                        assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                        assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
-                        assert.equal(res.LUISJsonStructure.model_features[1].name, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features[1].mode, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].words, 'portland,PDX');
-                        assert.equal(res.LUISJsonStructure.model_features[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].name, 'city2');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, false);
                         done();
                     })
                     .catch(err => done(err))
@@ -289,17 +289,17 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'city');
                         assert.equal(res.LUISJsonStructure.entities[0].roles.length, 1);
                         assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ['r1']);
-                        assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                        assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                        assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                        assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
-                        assert.equal(res.LUISJsonStructure.model_features[1].name, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features[1].mode, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].words, 'portland,PDX');
-                        assert.equal(res.LUISJsonStructure.model_features[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].enabledForAllModels, undefined);
+                        assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].name, 'city2');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, undefined);
                         done();
                     })
                     .catch(err => done(err))
@@ -330,17 +330,17 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.entities[0].features[1].featureName, 'city2');
                         assert.equal(res.LUISJsonStructure.entities[0].roles.length, 2);
                         assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ['r1', 'r2']);
-                        assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                        assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                        assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                        assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
-                        assert.equal(res.LUISJsonStructure.model_features[1].name, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features[1].mode, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].words, 'portland,PDX');
-                        assert.equal(res.LUISJsonStructure.model_features[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].name, 'city2');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, false);
                         done();
                     })
                     .catch(err => done(err))
@@ -454,17 +454,17 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.composites[0].name, 'x1');
                         assert.equal(res.LUISJsonStructure.composites[0].features.length, 1);
                         assert.equal(res.LUISJsonStructure.composites[0].features[0].featureName, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                        assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                        assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                        assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
-                        assert.equal(res.LUISJsonStructure.model_features[1].name, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features[1].mode, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].words, 'portland,PDX');
-                        assert.equal(res.LUISJsonStructure.model_features[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].enabledForAllModels, undefined);
+                        assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].name, 'city2');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, undefined);
                         done();
                     })
                     .catch(err => done(err))
@@ -495,17 +495,17 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.composites[0].features.length, 2);
                         assert.equal(res.LUISJsonStructure.composites[0].features[0].featureName, 'city');
                         assert.equal(res.LUISJsonStructure.composites[0].features[1].featureName, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                        assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
-                        assert.equal(res.LUISJsonStructure.model_features[0].mode, false);
-                        assert.equal(res.LUISJsonStructure.model_features[0].words, 'Seattle,SEATAC,SEA');
-                        assert.equal(res.LUISJsonStructure.model_features[0].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
-                        assert.equal(res.LUISJsonStructure.model_features[1].name, 'city2');
-                        assert.equal(res.LUISJsonStructure.model_features[1].mode, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].words, 'portland,PDX');
-                        assert.equal(res.LUISJsonStructure.model_features[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.model_features[1].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].mode, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].words, 'Seattle,SEATAC,SEA');
+                        assert.equal(res.LUISJsonStructure.phraselists[0].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[0].enabledForAllModels, false);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].name, 'city2');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
+                        assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, false);
                         done();
                     })
                     .catch(err => done(err))

@@ -3,8 +3,13 @@ import * as cp from 'child_process';
 import * as rimraf from 'rimraf';
 let pkg = require('../../../package.json');
 let assert = require('assert');
+const fs = require('fs-extra')
 
 describe('chatdown:convert', () => {
+
+  before(() => { 
+    fs.mkdirSync('./testout');
+  });
 
   after(() => {
     rimraf('./testout', (err) => {
@@ -40,8 +45,8 @@ describe('chatdown:convert', () => {
     });
   });
 
-  it('should generate static based timestamps when --static is passed as an argument', done => {
-    cp.exec(`(echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | node ./bin/run chatdown:convert --static`, (error, stdout) => {
+  it('should generate timestamps when --stamp is passed as an argument', done => {
+    cp.exec(`(echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | node ./bin/run chatdown:convert --stamp`, (error, stdout) => {
       assert.doesNotThrow(() => JSON.parse(stdout));
       done();
     });
@@ -87,6 +92,13 @@ describe('chatdown:convert', () => {
       assert(stderr.includes('no such file or directory') || stderr.includes('error'));
       done();
     });
+  });
+
+  it('should display an error message when the out directory does not exist', done => {
+    cp.exec(`node ./bin/run chatdown:convert -i "./test/utils/cli.sample.chat" -o ./xyz`, (error, stdout, stderr) => {
+      assert(stderr.includes('Containing directory path doesn\'t exist'));
+        done();
+      });
   });
 
 })

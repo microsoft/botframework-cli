@@ -67,7 +67,8 @@
   },
   "nyc": {
     "exclude": [
-      "**/lufile/generated/**"
+      "**/lufile/generated/**",
+      "test/**"
     ]
   }
 }
