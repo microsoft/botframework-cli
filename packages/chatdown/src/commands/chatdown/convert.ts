@@ -153,7 +153,7 @@ export default class ChatdownConvert extends Command {
       let validatedPath = utils.validatePath(writeFile, '', force)
       await fs.ensureFile(writeFile)
       await fs.writeJson(validatedPath, activities, {spaces: 2})
-      return writeFile
+      return validatedPath
     }
     const output = JSON.stringify(activities, null, 2)
     await new Promise(done => process.stdout.write(output, 'utf-8', () => done()))
