@@ -81,13 +81,13 @@ export default class LuisConvert extends Command {
 
   private async writeOutput(convertedObject: any, flags: any, isLu: boolean) {
     let filePath = await file.generateNewFilePath(flags.out, flags.in, isLu)
+    const validatedPath = utils.validatePath(filePath, '', flags.force)
     // write out the final file
     try {
-      const validatedPath = utils.validatePath(filePath, '', flags.force)
       await fs.writeFile(validatedPath, convertedObject, 'utf-8')
     } catch (err) {
-      throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
+      throw new CLIError('Unable to write file - ' + validatedPath + ' Error: ' + err.message)
     }
-    this.log('Successfully wrote LUIS model to ' + filePath)
+    this.log('Successfully wrote LUIS model to ' + validatedPath)
   }
 }
