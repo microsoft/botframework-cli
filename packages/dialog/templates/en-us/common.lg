@@ -52,7 +52,7 @@
 - 
 
 # optionalProperties
-- IF: {count(turn.schema.required) > count(turn.schema.properties)}
+- IF: {add(count(turn.schema.required),count(turn.schema.$expectedOnly)) < count(turn.schema.properties)}
 - Optional properties include: {join(foreach(where(turn.form.properties, property, !contains(turn.schema.required && !contains(turn.schema.$expectedOnly, property), property)), property, name(property)), ', ')}\n
 - ELSE:
 - 

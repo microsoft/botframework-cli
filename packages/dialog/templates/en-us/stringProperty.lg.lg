@@ -2,4 +2,10 @@
 - {formName}-{property}.{locale}.lg
 
 # template
-- # Ask{property}\n- \{askString('{property}')\}\n\n\[common.lg]
+- {AskTemplate()}\n{NameTemplate()}\n\[common.lg]
+
+# AskTemplate
+- # Ask{property}\n- \{askString('{property}')\}\n
+
+# NameTemplate
+- # {property}Name\n- {phrase(property, locale)}\n
