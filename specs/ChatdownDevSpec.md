@@ -41,7 +41,9 @@ OPTIONS
 
  -o, --out [file|folder]	Output file or folder. Default: STDOUT
 
-  -r, --recurs					If processing folder, will recurs down. Optional
+  -r, --recurs			If processing folder, will recurs down. Optional
+  
+  -f, --force            Overwrites output if present, otherwise rename _(or abort with error message?)_
 
   -s, --stamp [datetime]  If [datetime] not specified, stamps the file with local time. Optional
 

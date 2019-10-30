@@ -78,21 +78,21 @@ export default class QnamakerConvert extends Command {
 
   private async writeOutput(convertedObject: any, flags: any, isQnA: boolean) {
     let filePath = await file.generateNewFilePath(flags.out, flags.in, isQnA, '', fileExtEnum.QnAFile)
+    const validatedPath = utils.validatePath(filePath, '', flags.force)
     try {
       if (isQnA) {
-        let validatedPath = utils.validatePath(filePath, '', flags.force)
         await fs.writeFile(validatedPath, JSON.stringify(convertedObject.finalQnAJSON, null, 2), 'utf-8')
         if (convertedObject.finalQnAAlterations) {
           let filePathAlterations = await file.generateNewFilePath(flags.out, flags.in, isQnA, 'alterations_', fileExtEnum.QnAFile)
-          let validatedPath = utils.validatePath(filePathAlterations, '', flags.force)
-          await fs.writeFile(validatedPath, JSON.stringify(convertedObject.finalQnAAlterations, null, 2), 'utf-8')
+          const validatedPathAlter = utils.validatePath(filePathAlterations, '', flags.force)
+          await fs.writeFile(validatedPathAlter, JSON.stringify(convertedObject.finalQnAAlterations, null, 2), 'utf-8')
         }
       } else {
-        await fs.writeFile(filePath, convertedObject, 'utf-8')
+        await fs.writeFile(validatedPath, convertedObject, 'utf-8')
       }
     } catch (err) {
-      throw new CLIError('Unable to write file - ' + filePath + ' Error: ' + err.message)
+      throw new CLIError('Unable to write file - ' + validatedPath + ' Error: ' + err.message)
     }
-    this.log('Successfully wrote QnA model to ' + filePath)
+    this.log('Successfully wrote QnA model to ' + validatedPath)
   }
 }
