@@ -48,30 +48,7 @@
         "WorkPhone": { 
             "type": "string", 
             "$mappings": [ "utterance" ]
-        },
-        "Confirmation": {
-            "type": "string",
-            "enum": [
-                "yes",
-                "no"
-            ],
-            "$templates":[]
-        },
-        "CancelConfirmation": {
-            "type": "string",
-            "$mappings": ["Confirmation"],
-            "$templates":[]
-        },
-        "CompleteConfirmation": {
-            "type": "string",
-            "$mappings": ["Confirmation"],
-            "$templates":[]
-        },
-        "PropertyToChange": {
-            "type": "string",
-            "$mappings":["PROPERTYNAME"],  
-            "$templates":[]
-        }     
+        }
     },
     "required":["HomeStreet", "HomeCity", "HomeState", "HomeZip", "HomePhone", "WorkStreet", "WorkCity", "WorkState", "WorkZip", "WorkPhone"]
 }

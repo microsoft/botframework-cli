@@ -41,22 +41,7 @@
                 "no"
             ],
             "$templates":[]
-        },
-        "CancelConfirmation": {
-            "type": "string",
-            "$mappings": ["Confirmation"],
-            "$templates":[]
-        },
-        "CompleteConfirmation": {
-            "type": "string",
-            "$mappings": ["Confirmation"],
-            "$templates":[]
-        },
-        "PropertyToChange": {
-            "type": "string",
-            "$mappings":["PROPERTYNAME"],  
-            "$templates":[]
-        }     
+        }
     },
     "required":["Account", "Topic", "Territory","Description","ContactEmail","ContactPhone","EstimatedCloseDate","PurchaseTimeframe"]
 }
