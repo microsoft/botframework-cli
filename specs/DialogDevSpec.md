@@ -1,7 +1,9 @@
 # Dialog Command Dev Spec One-Pager
 
+## <span style="color:red"> *** DRAFT *** </span> 
+
 ## Summary
-Dialog command manipulates Adaptive dialog files, primarily around merging and verifying integrity.
+Dialog command manipulates Adaptive dialog files, primarily around merging and verifying integrity. 
 
 ## Requirements
 ### Prerequisites
