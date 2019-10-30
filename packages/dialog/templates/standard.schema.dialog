@@ -35,6 +35,7 @@
     "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
     "$templates": [
         "help.lu",
+        "cancel.lu",
         "locale.lu",
         "locale.lg",
         "BeginDialog.dialog",
@@ -42,6 +43,6 @@
         "Help.dialog",
         "luconfig.json",
         "lu.dialog",
-        "Main.dialog"
+        "Main.dialog"        
     ]
 }
