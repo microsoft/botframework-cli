@@ -33,7 +33,7 @@
 - ELSEIF: {$expectedProperties}
 - {join(foreach($expectedProperties, expected, help1(expected)), '\n')}
 - ELSE:
-- {requiredProperties()}{optionalProperties()}You can find out about a specific property by doing 'help <property>'.
+- {requiredProperties()}\n{optionalProperties()}\nYou can find out about a specific property by doing 'help <property>'.
 
 # help1(property)
 - IF: {turn.schema.properties[property].enum}
@@ -89,3 +89,6 @@
 
 # chooseProperty
 - Which property do you want to change?
+
+# notUnderstood
+- Sorry, I do not understand @{join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}\n\n@{help(null)}

@@ -41,6 +41,7 @@
         "BeginDialog.dialog",
         "ChooseProperty.dialog",
         "Help.dialog",
+        "NotUnderstood.dialog",
         "luconfig.json",
         "lu.dialog",
         "Main.dialog"        
