@@ -13,6 +13,7 @@ import * as ph from './generatePhrases'
 import { processSchemas } from './processSchemas'
 
 export enum FeedbackType {
+    message,
     info,
     warning,
     error
@@ -287,10 +288,10 @@ export async function generate(
         force = false
         op = 'Generating'
     }
-    feedback(FeedbackType.info, `${op} resources for ${ppath.basename(formPath, '.form')} in ${outDir}`)
-    feedback(FeedbackType.info, `Locales: ${JSON.stringify(allLocales)} `)
-    feedback(FeedbackType.info, `Templates: ${JSON.stringify(templateDirs)} `)
-    feedback(FeedbackType.info, `App.schema: ${metaSchema} `)
+    feedback(FeedbackType.message, `${op} resources for ${ppath.basename(formPath, '.form')} in ${outDir}`)
+    feedback(FeedbackType.message, `Locales: ${JSON.stringify(allLocales)} `)
+    feedback(FeedbackType.message, `Templates: ${JSON.stringify(templateDirs)} `)
+    feedback(FeedbackType.message, `App.schema: ${metaSchema} `)
     try {
         await fs.ensureDir(outDir)
         let { form, schema } = await processSchemas(formPath, templateDirs, outDir, force, feedback)
