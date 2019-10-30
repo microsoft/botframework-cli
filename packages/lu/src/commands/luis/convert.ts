@@ -7,9 +7,9 @@ import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
-const luConverter = require('./../../parser/converters/lutoluisconverter')
-const luisConverter = require('./../../parser/converters/luistoluconverter')
 const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const Lu = require('./../../parser/lu/lu')
+const Luis = require('./../../parser/luis/luis')
 
 export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
@@ -43,10 +43,17 @@ export default class LuisConvert extends Command {
       let result: any
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
-        result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
+        let luObject = await Lu.build(luFiles, flags.log, flags.culture)
+        result = await luObject.parseToLuis()
+        result = result.hasContent() ? result : ''
       } else {
         const luisFile = stdin ? stdin : await file.getContentFromFile(flags.in)
-        result = await luisConverter.parseLuisObjectToLu(luisFile, flags.sort, flags.in)
+        let luisObject = new Luis(file.parseJSON(luisFile, 'Luis'))
+        if (flags.sort) {
+          luisObject.sort()
+        }
+
+        result = luisObject.parseToLuContent()
       }
 
       // If result is null or undefined return
@@ -72,6 +79,7 @@ export default class LuisConvert extends Command {
         this.log(result)
       }
     } catch (err) {
+      //console.log(err)
       if (err instanceof exception) {
         throw new CLIError(err.text)
       }

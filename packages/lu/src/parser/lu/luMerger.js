@@ -1,17 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 const deepEqual = require('deep-equal')
-const parseFileContents = require('./../../parser/lufile/parseFileContents');
-const retCode = require('./../../parser/lufile/enums/CLI-errors');
-const helpers = require('./../../parser/lufile/helpers');
-const hClasses = require('./../../parser/lufile/classes/hclasses');
-const exception = require('./../../parser/lufile/classes/exception');
-const luObject = require('./../../parser/lufile/classes/luObject');
-const parserObject = require('./../../parser/lufile/classes/parserObject');
-const txtfile = require('./../../parser/lufile/read-text-file');
-const BuildDiagnostic = require('./../../parser/lufile/diagnostic').BuildDiagnostic;
-const LUISObjNameEnum = require('./../../parser/lufile/enums/luisobjenum');
-const luisJSON = require('./../../parser/luisfile/parseLuisFile');
+const parseFileContents = require('./../lufile/parseFileContents');
+const retCode = require('./../lufile/enums/CLI-errors');
+const helpers = require('./../lufile/helpers');
+const hClasses = require('./../lufile/classes/hclasses');
+const exception = require('./../lufile/classes/exception');
+const luObject = require('./../lufile/classes/luObject');
+const parserObject = require('./../lufile/classes/parserObject');
+const txtfile = require('./../lufile/read-text-file');
+const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
+const LUISObjNameEnum = require('./../lufile/enums/luisobjenum');
+const luisJSON = require('./../luisfile/parseLuisFile');
 
 
 module.exports = {

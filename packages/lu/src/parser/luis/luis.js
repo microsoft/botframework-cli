@@ -1,109 +1,35 @@
 const deepEqual = require('deep-equal')
-const retCode = require('./../../parser/lufile/enums/CLI-errors')
-const helpers = require('./../../parser/lufile/helpers')
-const exception = require('./../../parser/lufile/classes/exception')
-const LUISObjNameEnum = require('./../../parser/lufile/enums/luisobjenum')
+const retCode = require('./../lufile/enums/CLI-errors')
+const helpers = require('./../lufile/helpers')
+const exception = require('./../lufile/classes/exception')
+const LUISObjNameEnum = require('./../lufile/enums/luisobjenum')
 const NEWLINE = require('os').EOL;
-const helperClasses = require('./../../parser/lufile/classes/hclasses')
-const EntityTypeEnum = require('./../../parser/lufile/enums/luisEntityTypes');
+const helperClasses = require('./../lufile/classes/hclasses')
+const EntityTypeEnum = require('./../lufile/enums/luisEntityTypes');
 
 class Luis {
     constructor(LuisJSON = null){
-        this.intents = LuisJSON ? LuisJSON.intents : [];
-        this.entities = LuisJSON ? LuisJSON.entities : [];
-        this.composites = LuisJSON ? LuisJSON.composites : [];
-        this.closedLists = LuisJSON ? LuisJSON.closedLists : [];
-        this.regex_entities = LuisJSON ? LuisJSON.regex_entities : [];
-        this.model_features = LuisJSON ? LuisJSON.model_features : [];
-        this.regex_features = LuisJSON ? LuisJSON.regex_features : [];
-        this.utterances = LuisJSON ? LuisJSON.utterances : [];
-        this.patterns = LuisJSON ? LuisJSON.patterns : [];
-        this.patternAnyEntities = LuisJSON ? LuisJSON.patternAnyEntities : [];
-        this.prebuiltEntities = LuisJSON ? LuisJSON.prebuiltEntities : [];
+        if (LuisJSON) {
+            for (let prop in LuisJSON) {
+                this[prop] = LuisJSON[prop];
+            }
+        } else {
+            this.intents = [];
+            this.entities = [];
+            this.composites = [];
+            this.closedLists = [];
+            this.regex_entities = [];
+            this.model_features = [];
+            this.regex_features = [];
+            this.utterances = [];
+            this.patterns = [];
+            this.patternAnyEntities = [];
+            this.prebuiltEntities = [];
+        }
     }
 
     parseToLuContent(){
-        let fileContent = '';
-        let luisObj = new helperClasses.rLuisObj();
-        (this.intents || []).forEach(function(intent) {
-            luisObj.intents.push(new helperClasses.intent(intent, []));
-        });
-        // add utterances to luisObj
-        updateUtterancesList(this.utterances, luisObj.intents, 'text');
-        // add patterns to luisObj
-        updateUtterancesList(this.patterns, luisObj.intents, 'pattern');
-        if(luisObj.intents.length >= 0) {
-            fileContent += NEWLINE;
-            fileContent += addAppMetaData(this);
-            fileContent += '> # Intent definitions' + NEWLINE + NEWLINE;
-            // write out intents and utterances..
-            luisObj.intents.forEach(function(intent) {
-                // Add inherits information if any
-                if (intent.intent.inherits !== undefined) {
-                    // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
-                    fileContent += '> !# @intent.inherits = name : ' + intent.intent.name;
-                    if (intent.intent.inherits.domain_name !== undefined) {
-                        fileContent += '; domain_name : ' + intent.intent.inherits.domain_name;
-                    }
-                    if (intent.intent.inherits.model_name !== undefined) {
-                        fileContent += '; model_name : ' + intent.intent.inherits.model_name;
-                    }
-                    fileContent += NEWLINE + NEWLINE;
-                }
-                fileContent += '## ' + intent.intent.name + NEWLINE;
-                intent.utterances.forEach(function(utterance) {
-                    let updatedText = utterance.text;
-                    if(utterance.entities.length >= 0) {
-                        // update utterance for each entity
-                        let text = utterance.text;
-                        let sortedEntitiesList = objectSortByStartPos(utterance.entities);
-                        let tokenizedText = text.split('');
-                        let nonCompositesInUtterance = sortedEntitiesList.filter(entity => this.composites.find(composite => composite.name == entity.entity) == undefined);
-                        nonCompositesInUtterance.forEach(entity => {
-                            if (entity.role !== undefined) {
-                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                            } else {
-                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                            }
-                            tokenizedText[parseInt(entity.endPos)] += `}`;
-                        })
-                        let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => this.composites.find(composite => composite.name == entity.entity) != undefined);
-                        compositeEntitiesInUtterance.forEach(entity => {
-                            if (entity.role !== undefined) {
-                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
-                            } else {
-                                tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
-                            }
-                            tokenizedText[parseInt(entity.endPos)] += `}`;
-                        })
-                        updatedText = tokenizedText.join(''); 
-                    }
-                    if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
-                });
-                fileContent += NEWLINE + NEWLINE;
-                if (intent.intent.features) {
-                    fileContent += `@ intent ${intent.intent.name}`;
-                    fileContent += addRolesAndFeatures(intent.intent);
-                    fileContent += NEWLINE + NEWLINE;
-                }
-            });
-        }
-        parseEntitiesToLu(this, fileContent)
-        parseToLuPrebuiltEntities(this, fileContent)
-        
-        if(this.model_features && this.model_features.length >= 0) {
-            fileContent += handlePhraseLists(this.model_features);
-        }
-
-        if(this.phraselists && this.phraselists.length >= 0) {
-            fileContent += handlePhraseLists(this.phraselists);
-        }
-
-        parseToLuClosedLists(this, fileContent)
-        parseRegExEntitiesToLu(this, fileContent)
-        parseCompositesToLu(this, fileContent)
-        return fileContent
-
+        return luisToLuContent(this)
     }
 
     sort() {
@@ -119,7 +45,7 @@ class Luis {
     }
 
     static build(parsedLUISList) {
-        if (parsedLUISList.length === 0) return undefined;
+        if (parsedLUISList.length === 0) return new Luis();
         let FinalLUISJSON = parsedLUISList[0].LUISJsonStructure;
         parsedLUISList.splice(0, 1);
         parsedLUISList.forEach(function (blob) {
@@ -142,154 +68,22 @@ class Luis {
         return result
     }
 
-    validateLUISBlob() {
-        // look for entity name collisions - list, simple, patternAny, phraselist
-        // look for list entities labelled
-        // look for prebuilt entity labels in utterances
+    validate() {
+        return validateLUIS(this)
+    }
 
-        let entitiesList = [];
-        let entityFound = '';
-        if (this.entities.length > 0) {
-            this.entities.forEach(function (entity) {
-                entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['simple'], entity.roles));
-            });
-        }
-        if (this.closedLists.length > 0) {
-            this.closedLists.forEach(function (entity) {
-                entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
-                if (entityFound.length === 0) {
-                    entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['list'], entity.roles));
-                } else {
-                    entityFound[0].type.push('list');
-                }
-            });
-        }
-        if (this.patternAnyEntities.length > 0) {
-            this.patternAnyEntities.forEach(function (entity) {
-                entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
-                if (entityFound.length === 0) {
-                    entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['patternAny'], entity.roles));
-                } else {
-                    entityFound[0].type.push('patternAny');
-                }
-            });
-        }
-
-        if (this.regex_entities.length > 0) {
-            this.regex_entities.forEach(function (entity) {
-                entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
-                if (entityFound.length === 0) {
-                    entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, [`regEx:/${entity.regexPattern}/`], entity.roles));
-                } else {
-                    if (entityFound[0].regexPattern !== undefined) {
-                        if (entityFound[0].regexPattern !== entity.regexPattern)
-                            entityFound[0].type.push(`regEx:/${entity.regexPattern}/`);
-                    } else {
-                        entityFound[0].type.push(`regEx:/${entity.regexPattern}/`);
-                    }
-                }
-            });
-        }
-
-        // add any composite entities to entities list.
-        const compositesEnt = (this.composites || []);
-        compositesEnt.forEach(entity => {
-            entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
-            if (entityFound.length === 0) {
-                entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['composite'], entity.roles));
-            } else {
-                entityFound[0].type.push('composite');
-            }
-        })
-
-        // add any pre-built entities to the entities list.
-        const prebuiltEnt = (this.prebuiltEntities || []);
-        prebuiltEnt.forEach(entity => {
-            entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
-            if (entityFound.length === 0) {
-                entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['prebuilt'], entity.roles));
-            } else {
-                entityFound[0].type.push('prebuilt');
-            }
-        })
-
-        // for each entityFound, see if there are duplicate definitions
-        entitiesList.forEach(function (entity) {
-            if (entity.type.length > 1) {
-                let errorMsg = `Entity ${entity.name} has duplicate definitions.\r\n\t` + JSON.stringify(entity.type, 2, null);
-                let error = BuildDiagnostic({ message: errorMsg });
-
-                throw (new exception(retCode.errorCode.DUPLICATE_ENTITIES, error.toString()));
-            }
-        });
-
-        // do we have utterances with phraselist entities? 
-        if (this.utterances.length > 0) {
-            this.utterances.forEach(function (utterance) {
-                if (utterance.entities.length > 0) {
-                    utterance.entities.forEach(function (entity) {
-                        let entityInList = helpers.filterMatch(entitiesList, 'name', entity.entity);
-                        if (entityInList.length > 0) {
-                            if (entityInList[0].type.includes('phraseList')) {
-                                let errorMsg = `Utterance "${utterance.text}" has reference to PhraseList. \r\n\tYou cannot have utterances with phraselist references in them`;
-                                let error = BuildDiagnostic({ message: errorMsg });
-
-                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                            }
-                        }
-                    });
-                }
-            });
-        }
-
-        // validate composite entities
-        if (this.composites.length > 0) {
-            this.composites.forEach(composite => {
-                // composites cannot include pattern.any entities as children
-                if (this.patternAnyEntities.length > 0) {
-                    let patternAnyEntityInComposite = (this.patternAnyEntities || []).find(patternAnyEntity => {
-                        return composite.children.includes(patternAnyEntity.name);
-                    });
-                    if (patternAnyEntityInComposite !== undefined) {
-                        let errorMsg = `Composite entity "${composite.name}" includes pattern.any entity "${patternAnyEntityInComposite.name}".\r\n\tComposites cannot include pattern.any entity as a child.`;
-                        let error = BuildDiagnostic({ message: errorMsg });
-
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                    }
-                }
-
-                // composite entity definitions must have valid child entity type definitions. 
-                composite.children.forEach(child => {
-                    if (child instanceof Object) child = child.name;
-                    // Fix for #1165
-                    // Current implementation does not account for explicit role included in a child
-                    let childEntityName = child;
-                    let childEntityRole = '';
-                    if (child.includes(':')) {
-                        let childSplit = child.split(':').map(item => item.trim());
-                        childEntityName = childSplit[0];
-                        childEntityRole = childSplit[1];
-                    }
-                    let compositeChildEntityFound = (entitiesList || []).find(entity => entity.name == childEntityName);
-                    if (compositeChildEntityFound === undefined) {
-                        let errorMsg = `Composite entity "${composite.name}" includes an undefined child entity "${childEntityName}".\r\n\tAll children of composite entities must be explicitly defined or implicitly defined via an utterance or a pattern`;
-                        let error = BuildDiagnostic({ message: errorMsg });
-
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                    }
-                    if (childEntityRole != '') {
-                        if (!compositeChildEntityFound.roles.includes(childEntityRole)) {
-                            let errorMsg = `Composite entity "${composite.name}" includes an undefined child entity role "${childEntityName}:${childEntityRole}".\r\n\tAll children of composite entities must be explicitly defined or implicitly defined via an utterance or a pattern`;
-                            let error = BuildDiagnostic({ message: errorMsg });
-
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
-                        }
-                    }
-                })
-
-            })
-        }
-        return true;
+    hasContent(){
+        return this.intents.length > 0 ||
+        this.entities.length > 0 ||
+        this.composites.length > 0 ||
+        this.closedLists.length > 0 ||
+        this.regex_entities.length > 0 ||
+        this.model_features.length > 0 ||
+        this.regex_features.length > 0 ||
+        this.utterances.length > 0 ||
+        this.patterns.length > 0 ||
+        this.patternAnyEntities.length > 0 ||
+        this.prebuiltEntities.length > 0
     }
 }
 
@@ -663,7 +457,8 @@ const buildPatternAny = function(blob, FinalLUISJSON){
     })
 }
 
-const parseEntitiesToLu =  function(luisJson, fileContent){
+const parseEntitiesToLu =  function(luisJson){
+    let fileContent = ''
     if(luisJson.entities && luisJson.entities.length >= 0) {
         fileContent += '> # Entity definitions' + NEWLINE + NEWLINE;
         luisJson.entities.forEach(function(entity) {
@@ -690,9 +485,11 @@ const parseEntitiesToLu =  function(luisJson, fileContent){
         });
         fileContent += NEWLINE;
     }
+    return fileContent
 }
 
-const parseToLuPrebuiltEntities = function(luisJson, fileContent){
+const parseToLuPrebuiltEntities = function(luisJson){
+    let fileContent = ''
     if(luisJson.prebuiltEntities && luisJson.prebuiltEntities.length >= 0){
         fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
         luisJson.prebuiltEntities.forEach(function(entity) {
@@ -702,9 +499,11 @@ const parseToLuPrebuiltEntities = function(luisJson, fileContent){
         });
         fileContent += NEWLINE;
     }
+    return fileContent
 }
 
-const parseToLuClosedLists = function(luisJson, fileContent){
+const parseToLuClosedLists = function(luisJson){
+    let fileContent = ''
     if(luisJson.closedLists && luisJson.closedLists.length >= 0){
         fileContent += '> # List entities' + NEWLINE + NEWLINE;
         luisJson.closedLists.forEach(function(ListItem) {
@@ -724,9 +523,11 @@ const parseToLuClosedLists = function(luisJson, fileContent){
             fileContent += NEWLINE + NEWLINE;
         });
     }
+    return fileContent
 }
 
-const parseRegExEntitiesToLu = function(luisJson, fileContent){
+const parseRegExEntitiesToLu = function(luisJson){
+    let fileContent = ''
     if(luisJson.regex_entities && luisJson.regex_entities.length >= 0) {
         fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
         luisJson.regex_entities.forEach(function(regExEntity) {
@@ -739,9 +540,11 @@ const parseRegExEntitiesToLu = function(luisJson, fileContent){
         });
         fileContent += NEWLINE;
     }
+    return fileContent
 }
 
-const parseCompositesToLu = function(luisJson, fileContent){
+const parseCompositesToLu = function(luisJson){
+    let fileContent = ''
     // add composite entities if found in source LUIS JSON
     if(luisJson.composites && luisJson.composites.length > 0) {
         fileContent += '> # Composite entities' + NEWLINE + NEWLINE; 
@@ -758,6 +561,7 @@ const parseCompositesToLu = function(luisJson, fileContent){
             fileContent += NEWLINE;
         })
     }
+    return fileContent
 }
 
 const checkAndUpdateVersion = function(finalLUISJSON) {
@@ -786,4 +590,237 @@ const checkAndUpdateVersion = function(finalLUISJSON) {
             children.forEach(c => composite.children.push({name : c}));
         })
     }
+}
+
+const luisToLuContent = function(luisJSON){
+    let fileContent = '';
+    let luisObj = new helperClasses.rLuisObj();
+    (luisJSON.intents || []).forEach(function(intent) {
+        luisObj.intents.push(new helperClasses.intent(intent, []));
+    });
+    // add utterances to luisObj
+    updateUtterancesList(luisJSON.utterances, luisObj.intents, 'text');
+    // add patterns to luisObj
+    updateUtterancesList(luisJSON.patterns, luisObj.intents, 'pattern');
+    if(luisObj.intents.length >= 0) {
+        fileContent += NEWLINE;
+        fileContent += addAppMetaData(luisJSON);
+        fileContent += '> # Intent definitions' + NEWLINE + NEWLINE;
+        // write out intents and utterances..
+        luisObj.intents.forEach(function(intent) {
+            // Add inherits information if any
+            if (intent.intent.inherits !== undefined) {
+                // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
+                fileContent += '> !# @intent.inherits = name : ' + intent.intent.name;
+                if (intent.intent.inherits.domain_name !== undefined) {
+                    fileContent += '; domain_name : ' + intent.intent.inherits.domain_name;
+                }
+                if (intent.intent.inherits.model_name !== undefined) {
+                    fileContent += '; model_name : ' + intent.intent.inherits.model_name;
+                }
+                fileContent += NEWLINE + NEWLINE;
+            }
+            fileContent += '## ' + intent.intent.name + NEWLINE;
+            intent.utterances.forEach(function(utterance) {
+                let updatedText = utterance.text;
+                if(utterance.entities.length >= 0) {
+                    // update utterance for each entity
+                    let text = utterance.text;
+                    let sortedEntitiesList = objectSortByStartPos(utterance.entities);
+                    let tokenizedText = text.split('');
+                    let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
+                    nonCompositesInUtterance.forEach(entity => {
+                        if (entity.role !== undefined) {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                        } else {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                        }
+                        tokenizedText[parseInt(entity.endPos)] += `}`;
+                    })
+                    let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
+                    compositeEntitiesInUtterance.forEach(entity => {
+                        if (entity.role !== undefined) {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
+                        } else {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
+                        }
+                        tokenizedText[parseInt(entity.endPos)] += `}`;
+                    })
+                    updatedText = tokenizedText.join(''); 
+                }
+                if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
+            });
+            fileContent += NEWLINE + NEWLINE;
+            if (intent.intent.features) {
+                fileContent += `@ intent ${intent.intent.name}`;
+                fileContent += addRolesAndFeatures(intent.intent);
+                fileContent += NEWLINE + NEWLINE;
+            }
+        });
+    }
+    fileContent += parseEntitiesToLu(luisJSON, fileContent)
+    fileContent += parseToLuPrebuiltEntities(luisJSON, fileContent)
+    
+    if(luisJSON.model_features && luisJSON.model_features.length >= 0) {
+        fileContent += handlePhraseLists(luisJSON.model_features);
+    }
+
+    if(luisJSON.phraselists && luisJSON.phraselists.length >= 0) {
+        fileContent += handlePhraseLists(luisJSON.phraselists);
+    }
+
+    fileContent += parseToLuClosedLists(luisJSON, fileContent)
+    fileContent += parseRegExEntitiesToLu(luisJSON, fileContent)
+    fileContent += parseCompositesToLu(luisJSON, fileContent)
+    return fileContent
+}
+
+const validateLUIS = function(luisJSON) {
+    // look for entity name collisions - list, simple, patternAny, phraselist
+    // look for list entities labelled
+    // look for prebuilt entity labels in utterances
+
+    let entitiesList = [];
+    let entityFound = '';
+    if (luisJSON.entities.length > 0) {
+        luisJSON.entities.forEach(function (entity) {
+            entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['simple'], entity.roles));
+        });
+    }
+    if (luisJSON.closedLists.length > 0) {
+        luisJSON.closedLists.forEach(function (entity) {
+            entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
+            if (entityFound.length === 0) {
+                entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['list'], entity.roles));
+            } else {
+                entityFound[0].type.push('list');
+            }
+        });
+    }
+    if (luisJSON.patternAnyEntities.length > 0) {
+        luisJSON.patternAnyEntities.forEach(function (entity) {
+            entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
+            if (entityFound.length === 0) {
+                entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['patternAny'], entity.roles));
+            } else {
+                entityFound[0].type.push('patternAny');
+            }
+        });
+    }
+
+    if (luisJSON.regex_entities.length > 0) {
+        luisJSON.regex_entities.forEach(function (entity) {
+            entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
+            if (entityFound.length === 0) {
+                entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, [`regEx:/${entity.regexPattern}/`], entity.roles));
+            } else {
+                if (entityFound[0].regexPattern !== undefined) {
+                    if (entityFound[0].regexPattern !== entity.regexPattern)
+                        entityFound[0].type.push(`regEx:/${entity.regexPattern}/`);
+                } else {
+                    entityFound[0].type.push(`regEx:/${entity.regexPattern}/`);
+                }
+            }
+        });
+    }
+
+    // add any composite entities to entities list.
+    const compositesEnt = (luisJSON.composites || []);
+    compositesEnt.forEach(entity => {
+        entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
+        if (entityFound.length === 0) {
+            entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['composite'], entity.roles));
+        } else {
+            entityFound[0].type.push('composite');
+        }
+    })
+
+    // add any pre-built entities to the entities list.
+    const prebuiltEnt = (luisJSON.prebuiltEntities || []);
+    prebuiltEnt.forEach(entity => {
+        entityFound = helpers.filterMatch(entitiesList, 'name', entity.name);
+        if (entityFound.length === 0) {
+            entitiesList.push(new helperClass.validateLUISBlobEntity(entity.name, ['prebuilt'], entity.roles));
+        } else {
+            entityFound[0].type.push('prebuilt');
+        }
+    })
+
+    // for each entityFound, see if there are duplicate definitions
+    entitiesList.forEach(function (entity) {
+        if (entity.type.length > 1) {
+            let errorMsg = `Entity ${entity.name} has duplicate definitions.\r\n\t` + JSON.stringify(entity.type, 2, null);
+            let error = BuildDiagnostic({ message: errorMsg });
+
+            throw (new exception(retCode.errorCode.DUPLICATE_ENTITIES, error.toString()));
+        }
+    });
+
+    // do we have utterances with phraselist entities? 
+    if (luisJSON.utterances.length > 0) {
+        luisJSON.utterances.forEach(function (utterance) {
+            if (utterance.entities.length > 0) {
+                utterance.entities.forEach(function (entity) {
+                    let entityInList = helpers.filterMatch(entitiesList, 'name', entity.entity);
+                    if (entityInList.length > 0) {
+                        if (entityInList[0].type.includes('phraseList')) {
+                            let errorMsg = `Utterance "${utterance.text}" has reference to PhraseList. \r\n\tYou cannot have utterances with phraselist references in them`;
+                            let error = BuildDiagnostic({ message: errorMsg });
+
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    // validate composite entities
+    if (this.composites.length > 0) {
+        this.composites.forEach(composite => {
+            // composites cannot include pattern.any entities as children
+            if (this.patternAnyEntities.length > 0) {
+                let patternAnyEntityInComposite = (this.patternAnyEntities || []).find(patternAnyEntity => {
+                    return composite.children.includes(patternAnyEntity.name);
+                });
+                if (patternAnyEntityInComposite !== undefined) {
+                    let errorMsg = `Composite entity "${composite.name}" includes pattern.any entity "${patternAnyEntityInComposite.name}".\r\n\tComposites cannot include pattern.any entity as a child.`;
+                    let error = BuildDiagnostic({ message: errorMsg });
+
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                }
+            }
+
+            // composite entity definitions must have valid child entity type definitions. 
+            composite.children.forEach(child => {
+                if (child instanceof Object) child = child.name;
+                // Fix for #1165
+                // Current implementation does not account for explicit role included in a child
+                let childEntityName = child;
+                let childEntityRole = '';
+                if (child.includes(':')) {
+                    let childSplit = child.split(':').map(item => item.trim());
+                    childEntityName = childSplit[0];
+                    childEntityRole = childSplit[1];
+                }
+                let compositeChildEntityFound = (entitiesList || []).find(entity => entity.name == childEntityName);
+                if (compositeChildEntityFound === undefined) {
+                    let errorMsg = `Composite entity "${composite.name}" includes an undefined child entity "${childEntityName}".\r\n\tAll children of composite entities must be explicitly defined or implicitly defined via an utterance or a pattern`;
+                    let error = BuildDiagnostic({ message: errorMsg });
+
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                }
+                if (childEntityRole != '') {
+                    if (!compositeChildEntityFound.roles.includes(childEntityRole)) {
+                        let errorMsg = `Composite entity "${composite.name}" includes an undefined child entity role "${childEntityName}:${childEntityRole}".\r\n\tAll children of composite entities must be explicitly defined or implicitly defined via an utterance or a pattern`;
+                        let error = BuildDiagnostic({ message: errorMsg });
+
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    }
+                }
+            })
+
+        })
+    }
+    return true;
 }

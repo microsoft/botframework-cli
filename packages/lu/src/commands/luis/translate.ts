@@ -9,9 +9,9 @@ const path = require('path')
 const fileHelper = require('./../../utils/filehelper')
 const exception = require('./../../parser/lufile/classes/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
-const luisConverter = require('./../../parser/converters/luistoluconverter')
-const luConverter = require('./../../parser/lufile/parseFileContents')
 const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const Lu = require('./../../parser/lu/lu')
+const Luis = require('./../../parser/luis/luis')
 
 export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'
@@ -43,15 +43,17 @@ export default class LuisTranslate extends Command {
         result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
-        let translation = await luisConverter.parseLuisObjectToLu(json, false)
+        let luisObject = new Luis(fileHelper.parseJSON(json, 'Luis'))
+        let translation = luisObject.parseToLuContent()
         translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         let key = stdin ? 'stdin' : path.basename(flags.in)
         result = {
           [key] : {}
         }
         for (let lng in translation) {
-          let translatedJSON = await luConverter.parseFile(translation[lng], false)
-          result[key][lng] = await translatedJSON.LUISJsonStructure
+          let luObject = new Lu(translation[lng])
+          let translatedJSON = await luObject.parseToLuis()
+          result[key][lng] = await translatedJSON
         }
       }
 

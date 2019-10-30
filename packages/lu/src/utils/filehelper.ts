@@ -162,3 +162,11 @@ export async function detectLuContent(stdin: string, input: string) {
   }
   return false
 }
+
+export function parseJSON(input: string, appType: string) {
+  try {
+    return JSON.parse(input)
+  } catch (error) {
+    throw new CLIError(`Sorry, error parsing content as ${appType} JSON`)
+  }
+}

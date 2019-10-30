@@ -528,7 +528,7 @@ describe('luis:convert empty file handling', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
   .it('luis:convert errors out on empty json file', async (ctx) => {
-    expect(ctx.stderr).to.contain('Sorry, error parsing content as LUIS JSON')
+    expect(ctx.stderr).to.contain('Sorry, error parsing content as Luis JSON\n')
   })
 })
 
