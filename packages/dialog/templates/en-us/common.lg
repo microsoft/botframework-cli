@@ -29,7 +29,7 @@
 
 # help(property)
 - IF: {property}
-- help1(property)
+- {help1(property)}
 - ELSEIF: {$expectedProperties}
 - {join(foreach($expectedProperties, expected, help1(expected)), '\n')}
 - ELSE:
