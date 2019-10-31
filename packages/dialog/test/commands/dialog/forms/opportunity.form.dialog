@@ -43,5 +43,8 @@
             "$templates":[]
         }
     },
-    "required":["Account", "Topic", "Territory","Description","ContactEmail","ContactPhone","EstimatedCloseDate","PurchaseTimeframe"]
+    "required":["Account", "Topic", "Territory","Description","ContactEmail","ContactPhone","EstimatedCloseDate","PurchaseTimeframe"],
+    "$requires": [
+        "standard.schema.dialog"
+    ]
 }
