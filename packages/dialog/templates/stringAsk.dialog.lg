@@ -10,6 +10,17 @@
     "actions": [
         {
             "$type": "Microsoft.IfCondition",
+            "condition":"$lastExpectedProperty == '@{property}'",
+            "actions":[
+                {
+                    "$type": "Microsoft.SendActivity",
+                    "activity": "@{callHelp()}"
+                }
+                    
+            ]
+        },
+        {
+            "$type": "Microsoft.IfCondition",
             "condition": "contains(turn.schema.properties['@{property}'].$mappings, 'utterance')",
             "actions":[
                 {
@@ -29,6 +40,11 @@
                     ]
                 }
             ]
+        },
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$lastExpectedProperty",
+            "value": "'@{property}'"
         }
     ]
 }
@@ -36,3 +52,6 @@
 
 # callAsk
 - @\{Ask@{property}()}
+
+# callHelp
+- @\{help(@PropertyName)}
