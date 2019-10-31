@@ -1,0 +1,14 @@
+
+# filename
+- {formName}-{property}Setemail.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.SetProperty",
+    "property": "$@{property}",
+    "value": "@email"
+               
+}
+```

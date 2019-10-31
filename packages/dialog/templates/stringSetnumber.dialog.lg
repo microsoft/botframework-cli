@@ -1,0 +1,14 @@
+
+# filename
+- {formName}-{property}Setnumber.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.SetProperty",
+    "property": "$@{property}",
+    "value": "@number"
+               
+}
+```
