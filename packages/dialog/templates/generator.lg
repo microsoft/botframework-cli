@@ -1,0 +1,9 @@
+# roles
+- IF: @{role}
+    - roles=@{role}
+- ELSE:
+    -
+
+# entityFilename
+- @{formName}-@{if(role, role, entity)}.@{locale}.lu
+

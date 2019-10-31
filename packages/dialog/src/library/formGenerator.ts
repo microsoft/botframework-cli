@@ -214,12 +214,17 @@ async function processTemplates(
 
     // Entities first--ok to ignore templates because they might be property specific
     for (let entity of Object.keys(schema.entities())) {
+        let [entityName, role] = entity.split(':')
+        scope.entity = entityName
+        scope.role = role
         for (let ext of ['.lu', '.lg', '.qna', '.dialog']) {
             if (extensions.includes(ext)) {
-                await processTemplate(entity + ext, templateDirs, outDir, schema, scope, force, feedback, true)
+                await processTemplate(entityName + ext, templateDirs, outDir, schema, scope, force, feedback, true)
             }
         }
     }
+    scope.entity = undefined
+    scope.role = undefined
 
     // Process per property templates
     for (let prop of schema.schemaProperties()) {
@@ -243,6 +248,23 @@ async function processTemplates(
         }
     }
 }
+
+// Extending to roles.
+// Auto-generated enum/string do not need role.
+// To use them as a role do BreadEntity:foo
+// To use roles with prebuilts, an entity number:length should add the role as an .lu file.
+// Keep explicit reference to underlying or promote underlying?
+// Need template per-role.  When you see <name>:<role> do <name>Role.lu.  This works for prebuilt.
+// How do we generate enum/string entity roles?  
+// 1) Look in generated files and auto-generate role addition.
+// 2) Pick up *Entity:role and generate by hand.
+// 3) Always generate by hand, i.e. no template?
+// 4) If not present <entity>Role, generate
+//
+// .lu = $prebuilt:number roles=length or $foo:simple roles=blah
+// .lg = role(value) -> entity(value)
+// .dialog = generate from underlying entity?
+
 
 /**
  * Iterate through the locale templates and generate per property/locale files.

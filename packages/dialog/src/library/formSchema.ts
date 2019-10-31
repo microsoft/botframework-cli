@@ -113,13 +113,14 @@ export class FormSchema {
             let type = this.typeName()
             templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + 'Ask.dialog']
             for (let mapping of this.mappings()) {
-                if (mapping === this.path + 'Entity') {
+                let [entityName, role] = mapping.split(':')
+                if (entityName === this.path + 'Entity') {
                     templates.push(`${type}Set${type}.dialog`)
                     if (type === 'enum') {
                         templates.push(`${type}ClarifyEntity.dialog`)
                     }
                 } else {
-                    templates.push(`${type}Set${mapping}.dialog`)
+                    templates.push(`${type}Set${entityName}.dialog`)
                 }
             }
         }
@@ -130,7 +131,7 @@ export class FormSchema {
         let mappings: string[] = this.schema.$mappings
         if (!mappings && this.path) {
             if (this.schema.type === 'number') {
-                mappings = ['number']
+                mappings = [`number:${this.path}`, 'number']
             } else {
                 mappings = [this.path + 'Entity']
             }
