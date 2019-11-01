@@ -34,8 +34,6 @@ export default class ChatdownConvert extends Command {
     try {
       const {flags} = this.parse(ChatdownConvert)
 
-      let inputIsDirectory = flags.in ? (flags.in.includes('*') || this.isDir(flags.in)) : false
-
       if (flags.prefix) {
         const pkgName = this.config.name
         intercept(function (txt: any) {
@@ -43,32 +41,33 @@ export default class ChatdownConvert extends Command {
         })
       }
 
-      let outputDir = flags.out ? path.resolve(flags.out) : null
+      let inputEntities: string[] | undefined = []
+      let inputIsDirectory: boolean = flags.in ? (flags.in.includes('*') || this.isDirectory(flags.in)) : false
+      let outputDirectory: string | null | undefined
 
-      if (inputIsDirectory) {
-        let inputDir = flags.in ? flags.in.trim() : ''
-        const len = await this.processFiles(inputDir, outputDir, flags.force)
-        if (len === 0) {
-          throw new CLIError('No chat files found at: ' + flags.in)
-        }
-        this.log(chalk.green(`Successfully wrote ${len} files\n`))
-        return
-      } else {
-        const fileContents = await this.getInput(flags.in)
-        const fileName = flags.in ? this.getFileName(flags.in) : ''
-        if (fileContents) {
-          const activities = await chatdown(fileContents, flags)
-          const writeConfirmation = await this.writeOut(activities, fileName, outputDir, flags.force)
-          /* tslint:disable:strict-type-predicates */
-          if (typeof writeConfirmation === 'string') {
-            process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${writeConfirmation}\n`)
-          }
-        } else if (flags.in && !fileContents) {
-          throw new CLIError('No file contents found in: ' + flags.in)
-        } else {
-          return this._help()
-        }
+      // step 1: get chat data input
+      if (flags.in) {
+        inputEntities = await this.getInputEntities(inputIsDirectory, flags.in)
       }
+
+      if (flags.out) {
+        let outputDir = path.resolve(flags.out) || null
+      }
+
+      if (inputEntities.length < 1) {
+        throw new CLIError('No chat files found at: ' + flags.in)
+      }
+
+      // step 2: convert chat data input to transcript
+      const transcripts = await this.convertToTranscript(inputEntities, inputIsDirectory)
+
+      // step 3: write output transcript data
+      const x = 666;
+      // need for write step
+      // const fileName = this.getFileName(entities[i])
+      
+
+      console.log(inputEntities)
 
     } catch (err) {
       if (err.message.match(/Malformed configurations options detected/)) {
@@ -78,27 +77,53 @@ export default class ChatdownConvert extends Command {
     }
   }
 
-  private readonly isDir = (path: string) => {
-    const stats = fs.statSync(path)
-    return stats.isDirectory()
-  }
-
-  private async getInput(args: any) {
-    // Check if path passed in --in
-    if (args && args.length > 0) {
-      return utils.readTextFile(args)
-    } else {
-      //Check if piped data was sent
-      const {stdin} = process
-      if (stdin.isTTY) {
-        return false
-      } else {
-        return this.readStdin()
+  private async convertToTranscript(entities: any[], inputIsDir: boolean) {
+    const transcripts: string[] = []
+    /* tslint:disable:prefer-for-of */
+    for (let i = 0; i < entities.length; i++) {
+      try {
+        let transcript;
+        if (inputIsDir) {
+          transcript = await chatdown(await utils.readTextFile(entities[i]))
+        } else {
+          transcript = await chatdown(entities[i], flags)
+        }
+        transcripts.push(transcript)
+      } catch (error) {
+        if (error.message.match(/no such file or directory/)) {
+          throw new CLIError(error.message)
+        }
+        throw error
       }
     }
+    return transcripts
   }
 
-  private getFiles(directoryPath: any) {
+  private getFileName(file: any) {
+    return path.basename(file, path.extname(file))
+  }
+
+  private async getInputEntities(inputIsDirectory: boolean, inputFlag: string): Promise<string[]> {
+    if (inputIsDirectory) {
+      return await this.getInputFromDirectory(inputFlag)
+    }
+    return [await this.getInputFromFileOrStdin(inputFlag)]
+  }
+
+  private async getInputFromFileOrStdin(args: any): Promise<string> {
+    // Check if file passed in
+    if (args && args.length > 0) {
+      return utils.readTextFile(args)
+    } 
+    // Check if piped data was passed in
+    const {stdin} = process
+    if (!stdin.isTTY) {
+      return this.readStdin()
+    }
+    return ''
+  }
+
+  private getFilesFromDirectory(directoryPath: any): Promise<string[]> {
     return new Promise((resolve, reject) => {
       let fileList: any = []
       fs.readdir(directoryPath, (err: any, files: any) => {
@@ -111,52 +136,23 @@ export default class ChatdownConvert extends Command {
     })
   }
 
-  private getFileName(file: any) {
-    let fileName = path.basename(file, path.extname(file))
-    return fileName
-  }
-
-  private async processFiles(inputDir: any, outputDir: any, force: boolean) {
-    return new Promise(async (resolve, reject) => {
-      let files: any = []
-      if (inputDir.indexOf('*') > -1) {
-        files = glob.sync(inputDir, {ignore: ['**/node_modules/**']})
-      } else {
-        try {
-          files = await this.getFiles(inputDir)
-        } catch (err) {
-          reject(new CLIError(`Failed to scan directory ${err}`))
-        }
-      }
-      /* tslint:disable:prefer-for-of */
-      for (let i = 0; i < files.length; i++) {
-        try {
-          const fileName = this.getFileName(files[i])
-          let activities = await chatdown(await utils.readTextFile(files[i]))
-          await this.writeOut(activities, fileName, outputDir, force)
-        } catch (e) {
-          if (e.message.match(/no such file or directory/)) {
-            reject(new CLIError(e.message))
-          } else if (e.message.match(/Invalid Input/)) {
-            reject(new CLIError('No chat file path: ' + inputDir))
-          }
-          reject(e)
-        }
-      }
-      resolve(files.length)
-    })
-  }
-
-  private async writeOut(activities: any, fileName: string, outputDir: any, force: boolean) {
-    if (fileName && outputDir) {
-      let writeFile = path.join(outputDir, `${fileName}.transcript`)
-      let validatedPath = utils.validatePath(writeFile, '', force)
-      await fs.ensureFile(writeFile)
-      await fs.writeJson(validatedPath, activities, {spaces: 2})
-      return validatedPath
+  private async getInputFromDirectory(directoryPath: string | undefined): Promise<string[]> {
+    if (directoryPath && directoryPath.indexOf('*') > -1) {
+      return glob.sync(directoryPath, {ignore: ['**/node_modules/**']})
     }
-    const output = JSON.stringify(activities, null, 2)
-    await new Promise(done => process.stdout.write(output, 'utf-8', () => done()))
-    return true
+    try {
+      return await this.getFilesFromDirectory(directoryPath)
+    } catch (err) {
+      if (err.message.match(/Invalid Input/)) {
+        throw new CLIError('No chat file path: ' + directoryPath)
+      }
+      throw new CLIError(`Failed to scan directory ${err}`)
+    }
   }
+
+  private isDirectory(path: string): boolean {
+    const stats = fs.statSync(path)
+    return stats.isDirectory()
+  }
+
 }
