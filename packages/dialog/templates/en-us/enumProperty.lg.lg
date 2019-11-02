@@ -1,14 +1,14 @@
 # filename
-- {formName}-{property}.{locale}.lg
+- @{formName}-@{property}.@{locale}.lg
 
 # template
-- {AskTemplate()}\n{NameTemplate()}\n{ValueTemplate()}\n\[{formName}-{property}Entity.{locale}.lg]\n\[common.lg]
+- @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{formName}-@{property}Entity.@{locale}.lg]\n\[common.lg]
 
 # AskTemplate
-- # Ask{property}\n- \{askEnum('{property}')\}\n
+- # Ask@{property}\n- @\{askEnum('@{property}')\}\n
 
 # ValueTemplate
-- # {property}(val)\n- \{{concat(property, 'Entity')}(val)}\n
+- # @{property}(val)\n- @\{@{concat(property, 'Entity')}(val)}\n
 
 # NameTemplate
-- # {property}Name\n- {phrase(property, locale)}\n
+- # @{property}Name\n- @{phrase(property, locale)}\n

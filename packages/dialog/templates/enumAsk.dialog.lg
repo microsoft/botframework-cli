@@ -25,11 +25,6 @@
             "expectedProperties": [
                 "@{property}"
             ]
-        },
-        {
-            "$type": "Microsoft.SetProperty",
-            "property": "$lastExpectedProperty",
-            "value": "'@{property}'"
         }
     ]
 }

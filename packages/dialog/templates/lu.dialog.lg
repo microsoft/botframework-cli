@@ -14,8 +14,8 @@
 ```
 
 # entry(locale, name)
-- {concat('"', locale, '": ', file(locale, name))}
+- @{concat('"', locale, '": ', file(locale, name))}
 
 # file(locale, name)
-- {concat('"', name, '.', locale, '.lu"')}
+- @{concat('"', name, '.', locale, '.lu"')}
 

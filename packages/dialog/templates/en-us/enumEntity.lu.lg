@@ -1,14 +1,14 @@
 # filename
-- {formName}-{property}Entity.{locale}.lu
+- @{formName}-@{property}Entity.@{locale}.lu
 
 # template
-- {Entity()}\n{None()}
+- @{Entity()}\n@{None()}
 
 # Entity
-- {join(foreach(schema.properties[property].enum, enum, concat('$', property, 'Entity:', enum, '=\n', synonyms(enum))), '\n\n')}
+- @{join(foreach(schema.properties[property].enum, enum, concat('$', property, 'Entity:', enum, '=\n', synonyms(enum))), '\n\n')}
 
 # None
-- # None\n{join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
+- # None\n@{join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
 
 # synonyms(value)
-- {join(foreach(phrases(value), phrase, concat('- ', phrase)), '\n')}
+- @{join(foreach(phrases(value), phrase, concat('- ', phrase)), '\n')}
