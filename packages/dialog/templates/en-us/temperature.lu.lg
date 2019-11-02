@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:temperature @{roles()}
+
+[generator.lg](../generator.lg)

@@ -1,0 +1,14 @@
+
+# filename
+- {formName}-{property}Setage.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.SetProperty",
+    "property": "$@{property}",
+    "value": "@age"
+               
+}
+```

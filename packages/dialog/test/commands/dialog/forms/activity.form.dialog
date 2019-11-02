@@ -18,6 +18,9 @@
             "$mappings": [ "datetime" ]
         }
     },
-    "required":["Subject", "ActivityType", "StartDate"]
+    "required":["Subject", "ActivityType", "StartDate"],
+    "$requires": [
+        "standard.schema.dialog"
+    ]
 }
     
