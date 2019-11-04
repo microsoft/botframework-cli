@@ -24,17 +24,13 @@ Depends on Dialog / adaptive library.
 Here's a brief sample of usage cases:
 
      $ bf dialog
-     $ bf dialog:merge 
+     $ bf dialog:merge ./dialogs/*
      $ bf dialog:verify
      $ bf dialog:merge -o app.schema
 
 
 ## Design Specifications
 The command supports the adaptive dialog files in use by Composer and the rest of the adaptive dialog system. It merges disparate dialog files based on provided schema files into a single cohesive and self-referential file. Secondly, it supports validation pass to ensure the integrity of the merged file. 
-
-#### Glob Pattern
-
-Wild card and recursive file pattern specifications do not follow common guidelines, instead, we're using the  [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. Note: this is an exceptional pattern to the standard  BF CLI. **TBD**: Can we avoid this exception and follow standard BF CLI patterns?
 
 The dialog command is based on the adaptive dialog library. 
 
@@ -50,38 +46,34 @@ The dialog:verify command is used to validate that all of the .dialog file resou
 
 If there are "lint" errors, the command will display detailed error information or return successful confirmation.
 
+#### Glob Pattern
+
+Wild card and recursive file pattern specifications do not follow common guidelines, instead, we're using the  [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. Note: this is an exceptional pattern to the standard  BF CLI. **TBD**: Can we avoid this exception and follow standard BF CLI patterns?
+
+Otherwise, with exception of Glob file pattern, `bf dialg` respects all global flags based on [Contributing Guide](https://github.com/microsoft/botframework-cli/blob/master/CONTRIBUTING.md#general-guidelines) .
+
+
 ### Command Line Form
-USAGE
 
+```
  $ bf
+Operates on Adaptive Dialog assetts, merges, and verifies integrity of .dialog, and .schema files. 
 
-​		Respects all global flags based on [Contributing Guide](https://github.com/microsoft/botframework-cli/blob/master/CONTRIBUTING.md#general-guidelines) with exception of file pattern per exception section.
+$ bf dialog:merge <options> <FileSpec>	 
+Creates a .schema file by merging component schemas and the SDK schemas 
 
-
-
-$ bf dialog:merge \<options\> \<FileSpec\>	 
-
-​			Creates a .schema file by merging component schemas and the SDK schemas 
-
- \<options\>
-
-```
-  <FileSpec> = GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9] where GLOB is a glob pattern
+Where  <options>:
   -o, --output=output  Specify output path and filename for merged schema. [default: app.schema] 
-    -u, --update      Update and regenerates .schema file.
+  -u, --update      Update and regenerates .schema file.
+
+$ bf dialog:verify <options>  <FileSpec>	 
+Verifies that all of the .dialog file resources are valid based on the application schema specifications
 ```
-
-
-
-$ bf dialog:verify \<options\>  \<FileSpec\>	 
-
-​			Verifies that all of the .dialog file resources are valid based on the application schema specifications
-
- \<options\>
-
 ```
-  <FileSpec> = GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9] where GLOB is a glob pattern
+Where <options> include all global options (e.g. help, version)
 
+Where FileSpec: 
+     GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9] where GLOB is a glob pattern
 ```
 
 ## Special Considerations
@@ -97,3 +89,4 @@ $ bf dialog:verify \<options\>  \<FileSpec\>
 ## References
 
 \<any references of relevance\>
+
