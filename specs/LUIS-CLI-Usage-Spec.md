@@ -40,8 +40,7 @@ Reference: original  *luis init* command
 Parameters:
 
 ```
-  --authKey			LUIS authoring key
-  					* aka as Ocp-Apim-Subscription-Key or subscription key 
+  --subscriptionKey	LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key) 
   --appId			LUIS application Id
   --verId			LUIS version Id
   --region			LUIS application region. 
@@ -64,7 +63,7 @@ Parameters:
  --srcVerId			Source version to clone (mandatory, defaults to config:LUIS:verId)
  --destVerId		Destination version to create (mandatory)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --authKey			LUIS authoring (Ocp-Apim-subscription) key
+ --subscriptionKey			LUIS authoring (Ocp-Apim-subscription) key
 ```
 
 Returns:
@@ -84,7 +83,7 @@ Reference:  [Add application](https://westus.dev.cognitive.microsoft.com/docs/se
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --name				Name of LUIS application
  --description		Description of LUIS application
  --culture			Specify culture language (default: en-us)
@@ -111,7 +110,7 @@ Reference:  [Delete application](https://westus.dev.cognitive.microsoft.com/docs
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --force			If specified, ignore application dependencies. (optional, default: false). **TBD**: Do we still have to specify true/false? presence of flag should suffice
 ```
@@ -132,7 +131,7 @@ Reference:   [Delete version](https://westus.dev.cognitive.microsoft.com/docs/se
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --verId			Version to delete (mandatory)
 ```
@@ -153,7 +152,7 @@ Reference:    [Export application version](https://westus.dev.cognitive.microsof
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --verId			Version to export (mandatory, defaults to config:LUIS:verId)
  --format			Export format (optional, default: json) **TBD: ask luis for valid formats (json, lu?)
@@ -183,7 +182,7 @@ Reference:     [Import application](https://westus.dev.cognitive.microsoft.com/d
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --name				LUIS application name (optional)
  --in, -i			File path containing LUIS application contents, uses STDOUT if not specified (mandatory)
   --format			Content format (optional, default: json) **TBD: ask luis for valid formats (json, lu?) 
@@ -211,7 +210,7 @@ Reference:      [Import version](https://westus.dev.cognitive.microsoft.com/docs
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --verId			Version to export (mandatory, defaults to config:LUIS:verId)
  --format			Import format (optional, default: json) 
@@ -241,7 +240,7 @@ Reference:       [List applications](https://westus.dev.cognitive.microsoft.com/
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --skip				Number of entries to skip. Default: 0 (no skips)
  --take				Number of etnries to return. Maximum page size is 500. Default: 100
  -o, --out 			Output results to specified file in JSON format, otherwise prints to STDOUT (optional)
@@ -267,7 +266,7 @@ Reference:        [Get application endpoints]( https://westus.dev.cognitive.micr
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  -o, --out 			Output results to specified file in JSON format, otherwise prints to STDOUT (optional)
  					**TBD**: Not all commands do it. Optional, ok to skip file output
@@ -292,7 +291,7 @@ Reference:         [List versions](https://westus.dev.cognitive.microsoft.com/do
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --skip				Number of entries to skip. Default: 0 (no skips)
  --take				Number of etnries to return. Maximum page size is 500. Default: 100
@@ -319,7 +318,7 @@ Reference:         [Publish application](https://westus.dev.cognitive.microsoft.
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --verId			Version to publish (mandatory, defaults to config:LUIS:verId)
  --staging			Publishes application version to Staging slot, otherwise publish to production (default: false)
@@ -359,7 +358,7 @@ Returns:
   Parameters: 
 
   ```
-   --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+   --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
    --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
    --name				Name of LUIS application (mandatory)
    --description		Description of LUIS application (mandatory)
@@ -381,7 +380,7 @@ Reference:          [Rename version](https://westus.dev.cognitive.microsoft.com/
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --verId			Version to update (mandatory, defaults to config:LUIS:verId)
  --newVerId			New version name (mandatory)
@@ -403,7 +402,7 @@ Reference:           [Get application info](https://westus.dev.cognitive.microso
 Parameters: 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
 ```
 
@@ -454,7 +453,7 @@ Synopsis:      Shows training status
 Reference:            [Training status](https://westus.dev.cognitive.microsoft.com/docs/services/5890b47c39e2bb17b84a55ff/operations/5890b47c39e2bb052c5b9c46)
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --verId			Version to show training status (mandatory, defaults to config:LUIS:verId)
 ```
@@ -495,7 +494,7 @@ Synopsis:     Issues asynchronous training request for LUIS application
 Reference:             [Train version](https://westus.dev.cognitive.microsoft.com/docs/services/5890b47c39e2bb17b84a55ff/operations/5890b47c39e2bb052c5b9c45) 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --verId			Version to train (mandatory, defaults to config:LUIS:verId)
 ```
@@ -514,7 +513,7 @@ Synopsis:     Queries application for intent predictions
 Reference:            [Query application](https://westus.dev.cognitive.microsoft.com/docs/services/5819c76f40a6350ce09de1ac/operations/5819c77140a63516d81aee78) 
 
 ```
- --authKey			LUIS authoring (Ocp-Apim-subscription) key (mandatory, default: config:LUIS:authKey)
+ --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --query			Query string to predict (mandatory)
  --verbose			Returns all intents, otherwise only top scoring intent. (default: false)
