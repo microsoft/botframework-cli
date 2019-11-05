@@ -15,10 +15,23 @@ Use the following common guidelines for all commands (unless explicitly excluded
 * All lengthy operations (> 5 seconds) shall print progress indicator (dots at 5 sec interval)
 * All flags assume to be provided value pair (e.g. -o, --out implies -o, --out \<filename\>)
 * All flags that are marked `mandatory default to...` are mandatory *unless* specified in config in which case they default to provided values in config file
+* Use *camelCase* for all parameters
 
 All commands below assume to stem off of the `bf luis:*` command group.
 
 
+###  LUIS configuration values
+
+The stored global configuration values for the LUIS (api) command group are as follows:
+
+```
+  luis__subscriptionKey	LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
+  luis__appId			Default LUIS app Id
+  luis__versionId			Default LUIS version Id
+  luis__region			Default region as used in the hostname <region>.api.cognitive.microsoft.com
+```
+
+This corresponds directly to the init command below.
 
 ### LUIS Help
 
@@ -42,7 +55,7 @@ Parameters:
 ```
   --subscriptionKey	LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key) 
   --appId			LUIS application Id
-  --verId			LUIS version Id
+  --versionId		LUIS version Id
   --region			LUIS application region. 
   					Will be prepended to endpoint hostname:
                       <region>.api.cognitive.microsoft.com
@@ -60,10 +73,10 @@ Reference:  [Clone version](https://westus.dev.cognitive.microsoft.com/docs/serv
 Parameters:
 
 ```
- --srcVerId			Source version to clone (mandatory, defaults to config:LUIS:verId)
- --destVerId		Destination version to create (mandatory)
- --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --subscriptionKey			LUIS authoring (Ocp-Apim-subscription) key
+ --srcversionId			Source version to clone (mandatory, defaults to config:LUIS:versionId)
+ --destversionId		Destination version to create (mandatory)
+ --appid			LUIS application Id (mandatory, defaults to config:LUIS:appId)
+ --subscriptionKey	LUIS authoring (Ocp-Apim-subscription) key
 ```
 
 Returns:
@@ -90,7 +103,7 @@ Parameters:
  --tokenizerVersion	**TBD**: Get description from LUIS Team (optional/mandatory?)
  --usageScenario	**TBD**: Get description from LUIS Team (optional/mandatory?)
  --domain			**TBD**: Get description from LUIS Team (optional/mandatory?)
- --verId			LUIS version Id. (mandatory, defaults to config:LUIS:verId)
+ --versionId			LUIS version Id. (mandatory, defaults to config:LUIS:versionId)
 ```
 
 Returns:
@@ -110,8 +123,8 @@ Reference:  [Delete application](https://westus.dev.cognitive.microsoft.com/docs
 Parameters: 
 
 ```
- --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
- --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
+ --subscriptionkey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
+ --appid			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --force			If specified, ignore application dependencies. (optional, default: false). **TBD**: Do we still have to specify true/false? presence of flag should suffice
 ```
 
@@ -133,7 +146,7 @@ Parameters:
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --verId			Version to delete (mandatory)
+ --versionId			Version to delete (mandatory)
 ```
 
 Returns:
@@ -154,7 +167,7 @@ Parameters:
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --verId			Version to export (mandatory, defaults to config:LUIS:verId)
+ --versionId			Version to export (mandatory, defaults to config:LUIS:versionId)
  --format			Export format (optional, default: json) **TBD: ask luis for valid formats (json, lu?)
  --out, -o			Save exported application to specified file, uses STDOUT if not specified (optional)
  --force			Overwrites output file if exists, otherwise creates a parallel numbered file (optional)
@@ -212,7 +225,7 @@ Parameters:
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --verId			Version to export (mandatory, defaults to config:LUIS:verId)
+ --versionId			Version to export (mandatory, defaults to config:LUIS:versionId)
  --format			Import format (optional, default: json) 
  					**TBD: ask luis for valid formats (json, lu?) 
   					**TBD**: This is whats in the ContentType (1) 
@@ -320,7 +333,7 @@ Parameters:
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --verId			Version to publish (mandatory, defaults to config:LUIS:verId)
+ --versionId			Version to publish (mandatory, defaults to config:LUIS:versionId)
  --staging			Publishes application version to Staging slot, otherwise publish to production (default: false)
  --direct			Available only in direct version query. Do not publish to staging or production (default: false)
 ```
@@ -382,7 +395,7 @@ Parameters:
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --verId			Version to update (mandatory, defaults to config:LUIS:verId)
+ --versionId			Version to update (mandatory, defaults to config:LUIS:versionId)
  --newVerId			New version name (mandatory)
 ```
 
@@ -455,7 +468,7 @@ Reference:            [Training status](https://westus.dev.cognitive.microsoft.c
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --verId			Version to show training status (mandatory, defaults to config:LUIS:verId)
+ --versionId			Version to show training status (mandatory, defaults to config:LUIS:versionId)
 ```
 
 Returns:
@@ -496,7 +509,7 @@ Reference:             [Train version](https://westus.dev.cognitive.microsoft.co
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --verId			Version to train (mandatory, defaults to config:LUIS:verId)
+ --versionId			Version to train (mandatory, defaults to config:LUIS:versionId)
 ```
 
 Returns:
