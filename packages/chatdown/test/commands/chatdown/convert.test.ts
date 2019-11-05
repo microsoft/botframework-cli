@@ -4,15 +4,21 @@ import * as rimraf from 'rimraf';
 let pkg = require('../../../package.json');
 let assert = require('assert');
 const fs = require('fs-extra')
+const path = require('path')
 
 describe('chatdown:convert', () => {
 
   before(() => { 
     fs.mkdirSync('./testout');
+    fs.mkdirSync('./testin');
+    fs.copySync(path.resolve(__dirname,'../../utils/cli.sample.chat'), './testin/cli.sample.chat');
   });
 
   after(() => {
     rimraf('./testout', (err) => {
+      if (err) console.log(err);
+    })
+    rimraf('./testin', (err) => {
       if (err) console.log(err);
     })
   });
@@ -69,6 +75,13 @@ describe('chatdown:convert', () => {
   it('should process all files when a glob is passed in with the -i argument', done => {
     cp.exec(`node ./bin/run chatdown:convert -i "**/test/utils/*.sample.chat"`, (error, stdout, stderr) => {
       assert(stdout.includes('conversation'));
+      done();
+    });
+  });
+
+  it('should process all files when a directory is passed in with the -i argument', done => {
+    cp.exec(`node ./bin/run chatdown:convert -i "./testin"`, (error, stdout, stderr) => {
+      assert.doesNotThrow(() => JSON.parse(stdout));
       done();
     });
   });

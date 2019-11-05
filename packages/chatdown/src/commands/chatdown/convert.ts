@@ -33,6 +33,10 @@ export default class ChatdownConvert extends Command {
     try {
       const {flags} = this.parse(ChatdownConvert)
 
+      let inputEntities: string[] | undefined = []
+      let inputIsDirectory: boolean = flags.in ? (flags.in.includes('*') || this.isDirectory(flags.in)) : false
+      let outputDirectory: string | null | undefined
+
       if (flags.prefix) {
         const pkgName = this.config.name
         intercept(function (txt: any) {
@@ -44,16 +48,12 @@ export default class ChatdownConvert extends Command {
         flags.in = flags.in.trim()
       }
 
-      let inputEntities: string[] | undefined = []
-      let inputIsDirectory: boolean = flags.in ? (flags.in.includes('*') || this.isDirectory(flags.in)) : false
-      let outputDirectory: string | null | undefined
-
-      // step 1: get chat data input
-      inputEntities = await this.getInputEntities(inputIsDirectory, flags.in)
-
       if (flags.out) {
         outputDirectory = path.resolve(flags.out) || null
       }
+
+      // step 1: get chat data input
+      inputEntities = await this.getInputEntities(inputIsDirectory, flags.in)
 
       if (inputEntities.length < 1) {
         throw new CLIError('No chat files found at: ' + flags.in)
