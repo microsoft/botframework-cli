@@ -4,11 +4,14 @@
     "importHelpers": true,
     "module": "commonjs",
     "outDir": "lib",
-    "rootDir": "src",
     "strict": true,
     "target": "es2017"
   },
+  "exclude": [
+    "node_modules"
+  ],
   "include": [
-    "src/**/*"
+    "src/**/*.ts",
+    "test/**/*.test.ts"
   ]
 }

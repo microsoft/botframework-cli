@@ -5,15 +5,18 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
+    "@microsoft/bf-lu": "^4.7.0-preview.87840",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
+    "@microsoft/bf-lu": "^4.7.0-preview.87840",
     "@oclif/dev-cli": "^1.22.2",
     "@oclif/plugin-help": "^2.2.1",
     "@oclif/test": "^1.2.5",
     "@oclif/tslint": "^3.1.1",
+    "@types/argparse": "^1.0.36",
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.17.3",
@@ -22,8 +25,8 @@
     "mocha": "^5.2.0",
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
+    "ts-md5": "^1.2.6",
     "ts-node": "^8.4.1",
-    "tslint": "^5.20.1",
     "typescript": "^3.7.2"
   },
   "engines": {
