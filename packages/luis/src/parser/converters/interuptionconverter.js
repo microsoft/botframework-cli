@@ -121,12 +121,19 @@ module.exports = {
                                 }
                             }
 
+                            const contentList = idToResourceMap.get(x.target).content.Content.split(/\r?\n/);
                             let utterancesTobeAdded = [];
-                            
                             intents.forEach(intent => {
                                 if (intent.Name !== intentName) {
                                     utterancesTobeAdded = utterancesTobeAdded.concat(intent.UtteranceAndEntitiesMap.map(y => y.context.getText().trim()));
-                                    entities = entities.concat(intent.Entities);
+                                    
+                                    let entityContents = [];
+                                    intent.Entities.forEach(x => {
+                                        const startLine = x.ParseTree.start.line - 1;
+                                        const endLine = x.ParseTree.stop.line - 1;
+                                        entityContents.push(contentList.slice(startLine, endLine + 1).join('\n'));
+                                    })
+                                    entities = entities.concat(entityContents);
                                 }
                             })
                             brotherUtterances = brotherUtterances.concat(utterancesTobeAdded);
@@ -159,12 +166,10 @@ module.exports = {
                                 }
                             })
 
-                            
                             newFileContent = newLines.join('\r\n');
 
                             if (entities && entities.length > 0) {
-                                let entityContents = entities.map(x => x.ParseTree.getText().trim());
-                                newFileContent += '\r\n' + entityContents.join('\r\n') + '\r\n';
+                                newFileContent += '\r\n' + entities.join('\r\n\r\n') + '\r\n';
                             }
                             // update section here
                             targetResource.content = new SectionOperator(targetResource.content).updateSection(interuptionIntent.Id, newFileContent);
@@ -175,9 +180,9 @@ module.exports = {
                         brotherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
 
                         if (entities && entities.length > 0) {
-                            let entityContents = entities.map(x => x.ParseTree.getText().trim());
-                            newFileContent += '\r\n' + entityContents.join('\r\n') + '\r\n';
+                            newFileContent += '\r\n' + entities.join('\r\n\r\n') + '\r\n';
                         }
+
                         // add section here
                         targetResource.content = new SectionOperator(targetResource.content).addSection(newFileContent);
                     }
