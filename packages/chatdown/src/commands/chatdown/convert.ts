@@ -3,8 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {flags} from '@oclif/command'
-import {CLIError, Command, utils} from '@microsoft/bf-cli-command'
+import {CLIError, Command, utils, flags} from '@microsoft/bf-cli-command'
 const chalk = require('chalk')
 const chatdown = require('../../../utils/index')
 const fs = require('fs-extra')
@@ -18,10 +17,10 @@ export default class ChatdownConvert extends Command {
   static examples = [`
   $ bf chatdown
   $ bf chatdown --in=./path/to/file/sample.chat
-  $ bf chatdown --in ./test/utils/*.sample.chat -o ./
+  $ bf chatdown --in **/test/utils/*.sample.chat -o ./
   $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static`]
 
-  static flags = {
+  static flags: any = {
     in: flags.string({char: 'i', description: 'The path of the chat file or directory to be parsed. A glob expression may be passed containing chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an output directory is not present (-o), it will default the output to the current working directory.'}),
     out: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-o) will be placed.'}),
     stamp: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
@@ -41,33 +40,35 @@ export default class ChatdownConvert extends Command {
         })
       }
 
+      if (flags.in) {
+        flags.in = flags.in.trim()
+      }
+
       let inputEntities: string[] | undefined = []
       let inputIsDirectory: boolean = flags.in ? (flags.in.includes('*') || this.isDirectory(flags.in)) : false
       let outputDirectory: string | null | undefined
 
       // step 1: get chat data input
-      if (flags.in) {
-        inputEntities = await this.getInputEntities(inputIsDirectory, flags.in)
-      }
+      inputEntities = await this.getInputEntities(inputIsDirectory, flags.in)
 
       if (flags.out) {
-        let outputDir = path.resolve(flags.out) || null
+        outputDirectory = path.resolve(flags.out) || null
       }
 
       if (inputEntities.length < 1) {
         throw new CLIError('No chat files found at: ' + flags.in)
       }
 
-      // step 2: convert chat data input to transcript
-      const transcripts = await this.convertToTranscript(inputEntities, inputIsDirectory)
+      // step 2: convert chat data input to transcript(s)
+      const transcriptObjects = await this.convertToTranscriptObject(inputEntities, inputIsDirectory, flags.in)
 
       // step 3: write output transcript data
-      const x = 666;
-      // need for write step
-      // const fileName = this.getFileName(entities[i])
-      
+      const writeConfirmation = await this.writeTranscripts(transcriptObjects, outputDirectory, flags.forced)
 
-      console.log(inputEntities)
+      /* tslint:disable:strict-type-predicates */
+      if (typeof writeConfirmation === 'string') {
+        process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${writeConfirmation}\n`)
+      }
 
     } catch (err) {
       if (err.message.match(/Malformed configurations options detected/)) {
@@ -77,26 +78,29 @@ export default class ChatdownConvert extends Command {
     }
   }
 
-  private async convertToTranscript(entities: any[], inputIsDir: boolean) {
-    const transcripts: string[] = []
+  private async convertToTranscriptObject(entities: any[], inputIsDir: boolean, flagsIn: string) {
+    const transcriptObjects: object[] = []
+    let fileContents: string
+    let transcript: object
+    let fileName: string
     /* tslint:disable:prefer-for-of */
     for (let i = 0; i < entities.length; i++) {
       try {
-        let transcript;
-        if (inputIsDir) {
-          transcript = await chatdown(await utils.readTextFile(entities[i]))
-        } else {
-          transcript = await chatdown(entities[i], flags)
+        fileContents = inputIsDir ? await utils.readTextFile(entities[i]) : entities[i]
+        fileName = inputIsDir ? this.getFileName(entities[i]) : (flagsIn ? this.getFileName(flagsIn) : '')
+        transcript = {
+          name: fileName,
+          activities: await chatdown(fileContents)
         }
-        transcripts.push(transcript)
+        transcriptObjects.push(transcript)
       } catch (error) {
-        if (error.message.match(/no such file or directory/)) {
+        if (error.message && error.message.match(/no such file or directory/)) {
           throw new CLIError(error.message)
         }
         throw error
       }
     }
-    return transcripts
+    return transcriptObjects
   }
 
   private getFileName(file: any) {
@@ -105,7 +109,7 @@ export default class ChatdownConvert extends Command {
 
   private async getInputEntities(inputIsDirectory: boolean, inputFlag: string): Promise<string[]> {
     if (inputIsDirectory) {
-      return await this.getInputFromDirectory(inputFlag)
+      return this.getInputFromDirectory(inputFlag)
     }
     return [await this.getInputFromFileOrStdin(inputFlag)]
   }
@@ -114,7 +118,7 @@ export default class ChatdownConvert extends Command {
     // Check if file passed in
     if (args && args.length > 0) {
       return utils.readTextFile(args)
-    } 
+    }
     // Check if piped data was passed in
     const {stdin} = process
     if (!stdin.isTTY) {
@@ -130,7 +134,13 @@ export default class ChatdownConvert extends Command {
         if (err) {
           reject('Error scanning directory' + err)
         }
-        fileList = files.map((file: any) => path.join(directoryPath, file))
+        fileList = files
+          .filter((file: any) => {
+            return file.includes('.chat')
+          })
+          .map((file: any) => {
+            return path.join(directoryPath, file)
+          })
         resolve(fileList)
       })
     })
@@ -153,6 +163,20 @@ export default class ChatdownConvert extends Command {
   private isDirectory(path: string): boolean {
     const stats = fs.statSync(path)
     return stats.isDirectory()
+  }
+
+  private async writeTranscripts(transcripts: any, outputDir: any, force: boolean) {
+    for (let i = 0; i < transcripts.length; i++) {
+      if (transcripts[i].name && outputDir) {
+        let writeFile = path.join(outputDir, `${transcripts[i].name}.transcript`)
+        let validatedPath = utils.validatePath(writeFile, '', force)
+        await fs.ensureFile(writeFile)
+        await fs.writeJson(validatedPath, transcripts[i].activities, {spaces: 2})
+        if (i === transcripts.length - 1) return validatedPath
+      }
+      const output = JSON.stringify(transcripts[i].activities, null, 2)
+      await new Promise(done => process.stdout.write(output, 'utf-8', () => done()))
+    }
   }
 
 }

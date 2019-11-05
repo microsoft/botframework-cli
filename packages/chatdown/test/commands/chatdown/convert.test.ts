@@ -60,15 +60,15 @@ describe('chatdown:convert', () => {
     });
 
   it('should process all files when a glob is passed in with the -i argument, and the -o is passed in for the output directory', done => {
-    cp.exec(`node ./bin/run chatdown:convert -i "./test/utils/*.sample.chat" -o ./testout`, (error, stdout, stderr) => {
+    cp.exec(`node ./bin/run chatdown:convert -i "**/test/utils/*.sample.chat" -o ./testout`, (error, stdout, stderr) => {
       assert(stdout.includes('Successfully wrote'));
         done();
       });
   });
 
   it('should process all files when a glob is passed in with the -i argument', done => {
-    cp.exec(`node ./bin/run chatdown:convert -i "./test/utils/*.sample.chat"`, (error, stdout, stderr) => {
-      assert(stdout.includes('Successfully wrote'));
+    cp.exec(`node ./bin/run chatdown:convert -i "**/test/utils/*.sample.chat"`, (error, stdout, stderr) => {
+      assert(stdout.includes('conversation'));
       done();
     });
   });
