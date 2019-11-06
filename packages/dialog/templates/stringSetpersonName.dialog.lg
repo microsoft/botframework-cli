@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}SetpersonName.dialog
+- @{formName}-@{property}SetpersonName.dialog
 
 # template
 - ```

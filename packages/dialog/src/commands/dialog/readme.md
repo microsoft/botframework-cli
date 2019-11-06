@@ -24,6 +24,7 @@ Schemas are specified using JSON Schema.  You can use the normal JSON Schema mec
   * **number**, **string**
 * **\$expectedOnly** A list of properties that are only possible if they are expected.
 * **\$requires** A list of JSON Schema to use for internal mechanisms.  You can use either actual paths or just the name of the schema to use if found in one of the template directories.  The standard schema is `standard.schema.dialog`.  The form schema and all of the required schemas will have the top-level `properties`, `definitions`, `required`, `$expectedOnly` and `$templates` merged.
+* **\$triggerIntent** Name of the trigger intent or by default the name of the form.
 
 `<form>.form.dialog` will be generated with the form schema in it.  `<form>.schema.dialog` will have the whole schema defined.
 
@@ -37,6 +38,8 @@ just copied.  If the template ends with .lg then it is analyzed to see if it has
 * **schema** The JSON Schema of the form + internal properties.
 * **locales** The list of all locales being generated.
 * **properties** All of the form property names.
+* **entities** All of the types of schema entities being used.
+* **triggerIntent** $triggerIntent or the form name by default.
 * **locale** The locale being generated or empty if no locale.
 * **property** For per-property templates this the property name being generated.
 * **templates** Object with generated templates per lu, lg, qna, json and dialog.  The object contains:

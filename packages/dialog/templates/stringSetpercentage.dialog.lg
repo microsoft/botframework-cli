@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}Setpercentage.dialog
+- @{formName}-@{property}Setpercentage.dialog
 
 # template
 - ```

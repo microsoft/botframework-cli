@@ -1,5 +1,5 @@
 # filename
-- {formName}.main.dialog
+- @{formName}.main.dialog
 
 # template
 - ```

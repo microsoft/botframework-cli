@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}Setmoney.dialog
+- @{formName}-@{property}Setmoney.dialog
 
 # template
 - ```

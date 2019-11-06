@@ -1,5 +1,5 @@
 # filename
-- {formName}-{property}Ask.dialog
+- @{formName}-@{property}Ask.dialog
 
 # template
 - ```

@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}Setutterance.dialog
+- @{formName}-@{property}Setutterance.dialog
 
 # template
 - ```
@@ -9,6 +9,5 @@
     "$type": "Microsoft.SetProperty",
     "property": "$@{property}",
     "value": "@utterance"
-               
 }
 ```

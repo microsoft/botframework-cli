@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}Setphonenumber.dialog
+- @{formName}-@{property}Setphonenumber.dialog
 
 # template
 - ```

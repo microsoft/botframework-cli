@@ -1,5 +1,5 @@
 # filename
-- {formName}-{property}EntityClarify.dialog
+- @{formName}-@{property}EntityClarify.dialog
 
 # template
 - ```

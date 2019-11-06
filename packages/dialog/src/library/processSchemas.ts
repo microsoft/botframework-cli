@@ -13,11 +13,6 @@ let parser: any = require('json-schema-ref-parser')
 
 type idToSchema = { [id: string]: any }
 
-function basename(loc: string): string {
-    let name = ppath.basename(loc)
-    return name.substring(0, name.indexOf('.'))
-}
-
 async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): Promise<idToSchema> {
     let map: idToSchema = {}
     for (let dir of templateDirs) {
@@ -97,8 +92,8 @@ export async function processSchemas(formPath: string, templateDirs: string[], o
         if (schema.$expectedOnly) allSchema.$expectedOnly = allSchema.$expectedOnly.concat(schema.$expectedOnly)
         if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
     }
-    let name = basename(formPath)
+    let name = s.FormSchema.basename(formPath)
     await fg.writeFile(ppath.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema, undefined, 4), force, feedback)
     await fg.writeFile(ppath.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema, undefined, 4), force, feedback)
-    return { form: new s.FormSchema(formPath, formSchema, name), schema: new s.FormSchema('', allSchema, name) }
+    return { form: new s.FormSchema(formPath, formSchema), schema: new s.FormSchema(formPath, allSchema) }
 }

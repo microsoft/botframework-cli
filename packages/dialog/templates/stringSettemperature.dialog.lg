@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}Settemperature.dialog
+- @{formName}-@{property}Settemperature.dialog
 
 # template
 - ```

@@ -7,3 +7,6 @@
 # entityFilename
 - @{formName}-@{if(role, role, entity)}.@{locale}.lu
 
+# setFilename
+- @{formName}-@{property}Set@{if(role, role, entity)}.dialog
+

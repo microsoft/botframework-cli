@@ -6,17 +6,9 @@
     "property": "PropertyToChange",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
-            "property": "$PropertyToChange",
-            "value": "concat('dialog.', @PROPERTYName)"
-        },
-        {
             "$type": "Microsoft.DeleteProperty",
-            "property": "@{callPropertyToChange()}"            
+            "property": "dialog[@PROPERTYName]"            
         }
     ]
 }
 ```
-
-# callPropertyToChange
-- @\{dialog.PropertyToChange}

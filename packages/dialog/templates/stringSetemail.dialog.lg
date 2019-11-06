@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}Setemail.dialog
+- @{formName}-@{property}Setemail.dialog
 
 # template
 - ```

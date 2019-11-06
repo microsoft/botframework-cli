@@ -58,14 +58,15 @@ export class FormSchema {
         if (schema.type !== 'object') {
             throw new Error('Form schema must be of type object.')
         }
-        return new FormSchema('', schema, ppath.basename(schemaPath, '.form.dialog'))
+        return new FormSchema(schemaPath, schema)
     }
 
-    /** 
-     * Name of schema 
-     */
-    name: string
 
+    static basename(loc: string): string {
+        let name = ppath.basename(loc)
+        return name.substring(0, name.indexOf('.'))
+    }
+    
     /** 
      * Path to this schema definition. 
      */
@@ -76,16 +77,25 @@ export class FormSchema {
      */
     schema: any
 
-    constructor(path: string, schema: any, name?: string) {
-        this.name = name || ppath.basename(path, '.dialog')
-        this.path = path
+    /**
+     * Source of schema
+     */
+    source: string
+
+    constructor(source: string, schema: any, path?: string) {
+        this.source = source
+        this.path = path || ''
         this.schema = schema
+    }
+
+    name(): string {
+        return FormSchema.basename(this.source)
     }
 
     * schemaProperties(): Iterable<FormSchema> {
         for (let prop in this.schema.properties) {
             let newPath = this.path + (this.path === '' ? '' : '.') + prop
-            yield new FormSchema(newPath, this.schema.properties[prop])
+            yield new FormSchema(this.source, this.schema.properties[prop], newPath)
         }
     }
 
@@ -113,7 +123,7 @@ export class FormSchema {
             let type = this.typeName()
             templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + 'Ask.dialog']
             for (let mapping of this.mappings()) {
-                let [entityName, role] = mapping.split(':')
+                let [entityName, _] = mapping.split(':')
                 if (entityName === this.path + 'Entity') {
                     templates.push(`${type}Set${type}.dialog`)
                     if (type === 'enum') {
@@ -142,6 +152,10 @@ export class FormSchema {
         return mappings
     }
 
+    triggerIntent(): string {
+        return this.schema.$triggerIntent || this.name()
+    }
+
     /**
      * Return all entities found in schema.
      */
@@ -151,10 +165,34 @@ export class FormSchema {
         return entities
     }
 
+    /**
+     * Return all of the entity types in schema.
+     */
+    entityTypes(): string[] {
+        let found: string[] = []
+        for(let entity of Object.keys(this.entities())) {
+            let [entityName, _] = entity.split(':')
+            if (!found.includes(entityName)) {
+                found.push(entityName)
+            }
+        }
+        return found
+    }
+
+    /**
+     * Return the roles or entity types found in schema.
+     */
+    * roles(): Iterable<string> {
+        for(let entity of Object.keys(this.entities())) {
+            let [entityName, role] = entity.split(':')
+            yield role || entityName
+        }
+    }
+
     private addEntities(entities: EntitySet) {
         for (let mapping of this.mappings()) {
             // Do not include entities generated from property
-            if (!entities.hasOwnProperty(mapping) && !mapping.startsWith(this.path) && !mapping.endsWith('Entity') && mapping !== 'utterance') {
+            if (!entities.hasOwnProperty(mapping)) {
                 let entity = new Entity(mapping)
                 entities[mapping] = entity
             }

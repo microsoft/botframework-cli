@@ -1,6 +1,6 @@
 
 # filename
-- {formName}-{property}Setnumber.dialog
+- @{formName}-@{property}Setnumber.dialog
 
 # template
 - ```

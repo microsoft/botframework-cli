@@ -228,7 +228,7 @@ async function processTemplates(
 
     // Process per property templates
     for (let prop of schema.schemaProperties()) {
-        scope.property = prop.name
+        scope.property = prop.path
 
         // Property templates
         for (let templateName of prop.templates()) {
@@ -249,6 +249,12 @@ async function processTemplates(
     }
 }
 
+// Should have trigger intent with patterns having all entities in them to bootstrap.
+// When inside a form, ignore trigger intent.  This does not allow to start another form, but that probably needs to
+// be another intent.
+// By default trigger intent is form name.  Otherwise $triggerIntent.
+// When should we ask about intent/entity?  When it is something besides trigger intent?
+// 
 // Extending to roles.
 // Auto-generated enum/string do not need role.
 // To use them as a role do BreadEntity:foo
@@ -264,7 +270,6 @@ async function processTemplates(
 // .lu = $prebuilt:number roles=length or $foo:simple roles=blah
 // .lg = role(value) -> entity(value)
 // .dialog = generate from underlying entity?
-
 
 /**
  * Iterate through the locale templates and generate per property/locale files.
@@ -320,9 +325,11 @@ export async function generate(
         let scope: any = {
             locales: allLocales,
             form: form.schema,
-            formName: form.name,
+            formName: form.name(),
             schema: schema.schema,
             properties: Object.keys(form.schema.properties),
+            entities: schema.entityTypes(),
+            triggerIntent: form.triggerIntent(),
             appSchema: metaSchema
         }
         for (let currentLoc of allLocales) {
