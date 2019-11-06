@@ -63,12 +63,7 @@ export default class ChatdownConvert extends Command {
       const transcriptObjects = await this.convertToTranscriptObject(inputEntities, inputIsDirectory, flags.in)
 
       // step 3: write output transcript data
-      const writeConfirmation = await this.writeTranscripts(transcriptObjects, outputDirectory, flags.forced)
-
-      /* tslint:disable:strict-type-predicates */
-      if (typeof writeConfirmation === 'string') {
-        process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${writeConfirmation}\n`)
-      }
+      await this.writeTranscripts(transcriptObjects, outputDirectory, flags.forced)
 
     } catch (err) {
       if (err.message.match(/Malformed configurations options detected/)) {
@@ -83,11 +78,10 @@ export default class ChatdownConvert extends Command {
     let fileContents: string
     let transcript: object
     let fileName: string
-    /* tslint:disable:prefer-for-of */
-    for (let i = 0; i < entities.length; i++) {
+    const convertToTranscriptPromises = entities.map(async (entity: any) => {
       try {
-        fileContents = inputIsDir ? await utils.readTextFile(entities[i]) : entities[i]
-        fileName = inputIsDir ? this.getFileName(entities[i]) : (flagsIn ? this.getFileName(flagsIn) : '')
+        fileContents = inputIsDir ? await utils.readTextFile(entity) : entity
+        fileName = inputIsDir ? this.getFileName(entity) : (flagsIn ? this.getFileName(flagsIn) : '')
         transcript = {
           name: fileName,
           activities: await chatdown(fileContents)
@@ -99,7 +93,8 @@ export default class ChatdownConvert extends Command {
         }
         throw error
       }
-    }
+    })
+    await Promise.all(convertToTranscriptPromises)
     return transcriptObjects
   }
 
@@ -166,17 +161,17 @@ export default class ChatdownConvert extends Command {
   }
 
   private async writeTranscripts(transcripts: any, outputDir: any, force: boolean) {
-    for (let i = 0; i < transcripts.length; i++) {
-      if (transcripts[i].name && outputDir) {
-        let writeFile = path.join(outputDir, `${transcripts[i].name}.transcript`)
+    const writeTranscriptPromises = transcripts.map(async (transcript: any) => {
+      if (transcript.name && outputDir) {
+        let writeFile = path.join(outputDir, `${transcript.name}.transcript`)
         let validatedPath = utils.validatePath(writeFile, '', force)
         await fs.ensureFile(writeFile)
-        await fs.writeJson(validatedPath, transcripts[i].activities, {spaces: 2})
-        if (i === transcripts.length - 1) return validatedPath
+        await fs.writeJson(validatedPath, transcript.activities, {spaces: 2})
+        process.stdout.write(`${chalk.green('Successfully wrote file:')}  ${validatedPath}\n`)
       }
-      const output = JSON.stringify(transcripts[i].activities, null, 2)
-      await new Promise(done => process.stdout.write(output, 'utf-8', () => done()))
-    }
+      const output = JSON.stringify(transcript.activities, null, 2)
+      await Promise.resolve(process.stdout.write(output, 'utf-8'))
+    })
+    await Promise.all(writeTranscriptPromises)
   }
-
 }
