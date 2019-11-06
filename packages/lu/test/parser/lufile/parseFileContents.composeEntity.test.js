@@ -6,15 +6,10 @@ const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
 const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
-const collateLUISFiles = require('./../../../src/parser/converters/lutoluisconverter').collateLUISFiles;
-const LUFromLUISJson = require('./../../../src/parser/converters/luistoluconverter').constructMdFromLUISJSON;
-const NEWLINE = require('os').EOL;
-const validateLUISModel = require('./../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
-function sanitizeContent(fileContent) {
-    let escapedExampleNewLine = JSON.stringify('\r\n').replace(/"/g, '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-    let escapedNewLine = JSON.stringify(NEWLINE).replace(/"/g, '');
-    return fileContent.replace(new RegExp(escapedExampleNewLine, 'g'), escapedNewLine);
-}
+const luis = require('./../../../src/parser/luis/luis')
+const LUFromLUISJson = require('./../../../src/parser/luis/luConverter')
+const validateLUISModel = require('./../../../src/parser/luis/luisValidator')
+
 describe('Composite entities in .lu files', function() {
     it('Parser throws an excption on invalid composite entity definition - incorrect square brackets', function(done){
         let luFileContent = `$deviceTemperature : [`;
@@ -62,15 +57,18 @@ $deviceTemperature : [foo]`;
 
     it('Parser throws when a composite entity has a pattern.any entity as a child', function(done){
         let luFileContent = `$deviceTemperature : [p1; child2]
-# testIntent
-- I'm {p1}`;
+                            # testIntent
+                            - I'm {p1}`;
         parseFile(luFileContent, false)
-            .then(res => {
-                validateLUISModel(res.LUISJsonStructure)
-                    .then(res => done(`Test fail! Did not throw when expected`))
-                    .catch(err => done())
-            })
-            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+          .then(res => {
+            try{
+              validateLUISModel(res.LUISJsonStructure)
+              done(`Test fail! Did not throw when expected`)
+            }catch(err){
+              done()
+            }
+          })
+          .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
     });
 
     it('Parser throws when a composite entity name collides with another entity name', function(done){
@@ -78,9 +76,12 @@ $deviceTemperature : [foo]`;
 $deviceTemperature:simple`;
         parseFile(luFileContent, false)
             .then(res => {
+              try {
                 validateLUISModel(res.LUISJsonStructure)
-                    .then(res => done(`Test fail! Did not throw when expected`))
-                    .catch(err => done())
+                done(`Test fail! Did not throw when expected`)
+              } catch (error) {
+                done()
+              }
             })
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
     });
@@ -89,9 +90,12 @@ $deviceTemperature:simple`;
         let luFileContent = `$deviceTemperature : [p1; child2]`;
         parseFile(luFileContent, false)
             .then(res => {
+              try {
                 validateLUISModel(res.LUISJsonStructure)
-                    .then(res => done(`Test fail! Did not throw when expected`))
-                    .catch(err => done())
+                done(`Test fail! Did not throw when expected`)
+              } catch (error) {
+                done()
+              }
             })
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
     });
@@ -102,9 +106,12 @@ $deviceTemperature:simple`;
                             - this is a test with {p1=vishwac}`;
         parseFile(luFileContent, false)
             .then(res => {
+              try {
                 validateLUISModel(res.LUISJsonStructure)
-                    .then(res => done(`Test fail! Did not throw when expected`))
-                    .catch(err => done())
+                done(`Test fail! Did not throw when expected`)
+              } catch (error) {
+                done()
+              }
             })
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
     });
@@ -116,13 +123,18 @@ $deviceTemperature:simple`;
             .then(res1 => {
                 parseFile(luFile2Content, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => done(`Test fail! Did not throw when expected`))
-                            .catch(err => done())
+                      try {
+                        let luisObj = new luis()
+                        let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                        luisObj.collate(luisList)
+                        done(`Test fail! Did not throw when expected`)        
+                      } catch (error) {
+                        done()
+                      }
                     })
-                    .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                    .catch(err => done(`Test failed - ${err}`))
             })
-            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+            .catch(err => done(`Test failed - ${err}`))
     });
 
     it('Parser throws and correctly identifies a child without an explicit or implicit child entity definition [across .lu files]', function(done){
@@ -131,19 +143,21 @@ $deviceTemperature:simple`;
         - this is a test with {p1=vishwac}`;
         parseFile(luFile1Content, false)
             .then(res1 => {
-                parseFile(luFile2Content, false) 
-                    .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res3 => {
-                                validateLUISModel(res3)
-                                    .then(res => done(`Test fail! Did not throw when expected`))
-                                    .catch(err => done())
-                            })
-                            .catch(err => done(`Test failed 3- ${(err)}`))
-                    })
-                    .catch(err => done(`Test failed 2- ${JSON.stringify(err)}`))
+              parseFile(luFile2Content, false) 
+                .then(res2 => {
+                  try {
+                    let luisObj = new luis()
+                    let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                    luisObj.collate(luisList)
+                    luisObj.validate()
+                    done(`Test fail! Did not throw when expected`)
+                  } catch (error) {
+                    done()
+                  }
+                })
+                .catch(err => done(`Test failed 2- ${err}`))
             })
-            .catch(err => done(`Test failed 1- ${JSON.stringify(err)}`))
+            .catch(err => done(`Test failed 1- ${err}`))
     });
 
     it('Parser correctly collates composite child entity type definition [across .lu files]', function(done){
@@ -156,13 +170,16 @@ $deviceTemperature:simple`;
             .then(res1 => {
                 parseFile(luFile2Content, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res3 => {
-                                validateLUISModel(res3)
-                                    .then(res => done())
-                                    .catch(err => done(`Test failed 4- ${JSON.stringify(err)}`))
-                            })
-                            .catch(err => done(`Test failed 3- ${(err)}`))
+                          try {
+                            let luisObj = new luis()
+                            let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                            luisObj.collate(luisList)
+                            validateLUISModel(luisObj)
+                            done()
+                          } catch (error) {
+                            done(`Test failed 3- ${error}`)
+                          }
+  
                     })
                     .catch(err => done(`Test failed 2- ${JSON.stringify(err)}`))
             })
@@ -206,12 +223,13 @@ $deviceTemperature:simple`;
             "desc": "",
             "culture": "en-us"
           }`
-          LUFromLUISJson(JSON.parse(inputLUISJSON))
-            .then(res => {
-                assert(res.includes(`@ composite deviceTemperature = [p1, child2]`));
-                done();
-            })
-            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+          try {
+            let res = LUFromLUISJson(JSON.parse(inputLUISJSON))
+            assert(res.includes(`@ composite deviceTemperature = [p1, child2]`));
+            done()
+          } catch (error) {
+            done(`Test failed - ${JSON.stringify(error)}`)
+          }
     })
 
     it('Utterances with composite entity labels are handled correctly with ludown refresh', function(done) {
@@ -326,15 +344,16 @@ $deviceTemperature:simple`;
             ],
             "settings": []
           }`;
-      LUFromLUISJson(JSON.parse(inputLUISJSON))
-          .then(res => {
-              assert(res.includes(`- this is another {@c1={@simple1=test}}`));
-              assert(res.includes(`- this is {@c1=five degrees}`));
-              assert(res.includes(`- this is {@c1=one {@simple1=and} five degrees}`));
-              assert(res.includes(`- {@c1=this is one}`));
-              done();
-          })
-          .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+          try {
+            let res = LUFromLUISJson(JSON.parse(inputLUISJSON))
+            assert(res.includes(`- this is another {@c1={@simple1=test}}`));
+            assert(res.includes(`- this is {@c1=five degrees}`));
+            assert(res.includes(`- this is {@c1=one {@simple1=and} five degrees}`));
+            assert(res.includes(`- {@c1=this is one}`));
+            done();
+          } catch (error) {
+            done(`Test failed - ${JSON.stringify(error)}`)
+          }
     })
 
     it ('composite entities defined in an utterance is parsed correctly', function(done){

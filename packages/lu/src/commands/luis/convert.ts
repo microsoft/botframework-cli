@@ -8,8 +8,8 @@ const exception = require('./../../parser/lufile/classes/exception')
 const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
 const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
-const Lu = require('./../../parser/lu/lu')
 const Luis = require('./../../parser/luis/luis')
+const LuisBuilder = require('./../../parser/luis/luisBuilder')
 
 export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
@@ -43,12 +43,11 @@ export default class LuisConvert extends Command {
       let result: any
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
-        let luObject = await Lu.build(luFiles, flags.log, flags.culture)
-        result = await luObject.parseToLuis()
+        result = await LuisBuilder.build(luFiles, flags.log, flags.culture)
         result = result.hasContent() ? result : ''
       } else {
-        const luisFile = stdin ? stdin : await file.getContentFromFile(flags.in)
-        let luisObject = new Luis(file.parseJSON(luisFile, 'Luis'))
+        const luisContent = stdin ? stdin : await file.getContentFromFile(flags.in)
+        let luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
         if (flags.sort) {
           luisObject.sort()
         }

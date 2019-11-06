@@ -8,6 +8,7 @@ const compareLuFiles = async function(file1: string, file2: string) {
   let fixtureFile = await fs.readFile(path.join(__dirname, file2))
   result = result.toString().replace(/\r\n/g, "\n")
   fixtureFile = fixtureFile.toString().replace(/\r\n/g, "\n")
+  expect(fixtureFile).to.deep.equal(result)
   return result === fixtureFile
 }
 

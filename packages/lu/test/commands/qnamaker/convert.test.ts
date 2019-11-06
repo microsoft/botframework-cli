@@ -130,6 +130,6 @@ describe('qnamaker:convert empty file handling', () => {
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
   .it('qnamaker:convert errors out on empty json file', async (ctx) => {
-    expect(ctx.stderr).to.contain('Sorry, error parsing QnA JSON content')
+    expect(ctx.stderr).to.contain('Sorry, error parsing content as QnA JSON\n')
   })
 })
