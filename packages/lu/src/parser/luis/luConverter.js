@@ -1,6 +1,6 @@
 const NEWLINE = require('os').EOL;
 const helperClasses = require('./../lufile/classes/hclasses')
-const EntityTypeEnum = require('./../lufile/enums/luisEntityTypes');
+const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 
 const luisToLuContent = function(luisJSON){
     let fileContent = '';

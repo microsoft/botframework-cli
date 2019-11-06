@@ -5,12 +5,12 @@
  */
 
 const fetch = require('node-fetch');
-const PARSERCONSTS = require('./enums/parserconsts');
-const retCode = require('./enums/CLI-errors');
+const PARSERCONSTS = require('./../utils/enums/parserconsts');
+const retCode = require('./../utils/enums/CLI-errors');
 const chalk = require('chalk');
 const helperClasses = require('./classes/hclasses');
-const exception = require('./classes/exception');
-const helpers = require('./helpers');
+const exception = require('./../utils/exception');
+const helpers = require('./../utils/helpers');
 const NEWLINE = require('os').EOL;
 const MAX_TRANSLATE_BATCH_SIZE = 25;
 const MAX_CHAR_IN_REQUEST = 4990;

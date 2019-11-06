@@ -1,8 +1,6 @@
 const path = require('path')
-const fs = require('fs-extra')
-const txtfile = require('./../lufile/read-text-file')
-const exception = require('./../lufile/classes/exception')
-const retCode = require('./../lufile/enums/CLI-errors')
+const exception = require('./../utils/exception')
+const retCode = require('./../utils/enums/CLI-errors')
 const translateHelpers = require('./../lufile/translate-helpers')
 
 module.exports = {

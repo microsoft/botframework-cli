@@ -7,11 +7,11 @@ import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
 const fileHelper = require('./../../utils/filehelper')
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
-const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
+const qnaMaker = require('./../../parser/qna/qnamaker/qnamaker')
 const luConverter = require('./../../parser/lufile/parseFileContents')
-const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 
 export default class QnamakerTranslate extends Command {
   static description = 'Translate given QnA maker application JSON model or qna file(s)'
@@ -43,7 +43,7 @@ export default class QnamakerTranslate extends Command {
         result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
-        let translation = await qnaConverter.parseQnAObjectToLu(json, false, false)
+        let translation = new qnaMaker(fileHelper.parseJSON(json, 'QnA'))
         translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         let key = stdin ? 'stdin' : path.basename(flags.in)
         result = {

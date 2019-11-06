@@ -7,9 +7,9 @@ import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
 const fileHelper = require('./../../utils/filehelper')
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
-const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 const Lu = require('./../../parser/lu/lu')
 const Luis = require('./../../parser/luis/luis')
 

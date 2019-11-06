@@ -1,8 +1,8 @@
 const validator = require('./luisValidator')
 const luConverter = require('./luConverter')
-const LUISObjNameEnum = require('./../lufile/enums/luisobjenum')
+const LUISObjNameEnum = require('./../utils/enums/luisobjenum')
 const deepEqual = require('deep-equal')
-const helpers = require('./../lufile/helpers')
+const helpers = require('./../utils/helpers')
 
 class Luis {
     constructor(LuisJSON = null){

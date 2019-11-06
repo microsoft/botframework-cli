@@ -1,6 +1,6 @@
-const retCode = require('./../lufile/enums/CLI-errors')
-const helpers = require('./../lufile/helpers')
-const exception = require('./../lufile/classes/exception')
+const retCode = require('./../utils/enums/CLI-errors')
+const helpers = require('./../utils/helpers')
+const exception = require('./../utils/exception')
 const helperClass = require('./../lufile/classes/hclasses')
 
 const validateLUIS = function(luisJSON) {

@@ -1,6 +1,6 @@
 const NEWLINE = require('os').EOL;
-const exception = require('./../../lufile/classes/exception')
-const retCode = require('./../../lufile/enums/CLI-errors')
+const exception = require('./../../utils/exception')
+const retCode = require('./../../utils/enums/CLI-errors')
 
 const qnaToLuContent = function(qnaJSON){
     let fileContent = '> # QnA pairs' + NEWLINE + NEWLINE;

@@ -4,10 +4,10 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
-const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 const Luis = require('./../../parser/luis/luis')
 const LuisBuilder = require('./../../parser/luis/luisBuilder')
 
@@ -78,7 +78,7 @@ export default class LuisConvert extends Command {
         this.log(result)
       }
     } catch (err) {
-      //console.log(err)
+      // console.log(err)
       if (err instanceof exception) {
         throw new CLIError(err.text)
       }
