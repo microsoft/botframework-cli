@@ -75,19 +75,19 @@ An entity represents detailed information that is relevant in the utterance. For
 ### Definition
 Entites are declarated via
 ```markdown
-@ \<entity-type> \<entity-name> [[hasRoles] \<comma-separated-list-of-roles>]
+@ <entity-type> <entity-name> [[hasRoles] <comma-separated-list-of-roles>]
 ```
 
 Entities that require a definition (e.g. list, regex, composite etc) are represented using this notation - 
 
 ```markdown
-@ \<entity-name> = \<definition>
+@ <entity-name> = <definition>
 ```
 
 Declaration and definition can also be combined into a single line like this -
 
 ```markdown
-@ \<entity-type> \<entity-name> [[hasRoles] \<comma-separated-list-of-roles>] = \<definition>
+@ <entity-type> <entity-name> [[hasRoles] <comma-separated-list-of-roles>] = <definition>
 ```
 
 Entity type, entity name and definition are required. Roles are optional.
@@ -151,18 +151,18 @@ The following LUIS prebuilt entity types are supported -
 ```markdown
 @ list color favColor, screenColor
 @ color =
-    - \<normalized-value>
-        - \<synonym1>
-        - \<synonym2>
+    - <normalized-value>
+        - <synonym1>
+        - <synonym2>
         - ...
-    - \<normalized-value>
-        - \<synonym1>, \<synonym2>, ...
+    - <normalized-value>
+        - <synonym1>, <synonym2>, ...
  
 > Alternate definition
 
 @ list color favColor, screenColor =
-    - \<normalized-value>
-        - \<synonym1>; \<synonym2>; ...
+    - <normalized-value>
+        - <synonym1>; <synonym2>; ...
 ```
 
 **Note::** When using list entity, you should include a value from the list directly in the utterance, not an entity label or any other value. 
