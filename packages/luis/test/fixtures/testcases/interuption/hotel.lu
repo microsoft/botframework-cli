@@ -6,4 +6,5 @@
 
 @simple hello
 
-@simple world
+@ phraselist pl1 = 
+	- cheese,tomato,potato

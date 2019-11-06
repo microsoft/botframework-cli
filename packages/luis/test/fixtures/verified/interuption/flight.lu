@@ -7,9 +7,10 @@
 # interuptionGen
 - book a hotel in Seattle
 - how many rooms would you like
-- book a Chinese restaurant in Bellevue
+- book a {type = Chinese} restaurant in Bellevue
 - which distance do you prefer
 
 @simple hello
 
-@simple world
+@ phraselist pl1 = 
+	- cheese,tomato,potato

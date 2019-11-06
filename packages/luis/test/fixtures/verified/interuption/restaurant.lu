@@ -1,5 +1,5 @@
 # bookRestaurant
-- book a Chinese restaurant in Bellevue
+- book a {type = Chinese} restaurant in Bellevue
 
 # restaurantDistance
 - which distance do you prefer
@@ -12,4 +12,5 @@
 
 @simple hello
 
-@simple world
+@ phraselist pl1 = 
+	- cheese,tomato,potato
