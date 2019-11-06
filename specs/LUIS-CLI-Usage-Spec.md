@@ -93,6 +93,11 @@ Synopsis: Creates a new LUIS application
 
 Reference:  [Add application](https://westus.dev.cognitive.microsoft.com/docs/services/5890b47c39e2bb17b84a55ff/operations/5890b47c39e2bb052c5b9c2f) 
 
+Behavior: 
+
+* API's *usageScenario* parameter should be hard-coded set to "Bot Framework".
+* Do not send the 'domain' parameter
+
 Parameters: 
 
 ```
@@ -100,9 +105,8 @@ Parameters:
  --name				Name of LUIS application
  --description		Description of LUIS application
  --culture			Specify culture language (default: en-us)
- --tokenizerVersion	**TBD**: Get description from LUIS Team (optional/mandatory?)
- --usageScenario	**TBD**: Get description from LUIS Team (optional/mandatory?)
- --domain			**TBD**: Get description from LUIS Team (optional/mandatory?)
+ --tokenizerVersion	Version specifies how sentences are tokenized. (optional) 
+ 					See also: https://aka.ms/luistokens 
  --versionId			LUIS version Id. (mandatory, defaults to config:LUIS:versionId)
 ```
 
@@ -168,7 +172,7 @@ Parameters:
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --versionId			Version to export (mandatory, defaults to config:LUIS:versionId)
- --format			Export format (optional, default: json) **TBD: ask luis for valid formats (json, lu?)
+ --format			Export format. Accepted values: json (default) or lu. (optional)
  --out, -o			Save exported application to specified file, uses STDOUT if not specified (optional)
  --force			Overwrites output file if exists, otherwise creates a parallel numbered file (optional)
  
@@ -192,16 +196,18 @@ Synopsis:  Imports LUIS application from JSON or LU content.
 
 Reference:     [Import application](https://westus.dev.cognitive.microsoft.com/docs/services/5890b47c39e2bb17b84a55ff/operations/5890b47c39e2bb052c5b9c31) 
 
+Behavior: 
+
+* Detect content type & pass in headers 
+* (note: LUIS documentation bug lists two contentTypes, but only one is required)
+
 Parameters: 
 
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --name				LUIS application name (optional)
  --in, -i			File path containing LUIS application contents, uses STDOUT if not specified (mandatory)
-  --format			Content format (optional, default: json) **TBD: ask luis for valid formats (json, lu?) 
-  						**TBD**: This is whats in the ContentType (1) 
-  						**TBD**:  Detect instead
- --requestContentType	**TBD**: ContentType (2). Preferred to *not* expose, confusing dup. just use the one modality instead if possible
+  --format			Content format. valid formats: lu, json (default). (optional)
 ```
 
 Returns:
@@ -220,18 +226,19 @@ Synopsis:   Imports a new version into a LUIS application from JSON or LU conten
 
 Reference:      [Import version](https://westus.dev.cognitive.microsoft.com/docs/services/5890b47c39e2bb17b84a55ff/operations/5892283039e2bb0d9c2805f5) 
 
+Behavior: 
+
+* Detect content type & pass in headers 
+* (note: LUIS documentation bug lists two contentTypes, but only one is required)
+
 Parameters: 
 
 ```
  --subscriptionKey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
  --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --versionId			Version to export (mandatory, defaults to config:LUIS:versionId)
- --format			Import format (optional, default: json) 
- 					**TBD: ask luis for valid formats (json, lu?) 
-  					**TBD**: This is whats in the ContentType (1) 
-  					**TBD**: Detect instead 					
+ --versionId		Version to export (mandatory, defaults to config:LUIS:versionId)
+ --format			Import format. valid formats: lu, json (default). (optional)		
  --in, -i			File path containing LUIS application contents, uses STDOUT if not specified (mandatory)
- --requestContentType	**TBD**: Preferred to *not* expose, confusing dup. just use the one modality instead if possible
 ```
 
 Returns:
