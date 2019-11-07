@@ -78,7 +78,6 @@ export default class QnamakerConvert extends Command {
         }
       }
     } catch (err) {
-      // console.log(err)
       if (err instanceof exception) {
         throw new CLIError(err.text)
       }

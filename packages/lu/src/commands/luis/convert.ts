@@ -78,7 +78,6 @@ export default class LuisConvert extends Command {
         this.log(result)
       }
     } catch (err) {
-      // console.log(err)
       if (err instanceof exception) {
         throw new CLIError(err.text)
       }

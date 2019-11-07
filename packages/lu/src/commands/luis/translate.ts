@@ -36,24 +36,30 @@ export default class LuisTranslate extends Command {
       // Check if data piped in stdin
       let stdin = await this.readStdin()
       let isLu = await fileHelper.detectLuContent(stdin, flags.in)
-      let result: any
+      let result: any = {}
 
       if (isLu) {
         let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
-        result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let translatedLuFiles = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        luFiles.forEach((lu: any) => {
+          if (!result[lu.id]) {
+            result[lu.id] = {}
+          }
+          translatedLuFiles[lu.id].forEach((t: any) => {
+            result[t.id][t.language] = t.content
+          })
+        })
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
         let luisObject = new Luis(fileHelper.parseJSON(json, 'Luis'))
-        let translation = luisObject.parseToLuContent()
-        translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         let key = stdin ? 'stdin' : path.basename(flags.in)
+        let translation = new Lu(luisObject.parseToLuContent(), key)
+        let translatedLuis = await luTranslator.translateLu(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         result = {
           [key] : {}
         }
-        for (let lng in translation) {
-          let luObject = new Lu(translation[lng])
-          let translatedJSON = await luObject.parseToLuis()
-          result[key][lng] = await translatedJSON
+        for (let lu of translatedLuis) {
+          result[key][lu.language] = await lu.parseToLuis()
         }
       }
 

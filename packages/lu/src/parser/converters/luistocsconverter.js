@@ -1,10 +1,10 @@
 const parse_multi_platform_luis_1 = require("./../luis/propertyHelper");
-const LuisGen = require('./../luis/luisGen')
+const LuisGenBuilder = require('./../luis/luisGenBuilder')
 const Writer = require("./helpers/writer");
 
 module.exports = {
     writeFromLuisJson: async function(luisJson, className, space, outPath) {
-        const app = new LuisGen(luisJson);
+        const app = LuisGenBuilder.build(luisJson);
         let writer = new Writer();
         await writer.setOutputStream(outPath);
         this.header(space, className, writer);

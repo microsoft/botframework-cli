@@ -99,7 +99,7 @@ export async function generateNewTranslatedFilePath(fileName: string, translated
 
   newPath = path.join(output, translatedLanguage)
   await fs.mkdirp(newPath)
-  return path.join(newPath, fileName)
+  return path.join(newPath, path.basename(fileName))
 }
 
 export function validatePath(outputPath: string, defaultFileName: string, forceWrite = false): string {
