@@ -55,35 +55,7 @@ const parseIntentsToLu = function(luisObj, luisJSON){
             fileContent += NEWLINE + NEWLINE;
         }
         fileContent += '## ' + intent.intent.name + NEWLINE;
-        intent.utterances.forEach(function(utterance) {
-            let updatedText = utterance.text;
-            if(utterance.entities.length >= 0) {
-                // update utterance for each entity
-                let text = utterance.text;
-                let sortedEntitiesList = objectSortByStartPos(utterance.entities);
-                let tokenizedText = text.split('');
-                let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
-                nonCompositesInUtterance.forEach(entity => {
-                    if (entity.role !== undefined) {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                    } else {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                    }
-                    tokenizedText[parseInt(entity.endPos)] += `}`;
-                })
-                let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
-                compositeEntitiesInUtterance.forEach(entity => {
-                    if (entity.role !== undefined) {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
-                    } else {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
-                    }
-                    tokenizedText[parseInt(entity.endPos)] += `}`;
-                })
-                updatedText = tokenizedText.join(''); 
-            }
-            if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
-        });
+        fileContent += parseUtterancesToLu(intent.utterances, luisJSON)
         fileContent += NEWLINE + NEWLINE;
         if (intent.intent.features) {
             fileContent += `@ intent ${intent.intent.name}`;
@@ -96,7 +68,7 @@ const parseIntentsToLu = function(luisObj, luisJSON){
 
 const parseUtterancesToLu = function(utterances, luisJSON){
     let fileContent = ''
-    (utterances || []).forEach(function(utterance) {
+    utterances.forEach(function(utterance) {
         let updatedText = utterance.text;
         if(utterance.entities.length >= 0) {
             // update utterance for each entity
