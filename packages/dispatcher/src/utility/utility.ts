@@ -731,11 +731,13 @@ export class Utility {
         Utility.debuggingLog(
             `Utility.loadFile(): process.cmd()=${process.cwd()}`);
         try {
-        const fileContent: string = fs.readFileSync(filename, encoding);
-        return fileContent;
+            const fileContent: string = fs.readFileSync(filename, encoding);
+            return fileContent;
         } catch(e) {
-            throw e;
+            Utility.debuggingThrow(
+                `Utility.loadFile(): filename=${filename}, exception=${e}`);
         }
+        return "";
     }
     public static dumpFile(
         filename: string,
