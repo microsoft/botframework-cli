@@ -102,108 +102,111 @@ const parseUtterancesToLu = function(utterances, luisJSON){
 
 const parseEntitiesToLu =  function(luisJson){
     let fileContent = ''
-    if(luisJson.entities && luisJson.entities.length >= 0) {
-        fileContent += '> # Entity definitions' + NEWLINE + NEWLINE;
-        luisJson.entities.forEach(function(entity) {
-            if (!entity.children || entity.children.length === 0) {
-                // Add inherits information if any
-                if (entity.inherits !== undefined) {
-                    // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
-                    fileContent += '> !# @entity.inherits = name : ' + entity.name;
-                    if (entity.inherits.domain_name !== undefined) {
-                        fileContent += '; domain_name : ' + entity.inherits.domain_name;
-                    }
-                    if (entity.inherits.model_name !== undefined) {
-                        fileContent += '; model_name : ' + entity.inherits.model_name;
-                    }
-                    fileContent += NEWLINE + NEWLINE;
-                }
-                fileContent += `@ ml ${entity.name}`;
-                fileContent += addRolesAndFeatures(entity);
-                fileContent += NEWLINE + NEWLINE;
-            } else {
-                // handle n-depth entity
-                fileContent += handleNDepthEntity(entity);
-            }
-        });
-        fileContent += NEWLINE;
+    if(!luisJson.entities) {
+        return fileContent
     }
+    
+    fileContent += '> # Entity definitions' + NEWLINE + NEWLINE;
+    luisJson.entities.forEach(function(entity) {
+        if (!entity.children || entity.children.length === 0) {
+            // Add inherits information if any
+            if (entity.inherits !== undefined) {
+                // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
+                fileContent += '> !# @entity.inherits = name : ' + entity.name;
+                if (entity.inherits.domain_name !== undefined) {
+                    fileContent += '; domain_name : ' + entity.inherits.domain_name;
+                }
+                if (entity.inherits.model_name !== undefined) {
+                    fileContent += '; model_name : ' + entity.inherits.model_name;
+                }
+                fileContent += NEWLINE + NEWLINE;
+            }
+            fileContent += `@ ml ${entity.name}`;
+            fileContent += addRolesAndFeatures(entity);
+            fileContent += NEWLINE + NEWLINE;
+        } else {
+            // handle n-depth entity
+            fileContent += handleNDepthEntity(entity);
+        }
+    });
+    fileContent += NEWLINE;
+    
     return fileContent
 }
 
 const parseToLuPrebuiltEntities = function(luisJson){
     let fileContent = ''
-    if(luisJson.prebuiltEntities && luisJson.prebuiltEntities.length >= 0){
-        fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
-        luisJson.prebuiltEntities.forEach(function(entity) {
-            fileContent += `@ prebuilt ${entity.name}`;
-            fileContent += addRolesAndFeatures(entity);
-            fileContent += NEWLINE + NEWLINE;
-        });
-        fileContent += NEWLINE;
+    if(!luisJson.prebuiltEntities){
+        return fileContent
     }
+    fileContent += '> # PREBUILT Entity definitions' + NEWLINE + NEWLINE;
+    luisJson.prebuiltEntities.forEach(function(entity) {
+        fileContent += `@ prebuilt ${entity.name}`;
+        fileContent += addRolesAndFeatures(entity);
+        fileContent += NEWLINE + NEWLINE;
+    });
+    fileContent += NEWLINE;
     return fileContent
 }
 
 const parseToLuClosedLists = function(luisJson){
     let fileContent = ''
-    if(luisJson.closedLists && luisJson.closedLists.length >= 0){
-        fileContent += '> # List entities' + NEWLINE + NEWLINE;
-        luisJson.closedLists.forEach(function(ListItem) {
-            fileContent += `@ list ${ListItem.name}`;
-            fileContent += addRolesAndFeatures(ListItem);
-            if (ListItem.subLists.length !== 0) {
-                fileContent += ` = `;
-                fileContent += NEWLINE;
-            }
-            ListItem.subLists.forEach(function(list) {
-                fileContent += `\t- ${list.canonicalForm} :`;
-                fileContent += NEWLINE;
-                list.list.forEach(function(listItem) {
-                    fileContent += '\t\t- ' + listItem + NEWLINE;
-                });
-            });
-            fileContent += NEWLINE + NEWLINE;
-        });
+    if(!luisJson.closedLists){
+        return fileContent
     }
+    fileContent += '> # List entities' + NEWLINE + NEWLINE;
+    luisJson.closedLists.forEach(function(ListItem) {
+        fileContent += `@ list ${ListItem.name}`;
+        fileContent += addRolesAndFeatures(ListItem);
+        if (ListItem.subLists.length !== 0) {
+            fileContent += ` = `;
+            fileContent += NEWLINE;
+        }
+        ListItem.subLists.forEach(function(list) {
+            fileContent += `\t- ${list.canonicalForm} :`;
+            fileContent += NEWLINE;
+            list.list.forEach(function(listItem) {
+                fileContent += '\t\t- ' + listItem + NEWLINE;
+            });
+        });
+        fileContent += NEWLINE + NEWLINE;
+    });
     return fileContent
 }
 
 const parseRegExEntitiesToLu = function(luisJson){
     let fileContent = ''
-    if(luisJson.regex_entities && luisJson.regex_entities.length >= 0) {
-        fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
-        luisJson.regex_entities.forEach(function(regExEntity) {
-            fileContent += `@ regex ${regExEntity.name}`;
-            fileContent += addRolesAndFeatures(regExEntity);
-            if (regExEntity.regexPattern !== '') {
-                fileContent += ` = /${regExEntity.regexPattern}/`;
-            }
-            fileContent += NEWLINE;
-        });
-        fileContent += NEWLINE;
+    if(!luisJson.regex_entities) {
+        return fileContent
     }
+    fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
+    luisJson.regex_entities.forEach(function(regExEntity) {
+        fileContent += `@ regex ${regExEntity.name}`;
+        fileContent += addRolesAndFeatures(regExEntity);
+        if (regExEntity.regexPattern !== '') {
+            fileContent += ` = /${regExEntity.regexPattern}/`;
+        }
+        fileContent += NEWLINE;
+    });
+    fileContent += NEWLINE;
     return fileContent
 }
 
 const parseCompositesToLu = function(luisJson){
     let fileContent = ''
     // add composite entities if found in source LUIS JSON
-    if(luisJson.composites && luisJson.composites.length > 0) {
-        fileContent += '> # Composite entities' + NEWLINE + NEWLINE; 
-        luisJson.composites.forEach(composite => {
-            fileContent += `@ composite ${composite.name}`;
-            fileContent += addRolesAndFeatures(composite);
-            if (composite.children.length > 0) {
-                if (typeof composite.children[0] == "object") {
-                    fileContent += ` = [${composite.children.map(item => item.name).join(', ')}]`;
-                } else {
-                    fileContent += ` = [${composite.children.join(', ')}]`;
-                }
-            }
-            fileContent += NEWLINE;
-        })
+    if(!luisJson.composites || luisJson.composites.length <= 0) {
+        return fileContent
     }
+    fileContent += '> # Composite entities' + NEWLINE + NEWLINE; 
+    luisJson.composites.forEach(composite => {
+        fileContent += `@ composite ${composite.name}`;
+        fileContent += addRolesAndFeatures(composite);
+        if (composite.children.length > 0) {
+            fileContent += (typeof composite.children[0] == "object") ? ` = [${composite.children.map(item => item.name).join(', ')}]`: ` = [${composite.children.join(', ')}]`;
+        }
+        fileContent += NEWLINE;
+    })
     return fileContent
 }
 
@@ -285,15 +288,16 @@ const addRolesAndFeatures = function(entity) {
     if (entity.roles && entity.roles.length > 0) {
         roleAndFeatureContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} ${entity.roles.join(',')}`;
     }
-    if (entity.features && entity.features.length > 0) {
-        let featuresList = new Array();
-        entity.features.forEach(item => {
-            if (item.featureName) featuresList.push(item.featureName);
-            if (item.modelName) featuresList.push(item.modelName);
-        })
-        roleAndFeatureContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
+    if (!entity.features || entity.features.length <= 0) {
+        return roleAndFeatureContent
     }
-
+    
+    let featuresList = new Array();
+    entity.features.forEach(item => {
+        if (item.featureName) featuresList.push(item.featureName);
+        if (item.modelName) featuresList.push(item.modelName);
+    })
+    roleAndFeatureContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} ${featuresList.join(',')}`;
     return roleAndFeatureContent
 }
 
