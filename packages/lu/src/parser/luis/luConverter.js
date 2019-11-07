@@ -17,20 +17,14 @@ const luisToLuContent = function(luisJSON){
     fileContent += parseIntentsToLu(luisObj, luisJSON)
     fileContent += parseEntitiesToLu(luisJSON)
     fileContent += parseToLuPrebuiltEntities(luisJSON)
-    
-    if(luisJSON.model_features && luisJSON.model_features.length >= 0) {
-        fileContent += handlePhraseLists(luisJSON.model_features);
-    }
-
-    if(luisJSON.phraselists && luisJSON.phraselists.length >= 0) {
-        fileContent += handlePhraseLists(luisJSON.phraselists);
-    }
-
+    fileContent += handlePhraseLists(luisJSON.model_features);
+    fileContent += handlePhraseLists(luisJSON.phraselists);
     fileContent += parseToLuClosedLists(luisJSON)
     fileContent += parseRegExEntitiesToLu(luisJSON)
     fileContent += parseCompositesToLu(luisJSON)
     return fileContent
 }
+
 const parseIntentsToLu = function(luisObj, luisJSON){
     let fileContent = ''
     fileContent += NEWLINE;
@@ -215,7 +209,11 @@ const parseCompositesToLu = function(luisJson){
  * @param {Object[]} collection 
  */
 const handlePhraseLists = function(collection) {
-    let fileContent = '> # Phrase list definitions' + NEWLINE + NEWLINE;
+    let fileContent = ''
+    if(!collection) {
+        return fileContent
+    }
+    fileContent = '> # Phrase list definitions' + NEWLINE + NEWLINE;
     collection.forEach(function(entity) {
         fileContent += `@ phraselist ${entity.name}${(entity.mode ? `(interchangeable)` : ``)}`;
         if (entity.words && entity.words !== '') {
@@ -291,7 +289,7 @@ const addRolesAndFeatures = function(entity) {
     if (!entity.features || entity.features.length <= 0) {
         return roleAndFeatureContent
     }
-    
+
     let featuresList = new Array();
     entity.features.forEach(item => {
         if (item.featureName) featuresList.push(item.featureName);
