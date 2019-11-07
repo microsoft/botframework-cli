@@ -11,6 +11,8 @@ import { NgramSubwordFeaturizer } from "../../src/model/language_understanding/f
 
 import { Utility } from "../../src/utility/Utility";
 
+import { UnitTestHelper } from "../utility/Utility.test";
+
 /* tslint:disable */
 
 export const ColumnarContentEmail: string =
@@ -773,7 +775,7 @@ export function exampleFunctionDataWithLuContent(
 describe("Test Suite - data/columnar_data/ColumnarData - Email", () => {
     it("Test.0000 exampleFunctionDataWithLuContent()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const columnarData: ColumnarData = exampleFunctionDataWithLuContent(
             ColumnarContentEmail,
             0,

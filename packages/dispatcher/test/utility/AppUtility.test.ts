@@ -10,10 +10,12 @@ import { exampleFunctionUtility } from "../../src/utility/AppUtility";
 
 import { Utility } from "../../src/utility/Utility";
 
+import { UnitTestHelper } from "./Utility.test";
+
 describe("Test Suite - utility/app_utility", () => {
     it("Test.0000 exampleFunctionUtilityWithFilename()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "data/Columnar/Email.tsv";
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
@@ -26,7 +28,7 @@ describe("Test Suite - utility/app_utility", () => {
     });
     it("Test.0001 exampleFunctionUtility()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
         Utility.debuggingLog(

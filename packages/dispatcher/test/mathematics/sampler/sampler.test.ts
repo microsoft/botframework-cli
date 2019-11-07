@@ -9,10 +9,12 @@ import { ReservoirSampler } from "../../../src/mathematics/sampler/sampler";
 
 import { Utility } from "../../../src/utility/Utility";
 
+import { UnitTestHelper } from "../../utility/Utility.test";
+
 describe("Test Suite - mathematics/sampler/app_sampler", () => {
     it("Test.0000 addInstance()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         {
@@ -178,7 +180,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
 
     it("Test.0100 resetLabelsAndMap()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         sampler.resetLabelsAndMap();
@@ -356,7 +358,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
 
     it("Test.0200 getNumberLabels()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         const numberLabels: number = sampler.getNumberLabels();
@@ -365,7 +367,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
     });
     it("Test.0201 getLabels()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         const labels: string[] = sampler.getLabels();
@@ -374,7 +376,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
     });
     it("Test.0202 getLabelMap()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         const labelMap: { [id: string]: number; } = sampler.getLabelMap();
@@ -383,7 +385,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
     });
     it("Test.0203 getInstances()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         const instances: { [id: string]: string[]; } = sampler.getInstances();
@@ -393,7 +395,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
 
     it("Test.0300 getNumberInstances()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         const numberInstances: number = sampler.getNumberInstances();
@@ -403,7 +405,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
 
     it("Test.0400 getRandomInt()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         const randomInt: number = sampler.getRandomInt(3);
@@ -415,7 +417,7 @@ describe("Test Suite - mathematics/sampler/app_sampler", () => {
 
     it("Test.0500 sampleInstances()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
         sampler.addInstance("label0", "label0 - utterance 1");

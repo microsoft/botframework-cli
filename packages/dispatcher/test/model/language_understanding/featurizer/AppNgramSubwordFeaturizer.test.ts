@@ -9,10 +9,12 @@ import { exampleFunctionNgramSubwordFeaturizer } from "../../../../src/model/lan
 
 import { Utility } from "../../../../src/utility/Utility";
 
+import { UnitTestHelper } from "../../../utility/Utility.test";
+
 describe("Test Suite - model/language_understanding/featurizer/app_ngram_subword_featurizer", () => {
     it("Test.0000 exampleFunctionNgramSubwordFeaturizer()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionNgramSubwordFeaturizer();
     });
 });

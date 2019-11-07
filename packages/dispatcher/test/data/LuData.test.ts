@@ -11,6 +11,8 @@ import { NgramSubwordFeaturizer } from "../../src/model/language_understanding/f
 
 import { Utility } from "../../src/utility/Utility";
 
+import { UnitTestHelper } from "../utility/Utility.test";
+
 /* tslint:disable */
 
 // ---- NOTE ---- The dataset in LuContentEmail was minorly revised (LUIS application header added) from
@@ -885,7 +887,7 @@ export async function exampleFunctionDataWithLuContent(
 describe("Test Suite - data/lu_data/LuData", () => {
     it("Test.0000 exampleFunctionDataWithLuContent()", async function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const luData: LuData = await exampleFunctionDataWithLuContent(
             LuContentEmail);
     });

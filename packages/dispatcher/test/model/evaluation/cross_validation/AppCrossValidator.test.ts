@@ -16,10 +16,12 @@ import { ConfusionMatrix } from "../../../../src/model/evaluation/confusion_matr
 
 import { Utility } from "../../../../src/utility/Utility";
 
+import { UnitTestHelper } from "../../../utility/Utility.test";
+
 describe("Test Suite - model/evaluation/cross_validator/app_cross_validator", () => {
     it("Test.0000 exampleFunctionCrossValidatorWithLuContent()", async function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const cvResult: ConfusionMatrix = await exampleFunctionCrossValidatorWithLuContent(
             LuContentEmail,
             5,
@@ -32,7 +34,7 @@ describe("Test Suite - model/evaluation/cross_validator/app_cross_validator", ()
 
     it("Test.0100 exampleFunctionCrossValidatorWithColumnarContent()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const cvResult: ConfusionMatrix = exampleFunctionCrossValidatorWithColumnarContent(
             ColumnarContentEmail,
             0,
@@ -48,7 +50,7 @@ describe("Test Suite - model/evaluation/cross_validator/app_cross_validator", ()
 
     it("Test.0200 exampleFunctionCrossValidator()", async function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "data/Columnar/Email.tsv";
         process.argv.push("--filename");
         process.argv.push(filename);
@@ -62,7 +64,7 @@ describe("Test Suite - model/evaluation/cross_validator/app_cross_validator", ()
     });
     it("Test.0201 exampleFunctionCrossValidator()", async function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "data/LU/skills/emailskill/en/Email.lu";
         process.argv.push("--filename");
         process.argv.push(filename);

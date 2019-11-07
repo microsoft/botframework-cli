@@ -9,10 +9,12 @@ import { exampleFunctionReservoirSampler } from "../../../src/mathematics/sample
 
 import { Utility } from "../../../src/utility/Utility";
 
+import { UnitTestHelper } from "../../utility/Utility.test";
+
 describe("Test Suite - mathematics/sampler/app_sampler", () => {
     it("Test.0000 exampleFunctionReservoirSampler", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionReservoirSampler();
     });
 });

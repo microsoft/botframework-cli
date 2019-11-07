@@ -9,10 +9,12 @@ import { exampleFunctionData } from "../../src/data/AppLuData";
 
 import { Utility } from "../../src/utility/Utility";
 
+import { UnitTestHelper } from "../utility/Utility.test";
+
 describe("Test Suite - data/app_lu_data", () => {
     it("Test.0000 exampleFunctionData", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "data/LU/skills/emailskill/en/Email.lu";
         process.argv.push("--filename");
         process.argv.push(filename);

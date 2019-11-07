@@ -110,39 +110,53 @@ export class MathematicsHelper {
     public static getL2Regularized(weight: number, l2Regularization: number): number {
         return (weight * l2Regularization);
     }
-    public static getL1l2RegularizedOptimizedSparse(
+    public static getL1l2RegularizedWeightOptimizedSparse(
         weight: number,
         l1Regularization: number,
         l2Regularization: number): number {
         if (weight === 0) {
             return 0; // ---- NOTE: most sparse weights would remain zero, this check is to optimize the branches.
         }
-        let regularized: number = 0;
+        let regularized = weight * l2Regularization;
         if (weight > 0) {
             regularized += l1Regularization;
-        } else if (weight < 0) {
-            regularized -= l1Regularization;
+            if (weight <= regularized) {
+                return 0; // ---- NOTE: cap weight at 0.
+            }
         }
-        regularized += (weight * l2Regularization);
-        return regularized;
+        else if (weight < 0) {
+            regularized -= l1Regularization;
+            if (weight >= regularized) {
+                return 0; // ---- NOTE: cap weight at 0.
+            }
+        }
+        weight -= regularized;
+        return weight;
     }
-    public static getL1l2RegularizedOptimizedDense(
+    public static getL1l2RegularizedWeightOptimizedDense(
         weight: number,
         l1Regularization: number,
         l2Regularization: number): number {
-        let regularized: number = 0;
-        if (weight > 0) {
-            regularized += l1Regularization;
-        } else if (weight < 0) {
-            regularized -= l1Regularization;
+            let regularized = weight * l2Regularization;
+            if (weight > 0) {
+                regularized += l1Regularization;
+                if (weight <= regularized) {
+                    return 0; // ---- NOTE: cap weight at 0.
+                }
+            }
+            else if (weight < 0) {
+                regularized -= l1Regularization;
+                if (weight >= regularized) {
+                    return 0; // ---- NOTE: cap weight at 0.
+                }
+            }
+            weight -= regularized;
+            return weight;
         }
-        regularized += (weight * l2Regularization);
-        return regularized;
-    }
 
     /*
      *  return:
-     *  :   softmaxVectors: number[][]:
+     *      softmaxVectors: number[][]:
      *  update:
      *      matrixWeightGradientDenseArrays:
      *          Each row represents a dense feature gradient vector for a label.
@@ -722,7 +736,7 @@ export class MathematicsHelper {
         const columns: number = valueArray[0].length;
         for (let row: number = 0; row < rows; row++) {
             for (let column: number = 0; column < columns; column++) {
-                valueArray[row][column] -= MathematicsHelper.getL1l2RegularizedOptimizedSparse(
+                valueArray[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
                     valueArray[row][column],
                     l1Regularization,
                     l2Regularization);
@@ -738,7 +752,7 @@ export class MathematicsHelper {
         const columns: number = valueArray[0].length;
         for (let row: number = 0; row < rows; row++) {
             for (let column: number = 0; column < columns; column++) {
-                valueArray[row][column] -= MathematicsHelper.getL1l2RegularizedOptimizedDense(
+                valueArray[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
                     valueArray[row][column],
                     l1Regularization,
                     l2Regularization);
@@ -752,7 +766,7 @@ export class MathematicsHelper {
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
         for (let i: number = 0; i < valueArray.length; i++) {
-            valueArray[i] -= MathematicsHelper.getL1l2RegularizedOptimizedSparse(
+            valueArray[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
                 valueArray[i],
                 l1Regularization,
                 l2Regularization);
@@ -764,7 +778,7 @@ export class MathematicsHelper {
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
         for (let i: number = 0; i < valueArray.length; i++) {
-            valueArray[i] -= MathematicsHelper.getL1l2RegularizedOptimizedDense(
+            valueArray[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
                 valueArray[i],
                 l1Regularization,
                 l2Regularization);
@@ -1238,11 +1252,11 @@ export class MathematicsHelper {
         const length: number = existingVector.length;
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
-            const regularized: number = MathematicsHelper.getL1l2RegularizedOptimizedSparse(
+            const regularized: number = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
                 existingVector[i],
                 l1Regularization,
                 l2Regularization);
-            vector[i] = existingVector[i] - regularized;
+            vector[i] = regularized;
         }
         return vector;
     }
@@ -1253,11 +1267,11 @@ export class MathematicsHelper {
         const length: number = existingVector.length;
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
-            const regularized: number = MathematicsHelper.getL1l2RegularizedOptimizedDense(
+            const regularized: number = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
                 existingVector[i],
                 l1Regularization,
                 l2Regularization);
-            vector[i] = existingVector[i] - regularized;
+            vector[i] = regularized;
         }
         return vector;
     }

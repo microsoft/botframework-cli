@@ -14,6 +14,8 @@ import { LearnerUtility } from "../../../../../../src/model/supervised/classifie
 
 import { Utility } from "../../../../../../src/utility/Utility";
 
+import { UnitTestHelper } from "../../../../../utility/Utility.test";
+
 function getFeaturizerAndLearner(): {
     "featurizer": NgramSubwordFeaturizer,
     "learner": SoftmaxRegressionSparse } {
@@ -40,7 +42,7 @@ function getFeaturizerAndLearner(): {
 describe("Test Suite - model/supervised/classifier/neural_network/learner/softmax_regression_sparse", () => {
     it("Test.0000 constructor()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -62,7 +64,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0100 getModelWeights()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -83,7 +85,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
     });
     it("Test.0101 getModelBiases()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -101,7 +103,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0200 getNumberInputUnits()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -123,7 +125,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
     });
     it("Test.0201 getNumberOutputUnits()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -146,7 +148,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0300 getL1Regularization()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -161,7 +163,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
     });
     it("Test.0301 getL2Regularization()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -177,7 +179,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0400 getLossEarlyStopRatio()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -193,7 +195,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0500 fit()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -215,7 +217,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0600 fitMinibatching()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -237,7 +239,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0700 predict()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -259,7 +261,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0800 serializeToJsonString()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
@@ -284,7 +286,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/softma
 
     it("Test.0900 deserializeFromJsonString()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const result: {
             "featurizer": NgramSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,

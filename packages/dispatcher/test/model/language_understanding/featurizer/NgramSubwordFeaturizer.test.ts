@@ -13,6 +13,8 @@ import { NgramSubwordFeaturizer } from "../../../../src/model/language_understan
 
 import { Utility } from "../../../../src/utility/Utility";
 
+import { UnitTestHelper } from "../../../utility/Utility.test";
+
 function getNgramSubwordFeaturizerForUnitTests(
     subwordNgramBegin: number = 3,
     subwordNgramEnd: number = 4,
@@ -61,7 +63,7 @@ const hashingFeaturizerColumnarContentEmail: NgramSubwordFeaturizer = getHashing
 describe("Test Suite - model/language_understanding/featurizer/ngram_subword_featurizer", () => {
     it("Test.0000 constructor()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer();
         const input: string = "add flag to the email john just sent to me";
         const result: string[] = featurizer.featurize(input);
@@ -72,7 +74,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0100 getIntentsUtterances()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const intentsUtterances: { "intents": string[], "utterances": string[] } =
@@ -83,7 +85,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0200 getLabels()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const labels: string[] =
@@ -97,7 +99,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0201 getLabelMap()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const labelMap: { [id: string]: number; } =
@@ -111,7 +113,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0202 getFeatures()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const features: string[] =
@@ -125,7 +127,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0203 getFeatureMap()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureMap: { [id: string]: number; } =
@@ -139,7 +141,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0204 getHashingFeatureArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const hashingFeatureArrays: Array<Set<string>> =
@@ -154,7 +156,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0300 getNumberHashingFeaturesSetting()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const numberHashingFeaturesSetting: number =
@@ -167,7 +169,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0400 getNumberLabels()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const numberLabels: number =
@@ -179,7 +181,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0401 getNumberFeatures()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const numberFeatures: number =
@@ -191,7 +193,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0402 getNumberHashingFeatures()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const numberHashingFeatures: number =
@@ -204,7 +206,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0500 getLabelIndex()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const label: string = "AddFlag";
@@ -217,7 +219,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0501 getLabelIndex()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const label: string = "label";
@@ -230,7 +232,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0502 getLabelIndex()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const label: string = "label";
@@ -241,7 +243,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0503 getFeatureIndex()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const feature: string = "flag";
@@ -254,7 +256,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0504 getFeatureIndex()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const feature: string = " flag ";
@@ -267,7 +269,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.0505 getFeatureIndex()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const feature: string = " flag ";
@@ -279,7 +281,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0600 createFeatureSparseIndexArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureText: string = "add flag to the email john just sent to me";
@@ -293,7 +295,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0700 createFeatureSparseIndexArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -317,7 +319,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0800 createIntentUtteranceSparseIndexArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -348,7 +350,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.0900 createFeatureMiniBatchingSparseIndexArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -366,7 +368,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1000 createFeatureMiniBatchingSparseIndexArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const intentsUtterances: {
@@ -398,7 +400,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1100 createFeatureHashingSparseIndexArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const featureText: string = "add flag to the email john just sent to me";
@@ -412,7 +414,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1200 createFeatureHashingSparseIndexArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -436,7 +438,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1300 createIntentUtteranceHashingSparseIndexArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -467,7 +469,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1400 createLabelOneHotEncoderBooleanArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const label: string = "AddFlag";
@@ -484,7 +486,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.1401 createLabelOneHotEncoderNumberArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const label: string = "AddFlag";
@@ -502,7 +504,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1500 createFeatureOneHotEncoderBooleanArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const feature: string = "add flag to the email john just sent to me";
@@ -523,7 +525,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.1501 createFeatureOneHotEncoderNumberArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const feature: string = "add flag to the email john just sent to me";
@@ -545,7 +547,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1600 createFeatureOneHotEncoderBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -564,7 +566,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.1601 createFeatureOneHotEncoderNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -584,7 +586,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1700 createIntentUtteranceOneHotEncoderBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const intentUtteranceOneHotEncoderBooleanArrays: {
@@ -613,7 +615,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.1701 createIntentUtteranceOneHotEncoderNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const intentUtteranceOneHotEncoderBooleanArrays: {
@@ -643,7 +645,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1800 createFeatureMiniBatchingOneHotEncoderBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -660,7 +662,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.1801 createFeatureMiniBatchingOneHotEncoderNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -678,7 +680,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.1900 createIntentUtteranceMiniBatchingOneHotEncoderBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const intentUtteranceOneHotEncoderBooleanArrays: {
@@ -707,7 +709,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.1901 createIntentUtteranceMiniBatchingOneHotEncoderNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
         const intentUtteranceOneHotEncoderBooleanArrays: {
@@ -737,7 +739,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2000 createFeatureHashingOneHotEncoderBooleanArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const feature: string = "add flag to the email john just sent to me";
@@ -758,7 +760,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.2001 createFeatureHashingOneHotEncoderNumberArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const feature: string = "add flag to the email john just sent to me";
@@ -780,7 +782,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2100 createFeatureHashingOneHotEncoderBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -799,7 +801,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.2101 createFeatureHashingOneHotEncoderNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const featureTexts: string[] = [
@@ -819,7 +821,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2200 createIntentUtteranceHashingOneHotEncoderBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const intentUtteranceOneHotEncoderBooleanArrays: {
@@ -848,7 +850,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
     });
     it("Test.2201 createIntentUtteranceHashingOneHotEncoderNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             hashingFeaturizerColumnarContentEmail;
         const intentUtteranceOneHotEncoderBooleanArrays: {
@@ -878,7 +880,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2300 featurize()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer();
         const input: string = "add flag to the email john just sent to me";
         const result: string[] = featurizer.featurize(input);
@@ -891,7 +893,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2400 split()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer();
         const input: string = "add flag to the email john just sent to me";
         const result: string[] = featurizer.split(input);
@@ -904,7 +906,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2500 generateSubwords()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer();
         const input: string = "add flag to the email john just sent to me";
         const result: string[] = featurizer.generateSubwords(input);
@@ -917,7 +919,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2600 generateSubwords()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const subwordNgramBegin: number = 3;
         const subwordNgramEnd: number = 4;
         const toLowercase: boolean = true;
@@ -939,7 +941,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2700 serializeToJsonString()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const subwordNgramBegin: number = 3;
         const subwordNgramEnd: number = 4;
         const toLowercase: boolean = true;
@@ -964,7 +966,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
 
     it("Test.2800 deserializeFromJsonString()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const subwordNgramBegin: number = 3;
         const subwordNgramEnd: number = 4;
         const toLowercase: boolean = true;

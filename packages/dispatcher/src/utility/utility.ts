@@ -17,10 +17,6 @@ export class Utility {
     public static epsilon: number = 0.0001;
     public static epsilonRough: number = 0.01;
 
-    public static getDefaultUnitTestTimeout(): number {
-        return 60000;
-    }
-
     public static incrementKeyValueNumberMap<K>(
         keyNumberMap: Map<K, number>,
         key: K,

@@ -11,10 +11,12 @@ import { exampleFunctionConfusionMatrix } from "../../../../src/model/evaluation
 
 import { Utility } from "../../../../src/utility/Utility";
 
+import { UnitTestHelper } from "../../../utility/Utility.test";
+
 describe("Test Suite - model/evaluation/confusion_matrix/app_confusion_matrix", () => {
     it("Test.0000 exampleFunctionConfusionMatrix()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
-        this.timeout(Utility.getDefaultUnitTestTimeout());
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionConfusionMatrix();
     });
 });
