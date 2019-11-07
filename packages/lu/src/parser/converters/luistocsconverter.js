@@ -1,9 +1,10 @@
-const parse_multi_platform_luis_1 = require("./../luisfile/parseMultiPlatform");
+const parse_multi_platform_luis_1 = require("./../luis/propertyHelper");
+const LuisGen = require('./../luis/luisGen')
 const Writer = require("./helpers/writer");
 
 module.exports = {
     writeFromLuisJson: async function(luisJson, className, space, outPath) {
-        const app = parse_multi_platform_luis_1.fromLuisApp(luisJson);
+        const app = new LuisGen(luisJson);
         let writer = new Writer();
         await writer.setOutputStream(outPath);
         this.header(space, className, writer);
@@ -80,22 +81,22 @@ module.exports = {
             '{'
         ]);
         writer.increaseIndentation();
-        this.writeEntityBlock(app.simpleEntities, 'Simple entities', (entity) => {
+        this.writeEntityBlock(app.entities, 'Simple entities', (entity) => {
             writer.writeLineIndented(this.getEntityWithType(entity));
         }, writer);
-        this.writeEntityBlock(app.builtInEntities, 'Built-in entities', (entities) => {
+        this.writeEntityBlock(app.prebuiltEntities, 'Built-in entities', (entities) => {
             const entityType = entities[0];
             entities.forEach(entity => {
                 writer.writeLineIndented(this.getEntityWithType(entity, entityType));
             });
         }, writer);
-        this.writeEntityBlock(app.listEntities, 'Lists', (entity) => {
+        this.writeEntityBlock(app.closedLists, 'Lists', (entity) => {
             writer.writeLineIndented(this.getEntityWithType(entity, 'list'));
         }, writer);
-        this.writeEntityBlock(app.regexEntities, 'Regex entities', (entity) => {
+        this.writeEntityBlock(app.regex_entities, 'Regex entities', (entity) => {
             writer.writeLineIndented(this.getEntityWithType(entity));
         }, writer);
-        this.writeEntityBlock(app.patternEntities, 'Pattern.any', (entity) => {
+        this.writeEntityBlock(app.patternAnyEntities, 'Pattern.any', (entity) => {
             writer.writeLineIndented(this.getEntityWithType(entity));
         }, writer);
         // Composites

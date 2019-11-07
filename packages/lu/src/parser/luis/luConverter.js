@@ -12,64 +12,11 @@ const luisToLuContent = function(luisJSON){
     updateUtterancesList(luisJSON.utterances, luisObj.intents, 'text');
     // add patterns to luisObj
     updateUtterancesList(luisJSON.patterns, luisObj.intents, 'pattern');
-    if(luisObj.intents.length >= 0) {
-        fileContent += NEWLINE;
-        fileContent += addAppMetaData(luisJSON);
-        fileContent += '> # Intent definitions' + NEWLINE + NEWLINE;
-        // write out intents and utterances..
-        luisObj.intents.forEach(function(intent) {
-            // Add inherits information if any
-            if (intent.intent.inherits !== undefined) {
-                // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
-                fileContent += '> !# @intent.inherits = name : ' + intent.intent.name;
-                if (intent.intent.inherits.domain_name !== undefined) {
-                    fileContent += '; domain_name : ' + intent.intent.inherits.domain_name;
-                }
-                if (intent.intent.inherits.model_name !== undefined) {
-                    fileContent += '; model_name : ' + intent.intent.inherits.model_name;
-                }
-                fileContent += NEWLINE + NEWLINE;
-            }
-            fileContent += '## ' + intent.intent.name + NEWLINE;
-            intent.utterances.forEach(function(utterance) {
-                let updatedText = utterance.text;
-                if(utterance.entities.length >= 0) {
-                    // update utterance for each entity
-                    let text = utterance.text;
-                    let sortedEntitiesList = objectSortByStartPos(utterance.entities);
-                    let tokenizedText = text.split('');
-                    let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
-                    nonCompositesInUtterance.forEach(entity => {
-                        if (entity.role !== undefined) {
-                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                        } else {
-                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                        }
-                        tokenizedText[parseInt(entity.endPos)] += `}`;
-                    })
-                    let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
-                    compositeEntitiesInUtterance.forEach(entity => {
-                        if (entity.role !== undefined) {
-                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
-                        } else {
-                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
-                        }
-                        tokenizedText[parseInt(entity.endPos)] += `}`;
-                    })
-                    updatedText = tokenizedText.join(''); 
-                }
-                if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
-            });
-            fileContent += NEWLINE + NEWLINE;
-            if (intent.intent.features) {
-                fileContent += `@ intent ${intent.intent.name}`;
-                fileContent += addRolesAndFeatures(intent.intent);
-                fileContent += NEWLINE + NEWLINE;
-            }
-        });
-    }
-    fileContent += parseEntitiesToLu(luisJSON, fileContent)
-    fileContent += parseToLuPrebuiltEntities(luisJSON, fileContent)
+
+    // Parse Intents
+    fileContent += parseIntentsToLu(luisObj, luisJSON)
+    fileContent += parseEntitiesToLu(luisJSON)
+    fileContent += parseToLuPrebuiltEntities(luisJSON)
     
     if(luisJSON.model_features && luisJSON.model_features.length >= 0) {
         fileContent += handlePhraseLists(luisJSON.model_features);
@@ -79,10 +26,106 @@ const luisToLuContent = function(luisJSON){
         fileContent += handlePhraseLists(luisJSON.phraselists);
     }
 
-    fileContent += parseToLuClosedLists(luisJSON, fileContent)
-    fileContent += parseRegExEntitiesToLu(luisJSON, fileContent)
-    fileContent += parseCompositesToLu(luisJSON, fileContent)
+    fileContent += parseToLuClosedLists(luisJSON)
+    fileContent += parseRegExEntitiesToLu(luisJSON)
+    fileContent += parseCompositesToLu(luisJSON)
     return fileContent
+}
+const parseIntentsToLu = function(luisObj, luisJSON){
+    let fileContent = ''
+    fileContent += NEWLINE;
+    fileContent += addAppMetaData(luisJSON);
+    fileContent += '> # Intent definitions' + NEWLINE + NEWLINE;
+    
+    if(luisObj.intents.length <= 0) {
+        return fileContent
+    }
+    // write out intents and utterances..
+    luisObj.intents.forEach(function(intent) {
+        // Add inherits information if any
+        if (intent.intent.inherits !== undefined) {
+            // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
+            fileContent += '> !# @intent.inherits = name : ' + intent.intent.name;
+            if (intent.intent.inherits.domain_name !== undefined) {
+                fileContent += '; domain_name : ' + intent.intent.inherits.domain_name;
+            }
+            if (intent.intent.inherits.model_name !== undefined) {
+                fileContent += '; model_name : ' + intent.intent.inherits.model_name;
+            }
+            fileContent += NEWLINE + NEWLINE;
+        }
+        fileContent += '## ' + intent.intent.name + NEWLINE;
+        intent.utterances.forEach(function(utterance) {
+            let updatedText = utterance.text;
+            if(utterance.entities.length >= 0) {
+                // update utterance for each entity
+                let text = utterance.text;
+                let sortedEntitiesList = objectSortByStartPos(utterance.entities);
+                let tokenizedText = text.split('');
+                let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
+                nonCompositesInUtterance.forEach(entity => {
+                    if (entity.role !== undefined) {
+                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                    } else {
+                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                    }
+                    tokenizedText[parseInt(entity.endPos)] += `}`;
+                })
+                let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
+                compositeEntitiesInUtterance.forEach(entity => {
+                    if (entity.role !== undefined) {
+                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
+                    } else {
+                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
+                    }
+                    tokenizedText[parseInt(entity.endPos)] += `}`;
+                })
+                updatedText = tokenizedText.join(''); 
+            }
+            if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
+        });
+        fileContent += NEWLINE + NEWLINE;
+        if (intent.intent.features) {
+            fileContent += `@ intent ${intent.intent.name}`;
+            fileContent += addRolesAndFeatures(intent.intent);
+            fileContent += NEWLINE + NEWLINE;
+        }
+    });
+    return fileContent
+}
+
+const parseUtterancesToLu = function(utterances, luisJSON){
+    let fileContent = ''
+    (utterances || []).forEach(function(utterance) {
+        let updatedText = utterance.text;
+        if(utterance.entities.length >= 0) {
+            // update utterance for each entity
+            let text = utterance.text;
+            let sortedEntitiesList = objectSortByStartPos(utterance.entities);
+            let tokenizedText = text.split('');
+            let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
+            nonCompositesInUtterance.forEach(entity => {
+                if (entity.role !== undefined) {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                } else {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                }
+                tokenizedText[parseInt(entity.endPos)] += `}`;
+            })
+            let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
+            compositeEntitiesInUtterance.forEach(entity => {
+                if (entity.role !== undefined) {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
+                } else {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
+                }
+                tokenizedText[parseInt(entity.endPos)] += `}`;
+            })
+            updatedText = tokenizedText.join(''); 
+        }
+        if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
+    }); 
+    return fileContent  
 }
 
 const parseEntitiesToLu =  function(luisJson){

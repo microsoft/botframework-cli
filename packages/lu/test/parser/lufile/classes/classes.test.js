@@ -107,12 +107,6 @@ describe('Testing all classes', function() {
         });
     });
 
-    describe('validateLUISBlobEntity class', function() {
-        it('can create a new instance with no values passed in', function() {
-            assert.equal(new hClasses.validateLUISBlobEntity().name, '');
-        });
-    });
-
     describe('pattern class', function() {
         it('can create a new instance with no values passed in', function() {
             assert.equal(new hClasses.pattern().pattern, '');

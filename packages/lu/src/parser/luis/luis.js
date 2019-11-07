@@ -130,7 +130,7 @@ const mergeResults = function (blob, finalCollection, type) {
                 type === LUISObjNameEnum.UTTERANCE ||
                 finalCollection[type][fIndex].name !== blobItem.name) {
                     continue;
-                }
+            }
     
             itemExists = true;
             (blobItem.roles || []).forEach(blobRole => {
