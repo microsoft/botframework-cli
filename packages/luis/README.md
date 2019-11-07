@@ -28,25 +28,21 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`oclif-example luis:version:clone [FILE]`](#oclif-example-luisversionclone-file)
 
-## `oclif-example hello [FILE]`
+## `oclif-example luis:version:clone [FILE]`
 
 describe the command here
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ oclif-example luis:version:clone [FILE]
 
 OPTIONS
   -f, --force
   -h, --help       show CLI help
   -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
 ```
 
-_See code: [src\commands\hello.ts](https://github.com/packages/bf-luis-cli/blob/v0.0.0/src\commands\hello.ts)_
+_See code: [src\commands\luis\version\clone.ts](https://github.com/packages/bf-luis-cli/blob/v0.0.0/src\commands\luis\version\clone.ts)_
 <!-- commandsstop -->
