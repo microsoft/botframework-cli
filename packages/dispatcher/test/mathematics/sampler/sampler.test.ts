@@ -7,7 +7,7 @@ import assert = require("assert");
 
 import { ReservoirSampler } from "../../../src/mathematics/sampler/sampler";
 
-import { Utility } from "../../../src/utility/utility";
+import { Utility } from "../../../src/utility/Utility";
 
 describe("Test Suite - mathematics/sampler/app_sampler", () => {
     it("Test.0000 addInstance()", function() {

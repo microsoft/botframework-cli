@@ -116,7 +116,7 @@
             "entities": []
         },
         {
-            "text": "add a flag to this email",
+            "text": "add a flag please",
             "intent": "AddFlag",
             "entities": []
         },
@@ -126,14 +126,15 @@
             "entities": []
         },
         {
-            "text": "add flag to it",
+            "text": "add flag to this email",
             "intent": "AddFlag",
-            "entities": []
-        },
-        {
-            "text": "add flag to this message",
-            "intent": "AddFlag",
-            "entities": []
+            "entities": [
+                {
+                    "entity": "Category",
+                    "startPos": 4,
+                    "endPos": 7
+                }
+            ]
         },
         {
             "text": "flag",
@@ -147,6 +148,11 @@
         },
         {
             "text": "flag on",
+            "intent": "AddFlag",
+            "entities": []
+        },
+        {
+            "text": "flag the current email",
             "intent": "AddFlag",
             "entities": []
         },
@@ -167,23 +173,7 @@
             ]
         },
         {
-            "text": "flag this email as important for me",
-            "intent": "AddFlag",
-            "entities": [
-                {
-                    "entity": "Category",
-                    "startPos": 19,
-                    "endPos": 27
-                }
-            ]
-        },
-        {
             "text": "i want to add a flag",
-            "intent": "AddFlag",
-            "entities": []
-        },
-        {
-            "text": "i want to add a flag on this email",
             "intent": "AddFlag",
             "entities": []
         },
@@ -241,6 +231,11 @@
             "entities": []
         },
         {
+            "text": "this email needs to be flagged",
+            "intent": "AddFlag",
+            "entities": []
+        },
+        {
             "text": "add a file to the email",
             "intent": "AddMore",
             "entities": [
@@ -268,11 +263,6 @@
             "entities": []
         },
         {
-            "text": "add another line to the message",
-            "intent": "AddMore",
-            "entities": []
-        },
-        {
             "text": "add did you enjoy the entire program",
             "intent": "AddMore",
             "entities": [
@@ -284,58 +274,24 @@
             ]
         },
         {
-            "text": "add file to email",
-            "intent": "AddMore",
-            "entities": [
-                {
-                    "entity": "Attachment",
-                    "startPos": 4,
-                    "endPos": 7
-                }
-            ]
-        },
-        {
-            "text": "add more",
+            "text": "add more and change the message",
             "intent": "AddMore",
             "entities": []
         },
         {
-            "text": "add more don't forget to bring beer",
-            "intent": "AddMore",
-            "entities": [
-                {
-                    "entity": "Message",
-                    "startPos": 9,
-                    "endPos": 34
-                }
-            ]
-        },
-        {
-            "text": "add more text please",
+            "text": "add more to email",
             "intent": "AddMore",
             "entities": []
         },
         {
-            "text": "add more to roy 's email",
+            "text": "add more to email body",
             "intent": "AddMore",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 12,
-                    "endPos": 14
-                }
-            ]
+            "entities": []
         },
         {
-            "text": "add more to the last email",
+            "text": "add more to it",
             "intent": "AddMore",
-            "entities": [
-                {
-                    "entity": "OrderReference",
-                    "startPos": 16,
-                    "endPos": 19
-                }
-            ]
+            "entities": []
         },
         {
             "text": "add more to the message",
@@ -355,6 +311,11 @@
         },
         {
             "text": "add some more",
+            "intent": "AddMore",
+            "entities": []
+        },
+        {
+            "text": "add something",
             "intent": "AddMore",
             "entities": []
         },
@@ -423,18 +384,38 @@
             ]
         },
         {
-            "text": "i need to add something else to my email to cheryl",
+            "text": "i need to add additional lines",
+            "intent": "AddMore",
+            "entities": []
+        },
+        {
+            "text": "i need to add further contents",
+            "intent": "AddMore",
+            "entities": []
+        },
+        {
+            "text": "i need to add something else to that email to donna before it is sent",
             "intent": "AddMore",
             "entities": [
                 {
                     "entity": "ContactName",
-                    "startPos": 44,
-                    "endPos": 49
+                    "startPos": 46,
+                    "endPos": 50
                 }
             ]
         },
         {
+            "text": "i would like to add more to the email message",
+            "intent": "AddMore",
+            "entities": []
+        },
+        {
             "text": "i would like to open a new line",
+            "intent": "AddMore",
+            "entities": []
+        },
+        {
+            "text": "i'd like to add a bit more to the email.",
             "intent": "AddMore",
             "entities": []
         },
@@ -445,6 +426,11 @@
         },
         {
             "text": "insert more text in my email",
+            "intent": "AddMore",
+            "entities": []
+        },
+        {
+            "text": "is it ok if i add more to the email?",
             "intent": "AddMore",
             "entities": []
         },
@@ -470,11 +456,6 @@
             ]
         },
         {
-            "text": "ok, i need to add a few things to that",
-            "intent": "AddMore",
-            "entities": []
-        },
-        {
             "text": "please add it was terrible",
             "intent": "AddMore",
             "entities": [
@@ -486,12 +467,18 @@
             ]
         },
         {
-            "text": "put some additional lines to this message",
+            "text": "please add, please let me know what i can bring. i'd be happy to make a side dish or dessert",
             "intent": "AddMore",
-            "entities": []
+            "entities": [
+                {
+                    "entity": "Message",
+                    "startPos": 12,
+                    "endPos": 91
+                }
+            ]
         },
         {
-            "text": "wait, i need to write more",
+            "text": "put some additional lines to this message",
             "intent": "AddMore",
             "entities": []
         },
@@ -527,11 +514,6 @@
             ]
         },
         {
-            "text": "cancel message",
-            "intent": "CancelMessages",
-            "entities": []
-        },
-        {
             "text": "cancel my email to jane",
             "intent": "CancelMessages",
             "entities": [
@@ -543,7 +525,7 @@
             ]
         },
         {
-            "text": "cancel the email",
+            "text": "cancel searching the messages",
             "intent": "CancelMessages",
             "entities": []
         },
@@ -559,23 +541,17 @@
             ]
         },
         {
-            "text": "cancel the email to my sister",
-            "intent": "CancelMessages",
-            "entities": [
-                {
-                    "entity": "RelationshipName",
-                    "startPos": 23,
-                    "endPos": 28
-                }
-            ]
-        },
-        {
-            "text": "cancel the message",
+            "text": "cancel the mail",
             "intent": "CancelMessages",
             "entities": []
         },
         {
-            "text": "cancel this sending process",
+            "text": "cancel this email",
+            "intent": "CancelMessages",
+            "entities": []
+        },
+        {
+            "text": "cancel this message",
             "intent": "CancelMessages",
             "entities": []
         },
@@ -610,27 +586,7 @@
             "entities": []
         },
         {
-            "text": "don't read the message",
-            "intent": "CancelMessages",
-            "entities": []
-        },
-        {
             "text": "don't send",
-            "intent": "CancelMessages",
-            "entities": []
-        },
-        {
-            "text": "don't send it",
-            "intent": "CancelMessages",
-            "entities": []
-        },
-        {
-            "text": "don't send out",
-            "intent": "CancelMessages",
-            "entities": []
-        },
-        {
-            "text": "don't send that email",
             "intent": "CancelMessages",
             "entities": []
         },
@@ -660,11 +616,6 @@
             "entities": []
         },
         {
-            "text": "never mind cancel the message",
-            "intent": "CancelMessages",
-            "entities": []
-        },
-        {
             "text": "never mind, forget about the mail",
             "intent": "CancelMessages",
             "entities": []
@@ -675,12 +626,12 @@
             "entities": []
         },
         {
-            "text": "no cancel it, i don't want to send the mail",
+            "text": "no don't send",
             "intent": "CancelMessages",
             "entities": []
         },
         {
-            "text": "no don't send",
+            "text": "no don't send it",
             "intent": "CancelMessages",
             "entities": []
         },
@@ -691,6 +642,16 @@
         },
         {
             "text": "no, i don't want to send this message",
+            "intent": "CancelMessages",
+            "entities": []
+        },
+        {
+            "text": "no, no, cancel the reading",
+            "intent": "CancelMessages",
+            "entities": []
+        },
+        {
+            "text": "okay cancel sending the mail",
             "intent": "CancelMessages",
             "entities": []
         },
@@ -708,17 +669,6 @@
             "text": "stop reading",
             "intent": "CancelMessages",
             "entities": []
-        },
-        {
-            "text": "any new email",
-            "intent": "CheckMessages",
-            "entities": [
-                {
-                    "entity": "Category",
-                    "startPos": 4,
-                    "endPos": 6
-                }
-            ]
         },
         {
             "text": "any new email available",
@@ -753,7 +703,12 @@
             "entities": []
         },
         {
-            "text": "check my email please",
+            "text": "check email please",
+            "intent": "CheckMessages",
+            "entities": []
+        },
+        {
+            "text": "check my emails",
             "intent": "CheckMessages",
             "entities": []
         },
@@ -774,16 +729,6 @@
             "entities": []
         },
         {
-            "text": "check my mail box",
-            "intent": "CheckMessages",
-            "entities": []
-        },
-        {
-            "text": "check my message",
-            "intent": "CheckMessages",
-            "entities": []
-        },
-        {
             "text": "check outlook please",
             "intent": "CheckMessages",
             "entities": [
@@ -800,17 +745,12 @@
             "entities": []
         },
         {
-            "text": "check up messages",
-            "intent": "CheckMessages",
-            "entities": []
-        },
-        {
             "text": "could you please check my emails",
             "intent": "CheckMessages",
             "entities": []
         },
         {
-            "text": "could you please check my messages",
+            "text": "could you please check my inbox",
             "intent": "CheckMessages",
             "entities": []
         },
@@ -831,18 +771,24 @@
             ]
         },
         {
-            "text": "do i receive new mail in outlook?",
+            "text": "do i receive new email",
             "intent": "CheckMessages",
             "entities": [
                 {
                     "entity": "Category",
                     "startPos": 13,
                     "endPos": 15
-                },
+                }
+            ]
+        },
+        {
+            "text": "do i receive new message",
+            "intent": "CheckMessages",
+            "entities": [
                 {
-                    "entity": "Line",
-                    "startPos": 25,
-                    "endPos": 31
+                    "entity": "Category",
+                    "startPos": 13,
+                    "endPos": 15
                 }
             ]
         },
@@ -863,7 +809,7 @@
             ]
         },
         {
-            "text": "i want to check my inbox",
+            "text": "i want to check my emails",
             "intent": "CheckMessages",
             "entities": []
         },
@@ -921,7 +867,7 @@
             ]
         },
         {
-            "text": "whether i get new email",
+            "text": "whether i get new message",
             "intent": "CheckMessages",
             "entities": [
                 {
@@ -933,6 +879,17 @@
         },
         {
             "text": "whether i have new email",
+            "intent": "CheckMessages",
+            "entities": [
+                {
+                    "entity": "Category",
+                    "startPos": 15,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "whether i have new message",
             "intent": "CheckMessages",
             "entities": [
                 {
@@ -1004,6 +961,11 @@
             "entities": []
         },
         {
+            "text": "ok, good, just send it",
+            "intent": "ConfirmMessages",
+            "entities": []
+        },
+        {
             "text": "okay",
             "intent": "ConfirmMessages",
             "entities": []
@@ -1014,30 +976,9 @@
             "entities": []
         },
         {
-            "text": "okay, send it now",
-            "intent": "ConfirmMessages",
-            "entities": []
-        },
-        {
             "text": "perfect thank you",
             "intent": "ConfirmMessages",
             "entities": []
-        },
-        {
-            "text": "right, send it please",
-            "intent": "ConfirmMessages",
-            "entities": []
-        },
-        {
-            "text": "yeah right, send to alex",
-            "intent": "ConfirmMessages",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 20,
-                    "endPos": 23
-                }
-            ]
         },
         {
             "text": "yes it's right",
@@ -1046,6 +987,11 @@
         },
         {
             "text": "yes that's right",
+            "intent": "ConfirmMessages",
+            "entities": []
+        },
+        {
+            "text": "yes, send it",
             "intent": "ConfirmMessages",
             "entities": []
         },
@@ -1093,17 +1039,6 @@
             ]
         },
         {
-            "text": "delete the first email for me",
-            "intent": "Delete",
-            "entities": [
-                {
-                    "entity": "PositionReference",
-                    "startPos": 11,
-                    "endPos": 15
-                }
-            ]
-        },
-        {
             "text": "delete the last one",
             "intent": "Delete",
             "entities": [
@@ -1122,17 +1057,6 @@
                     "entity": "OrderReference",
                     "startPos": 11,
                     "endPos": 18
-                }
-            ]
-        },
-        {
-            "text": "delete the red ones",
-            "intent": "Delete",
-            "entities": [
-                {
-                    "entity": "Category",
-                    "startPos": 11,
-                    "endPos": 13
                 }
             ]
         },
@@ -1247,22 +1171,6 @@
             ]
         },
         {
-            "text": "could you forward this message to ronald and roy",
-            "intent": "Forward",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 34,
-                    "endPos": 39
-                },
-                {
-                    "entity": "ContactName",
-                    "startPos": 45,
-                    "endPos": 47
-                }
-            ]
-        },
-        {
             "text": "forward all files from sally to austin",
             "intent": "Forward",
             "entities": [
@@ -1348,22 +1256,6 @@
             ]
         },
         {
-            "text": "forward the email from melissa to peter",
-            "intent": "Forward",
-            "entities": [
-                {
-                    "entity": "SenderName",
-                    "startPos": 23,
-                    "endPos": 29
-                },
-                {
-                    "entity": "ContactName",
-                    "startPos": 34,
-                    "endPos": 38
-                }
-            ]
-        },
-        {
             "text": "forward the email to dad",
             "intent": "Forward",
             "entities": [
@@ -1391,31 +1283,9 @@
             ]
         },
         {
-            "text": "forward this email to eugene by typing what do you think",
+            "text": "forward this email to partone dot parttwo at gmail dot com",
             "intent": "Forward",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 22,
-                    "endPos": 27
-                },
-                {
-                    "entity": "Message",
-                    "startPos": 39,
-                    "endPos": 55
-                }
-            ]
-        },
-        {
-            "text": "forward this email to joseph",
-            "intent": "Forward",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 22,
-                    "endPos": 27
-                }
-            ]
+            "entities": []
         },
         {
             "text": "forward this email to patricia",
@@ -1461,13 +1331,18 @@
             ]
         },
         {
-            "text": "forward to mom",
+            "text": "forward to dorothy by typing i agree with it",
             "intent": "Forward",
             "entities": [
                 {
-                    "entity": "RelationshipName",
+                    "entity": "ContactName",
                     "startPos": 11,
-                    "endPos": 13
+                    "endPos": 17
+                },
+                {
+                    "entity": "Message",
+                    "startPos": 29,
+                    "endPos": 43
                 }
             ]
         },
@@ -1508,21 +1383,6 @@
                     "endPos": 16
                 }
             ]
-        },
-        {
-            "text": "please forward this email to partoneparttwo@163.com",
-            "intent": "Forward",
-            "entities": []
-        },
-        {
-            "text": "please forward this email to partoneparttwo@outlook.com",
-            "intent": "Forward",
-            "entities": []
-        },
-        {
-            "text": "please forward this message",
-            "intent": "Forward",
-            "entities": []
         },
         {
             "text": "1",
@@ -1613,6 +1473,28 @@
                     "entity": "OrderReference",
                     "startPos": 9,
                     "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "open the lastest email i got",
+            "intent": "QueryLastText",
+            "entities": [
+                {
+                    "entity": "OrderReference",
+                    "startPos": 9,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "please tell me who emailed me last",
+            "intent": "QueryLastText",
+            "entities": [
+                {
+                    "entity": "OrderReference",
+                    "startPos": 30,
+                    "endPos": 33
                 }
             ]
         },
@@ -1726,7 +1608,7 @@
             ]
         },
         {
-            "text": "what was the last email i got from steve edwards",
+            "text": "what was the last email i got from dad",
             "intent": "QueryLastText",
             "entities": [
                 {
@@ -1735,9 +1617,20 @@
                     "endPos": 16
                 },
                 {
-                    "entity": "SenderName",
+                    "entity": "FromRelationshipName",
                     "startPos": 35,
-                    "endPos": 47
+                    "endPos": 37
+                }
+            ]
+        },
+        {
+            "text": "who email me just now",
+            "intent": "QueryLastText",
+            "entities": [
+                {
+                    "entity": "Time",
+                    "startPos": 13,
+                    "endPos": 20
                 }
             ]
         },
@@ -1750,6 +1643,17 @@
             "text": "who emailed me just now",
             "intent": "QueryLastText",
             "entities": []
+        },
+        {
+            "text": "who emailed me last",
+            "intent": "QueryLastText",
+            "entities": [
+                {
+                    "entity": "OrderReference",
+                    "startPos": 15,
+                    "endPos": 18
+                }
+            ]
         },
         {
             "text": "who recently emailed me",
@@ -1805,18 +1709,13 @@
             ]
         },
         {
-            "text": "read darren's mail on the movie",
+            "text": "read aloud my new email",
             "intent": "ReadAloud",
             "entities": [
                 {
-                    "entity": "SenderName",
-                    "startPos": 5,
-                    "endPos": 10
-                },
-                {
-                    "entity": "EmailSubject",
-                    "startPos": 22,
-                    "endPos": 30
+                    "entity": "Category",
+                    "startPos": 14,
+                    "endPos": 16
                 }
             ]
         },
@@ -1837,7 +1736,34 @@
             ]
         },
         {
+            "text": "read email from kat",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "SenderName",
+                    "startPos": 16,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "read email from mum",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "FromRelationshipName",
+                    "startPos": 16,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
             "text": "read email to me",
+            "intent": "ReadAloud",
+            "entities": []
+        },
+        {
+            "text": "read emails",
             "intent": "ReadAloud",
             "entities": []
         },
@@ -1891,6 +1817,17 @@
             ]
         },
         {
+            "text": "read last mail",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "OrderReference",
+                    "startPos": 5,
+                    "endPos": 8
+                }
+            ]
+        },
+        {
             "text": "read mary grace white email",
             "intent": "ReadAloud",
             "entities": [
@@ -1902,13 +1839,34 @@
             ]
         },
         {
-            "text": "read me my latest emails",
+            "text": "read me my last hotmail email",
             "intent": "ReadAloud",
             "entities": [
                 {
                     "entity": "OrderReference",
                     "startPos": 11,
-                    "endPos": 16
+                    "endPos": 14
+                },
+                {
+                    "entity": "Line",
+                    "startPos": 16,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "read me the email",
+            "intent": "ReadAloud",
+            "entities": []
+        },
+        {
+            "text": "read me the email on thanksgiving day",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 21,
+                    "endPos": 36
                 }
             ]
         },
@@ -1920,22 +1878,6 @@
                     "entity": "SenderName",
                     "startPos": 24,
                     "endPos": 29
-                }
-            ]
-        },
-        {
-            "text": "read me the last email claude sent",
-            "intent": "ReadAloud",
-            "entities": [
-                {
-                    "entity": "OrderReference",
-                    "startPos": 12,
-                    "endPos": 15
-                },
-                {
-                    "entity": "SenderName",
-                    "startPos": 23,
-                    "endPos": 28
                 }
             ]
         },
@@ -1977,7 +1919,23 @@
             ]
         },
         {
+            "text": "read my email from hubby",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "SenderName",
+                    "startPos": 19,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
             "text": "read my email messages",
+            "intent": "ReadAloud",
+            "entities": []
+        },
+        {
+            "text": "read my email please",
             "intent": "ReadAloud",
             "entities": []
         },
@@ -1987,29 +1945,13 @@
             "entities": []
         },
         {
-            "text": "read my emails from patty",
+            "text": "read my new email",
             "intent": "ReadAloud",
             "entities": [
                 {
-                    "entity": "SenderName",
-                    "startPos": 20,
-                    "endPos": 24
-                }
-            ]
-        },
-        {
-            "text": "read my inbox",
-            "intent": "ReadAloud",
-            "entities": []
-        },
-        {
-            "text": "read my last email",
-            "intent": "ReadAloud",
-            "entities": [
-                {
-                    "entity": "OrderReference",
+                    "entity": "Category",
                     "startPos": 8,
-                    "endPos": 11
+                    "endPos": 10
                 }
             ]
         },
@@ -2025,7 +1967,12 @@
             ]
         },
         {
-            "text": "read my recent email message please",
+            "text": "read my notification",
+            "intent": "ReadAloud",
+            "entities": []
+        },
+        {
+            "text": "read my recent email",
             "intent": "ReadAloud",
             "entities": [
                 {
@@ -2047,6 +1994,17 @@
             ]
         },
         {
+            "text": "read my recent email to me",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "OrderReference",
+                    "startPos": 8,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
             "text": "read new email",
             "intent": "ReadAloud",
             "entities": [
@@ -2058,22 +2016,6 @@
             ]
         },
         {
-            "text": "read new email from david ma",
-            "intent": "ReadAloud",
-            "entities": [
-                {
-                    "entity": "Category",
-                    "startPos": 5,
-                    "endPos": 7
-                },
-                {
-                    "entity": "SenderName",
-                    "startPos": 20,
-                    "endPos": 27
-                }
-            ]
-        },
-        {
             "text": "read new message",
             "intent": "ReadAloud",
             "entities": [
@@ -2081,6 +2023,17 @@
                     "entity": "Category",
                     "startPos": 5,
                     "endPos": 7
+                }
+            ]
+        },
+        {
+            "text": "read out darren's mail",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "SenderName",
+                    "startPos": 9,
+                    "endPos": 14
                 }
             ]
         },
@@ -2101,14 +2054,52 @@
             ]
         },
         {
+            "text": "read out xu's email about apple's news",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "SenderName",
+                    "startPos": 9,
+                    "endPos": 10
+                },
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 26,
+                    "endPos": 37
+                }
+            ]
+        },
+        {
             "text": "read please",
             "intent": "ReadAloud",
             "entities": []
         },
         {
-            "text": "read the email",
+            "text": "read the email on auto repair",
             "intent": "ReadAloud",
-            "entities": []
+            "entities": [
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 18,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "read the first email in hotmail",
+            "intent": "ReadAloud",
+            "entities": [
+                {
+                    "entity": "PositionReference",
+                    "startPos": 9,
+                    "endPos": 13
+                },
+                {
+                    "entity": "Line",
+                    "startPos": 24,
+                    "endPos": 30
+                }
+            ]
         },
         {
             "text": "read the last email",
@@ -2138,24 +2129,13 @@
             ]
         },
         {
-            "text": "read todays mail",
+            "text": "read today's mail",
             "intent": "ReadAloud",
             "entities": [
                 {
                     "entity": "Date",
                     "startPos": 5,
-                    "endPos": 10
-                }
-            ]
-        },
-        {
-            "text": "create a response to the email by saying pls send me the picture again",
-            "intent": "Reply",
-            "entities": [
-                {
-                    "entity": "Message",
-                    "startPos": 41,
-                    "endPos": 69
+                    "endPos": 9
                 }
             ]
         },
@@ -2165,15 +2145,9 @@
             "entities": []
         },
         {
-            "text": "email back i will call you back",
+            "text": "how to reply to an email",
             "intent": "Reply",
-            "entities": [
-                {
-                    "entity": "Message",
-                    "startPos": 11,
-                    "endPos": 30
-                }
-            ]
+            "entities": []
         },
         {
             "text": "make a response with thank you very much",
@@ -2203,13 +2177,13 @@
             ]
         },
         {
-            "text": "reply by saying yes",
+            "text": "reply by saying i love you",
             "intent": "Reply",
             "entities": [
                 {
                     "entity": "Message",
                     "startPos": 16,
-                    "endPos": 18
+                    "endPos": 25
                 }
             ]
         },
@@ -2225,28 +2199,6 @@
             ]
         },
         {
-            "text": "reply that i am busy",
-            "intent": "Reply",
-            "entities": [
-                {
-                    "entity": "Message",
-                    "startPos": 11,
-                    "endPos": 19
-                }
-            ]
-        },
-        {
-            "text": "reply to edward",
-            "intent": "Reply",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 9,
-                    "endPos": 14
-                }
-            ]
-        },
-        {
             "text": "reply to my last email",
             "intent": "Reply",
             "entities": [
@@ -2254,6 +2206,17 @@
                     "entity": "OrderReference",
                     "startPos": 12,
                     "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "reply to susan",
+            "intent": "Reply",
+            "entities": [
+                {
+                    "entity": "ContactName",
+                    "startPos": 9,
+                    "endPos": 13
                 }
             ]
         },
@@ -2274,17 +2237,6 @@
             ]
         },
         {
-            "text": "reply we'll see you later",
-            "intent": "Reply",
-            "entities": [
-                {
-                    "entity": "Message",
-                    "startPos": 6,
-                    "endPos": 24
-                }
-            ]
-        },
-        {
             "text": "reply with hello",
             "intent": "Reply",
             "entities": [
@@ -2292,33 +2244,6 @@
                     "entity": "Message",
                     "startPos": 11,
                     "endPos": 15
-                }
-            ]
-        },
-        {
-            "text": "reply yee ha",
-            "intent": "Reply",
-            "entities": [
-                {
-                    "entity": "Message",
-                    "startPos": 6,
-                    "endPos": 11
-                }
-            ]
-        },
-        {
-            "text": "reply yee hello",
-            "intent": "Reply",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 6,
-                    "endPos": 8
-                },
-                {
-                    "entity": "Message",
-                    "startPos": 10,
-                    "endPos": 14
                 }
             ]
         },
@@ -2442,6 +2367,17 @@
             ]
         },
         {
+            "text": "detect the email containing keyword beauty",
+            "intent": "SearchMessages",
+            "entities": [
+                {
+                    "entity": "SearchTexts",
+                    "startPos": 36,
+                    "endPos": 41
+                }
+            ]
+        },
+        {
             "text": "detect the email from lisa",
             "intent": "SearchMessages",
             "entities": [
@@ -2530,22 +2466,6 @@
             ]
         },
         {
-            "text": "find an email from jay that contains halloween",
-            "intent": "SearchMessages",
-            "entities": [
-                {
-                    "entity": "SenderName",
-                    "startPos": 19,
-                    "endPos": 21
-                },
-                {
-                    "entity": "SearchTexts",
-                    "startPos": 37,
-                    "endPos": 45
-                }
-            ]
-        },
-        {
             "text": "find an email on the dinner reservation",
             "intent": "SearchMessages",
             "entities": [
@@ -2586,17 +2506,6 @@
                     "entity": "FromRelationshipName",
                     "startPos": 17,
                     "endPos": 19
-                }
-            ]
-        },
-        {
-            "text": "find emails that contain malta",
-            "intent": "SearchMessages",
-            "entities": [
-                {
-                    "entity": "SearchTexts",
-                    "startPos": 25,
-                    "endPos": 29
                 }
             ]
         },
@@ -2656,13 +2565,35 @@
             ]
         },
         {
-            "text": "search emails from mike",
+            "text": "search email contain outlook",
             "intent": "SearchMessages",
             "entities": [
                 {
-                    "entity": "SenderName",
-                    "startPos": 19,
-                    "endPos": 22
+                    "entity": "SearchTexts",
+                    "startPos": 21,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "search email with key words lunch",
+            "intent": "SearchMessages",
+            "entities": [
+                {
+                    "entity": "SearchTexts",
+                    "startPos": 28,
+                    "endPos": 32
+                }
+            ]
+        },
+        {
+            "text": "search emails about boating",
+            "intent": "SearchMessages",
+            "entities": [
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 20,
+                    "endPos": 26
                 }
             ]
         },
@@ -2678,29 +2609,18 @@
             ]
         },
         {
-            "text": "search keywords keywordone keywordtwo in my emails",
-            "intent": "SearchMessages",
-            "entities": [
-                {
-                    "entity": "SearchTexts",
-                    "startPos": 16,
-                    "endPos": 36
-                }
-            ]
-        },
-        {
             "text": "search my emails",
             "intent": "SearchMessages",
             "entities": []
         },
         {
-            "text": "search text with words lunch together",
+            "text": "search the email with keywords hello",
             "intent": "SearchMessages",
             "entities": [
                 {
                     "entity": "SearchTexts",
-                    "startPos": 23,
-                    "endPos": 36
+                    "startPos": 31,
+                    "endPos": 35
                 }
             ]
         },
@@ -2756,22 +2676,6 @@
                     "entity": "EmailSubject",
                     "startPos": 24,
                     "endPos": 38
-                }
-            ]
-        },
-        {
-            "text": "show me the email from tom and filtering with word lunch",
-            "intent": "SearchMessages",
-            "entities": [
-                {
-                    "entity": "SenderName",
-                    "startPos": 23,
-                    "endPos": 25
-                },
-                {
-                    "entity": "SearchTexts",
-                    "startPos": 51,
-                    "endPos": 55
                 }
             ]
         },
@@ -2879,6 +2783,32 @@
             ]
         },
         {
+            "text": "email to cynthia and mike, that dinner last week was splendid.",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "ContactName",
+                    "startPos": 9,
+                    "endPos": 15
+                },
+                {
+                    "entity": "ContactName",
+                    "startPos": 21,
+                    "endPos": 24
+                },
+                {
+                    "entity": "OrderReference",
+                    "startPos": 39,
+                    "endPos": 42
+                },
+                {
+                    "entity": "Message",
+                    "startPos": 27,
+                    "endPos": 60
+                }
+            ]
+        },
+        {
             "text": "email to harry potter and hermione granger",
             "intent": "SendEmail",
             "entities": [
@@ -2911,36 +2841,9 @@
             ]
         },
         {
-            "text": "email to mike waters : mike, that dinner last week was splendid.",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 9,
-                    "endPos": 19
-                },
-                {
-                    "entity": "Message",
-                    "startPos": 23,
-                    "endPos": 63
-                }
-            ]
-        },
-        {
             "text": "email to partoneparttwo@gmail.com",
             "intent": "SendEmail",
             "entities": []
-        },
-        {
-            "text": "i need to send an email about the words to a song",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "EmailSubject",
-                    "startPos": 34,
-                    "endPos": 48
-                }
-            ]
         },
         {
             "text": "make a new email about weather forecast",
@@ -2950,22 +2853,6 @@
                     "entity": "EmailSubject",
                     "startPos": 23,
                     "endPos": 38
-                }
-            ]
-        },
-        {
-            "text": "mark email for follow up and send to arthur",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "Category",
-                    "startPos": 15,
-                    "endPos": 23
-                },
-                {
-                    "entity": "ContactName",
-                    "startPos": 37,
-                    "endPos": 42
                 }
             ]
         },
@@ -2986,6 +2873,17 @@
             ]
         },
         {
+            "text": "new email about writing documents",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 16,
+                    "endPos": 32
+                }
+            ]
+        },
+        {
             "text": "new email to kimberly about wingman",
             "intent": "SendEmail",
             "entities": [
@@ -3002,13 +2900,13 @@
             ]
         },
         {
-            "text": "send a new email about facebook",
+            "text": "send a mail to daniel",
             "intent": "SendEmail",
             "entities": [
                 {
-                    "entity": "EmailSubject",
-                    "startPos": 23,
-                    "endPos": 30
+                    "entity": "ContactName",
+                    "startPos": 15,
+                    "endPos": 20
                 }
             ]
         },
@@ -3027,6 +2925,11 @@
                     "endPos": 36
                 }
             ]
+        },
+        {
+            "text": "send a new email to partonepartwopartthree@yahoo.com",
+            "intent": "SendEmail",
+            "entities": []
         },
         {
             "text": "send a read receipt email to samuel",
@@ -3066,18 +2969,18 @@
             "entities": []
         },
         {
-            "text": "send an email about test status to mark",
+            "text": "send an email marked for follow up to christian",
             "intent": "SendEmail",
             "entities": [
                 {
-                    "entity": "EmailSubject",
-                    "startPos": 20,
-                    "endPos": 30
+                    "entity": "Category",
+                    "startPos": 25,
+                    "endPos": 33
                 },
                 {
                     "entity": "ContactName",
-                    "startPos": 35,
-                    "endPos": 38
+                    "startPos": 38,
+                    "endPos": 46
                 }
             ]
         },
@@ -3098,7 +3001,70 @@
             ]
         },
         {
-            "text": "send an email to harold and bob kappus about team lunch saying same team lunch this tuesday",
+            "text": "send an email to christopher carpenter about the hiking trip",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "ContactName",
+                    "startPos": 17,
+                    "endPos": 37
+                },
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 49,
+                    "endPos": 59
+                }
+            ]
+        },
+        {
+            "text": "send an email to larry , joseph and billy larkson",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "ContactName",
+                    "startPos": 17,
+                    "endPos": 21
+                },
+                {
+                    "entity": "ContactName",
+                    "startPos": 25,
+                    "endPos": 30
+                },
+                {
+                    "entity": "ContactName",
+                    "startPos": 36,
+                    "endPos": 48
+                }
+            ]
+        },
+        {
+            "text": "send an email to lu , yue and qiong about funding",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "ContactName",
+                    "startPos": 17,
+                    "endPos": 18
+                },
+                {
+                    "entity": "ContactName",
+                    "startPos": 22,
+                    "endPos": 24
+                },
+                {
+                    "entity": "ContactName",
+                    "startPos": 30,
+                    "endPos": 34
+                },
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 42,
+                    "endPos": 48
+                }
+            ]
+        },
+        {
+            "text": "send an email to nathan with a red bang",
             "intent": "SendEmail",
             "entities": [
                 {
@@ -3107,30 +3073,9 @@
                     "endPos": 22
                 },
                 {
-                    "entity": "ContactName",
-                    "startPos": 28,
-                    "endPos": 37
-                },
-                {
-                    "entity": "Message",
-                    "startPos": 45,
-                    "endPos": 90
-                }
-            ]
-        },
-        {
-            "text": "send an email to jimmy klein saying this is the message about weekend plans",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 17,
-                    "endPos": 27
-                },
-                {
-                    "entity": "Message",
-                    "startPos": 36,
-                    "endPos": 74
+                    "entity": "Category",
+                    "startPos": 31,
+                    "endPos": 38
                 }
             ]
         },
@@ -3151,18 +3096,39 @@
             ]
         },
         {
-            "text": "send an email with read receipt to peter",
+            "text": "send an important email to olivia",
             "intent": "SendEmail",
             "entities": [
                 {
                     "entity": "Category",
-                    "startPos": 19,
-                    "endPos": 30
+                    "startPos": 8,
+                    "endPos": 16
                 },
                 {
                     "entity": "ContactName",
-                    "startPos": 35,
-                    "endPos": 39
+                    "startPos": 27,
+                    "endPos": 32
+                }
+            ]
+        },
+        {
+            "text": "send an urgent email from my work account to christian",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "Category",
+                    "startPos": 8,
+                    "endPos": 13
+                },
+                {
+                    "entity": "Line",
+                    "startPos": 29,
+                    "endPos": 40
+                },
+                {
+                    "entity": "ContactName",
+                    "startPos": 45,
+                    "endPos": 53
                 }
             ]
         },
@@ -3194,44 +3160,23 @@
             ]
         },
         {
-            "text": "send email marked priority to yun-sim and yi",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "Category",
-                    "startPos": 18,
-                    "endPos": 25
-                },
-                {
-                    "entity": "ContactName",
-                    "startPos": 30,
-                    "endPos": 36
-                },
-                {
-                    "entity": "ContactName",
-                    "startPos": 42,
-                    "endPos": 43
-                }
-            ]
-        },
-        {
-            "text": "send email to a and tian",
+            "text": "send email to heather about car",
             "intent": "SendEmail",
             "entities": [
                 {
                     "entity": "ContactName",
                     "startPos": 14,
-                    "endPos": 14
+                    "endPos": 20
                 },
                 {
-                    "entity": "ContactName",
-                    "startPos": 20,
-                    "endPos": 23
+                    "entity": "EmailSubject",
+                    "startPos": 28,
+                    "endPos": 30
                 }
             ]
         },
         {
-            "text": "send email to hannah saying test",
+            "text": "send email to kai xu, mingming and my mother",
             "intent": "SendEmail",
             "entities": [
                 {
@@ -3240,46 +3185,14 @@
                     "endPos": 19
                 },
                 {
-                    "entity": "Message",
-                    "startPos": 28,
-                    "endPos": 31
-                }
-            ]
-        },
-        {
-            "text": "send email to louis and mark it important",
-            "intent": "SendEmail",
-            "entities": [
-                {
                     "entity": "ContactName",
-                    "startPos": 14,
-                    "endPos": 18
-                },
-                {
-                    "entity": "Category",
-                    "startPos": 32,
-                    "endPos": 40
-                }
-            ]
-        },
-        {
-            "text": "send important email to evelyn and gary",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "Category",
-                    "startPos": 5,
-                    "endPos": 13
-                },
-                {
-                    "entity": "ContactName",
-                    "startPos": 24,
+                    "startPos": 22,
                     "endPos": 29
                 },
                 {
-                    "entity": "ContactName",
-                    "startPos": 35,
-                    "endPos": 38
+                    "entity": "RelationshipName",
+                    "startPos": 38,
+                    "endPos": 43
                 }
             ]
         },
@@ -3419,6 +3332,17 @@
             ]
         },
         {
+            "text": "start a new email about marriage counselor appointments",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 24,
+                    "endPos": 54
+                }
+            ]
+        },
+        {
             "text": "start a new email from tracy saying here is my resume",
             "intent": "SendEmail",
             "entities": [
@@ -3462,38 +3386,6 @@
             ]
         },
         {
-            "text": "start new email to friends about the club",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "RelationshipName",
-                    "startPos": 19,
-                    "endPos": 25
-                },
-                {
-                    "entity": "EmailSubject",
-                    "startPos": 37,
-                    "endPos": 40
-                }
-            ]
-        },
-        {
-            "text": "start up a new email to michelle about watching baseball",
-            "intent": "SendEmail",
-            "entities": [
-                {
-                    "entity": "ContactName",
-                    "startPos": 24,
-                    "endPos": 31
-                },
-                {
-                    "entity": "EmailSubject",
-                    "startPos": 39,
-                    "endPos": 55
-                }
-            ]
-        },
-        {
             "text": "the new email is high priority that is being sent to jacob",
             "intent": "SendEmail",
             "entities": [
@@ -3506,6 +3398,33 @@
                     "entity": "ContactName",
                     "startPos": 53,
                     "endPos": 57
+                }
+            ]
+        },
+        {
+            "text": "will you send a marked non urgent email to james",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "Category",
+                    "startPos": 23,
+                    "endPos": 32
+                },
+                {
+                    "entity": "ContactName",
+                    "startPos": 43,
+                    "endPos": 47
+                }
+            ]
+        },
+        {
+            "text": "write an email about the fundraiser",
+            "intent": "SendEmail",
+            "entities": [
+                {
+                    "entity": "EmailSubject",
+                    "startPos": 25,
+                    "endPos": 34
                 }
             ]
         },
@@ -3595,13 +3514,13 @@
             "entities": []
         },
         {
-            "text": "go to next mail",
+            "text": "go to the next page",
             "intent": "ShowNext",
             "entities": [
                 {
                     "entity": "OrderReference",
-                    "startPos": 6,
-                    "endPos": 9
+                    "startPos": 10,
+                    "endPos": 13
                 }
             ]
         },
@@ -3609,6 +3528,17 @@
             "text": "move forward",
             "intent": "ShowNext",
             "entities": []
+        },
+        {
+            "text": "move on next mail by jason",
+            "intent": "ShowNext",
+            "entities": [
+                {
+                    "entity": "OrderReference",
+                    "startPos": 8,
+                    "endPos": 11
+                }
+            ]
         },
         {
             "text": "move on to next mails",
@@ -3634,22 +3564,6 @@
         },
         {
             "text": "next unread email",
-            "intent": "ShowNext",
-            "entities": [
-                {
-                    "entity": "OrderReference",
-                    "startPos": 0,
-                    "endPos": 3
-                },
-                {
-                    "entity": "Category",
-                    "startPos": 5,
-                    "endPos": 10
-                }
-            ]
-        },
-        {
-            "text": "next unread one",
             "intent": "ShowNext",
             "entities": [
                 {
@@ -3726,17 +3640,6 @@
                     "entity": "FromRelationshipName",
                     "startPos": 28,
                     "endPos": 31
-                }
-            ]
-        },
-        {
-            "text": "show the next emails by wong",
-            "intent": "ShowNext",
-            "entities": [
-                {
-                    "entity": "OrderReference",
-                    "startPos": 9,
-                    "endPos": 12
                 }
             ]
         },
@@ -3828,33 +3731,6 @@
             ]
         },
         {
-            "text": "previous one please",
-            "intent": "ShowPrevious",
-            "entities": [
-                {
-                    "entity": "OrderReference",
-                    "startPos": 0,
-                    "endPos": 7
-                }
-            ]
-        },
-        {
-            "text": "show me previous email from jack",
-            "intent": "ShowPrevious",
-            "entities": [
-                {
-                    "entity": "OrderReference",
-                    "startPos": 8,
-                    "endPos": 15
-                },
-                {
-                    "entity": "SenderName",
-                    "startPos": 28,
-                    "endPos": 31
-                }
-            ]
-        },
-        {
             "text": "show me the last three mails",
             "intent": "ShowPrevious",
             "entities": [
@@ -3888,40 +3764,29 @@
             ]
         },
         {
-            "text": "show previous one in inbox",
+            "text": "show previous in red category",
             "intent": "ShowPrevious",
             "entities": [
                 {
                     "entity": "OrderReference",
                     "startPos": 5,
                     "endPos": 12
+                },
+                {
+                    "entity": "Category",
+                    "startPos": 17,
+                    "endPos": 19
                 }
             ]
         },
         {
-            "text": "show the previous email from my mentor",
+            "text": "show the previous one",
             "intent": "ShowPrevious",
             "entities": [
                 {
                     "entity": "OrderReference",
                     "startPos": 9,
                     "endPos": 16
-                },
-                {
-                    "entity": "FromRelationshipName",
-                    "startPos": 32,
-                    "endPos": 37
-                }
-            ]
-        },
-        {
-            "text": "the previous email",
-            "intent": "ShowPrevious",
-            "entities": [
-                {
-                    "entity": "OrderReference",
-                    "startPos": 4,
-                    "endPos": 11
                 }
             ]
         },

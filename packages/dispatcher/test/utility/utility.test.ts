@@ -5,9 +5,9 @@
 
 import assert = require("assert");
 
-// import { exampleFunctionUtilityWithFilename } from "../../src/utility/app_utility";
+// import { exampleFunctionUtilityWithFilename } from "../../src/utility/AppUtility";
 
-import { Utility } from "../../src/utility/utility";
+import { Utility } from "../../src/utility/Utility";
 
 describe("Test Suite - utility/Utility", () => {
     it("Test.0000 incrementKeyValueNumberMap()", function() {

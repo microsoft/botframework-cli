@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import { MathematicsHelper } from "../mathematics_helper/mathematics_helper";
+import { MathematicsHelper } from "../mathematics_helper/MathematicsHelper";
 
-import { Utility } from "../../utility/utility";
+import { Utility } from "../../utility/Utility";
 
 export class ReservoirSampler<T> {
 

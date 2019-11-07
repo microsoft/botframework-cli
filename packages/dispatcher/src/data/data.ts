@@ -6,9 +6,9 @@
 import { isNull } from "util";
 import { isUndefined } from "util";
 
-import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/ngram_subword_featurizer";
+import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../utility/utility";
+import { Utility } from "../utility/Utility";
 
 export class Data {
 

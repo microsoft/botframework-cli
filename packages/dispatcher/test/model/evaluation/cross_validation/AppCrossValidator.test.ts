@@ -1,4 +1,4 @@
-/**../../../../lib/src/utility/utility../../../../lib/src/utility/utility
+/**
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
