@@ -153,7 +153,7 @@ export async function exampleFunctionAutoActiveLearnerWithLuContent(
 }
 
 export function exampleFunctionAutoActiveLearnerWithColumnarContent(
-    luContent: string,
+    columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
     linesToSkip: number,
@@ -185,7 +185,7 @@ export function exampleFunctionAutoActiveLearnerWithColumnarContent(
     // -----------------------------------------------------------------------
     const columnarData: ColumnarData =
         ColumnarData.createColumnarData(
-            luContent,
+            columnarContent,
             new NgramSubwordFeaturizer(),
             labelColumnIndex,
             textColumnIndex,
@@ -518,14 +518,14 @@ export async function exampleFunctionAutoActiveLearner(): Promise<void> {
         args.outputModelFilename;
     const outputFeaturizerFilename: string =
         args.outputFeaturizerFilename;
-    const luContent: string =
+    const content: string =
         Utility.loadFile(filename);
     if (filename.endsWith(".lu")) {
         const aalResult: {
             "newLuData": LuData,
             "learner": SoftmaxRegressionSparse,
             } = await exampleFunctionAutoActiveLearnerWithLuContent(
-            luContent,
+            content,
             doAutoActiveLearning,
             aalLimitInitialNumberOfInstancesPerCategory,
             aalNumberOfInstancesPerIteration,
@@ -567,7 +567,7 @@ export async function exampleFunctionAutoActiveLearner(): Promise<void> {
             "newColumnarData": ColumnarData,
             "learner": SoftmaxRegressionSparse,
             }  = exampleFunctionAutoActiveLearnerWithColumnarContent(
-            luContent,
+            content,
             labelColumnIndex,
             textColumnIndex,
             linesToSkip,

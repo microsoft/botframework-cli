@@ -10,10 +10,12 @@ import { AutoActiveLearner } from "../../../../../src/model/supervised/classifie
 import { AppSoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 import { SoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
-// import { LuContentEmail } from "../../../../data/LuData.test";
 import { ColumnarContentEmail } from "../../../../data/ColumnarData.test";
 
+// import { LuContentEmail } from "../../../../data/LuData.test";
+
 import { ColumnarData } from "../../../../../src/data/ColumnarData";
+
 // import { LuData } from "../../../../../src/data/LuData";
 
 import { NgramSubwordFeaturizer } from "../../../../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
@@ -109,13 +111,13 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
         Utility.toPrintDebuggingLogToConsole = true;
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         // -----------------------------------------------------------------------
-        const luContent: string = ColumnarContentEmail;
+        const columnarContent: string = ColumnarContentEmail;
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
         const linesToSkip: number = 1;
         const columnarData: ColumnarData =
             ColumnarData.createColumnarData(
-                luContent,
+                columnarContent,
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,

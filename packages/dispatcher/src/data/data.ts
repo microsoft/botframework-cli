@@ -12,7 +12,7 @@ import { Utility } from "../utility/Utility";
 
 export class Data {
 
-    protected luContent: string = "";
+    protected content: string = "";
     protected luUtterances: any[] = [];
     protected intentInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
     protected entityTypeInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
@@ -66,8 +66,8 @@ export class Data {
         return intentInstanceIndexMapArray;
     }
 
-    public getLuContent(): string {
-        return this.luContent;
+    public getContent(): string {
+        return this.content;
     }
     public getLuObject(): any {
         return null;

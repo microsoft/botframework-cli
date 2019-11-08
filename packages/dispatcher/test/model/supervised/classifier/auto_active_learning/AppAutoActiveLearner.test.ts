@@ -11,13 +11,15 @@ import { AppSoftmaxRegressionSparse } from "../../../../../src/model/supervised/
 import { SoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
 import { ColumnarContentEmail } from "../../../../data/ColumnarData.test";
+
 import { LuContentEmail } from "../../../../data/LuData.test";
 
-import { exampleFunctionAutoActiveLearnerWithLuContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
 import { exampleFunctionAutoActiveLearnerWithColumnarContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
+import { exampleFunctionAutoActiveLearnerWithLuContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
 import { exampleFunctionAutoActiveLearner } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
 
 import { ColumnarData } from "../../../../../src/data/ColumnarData";
+
 import { LuData } from "../../../../../src/data/LuData";
 
 import { Utility } from "../../../../../src/utility/Utility";

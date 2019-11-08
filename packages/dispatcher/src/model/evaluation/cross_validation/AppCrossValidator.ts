@@ -143,7 +143,7 @@ export async function exampleFunctionCrossValidatorWithLuContent(
 }
 
 export function exampleFunctionCrossValidatorWithColumnarContent(
-    luContent: string,
+    columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
     linesToSkip: number,
@@ -166,7 +166,7 @@ export function exampleFunctionCrossValidatorWithColumnarContent(
     // -----------------------------------------------------------------------
     const columnarData: ColumnarData =
         ColumnarData.createColumnarData(
-            luContent,
+            columnarContent,
             new NgramSubwordFeaturizer(),
             labelColumnIndex,
             textColumnIndex,
@@ -459,12 +459,12 @@ export async function exampleFunctionCrossValidator(): Promise<void> {
         `learnerParameterToCalculateOverallLossAfterEpoch=${learnerParameterToCalculateOverallLossAfterEpoch}`);
     // const outputModelFilename: string =
     //     args.outputModelFilename;
-    const luContent: string =
+    const content: string =
         Utility.loadFile(filename);
     if (filename.endsWith(".lu")) {
         const confusionMatrixCrossValidation: ConfusionMatrix =
             await exampleFunctionCrossValidatorWithLuContent(
-                luContent,
+                content,
                 numberOfCrossValidationFolds,
                 learnerParameterEpochs,
                 learnerParameterMiniBatchSize,
@@ -490,7 +490,7 @@ export async function exampleFunctionCrossValidator(): Promise<void> {
             `linesToSkip=${linesToSkip}`);
         const confusionMatrixCrossValidation: ConfusionMatrix =
             exampleFunctionCrossValidatorWithColumnarContent(
-                luContent,
+                content,
                 labelColumnIndex,
                 textColumnIndex,
                 linesToSkip,

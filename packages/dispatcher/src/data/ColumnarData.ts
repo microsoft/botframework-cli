@@ -20,20 +20,20 @@ export class ColumnarData extends Data {
         // -------------------------------------------------------------------
         const columnarData: ColumnarData =
             ColumnarData.createColumnarData(
-                existingColumnarData.getLuContent(),
+                existingColumnarData.getContent(),
                 existingColumnarData.getFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
                 linesToSkip);
         // -------------------------------------------------------------------
         const utterancesArray: any[] =
-            columnarData.retrieveLuUtterances(columnarData.luContent);
+            columnarData.retrieveLuUtterances(columnarData.content);
         columnarData.luUtterances = utterancesArray.filter(
             (value: any, index: number, array: any[]) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
-        // columnarData.luUtterances = columnarData.retrieveLuUtterances(columnarData.luContent);
+        // columnarData.luUtterances = columnarData.retrieveLuUtterances(columnarData.content);
         // -------------------------------------------------------------------
         columnarData.intentInstanceIndexMapArray =
             columnarData.collectIntents(columnarData.luUtterances);
@@ -49,7 +49,7 @@ export class ColumnarData extends Data {
     }
 
     public static createColumnarData(
-        luContent: string,
+        content: string,
         featurizer: NgramSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
@@ -61,10 +61,10 @@ export class ColumnarData extends Data {
                 labelColumnIndex,
                 textColumnIndex,
                 linesToSkip);
-        columnarData.luContent =
-            luContent;
+        columnarData.content =
+            content;
         // -------------------------------------------------------------------
-        columnarData.luUtterances = columnarData.retrieveLuUtterances(luContent);
+        columnarData.luUtterances = columnarData.retrieveLuUtterances(content);
         // -------------------------------------------------------------------
         columnarData.intentInstanceIndexMapArray =
             columnarData.collectIntents(columnarData.luUtterances);
@@ -97,10 +97,10 @@ export class ColumnarData extends Data {
         this.linesToSkip = linesToSkip;
     }
 
-    public retrieveLuUtterances(luContent: any): any[] {
+    public retrieveLuUtterances(content: any): any[] {
         const intentsUtterances: { "intents": string[], "utterances": string[] } =
             Utility.loadLabelTextColumnarContent(
-                luContent,             // ---- filename: string,
+                content,             // ---- filename: string,
                 this.getLabelColumnIndex(), // ---- labelColumnIndex: number = 0,
                 this.getTextColumnIndex(),  // ---- textColumnIndex: number = 1,
                 this.getLinesToSkip(), // ---- lineIndexToStart: number = 0,

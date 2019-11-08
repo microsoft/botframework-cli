@@ -6,10 +6,11 @@
 import assert = require("assert");
 
 import { ColumnarContentEmail } from "../../../data/ColumnarData.test";
+
 import { LuContentEmail } from "../../../data/LuData.test";
 
-import { exampleFunctionCrossValidatorWithLuContent } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";
 import { exampleFunctionCrossValidatorWithColumnarContent } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";
+import { exampleFunctionCrossValidatorWithLuContent } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";
 import { exampleFunctionCrossValidator } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";
 
 import { ConfusionMatrix } from "../../../../src/model/evaluation/confusion_matrix/ConfusionMatrix";

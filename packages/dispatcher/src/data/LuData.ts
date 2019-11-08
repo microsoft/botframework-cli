@@ -19,7 +19,7 @@ export class LuData extends Data {
         // -------------------------------------------------------------------
         const luData: LuData =
             await LuData.createLuData(
-                existingLuData.getLuContent(),
+                existingLuData.getContent(),
                 existingLuData.getFeaturizer());
         // -------------------------------------------------------------------
         const luJsonStructure: any =
@@ -47,16 +47,16 @@ export class LuData extends Data {
     }
 
     public static async createLuData(
-        luContent: string,
+        content: string,
         featurizer: NgramSubwordFeaturizer): Promise<LuData> {
         // -------------------------------------------------------------------
         const luData: LuData =
             new LuData(featurizer);
-        luData.luContent =
-            luContent;
+        luData.content =
+            content;
         // -------------------------------------------------------------------
         luData.luObject =
-            await parseFile(luContent);
+            await parseFile(content);
         luData.luJsonStructure =
             luData.luObject.LUISJsonStructure;
         // -------------------------------------------------------------------

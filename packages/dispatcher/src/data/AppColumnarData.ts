@@ -88,9 +88,9 @@ export function exampleFunctionData(): ColumnarData {
         `filename=${filename}`);
     // Utility.debuggingLog(
     //     `outputFilename=${outputFilename}`);
-    const luContent: string = Utility.loadFile(filename);
+    const columnarContent: string = Utility.loadFile(filename);
     const columnarData: ColumnarData = ColumnarData.createColumnarData(
-        luContent,
+        columnarContent,
         new NgramSubwordFeaturizer(),
         labelColumnIndex,
         textColumnIndex,

@@ -622,14 +622,14 @@ ShowPrevious	1	what is the previous email
 
 /* tslint:enable */
 
-export function exampleFunctionDataWithLuContent(
-    luContent: string,
+export function exampleFunctionDataWithColumnarContent(
+    columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
     linesToSkip: number): ColumnarData {
     // -----------------------------------------------------------------------
     const columnarData: ColumnarData = ColumnarData.createColumnarData(
-        luContent,
+        columnarContent,
         new NgramSubwordFeaturizer(),
         labelColumnIndex,
         textColumnIndex,
@@ -773,10 +773,10 @@ export function exampleFunctionDataWithLuContent(
 }
 
 describe("Test Suite - data/columnar_data/ColumnarData - Email", () => {
-    it("Test.0000 exampleFunctionDataWithLuContent()", function() {
+    it("Test.0000 exampleFunctionDataWithColumnarContent()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const columnarData: ColumnarData = exampleFunctionDataWithLuContent(
+        const columnarData: ColumnarData = exampleFunctionDataWithColumnarContent(
             ColumnarContentEmail,
             0,
             2,

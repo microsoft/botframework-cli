@@ -10,6 +10,7 @@ import { CrossValidator } from "../../../../src/model/evaluation/cross_validatio
 import { AppSoftmaxRegressionSparse } from "../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
 import { ColumnarContentEmail } from "../../../data/ColumnarData.test";
+
 import { LuContentEmail } from "../../../data/LuData.test";
 
 import { ConfusionMatrix } from "../../../../src/model/evaluation/confusion_matrix/ConfusionMatrix";
@@ -83,7 +84,7 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
     it("Test.0001 crossValidate()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const luContent: string = ColumnarContentEmail;
+        const columnarContent: string = ColumnarContentEmail;
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
         const linesToSkip: number = 1;
@@ -105,7 +106,7 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
             true;
         const columnarData: ColumnarData =
             ColumnarData.createColumnarData(
-                luContent,
+                columnarContent,
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
