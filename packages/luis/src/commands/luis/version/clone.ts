@@ -5,13 +5,13 @@
 
 import {flags} from '@oclif/command'
 import {CLIError, Command} from '@microsoft/bf-cli-command'
-const getClient = require('../../../../utils/luisClientHelper')
+const utils = require('../../../../utils/index')
 
 export default class LuisVersionClone extends Command {
   static description = 'Creates a new version equivalent to the current snapshot of the selected application version.'
 
   static examples = [`
-  $ bf luis:version:clone --appId 01234 --versionId 0.1 --targetVersionId 0.2 --endpoint https://westus.api.cognitive.microsoft.com --subscriptionKey 01234
+    $ bf luis:version:clone --appId 01234 --versionId 0.1 --targetVersionId 0.2 --endpoint https://westus.api.cognitive.microsoft.com --subscriptionKey 01234
   `]
 
   static flags = {
@@ -27,13 +27,16 @@ export default class LuisVersionClone extends Command {
     try {
       const {flags} = this.parse(LuisVersionClone)
 
-      const appId = flags.appId
-      const versionId = flags.versionId
+      const appId = flags.appId || await utils.getPropFromConfig('appId')
+      const endpoint = flags.endpoint || await utils.getPropFromConfig('endpoint')
+      const subscriptionKey = flags.subscriptionKey || await utils.getPropFromConfig('subscriptionKey')
+      const versionId = flags.versionId || await utils.getPropFromConfig('versionId')
+      const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId')
       
-      const client = getClient(flags)
+      const client = utils.getLUISClient(subscriptionKey, endpoint)
       const options = {
         versionCloneObject: {
-          version: flags.targetVersionId
+          version: targetVersionId
         }
       }
 
