@@ -2,6 +2,12 @@ const NEWLINE = require('os').EOL;
 const helperClasses = require('./../lufile/classes/hclasses')
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 
+/**
+ * Parses a Luis object into Lu Content
+ * @param {Luis} luisJSON
+ * @returns {string} Lu Content
+ * @throws {exception} Throws on errors. exception object includes errCode and text. 
+ */
 const luisToLuContent = function(luisJSON){
     let fileContent = '';
     let luisObj = new helperClasses.rLuisObj();

@@ -1,6 +1,6 @@
 const qnaAlterationsToLuContent = require('./qnaConverter')
 
-class alterations {
+class Alterations {
     constructor(alterations = null) {
         if (alterations) {
             for (let prop in alterations) {
@@ -23,7 +23,7 @@ class alterations {
     }
 }
 
-module.exports = alterations
+module.exports = Alterations
 
 /**
  * Helper set of comparer functions that help with sort by examining a specific comparison logic.

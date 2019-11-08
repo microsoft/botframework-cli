@@ -46,6 +46,11 @@ class Luis {
         return false
     }
 
+    /**
+     * Collates a list of Luis instances into one.
+     * @param {Array<Luis>} luisList Array of Luis instances to be collate
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
     collate(luisList) {
         if (luisList.length === 0) return
         if(!this.hasContent()) {

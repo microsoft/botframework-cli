@@ -13,6 +13,15 @@ const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 
 module.exports = {
+    /**
+     * Merges Lu/QnA files into a parserObject.
+     * @param {Array<Lu>} luObjArray Array of LU/QnA files to be merge
+     * @param {boolean} verbose indicates if we need verbose logging.
+     * @param {string} luis_culture LUIS locale code
+     * @param {function} luSearchFn function to retrieve the lu files found in the references
+     * @returns {parserObject} Object that contains list of parsed LUIS object, list of parsed QnA object and list of parsed QnA Alteration Content
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
     Build: async function(luObjArray, verbose, luis_culture, luSearchFn){
         let allParsedContent = await buildLuJsonObject(luObjArray, verbose, luis_culture, luSearchFn)
         await resolveReferencesInUtterances(allParsedContent)

@@ -2,6 +2,12 @@ const NEWLINE = require('os').EOL;
 const exception = require('./../../utils/exception')
 const retCode = require('./../../utils/enums/CLI-errors')
 
+/**
+ * Parses a QnAMaker object into Qna Content
+ * @param {QnAMaker} qnaJSON
+ * @returns {string} Qna Content
+ * @throws {exception} Throws on errors. exception object includes errCode and text. 
+ */
 const qnaToLuContent = function(qnaJSON){
     let fileContent = '> # QnA pairs' + NEWLINE + NEWLINE;
     let root = null;

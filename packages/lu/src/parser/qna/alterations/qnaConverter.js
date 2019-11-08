@@ -1,5 +1,11 @@
 const NEWLINE = require('os').EOL;
 
+/**
+ * Parses an Alterations object into Qna Content
+ * @param {Alterations} alterationsJSON
+ * @returns {string} Qna Content
+ * @throws {exception} Throws on errors. exception object includes errCode and text. 
+ */
 const qnaAlterationsToLuContent = function(alterationsJSON){
     let fileContent = '> # QnA Alterations' + NEWLINE + NEWLINE;
     if(alterationsJSON.wordAlterations && alterationsJSON.wordAlterations.length > 0) {
