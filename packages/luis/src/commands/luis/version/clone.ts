@@ -3,8 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {flags} from '@oclif/command'
 import {CLIError, Command} from '@microsoft/bf-cli-command'
+import {flags} from '@oclif/command'
+
 const utils = require('../../../../utils/index')
 
 export default class LuisVersionClone extends Command {
@@ -16,11 +17,11 @@ export default class LuisVersionClone extends Command {
 
   static flags = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({ description: 'LUIS application Id' }),
-    versionId: flags.string({ description: 'LUIS version Id' }),
-    targetVersionId: flags.string({ description: 'LUIS target version Id' }),
-    endpoint: flags.string({ description: 'LUIS endpoint hostname' }),
-    subscriptionKey: flags.string({ description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)' }),
+    appId: flags.string({description: 'LUIS application Id'}),
+    versionId: flags.string({description: 'LUIS version Id'}),
+    targetVersionId: flags.string({description: 'LUIS target version Id'}),
+    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
   }
 
   async run() {
@@ -33,7 +34,7 @@ export default class LuisVersionClone extends Command {
       const versionId = flags.versionId || await utils.getPropFromConfig('versionId')
       const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId')
 
-      const requiredProps = { appId, endpoint, subscriptionKey, versionId, targetVersionId }
+      const requiredProps = {appId, endpoint, subscriptionKey, versionId, targetVersionId}
       utils.validateRequiredProps(requiredProps)
 
       const client = utils.getLUISClient(subscriptionKey, endpoint)
@@ -47,7 +48,7 @@ export default class LuisVersionClone extends Command {
 
       try {
         const latestVersion = await client.versions.clone(appId, versionId, options)
-        console.log(`App successfully cloned. Latest version is now: ${latestVersion}`)
+        this.log(`App successfully cloned. Latest version is now: ${latestVersion}`)
       } catch (err) {
         throw new CLIError(`Failed to clone app: ${err}`)
       }
@@ -58,6 +59,6 @@ export default class LuisVersionClone extends Command {
       }
       throw err
     }
-    
+
   }
 }

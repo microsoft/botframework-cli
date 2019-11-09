@@ -42,10 +42,9 @@ describe('luis:version:clone', () => {
   .reply(201, '0.2')
   )
   .stdout()
-  .stderr()
   .command(['luis:version:clone', '--appId', uuidv1(), '--versionId', '0.1', '--targetVersionId', '0.2', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
   .it('clones a luis app and returns the new version number', ctx => {
-    expect(ctx.stderr).not.to.contain('Failed to clone app')
+    expect(ctx.stdout).to.contain('App successfully cloned.')
   })
 
 })
