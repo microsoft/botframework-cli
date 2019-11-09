@@ -12,7 +12,7 @@ export default class LuisVersionClone extends Command {
   static description = 'Creates a new version equivalent to the current snapshot of the selected application version.'
 
   static examples = [`
-    $ bf luis:version:clone --appId 01234 --versionId 0.1 --targetVersionId 0.2 --endpoint https://westus.api.cognitive.microsoft.com --subscriptionKey 01234
+    $ bf luis:version:clone --appId {APP_ID} --versionId {VERSION_ID} --targetVersionId {TARGET_VERSION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
   static flags = {

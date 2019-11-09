@@ -32,16 +32,19 @@ USAGE
 
 ## `oclif-example luis:version:clone [FILE]`
 
-describe the command here
+Creates a new version equivalent to the current snapshot of the selected application version.
 
 ```
 USAGE
-  $ oclif-example luis:version:clone [FILE]
+  $ bf luis:version:clone --appId {APP_ID} --versionId {VERSION_ID} --targetVersionId {TARGET_VERSION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help          show CLI help
+  --appId             LUIS application Id
+  --versionId         LUIS version Id
+  --targetVersionId   LUIS target version Id
+  --endpoint          LUIS endpoint hostname
+  --subscriptionKey   LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
 ```
 
 _See code: [src\commands\luis\version\clone.ts](https://github.com/packages/bf-luis-cli/blob/v0.0.0/src\commands\luis\version\clone.ts)_
