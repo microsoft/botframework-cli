@@ -10,6 +10,7 @@ const fs = require('fs-extra')
 const pjson = require('../package.json')
 const msRest = require('ms-rest')
 const { LUISAuthoringClient } = require('azure-cognitiveservices-luis-authoring')
+const {CLIError} = require('@microsoft/bf-cli-command')
 
 const windowsHomedriveHome = () => process.env.HOMEDRIVE && process.env.HOMEPATH && path.join(process.env.HOMEDRIVE, process.env.HOMEPATH)
 const windowsUserprofileHome = () => process.env.USERPROFILE
@@ -30,11 +31,7 @@ const getConfigDir = (isWindows, home, pname) => {
 const getUserConfig = async () => {
     const pathToConfigJson = getConfigDir(isWindows, home, packageName)
     if (fs.existsSync(path.join(pathToConfigJson, 'config.json'))) {
-      try {
-        return await fs.readJSON(path.join(pathToConfigJson, 'config.json'))
-      } catch(err) {
-        console.log(`Error reading user config: ${err}`)
-      }
+      return await fs.readJSON(path.join(pathToConfigJson, 'config.json'), { throws: false })
     }
 }
 
@@ -49,16 +46,20 @@ const getLUISClient = (subscriptionKey, endpoint) => {
 }
 
 const getPropFromConfig = async(prop) => {
-  let config;
-  try {
-    config = await getUserConfig()
-  } catch(err) {
-    console.log(`Error getting prop from config: ${err}`)
-  }
+  const config = await getUserConfig()
   if (config && config[prop]) {
     return config[prop]
   }
 }
 
-module.exports.getLUISClient = getLUISClient;
-module.exports.getPropFromConfig = getPropFromConfig;
+const validateRequiredProps = configObj => {
+  Object.keys(configObj).forEach(key=>{
+    if (!configObj[key]) {
+      throw new CLIError(`Required input property '${key}' missing. Please pass it in as a flag or set it in the config file.`)
+    }
+  });
+}
+
+module.exports.getLUISClient = getLUISClient
+module.exports.getPropFromConfig = getPropFromConfig
+module.exports.validateRequiredProps = validateRequiredProps

@@ -32,7 +32,10 @@ export default class LuisVersionClone extends Command {
       const subscriptionKey = flags.subscriptionKey || await utils.getPropFromConfig('subscriptionKey')
       const versionId = flags.versionId || await utils.getPropFromConfig('versionId')
       const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId')
-      
+
+      const requiredProps = { appId, endpoint, subscriptionKey, versionId, targetVersionId }
+      utils.validateRequiredProps(requiredProps)
+
       const client = utils.getLUISClient(subscriptionKey, endpoint)
       const options = {
         versionCloneObject: {
@@ -40,9 +43,11 @@ export default class LuisVersionClone extends Command {
         }
       }
 
+      client.baseUri = 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
+
       try {
         const latestVersion = await client.versions.clone(appId, versionId, options)
-        this.log(`App successfully cloned. Latest version is now: ${latestVersion}`)
+        console.log(`App successfully cloned. Latest version is now: ${latestVersion}`)
       } catch (err) {
         throw new CLIError(`Failed to clone app: ${err}`)
       }
