@@ -44,8 +44,6 @@ export default class LuisVersionClone extends Command {
         }
       }
 
-      client.baseUri = 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
-
       try {
         const latestVersion = await client.versions.clone(appId, versionId, options)
         this.log(`App successfully cloned. Latest version is now: ${latestVersion}`)

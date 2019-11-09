@@ -42,7 +42,9 @@ const getLUISClient = (subscriptionKey, endpoint) => {
     }
   };
   const creds = new msRest.ApiKeyCredentials(token)
-  return new LUISAuthoringClient(creds, endpoint)
+  const luisClient = new LUISAuthoringClient(creds, endpoint)
+  luisClient.baseUri = 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
+  return luisClient
 }
 
 const getPropFromConfig = async(prop) => {
