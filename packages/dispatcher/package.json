@@ -11,7 +11,7 @@
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@microsoft/bf-lu": "^4.6.0",
+    "@microsoft/bf-lu": "^1.0.0",
     "@oclif/dev-cli": "^1.22.2",
     "@oclif/plugin-help": "^2.2.1",
     "@oclif/test": "^1.2.5",
@@ -27,6 +27,7 @@
     "rimraf": "^3.0.0",
     "ts-md5": "^1.2.6",
     "ts-node": "^8.4.1",
+    "tslint": "^5.20.1",
     "typescript": "^3.7.2"
   },
   "engines": {
