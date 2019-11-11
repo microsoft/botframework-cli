@@ -3,10 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command} from '@microsoft/bf-cli-command'
-import {flags} from '@oclif/command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
-const utils = require('../../../../utils/index')
+const utils = require('../../../utils/index')
 
 export default class LuisVersionClone extends Command {
   static description = 'Creates a new version equivalent to the current snapshot of the selected application version.'
@@ -27,12 +26,13 @@ export default class LuisVersionClone extends Command {
   async run() {
     try {
       const {flags} = this.parse(LuisVersionClone)
+      const configDir = this.config.configDir
 
-      const appId = flags.appId || await utils.getPropFromConfig('appId')
-      const endpoint = flags.endpoint || await utils.getPropFromConfig('endpoint')
-      const subscriptionKey = flags.subscriptionKey || await utils.getPropFromConfig('subscriptionKey')
-      const versionId = flags.versionId || await utils.getPropFromConfig('versionId')
-      const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId')
+      const appId = flags.appId || await utils.getPropFromConfig('appId', configDir)
+      const endpoint = flags.endpoint || await utils.getPropFromConfig('endpoint', configDir)
+      const subscriptionKey = flags.subscriptionKey || await utils.getPropFromConfig('subscriptionKey', configDir)
+      const versionId = flags.versionId || await utils.getPropFromConfig('versionId', configDir)
+      const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId', configDir)
 
       const requiredProps = {appId, endpoint, subscriptionKey, versionId, targetVersionId}
       utils.validateRequiredProps(requiredProps)

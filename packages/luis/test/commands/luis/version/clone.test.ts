@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 const sinon = require('sinon')
 const uuidv1 = require('uuid/v1')
-const utils = require('../../../../utils/index')
+const utils = require('../../../../src/utils/index')
 
 describe('luis:version:clone', () => {
 
@@ -23,7 +23,7 @@ describe('luis:version:clone', () => {
   test
   .stdout()
   .stderr()
-  .command(['luis:version:clone', '--versionId', '0.1', '--targetVersionId', '0.2', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .command(['luis:version:clone', '--versionId', '0.1', '--targetVersionId', '0.2', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'])
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'appId' missing.`)
   })
@@ -31,7 +31,7 @@ describe('luis:version:clone', () => {
   test
   .stdout()
   .stderr()
-  .command(['luis:version:clone', '--appId', uuidv1(), '--versionId', '0.1', '--targetVersionId', '0.2', '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .command(['luis:version:clone', '--appId', uuidv1(), '--versionId', '0.1', '--targetVersionId', '0.2', '--endpoint', 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'])
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })
@@ -42,7 +42,7 @@ describe('luis:version:clone', () => {
   .reply(201, '0.2')
   )
   .stdout()
-  .command(['luis:version:clone', '--appId', uuidv1(), '--versionId', '0.1', '--targetVersionId', '0.2', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .command(['luis:version:clone', '--appId', uuidv1(), '--versionId', '0.1', '--targetVersionId', '0.2', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'])
   .it('clones a luis app and returns the new version number', ctx => {
     expect(ctx.stdout).to.contain('App successfully cloned.')
   })
