@@ -123,8 +123,7 @@ export class MathematicsHelper {
             if (weight <= regularized) {
                 return 0; // ---- NOTE: cap weight at 0.
             }
-        }
-        else if (weight < 0) {
+        } else if (weight < 0) {
             regularized -= l1Regularization;
             if (weight >= regularized) {
                 return 0; // ---- NOTE: cap weight at 0.
@@ -143,8 +142,7 @@ export class MathematicsHelper {
                 if (weight <= regularized) {
                     return 0; // ---- NOTE: cap weight at 0.
                 }
-            }
-            else if (weight < 0) {
+            } else if (weight < 0) {
                 regularized -= l1Regularization;
                 if (weight >= regularized) {
                     return 0; // ---- NOTE: cap weight at 0.

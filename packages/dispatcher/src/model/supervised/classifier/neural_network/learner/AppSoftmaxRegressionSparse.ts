@@ -40,7 +40,7 @@ export class AppSoftmaxRegressionSparse {
         toCalculateOverallLossInGradientUpdate: boolean = false):
         {
             "featurizer": NgramSubwordFeaturizer,
-            "learner": SoftmaxRegressionSparse
+            "learner": SoftmaxRegressionSparse,
         } {
         // -------------------------------------------------------------------
         const numberUtterancesPerMiniBatch =

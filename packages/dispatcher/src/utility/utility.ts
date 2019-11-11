@@ -235,9 +235,13 @@ export class Utility {
         let s1: number = Utility.xorshift128plusState0;
         const s0: number = Utility.xorshift128plusState1;
         Utility.xorshift128plusState0 = s0;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s1 << 23;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s1 >> 17;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s0;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s0 >> 26;
         Utility.xorshift128plusState1 = s1;
         return Utility.xorshift128plusState0 + Utility.xorshift128plusState1;
@@ -305,18 +309,25 @@ export class Utility {
             Utility.xorshift128plusState1BigInt;
         Utility.xorshift128plusState0BigInt =
             s0;
+        // tslint:disable-next-line: no-bitwise
         Utility.xorshift128plusState0BigInt %=
             Utility.xorshift128plusCycleBigInt;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s1 << Utility.bigint23;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s1 >> Utility.bigint17;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s0;
+        // tslint:disable-next-line: no-bitwise
         s1 ^= s0 >> Utility.bigint26;
         Utility.xorshift128plusState1BigInt =
             s1;
+        // tslint:disable-next-line: no-bitwise
         Utility.xorshift128plusState1BigInt %=
             Utility.xorshift128plusCycleBigInt;
         let result: bigint =
             Utility.xorshift128plusState0BigInt + Utility.xorshift128plusState1BigInt;
+        // tslint:disable-next-line: no-bitwise
         result %= Utility.xorshift128plusCycleBigInt;
         return result;
     }
@@ -729,7 +740,7 @@ export class Utility {
         try {
             const fileContent: string = fs.readFileSync(filename, encoding);
             return fileContent;
-        } catch(e) {
+        } catch (e) {
             Utility.debuggingThrow(
                 `Utility.loadFile(): filename=${filename}, exception=${e}`);
         }
@@ -773,7 +784,9 @@ export class Utility {
         }
         for (let i: number = 0; i < feature.length; i++) {
             const char: number = feature.charCodeAt(i);
+            // tslint:disable-next-line: no-bitwise
             hash = ((hash << 5) - hash) + char;
+            // tslint:disable-next-line: no-bitwise
             hash |= 0; // ---- Convert to 32bit integer
         }
         return hash;
@@ -820,6 +833,7 @@ export class Utility {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] LOG-MESSAGE: ${message}`;
         if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable-next-line:no-console
             console.log(logMessage);
         }
     }

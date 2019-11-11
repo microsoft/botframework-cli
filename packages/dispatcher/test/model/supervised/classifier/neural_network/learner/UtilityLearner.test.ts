@@ -5,11 +5,15 @@
 
 import assert = require("assert");
 
+// tslint:disable-next-line: max-line-length
 import { AppSoftmaxRegressionSparse } from "../../../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
+// tslint:disable-next-line: max-line-length
 import { SoftmaxRegressionSparse } from "../../../../../../src/model/supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
+// tslint:disable-next-line: max-line-length
 import { NgramSubwordFeaturizer } from "../../../../../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
+// tslint:disable-next-line: max-line-length
 import { LearnerUtility } from "../../../../../../src/model/supervised/classifier/neural_network/learner/UtilityLearner";
 
 import { Utility } from "../../../../../../src/utility/Utility";

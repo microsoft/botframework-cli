@@ -192,6 +192,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringNumberArrayNew: string[] = Utility.jsonSerializationToArray(arrayInString);
         assert.ok(stringNumberArrayNew.length === 1,
             `stringNumberArrayNew.length=${stringNumberArrayNew.length}`);
+        // tslint:disable-next-line: triple-equals
         assert.ok(stringNumberArrayNew[0] == "a", // ---- NOTE: === will fail!
             `stringNumberArrayNew[0]=${stringNumberArrayNew[0]}`);
     });
@@ -301,6 +302,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok((stringNumberMapArrayNew.get("a") as number[]).length === 1,
             `(stringNumberMapArrayNew.get("a") as number[]).length=` +
             `${(stringNumberMapArrayNew.get("a") as number[]).length}`);
+        // tslint:disable-next-line: triple-equals
         assert.ok((stringNumberMapArrayNew.get("a") as number[])[0] == 1, // ---- NOTE: === will fail!
             `((stringNumberMapArrayNew.get("a") as number[])[0]==1)=` +
             `${(stringNumberMapArrayNew.get("a") as number[])[0] === 1}`);
@@ -384,6 +386,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok((stringNumberMapArrayNew.get("a") as number[]).length === 1,
             `(stringNumberMapArrayNew.get("a") as number[]).length=` +
             `${(stringNumberMapArrayNew.get("a") as number[]).length}`);
+        // tslint:disable-next-line: triple-equals
         assert.ok((stringNumberMapArrayNew.get("a") as number[])[0] == 1, // ---- NOTE: === will fail!
             `((stringNumberMapArrayNew.get("a") as number[])[0]==1)=` +
             `${(stringNumberMapArrayNew.get("a") as number[])[0] === 1}`);
@@ -1561,7 +1564,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: string =
-            Utility.getObjectMd5Hash(message as Object) as string;
+            Utility.getObjectMd5Hash(message as any) as string;
         Utility.debuggingLog(
             `messageMd5Hash=${messageMd5Hash}`);
         assert.ok(messageMd5Hash === "7959b2c4af2fd6d142ba32babd30ceb7",
@@ -1584,7 +1587,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: number =
-            Utility.getPositiveObjectHashCode(message as Object);
+            Utility.getPositiveObjectHashCode(message as any);
         Utility.debuggingLog(
             `messageMd5Hash=${messageMd5Hash}`);
         assert.ok(messageMd5Hash === 1064999089,
@@ -1595,7 +1598,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: number =
-            Utility.getObjectHashCode(message as Object);
+            Utility.getObjectHashCode(message as any);
         Utility.debuggingLog(
             `messageMd5Hash=${messageMd5Hash}`);
         assert.ok(messageMd5Hash === -1064999089,
@@ -1690,7 +1693,7 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.1407 isEmptyArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const input: object[][] = [["0" as Object]];
+        const input: object[][] = [["0" as any]];
         const isEmpty: boolean =
             Utility.isEmptyArrays(input);
         assert.ok(!isEmpty,
@@ -1744,7 +1747,7 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.1413 isEmptyArray()", function() {
         Utility.toPrintDebuggingLogToConsole = true;
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const input: object[] = ["0" as Object];
+        const input: object[] = ["0" as any];
         const isEmpty: boolean =
             Utility.isEmptyArray(input);
         assert.ok(!isEmpty,

@@ -10,7 +10,8 @@ import { SoftmaxRegressionSparse } from "../../../../../../src/model/supervised/
 
 import { NgramSubwordFeaturizer } from "../../../../../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { LearnerUtility } from "../../../../../../src/model/supervised/classifier/neural_network/learner/UtilityLearner";
+// import { LearnerUtility }
+// from "../../../../../../src/model/supervised/classifier/neural_network/learner/UtilityLearner";
 
 import { Utility } from "../../../../../../src/utility/Utility";
 

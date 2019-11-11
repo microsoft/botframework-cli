@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+// tslint:disable-next-line: no-var-requires
 const parseFile = require("@microsoft/bf-lu").parser.parseFile;
 
 import { Data } from "./Data";
