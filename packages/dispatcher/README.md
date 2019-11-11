@@ -3,7 +3,7 @@
 
 The bf-dispatcher package/library contains a Softmax Regression (MaxEnt) learner initially designed and used for auto-active-learning down-sampling. It also has a Machine Learning cross validation evaluator for evaluating intent classification models.
 
-The package can consume two forms of input sources: LU and TSV columnar files. It uses the bf-lu package (https://github.com/microsoft/botframework-cli/tree/hunyang/dispatcher/packages/lu) to parse a .lu file.
+The package can consume two forms of input sources: LU and TSV columnar files. It uses the bf-lu package (https://github.com/microsoft/botframework-cli/tree/master/packages/lu) to parse a .lu file.
 
 In "src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner.ts", there are example functions demonstrating how to use bf-dispatcher to consume a LU or TSV file, iterate through batches of input utterance/label records, and train models to select most relevant utterance/intent pairs through an auto active learning process.
 
