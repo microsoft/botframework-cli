@@ -63,6 +63,18 @@ describe('luis:generate:ts', () => {
       await compareSourceFiles('../../../fixtures/generate/closed-lists.ts', '../../../fixtures/generate/results/closed-lists.ts')
     })
 
+
+  test
+  .stdout()
+  .command(['luis:generate:ts',
+    '--in',
+    `${path.join(__dirname, '../../../fixtures/generate/FlightBooking.json')}`,
+    '--out',
+    `${path.join(__dirname, '../../../fixtures/generate/results/FlightBooking.ts')}`])
+  .it('FlightBooking sample json generated correct ts class', async () => {
+    await compareSourceFiles('../../../fixtures/generate/FlightBooking.ts', '../../../fixtures/generate/results/FlightBooking.ts')
+  })
+
   test
     .stdout()
     .command(['luis:generate:ts',

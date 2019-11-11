@@ -50,7 +50,7 @@ describe('Test schema merge', async () => {
         await tracker.addDialogFiles(["examples/*.dialog"]);
     });
 
-    it('packages', async () => {
+    xit('packages', async () => {
         let json = await fs.readJSON("examples/packages.schema");
         expect(json.definitions.packages, "Failed reading packages.config");
         expect(json.definitions.CSProj, "Failed reading CSProj");
