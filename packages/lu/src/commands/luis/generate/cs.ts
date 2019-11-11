@@ -67,11 +67,7 @@ export default class LuisGenerateCs extends Command {
     this.log(
       `Generating file at ${outputPath || 'stdout'} that contains class ${space}.${flags.className}.`
     )
-      try {
-        await LuisToCsConverter.writeFromLuisJson(app, flags.className, space, outputPath)      
-      } catch (error) {
-        console.log(error)
-      }
 
+    await LuisToCsConverter.writeFromLuisJson(app, flags.className, space, outputPath)
   }
 }
