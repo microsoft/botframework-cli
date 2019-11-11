@@ -51,7 +51,7 @@ module.exports = {
             writer.writeLineIndented(`export interface ${name} {`);
             writer.increaseIndentation();
             composite.attributes.forEach(attribute => {
-                writer.writeLineIndented(getEntityWithType(attribute, isList(attribute, app)));
+                writer.writeLineIndented(this.getEntityWithType(attribute, this.isList(attribute, app)));
             });
             writer.writeLineIndented(`$instance?: GeneratedInstance${name}`);
             writer.decreaseIndentation();
