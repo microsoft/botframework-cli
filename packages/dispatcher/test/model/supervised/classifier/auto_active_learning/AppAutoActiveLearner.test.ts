@@ -28,7 +28,7 @@ import { UnitTestHelper } from "../../../../utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto_active_learner", () => {
     it("Test.0000 exampleFunctionAutoActiveLearnerWithLuContent()", async function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newLuData": LuData,
@@ -46,7 +46,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
     });
 
     it("Test.0100 exampleFunctionAutoActiveLearnerWithColumnarContent()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newColumnarData": ColumnarData,
@@ -67,7 +67,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
     });
 
     it("Test.0200 exampleFunctionAutoActiveLearner()", async function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "data/LU/skills/emailskill/en/Email.lu";
         process.argv.push("--filename");
@@ -91,7 +91,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         await exampleFunctionAutoActiveLearner();
     });
     it("Test.0201 exampleFunctionAutoActiveLearner()", async function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "data/Columnar/Email.tsv";
         process.argv.push("--filename");

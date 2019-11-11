@@ -406,16 +406,14 @@ export async function exampleFunctionCrossValidator(): Promise<void> {
         `args=${JSON.stringify(args)}`);
     Utility.debuggingLog(
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
-    if (Utility.toBoolean(args.debug)) {
-        Utility.toPrintDebuggingLogToConsole = true;
-    }
+    const debugFlag: boolean = Utility.toBoolean(args.debug);
+    Utility.toPrintDebuggingLogToConsole = debugFlag;
     // console.dir(args);
     const filename: string =
         args.filename;
     if (!Utility.exists(filename)) {
-        Utility.toPrintDebuggingLogToConsole = true;
-        Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
-        throw Error(`The input dataset ${filename} does not exist!`);
+        Utility.debuggingThrow(
+            `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
     }
     let outputFilename: string = args.outputFilename;
     if (outputFilename == null) {

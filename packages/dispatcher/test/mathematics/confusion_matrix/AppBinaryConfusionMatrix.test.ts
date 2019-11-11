@@ -15,7 +15,7 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 describe("Test Suite - mathematics/confusion_matrix/app_binary_confusion_matrix", () => {
     it("Test.0000 exampleFunctionBinaryConfusionMatrixMetrics()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionBinaryConfusionMatrixMetrics();
     });

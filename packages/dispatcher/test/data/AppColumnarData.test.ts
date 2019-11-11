@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../utility/Utility.test";
 
 describe("Test Suite - data/app_columnar_data", () => {
     it("Test.0000 exampleFunctionData", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "data/Columnar/Email.tsv";
         process.argv.push("--filename");

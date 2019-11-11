@@ -101,9 +101,8 @@ export function exampleFunctionUtility(): void {
         `args=${JSON.stringify(args)}`);
     Utility.debuggingLog(
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
-    if (Utility.toBoolean(args.debug)) {
-        Utility.toPrintDebuggingLogToConsole = true;
-    }
+    const debugFlag: boolean = Utility.toBoolean(args.debug);
+    Utility.toPrintDebuggingLogToConsole = debugFlag;
     // console.dir(args);
     const filename: string = args.filename;
     const labelColumnIndex: number = +args.labelColumnIndex;

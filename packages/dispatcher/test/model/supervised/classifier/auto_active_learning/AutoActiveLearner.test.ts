@@ -68,13 +68,13 @@ const autoActiveLearner: AutoActiveLearner =
 
 describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_active_learner/AutoActiveLearner", () => {
     it("Test.0000 constructor()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionCreateAutoActiveLearner();
     });
 
     it("Test.0100 getAalLimitInitialNumberOfInstancesPerCategory()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalLimitInitialNumberOfInstancesPerCategory: number =
             autoActiveLearner.getAalLimitInitialNumberOfInstancesPerCategory();
@@ -82,7 +82,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
             `aalLimitInitialNumberOfInstancesPerCategory=${aalLimitInitialNumberOfInstancesPerCategory}`);
     });
     it("Test.0101 getAalNumberOfInstancesPerIteration()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalNumberOfInstancesPerIteration: number =
             autoActiveLearner.getAalNumberOfInstancesPerIteration();
@@ -90,7 +90,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
             `aalNumberOfInstancesPerIteration=${aalNumberOfInstancesPerIteration}`);
     });
     it("Test.0102 getAalInstanceSelectionThreshold()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalInstanceSelectionThreshold: number =
             autoActiveLearner.getAalInstanceSelectionThreshold();
@@ -99,7 +99,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
     });
 
     it("Test.0200 createLearner()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const learner: SoftmaxRegressionSparse =
             autoActiveLearner.createLearner(
@@ -108,7 +108,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
     });
 
     it("Test.0300 learn()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         // -----------------------------------------------------------------------
         const columnarContent: string = ColumnarContentEmail;

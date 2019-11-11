@@ -886,7 +886,7 @@ export async function exampleFunctionDataWithLuContent(
 
 describe("Test Suite - data/lu_data/LuData", () => {
     it("Test.0000 exampleFunctionDataWithLuContent()", async function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const luData: LuData = await exampleFunctionDataWithLuContent(
             LuContentEmail);

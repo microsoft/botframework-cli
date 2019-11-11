@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../../../utility/Utility.test";
 
 describe("Test Suite - model/language_understanding/featurizer/app_ngram_subword_featurizer", () => {
     it("Test.0000 exampleFunctionNgramSubwordFeaturizer()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionNgramSubwordFeaturizer();
     });

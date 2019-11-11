@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../../../../../utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/neural_network/learner/app_softmax_regression_sparse", () => {
     it("Test.0000 exampleFunctionSoftmaxRegressionSparseMinibatching", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         AppSoftmaxRegressionSparse.exampleFunctionSoftmaxRegressionSparseMinibatching(
             "data/Columnar/Email.tsv",

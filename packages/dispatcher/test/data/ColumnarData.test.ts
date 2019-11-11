@@ -774,7 +774,7 @@ export function exampleFunctionDataWithColumnarContent(
 
 describe("Test Suite - data/columnar_data/ColumnarData - Email", () => {
     it("Test.0000 exampleFunctionDataWithColumnarContent()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const columnarData: ColumnarData = exampleFunctionDataWithColumnarContent(
             ColumnarContentEmail,

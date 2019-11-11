@@ -154,21 +154,20 @@ export class LearnerUtility {
         toLowercase: boolean = true,
         toRemovePunctuation: boolean = false) {
         if (!Utility.exists(filename)) {
-            Utility.toPrintDebuggingLogToConsole = true;
-            Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
-            throw Error(`The input dataset ${filename} does not exist!`);
+            Utility.debuggingThrow(
+                `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
         }
         const intentsUtterances: { "intents": string[], "utterances": string[] } =
-            Utility.loadLabelTextColumnarFile(
-                filename, // ---- filename: string,
-                labelColumnIndex, // ---- labelColumnIndex: number = 0,
-                textColumnIndex,  // ---- textColumnIndex: number = 1,
-                lineIndexToStart, // ---- lineIndexToStart: number = 0,
-                "\t",     // ---- columnDelimiter: string = "\t",
-                "\n",     // ---- rowDelimiter: string = "\n",
-                "utf8",   // ---- encoding: string = "utf8",
-                -1,       // ---- lineIndexToEnd: number = -1
-            );
+        Utility.loadLabelTextColumnarFile(
+            filename, // ---- filename: string,
+            labelColumnIndex, // ---- labelColumnIndex: number = 0,
+            textColumnIndex,  // ---- textColumnIndex: number = 1,
+            lineIndexToStart, // ---- lineIndexToStart: number = 0,
+            "\t",     // ---- columnDelimiter: string = "\t",
+            "\n",     // ---- rowDelimiter: string = "\n",
+            "utf8",   // ---- encoding: string = "utf8",
+            -1,       // ---- lineIndexToEnd: number = -1
+        );
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer(
             subwordNgramBegin,
             subwordNgramEnd,
@@ -186,21 +185,20 @@ export class LearnerUtility {
         lineIndexToStart: number):
         { "intents": string[], "utterances": string[] } {
         if (!Utility.exists(filename)) {
-            Utility.toPrintDebuggingLogToConsole = true;
-            Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
-            throw Error(`The input dataset ${filename} does not exist!`);
+            Utility.debuggingThrow(
+                `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
         }
         const intentsUtterances: { "intents": string[], "utterances": string[] } =
-            Utility.loadLabelTextColumnarFile(
-                filename, // ---- filename: string,
-                labelColumnIndex, // ---- labelColumnIndex: number = 0,
-                textColumnIndex,  // ---- textColumnIndex: number = 1,
-                lineIndexToStart, // ---- lineIndexToStart: number = 0,
-                "\t",     // ---- columnDelimiter: string = "\t",
-                "\n",     // ---- rowDelimiter: string = "\n",
-                "utf8",   // ---- encoding: string = "utf8",
-                -1,       // ---- lineIndexToEnd: number = -1
-            );
+        Utility.loadLabelTextColumnarFile(
+            filename, // ---- filename: string,
+            labelColumnIndex, // ---- labelColumnIndex: number = 0,
+            textColumnIndex,  // ---- textColumnIndex: number = 1,
+            lineIndexToStart, // ---- lineIndexToStart: number = 0,
+            "\t",     // ---- columnDelimiter: string = "\t",
+            "\n",     // ---- rowDelimiter: string = "\n",
+            "utf8",   // ---- encoding: string = "utf8",
+            -1,       // ---- lineIndexToEnd: number = -1
+        );
         return intentsUtterances;
     }
 }

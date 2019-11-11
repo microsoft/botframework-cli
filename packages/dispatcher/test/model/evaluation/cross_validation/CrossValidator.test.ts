@@ -27,7 +27,7 @@ import { UnitTestHelper } from "../../../utility/Utility.test";
 
 describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async () => {
     it("Test.0000 crossValidate()", async function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const luContent: string = LuContentEmail;
         const numberOfCrossValidationFolds: number =
@@ -82,7 +82,7 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
             `${confusionMatrixCrossValidation.getMicroAverageMetrics()}`);
     });
     it("Test.0001 crossValidate()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const columnarContent: string = ColumnarContentEmail;
         const labelColumnIndex: number = 0;

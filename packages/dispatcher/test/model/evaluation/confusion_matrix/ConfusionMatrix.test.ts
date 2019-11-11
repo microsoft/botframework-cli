@@ -67,13 +67,13 @@ function getTestingConfusionMatrix(): ConfusionMatrix {
 describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () => {
 
     it("Test.0000 constructor()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
     });
 
     it("Test.0100 addFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         confusionMatrix.addFrom(confusionMatrix);
@@ -82,7 +82,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0201 getNumberLabels()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const numberLabels: number = confusionMatrix.getNumberLabels();
@@ -90,7 +90,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `numberLabels=${numberLabels}`);
     });
     it("Test.0201 getLabels()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const labels: string[] = confusionMatrix.getLabels();
@@ -98,7 +98,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `labels.length=${labels.length}`);
     });
     it("Test.0202 getLabelMap()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const labelMap: { [id: string]: number; } =
@@ -107,7 +107,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `Utility.getMapLength(labelMap)=${Utility.getMapLength(labelMap)}`);
     });
     it("Test.0203 getConfusionMatrixRows()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixRows: number[] =
@@ -116,7 +116,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `confusionMatrixRows).length=${confusionMatrixRows.length}`);
     });
     it("Test.0204 getConfusionMatrixColumns()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixColumns: number[] =
@@ -125,7 +125,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `confusionMatrixColumns.length=${confusionMatrixColumns.length}`);
     });
     it("Test.0205 getConfusionMatrixTotal()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixTotal: number =
@@ -134,7 +134,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `confusionMatrixTotal=${confusionMatrixTotal}`);
     });
     it("Test.0206 getConfusionMatrix()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixCells: number[][] =
@@ -150,7 +150,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0300 addInstanceByLabelIndex()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         confusionMatrix.addInstanceByLabelIndex(
@@ -165,7 +165,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0400 addInstance()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         confusionMatrix.addInstance(
@@ -180,7 +180,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0500 getBinaryConfusionMatrices()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const binaryConfusionMatrices: BinaryConfusionMatrixMetrics[] =
@@ -192,7 +192,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0600 getMicroAverageMetrics()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixMetrics: [number, number, number] =
@@ -206,7 +206,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0700 getMacroAverageMetrics()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixMetrics: [number, number, number, number] =
@@ -222,7 +222,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0800 getWeightedMacroAverageMetrics()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixMetrics: [number, number, number, number] =
@@ -238,7 +238,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     });
 
     it("Test.0900 validateLabelId()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const labelId: number = 0;
@@ -247,7 +247,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `labelId=${labelId}`);
     });
     it("Test.0901 validateLabelId()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const labelId: number = -1;
@@ -255,7 +255,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `labelId=${labelId}`);
     });
     it("Test.0902 validateLabelId()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const labelId: number = -3;
@@ -263,7 +263,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `labelId=${labelId}`);
     });
     it("Test.0903 validateLabel()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const label: string = "label0";
@@ -272,7 +272,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `label=${label}`);
     });
     it("Test.0904 validateLabel()", function() {
-        Utility.toPrintDebuggingLogToConsole = true;
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix = getTestingConfusionMatrix();
         const label: string = "label3";
