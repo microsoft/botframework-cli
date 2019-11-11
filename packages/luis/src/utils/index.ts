@@ -11,9 +11,8 @@ const msRest = require('ms-rest')
 const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
 
 const getUserConfig = async (configPath: string) => {
-  const pathToConfigJson = configPath
-  if (fs.existsSync(path.join(pathToConfigJson, 'config.json'))) {
-    return await fs.readJSON(path.join(pathToConfigJson, 'config.json'), {throws: false})
+  if (fs.existsSync(path.join(configPath, 'config.json'))) {
+    return await fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
   }
 }
 
