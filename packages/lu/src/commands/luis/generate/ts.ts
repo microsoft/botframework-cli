@@ -60,7 +60,11 @@ export default class LuisGenerateTs extends Command {
     this.log(
       `Generating file at ${outputPath || 'stdout'} that contains class ${flags.className}.`
     )
+try {
+  await LuisToTsConverter.writeFromLuisJson(app, flags.className, outputPath)
+} catch (error) {
+  console.log(error)
+}
 
-    await LuisToTsConverter.writeFromLuisJson(app, flags.className, outputPath)
   }
 }
