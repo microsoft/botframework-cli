@@ -12,7 +12,7 @@ const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
 
 const getUserConfig = async (configPath: string) => {
   if (fs.existsSync(path.join(configPath, 'config.json'))) {
-    return await fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
+    return fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
   }
 }
 
