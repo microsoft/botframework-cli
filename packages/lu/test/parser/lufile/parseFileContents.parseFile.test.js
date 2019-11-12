@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 const parseFile = require('./../../../src/parser/lufile/parseFileContents');
-const validateLUISBlob = require('./../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
+const validateLUISBlob = require('./../../../src/parser/luis/luisValidator')
 var chai = require('chai');
 var assert = chai.assert;
 describe('With helper functions', function () {
@@ -31,11 +31,14 @@ $commPreference:phraseList
 - m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix`;
                 parseFile.parseFile(luFile, false, 'en-us')
                         .then(function (parsedContent) {
-                                validateLUISBlob(parsedContent.LUISJsonStructure)
-                                        .then(() => done())
-                                        .catch(() => done('Test fail. validateLUISBlob did not throw when expected!'))
+                                try {
+                                        validateLUISBlob(parsedContent.LUISJsonStructure)
+                                        done()         
+                                } catch (error) {
+                                        done('Test fail. validateLUISBlob did not throw when expected!' + error)
+                                }
                         })
-                        .catch((err) => done('Test fail. validateLUISBlob did not throw when expected!'))
+                        .catch((err) => done('Test fail. validateLUISBlob did not throw when expected!' + err))
         });
 
         it('parseFile throws on invalid file refs', function (done) {

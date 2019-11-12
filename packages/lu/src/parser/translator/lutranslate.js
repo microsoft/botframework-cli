@@ -1,38 +1,43 @@
 const path = require('path')
-const fs = require('fs-extra')
-const txtfile = require('./../lufile/read-text-file')
-const exception = require('./../lufile/classes/exception')
-const retCode = require('./../lufile/enums/CLI-errors')
+const exception = require('./../utils/exception')
+const retCode = require('./../utils/enums/CLI-errors')
 const translateHelpers = require('./../lufile/translate-helpers')
+const Lu = require('./../lu/lu')
+const Qna = require('./../lu/qna')
 
 module.exports = {
     translateLuList: async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
-        let translation = {}
-        let i = 0
-        while(files.length > i) {
-            let luObject = files[i++]
-            try {
-                translation[path.basename(luObject.id)] = await this.translateLuObj(luObject.content, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
-            } catch (err) {
-                throw(err);
-            }
-         }
-        return translation
+        return await translateMarkDownList(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text, true)
     },
-    translateLuObj: async function(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
-        let translation = {}
-        try {
-            translation = await translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text)      
-        } catch (err) {
-            throw(err);
-        }
-        return translation
+    translateLu: async function(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+        return await translateMarkDown(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text, true)
+    },
+    translateQnAList: async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+        return await translateMarkDownList(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text, false)
+    },
+    translateQnA: async function(qnaObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+        return await translateMarkDown(qnaObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text, false)
     }
 }
 
-async function translateLuObject(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
+
+const translateMarkDownList = async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text, isLu) {
+    let translation = {}
+    let i = 0
+    while(files.length > i) {
+        let luObject = files[i++]
+        try {
+            translation[luObject.id] = await translateMarkDown(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text, isLu)      
+        } catch (err) {
+            throw(err);
+        }
+     }
+    return translation
+}
+
+const translateMarkDown =  async function(luObject, translate_key, to_lang, src_lang, translate_comments, translate_link_text, isLu) {
     let parsedLocContent = ''
-    let result = {}
+    let result = []
     // Support multi-language specification for targets.
     // Accepted formats are space or comma separated list of target language codes.
     // Tokenize to_lang
@@ -41,7 +46,7 @@ async function translateLuObject(luObject, translate_key, to_lang, src_lang, tra
         let tgt_lang = toLang[idx].trim();
         if (tgt_lang === '') continue;
         try {
-            parsedLocContent = await translateHelpers.parseAndTranslate(luObject, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, false)
+            parsedLocContent = await translateHelpers.parseAndTranslate(luObject.content, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, false)
         } catch (err) {
             throw(err);
         }
@@ -49,7 +54,7 @@ async function translateLuObject(luObject, translate_key, to_lang, src_lang, tra
             throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, file : ' + file + 'had invalid content'));
         } 
 
-        result[tgt_lang] = parsedLocContent   
+        result.push(isLu ? new Lu(parsedLocContent, luObject.id, luObject.includeInCollate, tgt_lang) : new Qna(parsedLocContent, luObject.id, luObject.includeInCollate, tgt_lang))
     }
     return result
 }
