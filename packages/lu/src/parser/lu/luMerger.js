@@ -2,20 +2,27 @@ const fs = require('fs');
 const path = require('path');
 const deepEqual = require('deep-equal')
 const parseFileContents = require('./../lufile/parseFileContents');
-const retCode = require('./../lufile/enums/CLI-errors');
-const helpers = require('./../lufile/helpers');
+const retCode = require('./../utils/enums/CLI-errors');
+const helpers = require('./../utils/helpers');
 const hClasses = require('./../lufile/classes/hclasses');
-const exception = require('./../lufile/classes/exception');
-const luObject = require('./../lufile/classes/luObject');
+const exception = require('./../utils/exception');
+const luObject = require('./../lu/lu');
 const parserObject = require('./../lufile/classes/parserObject');
 const txtfile = require('./../lufile/read-text-file');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
-const LUISObjNameEnum = require('./../lufile/enums/luisobjenum');
-const luisJSON = require('./../luisfile/parseLuisFile');
-
+const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 
 module.exports = {
-    mergeAndResolveReferences: async function (luObjArray, verbose, luis_culture, luSearchFn){
+    /**
+     * Merges Lu/QnA files into a parserObject.
+     * @param {Array<Lu>} luObjArray Array of LU/QnA files to be merge
+     * @param {boolean} verbose indicates if we need verbose logging.
+     * @param {string} luis_culture LUIS locale code
+     * @param {function} luSearchFn function to retrieve the lu files found in the references
+     * @returns {parserObject} Object that contains list of parsed LUIS object, list of parsed QnA object and list of parsed QnA Alteration Content
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    Build: async function(luObjArray, verbose, luis_culture, luSearchFn){
         let allParsedContent = await buildLuJsonObject(luObjArray, verbose, luis_culture, luSearchFn)
         await resolveReferencesInUtterances(allParsedContent)
         return allParsedContent
@@ -40,7 +47,7 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
         parsedFiles.push(luOb.id)
 
         if (haveLUISContent(parsedContent.LUISJsonStructure)
-            && await luisJSON.validateLUISBlob(parsedContent.LUISJsonStructure)) {
+            && parsedContent.LUISJsonStructure.validate()) {
             allParsedLUISContent.push(parserObject.create(parsedContent.LUISJsonStructure, undefined, undefined, luOb.id, luOb.includeInCollate))
         }
 
@@ -90,7 +97,7 @@ const findLuFilesInDir = async function(srcId, idsToFind){
             const luFilesToAdd = helpers.findLUFiles(rootPath, isRecursive);
             // add these to filesToParse
             for(let f = 0; f < luFilesToAdd.length; f++){
-                luObjects.push(new luObject(luFilesToAdd[f], readLuFile(luFilesToAdd[f]), file.includeInCollate))
+                luObjects.push(new luObject(readLuFile(luFilesToAdd[f]), luFilesToAdd[f], file.includeInCollate))
             } 
             continue
         } 
@@ -99,7 +106,7 @@ const findLuFilesInDir = async function(srcId, idsToFind){
             file.filePath = path.resolve(parentFilePath, file.filePath)
         } 
         // find matching parsed files and ensure includeInCollate is updated if needed.
-        luObjects.push(new luObject(file.filePath, readLuFile(file.filePath), file.includeInCollate))
+        luObjects.push(new luObject(readLuFile(file.filePath), file.filePath, file.includeInCollate))
         
     }
     return luObjects

@@ -7,11 +7,11 @@ import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
 const fileHelper = require('./../../utils/filehelper')
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
-const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
-const luConverter = require('./../../parser/lufile/parseFileContents')
-const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const qnaMaker = require('./../../parser/qna/qnamaker/qnamaker')
+const QnA = require('./../../parser/lu/qna')
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 
 export default class QnamakerTranslate extends Command {
   static description = 'Translate given QnA maker application JSON model or qna file(s)'
@@ -37,21 +37,29 @@ export default class QnamakerTranslate extends Command {
       let stdin = await this.readStdin()
 
       let isLu = await fileHelper.detectLuContent(stdin, flags.in)
-      let result: any
+      let result: any = {}
       if (isLu) {
         let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
-        result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let translatedLuFiles = await luTranslator.translateQnAList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        luFiles.forEach((lu: any) => {
+          if (!result[lu.id]) {
+            result[lu.id] = {}
+          }
+          translatedLuFiles[lu.id].forEach((t: any) => {
+            result[t.id][t.language] = t.content
+          })
+        })
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
-        let translation = await qnaConverter.parseQnAObjectToLu(json, false, false)
-        translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let qnaM = new qnaMaker(fileHelper.parseJSON(json, 'QnA'))
+        let qna = new QnA(qnaM.parseToLuContent())
+        let qnaTranslation = await luTranslator.translateQnA(qna, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         let key = stdin ? 'stdin' : path.basename(flags.in)
         result = {
           [key] : {}
         }
-        for (let lng in translation) {
-          let translatedJSON = await luConverter.parseFile(translation[lng], false)
-          result[key][lng] = await translatedJSON.qnaJsonStructure
+        for (let q of qnaTranslation) {
+          result[key][q.language] = await q.parseToQna()
         }
       }
 
