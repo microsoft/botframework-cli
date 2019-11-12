@@ -59,21 +59,46 @@ describe('chatdown:convert', () => {
   });
 
   it('should read from file when chat file is passed as an argument', done => {
-    cp.exec(`node ./bin/run chatdown:convert --in "./test/utils/cli.sample.chat"`, (error, stdout) => {
+    cp.exec(`node ./bin/run chatdown:convert --in "./testin/cli.sample.chat"`, (error, stdout) => {
       assert.doesNotThrow(() => JSON.parse(stdout));
-        done();
-      });
+      done();
     });
+  });
+
+  it('should read from file when chat file is passed as an argument and output the transcript to the folder specified', done => {
+    cp.exec(`node ./bin/run chatdown:convert --in "./testin/cli.sample.chat"  -o ./testout`, (error, stdout) => {
+      assert(stdout.includes('Successfully wrote'));
+      assert(stdout.includes('testout'));
+      done();
+    });
+  });
+
+  it('should read from file(s) when a folder is passed as an argument and output the transcript to the folder specified', done => {
+    cp.exec(`node ./bin/run chatdown:convert --in "./testin"  -o ./testout`, (error, stdout) => {
+      assert(stdout.includes('Successfully wrote'));
+      assert(stdout.includes('testout'));
+      done();
+    });
+  });
+
+  it('should read from file when chat file is passed as an argument and output the transcript to the folder specified, incrementing the filename if it already exists', done => {
+    cp.exec(`node ./bin/run chatdown:convert --in "./testin/cli.sample.chat"  -o ./testout`, (error, stdout) => {
+      assert(stdout.includes('Successfully wrote'));
+      assert(stdout.includes(').transcript'));
+      done();
+    });
+  });
 
   it('should process all files when a glob is passed in with the -i argument, and the -o is passed in for the output directory', done => {
-    cp.exec(`node ./bin/run chatdown:convert -i "**/test/utils/*.sample.chat" -o ./testout`, (error, stdout, stderr) => {
+    cp.exec(`node ./bin/run chatdown:convert -i "**testin/*.sample.chat" -o ./testout`, (error, stdout, stderr) => {
       assert(stdout.includes('Successfully wrote'));
-        done();
-      });
+      assert(stdout.includes('testout'));
+      done();
+    });
   });
 
   it('should process all files when a glob is passed in with the -i argument', done => {
-    cp.exec(`node ./bin/run chatdown:convert -i "**/test/utils/*.sample.chat"`, (error, stdout, stderr) => {
+    cp.exec(`node ./bin/run chatdown:convert -i "**/testin/*.sample.chat"`, (error, stdout, stderr) => {
       assert(stdout.includes('conversation'));
       done();
     });
@@ -108,7 +133,7 @@ describe('chatdown:convert', () => {
   });
 
   it('should display an error message when the out directory does not exist', done => {
-    cp.exec(`node ./bin/run chatdown:convert -i "./test/utils/cli.sample.chat" -o ./xyz`, (error, stdout, stderr) => {
+    cp.exec(`node ./bin/run chatdown:convert -i "./testin/cli.sample.chat" -o ./xyz`, (error, stdout, stderr) => {
       assert(stderr.includes('Containing directory path doesn\'t exist'));
         done();
       });

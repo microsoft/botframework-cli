@@ -30,47 +30,47 @@ export default class ChatdownConvert extends Command {
   }
 
   async run() {
-    try {
-      const {flags} = this.parse(ChatdownConvert)
+    const {flags} = this.parse(ChatdownConvert)
 
-      let inputEntities: string[] | undefined = []
-      let inputIsDirectory: boolean = flags.in ? (flags.in.includes('*') || this.isDirectory(flags.in)) : false
-      let outputDirectory: string | null | undefined
+    let inputEntities: string[] | undefined = []
+    let inputIsDirectory: boolean = flags.in ? (flags.in.includes('*') || this.isDirectory(flags.in)) : false
+    let outputDirectory: string | null | undefined
 
-      if (flags.prefix) {
-        const pkgName = this.config.name
-        intercept(function (txt: any) {
-          return `[${pkgName}]\n${txt}`
-        })
-      }
+    if (flags.prefix) {
+      const pkgName = this.config.name
+      intercept(function (txt: any) {
+        return `[${pkgName}]\n${txt}`
+      })
+    }
 
-      if (flags.in) {
-        flags.in = flags.in.trim()
-      }
+    if (flags.in) {
+      flags.in = flags.in.trim()
+    }
 
-      if (flags.out) {
-        outputDirectory = path.resolve(flags.out) || null
-      }
+    if (flags.out) {
+      outputDirectory = path.resolve(flags.out) || null
+    }
 
       // step 1: get chat data input
+    try {
       inputEntities = await this.getInputEntities(inputIsDirectory, flags.in)
-
-      if (inputEntities.length < 1) {
-        throw new CLIError('No chat files found at: ' + flags.in)
-      }
-
-      // step 2: convert chat data input to transcript(s)
-      const transcriptObjects = await this.convertToTranscriptObject(inputEntities, inputIsDirectory, flags.in)
-
-      // step 3: write output transcript data
-      await this.writeTranscripts(transcriptObjects, outputDirectory, flags.forced)
-
     } catch (err) {
       if (err.message.match(/Malformed configurations options detected/)) {
         throw new CLIError(err.message)
       }
       throw err
     }
+
+    if (inputEntities.length < 1) {
+      throw new CLIError('No chat files found at: ' + flags.in)
+    }
+
+    // step 2: convert chat data input to transcript(s)
+    const transcriptObjects = await this.convertToTranscriptObject(inputEntities, inputIsDirectory, flags.in)
+
+    // step 3: write output transcript data
+    await this.writeTranscripts(transcriptObjects, outputDirectory, flags.forced)
+
   }
 
   private async convertToTranscriptObject(entities: any[], inputIsDir: boolean, flagsIn: string) {
