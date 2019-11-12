@@ -11,7 +11,7 @@
     "actions": [
         {
             "$type": "Microsoft.IfCondition",
-            "condition": "contains(turn.schema.properties['@{property}'].$mappings,'datetime'",
+            "condition": "contains(turn.schema.properties['@{property}'].$mappings,'datetime')",
             "actions":[
                 {
                     "$type": "Microsoft.SetProperty",
