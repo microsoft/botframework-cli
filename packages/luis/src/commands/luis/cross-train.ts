@@ -19,19 +19,18 @@ export default class LuisCrossTrian extends Command {
   async run() {
     try {
       const { flags } = this.parse(LuisCrossTrian)
-      // Check if data piped in stdin
-      let stdin = await this.readStdin()
 
       //Check if file or folder
       //if folder, only lu to luis is supported
-      let isLu = await file.detectLuContent(stdin, flags.in)
+      let isLu = await file.detectLuContent(undefined, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isLu) {
-        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse)
-        result = await interuptionConverter.convertInteruption(luFiles, flags.intentname, flags.log);
-      }
+        const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse);
+        const luConfigObject = await file.getConfigObject(flags.in, flags.recurse);
+        result = await interuptionConverter.convertInteruption(luFiles, luConfigObject, flags.intentname, flags.log);
+      } 
 
       // If result is null or undefined return
       if (!result) {
