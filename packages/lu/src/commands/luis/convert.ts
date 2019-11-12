@@ -33,31 +33,31 @@ export default class LuisConvert extends Command {
     try {
       const {flags} = this.parse(LuisConvert)
       // Check if data piped in stdin
-      let stdin = await this.readStdin()
+      const stdin = await this.readStdin()
 
       //Check if file or folder
       //if folder, only lu to luis is supported
-      let isLu = await file.detectLuContent(stdin, flags.in)
+      const isLu = await file.detectLuContent(stdin, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
         result = await LuisBuilder.build(luFiles, flags.log, flags.culture)
-        result = result.hasContent() ? result : ''
+        if (!result.hasContent()) {
+          throw new CLIError('No LU or Luis content parsed!')
+        }
       } else {
         const luisContent = stdin ? stdin : await file.getContentFromFile(flags.in)
-        let luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
+        const luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
         if (flags.sort) {
           luisObject.sort()
         }
 
         result = luisObject.parseToLuContent()
-      }
-
-      // If result is null or undefined return
-      if (!result) {
-        throw new CLIError('No LU or Luis content parsed!')
+        if (!result) {
+          throw new CLIError('No LU or Luis content parsed!')
+        }
       }
 
        // Add headers to Luis Json

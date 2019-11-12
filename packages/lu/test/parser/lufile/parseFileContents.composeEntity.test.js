@@ -57,8 +57,8 @@ $deviceTemperature : [foo]`;
 
     it('Parser throws when a composite entity has a pattern.any entity as a child', function(done){
         let luFileContent = `$deviceTemperature : [p1; child2]
-                            # testIntent
-                            - I'm {p1}`;
+# testIntent
+- I'm {p1}`;
         parseFile(luFileContent, false)
           .then(res => {
             try{

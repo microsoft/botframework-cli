@@ -32,14 +32,10 @@ describe('With parse file function', function() {
         let fileContent = `[Valid PDF](https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf)`;
         let Blob1 = await parseFile(fileContent, false, null);
         let Blob2 = await parseFile(fileContent, false, null);
-            try {
-                let qna = new qnamaker()
-                let qnaList = [Blob1.qnaJsonStructure, Blob2.qnaJsonStructure]
-                qna.collate(qnaList)
-                assert.equal(qna.files[0].fileUri, 'https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf');
-            } catch(err){
-
-            }
+        let qna = new qnamaker()
+        let qnaList = [Blob1.qnaJsonStructure, Blob2.qnaJsonStructure]
+        qna.collate(qnaList)
+        assert.equal(qna.files[0].fileUri, 'https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf');
     })
 
 });

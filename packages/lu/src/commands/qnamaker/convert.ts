@@ -34,22 +34,22 @@ export default class QnamakerConvert extends Command {
       const {flags} = this.parse(QnamakerConvert)
 
       // Check if data piped in stdin
-      let stdin = await this.readStdin()
+      const stdin = await this.readStdin()
 
       //Check if file or folder
       //if folder, only lu to luis is supported
-      let isQnA = await file.detectLuContent(stdin, flags.in)
+      const isQnA = await file.detectLuContent(stdin, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isQnA) {
-        let luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
+        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
         result = {}
         result.finalQnAJSON = await QnAMakerBuilder.build(luFiles, false, flags.luis_culture)
         result.finalQnAAlterations = await alterationsBuilder.build(luFiles, false, flags.luis_culture)
       } else {
         const qnaContent = stdin ? stdin : await file.getContentFromFile(flags.in)
-        let QnA = flags.alterations ? new Alterations(file.parseJSON(qnaContent, 'QnA Alterations')) : new QnAMaker(file.parseJSON(qnaContent, 'QnA'))
+        const QnA = flags.alterations ? new Alterations(file.parseJSON(qnaContent, 'QnA Alterations')) : new QnAMaker(file.parseJSON(qnaContent, 'QnA'))
         if (flags.sort) {
           QnA.sort()
         }
