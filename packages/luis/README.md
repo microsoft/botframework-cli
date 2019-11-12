@@ -12,25 +12,12 @@
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @microsoft/bf-luis-cli
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/bf-luis-cli/0.0.0 win32-x64 node-v10.16.3
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
-```
-<!-- usagestop -->
+
 # Commands
 <!-- commands -->
 * [`bf luis:version:clone`](#bf-luisversionclone)
 
-## `oclif-example luis:version:clone`
+## `bf luis:version:clone`
 
 Creates a new version equivalent to the current snapshot of the selected application version.
 
@@ -47,5 +34,5 @@ OPTIONS
   --subscriptionKey   LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
 ```
 
-_See code: [src\commands\luis\version\clone.ts](https://github.com/packages/bf-luis-cli/blob/v0.0.0/src\commands\luis\version\clone.ts)_
+_See code: [src\commands\luis\version\clone.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/clone/index.ts)_
 <!-- commandsstop -->
