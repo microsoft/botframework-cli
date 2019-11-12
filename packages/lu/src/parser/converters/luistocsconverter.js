@@ -130,6 +130,7 @@ module.exports = {
                 writer.increaseIndentation();
                 composite.attributes.forEach(attr => {
                     writer.writeLineIndented(this.getEntityWithType(attr, app.closedLists.includes(attr) ? 'list' : attr));
+
                 });
                 writer.writeLineIndented([
                     '[JsonProperty("$instance")]',

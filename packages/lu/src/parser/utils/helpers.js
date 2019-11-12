@@ -168,7 +168,7 @@ const helpers = {
                     (finalLUISJSON.composites || []).find(i => i.features);
         if (v5DefFound) {
             finalLUISJSON.luis_schema_version = "6.0.0";
-            if (finalLUISJSON.model_features && finalLUISJSON.model_features.length !== 0) {
+            if (finalLUISJSON.model_features) {
                 finalLUISJSON.phraselists = [];
                 finalLUISJSON.model_features.forEach(item => finalLUISJSON.phraselists.push(Object.assign({}, item)));
                 delete finalLUISJSON.model_features;
