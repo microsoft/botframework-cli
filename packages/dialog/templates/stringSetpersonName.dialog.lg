@@ -6,9 +6,14 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@personName"
-               
+    "$type": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "actions": [
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@personName"          
+        }
+    ]               
 }
 ```
