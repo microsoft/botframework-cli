@@ -24,39 +24,30 @@ export default class LuisVersionClone extends Command {
   }
 
   async run() {
-    try {
-      const {flags} = this.parse(LuisVersionClone)
-      const configDir = this.config.configDir
+    const {flags} = this.parse(LuisVersionClone)
+    const configDir = this.config.configDir
 
-      const appId = flags.appId || await utils.getPropFromConfig('appId', configDir)
-      const endpoint = flags.endpoint || await utils.getPropFromConfig('endpoint', configDir)
-      const subscriptionKey = flags.subscriptionKey || await utils.getPropFromConfig('subscriptionKey', configDir)
-      const versionId = flags.versionId || await utils.getPropFromConfig('versionId', configDir)
-      const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId', configDir)
+    const appId = flags.appId || await utils.getPropFromConfig('appId', configDir)
+    const endpoint = flags.endpoint || await utils.getPropFromConfig('endpoint', configDir)
+    const subscriptionKey = flags.subscriptionKey || await utils.getPropFromConfig('subscriptionKey', configDir)
+    const versionId = flags.versionId || await utils.getPropFromConfig('versionId', configDir)
+    const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId', configDir)
 
-      const requiredProps = {appId, endpoint, subscriptionKey, versionId, targetVersionId}
-      utils.validateRequiredProps(requiredProps)
+    const requiredProps = {appId, endpoint, subscriptionKey, versionId, targetVersionId}
+    utils.validateRequiredProps(requiredProps)
 
-      const client = utils.getLUISClient(subscriptionKey, endpoint)
-      const options = {
-        versionCloneObject: {
-          version: targetVersionId
-        }
+    const client = utils.getLUISClient(subscriptionKey, endpoint)
+    const options = {
+      versionCloneObject: {
+        version: targetVersionId
       }
-
-      try {
-        const latestVersion = await client.versions.clone(appId, versionId, options)
-        this.log(`App successfully cloned. Latest version is now: ${latestVersion}`)
-      } catch (err) {
-        throw new CLIError(`Failed to clone app: ${err}`)
-      }
-
-    } catch (err) {
-      if (err.message.match(/Malformed configurations options detected/)) {
-        throw new CLIError(err.message)
-      }
-      throw err
     }
 
+    try {
+      const latestVersion = await client.versions.clone(appId, versionId, options)
+      this.log(`App successfully cloned. Latest version is now: ${latestVersion}`)
+    } catch (err) {
+      throw new CLIError(`Failed to clone app: ${err}`)
+    }
   }
 }
