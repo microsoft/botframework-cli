@@ -45,7 +45,8 @@ const getPropFromConfig = async (prop: string, configDir: string) => {
 }
 
 const processInputs = async (flags: any, configDir: string, prefix: string) => {
-  let config = filterConfig(await getUserConfig(configDir), prefix)
+  let config = await getUserConfig(configDir)
+  config = config ? filterConfig(config, prefix) : config
   const input = {
     appId: flags.appId || (config ? config.luis__appId : null),
     endpoint: flags.endpoint || (config ? config.luis__endpoint : null),
