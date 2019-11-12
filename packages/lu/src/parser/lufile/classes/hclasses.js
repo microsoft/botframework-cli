@@ -36,13 +36,6 @@ const readerObj = {
             this.patterns = patterns?patterns:[]; 
         }
     }, 
-    validateLUISBlobEntity: class {
-        constructor(name, type, roles) {
-            this.name = name?name:'';
-            this.type = type?type:[];
-            this.roles = roles?roles:[];
-        }
-    }, 
     pattern: class {
         constructor(pattern, intent) {
             this.pattern = pattern?pattern:'';
@@ -68,13 +61,6 @@ const readerObj = {
             this.name = name?name:'';
             this.subLists = subLists?subLists:[];
             this.roles = roles?roles:[];
-        }
-    },
-    translateLine: class {
-        constructor(text, localize, idx) {
-            this.text = text ? text: '';
-            this.localize = localize ? localize : false;
-            this.idx = idx ? idx : -1;
         }
     },
     regExEntity: class {

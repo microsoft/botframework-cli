@@ -2,7 +2,6 @@ const IntentDefinitionContext = require('./generated/LUFileParser').LUFileParser
 const visitor = require('./visitor');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const LUISObjNameEnum = require('./enums/luisobjenum');
 
 class LUIntent {
     /**

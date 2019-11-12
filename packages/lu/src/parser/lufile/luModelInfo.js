@@ -1,6 +1,3 @@
-const ModelInfoDefinitionContext = require('./generated/LUFileParser').LUFileParser.ModelInfoDefinitionContext;
-const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
-const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 
 class LUModelInfo {
     /**
