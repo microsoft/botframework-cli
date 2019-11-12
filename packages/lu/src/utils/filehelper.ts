@@ -6,20 +6,20 @@
 import {CLIError, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
-const helpers = require('./../parser/lufile/helpers')
-const luObject = require('./../parser/lufile/classes/luObject')
+const helpers = require('./../parser/utils/helpers')
+const luObject = require('./../parser/lu/lu')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
-    luObjects.push(new luObject('stdin', stdin))
+    luObjects.push(new luObject(stdin, 'stdin'))
   } else {
     let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
-      luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
+      luObjects.push(new luObject(luContent, path.resolve(luFiles[i])))
     }
   }
 
@@ -99,7 +99,7 @@ export async function generateNewTranslatedFilePath(fileName: string, translated
 
   newPath = path.join(output, translatedLanguage)
   await fs.mkdirp(newPath)
-  return path.join(newPath, fileName)
+  return path.join(newPath, path.basename(fileName))
 }
 
 export function validatePath(outputPath: string, defaultFileName: string, forceWrite = false): string {
@@ -161,4 +161,12 @@ export async function detectLuContent(stdin: string, input: string) {
     return true
   }
   return false
+}
+
+export function parseJSON(input: string, appType: string) {
+  try {
+    return JSON.parse(input)
+  } catch (error) {
+    throw new CLIError(`Sorry, error parsing content as ${appType} JSON`)
+  }
 }
