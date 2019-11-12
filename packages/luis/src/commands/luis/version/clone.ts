@@ -26,12 +26,9 @@ export default class LuisVersionClone extends Command {
   async run() {
     const {flags} = this.parse(LuisVersionClone)
     const configDir = this.config.configDir
+    const configPrefix = 'luis__'
 
-    const appId = flags.appId || await utils.getPropFromConfig('appId', configDir)
-    const endpoint = flags.endpoint || await utils.getPropFromConfig('endpoint', configDir)
-    const subscriptionKey = flags.subscriptionKey || await utils.getPropFromConfig('subscriptionKey', configDir)
-    const versionId = flags.versionId || await utils.getPropFromConfig('versionId', configDir)
-    const targetVersionId = flags.targetVersionId || await utils.getPropFromConfig('targetVersionId', configDir)
+    const {appId, endpoint, subscriptionKey, versionId, targetVersionId} = await utils.processInputs(flags, configDir, configPrefix)
 
     const requiredProps = {appId, endpoint, subscriptionKey, versionId, targetVersionId}
     utils.validateRequiredProps(requiredProps)

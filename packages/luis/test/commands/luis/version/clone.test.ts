@@ -6,7 +6,7 @@ const utils = require('../../../../src/utils/index')
 describe('luis:version:clone', () => {
 
   beforeEach(() => {
-    sinon.stub(utils, 'getPropFromConfig').callsFake(() => null)
+    sinon.stub(utils, 'processInputs').returnsArg(0)
   })
 
   afterEach(() => {
