@@ -10,6 +10,7 @@ export default class LuisCrossTrian extends Command {
 
   static flags: flags.Input<any> = {
     in: flags.string({ description: 'Source .lu file(s)' }),
+    root: flags.string({ description: 'root lu files to do cross training' }),
     recurse: flags.boolean({ description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false }),
     log: flags.boolean({ description: 'Enables log messages', default: false }),
     out: flags.string({ description: 'Output folder name. If not specified will update the folder of source lg file(s)' }),
@@ -26,10 +27,11 @@ export default class LuisCrossTrian extends Command {
 
       // Parse the object depending on the input
       let result: any
-      if (isLu) {
+      if (isLu && flags.root) {
         const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse);
+        const rootFiles = await file.getLuObjects(undefined, flags.root);
         const luConfigObject = await file.getConfigObject(flags.in, flags.recurse);
-        result = await interuptionConverter.convertInteruption(luFiles, luConfigObject, flags.intentname, flags.log);
+        result = await interuptionConverter.convertInteruption(luFiles, rootFiles, luConfigObject, flags.intentname, flags.log);
       } 
 
       // If result is null or undefined return

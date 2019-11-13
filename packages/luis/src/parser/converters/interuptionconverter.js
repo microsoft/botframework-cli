@@ -8,13 +8,14 @@ const LUSectionTypes = require('./../lufile/enums/lusectiontypes');
 module.exports = {
     /**
      * Parses a list of luObject to a LUIS JSON
-     * @param {luObject []} luArray luObject list to be parsed
+     * @param {luObject []} luArray the luObject list to be parsed
+     * @param {luObject []} rootArray root luObject list
      * @param {Map<string, Map<string, string>>} luConfig cross train files config 
      * @returns {string} intentName interuption intent name
      * @param {boolean} verbose verbose logging
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    convertInteruption: async function(luArray, luConfig, intentName, verbose) {
+    convertInteruption: async function(luArray, rootArray, luConfig, intentName, verbose) {
         try {
             let fileIdToLuResourceMap = new Map();
             for(const luFile of luArray) {
@@ -81,7 +82,8 @@ module.exports = {
                 resources.push(resource);
             }
 
-            const result = this.crossTrain(resources, intentName);
+            const rootResources = resources.filter(r => rootArray.some(root => root.id === r.id))
+            const result = this.crossTrain(rootResources, resources, intentName);
             for(const res of result) {
                 fileIdToLuResourceMap.set(res.id, res.content);
             }
@@ -101,7 +103,7 @@ module.exports = {
     };
     rootResource is the root resource of the tree structure of resources
     */
-    crossTrain: function(rootResource, resources, intentName = 'interuption') {
+    crossTrain: function(rootResources, resources, intentName = 'interuption') {
         const idToResourceMap = new Map();
         for (const resource of resources) {
             idToResourceMap.set(resource.id, resource);
@@ -118,20 +120,20 @@ module.exports = {
                     let brotherSections = [];
                     const contentList = resource.content.Content.split(/\r?\n/);
                     if (brothers && brothers.length > 0) {
-                        brothers.forEach(x => {
-                            const brotherSection = resource.content.Sections.filter(s => s.Name === x.intent)[0];
+                        brothers.forEach(b => {
+                            const brotherSection = resource.content.Sections.filter(s => s.Name === b.intent)[0];
                             brotherSections.push(brotherSection);
                         });
                     }
 
                     let entities = [];
                     let brotherUtterances = [];
-                    brotherSections.forEach(bs => {
-                        brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(y => y.context.getText().trim()));
+                    brotherSections.forEach(s => {
+                        brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.context.getText().trim()));
                         let entityContents = [];
-                        bs.Entities.forEach(x => {
-                            const startLine = x.ParseTree.start.line - 1;
-                            const endLine = x.ParseTree.stop.line - 1;
+                        s.Entities.forEach(e => {
+                            const startLine = e.ParseTree.start.line - 1;
+                            const endLine = e.ParseTree.stop.line - 1;
                             entityContents.push(contentList.slice(startLine, endLine + 1).join('\n'));
                         })
                         entities = entities.concat(entityContents);
@@ -140,7 +142,7 @@ module.exports = {
                     const interuptionIntents = targetResource.content.Sections.filter(section => section.Name === intentName);
                     if (interuptionIntents && interuptionIntents.length > 0) {
                         let interuptionIntent = interuptionIntents[0];
-                        let existingUtterances = interuptionIntent.UtteranceAndEntitiesMap.map(y => y.context.getText().trim().slice(1).trim());
+                        let existingUtterances = interuptionIntent.UtteranceAndEntitiesMap.map(u => u.context.getText().trim().slice(1).trim());
                         // construct new content here
                         let newFileContent = '';
                         brotherUtterances.forEach(utterance => {
@@ -190,9 +192,11 @@ module.exports = {
         }
 
         // Parse resources
-        rootResource.visited = true;
-        mergeChildrenInteruptions(rootResource, idToResourceMap)
-
+        for (const rootResource of rootResources) {
+            rootResource.visited = true;
+            this.mergeChildrenInteruptions(rootResource, idToResourceMap, intentName)
+        }
+        
         return Array.from(idToResourceMap.values());
     },
 
@@ -204,7 +208,7 @@ module.exports = {
                     throw (new exception(retCode.errorCode.INVALID_INPUT, `Loop detected for lu file ${childResource.id} when doing cross training.`));
                 }
 
-                const newChildResource = mergeInteruption(rootResource, childResource, intentName);
+                const newChildResource = this.mergeInteruption(rootResource, childResource, intentName);
                 result.set(child.target, newChildResource);
                 newChildResource.visited = true;
                 this.mergeChildrenInteruptions(newChildResource, result, intentName);
@@ -213,10 +217,10 @@ module.exports = {
     },
 
     mergeInteruption: function (fatherResource, childResource, intentName) {
-        const fatherInteruptions = rootResource.content.Sections.filter(x => x.Name = intentName);
+        const fatherInteruptions = fatherResource.content.Sections.filter(s => s.Name === intentName);
         if (fatherInteruptions && fatherInteruptions.length > 0) {
             const fatherInteruption = fatherInteruptions[0];
-            const fatherUtterances = fatherInteruption.UtteranceAndEntitiesMap.map(y => y.context.getText());
+            const fatherUtterances = fatherInteruption.UtteranceAndEntitiesMap.map(u => u.context.getText());
             const fatherContentList = fatherResource.content.Content.split(/\r?\n/);
             let fatherEntityDict = new Map();
             fatherInteruption.Entities.forEach(x => {
@@ -226,9 +230,11 @@ module.exports = {
             });
 
             const childInteruptions = childResource.content.Sections.filter(section => section.Name === intentName);
+            const childContentList = childResource.content.Content.split(/\r?\n/);
+            let interuptionEntities = [];
             if (childInteruptions && childInteruptions.length > 0) {
                 const childInteruption = childInteruptions[0];
-                const existingUtterances = childInteruption.UtteranceAndEntitiesMap.map(y => y.context.getText().trim().slice(1).trim());
+                const existingUtterances = childInteruption.UtteranceAndEntitiesMap.map(u => u.context.getText().trim().slice(1).trim());
                 // construct new content here
                 let newFileContent = '';
                 fatherUtterances.forEach(utterance => {
@@ -237,11 +243,16 @@ module.exports = {
                     }
                 });
 
-                let fatherEntities = [];
-                const existingEntityNames = childInteruption.Entities.map(y => y.Name);
+                childInteruption.Entities.forEach(e => {
+                    const startLine = e.ParseTree.start.line - 1;
+                    const endLine = e.ParseTree.stop.line - 1;
+                    interuptionEntities.push(childContentList.slice(startLine, endLine + 1).join('\n'));
+                });
+
+                const existingEntityNames = childInteruption.Entities.map(e => e.Name);
                 fatherEntityDict.forEach(nameContentPair => {
                     if (!existingEntityNames.includes(nameContentPair[0])) {
-                        fatherEntities.push(nameContentPair[1]);
+                        interuptionEntities.push(nameContentPair[1]);
                     }
                 })
     
@@ -261,9 +272,10 @@ module.exports = {
     
                     newFileContent = newLines.join('\r\n');
     
-                    if (fatherEntities && fatherEntities.length > 0) {
-                        newFileContent += '\r\n' + fatherEntities.join('\r\n\r\n') + '\r\n';
+                    if (interuptionEntities && interuptionEntities.length > 0) {
+                        newFileContent += '\r\n\r\n' + interuptionEntities.join('\r\n\r\n');
                     }
+
                     // update section here
                     childResource.content = new SectionOperator(childResource.content).updateSection(childInteruption.Id, newFileContent);
                 }
@@ -271,12 +283,11 @@ module.exports = {
                 // construct new content here
                 let newFileContent = `\r\n# ${intentName}\r\n`;
                 fatherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
-    
-                const fatherEntities = Array.from(fatherEntityDict.values());
-                if (fatherEntities && fatherEntities.length > 0) {
-                    newFileContent += '\r\n' + fatherEntities.join('\r\n\r\n') + '\r\n';
+                interuptionEntities = Array.from(fatherEntityDict.values());
+                if (interuptionEntities && interuptionEntities.length > 0) {
+                    newFileContent += '\r\n' + interuptionEntities.join('\r\n\r\n');
                 }
-    
+
                 // add section here
                 childResource.content = new SectionOperator(childResource.content).addSection(newFileContent);
             }
