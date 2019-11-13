@@ -50,7 +50,7 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
   flagLabels
     .filter(flag => flag !== 'help')
     .map((flag: string) => {
-      input[flag] = flags[flag] || (config ? config[`luis__${flag}`] : null)
+      input[flag] = flags[flag] || (config ? config[prefix + flag] : null)
     })
 
   return input
