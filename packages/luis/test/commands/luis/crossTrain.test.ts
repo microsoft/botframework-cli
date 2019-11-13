@@ -24,6 +24,9 @@ describe('luis:convert interuption intent among lu files', () => {
     expect(await compareLuFiles('./../../../interuptionGen/dia2.lu', './../../fixtures/verified/interuption/dia2.lu')).to.be.true;
     expect(await compareLuFiles('./../../../interuptionGen/dia3.lu', './../../fixtures/verified/interuption/dia3.lu')).to.be.true;
     expect(await compareLuFiles('./../../../interuptionGen/dia4.lu', './../../fixtures/verified/interuption/dia4.lu')).to.be.true;
+    expect(await compareLuFiles('./../../../interuptionGen/main.fr-fr.lu', './../../fixtures/verified/interuption/main.fr-fr.lu')).to.be.true;
+    expect(await compareLuFiles('./../../../interuptionGen/dia1.fr-fr.lu', './../../fixtures/verified/interuption/dia1.fr-fr.lu')).to.be.true;
+    expect(await compareLuFiles('./../../../interuptionGen/dia2.fr-fr.lu', './../../fixtures/verified/interuption/dia2.fr-fr.lu')).to.be.true;
   })
 })
 
