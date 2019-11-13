@@ -25,10 +25,11 @@ export default class LuisVersionClone extends Command {
 
   async run() {
     const {flags} = this.parse(LuisVersionClone)
+    const flagLabels = Object.keys(LuisVersionClone.flags)
     const configDir = this.config.configDir
     const configPrefix = 'luis__'
 
-    const {appId, endpoint, subscriptionKey, versionId, targetVersionId} = await utils.processInputs(flags, configDir, configPrefix)
+    const {appId, endpoint, subscriptionKey, versionId, targetVersionId} = await utils.processInputs(flags, flagLabels, configDir, configPrefix)
 
     const requiredProps = {appId, endpoint, subscriptionKey, versionId, targetVersionId}
     utils.validateRequiredProps(requiredProps)
