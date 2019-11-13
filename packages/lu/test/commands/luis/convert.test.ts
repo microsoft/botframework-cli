@@ -8,6 +8,7 @@ const compareLuFiles = async function(file1: string, file2: string) {
   let fixtureFile = await fs.readFile(path.join(__dirname, file2))
   result = result.toString().replace(/\r\n/g, "\n")
   fixtureFile = fixtureFile.toString().replace(/\r\n/g, "\n")
+  expect(fixtureFile).to.deep.equal(result)
   return result === fixtureFile
 }
 
@@ -408,6 +409,13 @@ describe('luis:convert version 5 upgrade test', () => {
   .it('luis:convert successfully converts LUIS JSON model with nDepth entity and features to LU', async () => {
     expect(await compareLuFiles('./../../../results/root38.lu', './../../fixtures/verified/newEntityWithFeatures.lu')).to.be.true
   })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/v6WithoutPhraseLists.lu')}`, '--out', './results/root38.json'])
+  .it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
+    expect(await compareLuFiles('./../../../results/root38.json', './../../fixtures/verified/v6WithoutPhraseLists.json')).to.be.true
+  })
 })
 
 describe('luis:convert negative tests', () => {
@@ -528,7 +536,7 @@ describe('luis:convert empty file handling', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
   .it('luis:convert errors out on empty json file', async (ctx) => {
-    expect(ctx.stderr).to.contain('Sorry, error parsing content as LUIS JSON')
+    expect(ctx.stderr).to.contain('Sorry, error parsing content as Luis JSON\n')
   })
 })
 

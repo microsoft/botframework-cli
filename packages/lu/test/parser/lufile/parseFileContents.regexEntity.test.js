@@ -5,19 +5,11 @@
 const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
-const retCode = require('./../../../src/parser/lufile/enums/CLI-errors').errorCode;
+const luis = require('./../../../src/parser/luis/luis')
 const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
-const collateLUISFiles = require('./../../../src/parser/converters/lutoluisconverter').collateLUISFiles;
 const translateHelpers = require('./../../../src/parser/lufile/translate-helpers');
 const TRANSLATE_KEY = process.env.TRANSLATOR_KEY;
-const helpers = require('./../../../src/parser/lufile/helpers');
-const NEWLINE = require('os').EOL;
-const validateLUISModel = require('./../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
-function sanitizeContent(fileContent) {
-    let escapedExampleNewLine = JSON.stringify('\r\n').replace(/"/g, '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-    let escapedNewLine = JSON.stringify(NEWLINE).replace(/"/g, '');
-    return fileContent.replace(new RegExp(escapedExampleNewLine, 'g'), escapedNewLine);
-}
+
 describe('Regex entities in .lu files', function() {
     it('are parsed correctly when a valid regex pattern is provided', function(done){
         let luFileContent = `$HRF-number:/hrf-[0-9]{6}/`;
@@ -107,14 +99,17 @@ $test:/hrf-[0-9]{6}/`;
             .then(res1 => {
                 parseFile(luFile2, false)
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(collated => {
-                                assert.equal(collated.regex_entities.length, 2);
-                                assert.deepEqual(collated.regex_entities[0], regexEntity1);
-                                assert.deepEqual(collated.regex_entities[1], regexEntity2);
+                            try {
+                                let luisObj = new luis()
+                                let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                                luisObj.collate(luisList)
+                                assert.equal(luisObj.regex_entities.length, 2);
+                                assert.deepEqual(luisObj.regex_entities[0], regexEntity1);
+                                assert.deepEqual(luisObj.regex_entities[1], regexEntity2);
                                 done();
-                            })
-                            .catch(err => done(`Test failed 3- ${JSON.stringify(err, null, 2)}`))
+                            } catch (err) {
+                                done(`Test failed 3- ${err, null, 2}`)
+                            }
                     })
                     .catch(err => done(`Test failed 2- ${(err)}`))                
             })
@@ -128,12 +123,15 @@ $test:/hrf-[0-9]{6}/`;
             .then(res1 => {
                 parseFile(luFile2, false)
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                console.log(JSON.stringify(res,null, 2));
-                                done(`Test failed - did not throw when expected`);
-                            })
-                            .catch(err => done())
+                        try {
+                            let luisObj = new luis()
+                            let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                            luisObj.collate(luisList)
+                            console.log(JSON.stringify(res, null, 2));
+                            done(`Test failed - did not throw when expected`);
+                        } catch(err) {
+                            done()
+                        }
                     })
                     .catch(err => done())                
             })
@@ -148,16 +146,15 @@ $test:/hrf-[0-9]{6}/`;
             .then(res1 => {
                 parseFile(luFile2, false)
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                validateLUISModel(res)
-                                    .then(validationRes => {
-                                        console.log(JSON.stringify(res,null, 2));
-                                        done(`Test failed - did not throw when expected`);
-                                    })
-                                    .catch(err => done())
-                            })
-                            .catch(err => done())
+                        try {
+                            let luisObj = new luis()
+                            let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                            luisObj.collate(luisList)
+                            luisObj.validate()
+                            done(`Test failed - did not throw when expected`);
+                        } catch(err) {
+                            done()
+                        }
                     })
                     .catch(err => done())                
             })

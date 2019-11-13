@@ -5,8 +5,8 @@
 const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
-const collateFiles = require('./../../../src/parser/converters/qnatoqnajsonconverter').collateQnAFiles;
-const retCode = require('./../../../src/parser/lufile/enums/CLI-errors').errorCode;
+const qnamaker = require('./../../../src/parser/qna/qnamaker/qnamaker')
+const retCode = require('./../../../src/parser/utils/enums/CLI-errors').errorCode;
 describe('With parse file function', function() {
     it('Throws when input lu file has invalid URIs', function(done){
         let fileContent = `[InvalidPDF](https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN2.pdf)`;
@@ -32,11 +32,10 @@ describe('With parse file function', function() {
         let fileContent = `[Valid PDF](https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf)`;
         let Blob1 = await parseFile(fileContent, false, null);
         let Blob2 = await parseFile(fileContent, false, null);
-        collateFiles([Blob1, Blob2])
-            .then(res => {
-                assert.equal(res.files[0].fileUri, 'https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf');
-            })
-            .catch(err => {throw(err)});
+        let qna = new qnamaker()
+        let qnaList = [Blob1.qnaJsonStructure, Blob2.qnaJsonStructure]
+        qna.collate(qnaList)
+        assert.equal(qna.files[0].fileUri, 'https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf');
     })
 
 });
