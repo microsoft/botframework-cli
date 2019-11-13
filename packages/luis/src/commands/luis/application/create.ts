@@ -11,7 +11,7 @@ export default class LuisApplicationCreate extends Command {
   static description = 'Creates a new LUIS application'
 
   static examples = [`
-    $ bf luis:version:clone --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --culture {CULTURE}
+    $ bf luis:application:create --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --culture {CULTURE}
     --domain {DOMAIN} --description {DESCRIPTION} --initialVersionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
   `]
 
