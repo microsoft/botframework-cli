@@ -1,0 +1,13 @@
+# dia2_trigger
+- book a hotel in Seattle
+
+# dia3_trigger
+- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+- which flight time do you prefer
+
+@simple fromLocation
+
+@ simple toLocation
+
+@ phraselist flightTimeline = 
+	- morning,afternoon,evening

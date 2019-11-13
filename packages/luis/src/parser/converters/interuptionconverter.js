@@ -21,6 +21,10 @@ module.exports = {
             for(const luFile of luArray) {
                 let luContent = luFile.content;
                 luContent = helpers.sanitizeNewLines(luContent);
+                if (luContent === undefined || luContent === '') {
+                    continue;
+                }
+
                 let luResource = luParser.parse(luContent);
                 if (luResource.Errors && luResource.Errors.length > 0) {
                     if (verbose) {
@@ -167,15 +171,17 @@ module.exports = {
                         }
                     } else {
                         // construct new content here
-                        let newFileContent = `\r\n# ${intentName}\r\n`;
-                        brotherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
+                        if (brotherUtterances && brotherUtterances.length > 0) {
+                            let newFileContent = `\r\n# ${intentName}\r\n`;
+                            brotherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
 
-                        if (entities && entities.length > 0) {
-                            newFileContent += '\r\n' + entities.join('\r\n\r\n') + '\r\n';
+                            if (entities && entities.length > 0) {
+                                newFileContent += '\r\n' + entities.join('\r\n\r\n') + '\r\n';
+                            }
+
+                            // add section here
+                            targetResource.content = new SectionOperator(targetResource.content).addSection(newFileContent);
                         }
-
-                        // add section here
-                        targetResource.content = new SectionOperator(targetResource.content).addSection(newFileContent);
                     }
 
                     idToResourceMap.set(targetResource.id, targetResource);
@@ -273,15 +279,17 @@ module.exports = {
                 }
             } else {
                 // construct new content here
-                let newFileContent = `\r\n# ${intentName}\r\n`;
-                fatherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
-                interuptionEntities = Array.from(fatherEntityDict.values());
-                if (interuptionEntities && interuptionEntities.length > 0) {
-                    newFileContent += '\r\n' + interuptionEntities.join('\r\n\r\n');
-                }
+                if (fatherUtterances && fatherUtterances.length > 0) {
+                    let newFileContent = `\r\n# ${intentName}\r\n`;
+                    fatherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
+                    interuptionEntities = Array.from(fatherEntityDict.values());
+                    if (interuptionEntities && interuptionEntities.length > 0) {
+                        newFileContent += '\r\n' + interuptionEntities.join('\r\n\r\n');
+                    }
 
-                // add section here
-                childResource.content = new SectionOperator(childResource.content).addSection(newFileContent);
+                    // add section here
+                    childResource.content = new SectionOperator(childResource.content).addSection(newFileContent);
+                }
             }
         }
 
