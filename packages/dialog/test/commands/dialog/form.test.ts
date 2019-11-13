@@ -54,7 +54,7 @@ describe('dialog:form', async () => {
     test
         .stdout()
         .stderr()
-        .command(['dialog:form', `${badSchema}`])
+        .command(['dialog:generate', `${badSchema}`])
         .it('Detect bad schema', ctx => {
             expect(ctx.stderr)
                 .to.contain('not a valid JSON Schema')
@@ -63,7 +63,7 @@ describe('dialog:form', async () => {
     test
         .stdout()
         .stderr()
-        .command(['dialog:form', `${schemaPath}`, '-o', `${output}`, '--verbose'])
+        .command(['dialog:generate', `${schemaPath}`, '-o', `${output}`, '--verbose'])
         .it('Detect success', ctx => {
             expect(ctx.stderr)
                 .to.contain('Generating')
