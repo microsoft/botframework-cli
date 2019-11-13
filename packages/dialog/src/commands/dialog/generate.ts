@@ -8,13 +8,18 @@ import * as gen from '../../library/formGenerator'
 import * as ppath from 'path'
 
 export default class GenerateDialog extends Command {
+    static description = '[PREVIEW] Generate localized .lu, .lg, .qna and .dialog assets to define a bot based on a schema using templates.'
+
+    static examples = [`
+      $ bf dialog:generate sandwich.schema --output c:/tmp
+    `]
 
     static args = [
-        { name: 'generate', required: true }
+        { name: 'schema', required: true, description: 'JSON Schema file used to drive generation.' }
     ]
 
     static flags: flags.Input<any> = {
-        force: flags.boolean({ char: 'f', description: 'Force overwriting generated files' }),
+        force: flags.boolean({ char: 'f', description: 'Force overwriting generated files.' }),
         help: flags.help({ char: 'h' }),
         locale: flags.string({ char: 'l', description: 'Locales to generate. [default: en-us]', multiple: true }),
         output: flags.string({ char: 'o', description: 'Output path for where to put generated .lu, .lg, .qna and .dialog files. [default: ./<form>-resources]', default: '.', required: false }),
