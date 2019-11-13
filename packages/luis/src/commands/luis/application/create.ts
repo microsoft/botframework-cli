@@ -31,7 +31,6 @@ export default class LuisApplicationCreate extends Command {
     const {flags} = this.parse(LuisApplicationCreate)
     const flagLabels = Object.keys(LuisApplicationCreate.flags)
     const configDir = this.config.configDir
-    const configPrefix = 'luis__'
 
     const {
       endpoint,
@@ -42,7 +41,7 @@ export default class LuisApplicationCreate extends Command {
       description,
       initialVersionId,
       usageScenario
-    } = await utils.processInputs(flags, flagLabels, configDir, configPrefix)
+    } = await utils.processInputs(flags, flagLabels, configDir)
 
     const requiredProps = {endpoint, subscriptionKey, name, domain}
     utils.validateRequiredProps(requiredProps)
