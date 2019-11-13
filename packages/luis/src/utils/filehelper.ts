@@ -187,7 +187,11 @@ export async function getConfigObject(input: string | undefined, recurse = false
       if (mappingsDict.has(filePath)) {
         let intentToReferFileMap = mappingsDict.get(filePath);
         if (intentToReferFileMap) {
-          intentToReferFileMap.set(intentName, referenceFilePath);
+          if(intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referenceFilePath) {
+            throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger ${intentName}`)
+          } else {
+            intentToReferFileMap.set(intentName, referenceFilePath);
+          }
         }
       } else {
         let intentToReferFileMap = new Map<string, string>();

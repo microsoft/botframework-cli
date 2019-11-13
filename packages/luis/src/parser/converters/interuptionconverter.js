@@ -64,7 +64,7 @@ module.exports = {
                         if (luFilePaths && luFilePaths.length == 1) {
                             let luFilePath = luFilePaths[0];
                             let referenceLuFilePath = luConfig.get(luFilePath).get(name);
-                            const intentPaths = fileToLuResourcekeys.filter(x => x.endsWith(referenceLuFilePath.slice(2)));
+                            const intentPaths = fileToLuResourcekeys.filter(x => referenceLuFilePath && x.endsWith(referenceLuFilePath.slice(2)));
                             if (intentPaths && intentPaths.length === 1) {
                                 resource.children.push({
                                     intent: name,
@@ -116,16 +116,8 @@ module.exports = {
                 let intent = child.intent;
                 if (idToResourceMap.has(child.target)) {
                     let targetResource = idToResourceMap.get(child.target);
-                    let brothers = children.filter(child => child.intent !== intent && child.intent !== intentName);
-                    let brotherSections = [];
                     const contentList = resource.content.Content.split(/\r?\n/);
-                    if (brothers && brothers.length > 0) {
-                        brothers.forEach(b => {
-                            const brotherSection = resource.content.Sections.filter(s => s.Name === b.intent)[0];
-                            brotherSections.push(brotherSection);
-                        });
-                    }
-
+                    const brotherSections = resource.content.Sections.filter(s => s.Name !== intent && s.Name !== intentName && s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION);
                     let entities = [];
                     let brotherUtterances = [];
                     brotherSections.forEach(s => {
