@@ -103,7 +103,7 @@ module.exports = {
     };
     rootResource is the root resource of the tree structure of resources
     */
-    crossTrain: function(rootResources, resources, intentName = 'interuption') {
+    crossTrain: function(rootResources, resources, intentName) {
         const idToResourceMap = new Map();
         for (const resource of resources) {
             idToResourceMap.set(resource.id, resource);

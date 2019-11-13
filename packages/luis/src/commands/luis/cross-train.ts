@@ -14,7 +14,7 @@ export default class LuisCrossTrian extends Command {
     recurse: flags.boolean({ description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false }),
     log: flags.boolean({ description: 'Enables log messages', default: false }),
     out: flags.string({ description: 'Output folder name. If not specified will update the folder of source lg file(s)' }),
-    intentname: flags.string({ description: 'interuption intent name', default: 'interuption' }),
+    intentname: flags.string({ description: 'interuption intent name', default: '_Interuption' }),
   }
 
   async run() {
