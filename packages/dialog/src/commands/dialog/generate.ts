@@ -7,31 +7,31 @@ import { Command, flags } from '@microsoft/bf-cli-command';
 import * as gen from '../../library/formGenerator'
 import * as ppath from 'path'
 
-export default class DialogForm extends Command {
+export default class GenerateDialog extends Command {
 
     static args = [
-        { name: 'form', required: true }
+        { name: 'generate', required: true }
     ]
 
     static flags: flags.Input<any> = {
         force: flags.boolean({ char: 'f', description: 'Force overwriting generated files' }),
         help: flags.help({ char: 'h' }),
         locale: flags.string({ char: 'l', description: 'Locales to generate. [default: en-us]', multiple: true }),
-        output: flags.string({ char: 'o', description: 'Output path for where to put generated .lu, .lg and .dialog files. [default: ./<form>-resources]', default: '.', required: false }),
+        output: flags.string({ char: 'o', description: 'Output path for where to put generated .lu, .lg, .qna and .dialog files. [default: ./<form>-resources]', default: '.', required: false }),
         schema: flags.string({ char: 's', description: 'Path to your app.schema file.', required: false }),
         templates: flags.string({ char: 't', description: 'Directory with templates to use for generating form assets.', multiple: true }),
         verbose: flags.boolean({ description: 'Output verbose logging of files as they are processed', default: false }),
     }
 
     async run() {
-        const { args, flags } = this.parse(DialogForm)
+        const { args, flags } = this.parse(GenerateDialog)
         try {
-            let formName = ppath.basename(args.form, '.schema.dialog')
+            let formName = ppath.basename(args.schema, '.schema.dialog')
             let outDir = flags.output
             if (!outDir) {
                 outDir = ppath.join(formName + '-resources')
             }
-            await gen.generate(args.form, outDir, flags.schema, flags.locale, flags.templates, flags.force,
+            await gen.generate(args.schema, outDir, flags.schema, flags.locale, flags.templates, flags.force,
                 (type, msg) => {
                     if (type === gen.FeedbackType.message
                         || type === gen.FeedbackType.error
