@@ -8,17 +8,12 @@
     "$schema": "@{appSchema}",
     "$type": "Microsoft.OnSetProperty",
     "property": "@{property}",
+    "entity":"@datetimeV2",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
-            "condition": "contains(turn.schema.properties['@{property}'].$mappings,'datetimeV2')",
-            "actions":[
-                {
-                    "$type": "Microsoft.SetProperty",
-                    "property": "$@{property}",
-                    "value": "join(@datetime.timex,', ')"
-                }
-            ]                  
+            "$type": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "join(@datetime.timex,', ')"                              
         }
     ]
 }

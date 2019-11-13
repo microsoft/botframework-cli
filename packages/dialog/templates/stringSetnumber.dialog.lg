@@ -8,6 +8,7 @@
     "$schema": "@{appSchema}",
     "$type": "Microsoft.OnSetProperty",
     "property": "@{property}",
+    "entity": "@number",
     "actions": [
         {
             "$type": "Microsoft.SetProperty",
