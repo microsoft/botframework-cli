@@ -27,6 +27,12 @@
 # askString(property)
 - Enter a value for @{name(property)}
 
+# askHelp
+- IF: @{and($retries, $retries > 0)}
+- @{join(foreach($expectedProperties, expected, help1(expected)), '\n')}
+- ELSE:
+- 
+
 # help(property)
 - IF: @{property}
 - @{help1(property)}
