@@ -48,7 +48,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Dialog Form Tests",
+            "name": "Dialog Generator Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "args": [
@@ -57,7 +57,7 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/test/commands/dialog/form.test.ts"
+                "${workspaceFolder}/test/commands/dialog/generator.test.ts"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },

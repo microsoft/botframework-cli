@@ -3,10 +3,10 @@
  * Copyright(c) Microsoft Corporation.All rights reserved.
  * Licensed under the MIT License.
  */
-import * as fg from './formGenerator'
+import * as fg from './dialogGenerator'
 import * as glob from 'globby'
 import * as ppath from 'path'
-import * as s from './formSchema'
+import * as s from './schema'
 let allof: any = require('json-schema-merge-allof')
 let clone = require('clone')
 let parser: any = require('json-schema-ref-parser')
@@ -68,7 +68,7 @@ async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): P
 // 2) $requires:[] can be in a property or at the top.  This is handled by finding all of them and then merging
 //    properties, definition and required.  
 //    The assumption here is that the required properties are orthogonal to the form so unique names are important.
-export type Schemas = { form: s.FormSchema, schema: s.FormSchema }
+export type Schemas = { form: s.Schema, schema: s.Schema }
 export async function processSchemas(formPath: string, templateDirs: string[], outDir: string, force: boolean, feedback: fg.Feedback)
     : Promise<Schemas> {
     let allRequired = await templateSchemas(templateDirs, feedback)
@@ -92,8 +92,8 @@ export async function processSchemas(formPath: string, templateDirs: string[], o
         if (schema.$expectedOnly) allSchema.$expectedOnly = allSchema.$expectedOnly.concat(schema.$expectedOnly)
         if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
     }
-    let name = s.FormSchema.basename(formPath)
+    let name = s.Schema.basename(formPath)
     await fg.writeFile(ppath.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema, undefined, 4), force, feedback)
     await fg.writeFile(ppath.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema, undefined, 4), force, feedback)
-    return { form: new s.FormSchema(formPath, formSchema), schema: new s.FormSchema(formPath, allSchema) }
+    return { form: new s.Schema(formPath, formSchema), schema: new s.Schema(formPath, allSchema) }
 }

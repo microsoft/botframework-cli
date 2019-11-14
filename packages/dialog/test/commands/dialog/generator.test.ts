@@ -10,11 +10,11 @@ import * as fs from 'fs-extra'
 import 'mocha'
 import * as os from 'os'
 import * as ppath from 'path'
-import * as ft from '../../../src/library/formSchema'
-import * as gen from '../../../src/library/formGenerator'
+import * as ft from '../../../src/library/schema'
+import * as gen from '../../../src/library/dialogGenerator'
 import { fail } from 'assert';
 
-describe('dialog:form', async () => {
+describe('dialog:generate', async () => {
     let output = ppath.join(os.tmpdir(), 'sandwich.out')
     let schemaPath = 'test/commands/dialog/forms/sandwich.form.dialog'
     let badSchema = 'test/commands/dialog/forms/bad-schema.form.dialog'
@@ -35,7 +35,7 @@ describe('dialog:form', async () => {
 
     it('Not object type', async () => {
         try {
-            await ft.FormSchema.readSchema(notObject)
+            await ft.Schema.readSchema(notObject)
             fail('Did not detect bad schema');
         } catch (e) {
             expect(e.message).to.contain('must be of type object')
@@ -44,7 +44,7 @@ describe('dialog:form', async () => {
 
     it('Illegal schema', async () => {
         try {
-            await ft.FormSchema.readSchema(badSchema)
+            await ft.Schema.readSchema(badSchema)
             fail('Did not detect bad schema');
         } catch (e) {
             expect(e.message).to.contain('is not a valid JSON Schema')

@@ -3,7 +3,7 @@
  * Copyright(c) Microsoft Corporation.All rights reserved.
  * Licensed under the MIT License.
  */
-export * from './formSchema'
+export * from './schema'
 import * as Validator from 'ajv'
 import * as os from 'os'
 import * as ppath from 'path'
@@ -39,12 +39,12 @@ type EntitySet = Record<string, Entity>
  * 
  * TODO: Add more like $units.
  */
-export class FormSchema {
+export class Schema {
     /**
      * Read and validate schema from a path.
      * @param schemaPath URL for schema.
      */
-    static async readSchema(schemaPath: string): Promise<FormSchema> {
+    static async readSchema(schemaPath: string): Promise<Schema> {
         let noref = await parser.dereference(schemaPath)
         let schema = allof(noref)
         let validator = new Validator()
@@ -58,7 +58,7 @@ export class FormSchema {
         if (schema.type !== 'object') {
             throw new Error('Form schema must be of type object.')
         }
-        return new FormSchema(schemaPath, schema)
+        return new Schema(schemaPath, schema)
     }
 
 
@@ -89,13 +89,13 @@ export class FormSchema {
     }
 
     name(): string {
-        return FormSchema.basename(this.source)
+        return Schema.basename(this.source)
     }
 
-    * schemaProperties(): Iterable<FormSchema> {
+    * schemaProperties(): Iterable<Schema> {
         for (let prop in this.schema.properties) {
             let newPath = this.path + (this.path === '' ? '' : '.') + prop
-            yield new FormSchema(this.source, this.schema.properties[prop], newPath)
+            yield new Schema(this.source, this.schema.properties[prop], newPath)
         }
     }
 

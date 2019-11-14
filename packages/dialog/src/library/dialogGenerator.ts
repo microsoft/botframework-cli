@@ -3,8 +3,8 @@
  * Copyright(c) Microsoft Corporation.All rights reserved.
  * Licensed under the MIT License.
  */
-export * from './formGenerator'
-import * as s from './formSchema'
+export * from './dialogGenerator'
+import * as s from './schema'
 import * as expr from 'botframework-expressions'
 import * as fs from 'fs-extra'
 import * as lg from 'botbuilder-lg'
@@ -145,7 +145,7 @@ async function processTemplate(
     templateName: string,
     templateDirs: string[],
     outDir: string,
-    form: s.FormSchema,
+    form: s.Schema,
     scope: any,
     force: boolean,
     feedback: Feedback,
@@ -195,8 +195,8 @@ async function processTemplate(
 }
 
 async function processTemplates(
-    form: s.FormSchema,
-    schema: s.FormSchema,
+    form: s.Schema,
+    schema: s.Schema,
     extensions: string[],
     templateDirs: string[],
     outDir: string,
@@ -248,28 +248,6 @@ async function processTemplates(
         }
     }
 }
-
-// Should have trigger intent with patterns having all entities in them to bootstrap.
-// When inside a form, ignore trigger intent.  This does not allow to start another form, but that probably needs to
-// be another intent.
-// By default trigger intent is form name.  Otherwise $triggerIntent.
-// When should we ask about intent/entity?  When it is something besides trigger intent?
-// 
-// Extending to roles.
-// Auto-generated enum/string do not need role.
-// To use them as a role do BreadEntity:foo
-// To use roles with prebuilts, an entity number:length should add the role as an .lu file.
-// Keep explicit reference to underlying or promote underlying?
-// Need template per-role.  When you see <name>:<role> do <name>Role.lu.  This works for prebuilt.
-// How do we generate enum/string entity roles?  
-// 1) Look in generated files and auto-generate role addition.
-// 2) Pick up *Entity:role and generate by hand.
-// 3) Always generate by hand, i.e. no template?
-// 4) If not present <entity>Role, generate
-//
-// .lu = $prebuilt:number roles=length or $foo:simple roles=blah
-// .lg = role(value) -> entity(value)
-// .dialog = generate from underlying entity?
 
 /**
  * Iterate through the locale templates and generate per property/locale files.

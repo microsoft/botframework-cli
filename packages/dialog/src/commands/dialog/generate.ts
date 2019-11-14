@@ -4,7 +4,7 @@
  */
 
 import { Command, flags } from '@microsoft/bf-cli-command';
-import * as gen from '../../library/formGenerator'
+import * as gen from '../../library/dialogGenerator'
 import * as ppath from 'path'
 
 export default class GenerateDialog extends Command {

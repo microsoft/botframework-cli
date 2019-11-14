@@ -32,7 +32,7 @@ popd
 goto done
 
 :help
-echo formCopy [lubuild] [input] [output]
+echo genCopy [lubuild] [input] [output]
 echo lubuild default: yes
 echo input default: %TEMP%\sandwich.out
 echo output default: %%REPOS%%\botbuilder-dotnet\tests\Microsoft.Bot.Builder.TestBot.Json\Samples\GeneratedForm\
