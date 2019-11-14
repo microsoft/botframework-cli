@@ -217,10 +217,10 @@ export async function getConfigObject(input: string | undefined, recurse = false
         intentToReferFileMap.set(intentName, referenceFilePath)
         mappingsDict.set(filePath, intentToReferFileMap)
       }
-    });
+    })
   }
 
-  return mappingsDict;
+  return mappingsDict
 }
 
 export function parseJSON(input: string, appType: string) {

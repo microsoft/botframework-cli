@@ -55,7 +55,7 @@ export default class LuisCrossTrian extends Command {
   }
 
   private async writeLuFiles(fileIdToLuResourceMap: Map<string, any>, flags?: any) {
-    let newFolder;
+    let newFolder
     if (flags && flags.out) {
       newFolder = flags.out
       if (!path.isAbsolute(flags.out)) {
