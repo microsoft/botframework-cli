@@ -184,41 +184,41 @@ async function getConfigFiles(input: string | undefined, recurse = false): Promi
 }
 
 export async function getConfigObject(input: string | undefined, recurse = false) {
-  let luConfigs = await getConfigFiles(input, recurse);
-  if (luConfigs === undefined) {
+  let luConfigs = await getConfigFiles(input, recurse)
+  if (luConfigs.length === 0) {
     throw new CLIError(`Sorry, no .config file found in the folder: ${input}`)
   }
   if (luConfigs.length > 1) {
     throw new CLIError(`Sorry, multiple config files found in the folder: ${input}`)
   }
 
-  let mappingsDict = new Map<string, Map<string, string>>();
-  let luConfig: any = await getContentFromFile(luConfigs[0]);
+  let mappingsDict = new Map<string, Map<string, string>>()
+  let luConfig: any = await getContentFromFile(luConfigs[0])
   if (luConfig && luConfig !== '') {
-    let mappingLines = luConfig.split(/\r?\n/);
+    let mappingLines = luConfig.split(/\r?\n/)
     mappingLines.forEach((mappingLine: string) => {
-      let keyValuePair = mappingLine.split('->');
-      let key = keyValuePair[0];
-      let value = keyValuePair[1];
-      let filePath = key.split('#')[0].trim().replace(/\//g, '\\');
-      let intentName = key.split('#')[1].trim().replace(/\//g, '\\');
-      let referenceFilePath = value.trim().replace(/\//g, '\\');
+      let keyValuePair = mappingLine.split('->')
+      let key = keyValuePair[0]
+      let value = keyValuePair[1]
+      let filePath = key.split('#')[0].trim().replace(/\//g, '\\')
+      let intentName = key.split('#')[1].trim().replace(/\//g, '\\')
+      let referenceFilePath = value.trim().replace(/\//g, '\\')
       if (mappingsDict.has(filePath)) {
-        let intentToReferFileMap = mappingsDict.get(filePath);
+        let intentToReferFileMap = mappingsDict.get(filePath)
         if (intentToReferFileMap) {
-          if(intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referenceFilePath) {
+          if (intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referenceFilePath) {
             throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger ${intentName}`)
           } else {
-            intentToReferFileMap.set(intentName, referenceFilePath);
+            intentToReferFileMap.set(intentName, referenceFilePath)
           }
         }
       } else {
-        let intentToReferFileMap = new Map<string, string>();
-        intentToReferFileMap.set(intentName, referenceFilePath);
-        mappingsDict.set(filePath, intentToReferFileMap);
+        let intentToReferFileMap = new Map<string, string>()
+        intentToReferFileMap.set(intentName, referenceFilePath)
+        mappingsDict.set(filePath, intentToReferFileMap)
       }
     });
-  }  
+  }
 
   return mappingsDict;
 }
