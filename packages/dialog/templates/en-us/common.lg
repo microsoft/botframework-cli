@@ -66,6 +66,18 @@
 # cancel
 - Do you want to end the conversation? (yes/no)
 
+# setPropertyMessage(property, val)
+- IF: @{contains($expectedProperties, property)}
+- 
+- ELSE:
+- @{setUnexpectedPropertyMessage(property, val)}
+
+# setUnexpectedPropertyMessage(property, val)
+- IF:@{dialog[property]}
+- @{unexpectedPropertyChange(property, val, dialog[property])}
+- ELSE:
+- @{unexpectedPropertySet(property, val)}
+
 # unexpectedPropertySet(property, val)
 - @{name(property)} is set as @{value(property, val)}.
 
