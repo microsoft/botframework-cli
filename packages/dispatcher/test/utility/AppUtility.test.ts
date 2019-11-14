@@ -16,7 +16,7 @@ describe("Test Suite - utility/app_utility", () => {
     it("Test.0000 exampleFunctionUtilityWithFilename()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
         const linesToSkip: number = 1;
@@ -33,7 +33,7 @@ describe("Test Suite - utility/app_utility", () => {
             `process.cwd()=${process.cwd()}`);
         Utility.debuggingLog(
             `process.argv=${process.argv}`);
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         process.argv.push("--filename");
         process.argv.push(filename);
         process.argv.push("--labelColumnIndex");

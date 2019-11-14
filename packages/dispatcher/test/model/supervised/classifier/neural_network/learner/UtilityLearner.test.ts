@@ -27,7 +27,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
         const featurizer: NgramSubwordFeaturizer =
             LearnerUtility.exampleFunctionLoadFeaturizeTrainDataset(
                 0,
-                "data/Columnar/Email.tsv",
+                "resources/data/Columnar/Email.tsv",
                 0,
                 2,
                 1);
@@ -48,7 +48,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
         LearnerUtility.exampleFunctionPredictAndEvaluateTestDataset(
             featurizer,
             softmax,
-            "data/Columnar/EmailTest.tsv",
+            "resources/data/Columnar/EmailTest.tsv",
             0,
             2,
             1);
@@ -60,7 +60,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
         const featurizer: NgramSubwordFeaturizer =
             LearnerUtility.exampleFunctionLoadFeaturizeTrainDataset(
                 1024,
-                "data/Columnar/Email.tsv",
+                "resources/data/Columnar/Email.tsv",
                 0,
                 2,
                 1);
@@ -81,7 +81,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
         LearnerUtility.exampleFunctionPredictAndEvaluateTestDatasetHashing(
             featurizer,
             softmax,
-            "data/Columnar/EmailTest.tsv",
+            "resources/data/Columnar/EmailTest.tsv",
             0,
             2,
             1);
@@ -92,7 +92,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         LearnerUtility.exampleFunctionLoadFeaturizeTrainDataset(
             0,
-            "data/Columnar/Email.tsv",
+            "resources/data/Columnar/Email.tsv",
             0,
             2,
             1);
@@ -102,7 +102,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         LearnerUtility.exampleFunctionLoadTestDataset(
-            "data/Columnar/EmailTest.tsv",
+            "resources/data/Columnar/EmailTest.tsv",
             0,
             2,
             1);

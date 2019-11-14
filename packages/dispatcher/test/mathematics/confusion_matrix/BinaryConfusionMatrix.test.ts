@@ -559,4 +559,14 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
             `binaryConfusionMatrixMetrics.getRow1()=${binaryConfusionMatrixMetrics.getRow1()}` +
             `binaryConfusionMatrixMetrics.getColumn1()=${binaryConfusionMatrixMetrics.getColumn1()}`);
     });
+
+    it("Test.0500 getDerivedMetrics()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        assert.ok(binaryConfusionMatrixMetrics.getDerivedMetrics().support === 2,
+            `binaryConfusionMatrixMetrics.getTotal()=${binaryConfusionMatrixMetrics.getTotal()}` +
+            `binaryConfusionMatrixMetrics.getCell11()=${binaryConfusionMatrixMetrics.getCell11()}` +
+            `binaryConfusionMatrixMetrics.getRow1()=${binaryConfusionMatrixMetrics.getRow1()}` +
+            `binaryConfusionMatrixMetrics.getColumn1()=${binaryConfusionMatrixMetrics.getColumn1()}`);
+    });
 });

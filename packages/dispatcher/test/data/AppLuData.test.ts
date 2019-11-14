@@ -15,7 +15,7 @@ describe("Test Suite - data/app_lu_data", () => {
     it("Test.0000 exampleFunctionData", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "data/LU/skills/emailskill/en/Email.lu";
+        const filename: string = "resources/data/LU/skills/emailskill/en/Email.lu";
         process.argv.push("--filename");
         process.argv.push(filename);
         exampleFunctionData();

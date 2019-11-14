@@ -8,7 +8,7 @@ The package can consume two forms of input sources: LU and TSV columnar files. I
 In "src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner.ts", there are example functions demonstrating how to use bf-dispatcher to consume a LU or TSV file, iterate through batches of input utterance/label records, and train models to select most relevant utterance/intent pairs through an auto active learning process.
 
 ```
-export function exampleFunctionAutoActiveLearnerWithColumnarContent(
+export function mainAutoActiveLearnerWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
@@ -153,7 +153,7 @@ export function exampleFunctionAutoActiveLearnerWithColumnarContent(
 In "src/model/evaluation/cross_validation/AppCrossValidator.ts", there are example functions demonstrating how to use bf-dispatcher to run a Cross Validation process to evaluate model performance.
 
 ```
-export function exampleFunctionCrossValidatorWithColumnarContent(
+export function mainCrossValidatorWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,

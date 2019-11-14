@@ -19,7 +19,7 @@ import { NgramSubwordFeaturizer } from "../../../language_understanding/featuriz
 
 import { Utility } from "../../../../utility/Utility";
 
-export async function exampleFunctionAutoActiveLearnerWithLuContent(
+export async function mainAutoActiveLearnerWithLuContent(
     luContent: string,
     doAutoActiveLearning: boolean =
         AutoActiveLearner.defaultDoAutoActiveLearning,
@@ -152,7 +152,7 @@ export async function exampleFunctionAutoActiveLearnerWithLuContent(
     // -----------------------------------------------------------------------
 }
 
-export function exampleFunctionAutoActiveLearnerWithColumnarContent(
+export function mainAutoActiveLearnerWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
@@ -293,7 +293,7 @@ export function exampleFunctionAutoActiveLearnerWithColumnarContent(
     // -----------------------------------------------------------------------
 }
 
-export async function exampleFunctionAutoActiveLearner(): Promise<void> {
+export async function mainAutoActiveLearner(): Promise<void> {
     // -----------------------------------------------------------------------
     const dateTimeBeginInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
@@ -523,7 +523,7 @@ export async function exampleFunctionAutoActiveLearner(): Promise<void> {
         const aalResult: {
             "newLuData": LuData,
             "learner": SoftmaxRegressionSparse,
-            } = await exampleFunctionAutoActiveLearnerWithLuContent(
+            } = await mainAutoActiveLearnerWithLuContent(
             content,
             doAutoActiveLearning,
             aalLimitInitialNumberOfInstancesPerCategory,
@@ -565,7 +565,7 @@ export async function exampleFunctionAutoActiveLearner(): Promise<void> {
         const aalResult: {
             "newColumnarData": ColumnarData,
             "learner": SoftmaxRegressionSparse,
-            }  = exampleFunctionAutoActiveLearnerWithColumnarContent(
+            }  = mainAutoActiveLearnerWithColumnarContent(
             content,
             labelColumnIndex,
             textColumnIndex,
@@ -609,5 +609,5 @@ export async function exampleFunctionAutoActiveLearner(): Promise<void> {
 }
 
 if (require.main === module) {
-    exampleFunctionAutoActiveLearner().then(() => { return; });
+    mainAutoActiveLearner().then(() => { return; });
 }

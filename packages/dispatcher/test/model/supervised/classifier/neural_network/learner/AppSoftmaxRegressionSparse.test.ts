@@ -16,8 +16,8 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/app_so
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         AppSoftmaxRegressionSparse.exampleFunctionSoftmaxRegressionSparseMinibatching(
-            "data/Columnar/Email.tsv",
-            "data/Columnar/EmailTest.tsv",
+            "resources/data/Columnar/Email.tsv",
+            "resources/data/Columnar/EmailTest.tsv",
             0,
             2,
             1,

@@ -14,9 +14,9 @@ import { ColumnarContentEmail } from "../../../../data/ColumnarData.test";
 
 import { LuContentEmail } from "../../../../data/LuData.test";
 
-import { exampleFunctionAutoActiveLearnerWithColumnarContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
-import { exampleFunctionAutoActiveLearnerWithLuContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
-import { exampleFunctionAutoActiveLearner } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
+import { mainAutoActiveLearnerWithColumnarContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
+import { mainAutoActiveLearnerWithLuContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
+import { mainAutoActiveLearner } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
 
 import { ColumnarData } from "../../../../../src/data/ColumnarData";
 
@@ -27,13 +27,13 @@ import { Utility } from "../../../../../src/utility/Utility";
 import { UnitTestHelper } from "../../../../utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto_active_learner", () => {
-    it("Test.0000 exampleFunctionAutoActiveLearnerWithLuContent()", async function() {
+    it("Test.0000 mainAutoActiveLearnerWithLuContent()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newLuData": LuData,
             "learner": SoftmaxRegressionSparse,
-        } = await exampleFunctionAutoActiveLearnerWithLuContent(
+        } = await mainAutoActiveLearnerWithLuContent(
             LuContentEmail,
             AutoActiveLearner.defaultDoAutoActiveLearning,
             AutoActiveLearner.defaultAalLimitInitialNumberOfInstancesPerCategory,
@@ -45,13 +45,13 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         // const learner: SoftmaxRegressionSparse = aalResult.learner;
     });
 
-    it("Test.0100 exampleFunctionAutoActiveLearnerWithColumnarContent()", function() {
+    it("Test.0100 mainAutoActiveLearnerWithColumnarContent()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newColumnarData": ColumnarData,
             "learner": SoftmaxRegressionSparse,
-        } = exampleFunctionAutoActiveLearnerWithColumnarContent(
+        } = mainAutoActiveLearnerWithColumnarContent(
             ColumnarContentEmail,
             0,
             2,
@@ -66,10 +66,10 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         // const learner: SoftmaxRegressionSparse = aalResult.learner;
     });
 
-    it("Test.0200 exampleFunctionAutoActiveLearner()", async function() {
+    it("Test.0200 mainAutoActiveLearner()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "data/LU/skills/emailskill/en/Email.lu";
+        const filename: string = "resources/data/LU/skills/emailskill/en/Email.lu";
         process.argv.push("--filename");
         process.argv.push(filename);
         process.argv.push("--outputModelFilename");
@@ -88,12 +88,12 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         process.argv.push(`${AppSoftmaxRegressionSparse.defaultEpochs}`);
         process.argv.push("--learnerParameterMiniBatchSize");
         process.argv.push(`${32}`);
-        await exampleFunctionAutoActiveLearner();
+        await mainAutoActiveLearner();
     });
-    it("Test.0201 exampleFunctionAutoActiveLearner()", async function() {
+    it("Test.0201 mainAutoActiveLearner()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         process.argv.push("--filename");
         process.argv.push(filename);
         process.argv.push("--outputModelFilename");
@@ -118,6 +118,6 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         process.argv.push("2");
         process.argv.push("--linesToSkip");
         process.argv.push("1");
-        await exampleFunctionAutoActiveLearner();
+        await mainAutoActiveLearner();
     });
 });

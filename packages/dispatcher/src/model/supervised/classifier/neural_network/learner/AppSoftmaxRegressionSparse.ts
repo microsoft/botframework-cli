@@ -131,8 +131,8 @@ export class AppSoftmaxRegressionSparse {
 
 if (require.main === module) {
     AppSoftmaxRegressionSparse.exampleFunctionSoftmaxRegressionSparseMinibatching(
-        "data/Columnar/Email.tsv",
-        "data/Columnar/EmailTest.tsv",
+        "resources/data/Columnar/Email.tsv",
+        "resources/data/Columnar/EmailTest.tsv",
         100,
         AppSoftmaxRegressionSparse.defaultMiniBatchSize,
         0.00,

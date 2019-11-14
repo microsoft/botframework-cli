@@ -15,7 +15,7 @@ describe("Test Suite - data/app_columnar_data", () => {
     it("Test.0000 exampleFunctionData", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         process.argv.push("--filename");
         process.argv.push(filename);
         process.argv.push("--labelColumnIndex");

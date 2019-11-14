@@ -1451,7 +1451,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
         const lineIndexToStart: number = 1;
@@ -1483,7 +1483,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         const fileContent: string =
             Utility.loadFile(filename);
         const labelColumnIndex: number = 0;
@@ -1518,7 +1518,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         const fileContent: string =
             Utility.loadFile(filename);
         Utility.debuggingLog(
@@ -1531,7 +1531,7 @@ describe("Test Suite - utility/Utility", () => {
     // ---- TODO ----     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     // ---- TODO ----     Utility.debuggingLog(
     // ---- TODO ----         `process.cwd()=${process.cwd()}`);
-    // ---- TODO ----     const filename: string = "data/Columnar/Email.tsv";
+    // ---- TODO ----     const filename: string = "resources/data/Columnar/Email.tsv";
     // ---- TODO ----     const fileContent: string =
     // ---- TODO ----         Utility.loadFile(filename);
     // ---- TODO ----     Utility.debuggingLog(
@@ -1544,7 +1544,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
-        const filename: string = "data/Columnar/Email.tsv";
+        const filename: string = "resources/data/Columnar/Email.tsv";
         const fileExists: boolean =
             Utility.exists(filename);
         assert.ok(fileExists,
@@ -1555,7 +1555,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
-        const filename: string = "data/Columnar/Email.sss";
+        const filename: string = "resources/data/Columnar/Email.sss";
         const fileExists: boolean =
             Utility.exists(filename);
         assert.ok(!fileExists,

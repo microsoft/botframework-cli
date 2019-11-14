@@ -427,4 +427,31 @@ export class BinaryConfusionMatrixMetrics {
         //
         return this.getPositives();
     }
+
+    public getDerivedMetrics(): { [id:string]: Number; } {
+        const metrics: { [id:string]: Number; } = {};
+        metrics.positives = this.getPositives();
+        metrics.negatives = this.getNegatives();
+        metrics.positiveRatio = this.getPositiveRatio();
+        metrics.negativeRatio = this.getNegativeRatio();
+        metrics.predictedPositives = this.getPredictedPositives();
+        metrics.predictedNegatives = this.getPredictedNegatives();
+        metrics.predictedPositiveRatio = this.getPredictedPositiveRatio();
+        metrics.predictedNegativeRatio = this.getPredictedNegativeRatio();
+        metrics.truePositives = this.getTruePositives();
+        metrics.truePositiveRatio = this.getTruePositiveRatio();
+        metrics.trueNegatives = this.getTrueNegatives();
+        metrics.trueNegativeRatio = this.getTrueNegativeRatio();
+        metrics.falsePositives = this.getFalsePositives();
+        metrics.falsePositiveRatio = this.getFalsePositiveRatio();
+        metrics.falseNegatives = this.getFalseNegatives();
+        metrics.falseNegativeRatio = this.getFalseNegativeRatio();
+        metrics.positiveNegativeRatio = this.getPositiveNegativeRatio();
+        metrics.negativePositiveRatio = this.getNegativePositiveRatio();
+        metrics.precision = this.getPrecision();
+        metrics.recall = this.getRecall();
+        metrics.f1Score = this.getF1Score();
+        metrics.support = this.getSupport();
+        return metrics;
+    }
 }

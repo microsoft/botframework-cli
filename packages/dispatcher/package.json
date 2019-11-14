@@ -4,14 +4,15 @@
   "version": "1.0.0",
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
+  "main": "lib/parser/index.js",
   "dependencies": {
-    "@microsoft/bf-lu": "^1.0.0",
+    "@microsoft/bf-lu": "1.0.0",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@microsoft/bf-lu": "^1.0.0",
+    "@microsoft/bf-lu": "1.0.0",
     "@oclif/dev-cli": "^1.22.2",
     "@oclif/plugin-help": "^2.2.1",
     "@oclif/test": "^1.2.5",
@@ -51,7 +52,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "microsoft/botframework-cli",
+  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/dispatcher",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",

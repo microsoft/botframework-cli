@@ -13,6 +13,8 @@ import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_n
 
 // import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
 
+import { BinaryConfusionMatrixMetrics } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
+
 import { ConfusionMatrix } from "../confusion_matrix/ConfusionMatrix";
 
 import { ColumnarData } from "../../../data/ColumnarData";
@@ -23,7 +25,7 @@ import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/
 
 import { Utility } from "../../../utility/Utility";
 
-export async function exampleFunctionCrossValidatorWithLuContent(
+export async function mainCrossValidatorWithLuContent(
     luContent: string,
     numberOfCrossValidationFolds: number =
         CrossValidator.defaultNumberOfCrossValidationFolds,
@@ -142,7 +144,7 @@ export async function exampleFunctionCrossValidatorWithLuContent(
     // -----------------------------------------------------------------------
 }
 
-export function exampleFunctionCrossValidatorWithColumnarContent(
+export function mainCrossValidatorWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
@@ -267,7 +269,7 @@ export function exampleFunctionCrossValidatorWithColumnarContent(
     // -----------------------------------------------------------------------
 }
 
-export async function exampleFunctionCrossValidator(): Promise<void> {
+export async function mainCrossValidator(): Promise<void> {
     // -----------------------------------------------------------------------
     const dateTimeBeginInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
@@ -461,7 +463,7 @@ export async function exampleFunctionCrossValidator(): Promise<void> {
         Utility.loadFile(filename);
     if (filename.endsWith(".lu")) {
         const confusionMatrixCrossValidation: ConfusionMatrix =
-            await exampleFunctionCrossValidatorWithLuContent(
+            await mainCrossValidatorWithLuContent(
                 content,
                 numberOfCrossValidationFolds,
                 learnerParameterEpochs,
@@ -487,7 +489,7 @@ export async function exampleFunctionCrossValidator(): Promise<void> {
         Utility.debuggingLog(
             `linesToSkip=${linesToSkip}`);
         const confusionMatrixCrossValidation: ConfusionMatrix =
-            exampleFunctionCrossValidatorWithColumnarContent(
+            mainCrossValidatorWithColumnarContent(
                 content,
                 labelColumnIndex,
                 textColumnIndex,
@@ -500,10 +502,23 @@ export async function exampleFunctionCrossValidator(): Promise<void> {
                 learnerParameterLossEarlyStopRatio,
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
+        const crossValidationBinaryConfusionMatrixMetrics: BinaryConfusionMatrixMetrics[] = 
+            confusionMatrixCrossValidation.getBinaryConfusionMatrices();
+        const labelMap: { [id: string]: number; } =
+            confusionMatrixCrossValidation.getLabelMap();
+        const labelBinaryConfusionMatrixMetricMap: { [id: string]: BinaryConfusionMatrixMetrics; } =
+            Object.entries(labelMap).reduce((accumulant, [id, value]) => ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value]}), {});
+        const labelBinaryConfusionMatrixDerivedMetricMap: { [id: string]: { [id: string]: number }; } =
+            Object.entries(labelMap).reduce((accumulant, [id, value]) => ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value].getDerivedMetrics()}), {});
+        const serialized: any = {
+            labelBinaryConfusionMatrixMetricMap,
+            labelBinaryConfusionMatrixDerivedMetricMap,
+            confusionMatrixCrossValidation,
+        };
         if (!Utility.isEmptyString(outputFilename)) {
             Utility.dumpFile(
                 outputFilename,
-                JSON.stringify(confusionMatrixCrossValidation, undefined, 4));
+                JSON.stringify(serialized, undefined, 4));
         }
     }
     // -----------------------------------------------------------------------
@@ -517,5 +532,5 @@ export async function exampleFunctionCrossValidator(): Promise<void> {
 }
 
 if (require.main === module) {
-    exampleFunctionCrossValidator().then(() => { return; });
+    mainCrossValidator().then(() => { return; });
 }
