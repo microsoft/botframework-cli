@@ -9,6 +9,11 @@
     "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
     "actions": [        
         {
+            "$type": "Microsoft.SetProperty",
+            "property": "$lastExpectedProperty",
+            "value": "'@{property}'"
+        },
+        {
             "$type": "Microsoft.Ask",
             "activity": "@{callAsk()}",
             "expectedProperties": [
