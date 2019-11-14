@@ -44,6 +44,7 @@
     "nyc": "^13.3.0",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
+    "rimraf": "^2.6.3",
     "typescript": "^3.5.3"
   },
   "engines": {
@@ -69,9 +70,9 @@
   },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
+    "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md",
     "documentation": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme && rimraf oclif.manifest.json"

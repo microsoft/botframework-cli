@@ -32,6 +32,7 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.6",
     "nyc": "^13.3.0",
+    "rimraf": "^2.6.3",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
@@ -58,9 +59,10 @@
   },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/lu",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
+    "buildLu": "rimraf lib && tsc -b",
+    "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.**\"",
     "version": "oclif-dev readme && git add README.md",
     "documentation": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme && rimraf oclif.manifest.json"
