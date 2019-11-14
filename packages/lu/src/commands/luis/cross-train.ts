@@ -15,12 +15,13 @@ export default class LuisCrossTrian extends Command {
   static description = 'Convert interuption intents among .lu file(s)'
 
   static flags: flags.Input<any> = {
-    in: flags.string({description: 'Source .lu file(s)'}),
-    root: flags.string({description: 'root lu files to do cross training'}),
-    recurse: flags.boolean({description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
+    help: flags.help({char: 'h', description: 'luis:cross-train help'}),
+    in: flags.string({char: 'i', description: 'Source .lu file(s)'}),
+    out: flags.string({char: 'o', description: 'Output folder name. If not specified, source lu file(s) will be updated'}),
+    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
-    out: flags.string({description: 'Output folder name. If not specified will update the folder of source lg file(s)'}),
-    intentname: flags.string({description: 'interuption intent name', default: '_Interuption'}),
+    root: flags.string({description: 'Root lu files to do cross training'}),
+    intentname: flags.string({description: 'Interuption intent name', default: '_Interuption'})
   }
 
   async run() {
