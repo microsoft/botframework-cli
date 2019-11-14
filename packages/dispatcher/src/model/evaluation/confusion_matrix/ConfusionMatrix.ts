@@ -9,6 +9,104 @@ import { Utility } from "../../../utility/Utility";
 
 export class ConfusionMatrix {
 
+    public static generateConfusionMatrixMetricStructure(
+        confusionMatrix: ConfusionMatrix): { "confusionMatrix": ConfusionMatrix,
+            "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
+            "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
+            "macroAverageMetrics": { "averagePrecision": number,
+                                     "averageRecall": number,
+                                     "averageF1Score": number,
+                                     "totalMacroAverage": number },
+            "microAverageMetrics": { "accuracy": number,
+                                     "truePositives": number,
+                                     "totalMicroAverage": number },
+            "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
+                                     "weightedAverageRecall": number,
+                                     "weightedAverageF1Score": number,
+                                     "weightedTotalMacroAverage": number } } {
+        const crossValidationBinaryConfusionMatrixMetrics: BinaryConfusionMatrixMetrics[] =
+            confusionMatrix.getBinaryConfusionMatrices();
+        const labelMap: { [id: string]: number; } =
+            confusionMatrix.getLabelMap();
+        const labelBinaryConfusionMatrixDerivedMetricMap: { [id: string]: { [id: string]: number }; } =
+            Object.entries(labelMap).reduce(
+                (accumulant, [id, value]) =>
+                ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value].getDerivedMetrics()}), {});
+        const labelBinaryConfusionMatrixMetricMap: { [id: string]: BinaryConfusionMatrixMetrics; } =
+            Object.entries(labelMap).reduce(
+                (accumulant, [id, value]) =>
+                ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value]}), {});
+        const microAverageMetricArray: [number, number, number] =
+            confusionMatrix.getMicroAverageMetrics();
+        const accuracy: number =
+            microAverageMetricArray[0];
+        const truePositives: number =
+            microAverageMetricArray[1];
+        const totalMicroAverage: number =
+            microAverageMetricArray[2];
+        const microAverageMetrics: { "accuracy": number,
+            "truePositives": number,
+            "totalMicroAverage": number } = { accuracy,
+            truePositives,
+            totalMicroAverage };
+        const macroAverageMetricArray: [number, number, number, number] =
+            confusionMatrix.getMacroAverageMetrics();
+        const averagePrecision: number =
+            macroAverageMetricArray[0];
+        const averageRecall: number =
+            macroAverageMetricArray[1];
+        const averageF1Score: number =
+            macroAverageMetricArray[2];
+        const totalMacroAverage: number =
+            macroAverageMetricArray[3];
+        const macroAverageMetrics: { "averagePrecision": number,
+            "averageRecall": number,
+            "averageF1Score": number,
+            "totalMacroAverage": number } = { averagePrecision,
+            averageRecall,
+            averageF1Score,
+            totalMacroAverage };
+        const weightedMacroAverageMetricArray: [number, number, number, number] =
+            confusionMatrix.getWeightedMacroAverageMetrics();
+        const weightedAveragePrecision: number =
+            weightedMacroAverageMetricArray[0];
+        const weightedAverageRecall: number =
+            weightedMacroAverageMetricArray[1];
+        const weightedAverageF1Score: number =
+            weightedMacroAverageMetricArray[2];
+        const weightedTotalMacroAverage: number =
+            weightedMacroAverageMetricArray[3];
+        const weightedMacroAverageMetrics: { "weightedAveragePrecision": number,
+            "weightedAverageRecall": number,
+            "weightedAverageF1Score": number,
+            "weightedTotalMacroAverage": number } = { weightedAveragePrecision,
+            weightedAverageRecall,
+            weightedAverageF1Score,
+            weightedTotalMacroAverage };
+        const confusionMatrixMetricStructure: { "confusionMatrix": ConfusionMatrix,
+            "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
+            "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
+            "macroAverageMetrics": { "averagePrecision": number,
+                                     "averageRecall": number,
+                                     "averageF1Score": number,
+                                     "totalMacroAverage": number },
+            "microAverageMetrics": { "accuracy": number,
+                                     "truePositives": number,
+                                     "totalMicroAverage": number },
+            "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
+                                     "weightedAverageRecall": number,
+                                     "weightedAverageF1Score": number,
+                                     "weightedTotalMacroAverage": number } } = {
+            confusionMatrix,
+            labelBinaryConfusionMatrixDerivedMetricMap,
+            labelBinaryConfusionMatrixMetricMap,
+            macroAverageMetrics,
+            microAverageMetrics,
+            weightedMacroAverageMetrics,
+            };
+        return confusionMatrixMetricStructure;
+    }
+
     protected labels: string[] = [];
     protected labelMap: { [id: string]: number; } = {};
     protected confusionMatrix: number[][] = [];

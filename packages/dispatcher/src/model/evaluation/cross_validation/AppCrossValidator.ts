@@ -502,23 +502,26 @@ export async function mainCrossValidator(): Promise<void> {
                 learnerParameterLossEarlyStopRatio,
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
-        const crossValidationBinaryConfusionMatrixMetrics: BinaryConfusionMatrixMetrics[] = 
-            confusionMatrixCrossValidation.getBinaryConfusionMatrices();
-        const labelMap: { [id: string]: number; } =
-            confusionMatrixCrossValidation.getLabelMap();
-        const labelBinaryConfusionMatrixMetricMap: { [id: string]: BinaryConfusionMatrixMetrics; } =
-            Object.entries(labelMap).reduce((accumulant, [id, value]) => ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value]}), {});
-        const labelBinaryConfusionMatrixDerivedMetricMap: { [id: string]: { [id: string]: number }; } =
-            Object.entries(labelMap).reduce((accumulant, [id, value]) => ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value].getDerivedMetrics()}), {});
-        const serialized: any = {
-            labelBinaryConfusionMatrixMetricMap,
-            labelBinaryConfusionMatrixDerivedMetricMap,
-            confusionMatrixCrossValidation,
-        };
+        const confusionMatrixMetricStructure: { "confusionMatrix": ConfusionMatrix,
+            "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
+            "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
+            "macroAverageMetrics": { "averagePrecision": number,
+                                     "averageRecall": number,
+                                     "averageF1Score": number,
+                                     "totalMacroAverage": number },
+            "microAverageMetrics": { "accuracy": number,
+                                     "truePositives": number,
+                                     "totalMicroAverage": number },
+            "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
+                                     "weightedAverageRecall": number,
+                                     "weightedAverageF1Score": number,
+                                     "weightedTotalMacroAverage": number } } =
+            ConfusionMatrix.generateConfusionMatrixMetricStructure(
+                confusionMatrixCrossValidation);
         if (!Utility.isEmptyString(outputFilename)) {
             Utility.dumpFile(
                 outputFilename,
-                JSON.stringify(serialized, undefined, 4));
+                JSON.stringify(confusionMatrixMetricStructure, undefined, 4));
         }
     }
     // -----------------------------------------------------------------------

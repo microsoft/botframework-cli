@@ -11,11 +11,11 @@ import { mainCrossValidatorWithColumnarContent } from "./model/evaluation/cross_
 import { mainCrossValidatorWithLuContent } from "./model/evaluation/cross_validation/AppCrossValidator";
 import { mainCrossValidator } from "./model/evaluation/cross_validation/AppCrossValidator";
 
- export default {
+export default {
+    mainAutoActiveLearner,
     mainAutoActiveLearnerWithColumnarContent,
     mainAutoActiveLearnerWithLuContent,
-    mainAutoActiveLearner,
+    mainCrossValidator,
     mainCrossValidatorWithColumnarContent,
     mainCrossValidatorWithLuContent,
-    mainCrossValidator,
 };

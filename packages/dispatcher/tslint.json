@@ -1,3 +1,20 @@
 {
-  "extends": "tslint:recommended"
+  "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": [
+    ]
+  },
+  "rules": {
+    "ordered-imports": [false],
+    "object-literal-sort-keys": [false],
+    "file-header": [
+      true,
+      {
+        "match": "Copyright \\(c\\) Microsoft Corporation\\.*",
+        "allow-single-line-comments": false,
+        "default": "Copyright (c) Microsoft Corporation. All rights reserved.\nLicensed under the MIT License.",
+        "enforce-trailing-newline": false
+      }
+    ]
+  }
 }

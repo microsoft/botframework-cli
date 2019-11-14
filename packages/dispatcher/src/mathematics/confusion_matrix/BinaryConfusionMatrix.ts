@@ -428,8 +428,8 @@ export class BinaryConfusionMatrixMetrics {
         return this.getPositives();
     }
 
-    public getDerivedMetrics(): { [id:string]: Number; } {
-        const metrics: { [id:string]: Number; } = {};
+    public getDerivedMetrics(): { [id: string]: number; } {
+        const metrics: { [id: string]: number; } = {};
         metrics.positives = this.getPositives();
         metrics.negatives = this.getNegatives();
         metrics.positiveRatio = this.getPositiveRatio();
