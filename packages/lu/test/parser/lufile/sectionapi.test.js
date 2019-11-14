@@ -6,7 +6,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const luparser = require('./../../../src/parser/lufile/luParser');
 const SectionOperator = require('./../../../src/parser/lufile/sectionOperator');
-const LUSectionTypes = require('./../../../src/parser/lufile/enums/lusectiontypes');
+const LUSectionTypes = require('./../../../src/parser/utils/enums/lusectiontypes');
 
 describe('Section CRUD test', () => {
     let luresource = undefined;
