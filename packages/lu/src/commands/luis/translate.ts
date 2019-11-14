@@ -7,11 +7,11 @@ import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
 const fileHelper = require('./../../utils/filehelper')
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const luTranslator = require('./../../parser/translator/lutranslate')
-const luisConverter = require('./../../parser/converters/luistoluconverter')
-const luConverter = require('./../../parser/lufile/parseFileContents')
-const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
+const Lu = require('./../../parser/lu/lu')
+const Luis = require('./../../parser/luis/luis')
 
 export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'
@@ -36,22 +36,30 @@ export default class LuisTranslate extends Command {
       // Check if data piped in stdin
       let stdin = await this.readStdin()
       let isLu = await fileHelper.detectLuContent(stdin, flags.in)
-      let result: any
+      let result: any = {}
 
       if (isLu) {
         let luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
-        result = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let translatedLuFiles = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        luFiles.forEach((lu: any) => {
+          if (!result[lu.id]) {
+            result[lu.id] = {}
+          }
+          translatedLuFiles[lu.id].forEach((t: any) => {
+            result[t.id][t.language] = t.content
+          })
+        })
       } else {
         let json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
-        let translation = await luisConverter.parseLuisObjectToLu(json, false)
-        translation = await luTranslator.translateLuObj(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        let luisObject = new Luis(fileHelper.parseJSON(json, 'Luis'))
         let key = stdin ? 'stdin' : path.basename(flags.in)
+        let translation = new Lu(luisObject.parseToLuContent(), key)
+        let translatedLuis = await luTranslator.translateLu(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         result = {
           [key] : {}
         }
-        for (let lng in translation) {
-          let translatedJSON = await luConverter.parseFile(translation[lng], false)
-          result[key][lng] = await translatedJSON.LUISJsonStructure
+        for (let lu of translatedLuis) {
+          result[key][lu.language] = await lu.parseToLuis()
         }
       }
 

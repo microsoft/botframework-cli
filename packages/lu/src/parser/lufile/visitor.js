@@ -1,5 +1,5 @@
 const lp = require('./generated/LUFileParser').LUFileParser;
-const LUISObjNameEnum = require('./enums/luisobjenum');
+const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 
 class Visitor {
     /**

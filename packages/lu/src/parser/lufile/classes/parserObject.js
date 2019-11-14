@@ -2,9 +2,9 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-const QnA = require('./qna');
-const LUIS = require('./LUIS');
-const qnaAlterations = require('./qnaAlterations');
+const QnA = require('./../../qna/qnamaker/qnamaker');
+const LUIS = require('./../../luis/luis');
+const qnaAlterations = require('./../../qna/alterations/alterations');
 class parserObject {
     /**
      * @property {FileToParse []} additionalFilesToParse
@@ -28,7 +28,7 @@ class parserObject {
         this.additionalFilesToParse = [];
         this.LUISJsonStructure = new LUIS();
         this.qnaJsonStructure = new QnA();
-        this.qnaAlterations = new qnaAlterations.qnaAlterations();
+        this.qnaAlterations = new qnaAlterations();
         this.srcFile = undefined;
         this.includeInCollate = true;
     }
@@ -45,7 +45,7 @@ parserObject.create = function(LUISJsonStructure, qnaJsonStructure, lQnaAlterati
     let parserObj = new parserObject();
     parserObj.LUISJsonStructure = (LUISJsonStructure || new LUIS());
     parserObj.qnaJsonStructure = (qnaJsonStructure || new QnA());
-    parserObj.qnaAlterations = (lQnaAlterations || new qnaAlterations.qnaAlterations());
+    parserObj.qnaAlterations = (lQnaAlterations || new qnaAlterations());
     parserObj.srcFile = (srcFile || undefined);
     if(includeInCollate === undefined) parserObj.includeInCollate = true;
     else parserObj.includeInCollate = includeInCollate;
