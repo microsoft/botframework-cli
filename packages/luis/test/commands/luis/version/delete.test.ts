@@ -52,7 +52,7 @@ describe('luis:version:delete', () => {
   .stderr()
   .command(['luis:version:delete', '--appId', uuidv1(), '--versionId', '0.2', '--endpoint', 'undefined', '--subscriptionKey', uuidv1()])
   .it('fails to delete an app and displays an error message if the endpoint is undefined', ctx => {
-    expect(ctx.stderr).to.contain('Failed to delete app')
+    expect(ctx.stderr).to.contain('Failed to delete app version')
   })
 
 })
