@@ -39,7 +39,7 @@ describe('luis:application:delete', () => {
   test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .delete(uri => uri.includes('apps'))
-  .reply(200, {'status': 'success'})
+  .reply(200, {'code': 'Success'})
   )
   .stdout()
   .command(['luis:application:delete', '--appId', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1()])

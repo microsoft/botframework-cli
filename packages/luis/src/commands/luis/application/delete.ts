@@ -38,8 +38,10 @@ export default class LuisApplicationDelete extends Command {
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
-      await client.apps.deleteMethod(appId)
-      this.log('App successfully deleted.')
+      const result = await client.apps.deleteMethod(appId)
+      if (result.code === 'Success') {
+        this.log('App successfully deleted.')
+      }
     } catch (err) {
       throw new CLIError(`Failed to delete app: ${err}`)
     }
