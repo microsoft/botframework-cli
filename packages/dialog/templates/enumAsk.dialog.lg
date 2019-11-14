@@ -9,20 +9,10 @@
     "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
-            "condition":"$lastExpectedProperty == '@{property}'",
-            "actions":[
-                {
-                    "$type": "Microsoft.SendActivity",
-                    "activity": "@{callHelp()}"
-                }
-                    
-            ]
-        },
-        {
-            "$type": "Microsoft.SetProperty",
-            "property": "$lastExpectedProperty",
-            "value": "'@{property}'"
+           
+            "$type": "Microsoft.SendActivity",
+            "activity": "@{callAskHelp()}"
+                
         },
         {
             "$type": "Microsoft.Ask",
@@ -40,3 +30,6 @@
 
 # callHelp
 - @\{help(@PropertyName)}
+
+# callAskHelp
+- @\{askHelp()}
