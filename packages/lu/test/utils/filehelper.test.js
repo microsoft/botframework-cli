@@ -1,8 +1,7 @@
 const utils = require('@microsoft/bf-cli-command').utils
 const expect = require('chai').expect;   
 const fileHelper = require('./../../src/utils/filehelper')
-const luObject = require('./../../src/parser/lufile/classes/luObject')
-const fs = require('fs-extra')
+const luObject = require('./../../src/parser/lu/lu')
 const path = require('path')
 
 describe('utils/filehelper test', () => {
@@ -11,7 +10,7 @@ describe('utils/filehelper test', () => {
             let expected = []
             let pathToFile = path.resolve(path.join(__dirname, './../fixtures/file.lu'))
             let content = await utils.readTextFile(pathToFile)
-            expected.push(new luObject(pathToFile, content))
+            expected.push(new luObject(content, pathToFile))
             let luObjArray = await fileHelper.getLuObjects('', pathToFile)
             expect(luObjArray).to.deep.equal(expected)
         }catch(err){
@@ -31,7 +30,7 @@ describe('utils/filehelper test', () => {
             - Good evening`
             let luObjArray = await fileHelper.getLuObjects(content, '')
             let expected = []
-            expected.push(new luObject('stdin', content))
+            expected.push(new luObject(content, 'stdin'))
             expect(luObjArray).to.deep.equal(expected)
         }catch(err){
             console.log(err)

@@ -12,41 +12,27 @@
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @microsoft/bf-luis-cli
-$ oclif-example COMMAND
-running command...
-$ oclif-example (-v|--version|version)
-@microsoft/bf-luis-cli/0.0.0 win32-x64 node-v10.16.3
-$ oclif-example --help [COMMAND]
-USAGE
-  $ oclif-example COMMAND
-...
-```
-<!-- usagestop -->
+
 # Commands
 <!-- commands -->
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
+* [`bf luis:version:clone`](#bf-luisversionclone)
 
-## `oclif-example hello [FILE]`
+## `bf luis:version:clone`
 
-describe the command here
+Creates a new version equivalent to the current snapshot of the selected application version.
 
 ```
 USAGE
-  $ oclif-example hello [FILE]
+  $ bf luis:version:clone --appId {APP_ID} --versionId {VERSION_ID} --targetVersionId {TARGET_VERSION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+  -h, --help          show CLI help
+  --appId             LUIS application Id
+  --versionId         LUIS version Id
+  --targetVersionId   LUIS target version Id
+  --endpoint          LUIS endpoint hostname
+  --subscriptionKey   LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
 ```
 
-_See code: [src\commands\hello.ts](https://github.com/packages/bf-luis-cli/blob/v0.0.0/src\commands\hello.ts)_
+_See code: [src\commands\luis\version\clone.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/clone/index.ts)_
 <!-- commandsstop -->

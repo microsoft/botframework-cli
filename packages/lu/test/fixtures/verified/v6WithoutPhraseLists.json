@@ -1,0 +1,75 @@
+{
+  "intents": [
+    {
+      "name": "test"
+    }
+  ],
+  "entities": [
+    {
+      "name": "address",
+      "roles": [],
+      "children": [
+        {
+          "name": "doorNumber",
+          "instanceOf": "number",
+          "children": []
+        },
+        {
+          "name": "streetName",
+          "instanceOf": null,
+          "children": []
+        },
+        {
+          "name": "city",
+          "instanceOf": "geographyV2",
+          "children": []
+        },
+        {
+          "name": "zipcode",
+          "instanceOf": "zipRegex",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [
+    {
+      "name": "zipRegex",
+      "regexPattern": "[0-9]{5}",
+      "roles": []
+    }
+  ],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "one",
+      "intent": "test",
+      "entities": []
+    },
+    {
+      "text": "two",
+      "intent": "test",
+      "entities": []
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [
+    {
+      "name": "number",
+      "roles": []
+    },
+    {
+      "name": "geographyV2",
+      "roles": []
+    }
+  ],
+  "name": "test app",
+  "desc": "test",
+  "versionId": "0.1",
+  "culture": "en-us",
+  "luis_schema_version": "6.0.0",
+  "phraselists": []
+}
