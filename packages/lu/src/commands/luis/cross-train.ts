@@ -1,8 +1,9 @@
 import { CLIError, Command, flags } from '@microsoft/bf-cli-command'
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const fs = require('fs-extra')
 const path = require('path')
 const file = require('./../../utils/filehelper')
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 const interuptionConverter = require('./../../parser/converters/interuptionconverter')
 
 export default class LuisCrossTrian extends Command {
@@ -23,12 +24,12 @@ export default class LuisCrossTrian extends Command {
 
       //Check if file or folder
       //if folder, only lu to luis is supported
-      let isLu = await file.detectLuContent(undefined, flags.in)
+      const isLu = await file.detectLuContent(undefined, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isLu && flags.root) {
-        const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse);
+        const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile);
         const rootFiles = await file.getLuObjects(undefined, flags.root);
         const luConfigObject = await file.getConfigObject(flags.in, flags.recurse);
         result = await interuptionConverter.convertInteruption(luFiles, rootFiles, luConfigObject, flags.intentname, flags.log);

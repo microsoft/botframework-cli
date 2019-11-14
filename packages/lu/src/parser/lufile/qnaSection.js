@@ -1,5 +1,5 @@
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
-const LUSectionTypes = require('../utils/enums/lusectiontypes'); 
+const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const uuidv4 = require('uuid/v4');
 
 class QnaSection {

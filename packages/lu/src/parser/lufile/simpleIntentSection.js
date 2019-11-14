@@ -4,7 +4,7 @@ const NewEntitySection = require('./newEntitySection');
 const visitor = require('./visitor');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const LUSectionTypes = require('../utils/enums/lusectiontypes'); 
+const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const uuidv4 = require('uuid/v4');
 
 class SimpleIntentSection {

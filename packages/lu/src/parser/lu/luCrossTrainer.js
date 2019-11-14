@@ -1,9 +1,9 @@
-const retCode = require('./../lufile/enums/CLI-errors')
-const helpers = require('./../lufile/helpers')
-const exception = require('./../lufile/classes/exception')
-const luParser = require('../lufile/luParser');
+const retCode = require('./../utils/enums/CLI-errors')
+const helpers = require('./../utils/helpers')
+const exception = require('./../utils/exception')
+const luParser = require('./../lufile/luParser');
 const SectionOperator = require('./../lufile/sectionOperator');
-const LUSectionTypes = require('./../lufile/enums/lusectiontypes');
+const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 
 module.exports = {
     /**

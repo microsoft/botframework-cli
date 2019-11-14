@@ -1,6 +1,6 @@
 const NestedIntentSectionContext = require('./generated/LUFileParser').LUFileParser.NestedIntentSectionContext
 const SimpleIntentSection = require('./simpleIntentSection');
-const LUSectionTypes = require('../utils/enums/lusectiontypes'); 
+const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const uuidv4 = require('uuid/v4');
 
 class NestedIntentSection {

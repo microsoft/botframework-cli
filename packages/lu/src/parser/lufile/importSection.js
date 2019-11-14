@@ -1,6 +1,6 @@
 const ImportSectionContext = require('./generated/LUFileParser').LUFileParser.ImportSectionContext;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const LUSectionTypes = require('../utils/enums/lusectiontypes'); 
+const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const uuidv4 = require('uuid/v4');
 
 class ImportSection {

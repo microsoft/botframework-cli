@@ -163,7 +163,6 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-<<<<<<< HEAD:packages/luis/src/utils/filehelper.ts
 async function getConfigFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
   let filesToParse = []
   let fileStat = await fs.stat(input)
@@ -223,7 +222,7 @@ export async function getConfigObject(input: string | undefined, recurse = false
 
   return mappingsDict;
 }
-=======
+
 export function parseJSON(input: string, appType: string) {
   try {
     return JSON.parse(input)
@@ -231,4 +230,3 @@ export function parseJSON(input: string, appType: string) {
     throw new CLIError(`Sorry, error parsing content as ${appType} JSON`)
   }
 }
->>>>>>> master:packages/lu/src/utils/filehelper.ts

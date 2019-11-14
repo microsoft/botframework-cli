@@ -11,7 +11,7 @@ const ImportSection = require('./importSection');
 const QnaSection = require('./qnaSection');
 const ModelInfoSection = require('./modelInfoSection');
 const LUErrorListener = require('./luErrorListener');
-const SectionType = require('./enums/lusectiontypes');
+const SectionType = require('./../utils/enums/lusectiontypes');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 

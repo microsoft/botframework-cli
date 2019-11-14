@@ -1,5 +1,5 @@
 const luParser = require('./luParser');
-const helpers = require('../utils/helpers');
+const helpers = require('./../utils/helpers');
   
 class SectionOperator {
 

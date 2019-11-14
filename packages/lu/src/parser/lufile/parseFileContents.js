@@ -3,18 +3,11 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-<<<<<<< HEAD:packages/luis/src/parser/lufile/parseFileContents.js
-const LUISObjNameEnum = require('./enums/luisobjenum');
-const PARSERCONSTS = require('./enums/parserconsts');
-const builtInTypes = require('./enums/luisbuiltintypes');
-const SectionType = require('./enums/lusectiontypes');
-const helpers = require('./helpers');
-=======
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 const PARSERCONSTS = require('./../utils/enums/parserconsts');
 const builtInTypes = require('./../utils/enums/luisbuiltintypes');
 const helpers = require('./../utils/helpers');
->>>>>>> master:packages/lu/src/parser/lufile/parseFileContents.js
+const SectionType = require('./../utils/enums/lusectiontypes');
 const chalk = require('chalk');
 const url = require('url');
 const retCode = require('./../utils/enums/CLI-errors');
@@ -31,14 +24,9 @@ const fileToParse = require('./classes/filesToParse');
 const luParser = require('./luParser');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-<<<<<<< HEAD:packages/luis/src/parser/lufile/parseFileContents.js
-const EntityTypeEnum = require('./enums/luisEntityTypes');
-const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
-const SimpleIntentSection = require('./simpleIntentSection');
-=======
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
->>>>>>> master:packages/lu/src/parser/lufile/parseFileContents.js
+const SimpleIntentSection = require('./simpleIntentSection');
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -424,35 +412,20 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-<<<<<<< HEAD:packages/luis/src/parser/lufile/parseFileContents.js
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine());
-=======
-                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
->>>>>>> master:packages/lu/src/parser/lufile/parseFileContents.js
+                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
-<<<<<<< HEAD:packages/luis/src/parser/lufile/parseFileContents.js
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.entityFeatureToModel[entityExists.type]);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
                         validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityDefinition().newEntityLine());
-                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
-=======
-                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel[entityExists.type]);
-                        }
-                    } else if (featureIntentExists) {
-                        // Add intent as a feature to another intent
-                        validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.intentFeatureToModel);
->>>>>>> master:packages/lu/src/parser/lufile/parseFileContents.js
+                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.intentFeatureToModel);
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an intent. No definition found for feature "${feature}" in usesFeature definition for intent "${section.Name}"`;
@@ -486,35 +459,20 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     if (featureExists) {
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-<<<<<<< HEAD:packages/luis/src/parser/lufile/parseFileContents.js
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine());
-=======
-                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
->>>>>>> master:packages/lu/src/parser/lufile/parseFileContents.js
+                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
-<<<<<<< HEAD:packages/luis/src/parser/lufile/parseFileContents.js
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.entityFeatureToModel[featureExists.type]);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
                         validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityDefinition().newEntityLine());
-                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine());
-=======
-                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel[featureExists.type]);
-                        }
-                    } else if (featureIntentExists) {
-                        // Add intent as a feature to another intent
-                        validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.intentFeatureToModel);
->>>>>>> master:packages/lu/src/parser/lufile/parseFileContents.js
+                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.intentFeatureToModel);
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an entity. No definition found for feature "${feature}" in usesFeature definition for entity "${section.Name}"`;
