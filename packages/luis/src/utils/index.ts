@@ -43,16 +43,17 @@ const getPropFromConfig = async (prop: string, configDir: string) => {
   }
 }
 
-const processInputs = async (flags: any, configDir: string, prefix: string) => {
+const processInputs = async (flags: any, flagLabels: string[], configDir: string) => {
+  const configPrefix = 'luis__'
   let config = await getUserConfig(configDir)
-  config = config ? filterConfig(config, prefix) : config
-  const input = {
-    appId: flags.appId || (config ? config.luis__appId : null),
-    endpoint: flags.endpoint || (config ? config.luis__endpoint : null),
-    subscriptionKey: flags.subscriptionKey || (config ? config.luis__subscriptionKey : null),
-    versionId: flags.versionId || (config ? config.luis__versionId : null),
-    targetVersionId: flags.targetVersionId || (config ? config.luis__targetVersionId : null)
-  }
+  config = config ? filterConfig(config, configPrefix) : config
+  const input: any = {}
+  flagLabels
+    .filter(flag => flag !== 'help')
+    .map((flag: string) => {
+      input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
+    })
+
   return input
 }
 
