@@ -23,7 +23,7 @@
     "@types/rimraf": "^2.0.3",
     "chai": "^4.2.0",
     "globby": "^10.0.1",
-    "mocha": "^5.2.0",
+    "mocha": "^6.2.2",
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "sinon": "^7.5.0",
@@ -55,6 +55,7 @@
   },
   "repository": "packages/bf-luis-cli",
   "scripts": {
+    "build": "tsc -b",
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
