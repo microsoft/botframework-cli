@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const file = require('./../../utils/filehelper')
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
-const interuptionConverter = require('./../../parser/converters/interuptionconverter')
+const luCrossTrainer = require('./../../parser/lu/luCrossTrainer')
 
 export default class LuisCrossTrian extends Command {
   static description = 'Convert interuption intents among .lu file(s)'
@@ -32,7 +32,7 @@ export default class LuisCrossTrian extends Command {
         const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile);
         const rootFiles = await file.getLuObjects(undefined, flags.root);
         const luConfigObject = await file.getConfigObject(flags.in, flags.recurse);
-        result = await interuptionConverter.convertInteruption(luFiles, rootFiles, luConfigObject, flags.intentname, flags.log);
+        result = await luCrossTrainer.convertInteruption(luFiles, rootFiles, luConfigObject, flags.intentname, flags.log);
       } 
 
       // If result is null or undefined return

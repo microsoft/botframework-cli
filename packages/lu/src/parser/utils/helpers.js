@@ -25,7 +25,8 @@ const helpers = {
      */
     FileExtTypeEnum: {
         LUFile : '.lu',
-        QnAFile : '.qna'
+        QnAFile : '.qna',
+        CROSSTRAINCONFIG: '.config'
     },
     /**
      * Helper function to recursively get all .lu files
@@ -34,17 +35,15 @@ const helpers = {
      * @param {FileExtTypeEnum} extType indicates if we should look for LUFile or QnAFile
      * @returns {Array} Array of .lu files found
     */
-<<<<<<< HEAD:packages/luis/src/parser/lufile/helpers.js
-    findLUFiles: function (inputFolder, getSubFolders) {
+    findLUFiles: function (inputFolder, getSubFolders, extType = this.FileExtTypeEnum.LUFile) {
         let results = [];
-        const luExt = '.lu';
         fs.readdirSync(inputFolder).forEach(function (dirContent) {
             dirContent = path.resolve(inputFolder, dirContent);
             if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
                 results = results.concat(helpers.findLUFiles(dirContent, getSubFolders));
             }
             if (fs.statSync(dirContent).isFile()) {
-                if (dirContent.endsWith(luExt)) {
+                if (dirContent.endsWith(extType)) {
                     results.push(dirContent);
                 }
             }
@@ -55,9 +54,10 @@ const helpers = {
      * Helper function to recursively get all .config files
      * @param {string} inputfolder input folder name
      * @param {boolean} getSubFolder indicates if we should recursively look in sub-folders as well
+     * @param {FileExtTypeEnum} extType indicates if we should look for LUFile or QnAFile or cross train config file
      * @returns {Array} Array of .config files found
     */
-    findConfigFiles: function (inputFolder, getSubFolders) {
+    findConfigFiles: function (inputFolder, getSubFolders, extType = this.FileExtTypeEnum.CROSSTRAINCONFIG) {
         let results = [];
         const luExt = '.config';
         fs.readdirSync(inputFolder).forEach(function (dirContent) {
@@ -66,18 +66,7 @@ const helpers = {
                 results = results.concat(helpers.findConfigFiles(dirContent, getSubFolders));
             }
             if (fs.statSync(dirContent).isFile()) {
-                if (dirContent.endsWith(luExt)) {
-=======
-   findLUFiles: function(inputFolder, getSubFolders, extType = this.FileExtTypeEnum.LUFile) {
-        let results = [];
-        fs.readdirSync(inputFolder).forEach(function(dirContent) {
-            dirContent = path.resolve(inputFolder,dirContent);
-            if(getSubFolders && fs.statSync(dirContent).isDirectory()) {
-                results = results.concat(helpers.findLUFiles(dirContent, getSubFolders));
-            }
-            if(fs.statSync(dirContent).isFile()) {
-                if(dirContent.endsWith(extType)) {
->>>>>>> master:packages/lu/src/parser/utils/helpers.js
+                if (dirContent.endsWith(extType)) {
                     results.push(dirContent);
                 }
             }
