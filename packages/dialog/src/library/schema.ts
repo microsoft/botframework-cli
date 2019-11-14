@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-/**
- * Copyright(c) Microsoft Corporation.All rights reserved.
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+
+ /* tslint:disable:no-unused */
 export * from './schema'
 import * as Validator from 'ajv'
 import * as os from 'os'
@@ -60,7 +62,6 @@ export class Schema {
         }
         return new Schema(schemaPath, schema)
     }
-
 
     static basename(loc: string): string {
         let name = ppath.basename(loc)
