@@ -20,16 +20,16 @@
             ]
         },
         {
+            "$type": "Microsoft.SetProperty",
+            "property": "$lastExpectedProperty",
+            "value": "'@{property}'"
+        },
+        {
             "$type": "Microsoft.Ask",
             "activity": "@{callAsk()}",
             "expectedProperties": [
                 "@{property}"
             ]
-        },
-        {
-            "$type": "Microsoft.SetProperty",
-            "property": "$lastExpectedProperty",
-            "value": "'@{property}'"
         }
     ]
 }
