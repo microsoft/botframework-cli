@@ -10,6 +10,7 @@
   "dependencies": {
     "@microsoft/bf-chatdown": "1.0.0",
     "@microsoft/bf-cli-config": "1.0.0",
+    "@microsoft/bf-dialog": "1.0.0",
     "@microsoft/bf-lu": "1.0.0",
     "@microsoft/bf-qnamaker": "1.0.0",
     "@oclif/command": "~1.5.13",
@@ -62,6 +63,7 @@
       "@oclif/plugin-help",
       "@microsoft/bf-chatdown",
       "@microsoft/bf-cli-config",
+      "@microsoft/bf-dialog",
       "@microsoft/bf-qnamaker",
       "@microsoft/bf-lu"
     ],

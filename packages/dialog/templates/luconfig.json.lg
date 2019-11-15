@@ -1,0 +1,13 @@
+# filename
+- luconfig.json
+
+# template
+- ```
+{
+    "name": "@{formName}",
+    "defaultLanguage": "@{locales[0]}",
+    "models": [
+        @{join(foreach(locales, locale, concat('"', locale, '/', formName, '.', locale, '.lu"')), ',\n')}
+    ]
+}
+```

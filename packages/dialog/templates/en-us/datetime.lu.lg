@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:datetime @{roles()}
+
+[generator.lg](../generator.lg)
