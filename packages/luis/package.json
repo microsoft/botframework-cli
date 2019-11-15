@@ -20,6 +20,7 @@
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.17.4",
+    "@types/rimraf": "^2.0.3",
     "chai": "^4.2.0",
     "globby": "^10.0.1",
     "mocha": "^5.2.0",
