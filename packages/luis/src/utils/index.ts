@@ -79,7 +79,7 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
     await fs.ensureFile(outputLocation)
     await fs.writeJson(validatedPath, content, {spaces: 2})
   } catch (error) {
-    throw new CLIError(`Error writing exported app to file: ${error}`)
+    throw new CLIError(error)
   }
   return validatedPath
 }
