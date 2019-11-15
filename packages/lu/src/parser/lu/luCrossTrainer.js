@@ -7,15 +7,16 @@ const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 
 module.exports = {
     /**
-     * Parses a list of luObject to a LUIS JSON
-     * @param {luObject []} luArray the luObject list to be parsed
-     * @param {luObject []} rootArray root luObject list
-     * @param {Map<string, Map<string, string>>} luConfig cross train files config 
-     * @returns {string} intentName interuption intent name
+     * Do cross training among lu files
+     * @param {luObject[]} luArray the luObject list to be parsed
+     * @param {luObject[]} rootArray root luObject list
+     * @param {Map<string, Map<string, string>>} luConfig cross train config 
+     * @param {string} intentName interuption intent name
      * @param {boolean} verbose verbose logging
-     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     * @returns {Map<string, LUResource>} Map of file id and luResource
+     * @throws {exception} Throws on errors. exception object includes errCode and text
      */
-    convertInteruption: async function(luArray, rootArray, luConfig, intentName, verbose) {
+    luCrossTrain: async function(luArray, rootArray, luConfig, intentName, verbose) {
         try {
             let fileIdToLuResourceMap = new Map();
             for(const luFile of luArray) {
@@ -43,6 +44,14 @@ module.exports = {
                 fileIdToLuResourceMap.set(luFile.id, luResource);
             }
 
+            /*
+            resources is array of below object
+            {
+                id: a.lu
+                content: LUResource
+                children: [ { intent: "b", target: "b.lu"} , {intent:  "c", target: "c.lu"}]
+            }
+            */
             let resources = [];
             let fileToLuResourcekeys = Array.from(fileIdToLuResourceMap.keys());
             let luFileToIntentKeys = Array.from(luConfig.keys());
@@ -98,15 +107,14 @@ module.exports = {
         }
     },
 
-    /*
-    resources is array of below object
-    {
-        id: a.lu
-        content: LuResource
-        children: [ { intent: "b", target: "b.lu"} , {intent:  "c", target: "c.lu"}]
-    };
-    rootResource is the root resource of the tree structure of resources
-    */
+    /**
+     * Cross training core function
+     * @param {any[]} rootResources the root resource object list
+     * @param {any[]} resources all resource object list
+     * @param {string} intentName interuption intent name
+     * @returns {any[]} updated resource objects
+     * @throws {exception} Throws on errors. exception object includes errCode and text
+     */
     crossTrain: function(rootResources, resources, intentName) {
         const idToResourceMap = new Map();
         for (const resource of resources) {

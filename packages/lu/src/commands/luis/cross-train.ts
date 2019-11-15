@@ -38,12 +38,12 @@ export default class LuisCrossTrian extends Command {
         const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile)
         const rootFiles = await file.getLuObjects(undefined, flags.root)
         const luConfigObject = await file.getConfigObject(flags.in, flags.recurse)
-        result = await luCrossTrainer.convertInteruption(luFiles, rootFiles, luConfigObject, flags.intentname, flags.log)
+        result = await luCrossTrainer.luCrossTrain(luFiles, rootFiles, luConfigObject, flags.intentname, flags.log)
       }
 
       // If result is null or undefined return
       if (!result) {
-        throw new CLIError('No LU or Luis content parsed!')
+        throw new CLIError('No LU content parsed!')
       }
 
       await this.writeLuFiles(result, flags)
