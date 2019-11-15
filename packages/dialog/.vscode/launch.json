@@ -86,7 +86,7 @@
                 "${workspaceFolder}/lib/**/*.js"
             ],
             "args": [
-                "dialog:form",
+                "dialog:generate",
                 "${workspaceFolder}/test/commands/dialog/forms/sandwich.form.dialog",
                 "-o",
                 "${env:TEMP}/sandwich.out",
