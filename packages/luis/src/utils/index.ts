@@ -36,13 +36,6 @@ const getLUISClient = (subscriptionKey: string, endpoint: string) => {
   return luisClient
 }
 
-const getPropFromConfig = async (prop: string, configDir: string) => {
-  const config = await getUserConfig(configDir)
-  if (config && config[prop]) {
-    return config[prop]
-  }
-}
-
 const processInputs = async (flags: any, flagLabels: string[], configDir: string) => {
   const configPrefix = 'luis__'
   let config = await getUserConfig(configDir)
@@ -67,6 +60,5 @@ const validateRequiredProps = (configObj: any) => {
 
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
-module.exports.getPropFromConfig = getPropFromConfig
 module.exports.processInputs = processInputs
 module.exports.validateRequiredProps = validateRequiredProps

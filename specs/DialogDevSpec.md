@@ -74,7 +74,6 @@ Where <options> include all global options (e.g. help, version)
 
 Where FileSpec: 
      GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9] where GLOB is a glob pattern
-
 ```
 
 ## Special Considerations
@@ -90,3 +89,4 @@ Where FileSpec:
 ## References
 
 \<any references of relevance\>
+
