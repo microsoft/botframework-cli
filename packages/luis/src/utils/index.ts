@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError} from '@microsoft/bf-cli-command'
+import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
@@ -53,7 +53,6 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
     .map((flag: string) => {
       input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
     })
-
   return input
 }
 
@@ -65,8 +64,43 @@ const validateRequiredProps = (configObj: any) => {
   })
 }
 
+const isDirectory = (path: string): boolean => {
+  let stats
+  try {
+    stats = fs.statSync(path)
+  } catch {
+    return false
+  }
+  return stats.isDirectory()
+}
+
+const writeToConsole = (outputContents: string) => {
+  const output = JSON.stringify(outputContents, null, 2)
+  process.stdout.write('App successfully exported\n')
+  process.stdout.write(output, 'utf-8')
+}
+
+const writeToFile = async (outputLocation: string, content: any, force: boolean) => {
+  const validatedPath = utils.validatePath(outputLocation, '', force)
+  await fs.ensureFile(outputLocation)
+  await fs.writeJson(validatedPath, content, {spaces: 2})
+  process.stdout.write(`File successfully written: ${validatedPath}`)
+}
+
+const writeOutput = async (outputLocation: string, content: any, force: boolean) => {
+  if (!outputLocation || isDirectory(outputLocation)) {
+    return writeToConsole(content)
+  }
+  try {
+    await writeToFile(outputLocation, content, force)
+  } catch (error) {
+    throw new CLIError(`Error writing exported app to file: ${error}`)
+  }
+}
+
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.getPropFromConfig = getPropFromConfig
 module.exports.processInputs = processInputs
 module.exports.validateRequiredProps = validateRequiredProps
+module.exports.writeOutput = writeOutput

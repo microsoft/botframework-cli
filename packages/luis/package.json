@@ -8,6 +8,7 @@
     "@oclif/config": "^1.13.3",
     "@types/sinon": "^7.5.0",
     "azure-cognitiveservices-luis-authoring": "2.1.1",
+    "chalk": "^3.0.0",
     "fs-extra": "^8.1.0",
     "ms-rest": "2.5.3",
     "tslib": "^1.10.0"
@@ -20,6 +21,7 @@
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.17.4",
+    "@types/rimraf": "^2.0.3",
     "chai": "^4.2.0",
     "globby": "^10.0.1",
     "mocha": "^5.2.0",
