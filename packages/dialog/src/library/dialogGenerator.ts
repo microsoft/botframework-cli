@@ -106,11 +106,11 @@ async function replaceAsync(str: string, re: RegExp, callback: (match: string) =
     return strings.join('')
 }
 
-const RefPattern = /^\[[^\]]*\]/gm
+const RefPattern = /^\s*\[[^\]\n\r]*\]\s*$/gm
 async function processLibraryTemplates(template: string, outPath: string, templateDirs: string[], outDir: string, form: any, scope: any, force: boolean, feedback: Feedback): Promise<string> {
     if (!template.startsWith('>>> Library')) {
         return replaceAsync(template, RefPattern, async (match: string): Promise<string> => {
-            let replacement = await processTemplate(match.substring(1, match.length - 1), templateDirs, outDir, form, scope, force, feedback, false)
+            let replacement = await processTemplate(match.substring(match.indexOf('[') + 1, match.indexOf(']')), templateDirs, outDir, form, scope, force, feedback, false)
             let local = ppath.relative(ppath.dirname(outPath), replacement)
             return Promise.resolve(`[${ppath.basename(replacement)}](${local})`)
         });
