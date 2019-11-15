@@ -36,9 +36,20 @@ const getLUISClient = (subscriptionKey: string, endpoint: string) => {
   return luisClient
 }
 
+const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
+  const allowedConfigValues = [`${prefix}appId`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`]
+  const filtered = Object.keys(configObj)
+  .filter(key => allowedConfigValues.includes(key))
+  .reduce((filteredConfigObj: any, key) => {
+    filteredConfigObj[key] = configObj[key]
+    return filteredConfigObj
+  }, {})
+  return filtered
+}
+
 const processInputs = async (flags: any, flagLabels: string[], configDir: string) => {
   const configPrefix = 'luis__'
-  let config = await getUserConfig(configDir)
+  let config = filterByAllowedConfigValues(await getUserConfig(configDir), configPrefix)
   config = config ? filterConfig(config, configPrefix) : config
   const input: any = {}
   flagLabels
