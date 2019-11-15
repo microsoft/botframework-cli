@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:keyPhrase @{roles()}
+
+[generator.lg](../generator.lg)
