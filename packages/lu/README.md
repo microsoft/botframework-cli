@@ -16,7 +16,6 @@
 * [Working with QnA Maker](./docs/working-with-qna.md)
 * [Machine translating .lu/ .qna files](./docs/translate-command.md)
 * [@microsoft/bf-lu as a library](./docs/use-as-library.md)
-* [Cross training .lu files](./docs/parse-to-suggest.md)
 
 # Commands
 <!-- commands -->
@@ -25,7 +24,6 @@
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
 * [`bf luis:translate`](#bf-luistranslate)
-* [`bf luis:cross-train`](#bf-luiscross-train)
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:translate`](#bf-qnamakertranslate)
 
@@ -126,26 +124,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/translate.ts)_
-
-## `bf luis:cross-train`
-
-Convert interuption intents among .lu file(s)
-
-```
-USAGE
-  $ bf luis:cross-train
-
-OPTIONS
-  -h, --help                   luis:cross-train help
-  -i, --in=in                  Source .lu file(s)
-  -o, --out=out                Output folder name. If not specified, source lu file(s) will be updated
-  -r, --recurse                Indicates if sub-folders need to be considered to file .lu file(s)
-  --log                        Enables log messages
-  --root=root                  (required) Root lu files to do cross training
-  --intentname=intentname      Interuption intent name
-```
-
-_See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/cross-train.ts)_
 
 ## `bf qnamaker:convert`
 

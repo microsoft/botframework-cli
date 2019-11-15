@@ -10,7 +10,7 @@ const compareLuFiles = async function (file1: string, file2: string) {
   return result === fixtureFile
 }
 
-describe('luis:convert interuption intent among lu files', () => {
+describe.skip('luis:convert interuption intent among lu files', () => {
   after(async function () {
     await fs.remove(path.join(__dirname, './../../../interuptionGen'))
   })
