@@ -1,0 +1,20 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnIntent",
+    "intent": "Cancel",
+    "actions": [
+        {
+            "$type": "Microsoft.Ask",
+            "activity": "@{callCancel()}",
+            "expectedProperties": [
+                "CancelConfirmation"
+            ]
+        }
+    ]
+}
+```
+
+# callCancel
+- @\{cancel()}

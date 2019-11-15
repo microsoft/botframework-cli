@@ -6,7 +6,6 @@
 import { Command, flags } from '@microsoft/bf-cli-command';
 import * as Validator from 'ajv';
 import * as fs from 'fs-extra';
-import * as getJson from 'get-json';
 import * as glob from 'globby';
 import * as os from 'os';
 import * as ppath from 'path';
@@ -14,6 +13,7 @@ import * as semver from 'semver';
 import * as xp from 'xml2js';
 let allof: any = require('json-schema-merge-allof')
 let clone = require('clone')
+let getJson = require('get-json')
 let parser: any = require('json-schema-ref-parser')
 let util: any = require('util')
 let exec: any = util.promisify(require('child_process').exec)
@@ -40,7 +40,7 @@ export default class DialogMerge extends Command {
         verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
 
-    private verbose = false
+    private verbose? = false
     private failed = false
     private missingTypes = new Set()
     private currentFile = ''

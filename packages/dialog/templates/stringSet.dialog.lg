@@ -1,0 +1,67 @@
+
+# filename
+- @{formName}-@{property}Set.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "actions": [
+        {
+            "$type": "Microsoft.SwitchCondition",
+            "condition": "turn.schema.properties['@{property}'].$mappings[0]",
+            "cases":[
+                {
+                    "value":"utterance",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$@{property}",
+                            "value": "@utterance"
+                        }
+                    ]                   
+                },
+                {
+                    "value":"datetime",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$@{property}",
+                            "value": "join(@datetime.timex,', ')"
+                        }
+                    ]  
+                },
+                {
+                    "value":"datetimeV2",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$@{property}",
+                            "value": "join(@datetime.timex,', ')"
+                        }
+                    ]  
+                },
+                {
+                    "value":"email",
+                    "actions":[
+                        {
+                            "$type": "Microsoft.SetProperty",
+                            "property": "$@{property}",
+                            "value": "@email"
+                        }
+                    ]  
+                }           
+            ],
+            "default":[
+                {
+                    "$type": "Microsoft.SetProperty",
+                    "property": "$@{property}",
+                    "value": "turn.recognized.entities[turn.schema.properties['@{property}'].$mappings[0]]"
+                }
+            ]
+        }
+    ]
+}
+```
