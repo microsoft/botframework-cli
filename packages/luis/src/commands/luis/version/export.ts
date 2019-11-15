@@ -45,9 +45,13 @@ export default class LuisVersionExport extends Command {
 
     try {
       const appJSON = await client.versions.exportMethod(appId, versionId)
-      if (appJSON) {
-        const outputPath = out ? out : ''
-        await utils.writeOutput(outputPath, appJSON, force)
+      if (!appJSON) throw new CLIError('Failed to export file')
+      if (out) {
+        const writtenFilePath: string = await utils.writeToFile(out, appJSON, force)
+        this.log(`File successfully written: ${writtenFilePath}`)
+      } else {
+        await utils.writeToConsole(appJSON)
+        this.log('App successfully exported\n')
       }
     } catch (error) {
       throw new CLIError(error)

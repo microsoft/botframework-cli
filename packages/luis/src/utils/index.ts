@@ -68,42 +68,25 @@ const validateRequiredProps = (configObj: any) => {
   })
 }
 
-const isDirectory = (path: string): boolean => {
-  let stats
-  try {
-    stats = fs.statSync(path)
-  } catch {
-    return false
-  }
-  return stats.isDirectory()
-}
-
 const writeToConsole = (outputContents: string) => {
   const output = JSON.stringify(outputContents, null, 2)
-  process.stdout.write('App successfully exported\n')
   process.stdout.write(output, 'utf-8')
 }
 
 const writeToFile = async (outputLocation: string, content: any, force: boolean) => {
   const validatedPath = utils.validatePath(outputLocation, '', force)
-  await fs.ensureFile(outputLocation)
-  await fs.writeJson(validatedPath, content, {spaces: 2})
-  process.stdout.write(`File successfully written: ${validatedPath}`)
-}
-
-const writeOutput = async (outputLocation: string, content: any, force: boolean) => {
-  if (!outputLocation || isDirectory(outputLocation)) {
-    return writeToConsole(content)
-  }
   try {
-    await writeToFile(outputLocation, content, force)
+    await fs.ensureFile(outputLocation)
+    await fs.writeJson(validatedPath, content, {spaces: 2})
   } catch (error) {
     throw new CLIError(`Error writing exported app to file: ${error}`)
   }
+  return validatedPath
 }
 
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs
 module.exports.validateRequiredProps = validateRequiredProps
-module.exports.writeOutput = writeOutput
+module.exports.writeToConsole = writeToConsole
+module.exports.writeToFile = writeToFile
