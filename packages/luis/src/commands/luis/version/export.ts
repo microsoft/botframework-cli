@@ -11,7 +11,7 @@ export default class LuisVersionExport extends Command {
   static description = 'Exports a LUIS application to JSON format'
 
   static examples = [`
-    $ bf luis:version:export --appId {APP_ID} --versionId {VERSION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
+    $ bf luis:version:export --appId {APP_ID} --versionId {VERSION_ID} --out {FILENAME.json or PATH/FILENAME.json} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
   static flags = {
