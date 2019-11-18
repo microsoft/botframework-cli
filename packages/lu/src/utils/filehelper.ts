@@ -163,39 +163,21 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-async function getConfigFiles(input: string | undefined, recurse = false): Promise<Array<any>> {
-  let filesToParse = []
+async function getConfigFile(input: string): Promise<string> {
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
-    filesToParse.push(input)
-    return filesToParse
+    return input
+  } else {
+    throw new CLIError('Sorry, ' + input + ' is not a config file or does not exist')
   }
-
-  if (!fileStat.isDirectory()) {
-    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
-  }
-
-  filesToParse = helpers.findConfigFiles(input, recurse)
-
-  if (filesToParse.length === 0) {
-    throw new CLIError('Sorry, no .lu files found in the specified folder.')
-  }
-  return filesToParse
 }
 
-export async function getConfigObject(input: string | undefined, recurse = false) {
-  let luConfigs = await getConfigFiles(input, recurse)
-  if (luConfigs.length === 0) {
-    throw new CLIError(`Sorry, no .config file found in the folder: ${input}`)
-  }
-  if (luConfigs.length > 1) {
-    throw new CLIError(`Sorry, multiple config files found in the folder: ${input}`)
-  }
-
+export async function getConfigObject(input: string) {
+  let luConfig = await getConfigFile(input)
   let mappingsDict = new Map<string, Map<string, string>>()
-  let luConfig: any = await getContentFromFile(luConfigs[0])
-  if (luConfig && luConfig !== '') {
-    let mappingLines = luConfig.split(/\r?\n/)
+  let luConfigContent: any = await getContentFromFile(luConfig)
+  if (luConfigContent && luConfigContent !== '') {
+    let mappingLines = luConfigContent.split(/\r?\n/)
     mappingLines.forEach((mappingLine: string) => {
       let keyValuePair = mappingLine.split('->')
       let key = keyValuePair[0]

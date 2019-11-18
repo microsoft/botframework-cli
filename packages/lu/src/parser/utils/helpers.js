@@ -59,7 +59,6 @@ const helpers = {
     */
     findConfigFiles: function (inputFolder, getSubFolders, extType = this.FileExtTypeEnum.CROSSTRAINCONFIG) {
         let results = [];
-        const luExt = '.config';
         fs.readdirSync(inputFolder).forEach(function (dirContent) {
             dirContent = path.resolve(inputFolder, dirContent);
             if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
