@@ -16,7 +16,6 @@ describe('utils/filehelper test', () => {
         }catch(err){
             console.log(err)
         }
-
     })
 
     it('File helper correctly  builds a luObject list from stdin', async function(){
@@ -32,6 +31,18 @@ describe('utils/filehelper test', () => {
             let expected = []
             expected.push(new luObject(content, 'stdin'))
             expect(luObjArray).to.deep.equal(expected)
+        }catch(err){
+            console.log(err)
+        }
+    })
+
+    it('File helper correctly build a triggerIntent to dialog mapping dict', async function(){
+        try{
+            let pathToFile = path.resolve(path.join(__dirname, './../fixtures/testcases/interuption/intent_to_lu.config'))
+            let configObject = await fileHelper.getConfigObject(pathToFile)
+            expect(Array.from(configObject.keys()).length).to.deep.equals(3)
+            expect(configObject.get('.\\dia2\\dia2.lu').get('dia4_trigger')).to.deep.equals('.\\dia4\\dia4.lu')
+            expect(configObject.get('.\\main\\main.fr-fr.lu').get('dia2_trigger')).to.deep.equals('.\\dia2\\dia2.fr-fr.lu')
         }catch(err){
             console.log(err)
         }
