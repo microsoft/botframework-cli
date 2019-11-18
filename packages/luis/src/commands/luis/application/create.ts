@@ -23,6 +23,7 @@ export default class LuisApplicationCreate extends Command {
     culture: flags.string({description: 'LUIS application culture'}),
     description: flags.string({description: 'LUIS application description'}),
     versionId: flags.string({description: 'LUIS application initial version Id'}),
+    tokenizerVersion: flags.string({description: 'Version specifies how sentences are tokenized.'}),
   }
 
   async run() {
@@ -36,7 +37,8 @@ export default class LuisApplicationCreate extends Command {
       name,
       culture,
       description,
-      versionId
+      versionId,
+      tokenizerVersion
     } = await utils.processInputs(flags, flagLabels, configDir)
 
     const usageScenario = 'Bot Framework'
@@ -47,7 +49,7 @@ export default class LuisApplicationCreate extends Command {
     const client = utils.getLUISClient(subscriptionKey, endpoint)
     const options = {}
 
-    const applicationCreateObject = {name, culture, description, versionId, usageScenario}
+    const applicationCreateObject = {name, culture, description, versionId, usageScenario, tokenizerVersion}
 
     try {
       const newAppId = await client.apps.add(applicationCreateObject, options)
