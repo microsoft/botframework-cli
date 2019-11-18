@@ -67,7 +67,7 @@
   },
   "nyc": {
     "exclude": [
-      "**/lufile/generated/**",
+      "src/parser/lufile/generated/**",
       "test/**"
     ]
   }
