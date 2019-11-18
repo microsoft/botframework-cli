@@ -9,14 +9,14 @@ module.exports = {
     /**
      * Do cross training among lu files
      * @param {luObject[]} luArray the luObject list to be parsed
-     * @param {luObject[]} rootArray root luObject list
+     * @param {luObject[]} rootLuArray root luObject list
      * @param {Map<string, Map<string, string>>} luConfig cross train config 
      * @param {string} intentName interuption intent name
      * @param {boolean} verbose verbose logging
      * @returns {Map<string, LUResource>} Map of file id and luResource
      * @throws {exception} Throws on errors. exception object includes errCode and text
      */
-    luCrossTrain: async function(luArray, rootArray, luConfig, intentName, verbose) {
+    luCrossTrain: async function(luArray, rootLuArray, luConfig, intentName, verbose) {
         try {
             let fileIdToLuResourceMap = new Map();
             for(const luFile of luArray) {
@@ -95,7 +95,7 @@ module.exports = {
                 resources.push(resource);
             }
 
-            const rootResources = resources.filter(r => rootArray.some(root => root.id === r.id))
+            const rootResources = resources.filter(r => rootLuArray.some(root => root.id === r.id))
             const result = this.crossTrain(rootResources, resources, intentName);
             for(const res of result) {
                 fileIdToLuResourceMap.set(res.id, res.content);
