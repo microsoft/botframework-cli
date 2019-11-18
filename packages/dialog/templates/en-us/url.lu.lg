@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:url @{roles()}
+
+[generator.lg](../generator.lg)

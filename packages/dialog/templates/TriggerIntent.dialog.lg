@@ -1,0 +1,21 @@
+# filename
+- @{formName}-@{triggerIntent}Intent.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnIntent",
+    "intent": "@{triggerIntent}",
+    "condition": "count(turn.recognizedentities) == 0",
+    "actions": [
+        {
+            "$type": "Microsoft.SendActivity",
+            "activity": "@{callNotUnderstood()}"           
+        }
+    ]
+}
+```
+
+# callNotUnderstood
+- @\{notUnderstood()}

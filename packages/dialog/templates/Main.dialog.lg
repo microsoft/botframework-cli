@@ -1,0 +1,16 @@
+# filename
+- @{formName}.main.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.FormDialog",
+    "recognizer": "@{formName}.lu",
+    "generator": "@{formName}.lg",
+    "schema": "@{formName}.schema",
+    "triggers": [ 
+        @{join(foreach(where(templates.dialog, dialog, !contains(dialog.name, '.')), dialog, concat('"', dialog.name, '"')), ',\n')} 
+        ]
+}
+```

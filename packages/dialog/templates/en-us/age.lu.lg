@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:age @{roles()}
+
+[generator.lg](../generator.lg)

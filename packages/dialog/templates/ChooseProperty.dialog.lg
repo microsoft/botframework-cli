@@ -1,0 +1,16 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnChooseProperty",
+    "actions": [
+        {
+            "$type": "Microsoft.Ask",
+            "activity": "@{callChooseProperties()}"           
+        }
+    ]
+}
+```
+
+# callChooseProperties
+- @\{chooseProperties()}
