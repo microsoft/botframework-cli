@@ -22,6 +22,7 @@ export default class LuisVersionExport extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
+    format: flags.string({description: 'Export format. Accepted values: json (default) or lu.'})
   }
 
   async run() {
@@ -34,6 +35,7 @@ export default class LuisVersionExport extends Command {
       versionId,
       endpoint,
       force,
+      format,
       out,
       subscriptionKey,
     } = await utils.processInputs(flags, flagLabels, configDir)
@@ -44,7 +46,7 @@ export default class LuisVersionExport extends Command {
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
-      const appJSON = await client.versions.exportMethod(appId, versionId)
+      const appJSON = await client.versions.exportMethod(appId, versionId, format)
       if (!appJSON) throw new CLIError('Failed to export file')
       if (out) {
         const writtenFilePath: string = await utils.writeToFile(out, appJSON, force)
