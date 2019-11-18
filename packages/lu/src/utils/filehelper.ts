@@ -11,7 +11,7 @@ const luObject = require('./../parser/lu/lu')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
-export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
+export async function getLuObjects(stdin: string, input: string, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
     luObjects.push(new luObject(stdin, 'stdin'))
@@ -26,23 +26,29 @@ export async function getLuObjects(stdin: string, input: string | undefined, rec
   return luObjects
 }
 
-async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
+async function getLuFiles(inputPath: string, recurse = false, extType: string | undefined): Promise<Array<any>> {
   let filesToParse = []
-  let fileStat = await fs.stat(input)
-  if (fileStat.isFile()) {
-    filesToParse.push(input)
-    return filesToParse
+  const inputs = inputPath.split(',')
+  if (inputs) {
+    for (const input of inputs) {
+      let fileStat = await fs.stat(input)
+      if (fileStat.isFile()) {
+        filesToParse.push(input)
+        return filesToParse
+      }
+    
+      if (!fileStat.isDirectory()) {
+        throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
+      }
+    
+      filesToParse = helpers.findLUFiles(input, recurse, extType)
+    
+      if (filesToParse.length === 0) {
+        throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
+      }
+    }
   }
-
-  if (!fileStat.isDirectory()) {
-    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
-  }
-
-  filesToParse = helpers.findLUFiles(input, recurse, extType)
-
-  if (filesToParse.length === 0) {
-    throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
-  }
+  
   return filesToParse
 }
 
