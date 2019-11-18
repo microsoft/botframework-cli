@@ -1,0 +1,5 @@
+# filename
+- @{formName}-@{triggerIntent}.lu
+
+# template
+- # {triggerIntent}\n@{join(foreach(entities, entity, concat('- {', entity, '}')), '\n')}
