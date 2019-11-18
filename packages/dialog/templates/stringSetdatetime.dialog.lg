@@ -1,0 +1,25 @@
+
+# filename
+- @{formName}-@{property}Setdatetime.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "actions": [
+        {
+            "$type": "Microsoft.IfCondition",
+            "condition": "contains(turn.schema.properties['@{property}'].$mappings,'datetime'",
+            "actions":[
+                {
+                    "$type": "Microsoft.SetProperty",
+                    "property": "$@{property}",
+                    "value": "join(@datetime.timex,', ')"
+                }
+            ]                  
+        }
+    ]
+}
+```

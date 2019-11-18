@@ -5,11 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "antlr-debug",
+            "request": "launch",
+            "name": "Debug Current Grammar",
+            "input": "test/commands/dialog/forms/input.txt",
+            "startRule": "doc",
+            "visualParseTree": true
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Dialog Merge Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "cwd":"${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "args": [
                 "-u",
                 "tdd",
@@ -25,7 +33,7 @@
             "request": "launch",
             "name": "Dialog Verify Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "cwd":"${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "sourceMaps": false,
             "args": [
                 "-u",
@@ -34,6 +42,22 @@
                 "999999",
                 "--colors",
                 "${workspaceFolder}/test/commands/dialog/verify.test.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Dialog Generator Tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "args": [
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/test/commands/dialog/generator.test.ts"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },
@@ -51,6 +75,90 @@
                 "-f",
                 "c:/source/github/botbuilder-dotnet/**/*.schema"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Sandwich Form",
+            "program": "${workspaceFolder}/bin/run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:generate",
+                "${workspaceFolder}/test/commands/dialog/forms/sandwich.form.dialog",
+                "-o",
+                "${env:TEMP}/sandwich.out",
+                "--force",
+                "--verbose",
+                "--schema",
+                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Activity Form",
+            "program": "${workspaceFolder}/bin/run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:form",
+                "${workspaceFolder}/test/commands/dialog/forms/activity.form.dialog",
+                "-o",
+                "${env:TEMP}/activity.out",
+                "--force",
+                "--verbose",
+                "--schema",
+                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Contact Form",
+            "program": "${workspaceFolder}/bin/run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:form",
+                "${workspaceFolder}/test/commands/dialog/forms/contact.form.dialog",
+                "-o",
+                "${env:TEMP}/contact.out",
+                "--force",
+                "--verbose",
+                "--schema",
+                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Opportunity Form",
+            "program": "${workspaceFolder}/bin/run",
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": [
+                "${workspaceFolder}/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:form",
+                "${workspaceFolder}/test/commands/dialog/forms/opportunity.form.dialog",
+                "-o",
+                "${env:TEMP}/opportunity.out",
+                "--force",
+                "--verbose",
+                "--schema",
+                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }
