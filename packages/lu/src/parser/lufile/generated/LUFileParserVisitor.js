@@ -228,12 +228,6 @@ LUFileParserVisitor.prototype.visitRegexEntityIdentifier = function(ctx) {
 };
 
 
-// Visit a parse tree produced by LUFileParser#entityIdentifier.
-LUFileParserVisitor.prototype.visitEntityIdentifier = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
 // Visit a parse tree produced by LUFileParser#entityListBody.
 LUFileParserVisitor.prototype.visitEntityListBody = function(ctx) {
   return this.visitChildren(ctx);

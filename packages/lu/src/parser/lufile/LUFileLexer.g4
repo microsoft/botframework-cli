@@ -190,10 +190,6 @@ NEWLINE_IN_ENTITY
   : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
   ;
 
-ENTITY_IDENTIFIER
-  : (LETTER | NUMBER | '_' | '-' | '|' | '.')+ { this.ignoreWS = false;}
-  ;
-
 COMPOSITE_ENTITY
   : '[' (~[\r\n{}[()])*
   ;
@@ -202,12 +198,12 @@ REGEX_ENTITY
   : '/' (~[\r\n])*
   ;
 
-COLON_MARK
-  : ':'
+ENTITY_TEXT
+  : ~[ \t\r\n:]+ { this.ignoreWS = false;}
   ;
 
-SPECIAL_CHAR_MARK 
-  : '=' | ',' | '!'
+COLON_MARK
+  : ':'
   ;
 
 mode QNA_MODE;

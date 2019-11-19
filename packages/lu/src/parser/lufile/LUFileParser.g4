@@ -141,11 +141,11 @@ entityLine
     ;
 
 entityName
-    : (entityIdentifier|WS)*
+    : (ENTITY_TEXT|WS)*
     ;
 
 entityType
-    : (entityIdentifier|compositeEntityIdentifier|regexEntityIdentifier|SPECIAL_CHAR_MARK|COLON_MARK|WS)*
+    : (compositeEntityIdentifier|regexEntityIdentifier|ENTITY_TEXT|COLON_MARK|WS)*
     ;
 
 compositeEntityIdentifier
@@ -154,10 +154,6 @@ compositeEntityIdentifier
 
 regexEntityIdentifier
     : REGEX_ENTITY
-    ;
-
-entityIdentifier
-    : ENTITY_IDENTIFIER
     ;
 
 entityListBody

@@ -13,5 +13,11 @@
   "devDependencies": {
     "fs-extra": "^8.1.0",
     "lerna": "^3.2.1"
+  },
+  "nyc": {
+    "exclude": [
+      "**/lu/**/generated/**",
+      "**/test/**"
+    ]
   }
 }

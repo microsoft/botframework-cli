@@ -193,7 +193,7 @@ describe('luis:convert', () => {
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
     .it('luis:convert writes out an error when invalid entity definition is found', async (ctx) => {
-      expect(ctx.stderr).to.contain("[ERROR] line 1:9 - line 1:10: syntax error: missing ':' at '='")
+      expect(ctx.stderr).to.contain("[ERROR] line 1:14 - line 1:16: syntax error: missing ':' at '\\r\\n'")
     })
 
     test
@@ -388,41 +388,49 @@ describe('luis:convert', () => {
 
     test
     .stdout()
-    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_enabled.lu')}`, '--out', './results/root36.json',])
-    .it('luis:convert section enabled lu file', async () => {
-      let parsedObjects = await parseJsonFiles('./../../../results/root36.json', './../../fixtures/verified/section_enabled.json')
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/special-char-in-entity-type.lu')}`, '--out', './results/root36.json', '--log'])
+    .it('luis:convert entities with special chars in entity type line', async (ctx) => {
+      let parsedObjects = await parseJsonFiles('./../../../results/root36.json', './../../fixtures/verified/special-char-in-entity-type.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 
     test
     .stdout()
-    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_enabled2.lu')}`, '--out', './results/root37.json',])
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_enabled.lu')}`, '--out', './results/root37.json',])
+    .it('luis:convert section enabled lu file', async () => {
+      let parsedObjects = await parseJsonFiles('./../../../results/root37.json', './../../fixtures/verified/section_enabled.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_enabled2.lu')}`, '--out', './results/root38.json',])
     .it('luis:convert section enabled lu file with new entity inside and outside section', async () => {
-      let parsedObjects = await parseJsonFiles('./../../../results/root37.json', './../../fixtures/verified/section_enabled2.json')
+      let parsedObjects = await parseJsonFiles('./../../../results/root38.json', './../../fixtures/verified/section_enabled2.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 
     test
     .stdout()
-    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_disabled.lu')}`, '--out', './results/root38.json',])
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_disabled.lu')}`, '--out', './results/root39.json',])
     .it('luis:convert section disabled lu file that contains section definition', async () => {
-      let parsedObjects = await parseJsonFiles('./../../../results/root38.json', './../../fixtures/verified/section_disabled.json')
+      let parsedObjects = await parseJsonFiles('./../../../results/root39.json', './../../fixtures/verified/section_disabled.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 
     test
     .stdout()
-    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_disabled2.lu')}`, '--out', './results/root39.json',])
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/section_disabled2.lu')}`, '--out', './results/root40.json',])
     .it('luis:convert section disabled lu file with enableSections set to false', async () => {
-      let parsedObjects = await parseJsonFiles('./../../../results/root39.json', './../../fixtures/verified/section_disabled2.json')
+      let parsedObjects = await parseJsonFiles('./../../../results/root40.json', './../../fixtures/verified/section_disabled2.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 
     test
     .stdout()
-    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/merge_intents_disabled.lu')}`, '--out', './results/root40.json',])
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/merge_intents_disabled.lu')}`, '--out', './results/root41.json',])
     .it('luis:convert section enabled lu file', async () => {
-      let parsedObjects = await parseJsonFiles('./../../../results/root40.json', './../../fixtures/verified/merge_intents_disabled.json')
+      let parsedObjects = await parseJsonFiles('./../../../results/root41.json', './../../fixtures/verified/merge_intents_disabled.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 })   
