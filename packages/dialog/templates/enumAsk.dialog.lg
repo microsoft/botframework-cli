@@ -7,13 +7,7 @@
     "$schema": "@{appSchema}",
     "$type": "Microsoft.OnAsk",
     "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
-    "actions": [
-        {
-           
-            "$type": "Microsoft.SendActivity",
-            "activity": "@{callAskHelp()}"
-                
-        },
+    "actions": [        
         {
             "$type": "Microsoft.Ask",
             "activity": "@{callAsk()}",
@@ -27,9 +21,3 @@
 
 # callAsk
 - @\{Ask{property}()}
-
-# callHelp
-- @\{help(@PropertyName)}
-
-# callAskHelp
-- @\{askHelp()}

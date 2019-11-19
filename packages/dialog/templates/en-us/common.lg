@@ -16,7 +16,10 @@
 
 > TODO: We should look at the schema and if a few items list them or do cards or..
 # askEnum(property)
-- Which value do you want for @{name(property)}?
+- ```
+@{askHelp()}
+Which value do you want for @{name(property)}?
+```
 
 # askNumber(property)
 - IF: @{turn.schema.properties[property].minimum && turn.schema.properties[property].maximum}
@@ -67,7 +70,10 @@
 - @{foreach(turn.schema.properties[property].enum, enum, value(property, enum))}
 
 # clarifyEnumEntity(property)
-- Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
+- ```
+@{askHelp()}
+Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
+```
 
 # cancel
 - Do you want to end the conversation? (yes/no)
@@ -143,7 +149,7 @@
 - Which property do you want to change?
 
 # notUnderstood
-- Sorry, I do not understand @{join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}\n\n@{help(null)}
+- Sorry, I do not understand @{join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}\n
 
 # CompleteConfirmationName
 - confirmation
