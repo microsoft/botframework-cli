@@ -65,7 +65,8 @@ module.exports = {
                 if (luConfig.has(fileId)) {
                     let intents = [];
                     for (const section of luResource.Sections) {
-                        if (section.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+                        if (section.SectionType === LUSectionTypes.SIMPLEINTENTSECTION 
+                            || section.SectionType === LUSectionTypes.NESTEDINTENTSECTION) {
                             intents.push(section);
                         }
                     }
@@ -122,18 +123,33 @@ module.exports = {
                 let intent = child.intent;
                 if (idToResourceMap.has(child.target)) {
                     const contentList = resource.content.Content.split(/\r?\n/);
-                    const brotherSections = resource.content.Sections.filter(s => s.Name !== intent && s.Name !== intentName && s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION);
+                    const brotherSections = resource.content.Sections.filter(s => s.Name !== intent 
+                        && s.Name !== intentName 
+                        && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION));
                     let entities = [];
                     let brotherUtterances = [];
                     brotherSections.forEach(s => {
-                        brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.context.getText().trim()));
-                        let entityContents = [];
-                        s.Entities.forEach(e => {
-                            const startLine = e.ParseTree.start.line - 1;
-                            const endLine = e.ParseTree.stop.line - 1;
-                            entityContents.push(contentList.slice(startLine, endLine + 1).join('\n'));
-                        })
-                        entities = entities.concat(entityContents);
+                        if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+                            brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.context.getText().trim()));
+                            let entityContents = [];
+                            s.Entities.forEach(e => {
+                                const startLine = e.ParseTree.start.line - 1;
+                                const endLine = e.ParseTree.stop.line - 1;
+                                entityContents.push(contentList.slice(startLine, endLine + 1).join('\n'));
+                            })
+                            entities = entities.concat(entityContents);
+                        } else {
+                            brotherUtterances = brotherUtterances.concat(s.SimpleIntentSections.flatMap(s => s.UtteranceAndEntitiesMap.map(u => u.context.getText().trim())));
+                            let entityContents = [];
+                            s.SimpleIntentSections.forEach(s => {
+                                s.Entities.forEach(e => {
+                                    const startLine = e.ParseTree.start.line - 1;
+                                    const endLine = e.ParseTree.stop.line - 1;
+                                    entityContents.push(contentList.slice(startLine, endLine + 1).join('\n'));
+                                })
+                            })
+                            entities = entities.concat(entityContents);
+                        }
                     });
 
                     let targetResource = idToResourceMap.get(child.target);
