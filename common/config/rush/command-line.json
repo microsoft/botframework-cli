@@ -14,10 +14,35 @@
     {
       "commandKind": "bulk",
       "name": "test",
-      "summary": "Execute dev tests defined in projects",
-      "description": "Execute any tests which a developer typically runs in their inner dev loop. Dev tests *should* just refer to other test scripts, but they don't have to. This command is never run by the build server.",
+      "summary": "Run all tests",
+      "description": "This runs all tests. NOTE: You must build at least once for tests run. If you modify a dependency and want to test that behavior change, you must also run build. We don't automatically rebuild to optimize for speed of single package development.",
       "enableParallelism": true
     },
+    {
+      "commandKind": "bulk",
+      "name": "clean",
+      "summary": "Cleans non-rush content. Use rush unlink/purge/tableflip.",
+      "enableParallelism": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "coverage",
+      "summary": "Run tests with coverage",
+      "enableParallelism": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "doc",
+      "summary": "Generate documentation",
+      "enableParallelism": true
+    },
+    {
+      "commandKind": "global",
+      "name": "tableflip",
+      "summary": "clean everything up",
+      "shellCommand": "rush unlink & rush purge & npx rimraf ./node_modules ./packages/chatdown/node_modules ./packages/cli/node_modules ./packages/command/node_modules ./packages/config/node_modules ./packages/dialog/node_modules ./packages/lu/node_modules ./packages/luis/node_modules ./packages/qnamaker/node_modules & rush update",
+      "safeForSimultaneousRushProcesses": true
+    }
     // {
     //   /**
     //    * (Required) Determines the type of custom command.
