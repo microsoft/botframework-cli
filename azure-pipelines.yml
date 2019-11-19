@@ -27,7 +27,7 @@ steps:
   inputs:
     command: custom
     verbose: false
-    customCommand: 'install --global rush'
+    customCommand: 'install --global @microsoft/rush'
 
 - script: 'rush update'
   displayName: 'rush update'
