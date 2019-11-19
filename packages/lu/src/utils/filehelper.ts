@@ -197,7 +197,7 @@ export async function getConfigObject(input: string, recurse = false) {
 
   let mappingsDict = new Map<string, Map<string, string>>()
   for (const luConfigFile of luConfigFiles) {
-    const configFileDir = path.dirname(luConfigFile);
+    const configFileDir = path.dirname(luConfigFile)
     const luConfigContent = await getContentFromFile(luConfigFile)
     if (luConfigContent && luConfigContent !== '') {
       try {
@@ -224,8 +224,7 @@ export async function getConfigObject(input: string, recurse = false) {
             mappingsDict.set(filePath, intentToReferFileMap)
           }
         })
-      }
-      catch {
+      } catch {
         throw new CLIError(`Sorry, invalid cross training config: ${luConfigContent}`)
       }
     }
