@@ -34,7 +34,7 @@ describe('chatdown:convert', function() {
   // TODO(chrande): this test consistently fails when run in parallel with the other tests. Disabling for now.
   it.skip('should accept data as a pipe and output the results', done => {
     /* istanbul ignore next */
-    cp.exec(`(echo user=Joe && echo bot=LuliBot && echo LuliBot: hello! && echo joe:can I get some help?) | node ./bin/run chatdown:convert`, {timeout: 3000}, (err, stdout) => {
+    cp.exec(`(echo user=Joe && echo bot=LuliBot && echo LuliBot: hello! && echo joe:can I get some help?) | node ./bin/run chatdown:convert`, (err, stdout) => {
       if(err) return done(err);
       assert.doesNotThrow(() => JSON.parse(stdout));
       done();
