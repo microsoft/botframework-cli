@@ -16,7 +16,8 @@
       "name": "test",
       "summary": "Run all tests",
       "description": "This runs all tests. NOTE: You must build at least once for tests run. If you modify a dependency and want to test that behavior change, you must also run build. We don't automatically rebuild to optimize for speed of single package development.",
-      "enableParallelism": true
+      "enableParallelism": true,
+      "allowWarningsInSuccessfulBuild": true
     },
     {
       "commandKind": "bulk",
@@ -31,7 +32,8 @@
       "commandKind": "bulk",
       "name": "coverage",
       "summary": "Run tests with coverage",
-      "enableParallelism": false
+      "enableParallelism": false,
+      "allowWarningsInSuccessfulBuild": true
     },
     {
       "commandKind": "bulk",
