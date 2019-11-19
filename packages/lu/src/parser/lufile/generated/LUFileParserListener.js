@@ -1,4 +1,4 @@
-// Generated from LUFileParser.g4 by ANTLR 4.7.1
+// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -260,15 +260,6 @@ LUFileParserListener.prototype.enterRegexEntityIdentifier = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#regexEntityIdentifier.
 LUFileParserListener.prototype.exitRegexEntityIdentifier = function(ctx) {
-};
-
-
-// Enter a parse tree produced by LUFileParser#entityIdentifier.
-LUFileParserListener.prototype.enterEntityIdentifier = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#entityIdentifier.
-LUFileParserListener.prototype.exitEntityIdentifier = function(ctx) {
 };
 
 
