@@ -24,11 +24,14 @@
       "summary": "Cleans non-rush content. Use rush unlink/purge/tableflip.",
       "enableParallelism": true
     },
+    /**
+     * Disable parallelism because it makes the results flakier
+     */
     {
       "commandKind": "bulk",
       "name": "coverage",
       "summary": "Run tests with coverage",
-      "enableParallelism": true
+      "enableParallelism": false
     },
     {
       "commandKind": "bulk",
