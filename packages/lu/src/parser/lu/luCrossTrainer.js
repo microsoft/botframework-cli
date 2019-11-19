@@ -16,10 +16,10 @@ module.exports = {
      * @returns {Map<string, LUResource>} Map of file id and luResource
      * @throws {exception} Throws on errors. exception object includes errCode and text
      */
-    luCrossTrain: async function(luArray, rootLuArray, luConfig, intentName, verbose) {
+    luCrossTrain: async function (luArray, rootLuArray, luConfig, intentName, verbose) {
         try {
             let fileIdToLuResourceMap = new Map();
-            for(const luFile of luArray) {
+            for (const luFile of luArray) {
                 let luContent = luFile.content;
                 luContent = helpers.sanitizeNewLines(luContent);
                 if (luContent === undefined || luContent === '') {
@@ -34,7 +34,7 @@ module.exports = {
                             process.stdout.write(warns.map(warn => warn.toString()).join('\n').concat('\n'));
                         }
                     }
-            
+
                     var errors = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR));
                     if (errors.length > 0) {
                         throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n')));
@@ -53,9 +53,8 @@ module.exports = {
             }
             */
             let resources = [];
-            let fileToLuResourcekeys = Array.from(fileIdToLuResourceMap.keys());
-            let luFileToIntentKeys = Array.from(luConfig.keys());
-            for (const fileId of fileIdToLuResourceMap.keys()) {
+            let fileIdsFromInput = Array.from(fileIdToLuResourceMap.keys());
+            for (const fileId of fileIdsFromInput) {
                 let luResource = fileIdToLuResourceMap.get(fileId);
                 let resource = {
                     id: fileId,
@@ -63,31 +62,26 @@ module.exports = {
                     children: []
                 };
 
-                let intents = [];
-                for(const section of luResource.Sections) {
-                    if (section.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-                        intents.push(section);
+                if (luConfig.has(fileId)) {
+                    let intents = [];
+                    for (const section of luResource.Sections) {
+                        if (section.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+                            intents.push(section);
+                        }
                     }
-                }
 
-                for (const intent of intents) {
-                    const name = intent.Name;
-                    if (name !== intentName) {
-                        let luFilePaths = luFileToIntentKeys.filter(x => fileId.endsWith(x.slice(2)));
-                        if (luFilePaths && luFilePaths.length == 1) {
-                            let luFilePath = luFilePaths[0];
-                            let referenceLuFilePath = luConfig.get(luFilePath).get(name);
-                            const intentPaths = fileToLuResourcekeys.filter(x => referenceLuFilePath && x.endsWith(referenceLuFilePath.slice(2)));
-                            if (intentPaths && intentPaths.length === 1) {
-                                resource.children.push({
-                                    intent: name,
-                                    target: intentPaths[0]
-                                })
-                            } else if (intentPaths && intentPaths.length > 1) {
-                                throw (new exception(retCode.errorCode.INVALID_INPUT, `Multiple files found for ${referenceLuFilePath}`));
+                    for (const intent of intents) {
+                        const name = intent.Name;
+                        if (name !== intentName) {
+                            const referencedFileId = luConfig.get(fileId).get(name);
+                            if (referencedFileId) {
+                                if (fileIdsFromInput.includes(referencedFileId)) {
+                                    resource.children.push({
+                                        intent: name,
+                                        target: referencedFileId
+                                    })
+                                }
                             }
-                        } else if (luFilePaths && luFilePaths.length > 1) {
-                            // TODO: throw exception
                         }
                     }
                 }
@@ -97,13 +91,13 @@ module.exports = {
 
             const rootResources = resources.filter(r => rootLuArray.some(root => root.id === r.id))
             const result = this.crossTrain(rootResources, resources, intentName);
-            for(const res of result) {
+            for (const res of result) {
                 fileIdToLuResourceMap.set(res.id, res.content);
             }
 
             return fileIdToLuResourceMap;
         } catch (err) {
-            throw(err)
+            throw (err)
         }
     },
 
@@ -115,7 +109,7 @@ module.exports = {
      * @returns {any[]} updated resource objects
      * @throws {exception} Throws on errors. exception object includes errCode and text
      */
-    crossTrain: function(rootResources, resources, intentName) {
+    crossTrain: function (rootResources, resources, intentName) {
         const idToResourceMap = new Map();
         for (const resource of resources) {
             idToResourceMap.set(resource.id, resource);
@@ -127,7 +121,6 @@ module.exports = {
             for (const child of children) {
                 let intent = child.intent;
                 if (idToResourceMap.has(child.target)) {
-                    let targetResource = idToResourceMap.get(child.target);
                     const contentList = resource.content.Content.split(/\r?\n/);
                     const brotherSections = resource.content.Sections.filter(s => s.Name !== intent && s.Name !== intentName && s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION);
                     let entities = [];
@@ -143,6 +136,7 @@ module.exports = {
                         entities = entities.concat(entityContents);
                     });
 
+                    let targetResource = idToResourceMap.get(child.target);
                     const interuptionIntents = targetResource.content.Sections.filter(section => section.Name === intentName);
                     if (interuptionIntents && interuptionIntents.length > 0) {
                         let interuptionIntent = interuptionIntents[0];
@@ -202,7 +196,7 @@ module.exports = {
             rootResource.visited = true;
             this.mergeChildrenInteruptions(rootResource, idToResourceMap, intentName)
         }
-        
+
         return Array.from(idToResourceMap.values());
     },
 
@@ -261,7 +255,7 @@ module.exports = {
                         interuptionEntities.push(nameContentPair[1]);
                     }
                 })
-    
+
                 if (newFileContent !== '') {
                     newFileContent = childInteruption.ParseTree.intentDefinition().getText().trim() + '\r\n' + newFileContent;
                     let lines = newFileContent.split(/\r?\n/);
@@ -275,9 +269,9 @@ module.exports = {
                             newLines.push('# ' + line.trim().slice(1).trim());
                         }
                     })
-    
+
                     newFileContent = newLines.join('\r\n');
-    
+
                     if (interuptionEntities && interuptionEntities.length > 0) {
                         newFileContent += '\r\n\r\n' + interuptionEntities.join('\r\n\r\n');
                     }

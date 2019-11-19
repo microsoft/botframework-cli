@@ -11,7 +11,7 @@ const luObject = require('./../parser/lu/lu')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
-export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
+export async function getLuObjects(stdin: string, input: string, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
     luObjects.push(new luObject(stdin, 'stdin'))
@@ -26,23 +26,29 @@ export async function getLuObjects(stdin: string, input: string | undefined, rec
   return luObjects
 }
 
-async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
+async function getLuFiles(inputPath: string, recurse = false, extType: string | undefined): Promise<Array<any>> {
   let filesToParse = []
-  let fileStat = await fs.stat(input)
-  if (fileStat.isFile()) {
-    filesToParse.push(input)
-    return filesToParse
+  const inputs = inputPath.split(',')
+  if (inputs) {
+    for (const input of inputs) {
+      let fileStat = await fs.stat(input)
+      if (fileStat.isFile()) {
+        filesToParse.push(input)
+        return filesToParse
+      }
+
+      if (!fileStat.isDirectory()) {
+        throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
+      }
+
+      filesToParse = helpers.findLUFiles(input, recurse, extType)
+
+      if (filesToParse.length === 0) {
+        throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
+      }
+    }
   }
 
-  if (!fileStat.isDirectory()) {
-    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
-  }
-
-  filesToParse = helpers.findLUFiles(input, recurse, extType)
-
-  if (filesToParse.length === 0) {
-    throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
-  }
   return filesToParse
 }
 
@@ -184,40 +190,45 @@ async function getConfigFiles(input: string, recurse = false): Promise<Array<any
 }
 
 export async function getConfigObject(input: string, recurse = false) {
-  let luConfigs = await getConfigFiles(input, recurse)
-  if (luConfigs.length === 0) {
-    throw new CLIError(`Sorry, no .config file found in the folder: ${input}`)
-  }
-  if (luConfigs.length > 1) {
-    throw new CLIError(`Sorry, multiple config files found in the folder: ${input}`)
+  const luConfigFiles = await getConfigFiles(input, recurse)
+  if (luConfigFiles.length === 0) {
+    throw new CLIError(`Sorry, no .config file found in the folder '${input}' and its sub folders`)
   }
 
   let mappingsDict = new Map<string, Map<string, string>>()
-  let luConfig: any = await getContentFromFile(luConfigs[0])
-  if (luConfig && luConfig !== '') {
-    let mappingLines = luConfig.split(/\r?\n/)
-    mappingLines.forEach((mappingLine: string) => {
-      let keyValuePair = mappingLine.split('->')
-      let key = keyValuePair[0]
-      let value = keyValuePair[1]
-      let filePath = key.split('#')[0].trim().replace(/\//g, '\\')
-      let intentName = key.split('#')[1].trim().replace(/\//g, '\\')
-      let referenceFilePath = value.trim().replace(/\//g, '\\')
-      if (mappingsDict.has(filePath)) {
-        let intentToReferFileMap = mappingsDict.get(filePath)
-        if (intentToReferFileMap) {
-          if (intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referenceFilePath) {
-            throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger ${intentName}`)
+  for (const luConfigFile of luConfigFiles) {
+    const configFileDir = path.dirname(luConfigFile);
+    const luConfigContent = await getContentFromFile(luConfigFile)
+    if (luConfigContent && luConfigContent !== '') {
+      try {
+        let mappingLines = luConfigContent.split(/\r?\n/)
+        mappingLines.forEach((mappingLine: string) => {
+          let keyValuePair = mappingLine.split('->')
+          let key = keyValuePair[0]
+          let value = keyValuePair[1]
+          let filePath = path.resolve(configFileDir, key.split('#')[0].trim().replace(/\//g, '\\'))
+          let intentName = key.split('#')[1].trim().replace(/\//g, '\\')
+          let referencedFilePath = path.resolve(configFileDir, value.trim().replace(/\//g, '\\'))
+          if (mappingsDict.has(filePath)) {
+            let intentToReferFileMap = mappingsDict.get(filePath)
+            if (intentToReferFileMap) {
+              if (intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referencedFilePath) {
+                throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger ${intentName}`)
+              } else {
+                intentToReferFileMap.set(intentName, referencedFilePath)
+              }
+            }
           } else {
-            intentToReferFileMap.set(intentName, referenceFilePath)
+            let intentToReferFileMap = new Map<string, string>()
+            intentToReferFileMap.set(intentName, referencedFilePath)
+            mappingsDict.set(filePath, intentToReferFileMap)
           }
-        }
-      } else {
-        let intentToReferFileMap = new Map<string, string>()
-        intentToReferFileMap.set(intentName, referenceFilePath)
-        mappingsDict.set(filePath, intentToReferFileMap)
+        })
       }
-    })
+      catch {
+        throw new CLIError(`Sorry, invalid cross training config: ${luConfigContent}`)
+      }
+    }
   }
 
   return mappingsDict
