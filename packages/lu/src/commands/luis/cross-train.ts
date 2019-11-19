@@ -20,7 +20,7 @@ export default class LuisCrossTrian extends Command {
     out: flags.string({char: 'o', description: 'Output folder name. If not specified, source lu file(s) will be updated'}),
     recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
     log: flags.boolean({description: 'Enables log messages', default: false}),
-    root: flags.string({description: 'Root lu files to do cross training'}),
+    root: flags.string({description: 'Root lu files to do cross training. Separated by comma if multiple root files exist.'}),
     intentname: flags.string({description: 'Interuption intent name', default: '_Interuption'})
   }
 

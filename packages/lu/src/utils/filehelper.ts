@@ -36,19 +36,19 @@ async function getLuFiles(inputPath: string, recurse = false, extType: string | 
         filesToParse.push(input)
         return filesToParse
       }
-    
+
       if (!fileStat.isDirectory()) {
         throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
       }
-    
+
       filesToParse = helpers.findLUFiles(input, recurse, extType)
-    
+
       if (filesToParse.length === 0) {
         throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
       }
     }
   }
-  
+
   return filesToParse
 }
 
@@ -190,40 +190,45 @@ async function getConfigFiles(input: string, recurse = false): Promise<Array<any
 }
 
 export async function getConfigObject(input: string, recurse = false) {
-  let luConfigs = await getConfigFiles(input, recurse)
-  if (luConfigs.length === 0) {
-    throw new CLIError(`Sorry, no .config file found in the folder: ${input}`)
-  }
-  if (luConfigs.length > 1) {
-    throw new CLIError(`Sorry, multiple config files found in the folder: ${input}`)
+  const luConfigFiles = await getConfigFiles(input, recurse)
+  if (luConfigFiles.length === 0) {
+    throw new CLIError(`Sorry, no .config file found in the folder '${input}' and its sub folders`)
   }
 
   let mappingsDict = new Map<string, Map<string, string>>()
-  let luConfig: any = await getContentFromFile(luConfigs[0])
-  if (luConfig && luConfig !== '') {
-    let mappingLines = luConfig.split(/\r?\n/)
-    mappingLines.forEach((mappingLine: string) => {
-      let keyValuePair = mappingLine.split('->')
-      let key = keyValuePair[0]
-      let value = keyValuePair[1]
-      let filePath = key.split('#')[0].trim().replace(/\//g, '\\')
-      let intentName = key.split('#')[1].trim().replace(/\//g, '\\')
-      let referenceFilePath = value.trim().replace(/\//g, '\\')
-      if (mappingsDict.has(filePath)) {
-        let intentToReferFileMap = mappingsDict.get(filePath)
-        if (intentToReferFileMap) {
-          if (intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referenceFilePath) {
-            throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger ${intentName}`)
+  for (const luConfigFile of luConfigFiles) {
+    const configFileDir = path.dirname(luConfigFile);
+    const luConfigContent = await getContentFromFile(luConfigFile)
+    if (luConfigContent && luConfigContent !== '') {
+      try {
+        let mappingLines = luConfigContent.split(/\r?\n/)
+        mappingLines.forEach((mappingLine: string) => {
+          let keyValuePair = mappingLine.split('->')
+          let key = keyValuePair[0]
+          let value = keyValuePair[1]
+          let filePath = path.resolve(configFileDir, key.split('#')[0].trim().replace(/\//g, '\\'))
+          let intentName = key.split('#')[1].trim().replace(/\//g, '\\')
+          let referencedFilePath = path.resolve(configFileDir, value.trim().replace(/\//g, '\\'))
+          if (mappingsDict.has(filePath)) {
+            let intentToReferFileMap = mappingsDict.get(filePath)
+            if (intentToReferFileMap) {
+              if (intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referencedFilePath) {
+                throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger ${intentName}`)
+              } else {
+                intentToReferFileMap.set(intentName, referencedFilePath)
+              }
+            }
           } else {
-            intentToReferFileMap.set(intentName, referenceFilePath)
+            let intentToReferFileMap = new Map<string, string>()
+            intentToReferFileMap.set(intentName, referencedFilePath)
+            mappingsDict.set(filePath, intentToReferFileMap)
           }
-        }
-      } else {
-        let intentToReferFileMap = new Map<string, string>()
-        intentToReferFileMap.set(intentName, referenceFilePath)
-        mappingsDict.set(filePath, intentToReferFileMap)
+        })
       }
-    })
+      catch {
+        throw new CLIError(`Sorry, invalid cross training config: ${luConfigContent}`)
+      }
+    }
   }
 
   return mappingsDict
