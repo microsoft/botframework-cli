@@ -17,7 +17,7 @@
   "scripts": {
     "prepack": "",
     "postpack": "",
-    "posttest": "tslint -p test -t stylish",
+    "posttest": "",
     "build":"tsc -b",
     "clean":"rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
