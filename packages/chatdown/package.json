@@ -66,13 +66,16 @@
   },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown",
   "scripts": {
-    "build":"tsc -b",
+    "prepack": "npm run clean && npm run build && npm run doc:readme",
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "build":"tsc -b",
+    "clean":"rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "coverage": "nyc npm run test",
-    "version": "oclif-dev readme && git add README.md",
-    "documentation": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme && rimraf oclif.manifest.json"
+    "report:coverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
+    "doc:readme":"oclif-dev manifest && oclif-dev readme",
+    "version": "npm run doc:readme && git add README.md"
   }
 }

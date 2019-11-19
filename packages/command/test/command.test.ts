@@ -19,7 +19,7 @@ describe('command', () => {
 
     return Test.run([])
   })
-  .do(output => expect(output.stderr).to.equal('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues\nfailure\n'))
+  .do(output => expect(output.stderr).to.include('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues'))
   .it('Errors out')
 
   fancy

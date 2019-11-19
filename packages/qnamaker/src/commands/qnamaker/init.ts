@@ -34,7 +34,7 @@ export default class QnamakerInit extends Command {
       'What would you like to use as your active knowledgebase ID? [none] '
     ]
 
-    const answers = []
+    const answers: any[] = []
     /* tslint:disable: prefer-for-of */
     for (let i = 0; i < questions.length; i++) {
       const question = questions[i]
