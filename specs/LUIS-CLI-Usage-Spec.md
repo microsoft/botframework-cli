@@ -64,7 +64,8 @@ Parameters:
 
 
 
-### clone:version
+### version:clone
+
 
 Synopsis: Creates a new version equivalent to the current snapshot of the selected application version.
 
@@ -73,10 +74,10 @@ Reference:  [Clone version](https://westus.dev.cognitive.microsoft.com/docs/serv
 Parameters:
 
 ```
- --srcversionId			Source version to clone (mandatory, defaults to config:LUIS:versionId)
- --destversionId		Destination version to create (mandatory)
- --appid			LUIS application Id (mandatory, defaults to config:LUIS:appId)
- --subscriptionKey	LUIS authoring (Ocp-Apim-subscription) key
+ --versionId			Source version to clone (mandatory, defaults to config:LUIS:versionId)
+ --targetVersionId		Destination version to create (mandatory)
+ --appId				LUIS application Id (mandatory, defaults to config:LUIS:appId)
+ --subscriptionKey		LUIS authoring (Ocp-Apim-subscription) key
 ```
 
 Returns:
@@ -87,7 +88,7 @@ Returns:
 
 
 
-### create:application
+### application:create
 
 Synopsis: Creates a new LUIS application
 
@@ -116,9 +117,7 @@ Returns:
   * Or error code with error message
 * Echo newly created application Id
 
-
-
-###  delete:application
+###  application:delete
 
 Synopsis:  Deletes a LUIS application. 
 
@@ -128,7 +127,7 @@ Parameters:
 
 ```
  --subscriptionkey	LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)
- --appid			LUIS application Id (mandatory, defaults to config:LUIS:appId)
+ --appId			LUIS application Id (mandatory, defaults to config:LUIS:appId)
  --force			If specified, ignore application dependencies. (optional, default: false). **TBD**: Do we still have to specify true/false? presence of flag should suffice
 ```
 
@@ -139,7 +138,7 @@ Returns:
 
 
 
-###  delete:version
+###  version:delete
 
 Synopsis:  Deletes a LUIS application version. 
 
@@ -160,7 +159,7 @@ Returns:
 
 
 
-###   export:version
+###   version:export
 
 Synopsis:   Exports a LUIS application to JSON format . 
 
@@ -189,8 +188,7 @@ Returns:
   * If file specified, print out written file full path
 
   
-
-### import:application 
+### application:import
 
 Synopsis:  Imports LUIS application from JSON or LU content.  
 
@@ -220,7 +218,7 @@ Returns:
 
   
 
-### import:version
+### version:import
 
 Synopsis:   Imports a new version into a LUIS application from JSON or LU content.   
 
@@ -249,9 +247,8 @@ Returns:
 
 * Prints out created version Id
 
-  
 
-### list:applications
+### application:list
 
 Synopsis:    Lists all applications on LUIS service.
 
@@ -277,7 +274,7 @@ Returns:
 
   
 
-### list:endpoints
+### endpoint:list
 
 Synopsis:     Returns available deployment endpoints
 
@@ -300,9 +297,8 @@ Returns:
 
 * Prints out deployment endpoints unless output file is specified
 
-  
 
-### list:versions
+### version:list
 
 Synopsis:     Returns application's versions
 
@@ -329,7 +325,7 @@ Returns:
 
   
 
-### publish:application **TBD**: Original spec states publish:version
+### application:publish **TBD**: Original spec states publish:version
 
 Synopsis:     Publishes application's version
 
@@ -367,9 +363,7 @@ Returns:
   }
   ```
 
-  
-
-  ### rename:application
+### application:rename
 
   Synopsis:     Renames the application and updates its description
 
@@ -391,7 +385,7 @@ Returns:
 
 
 
-### rename:version
+### version:rename
 
 Synopsis:      Renames application version 
 
@@ -413,7 +407,7 @@ Returns:
 
 
 
-### show:application
+### application:show
 
 Synopsis:      Shows application information
 
@@ -466,7 +460,7 @@ Returns:
 
   
 
-### show:training **TBD**: Change from show:trainingstatus
+### train:show **TBD**: Change from show:trainingstatus
 
 Synopsis:      Shows training status
 
@@ -507,7 +501,7 @@ Returns:
   ]
   ```
 
-### train  **TBD**: Changed from original table spec
+### train:run  **TBD**: Changed from original table spec
 
 Synopsis:     Issues asynchronous training request for LUIS application
 
@@ -526,7 +520,7 @@ Returns:
 
 
 
-### query **TBD**: Ensure it is the right one
+### application:query **TBD**: Ensure it is the right one
 
 Synopsis:     Queries application for intent predictions
 
