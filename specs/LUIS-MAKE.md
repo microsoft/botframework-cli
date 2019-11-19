@@ -7,32 +7,35 @@ Lubuild is a preview CLI tool available in [botbuilder-tools repository][1]. As 
 
 ## Functional requirements
 1. Given an .lu files that describes one luis application and a [luis-configuration](#LUIS-configuration),
-    a. Find a matching LUIS application. 
-    b. If found uploads new model definition (as defined in .lu file) as new version.
-    c. Else Create a new LUIS application with the model definition (as defined in .lu file). This is the functional equivalent of `import application` command.
-    d Train and publish the new application.
+    - (a) Find a matching LUIS application. 
+    - (b) If found uploads new model definition (as defined in .lu file) as new version.
+    - (c) Else Create a new LUIS application with the model definition (as defined in .lu file. This is the functional equivalent of `import application` command.
+    - (d) Train and publish the new application.
 2. Given a collection of .lu files that describe one luis application across one or more supported [luis locales][2] and a [luis-configuration](#LUIS-configuration),
-    a. For each locale, do 1.a - 1.d
+    - For each locale, do 1.a - 1.d
 3. LUIS supports up to 5 concurrent authoring API calls and up to 5 calls per second to the service per authoring key. The library should leverage this capability as a performance optimization and parallelize calls up to 5 applications (each .lu content is an application). Note that for each .lu content, we might need to do either create/ import followed by train and then publish. We cannot parallelize calls within that workflow but can parallelize across applications.
-4. To determine if an application exists, we should use the following order of precendence - 
-    a. If the .lu file has a @app.name property, we should use that as the app name to find.
-    b. <BotName>(<environment>)-<luFileNameOrId>.<locale>.lu
+    - Failures on any calls to LUIS should automatically initiate a wait-retry loop for up to 5 times. Repeat failures should be reported back with the actual error message from the service and the corresponding LU content (file name/ content itself).
+4. To determine if an application exists, we should use the following order of precedence. This is applicable for #1.a-c above to determine if an application exists already or we should create a new application - 
+    - (a) If the .lu file has a @app.name property, we should use that as the app name to find. **.OR.**
+    - (b) Find an application with the following naming convention - \<BotName>(\<environment>)-\<luFileNameOrId>.\<locale>.lu
 5. To determine if a new version needs to be created, we will
-    a. Get the latest published application version (to either PRODCUTION or STAGING) via call to [Get application info][3]
-    b. export the version via call to [Export application version][4]
-    c. [Transform][5] and perform a diff against the current LU JSON .vs. what's in latest version. Create a new version if the content is different or no content exists.
+    - (a) Get the latest published application version (to either PRODCUTION or STAGING) via call to [Get application info][3]
+    - (b) export the version via call to [Export application version][4]
+    - (c) [Transform][5] and perform a diff against the current LU JSON .vs. what's in latest version. Create a new version if the content is different or no content exists.
 6. If [luis-configuration](#LUIS-configuration) requests .dialog files be generated, then generate .dialog files with the newly created/ updated LUIS application information. See [dialog-files](#dialog-files) to learn more about the logic for creating .dialog and related files. 
 
 ## Locale naming conventions
-When the CLI route is atttempting to infer the locale from the file name, we should expect the file names to be in this convention - 
-<fileName>.<locale>.lu
+When the CLI route is attempting to infer the locale from the file name, we should expect the file names to be in this convention - 
+\<fileName>.\<locale>.lu
 
-<locale> must be one of the supported [luis locales][2].
+\<locale> must be one of the supported [luis locales][2].
 
 ## Version naming conventions
-When creating a new application, version the application as `1`
-When creating a new version, increment the application version by 1. So versions would be named as 1, 2, 3, 4, ...
-If the prior version is not a number, then add -1, -2, -3 ... as a **suffix**. E.g. Initial version - `myversion` -> `myversion-1` -> `myversion-2` -> ...
+- When creating a new application, version the application as `0.1`
+- When creating a new version, use the following order of precedence - 
+    - use @app.versionId if present in the LU content.
+    - increment the application minor version by 1. So versions would be named as 0.1, 0.2, 0.3, 0.4, ...
+    - If the prior version is not a number, then add -0.1, -0.2, -0.3 ... as a **suffix**. E.g. Initial version - `myversion` -> `myversion-0.1` -> `myversion-0.2` -> ...
 
 ## LUIS configuration
 1. Location of the .lu file (absolute or relative path or file content via stdin for CLI)
