@@ -1,5 +1,5 @@
---require ts-node/register
---watch-extensions ts
+--require test/hook.js
+--require source-map-support/register
 --recursive
---reporter spec
---timeout 30000
+--timeout 5000
+**/*.test.{ts,js}

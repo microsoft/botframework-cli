@@ -1,4 +1,5 @@
 --require test/hook.js
 --require source-map-support/register
 --recursive
+--timeout 5000
 **/*.test.{ts,js}
