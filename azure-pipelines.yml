@@ -35,12 +35,11 @@ steps:
 - script: 'rush build'
   displayName: 'rush build'
 
+- script: 'rush test'
+  displayName: 'rush test'
+
 - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
   displayName: 'Component Detection'
-
-
-- script: 'rush coverage'
-  displayName: 'rush coverage'
 
 - script: 'rush report:coverage'
   displayName: 'rush report:coverage'
