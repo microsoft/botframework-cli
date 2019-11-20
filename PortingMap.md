@@ -32,3 +32,4 @@ Commands invoked by BF [New Command] as follows:
 ## See Also
 
 * [BF CLI](https://github.com/microsoft/botframework-cli) main page
+* [Tool Lifetime Support Policy](./ToolLifetimeSchedule.md)
