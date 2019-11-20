@@ -19,7 +19,14 @@ const filterConfig = (config: any, prefix: string) => {
 }
 
 const getInputFromFile = async (path: string): Promise<string> => {
-  return utils.readTextFile(path)
+  if (path) {
+    try {
+      return await utils.readTextFile(path)
+    } catch (error) {
+      throw new CLIError(`Failed to read app JSON: ${error}`)
+    }
+  }
+  return ''
 }
 
 const getUserConfig = async (configPath: string) => {

@@ -59,6 +59,14 @@ describe('luis:application:import', () => {
   })
 
   test
+  .stdout()
+  .stderr()
+  .command(['luis:application:import', '--name', 'Sample', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1()])
+  .it('displays an error message if no input data detected', ctx => {
+    expect(ctx.stderr).to.contain('No import data found - please provide input through stdin or the --in flag')
+  })
+
+  test
   .stdin('{"luis_schema_version": "4.0.0","versionId": "0.1","name": "sampleapp","desc": "test description","culture": "en-us","tokenizerVersion": "1.0.0","intents": [{"name": "None"}],"entities": [],"composites": [],"closedLists": [],"patternAnyEntities": [],"regex_entities": [],"prebuiltEntities": [],"model_features": [],"regex_features": [],"patterns": [],"utterances": [],"settings": []}')
   .stdout()
   .stderr()

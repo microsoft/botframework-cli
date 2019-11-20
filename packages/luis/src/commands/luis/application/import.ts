@@ -27,6 +27,7 @@ export default class LuisApplicationImport extends Command {
     const {flags} = this.parse(LuisApplicationImport)
     const flagLabels = Object.keys(LuisApplicationImport.flags)
     const configDir = this.config.configDir
+    const stdin = await this.readStdin()
 
     let {endpoint, subscriptionKey, name, inVal} = await utils.processInputs(flags, flagLabels, configDir)
 
@@ -35,7 +36,9 @@ export default class LuisApplicationImport extends Command {
 
     inVal = inVal ? inVal.trim() : flags.in
 
-    const appJSON = await this.getImportJSON(inVal)
+    const appJSON = stdin ? stdin : await utils.getInputFromFile(inVal)
+    if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
+
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
@@ -43,20 +46,6 @@ export default class LuisApplicationImport extends Command {
       this.log(`App successfully imported with id ${newAppId}.`)
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)
-    }
-  }
-
-  async getImportJSON(input: string) {
-    if (input) {
-      try {
-        return await utils.getInputFromFile(input)
-      } catch (error) {
-        throw new CLIError(`Failed to read app JSON: ${error}`)
-      }
-    }
-    const {stdin} = process
-    if (!stdin.isTTY) {
-      return this.readStdin()
     }
   }
 
