@@ -16,7 +16,6 @@
 * [Working with QnA Maker](./docs/working-with-qna.md)
 * [Machine translating .lu/ .qna files](./docs/translate-command.md)
 * [@microsoft/bf-lu as a library](./docs/use-as-library.md)
-* [Cross training .lu files](./docs/parse-to-suggest.md)
 
 # Commands
 <!-- commands -->
