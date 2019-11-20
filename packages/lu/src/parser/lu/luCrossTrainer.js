@@ -4,6 +4,7 @@ const exception = require('./../utils/exception')
 const luParser = require('./../lufile/luParser');
 const SectionOperator = require('./../lufile/sectionOperator');
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
+const DiagnosticSeverity = require('./../lufile/diagnostic').DiagnosticSeverity;
 
 module.exports = {
     /**
@@ -80,7 +81,7 @@ module.exports = {
                                     resource.children.push({
                                         intent: name,
                                         target: referencedFileId
-                                    })
+                                    });
                                 }
                             }
                         }
@@ -90,7 +91,7 @@ module.exports = {
                 resources.push(resource);
             }
 
-            const rootResources = resources.filter(r => rootLuArray.some(root => root.id === r.id))
+            const rootResources = resources.filter(r => rootLuArray.some(root => root.id === r.id));
             const result = this.crossTrain(rootResources, resources, intentName);
             for (const res of result) {
                 fileIdToLuResourceMap.set(res.id, res.content);
@@ -126,82 +127,36 @@ module.exports = {
                     const brotherSections = resource.content.Sections.filter(s => s.Name !== intent 
                         && s.Name !== intentName 
                         && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION));
-                    let entities = [];
+                    
+                    let brotherEntityDict = new Map();
                     let brotherUtterances = [];
                     brotherSections.forEach(s => {
                         if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
                             brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.context.getText().trim()));
-                            let entityContents = [];
                             s.Entities.forEach(e => {
                                 const startLine = e.ParseTree.start.line - 1;
                                 const endLine = e.ParseTree.stop.line - 1;
-                                entityContents.push(contentList.slice(startLine, endLine + 1).join('\n'));
+                                brotherEntityDict.set(e.Name, contentList.slice(startLine, endLine + 1).join('\r\n'));
                             })
-                            entities = entities.concat(entityContents);
                         } else {
-                            brotherUtterances = brotherUtterances.concat(s.SimpleIntentSections.flatMap(s => s.UtteranceAndEntitiesMap.map(u => u.context.getText().trim())));
-                            let entityContents = [];
+                            s.SimpleIntentSections.forEach(section => {
+                                brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.context.getText().trim()));
+                            })
+                            
                             s.SimpleIntentSections.forEach(s => {
                                 s.Entities.forEach(e => {
                                     const startLine = e.ParseTree.start.line - 1;
                                     const endLine = e.ParseTree.stop.line - 1;
-                                    entityContents.push(contentList.slice(startLine, endLine + 1).join('\n'));
+                                    brotherEntityDict.set(e.Name, contentList.slice(startLine, endLine + 1).join('\r\n'));
                                 })
                             })
-                            entities = entities.concat(entityContents);
                         }
                     });
 
                     let targetResource = idToResourceMap.get(child.target);
-                    const interuptionIntents = targetResource.content.Sections.filter(section => section.Name === intentName);
-                    if (interuptionIntents && interuptionIntents.length > 0) {
-                        let interuptionIntent = interuptionIntents[0];
-                        let existingUtterances = interuptionIntent.UtteranceAndEntitiesMap.map(u => u.context.getText().trim().slice(1).trim());
-                        // construct new content here
-                        let newFileContent = '';
-                        brotherUtterances.forEach(utterance => {
-                            if (!existingUtterances.includes(utterance.trim().slice(1).trim())) {
-                                newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n';
-                            }
-                        });
 
-                        if (newFileContent !== '') {
-                            newFileContent = interuptionIntent.ParseTree.intentDefinition().getText().trim() + '\r\n' + newFileContent;
-                            let lines = newFileContent.split(/\r?\n/);
-                            let newLines = [];
-                            lines.forEach(line => {
-                                if (line.trim().startsWith('-')) {
-                                    newLines.push('- ' + line.trim().slice(1).trim());
-                                } else if (line.trim().startsWith('##')) {
-                                    newLines.push('## ' + line.trim().slice(2).trim());
-                                } else if (line.trim().startsWith('#')) {
-                                    newLines.push('# ' + line.trim().slice(1).trim());
-                                }
-                            })
-
-                            newFileContent = newLines.join('\r\n');
-
-                            if (entities && entities.length > 0) {
-                                newFileContent += '\r\n' + entities.join('\r\n\r\n') + '\r\n';
-                            }
-                            // update section here
-                            targetResource.content = new SectionOperator(targetResource.content).updateSection(interuptionIntent.Id, newFileContent);
-                        }
-                    } else {
-                        // construct new content here
-                        if (brotherUtterances && brotherUtterances.length > 0) {
-                            let newFileContent = `\r\n# ${intentName}\r\n`;
-                            brotherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
-
-                            if (entities && entities.length > 0) {
-                                newFileContent += '\r\n' + entities.join('\r\n\r\n') + '\r\n';
-                            }
-
-                            // add section here
-                            targetResource.content = new SectionOperator(targetResource.content).addSection(newFileContent);
-                        }
-                    }
-
+                    // Merge direct brother's utterances and entities
+                    targetResource = this.mergeInteruptionIntent(brotherUtterances, brotherEntityDict, targetResource, intentName);
                     idToResourceMap.set(targetResource.id, targetResource);
                 }
             }
@@ -210,13 +165,13 @@ module.exports = {
         // Parse resources
         for (const rootResource of rootResources) {
             rootResource.visited = true;
-            this.mergeChildrenInteruptions(rootResource, idToResourceMap, intentName)
+            this.mergeRootInteruptionToLeaves(rootResource, idToResourceMap, intentName);
         }
 
         return Array.from(idToResourceMap.values());
     },
 
-    mergeChildrenInteruptions: function (rootResource, result, intentName) {
+    mergeRootInteruptionToLeaves: function (rootResource, result, intentName) {
         if (rootResource && rootResource.children && rootResource.children.length > 0) {
             for (const child of rootResource.children) {
                 let childResource = result.get(child.target);
@@ -224,15 +179,15 @@ module.exports = {
                     throw (new exception(retCode.errorCode.INVALID_INPUT, `Loop detected for lu file ${childResource.id} when doing cross training.`));
                 }
 
-                const newChildResource = this.mergeInteruption(rootResource, childResource, intentName);
+                const newChildResource = this.mergeFatherInteruptionToChild(rootResource, childResource, intentName);
                 result.set(child.target, newChildResource);
                 newChildResource.visited = true;
-                this.mergeChildrenInteruptions(newChildResource, result, intentName);
+                this.mergeRootInteruptionToLeaves(newChildResource, result, intentName);
             }
         }
     },
 
-    mergeInteruption: function (fatherResource, childResource, intentName) {
+    mergeFatherInteruptionToChild: function (fatherResource, childResource, intentName) {
         const fatherInteruptions = fatherResource.content.Sections.filter(s => s.Name === intentName);
         if (fatherInteruptions && fatherInteruptions.length > 0) {
             const fatherInteruption = fatherInteruptions[0];
@@ -242,75 +197,81 @@ module.exports = {
             fatherInteruption.Entities.forEach(x => {
                 const startLine = x.ParseTree.start.line - 1;
                 const endLine = x.ParseTree.stop.line - 1;
-                fatherEntityDict.set(x.Name, fatherContentList.slice(startLine, endLine + 1).join('\n'));
+                fatherEntityDict.set(x.Name, fatherContentList.slice(startLine, endLine + 1).join('\r\n'));
             });
 
-            const childInteruptions = childResource.content.Sections.filter(section => section.Name === intentName);
-            const childContentList = childResource.content.Content.split(/\r?\n/);
-            let interuptionEntities = [];
-            if (childInteruptions && childInteruptions.length > 0) {
-                const childInteruption = childInteruptions[0];
-                const existingUtterances = childInteruption.UtteranceAndEntitiesMap.map(u => u.context.getText().trim().slice(1).trim());
-                // construct new content here
-                let newFileContent = '';
-                fatherUtterances.forEach(utterance => {
-                    if (!existingUtterances.includes(utterance.trim().slice(1).trim())) {
-                        newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n';
-                    }
-                });
-
-                childInteruption.Entities.forEach(e => {
-                    const startLine = e.ParseTree.start.line - 1;
-                    const endLine = e.ParseTree.stop.line - 1;
-                    interuptionEntities.push(childContentList.slice(startLine, endLine + 1).join('\n'));
-                });
-
-                const existingEntityNames = childInteruption.Entities.map(e => e.Name);
-                fatherEntityDict.forEach(nameContentPair => {
-                    if (!existingEntityNames.includes(nameContentPair[0])) {
-                        interuptionEntities.push(nameContentPair[1]);
-                    }
-                })
-
-                if (newFileContent !== '') {
-                    newFileContent = childInteruption.ParseTree.intentDefinition().getText().trim() + '\r\n' + newFileContent;
-                    let lines = newFileContent.split(/\r?\n/);
-                    let newLines = [];
-                    lines.forEach(line => {
-                        if (line.trim().startsWith('-')) {
-                            newLines.push('- ' + line.trim().slice(1).trim());
-                        } else if (line.trim().startsWith('##')) {
-                            newLines.push('## ' + line.trim().slice(2).trim());
-                        } else if (line.trim().startsWith('#')) {
-                            newLines.push('# ' + line.trim().slice(1).trim());
-                        }
-                    })
-
-                    newFileContent = newLines.join('\r\n');
-
-                    if (interuptionEntities && interuptionEntities.length > 0) {
-                        newFileContent += '\r\n\r\n' + interuptionEntities.join('\r\n\r\n');
-                    }
-
-                    // update section here
-                    childResource.content = new SectionOperator(childResource.content).updateSection(childInteruption.Id, newFileContent);
-                }
-            } else {
-                // construct new content here
-                if (fatherUtterances && fatherUtterances.length > 0) {
-                    let newFileContent = `\r\n# ${intentName}\r\n`;
-                    fatherUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
-                    interuptionEntities = Array.from(fatherEntityDict.values());
-                    if (interuptionEntities && interuptionEntities.length > 0) {
-                        newFileContent += '\r\n' + interuptionEntities.join('\r\n\r\n');
-                    }
-
-                    // add section here
-                    childResource.content = new SectionOperator(childResource.content).addSection(newFileContent);
-                }
-            }
+            childResource = this.mergeInteruptionIntent(fatherUtterances, fatherEntityDict, childResource, intentName);
         }
 
         return childResource;
+    },
+
+    mergeInteruptionIntent: function (fromUtterances, fromEntityDict, toResource, intentName) {
+        const toInteruptions = toResource.content.Sections.filter(section => section.Name === intentName);
+        const toContentList = toResource.content.Content.split(/\r?\n/);
+        let interuptionEntities = [];
+        if (toInteruptions && toInteruptions.length > 0) {
+            const toInteruption = toInteruptions[0];
+            const existingUtterances = toInteruption.UtteranceAndEntitiesMap.map(u => u.context.getText().trim().slice(1).trim());
+            // construct new content here
+            let newFileContent = '';
+            fromUtterances.forEach(utterance => {
+                if (!existingUtterances.includes(utterance.trim().slice(1).trim())) {
+                    newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n';
+                }
+            });
+
+            toInteruption.Entities.forEach(e => {
+                const startLine = e.ParseTree.start.line - 1;
+                const endLine = e.ParseTree.stop.line - 1;
+                interuptionEntities.push(toContentList.slice(startLine, endLine + 1).join('\r\n'));
+            });
+
+            const existingEntityNames = toInteruption.Entities.map(e => e.Name);
+            fromEntityDict.forEach(nameContentPair => {
+                if (!existingEntityNames.includes(nameContentPair[0])) {
+                    interuptionEntities.push(nameContentPair[1]);
+                }
+            })
+
+            if (newFileContent !== '') {
+                newFileContent = toInteruption.ParseTree.intentDefinition().getText().trim() + '\r\n' + newFileContent;
+                let lines = newFileContent.split(/\r?\n/);
+                let newLines = [];
+                lines.forEach(line => {
+                    if (line.trim().startsWith('-')) {
+                        newLines.push('- ' + line.trim().slice(1).trim());
+                    } else if (line.trim().startsWith('##')) {
+                        newLines.push('## ' + line.trim().slice(2).trim());
+                    } else if (line.trim().startsWith('#')) {
+                        newLines.push('# ' + line.trim().slice(1).trim());
+                    }
+                })
+
+                newFileContent = newLines.join('\r\n');
+
+                if (interuptionEntities && interuptionEntities.length > 0) {
+                    newFileContent += '\r\n\r\n' + interuptionEntities.join('\r\n\r\n') + '\r\n';
+                }
+
+                // update section here
+                toResource.content = new SectionOperator(toResource.content).updateSection(toInteruption.Id, newFileContent);
+            }
+        } else {
+            // construct new content here
+            if (fromUtterances && fromUtterances.length > 0) {
+                let newFileContent = `\r\n# ${intentName}\r\n`;
+                fromUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
+                interuptionEntities = Array.from(fromEntityDict.values());
+                if (interuptionEntities && interuptionEntities.length > 0) {
+                    newFileContent += '\r\n' + interuptionEntities.join('\r\n\r\n') + '\r\n';
+                }
+
+                // add section here
+                toResource.content = new SectionOperator(toResource.content).addSection(newFileContent);
+            }
+        }
+
+        return toResource;
     }
 }
