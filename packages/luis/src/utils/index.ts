@@ -18,6 +18,17 @@ const filterConfig = (config: any, prefix: string) => {
     }, {})
 }
 
+const getInputFromFile = async (path: string): Promise<string> => {
+  if (path) {
+    try {
+      return await utils.readTextFile(path)
+    } catch (error) {
+      throw new CLIError(`Failed to read app JSON: ${error}`)
+    }
+  }
+  return ''
+}
+
 const getUserConfig = async (configPath: string) => {
   if (fs.existsSync(path.join(configPath, 'config.json'))) {
     return fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
@@ -55,6 +66,10 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
   flagLabels
     .filter(flag => flag !== 'help')
     .map((flag: string) => {
+      if (flag === 'in') {
+        // rename property since 'in' is a reserved keyword in Javascript
+        input[`${flag}Val`] = flags[flag]
+      }
       input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
     })
   return input
@@ -84,6 +99,7 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
   return validatedPath
 }
 
+module.exports.getInputFromFile = getInputFromFile
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs
