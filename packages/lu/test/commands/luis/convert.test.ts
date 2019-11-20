@@ -186,7 +186,7 @@ describe('luis:convert', () => {
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
     .it('luis:convert writes out an error when invalid entity definition is found', async (ctx) => {
-      expect(ctx.stderr).to.contain("[ERROR] line 1:9 - line 1:10: syntax error: missing ':' at '='")
+      expect(ctx.stderr).to.contain("[ERROR] line 1:14 - line 1:16: syntax error: missing ':' at '\\r\\n'")
     })
 
     test
@@ -377,6 +377,14 @@ describe('luis:convert', () => {
     .it('luis:convert Invalid intent inherits information is skipped (invalid model)', async (ctx) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @app = test"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/special-char-in-entity-type.lu')}`, '--out', './results/root36.json', '--log'])
+    .it('luis:convert entities with special chars in entity type line', async (ctx) => {
+      let parsedObjects = await parseJsonFiles('./../../../results/root36.json', './../../fixtures/verified/special-char-in-entity-type.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 })   
 
