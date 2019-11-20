@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, utils} from '@microsoft/bf-cli-command'
+import {CLIError, ReadPipedStdin, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
@@ -16,6 +16,20 @@ const filterConfig = (config: any, prefix: string) => {
       filteredConfig[key] = config[key]
       return filteredConfig
     }, {})
+}
+
+const getInputFromFileOrStdin = async (args: any): Promise<string> => {
+  // Check if file passed in
+  if (args && args.length > 0) {
+    return utils.readTextFile(args)
+  }
+  // Check if piped data was passed in
+  const {stdin} = process
+  if (!stdin.isTTY) {
+    const result = ReadPipedStdin.read()
+    return result
+  }
+  return ''
 }
 
 const getUserConfig = async (configPath: string) => {
@@ -55,6 +69,10 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
   flagLabels
     .filter(flag => flag !== 'help')
     .map((flag: string) => {
+      if (flag === 'in') {
+        // rename property since 'in' is a reserved keyword in Javascript
+        input[`${flag}Val`] = flags[flag]
+      }
       input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
     })
   return input
@@ -84,6 +102,7 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
   return validatedPath
 }
 
+module.exports.getInputFromFileOrStdin = getInputFromFileOrStdin
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs

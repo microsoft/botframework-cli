@@ -5,5 +5,6 @@
 
 import {CLIError, Command, flags} from './command'
 import utils from './utils'
-export {CLIError, Command, flags, utils}
+import ReadPipedStdin from './readpipeddata'
+export {CLIError, Command, flags, utils, ReadPipedStdin}
 export default Command
