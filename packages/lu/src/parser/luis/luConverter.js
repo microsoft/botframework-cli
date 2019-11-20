@@ -221,7 +221,13 @@ const handlePhraseLists = function(collection) {
     }
     fileContent = '> # Phrase list definitions' + NEWLINE + NEWLINE;
     collection.forEach(function(entity) {
+        let flags = '';
         fileContent += `@ phraselist ${entity.name}${(entity.mode ? `(interchangeable)` : ``)}`;
+        if (entity.activated !== undefined && !entity.activated) flags += `disabled`;
+        if (entity.enabledForAllModels !== undefined && entity.enabledForAllModels) {
+            flags += (flags !== '') ? `, enabledForAllModels` : `enabledForAllModels`;
+        }
+        if (flags !== '') fileContent += ` ${flags}`;
         if (entity.words && entity.words !== '') {
             fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
         }
