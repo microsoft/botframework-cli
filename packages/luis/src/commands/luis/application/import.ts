@@ -27,7 +27,6 @@ export default class LuisApplicationImport extends Command {
     const {flags} = this.parse(LuisApplicationImport)
     const flagLabels = Object.keys(LuisApplicationImport.flags)
     const configDir = this.config.configDir
-    let appJSON
 
     let {endpoint, subscriptionKey, name, inVal} = await utils.processInputs(flags, flagLabels, configDir)
 
@@ -36,8 +35,7 @@ export default class LuisApplicationImport extends Command {
 
     inVal = inVal ? inVal.trim() : flags.in
 
-    appJSON = await this.getImportJSON(inVal)
-
+    const appJSON = await this.getImportJSON(inVal)
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
