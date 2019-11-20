@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, ReadPipedStdin, utils} from '@microsoft/bf-cli-command'
+import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
@@ -18,18 +18,8 @@ const filterConfig = (config: any, prefix: string) => {
     }, {})
 }
 
-const getInputFromFileOrStdin = async (args: any): Promise<string> => {
-  // Check if file passed in
-  if (args && args.length > 0) {
-    return utils.readTextFile(args)
-  }
-  // Check if piped data was passed in
-  const {stdin} = process
-  if (!stdin.isTTY) {
-    const result = ReadPipedStdin.read()
-    return result
-  }
-  return ''
+const getInputFromFile = async (path: string): Promise<string> => {
+  return utils.readTextFile(path)
 }
 
 const getUserConfig = async (configPath: string) => {
@@ -102,7 +92,7 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
   return validatedPath
 }
 
-module.exports.getInputFromFileOrStdin = getInputFromFileOrStdin
+module.exports.getInputFromFile = getInputFromFile
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs

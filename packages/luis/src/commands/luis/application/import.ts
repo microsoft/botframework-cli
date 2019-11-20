@@ -36,11 +36,7 @@ export default class LuisApplicationImport extends Command {
 
     inVal = inVal ? inVal.trim() : flags.in
 
-    try {
-      appJSON = await utils.getInputFromFileOrStdin(inVal)
-    } catch (error) {
-      throw new CLIError(`Failed to read app JSON: ${error}`)
-    }
+    appJSON = await this.getImportJSON(inVal)
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
@@ -51,4 +47,19 @@ export default class LuisApplicationImport extends Command {
       throw new CLIError(`Failed to import app: ${err}`)
     }
   }
+
+  async getImportJSON(input: string) {
+    if (input) {
+      try {
+        return await utils.getInputFromFile(input)
+      } catch (error) {
+        throw new CLIError(`Failed to read app JSON: ${error}`)
+      }
+    }
+    const {stdin} = process
+    if (!stdin.isTTY) {
+      return this.readStdin()
+    }
+  }
+
 }
