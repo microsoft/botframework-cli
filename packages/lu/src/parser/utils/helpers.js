@@ -172,7 +172,7 @@ const helpers = {
             if (finalLUISJSON.model_features) {
                 finalLUISJSON.phraselists = [];
                 finalLUISJSON.model_features.forEach(item => {
-                    if (!item.enabledForAllModels) item.enabledForAllModels = true
+                    if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
                     finalLUISJSON.phraselists.push(Object.assign({}, item))
                 });
                 delete finalLUISJSON.model_features;

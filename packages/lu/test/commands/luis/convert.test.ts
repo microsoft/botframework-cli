@@ -186,7 +186,7 @@ describe('luis:convert', () => {
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
     .it('luis:convert writes out an error when invalid entity definition is found', async (ctx) => {
-      expect(ctx.stderr).to.contain("[ERROR] line 1:14 - line 1:16: syntax error: missing ':' at '\\r\\n'")
+      expect(ctx.stderr).to.contain("syntax error: missing ':'")
     })
 
     test
