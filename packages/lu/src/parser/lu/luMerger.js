@@ -136,7 +136,8 @@ const haveLUISContent = function(blob) {
     (blob[LUISObjNameEnum.UTTERANCE].length > 0) ||
     (blob.prebuiltEntities.length > 0) ||
     (blob[LUISObjNameEnum.REGEX].length > 0) ||
-    (blob.model_features.length > 0) ||
+    (blob.model_features && blob.model_features.length > 0) ||
+    (blob.phraselists && blob.phraselists.length > 0) ||
     (blob.composites.length > 0));
 }
 

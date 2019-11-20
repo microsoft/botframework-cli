@@ -1,0 +1,27 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnAsk",
+    "condition": "empty(where(dialog.requiredProperties, property, !dialog[property]))",
+    "actions": [
+        {
+            "$type": "Microsoft.SendActivity",
+            "activity": "@{callReadForm()}"
+        },
+        {
+            "$type": "Microsoft.Ask",
+            "activity": "@{callConfirmChange()}",
+            "expectedProperties": [
+                "CompleteConfirmation"
+            ]
+        }
+    ]
+}
+```
+
+# callReadForm
+- @\{readForm()}
+
+# callConfirmChange
+- @\{confirmChange()}

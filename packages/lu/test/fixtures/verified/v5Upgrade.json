@@ -44,7 +44,8 @@
       "name": "abc",
       "words": "one,two,three",
       "mode": false,
-      "activated": true
+      "activated": true,
+      "enabledForAllModels": true
     }
   ],
   "versionId": "0.1",

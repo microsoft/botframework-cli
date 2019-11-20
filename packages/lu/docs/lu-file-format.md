@@ -358,6 +358,25 @@ By default synonyms are set to be **not interchangeable** (matches with the port
     - you are
 ```
 
+Phrase lists can be marked as `disabled` using this notation: 
+
+```markdown
+@ phraselist abc disabled
+
+> also same as this
+@ phraselist question(interchangeable) = 
+    - are you
+    - you are
+
+@ question disabled
+```
+
+Phrase lists by default are enabled for all models. However when you explicitly start assigning phrase list as a feature (descriptor) to other models, then the specific phrase lists is not enabled for all models. To explicitly make a phrase list always available to all models, you can do so via:
+
+```markdown
+@ phraselist abc enabledForAllModels
+```
+
 ## Model as feature
 
 Here's how you add a feature to a ml entity or an intent - with `usesFeature`.
