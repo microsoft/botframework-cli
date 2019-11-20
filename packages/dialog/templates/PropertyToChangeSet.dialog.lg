@@ -1,0 +1,14 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnSetProperty",
+    "property": "PropertyToChange",
+    "actions": [
+        {
+            "$type": "Microsoft.DeleteProperty",
+            "property": "dialog[@PROPERTYName]"            
+        }
+    ]
+}
+```

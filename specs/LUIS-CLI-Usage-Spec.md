@@ -66,6 +66,7 @@ Parameters:
 
 ### version:clone
 
+
 Synopsis: Creates a new version equivalent to the current snapshot of the selected application version.
 
 Reference:  [Clone version](https://westus.dev.cognitive.microsoft.com/docs/services/5890b47c39e2bb17b84a55ff/operations/5890b47c39e2bb052c5b9c3a) 
@@ -115,8 +116,6 @@ Returns:
 * Operation success confirmation
   * Or error code with error message
 * Echo newly created application Id
-
-
 
 ###  application:delete
 
@@ -189,7 +188,6 @@ Returns:
   * If file specified, print out written file full path
 
   
-
 ### application:import
 
 Synopsis:  Imports LUIS application from JSON or LU content.  
@@ -249,7 +247,6 @@ Returns:
 
 * Prints out created version Id
 
-  
 
 ### application:list
 
@@ -300,7 +297,6 @@ Returns:
 
 * Prints out deployment endpoints unless output file is specified
 
-  
 
 ### version:list
 
@@ -366,8 +362,6 @@ Returns:
       "failedRegions": ""
   }
   ```
-
-  
 
 ### application:rename
 
