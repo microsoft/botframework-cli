@@ -38,17 +38,19 @@ describe('utils/filehelper test', () => {
 
     it('File helper correctly build a triggerIntent to dialog mapping dict', async function(){
         try{
-            let pathToFile = path.resolve(path.join(__dirname, './../fixtures/testcases/interuption/intent_to_lu.config'))
+            let pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption/intent_to_lu.config')
             let configObject = await fileHelper.getConfigObject(pathToFile)
-            expect(Array.from(configObject.keys()).length).to.deep.equals(3)
-            expect(configObject.get('.\\dia2\\dia2.lu').get('dia4_trigger')).to.deep.equals('.\\dia4\\dia4.lu')
-            expect(configObject.get('.\\main\\main.fr-fr.lu').get('dia2_trigger')).to.deep.equals('.\\dia2\\dia2.fr-fr.lu')
+            let configObjKeys = Array.from(configObject.keys())
+            expect(configObjKeys.length).to.deep.equals(3)
+            expect(configObject.get(configObjKeys[1]).get('dia4_trigger')).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia4/dia4.lu'))
+            expect(configObject.get(configObjKeys[2]).get('dia2_trigger')).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia2/dia2.fr-fr.lu'))
 
-            pathToFile = path.resolve(path.join(__dirname, './../fixtures/testcases/interuption2'))
+            pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption2')
             configObject = await fileHelper.getConfigObject(pathToFile)
-            expect(Array.from(configObject.keys()).length).to.deep.equals(2)
-            expect(configObject.get('.\\main\\main.lu').get('dia1_trigger')).to.deep.equals('.\\dia1\\dia1.lu')
-            expect(configObject.get('.\\dia1\\dia1.lu').get('dia3_trigger')).to.deep.equals('.\\dia3\\dia3.lu')
+            configObjKeys = Array.from(configObject.keys())
+            expect(configObjKeys.length).to.deep.equals(2)
+            expect(configObject.get(configObjKeys[0]).get('dia1_trigger')).to.deep.equals(path.resolve(pathToFile, './dia1/dia1.lu'))
+            expect(configObject.get(configObjKeys[1]).get('dia3_trigger')).to.deep.equals(path.resolve(pathToFile, './dia3/dia3.lu'))
         }catch(err){
             console.log(err)
         }
