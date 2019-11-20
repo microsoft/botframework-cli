@@ -409,7 +409,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                             addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
-                            plEnity.enabledForAllModels = false;
+                            if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
@@ -456,7 +456,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                             addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
-                            plEnity.enabledForAllModels = false;
+                            if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
@@ -1207,14 +1207,25 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
  * @param {String []} valuesList Array of individual lines to be processed and added to phrase list.
  */
 const handlePhraseList = function(parsedContent, entityName, entityType, entityRoles, valuesList, currentLine) {
+    let isPLEnabledForAllModels = undefined;
+    let isPLEnabled = undefined;
     if (entityRoles.length !== 0) {
-        let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
-        let error = BuildDiagnostic({
-            message: errorMsg,
-            context: currentLine
+        // Phrase lists cannot have roles; however we will allow inline definition of enabledForAllModels as well as disabled as a property on phrase list.
+        entityRoles.forEach(item => {
+            if (item.toLowerCase() === 'disabled') {
+                isPLEnabled = false;
+            } else if (item.toLowerCase() === 'enabledforallmodels') {
+                isPLEnabledForAllModels = true;
+            } else {
+                let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: currentLine
+                })
+        
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            }
         })
-
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
     }
     // check if this phraselist entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
@@ -1255,8 +1266,11 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
             if (!wordsSplit.includes(plValueItem)) pLEntityExists.words += (pLEntityExists.words !== '' ? ',' : '') + plValueItem;
         })
     } else {
-        parsedContent.LUISJsonStructure.model_features.push(new helperClass.modelObj(entityName, intc, pLValues.join(','), true));
+        pLEntityExists = new helperClass.modelObj(entityName, intc, pLValues.join(','), true);
+        parsedContent.LUISJsonStructure.model_features.push(pLEntityExists);
     }
+    if (isPLEnabled !== undefined) pLEntityExists.activated = isPLEnabled;
+    if (isPLEnabledForAllModels !== undefined) pLEntityExists.enabledForAllModels = isPLEnabledForAllModels;
 }
 
 /**
