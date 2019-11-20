@@ -34,8 +34,7 @@ export default class LuisApplicationImport extends Command {
     const requiredProps = {endpoint, subscriptionKey, name}
     utils.validateRequiredProps(requiredProps)
 
-    if (!inVal) inVal = flags.in
-    if (inVal) inVal = inVal.trim()
+    inVal = inVal ? inVal.trim() : flags.in
 
     try {
       appJSON = await utils.getInputFromFileOrStdin(inVal)
