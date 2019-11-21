@@ -123,40 +123,25 @@ module.exports = {
             for (const child of children) {
                 let intent = child.intent;
                 if (idToResourceMap.has(child.target)) {
-                    const contentList = resource.content.Content.split(/\r?\n/);
                     const brotherSections = resource.content.Sections.filter(s => s.Name !== intent 
                         && s.Name !== intentName 
                         && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION));
                     
-                    let brotherEntityDict = new Map();
                     let brotherUtterances = [];
                     brotherSections.forEach(s => {
                         if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-                            brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.context.getText().trim()));
-                            s.Entities.forEach(e => {
-                                const startLine = e.ParseTree.start.line - 1;
-                                const endLine = e.ParseTree.stop.line - 1;
-                                brotherEntityDict.set(e.Name, contentList.slice(startLine, endLine + 1).join('\r\n'));
-                            })
+                            brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance));
                         } else {
                             s.SimpleIntentSections.forEach(section => {
-                                brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.context.getText().trim()));
-                            })
-                            
-                            s.SimpleIntentSections.forEach(s => {
-                                s.Entities.forEach(e => {
-                                    const startLine = e.ParseTree.start.line - 1;
-                                    const endLine = e.ParseTree.stop.line - 1;
-                                    brotherEntityDict.set(e.Name, contentList.slice(startLine, endLine + 1).join('\r\n'));
-                                })
+                                brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance));
                             })
                         }
                     });
 
                     let targetResource = idToResourceMap.get(child.target);
 
-                    // Merge direct brother's utterances and entities
-                    targetResource = this.mergeInteruptionIntent(brotherUtterances, brotherEntityDict, targetResource, intentName);
+                    // Merge direct brother's utterances
+                    targetResource = this.mergeInteruptionIntent(brotherUtterances, targetResource, intentName);
                     idToResourceMap.set(targetResource.id, targetResource);
                 }
             }
@@ -191,48 +176,25 @@ module.exports = {
         const fatherInteruptions = fatherResource.content.Sections.filter(s => s.Name === intentName);
         if (fatherInteruptions && fatherInteruptions.length > 0) {
             const fatherInteruption = fatherInteruptions[0];
-            const fatherUtterances = fatherInteruption.UtteranceAndEntitiesMap.map(u => u.context.getText());
-            const fatherContentList = fatherResource.content.Content.split(/\r?\n/);
-            let fatherEntityDict = new Map();
-            fatherInteruption.Entities.forEach(x => {
-                const startLine = x.ParseTree.start.line - 1;
-                const endLine = x.ParseTree.stop.line - 1;
-                fatherEntityDict.set(x.Name, fatherContentList.slice(startLine, endLine + 1).join('\r\n'));
-            });
-
-            childResource = this.mergeInteruptionIntent(fatherUtterances, fatherEntityDict, childResource, intentName);
+            const fatherUtterances = fatherInteruption.UtteranceAndEntitiesMap.map(u => u.utterance);
+            childResource = this.mergeInteruptionIntent(fatherUtterances, childResource, intentName);
         }
 
         return childResource;
     },
 
-    mergeInteruptionIntent: function (fromUtterances, fromEntityDict, toResource, intentName) {
+    mergeInteruptionIntent: function (fromUtterances, toResource, intentName) {
         const toInteruptions = toResource.content.Sections.filter(section => section.Name === intentName);
-        const toContentList = toResource.content.Content.split(/\r?\n/);
-        let interuptionEntities = [];
         if (toInteruptions && toInteruptions.length > 0) {
             const toInteruption = toInteruptions[0];
-            const existingUtterances = toInteruption.UtteranceAndEntitiesMap.map(u => u.context.getText().trim().slice(1).trim());
+            const existingUtterances = toInteruption.UtteranceAndEntitiesMap.map(u => u.utterance);
             // construct new content here
             let newFileContent = '';
             fromUtterances.forEach(utterance => {
-                if (!existingUtterances.includes(utterance.trim().slice(1).trim())) {
-                    newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n';
+                if (!existingUtterances.includes(utterance)) {
+                    newFileContent += '- ' + utterance + '\r\n';
                 }
             });
-
-            toInteruption.Entities.forEach(e => {
-                const startLine = e.ParseTree.start.line - 1;
-                const endLine = e.ParseTree.stop.line - 1;
-                interuptionEntities.push(toContentList.slice(startLine, endLine + 1).join('\r\n'));
-            });
-
-            const existingEntityNames = toInteruption.Entities.map(e => e.Name);
-            fromEntityDict.forEach(nameContentPair => {
-                if (!existingEntityNames.includes(nameContentPair[0])) {
-                    interuptionEntities.push(nameContentPair[1]);
-                }
-            })
 
             if (newFileContent !== '') {
                 newFileContent = toInteruption.ParseTree.intentDefinition().getText().trim() + '\r\n' + newFileContent;
@@ -250,10 +212,6 @@ module.exports = {
 
                 newFileContent = newLines.join('\r\n');
 
-                if (interuptionEntities && interuptionEntities.length > 0) {
-                    newFileContent += '\r\n\r\n' + interuptionEntities.join('\r\n\r\n') + '\r\n';
-                }
-
                 // update section here
                 toResource.content = new SectionOperator(toResource.content).updateSection(toInteruption.Id, newFileContent);
             }
@@ -261,12 +219,8 @@ module.exports = {
             // construct new content here
             if (fromUtterances && fromUtterances.length > 0) {
                 let newFileContent = `\r\n# ${intentName}\r\n`;
-                fromUtterances.forEach(utterance => newFileContent += '- ' + utterance.trim().slice(1).trim() + '\r\n');
-                interuptionEntities = Array.from(fromEntityDict.values());
-                if (interuptionEntities && interuptionEntities.length > 0) {
-                    newFileContent += '\r\n' + interuptionEntities.join('\r\n\r\n') + '\r\n';
-                }
-
+                fromUtterances.forEach(utterance => newFileContent += '- ' + utterance + '\r\n');
+             
                 // add section here
                 toResource.content = new SectionOperator(toResource.content).addSection(newFileContent);
             }

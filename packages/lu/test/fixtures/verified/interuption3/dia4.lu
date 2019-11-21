@@ -9,17 +9,9 @@
 - When do you want to leave from Seattle train station
 
 # _Interuption
-- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+- book a flight from Seattle to Beijing
 - which flight time do you prefer
 - Hello
 - Hi
 - book a hotel in Seattle
 - Which type of hotel do you prefer
-
-@simple fromLocation
-
-@ simple toLocation
-
-@ phraselist flightTimeline = 
-	- morning,afternoon,evening
-

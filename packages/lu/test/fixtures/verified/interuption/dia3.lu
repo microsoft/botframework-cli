@@ -6,7 +6,7 @@
 @ simple toLocation
 
 # flightTime
-- which flight time do you prefer
+- which {flightTime} do you prefer
 
 @ phraselist flightTimeline = 
 	- morning,afternoon,evening

@@ -5,16 +5,9 @@
 - Which type of hotel do you prefer
 
 # _Interuption
-- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+- book a flight from Seattle to Beijing
 - which flight time do you prefer
 - book a train ticket from Seattle to Portland
 - When do you want to leave from Seattle train station
 - Hello
 - Hi
-
-@simple fromLocation
-
-@ simple toLocation
-
-@ phraselist flightTimeline = 
-	- morning,afternoon,evening

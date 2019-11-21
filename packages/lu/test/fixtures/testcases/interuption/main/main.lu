@@ -4,7 +4,7 @@
 
 # dia2_trigger
 - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
-- which flight time do you prefer
+- which {flightTime} do you prefer
 - book a train ticket from Seattle to Portland
 - When do you want to leave from Seattle train station
 
