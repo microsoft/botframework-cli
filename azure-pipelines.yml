@@ -46,6 +46,7 @@ steps:
   enabled: false
 
 - task: PublishBuildArtifacts@1
+  enabled: false
   displayName: 'Publish Artifact: nyc_output'
   inputs:
     PathtoPublish: '$(Build.SourcesDirectory)\.nyc_output'
