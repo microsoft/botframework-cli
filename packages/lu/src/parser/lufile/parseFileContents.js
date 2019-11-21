@@ -26,7 +26,6 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
-const SimpleIntentSection = require('./simpleIntentSection');
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',

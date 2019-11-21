@@ -1,6 +1,7 @@
 const retCode = require('./../utils/enums/CLI-errors')
 const helpers = require('./../utils/helpers')
 const exception = require('./../utils/exception')
+const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 
 const validateLUIS = function(luisJSON) {
     // look for entity name collisions - list, simple, patternAny, phraselist
