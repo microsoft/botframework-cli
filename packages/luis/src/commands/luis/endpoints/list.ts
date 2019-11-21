@@ -37,12 +37,12 @@ export default class LuisEndpointsList extends Command {
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
-      const appList = await client.apps.listEndpoints(appId, options)
+      const endpointsList = await client.apps.listEndpoints(appId, options)
       if (out) {
-        const writtenFilePath: string = await utils.writeToFile(out, appList, force)
+        const writtenFilePath: string = await utils.writeToFile(out, endpointsList, force)
         this.log(`\nList successfully written to file: ${writtenFilePath}`)
       } else {
-        await utils.writeToConsole(appList)
+        await utils.writeToConsole(endpointsList)
         this.log('\nList successfully output to console')
       }
     } catch (err) {
