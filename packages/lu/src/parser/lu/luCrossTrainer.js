@@ -176,7 +176,7 @@ module.exports = {
             for (const child of rootResource.children) {
                 let childResource = result.get(child.target);
                 if (childResource.visited !== undefined && childResource.visited === true) {
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Loop detected for lu file ${childResource.id} when doing cross training.`));
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, dialog call loop detected for lu file ${childResource.id} when doing cross training.`));
                 }
 
                 const newChildResource = this.mergeFatherInteruptionToChild(rootResource, childResource, intentName);

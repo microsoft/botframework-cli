@@ -1,5 +1,6 @@
 # dia2_trigger
 - book a hotel in Seattle
+- Which type of hotel do you prefer
 
 # dia3_trigger
 - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}

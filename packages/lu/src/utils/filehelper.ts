@@ -213,7 +213,7 @@ export async function getConfigObject(input: string, recurse = false) {
             let intentToReferFileMap = mappingsDict.get(filePath)
             if (intentToReferFileMap) {
               if (intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referencedFilePath) {
-                throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger ${intentName}`)
+                throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger '${intentName}' in config:\r\n${luConfigContent}`)
               } else {
                 intentToReferFileMap.set(intentName, referencedFilePath)
               }
@@ -224,8 +224,12 @@ export async function getConfigObject(input: string, recurse = false) {
             mappingsDict.set(filePath, intentToReferFileMap)
           }
         })
-      } catch {
-        throw new CLIError(`Sorry, invalid cross training config: ${luConfigContent}`)
+      } catch (err) {
+        if (err instanceof CLIError) {
+          throw err
+        } else {
+          throw new CLIError(`Sorry, invalid cross training config:\r\n${luConfigContent}`)
+        }
       }
     }
   }

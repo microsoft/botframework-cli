@@ -48,5 +48,30 @@ describe('luis:convert interuption intent among lu files', () => {
       expect(await compareLuFiles('./../../../interuptionGen/dia3.lu', './../../fixtures/verified/interuption3/dia3.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia4.lu', './../../fixtures/verified/interuption3/dia4.lu')).to.be.true
     })
-})
 
+    test
+    .stdout()
+    .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption4')}`, '--root', `${path.join(__dirname, './../../fixtures/testcases/interuption4/main/main.lu')}`, '--out', 'interuptionGen', '--intentname', '_Interuption', '--recurse'])
+    .it('luis:convert interuption intents when local intents occur', async () => {
+      expect(await compareLuFiles('./../../../interuptionGen/main.lu', './../../fixtures/verified/interuption4/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/dia1.lu', './../../fixtures/verified/interuption4/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/dia2.lu', './../../fixtures/verified/interuption4/dia2.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/dia3.lu', './../../fixtures/verified/interuption4/dia3.lu')).to.be.true
+    })
+
+    test
+    .stdout()
+    .stderr()
+    .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption5')}`, '--root', `${path.join(__dirname, './../../fixtures/testcases/interuption5/main/main.lu')}`, '--out', 'interuptionGen', '--intentname', '_Interuption', '--recurse'])
+    .it('luis:convert should throw exception when multiple dialog invocations of same trigger occur in config', async (ctx) => {
+      expect(ctx.stderr).to.contain('Sorry, multiple dialog invocations occur in same trigger')
+    })
+
+    test
+    .stdout()
+    .stderr()
+    .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption6')}`, '--root', `${path.join(__dirname, './../../fixtures/testcases/interuption6/main/main.lu')}`, '--out', 'interuptionGen', '--intentname', '_Interuption', '--recurse'])
+    .it('luis:convert should throw exception when dialog call loop is detected in config', async (ctx) => {
+      expect(ctx.stderr).to.contain('Sorry, dialog call loop detected for lu file')
+    })
+})

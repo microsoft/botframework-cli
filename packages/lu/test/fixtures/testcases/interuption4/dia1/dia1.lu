@@ -1,14 +1,10 @@
-# bookHotel
+# dia2_trigger
 - book a hotel in Seattle
-
-# hotelType
 - Which type of hotel do you prefer
 
-# _Interuption
+# dia3_trigger
 - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
 - which flight time do you prefer
-- book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
 
 @simple fromLocation
 
@@ -16,3 +12,7 @@
 
 @ phraselist flightTimeline = 
 	- morning,afternoon,evening
+
+# local_trigger1
+- Hello
+- Hi

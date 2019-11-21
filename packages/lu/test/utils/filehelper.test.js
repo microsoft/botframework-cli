@@ -55,4 +55,13 @@ describe('utils/filehelper test', () => {
             console.log(err)
         }
     })
+
+    it('File helper correctly throw exception when multiple dialog invocations in same trigger occur in cross-train config', async function(){
+        try{
+            let pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption5/intent_to_lu.config')
+            await fileHelper.getConfigObject(pathToFile)
+        }catch(err){
+            expect(err.toString()).to.include('Sorry, multiple dialog invocations occur in same trigger')
+        }
+    })
 })
