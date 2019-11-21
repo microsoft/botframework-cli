@@ -76,3 +76,10 @@ tsconfig.tsbuildinfo
 packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.csproj.CoreCompileInputs.cache
 packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.AssemblyInfo.cs
 packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.AssemblyInfoInputs.cache
+
+#generated antlr files
+.antlr
+packages/dialog/tsconfig.tsbuildinfo
+
+# BuildInfo
+tsconfig.tsbuildinfo

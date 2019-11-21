@@ -1,0 +1,64 @@
+{
+  "name": "@microsoft/bf-luis-cli",
+  "version": "0.0.0",
+  "bugs": "https://github.com/packages/bf-luis-cli/issues",
+  "dependencies": {
+    "@microsoft/bf-cli-command": "1.0.0",
+    "@oclif/command": "^1.5.19",
+    "@oclif/config": "^1.13.3",
+    "@types/sinon": "^7.5.0",
+    "azure-cognitiveservices-luis-authoring": "2.1.1",
+    "fs-extra": "^8.1.0",
+    "ms-rest": "2.5.3",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@oclif/plugin-help": "^2.2.1",
+    "@oclif/test": "^1.2.5",
+    "@oclif/tslint": "^3.1.1",
+    "@types/chai": "^4.2.4",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.17.4",
+    "@types/rimraf": "^2.0.3",
+    "chai": "^4.2.0",
+    "globby": "^10.0.1",
+    "mocha": "^5.2.0",
+    "nyc": "^14.1.1",
+    "rimraf": "^3.0.0",
+    "sinon": "^7.5.0",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2",
+    "uuid": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
+    "/yarn.lock"
+  ],
+  "homepage": "https://github.com/packages/bf-luis-cli",
+  "keywords": [
+    "oclif-plugin"
+  ],
+  "license": "MIT",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "bf",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "packages/bf-luis-cli",
+  "scripts": {
+    "postpack": "rimraf oclif.manifest.json",
+    "posttest": "tslint -p test -t stylish",
+    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}

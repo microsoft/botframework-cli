@@ -1,0 +1,17 @@
+# filename
+- @{formName}-@{property}Ask.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$type": "Microsoft.OnClearProperty",
+    "condition": "turn.dialogEvent.Value.Change.Slot == '@{property}'",
+    "actions": [
+        {
+            "$type": "Microsoft.DeleteProperty",
+            "property": "$@{PROPERTY}"
+        }
+    ]
+}
+```

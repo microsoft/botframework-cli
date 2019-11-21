@@ -4,12 +4,15 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
-const luConverter = require('./../../parser/converters/qnatoqnajsonconverter')
-const qnaConverter = require('./../../parser/converters/qnajsontoqnaconverter')
-const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
+
+const QnAMaker = require('./../../parser/qna/qnamaker/qnamaker')
+const Alterations = require('./../../parser/qna/alterations/alterations')
+const QnAMakerBuilder = require('./../../parser/qna/qnamaker/qnaMakerBuilder')
+const alterationsBuilder = require('./../../parser/qna/alterations/alterationsBuilder')
 
 export default class QnamakerConvert extends Command {
   static description = 'Converts .lu file(s) to QnA application JSON models or vice versa.'
@@ -31,20 +34,26 @@ export default class QnamakerConvert extends Command {
       const {flags} = this.parse(QnamakerConvert)
 
       // Check if data piped in stdin
-      let stdin = await this.readStdin()
+      const stdin = await this.readStdin()
 
       //Check if file or folder
       //if folder, only lu to luis is supported
-      let isQnA = await file.detectLuContent(stdin, flags.in)
+      const isQnA = await file.detectLuContent(stdin, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isQnA) {
-        let luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
-        result = await luConverter.parseQnaToJson(luFiles, false, flags.luis_culture)
+        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
+        result = {}
+        result.finalQnAJSON = await QnAMakerBuilder.build(luFiles, false, flags.luis_culture)
+        result.finalQnAAlterations = await alterationsBuilder.build(luFiles, false, flags.luis_culture)
       } else {
-        const qnAFile = stdin ? stdin : await file.getContentFromFile(flags.in)
-        result = await qnaConverter.parseQnAObjectToLu(qnAFile, flags.sort, flags.alterations)
+        const qnaContent = stdin ? stdin : await file.getContentFromFile(flags.in)
+        const QnA = flags.alterations ? new Alterations(file.parseJSON(qnaContent, 'QnA Alterations')) : new QnAMaker(file.parseJSON(qnaContent, 'QnA'))
+        if (flags.sort) {
+          QnA.sort()
+        }
+        result = QnA.parseToLuContent()
       }
 
       // If result is null or undefined return

@@ -5,25 +5,25 @@
 const modules = {
     parser: {
         parseFile: require('./lufile/parseFileContents').parseFile,
-        validateLUISBlob: require('./luisfile/parseLuisFile').validateLUISBlob
+        validateLUISBlob: require('./luis/luisValidator').validateLUIS
     },
     refresh: {
-        constructMdFromLUIS: require('./converters/luistoluconverter').constructMdFromLUISJSON,
-        constructMdFromQnA: require('./converters/qnajsontoqnaconverter').constructMdFromQnAJSON,
-        constructMdFromQnAAlteration: require('./converters/qnajsontoqnaconverter').constructMdFromQnAAlterationJSON
+        constructMdFromLUIS: require('./luis/luConverter'),
+        constructMdFromQnA: require('./qna/qnamaker/qnaConverter'),
+        constructMdFromQnAAlteration: require('./qna/alterations/qnaConverter')
     },
     translate: {
         parseAndTranslate: require('./lufile/translate-helpers').parseAndTranslate,
         translateText: require('./lufile/translate-helpers').translateText
     },
     helperEnums: {
-        errorCodes: require('./lufile/enums/CLI-errors').errorCode,
-        parseCommands: require('./lufile/enums/parsecommands'),
+        errorCodes: require('./utils/enums/CLI-errors').errorCode,
+        parseCommands: require('./utils/enums/parsecommands'),
     },
     helperClasses: {
-        Exception: require('./lufile/classes/exception'),
-        LUIS: require('./lufile/classes/LUIS'),
-        QnA: require('./lufile/classes/qna'),
+        Exception: require('./utils/exception'),
+        LUIS: require('./luis/luis'),
+        QnA: require('./qna/qnamaker/qnamaker'),
         Parser: require('./lufile/classes/parserObject')
     }
 };

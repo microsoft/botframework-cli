@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:percentage @{roles()}
+
+[generator.lg](../generator.lg)

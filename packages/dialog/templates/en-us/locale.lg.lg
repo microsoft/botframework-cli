@@ -1,0 +1,5 @@
+# filename
+- @{formName}.@{locale}.lg
+
+# template
+- >>> Library\n@{join(foreach(templates.lg, lg, concat('[', lg.fullName, '](./', lg.fullName, ')')), '\n')}

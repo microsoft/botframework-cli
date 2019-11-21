@@ -8,6 +8,7 @@ const compareLuFiles = async function(file1: string, file2: string) {
   let fixtureFile = await fs.readFile(path.join(__dirname, file2))
   result = result.toString().replace(/\r\n/g, "\n")
   fixtureFile = fixtureFile.toString().replace(/\r\n/g, "\n")
+  expect(fixtureFile).to.deep.equal(result)
   return result === fixtureFile
 }
 
@@ -185,7 +186,7 @@ describe('luis:convert', () => {
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
     .it('luis:convert writes out an error when invalid entity definition is found', async (ctx) => {
-      expect(ctx.stderr).to.contain("[ERROR] line 1:9 - line 1:10: syntax error: missing ':' at '='")
+      expect(ctx.stderr).to.contain("syntax error: missing ':'")
     })
 
     test
@@ -377,6 +378,14 @@ describe('luis:convert', () => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @app = test"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/special-char-in-entity-type.lu')}`, '--out', './results/root36.json', '--log'])
+    .it('luis:convert entities with special chars in entity type line', async (ctx) => {
+      let parsedObjects = await parseJsonFiles('./../../../results/root36.json', './../../fixtures/verified/special-char-in-entity-type.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
 })   
 
 describe('luis:convert version 5 upgrade test', () => {
@@ -407,6 +416,20 @@ describe('luis:convert version 5 upgrade test', () => {
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/newEntityWithFeatures.json')}`, '--out', './results/root38.lu'])
   .it('luis:convert successfully converts LUIS JSON model with nDepth entity and features to LU', async () => {
     expect(await compareLuFiles('./../../../results/root38.lu', './../../fixtures/verified/newEntityWithFeatures.lu')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/v6WithoutPhraseLists.lu')}`, '--out', './results/root38.json'])
+  .it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
+    expect(await compareLuFiles('./../../../results/root38.json', './../../fixtures/verified/v6WithoutPhraseLists.json')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/plWithFlags.lu')}`, '--out', './results/root39.json'])
+  .it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
+    expect(await compareLuFiles('./../../../results/root39.json', './../../fixtures/verified/plWithFlags.json')).to.be.true
   })
 })
 
@@ -528,7 +551,7 @@ describe('luis:convert empty file handling', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
   .it('luis:convert errors out on empty json file', async (ctx) => {
-    expect(ctx.stderr).to.contain('Sorry, error parsing content as LUIS JSON')
+    expect(ctx.stderr).to.contain('Sorry, error parsing content as Luis JSON\n')
   })
 })
 

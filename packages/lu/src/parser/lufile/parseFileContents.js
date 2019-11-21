@@ -3,29 +3,28 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-const LUISObjNameEnum = require('./enums/luisobjenum');
-const PARSERCONSTS = require('./enums/parserconsts');
-const builtInTypes = require('./enums/luisbuiltintypes');
-const helpers = require('./helpers');
+const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
+const PARSERCONSTS = require('./../utils/enums/parserconsts');
+const builtInTypes = require('./../utils/enums/luisbuiltintypes');
+const helpers = require('./../utils/helpers');
 const chalk = require('chalk');
 const url = require('url');
-const retCode = require('./enums/CLI-errors');
+const retCode = require('./../utils/enums/CLI-errors');
 const parserObj = require('./classes/parserObject');
-const qnaListObj = require('./classes/qnaList');
-const qnaMetaDataObj = require('./classes/qnaMetaData');
+const qnaListObj = require('./../qna/qnamaker/qnaList');
+const qnaMetaDataObj = require('./../qna/qnamaker/qnaMetaData');
 const helperClass = require('./classes/hclasses');
 const deepEqual = require('deep-equal');
-const qna = require('./classes/qna');
-const exception = require('./classes/exception');
-const qnaAlterations = require('./classes/qnaAlterations');
+const exception = require('./../utils/exception');
+const qnaAlterations = require('./../qna/alterations/alterations');
 const fetch = require('node-fetch');
-const qnaFile = require('./classes/qnaFiles');
+const qnaFile = require('./../qna/qnamaker/qnaFiles');
 const fileToParse = require('./classes/filesToParse');
 const luParser = require('./luParser');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const EntityTypeEnum = require('./enums/luisEntityTypes');
-const luisEntityTypeMap = require('./enums/luisEntityTypeNameMap');
+const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
+const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -410,7 +409,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                             addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
-                            plEnity.enabledForAllModels = false;
+                            if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
@@ -457,7 +456,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                             addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
-                            plEnity.enabledForAllModels = false;
+                            if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
@@ -1208,14 +1207,25 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
  * @param {String []} valuesList Array of individual lines to be processed and added to phrase list.
  */
 const handlePhraseList = function(parsedContent, entityName, entityType, entityRoles, valuesList, currentLine) {
+    let isPLEnabledForAllModels = undefined;
+    let isPLEnabled = undefined;
     if (entityRoles.length !== 0) {
-        let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
-        let error = BuildDiagnostic({
-            message: errorMsg,
-            context: currentLine
+        // Phrase lists cannot have roles; however we will allow inline definition of enabledForAllModels as well as disabled as a property on phrase list.
+        entityRoles.forEach(item => {
+            if (item.toLowerCase() === 'disabled') {
+                isPLEnabled = false;
+            } else if (item.toLowerCase() === 'enabledforallmodels') {
+                isPLEnabledForAllModels = true;
+            } else {
+                let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: currentLine
+                })
+        
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            }
         })
-
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
     }
     // check if this phraselist entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
@@ -1256,8 +1266,11 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
             if (!wordsSplit.includes(plValueItem)) pLEntityExists.words += (pLEntityExists.words !== '' ? ',' : '') + plValueItem;
         })
     } else {
-        parsedContent.LUISJsonStructure.model_features.push(new helperClass.modelObj(entityName, intc, pLValues.join(','), true));
+        pLEntityExists = new helperClass.modelObj(entityName, intc, pLValues.join(','), true);
+        parsedContent.LUISJsonStructure.model_features.push(pLEntityExists);
     }
+    if (isPLEnabled !== undefined) pLEntityExists.activated = isPLEnabled;
+    if (isPLEnabledForAllModels !== undefined) pLEntityExists.enabledForAllModels = isPLEnabledForAllModels;
 }
 
 /**
@@ -1499,7 +1512,7 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
                     let alterationlist = [entity.Name];
                     if (entity.SynonymsOrPhraseList && entity.SynonymsOrPhraseList.length > 0) {
                         alterationlist = alterationlist.concat(entity.SynonymsOrPhraseList);
-                        parsedContent.qnaAlterations.wordAlterations.push(new qnaAlterations.alterations(alterationlist));
+                        parsedContent.qnaAlterations.wordAlterations.push(new qnaAlterations().wordAlterations = {"alterations": alterationlist});
                     } else {
                         let errorMsg = `QnA alteration section: "${alterationlist}" does not have list decoration. Prefix line with "-" or "+" or "*"`;
                         let error = BuildDiagnostic({
