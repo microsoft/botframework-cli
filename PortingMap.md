@@ -27,7 +27,11 @@ Commands invoked by BF [New Command] as follows:
 | lg                            | MSLG        | TBD     |
 | dispatch                      | Dispatch    | TBD     |
 
+## Deprecation Schedule
 
+Legacy tools shall be maintained for an extended period past the deprecation message in the tool, typically spanning 2 release cycles in order to support easy transition to the new _bf cli_. 
+
+See [Tool Lifetime Support Policy](./ToolLifetimeSchedule.md) for detailed timeline.
 
 ## See Also
 
