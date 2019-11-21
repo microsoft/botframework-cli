@@ -8,9 +8,9 @@ const modules = {
         validateLUISBlob: require('./luis/luisValidator')
     },
     refresh: {
-        constructMdFromLUIS: require('./luis/luConverter').luisToLuContent,
-        constructMdFromQnA: require('./qna/qnamaker/qnaConverter').qnaToLuContent,
-        constructMdFromQnAAlteration: require('./qna/alterations/qnaConverter').qnaAlterationsToLuContent
+        constructMdFromLUIS: require('./luis/luConverter'),
+        constructMdFromQnA: require('./qna/qnamaker/qnaConverter'),
+        constructMdFromQnAAlteration: require('./qna/alterations/qnaConverter')
     },
     translate: {
         parseAndTranslate: require('./lufile/translate-helpers').parseAndTranslate,

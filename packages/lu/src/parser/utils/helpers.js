@@ -188,12 +188,16 @@ const helpers = {
         let v5DefFound = false;
         v5DefFound = (finalLUISJSON.entities || []).find(i => i.children || i.features) ||
                     (finalLUISJSON.intents || []).find(i => i.features) || 
-                    (finalLUISJSON.composites || []).find(i => i.features);
+                    (finalLUISJSON.composites || []).find(i => i.features) || 
+                    (finalLUISJSON.luis_schema_version === '6.0.0');
         if (v5DefFound) {
             finalLUISJSON.luis_schema_version = "6.0.0";
             if (finalLUISJSON.model_features) {
                 finalLUISJSON.phraselists = [];
-                finalLUISJSON.model_features.forEach(item => finalLUISJSON.phraselists.push(Object.assign({}, item)));
+                finalLUISJSON.model_features.forEach(item => {
+                    if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
+                    finalLUISJSON.phraselists.push(Object.assign({}, item))
+                });
                 delete finalLUISJSON.model_features;
             }
             (finalLUISJSON.composites || []).forEach(composite => {
