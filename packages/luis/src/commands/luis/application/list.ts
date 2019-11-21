@@ -8,7 +8,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationList extends Command {
-  static description = 'Lists all of the user applications'
+  static description = 'Imports LUIS application from JSON or LU content.'
 
   static examples = [`
     $ bf luis:application:list --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --take 3
