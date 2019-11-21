@@ -34,7 +34,7 @@ async function getLuFiles(inputPath: string, recurse = false, extType: string | 
       let fileStat = await fs.stat(input)
       if (fileStat.isFile()) {
         filesToParse.push(input)
-        return filesToParse
+        continue
       }
 
       if (!fileStat.isDirectory()) {
@@ -192,38 +192,37 @@ async function getConfigFiles(input: string, recurse = false): Promise<Array<any
 export async function getConfigObject(input: string, recurse = false) {
   const luConfigFiles = await getConfigFiles(input, recurse)
   if (luConfigFiles.length === 0) {
-    throw new CLIError(`Sorry, no .config file found in the folder '${input}' and its sub folders`)
+    throw new CLIError(`Sorry, no .json file found in the folder '${input}' and its sub folders`)
   }
 
-  let mappingsDict = new Map<string, Map<string, string>>()
+  let finalLuConfigObj = Object.create(null)
   for (const luConfigFile of luConfigFiles) {
     const configFileDir = path.dirname(luConfigFile)
     const luConfigContent = await getContentFromFile(luConfigFile)
     if (luConfigContent && luConfigContent !== '') {
       try {
-        let mappingLines = luConfigContent.split(/\r?\n/)
-        mappingLines.forEach((mappingLine: string) => {
-          let keyValuePair = mappingLine.split('->')
-          let key = keyValuePair[0]
-          let value = keyValuePair[1]
-          let filePath = path.resolve(configFileDir, key.split('#')[0].trim().replace(/\//g, '\\'))
-          let intentName = key.split('#')[1].trim().replace(/\//g, '\\')
-          let referencedFilePath = path.resolve(configFileDir, value.trim().replace(/\//g, '\\'))
-          if (mappingsDict.has(filePath)) {
-            let intentToReferFileMap = mappingsDict.get(filePath)
-            if (intentToReferFileMap) {
-              if (intentToReferFileMap.has(intentName) && intentToReferFileMap.get(intentName) !== referencedFilePath) {
+        const luConfigObj = JSON.parse(luConfigContent)
+        for (const rootluFilePath of Object.keys(luConfigObj)) {
+          const filePath = path.resolve(configFileDir, rootluFilePath)
+          const intentToDestLuFilePath = luConfigObj[rootluFilePath]
+          for (const intentName of Object.keys(intentToDestLuFilePath)) {
+            const destLuFilePath = intentToDestLuFilePath[intentName]
+            const referencedFilePath = path.resolve(configFileDir, destLuFilePath)
+
+            if (filePath in finalLuConfigObj) {
+              const intentToReferFile = finalLuConfigObj[filePath]
+              if (intentName in intentToReferFile && intentToReferFile[intentName] !== referencedFilePath) {
                 throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger '${intentName}' in config:\r\n${luConfigContent}`)
               } else {
-                intentToReferFileMap.set(intentName, referencedFilePath)
+                intentToReferFile[intentName] = referencedFilePath
               }
+            } else {
+              let intentToReferFile = Object.create(null)
+              intentToReferFile[intentName] = referencedFilePath
+              finalLuConfigObj[filePath] = intentToReferFile
             }
-          } else {
-            let intentToReferFileMap = new Map<string, string>()
-            intentToReferFileMap.set(intentName, referencedFilePath)
-            mappingsDict.set(filePath, intentToReferFileMap)
           }
-        })
+        }
       } catch (err) {
         if (err instanceof CLIError) {
           throw err
@@ -234,7 +233,7 @@ export async function getConfigObject(input: string, recurse = false) {
     }
   }
 
-  return mappingsDict
+  return finalLuConfigObj
 }
 
 export function parseJSON(input: string, appType: string) {

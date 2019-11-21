@@ -59,7 +59,7 @@ describe('luis:convert interuption intent among lu files', () => {
       expect(await compareLuFiles('./../../../interuptionGen/dia3.lu', './../../fixtures/verified/interuption4/dia3.lu')).to.be.true
     })
 
-    test
+    test.skip()
     .stdout()
     .stderr()
     .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption5')}`, '--root', `${path.join(__dirname, './../../fixtures/testcases/interuption5/main/main.lu')}`, '--out', 'interuptionGen', '--intentname', '_Interuption', '--recurse'])

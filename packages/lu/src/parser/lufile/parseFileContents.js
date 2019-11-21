@@ -55,7 +55,13 @@ const parseFileContentsModule = {
      */
     parseFile: async function (fileContent, log, locale) {
         fileContent = helpers.sanitizeNewLines(fileContent);
+
         let parsedContent = new parserObj();
+        
+        if (fileContent === '') {
+            return parsedContent;
+        }
+
         await parseLuAndQnaWithAntlr(parsedContent, fileContent.toString(), log, locale);
 
         return parsedContent;

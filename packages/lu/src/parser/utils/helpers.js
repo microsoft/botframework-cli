@@ -26,7 +26,7 @@ const helpers = {
     FileExtTypeEnum: {
         LUFile : '.lu',
         QnAFile : '.qna',
-        CROSSTRAINCONFIG: '.config'
+        CROSSTRAINCONFIG: '.json'
     },
     /**
      * Helper function to recursively get all .lu files

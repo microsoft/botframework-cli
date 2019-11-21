@@ -9,19 +9,22 @@ const DiagnosticSeverity = require('./../lufile/diagnostic').DiagnosticSeverity;
 module.exports = {
     /**
      * Do cross training among lu files
-     * @param {luObject[]} luArray the luObject list to be parsed
-     * @param {luObject[]} rootLuArray root luObject list
-     * @param {Map<string, Map<string, string>>} luConfig cross train config 
-     * @param {string} intentName interuption intent name
-     * @param {boolean} verbose verbose logging
+     * @param {luObject[]} luObjectArray the luObject list to be parsed
+     * @param {any} crossTrainConfig cross train json config
      * @returns {Map<string, LUResource>} Map of file id and luResource
      * @throws {exception} Throws on errors. exception object includes errCode and text
      */
-    luCrossTrain: async function (luArray, rootLuArray, luConfig, intentName, verbose) {
+    luCrossTrain: async function (luObjectArray, crossTrainConfig) {
         try {
+            const crossTrainConfigObj = JSON.parse(crossTrainConfig);
+            const rootObjectIds = crossTrainConfigObj.rootIds;
+            const triggerRules = crossTrainConfigObj.triggerRules;
+            const intentName = crossTrainConfigObj.intentName;
+            const verbose = crossTrainConfigObj.verbose;
+
             let fileIdToLuResourceMap = new Map();
-            for (const luFile of luArray) {
-                let luContent = luFile.content;
+            for (const luObject of luObjectArray) {
+                let luContent = luObject.content;
                 luContent = helpers.sanitizeNewLines(luContent);
                 if (luContent === undefined || luContent === '') {
                     continue;
@@ -42,7 +45,7 @@ module.exports = {
                     }
                 }
 
-                fileIdToLuResourceMap.set(luFile.id, luResource);
+                fileIdToLuResourceMap.set(luObject.id, luResource);
             }
 
             /*
@@ -63,7 +66,7 @@ module.exports = {
                     children: []
                 };
 
-                if (luConfig.has(fileId)) {
+                if (fileId in triggerRules) {
                     let intents = [];
                     for (const section of luResource.Sections) {
                         if (section.SectionType === LUSectionTypes.SIMPLEINTENTSECTION 
@@ -75,7 +78,7 @@ module.exports = {
                     for (const intent of intents) {
                         const name = intent.Name;
                         if (name !== intentName) {
-                            const referencedFileId = luConfig.get(fileId).get(name);
+                            const referencedFileId = triggerRules[fileId][name];
                             if (referencedFileId) {
                                 if (fileIdsFromInput.includes(referencedFileId)) {
                                     resource.children.push({
@@ -91,7 +94,7 @@ module.exports = {
                 resources.push(resource);
             }
 
-            const rootResources = resources.filter(r => rootLuArray.some(root => root.id === r.id));
+            const rootResources = resources.filter(r => rootObjectIds.some(rootId => rootId === r.id));
             const result = this.crossTrain(rootResources, resources, intentName);
             for (const res of result) {
                 fileIdToLuResourceMap.set(res.id, res.content);

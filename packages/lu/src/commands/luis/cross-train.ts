@@ -36,9 +36,17 @@ export default class LuisCrossTrian extends Command {
       let result: any
       if (isLu && flags.root) {
         const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile)
-        const rootFiles = await file.getLuObjects(undefined, flags.root)
+        const rootFiles = await file.getLuObjects(undefined, flags.root, flags.recurse, fileExtEnum.LUFile)
         const luConfigObject = await file.getConfigObject(flags.in, flags.recurse)
-        result = await luCrossTrainer.luCrossTrain(luFiles, rootFiles, luConfigObject, flags.intentname, flags.log)
+
+        let crossTrainConfig = {
+          rootIds: rootFiles.map((r: any) => r.id),
+          triggerRules: luConfigObject,
+          intentName: flags.intentname,
+          verbose: flags.log
+        }
+
+        result = await luCrossTrainer.luCrossTrain(luFiles, JSON.stringify(crossTrainConfig))
       }
 
       // If result is null or undefined return

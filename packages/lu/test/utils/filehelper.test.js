@@ -38,30 +38,21 @@ describe('utils/filehelper test', () => {
 
     it('File helper correctly build a triggerIntent to dialog mapping dict', async function(){
         try{
-            let pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption/intent_to_lu.config')
+            let pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption/intent_to_lu.json')
             let configObject = await fileHelper.getConfigObject(pathToFile)
-            let configObjKeys = Array.from(configObject.keys())
+            let configObjKeys = Object.keys(configObject)
             expect(configObjKeys.length).to.deep.equals(3)
-            expect(configObject.get(configObjKeys[1]).get('dia4_trigger')).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia4/dia4.lu'))
-            expect(configObject.get(configObjKeys[2]).get('dia2_trigger')).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia2/dia2.fr-fr.lu'))
+            expect(configObject[configObjKeys[1]]['dia4_trigger']).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia4/dia4.lu'))
+            expect(configObject[configObjKeys[2]]['dia2_trigger']).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia2/dia2.fr-fr.lu'))
 
             pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption2')
             configObject = await fileHelper.getConfigObject(pathToFile)
-            configObjKeys = Array.from(configObject.keys())
+            configObjKeys = Object.keys(configObject)
             expect(configObjKeys.length).to.deep.equals(2)
-            expect(configObject.get(configObjKeys[0]).get('dia1_trigger')).to.deep.equals(path.resolve(pathToFile, './dia1/dia1.lu'))
-            expect(configObject.get(configObjKeys[1]).get('dia3_trigger')).to.deep.equals(path.resolve(pathToFile, './dia3/dia3.lu'))
+            expect(configObject[configObjKeys[0]]['dia1_trigger']).to.deep.equals(path.resolve(pathToFile, './dia1/dia1.lu'))
+            expect(configObject[configObjKeys[1]]['dia3_trigger']).to.deep.equals(path.resolve(pathToFile, './dia3/dia3.lu'))
         }catch(err){
             console.log(err)
-        }
-    })
-
-    it('File helper correctly throw exception when multiple dialog invocations in same trigger occur in cross-train config', async function(){
-        try{
-            let pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption5/intent_to_lu.config')
-            await fileHelper.getConfigObject(pathToFile)
-        }catch(err){
-            expect(err.toString()).to.include('Sorry, multiple dialog invocations occur in same trigger')
         }
     })
 })
