@@ -64,7 +64,7 @@ export default class DialogMerge extends Command {
         this.failed = false
         this.missingTypes = new Set()
         try {
-            let schemaPaths = []
+            let schemaPaths: any[] = []
             if (update) {
                 if (!branch) {
                     this.error(`${this.currentFile}: error: Must specify -branch <branch> in order to use -update`)

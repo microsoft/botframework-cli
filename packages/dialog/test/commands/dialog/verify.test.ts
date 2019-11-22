@@ -24,7 +24,7 @@ describe('dialog:verify', () => {
         .command(["dialog:verify", `${path.join(__dirname, './examples/*.dialog')}`])
         .it('verify all', ctx => {
             expect(ctx.stderr)
-                .to.contain("Error: 17 found.");
+                .to.contain("Error: 16 found.");
         });
 });
 
