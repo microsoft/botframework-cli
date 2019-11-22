@@ -2,4 +2,4 @@
 - @{formName}.@{locale}.lg
 
 # template
-- >>> Library\n@{join(foreach(templates.lg, lg, concat('[', lg.fullName, '](./', lg.fullName, ')')), '\n')}
+- >>> Library\n@{join(foreach(templates.lg, lg, concat('[', lg.fallbackName, '](', lg.fallbackName, ')')), '\n')}

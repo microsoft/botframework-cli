@@ -107,19 +107,21 @@ async function replaceAsync(str: string, re: RegExp, callback: (match: string) =
 }
 
 const RefPattern = /^\s*\[[^\]\n\r]*\]\s*$/gm
+const LocalePattern = /\.[^.]+\.lg$/
 async function processLibraryTemplates(template: string, outPath: string, templateDirs: string[], outDir: string, form: any, scope: any, force: boolean, feedback: Feedback): Promise<string> {
     if (!template.startsWith('>>> Library')) {
         return replaceAsync(template, RefPattern, async (match: string): Promise<string> => {
             let replacement = await processTemplate(match.substring(match.indexOf('[') + 1, match.indexOf(']')), templateDirs, outDir, form, scope, force, feedback, false)
+            replacement = replacement.replace(LocalePattern, '.lg')
             let local = ppath.relative(ppath.dirname(outPath), replacement)
-            return Promise.resolve(`[${ppath.basename(replacement)}](${local})`)
+            return Promise.resolve(`\n[${ppath.basename(replacement)}](${local})`)
         });
     } else {
         return Promise.resolve(template)
     }
 }
 
-type FileRef = { name: string, fullName: string, relative: string }
+type FileRef = { name: string, fallbackName: string, fullName: string, relative: string }
 function addEntry(fullPath: string, outDir: string, tracker: any): FileRef | undefined {
     let ref: FileRef | undefined
     let basename = ppath.basename(fullPath, '.dialog')
@@ -128,6 +130,7 @@ function addEntry(fullPath: string, outDir: string, tracker: any): FileRef | und
     if (!arr.find(ref => ref.name === basename)) {
         ref = {
             name: basename,
+            fallbackName: basename.replace(/\.[^.]+\.lg/, '.lg'),
             fullName: ppath.basename(fullPath),
             relative: ppath.relative(outDir, fullPath)
         }
