@@ -29,7 +29,7 @@ describe('luis:application:list', () => {
   .stdout()
   .command(['luis:application:list', '--help'])
   .it('should print the help contents when --help is passed as an argument', ctx => {
-    expect(ctx.stdout).to.contain('Imports LUIS application from JSON or LU content.')
+    expect(ctx.stdout).to.contain('Lists all applications on LUIS service.')
   })
 
   test
