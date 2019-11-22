@@ -56,6 +56,7 @@ module.exports = {
                 children: [ {target: "b.lu", intent: "b"} , {target: "c.lu", intent: "c"}]
             }
             */
+            let visitedChildren = new Set();
             let resources = [];
             let fileIdsFromInput = Array.from(fileIdToLuResourceMap.keys());
             for (const fileId of fileIdsFromInput) {
@@ -80,16 +81,20 @@ module.exports = {
                         if (fileIdsFromInput.includes(destLuFile)) {
                             const triggerIntentName = destLuFileToIntent[destLuFile];
                             if (intents.some(i => i.Name === triggerIntentName)) {
-                                resource.children.push({
-                                    target: destLuFile,
-                                    intent: triggerIntentName
-                                });
+                                if (visitedChildren.has(destLuFile)) {
+                                    // validate loop in a tree or forest
+                                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, dialog call loop detected for lu file ${destLuFile} when doing cross training`));
+                                } else {
+                                    resource.children.push({
+                                        target: destLuFile,
+                                        intent: triggerIntentName
+                                    });
 
+                                    visitedChildren.add(destLuFile);
+                                }
                             } else {
-                                // TODO: throw exception
+                                throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`));
                             }
-                        } else {
-                            // TODO: throw exception of file not found
                         }
                     }
                 }
@@ -97,10 +102,17 @@ module.exports = {
                 resources.push(resource);
             }
 
-            const rootResources = resources.filter(r => rootObjectIds.some(rootId => rootId === r.id));
-            const result = this.crossTrain(rootResources, resources, intentName);
-            for (const res of result) {
-                fileIdToLuResourceMap.set(res.id, res.content);
+            // do cross training from roots. One root one core training
+            for (const rootObjectId of rootObjectIds) {
+                if (resources.some(r => r.id === rootObjectId)) {
+                    // do cross training for each root at top level
+                    const result = this.crossTrain(rootObjectId, resources, intentName);
+                    for (const res of result) {
+                        fileIdToLuResourceMap.set(res.id, res.content);
+                    }
+                } else {
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, root lu file '${rootObjectId}' does not exist`));
+                }
             }
 
             return fileIdToLuResourceMap;
@@ -110,69 +122,66 @@ module.exports = {
     },
 
     /**
-     * Cross training core function
-     * @param {any[]} rootResources the root resource object list
+     * Cross training core function. Do cross training from a root to its children once.
+     * @param {string} rootResourceId the root resource object id
      * @param {any[]} resources all resource object list
      * @param {string} intentName interuption intent name
      * @returns {any[]} updated resource objects
      * @throws {exception} Throws on errors. exception object includes errCode and text
      */
-    crossTrain: function (rootResources, resources, intentName) {
+    crossTrain: function (rootResourceId, resources, intentName) {
         const idToResourceMap = new Map();
         for (const resource of resources) {
             idToResourceMap.set(resource.id, resource);
         }
 
-        for (const id of idToResourceMap.keys()) {
-            let resource = idToResourceMap.get(id);
-            let children = resource.children;
-            for (const child of children) {
-                let triggerIntent = child.intent;
-                const brotherSections = resource.content.Sections.filter(s => s.Name !== triggerIntent
-                    && s.Name !== intentName
-                    && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION));
-
-                let brotherUtterances = [];
-                brotherSections.forEach(s => {
-                    if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-                        brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance));
-                    } else {
-                        s.SimpleIntentSections.forEach(section => {
-                            brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance));
-                        })
-                    }
-                });
-
-                let targetResource = idToResourceMap.get(child.target);
-
-                // Merge direct brother's utterances
-                targetResource = this.mergeInteruptionIntent(brotherUtterances, targetResource, intentName);
-                idToResourceMap.set(targetResource.id, targetResource);
-            }
-        }
-
         // Parse resources
-        for (const rootResource of rootResources) {
-            rootResource.visited = true;
-            this.mergeRootInteruptionToLeaves(rootResource, idToResourceMap, intentName);
-        }
+        let rootResource = resources.filter(r => r.id === rootResourceId)[0];
+        rootResource.visited = true;
+        this.mergeRootInteruptionToLeaves(rootResource, idToResourceMap, intentName);
 
         return Array.from(idToResourceMap.values());
     },
 
     mergeRootInteruptionToLeaves: function (rootResource, result, intentName) {
         if (rootResource && rootResource.children && rootResource.children.length > 0) {
+            this.mergeBrothersInteruption(rootResource, result, intentName)
             for (const child of rootResource.children) {
                 let childResource = result.get(child.target);
-                if (childResource.visited !== undefined && childResource.visited === true) {
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, dialog call loop detected for lu file ${childResource.id} when doing cross training.`));
+                if (childResource.visited === undefined) {
+                    const newChildResource = this.mergeFatherInteruptionToChild(rootResource, childResource, intentName);
+                    result.set(child.target, newChildResource);
+                    newChildResource.visited = true;
+                    this.mergeRootInteruptionToLeaves(newChildResource, result, intentName);
                 }
-
-                const newChildResource = this.mergeFatherInteruptionToChild(rootResource, childResource, intentName);
-                result.set(child.target, newChildResource);
-                newChildResource.visited = true;
-                this.mergeRootInteruptionToLeaves(newChildResource, result, intentName);
             }
+        }
+    },
+
+    mergeBrothersInteruption: function (resource, result, intentName) {
+        let children = resource.children;
+        for (const child of children) {
+            let triggerIntent = child.intent;
+            const brotherSections = resource.content.Sections.filter(s => s.Name !== triggerIntent
+                && s.Name !== intentName
+                && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION));
+
+            let brotherUtterances = [];
+            brotherSections.forEach(s => {
+                if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+                    brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance));
+                } else {
+                    s.SimpleIntentSections.forEach(section => {
+                        brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance));
+                    })
+                }
+            });
+
+            let targetResource = result.get(child.target);
+
+            // Merge direct brother's utterances
+            targetResource = this.mergeInteruptionIntent(brotherUtterances, targetResource, intentName);
+            result.set(targetResource.id, targetResource);
         }
     },
 
