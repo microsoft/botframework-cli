@@ -53,7 +53,7 @@ module.exports = {
             {
                 id: a.lu
                 content: LUResource
-                children: [ { intent: "b", target: "b.lu"} , {intent:  "c", target: "c.lu"}]
+                children: [ {target: "b.lu", intent: "b"} , {target: "c.lu", intent: "c"}]
             }
             */
             let resources = [];
@@ -75,18 +75,21 @@ module.exports = {
                         }
                     }
 
-                    for (const intent of intents) {
-                        const name = intent.Name;
-                        if (name !== intentName) {
-                            const referencedFileId = triggerRules[fileId][name];
-                            if (referencedFileId) {
-                                if (fileIdsFromInput.includes(referencedFileId)) {
-                                    resource.children.push({
-                                        intent: name,
-                                        target: referencedFileId
-                                    });
-                                }
+                    const destLuFileToIntent = triggerRules[fileId];
+                    for (const destLuFile of Object.keys(destLuFileToIntent)) {
+                        if (fileIdsFromInput.includes(destLuFile)) {
+                            const triggerIntentName = destLuFileToIntent[destLuFile];
+                            if (intents.some(i => i.Name === triggerIntentName)) {
+                                resource.children.push({
+                                    target: destLuFile,
+                                    intent: triggerIntentName
+                                });
+
+                            } else {
+                                // TODO: throw exception
                             }
+                        } else {
+                            // TODO: throw exception of file not found
                         }
                     }
                 }
@@ -124,29 +127,27 @@ module.exports = {
             let resource = idToResourceMap.get(id);
             let children = resource.children;
             for (const child of children) {
-                let intent = child.intent;
-                if (idToResourceMap.has(child.target)) {
-                    const brotherSections = resource.content.Sections.filter(s => s.Name !== intent 
-                        && s.Name !== intentName 
-                        && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION));
-                    
-                    let brotherUtterances = [];
-                    brotherSections.forEach(s => {
-                        if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-                            brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance));
-                        } else {
-                            s.SimpleIntentSections.forEach(section => {
-                                brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance));
-                            })
-                        }
-                    });
+                let triggerIntent = child.intent;
+                const brotherSections = resource.content.Sections.filter(s => s.Name !== triggerIntent
+                    && s.Name !== intentName
+                    && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION));
 
-                    let targetResource = idToResourceMap.get(child.target);
+                let brotherUtterances = [];
+                brotherSections.forEach(s => {
+                    if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+                        brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance));
+                    } else {
+                        s.SimpleIntentSections.forEach(section => {
+                            brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance));
+                        })
+                    }
+                });
 
-                    // Merge direct brother's utterances
-                    targetResource = this.mergeInteruptionIntent(brotherUtterances, targetResource, intentName);
-                    idToResourceMap.set(targetResource.id, targetResource);
-                }
+                let targetResource = idToResourceMap.get(child.target);
+
+                // Merge direct brother's utterances
+                targetResource = this.mergeInteruptionIntent(brotherUtterances, targetResource, intentName);
+                idToResourceMap.set(targetResource.id, targetResource);
             }
         }
 

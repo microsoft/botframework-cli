@@ -203,23 +203,18 @@ export async function getConfigObject(input: string, recurse = false) {
       try {
         const luConfigObj = JSON.parse(luConfigContent)
         for (const rootluFilePath of Object.keys(luConfigObj)) {
-          const filePath = path.resolve(configFileDir, rootluFilePath)
-          const intentToDestLuFilePath = luConfigObj[rootluFilePath]
-          for (const intentName of Object.keys(intentToDestLuFilePath)) {
-            const destLuFilePath = intentToDestLuFilePath[intentName]
-            const referencedFilePath = path.resolve(configFileDir, destLuFilePath)
-
-            if (filePath in finalLuConfigObj) {
-              const intentToReferFile = finalLuConfigObj[filePath]
-              if (intentName in intentToReferFile && intentToReferFile[intentName] !== referencedFilePath) {
-                throw new CLIError(`Sorry, multiple dialog invocations occur in same trigger '${intentName}' in config:\r\n${luConfigContent}`)
-              } else {
-                intentToReferFile[intentName] = referencedFilePath
-              }
+          const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
+          const destLuFileToIntent = luConfigObj[rootluFilePath]
+          for (const destLuFilePath of Object.keys(destLuFileToIntent)) {
+            const triggerIntent = destLuFileToIntent[destLuFilePath]
+            const destLuFileFullPath = path.resolve(configFileDir, destLuFilePath)
+            if (rootLuFileFullPath in finalLuConfigObj) {
+              const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
+              finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
             } else {
-              let intentToReferFile = Object.create(null)
-              intentToReferFile[intentName] = referencedFilePath
-              finalLuConfigObj[filePath] = intentToReferFile
+              let finalDestLuFileToIntent = Object.create(null)
+              finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
+              finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
             }
           }
         }

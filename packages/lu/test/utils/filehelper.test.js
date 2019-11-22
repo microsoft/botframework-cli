@@ -42,15 +42,15 @@ describe('utils/filehelper test', () => {
             let configObject = await fileHelper.getConfigObject(pathToFile)
             let configObjKeys = Object.keys(configObject)
             expect(configObjKeys.length).to.deep.equals(3)
-            expect(configObject[configObjKeys[1]]['dia4_trigger']).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia4/dia4.lu'))
-            expect(configObject[configObjKeys[2]]['dia2_trigger']).to.deep.equals(path.resolve(path.dirname(pathToFile), './dia2/dia2.fr-fr.lu'))
+            expect(configObject[configObjKeys[1]][path.resolve(path.dirname(pathToFile), './dia4/dia4.lu')]).to.deep.equals('dia4_trigger')
+            expect(configObject[configObjKeys[2]][path.resolve(path.dirname(pathToFile), './dia2/dia2.fr-fr.lu')]).to.deep.equals('dia2_trigger')
 
             pathToFile = path.resolve(__dirname, './../fixtures/testcases/interuption2')
             configObject = await fileHelper.getConfigObject(pathToFile)
             configObjKeys = Object.keys(configObject)
             expect(configObjKeys.length).to.deep.equals(2)
-            expect(configObject[configObjKeys[0]]['dia1_trigger']).to.deep.equals(path.resolve(pathToFile, './dia1/dia1.lu'))
-            expect(configObject[configObjKeys[1]]['dia3_trigger']).to.deep.equals(path.resolve(pathToFile, './dia3/dia3.lu'))
+            expect(configObject[configObjKeys[0]][path.resolve(pathToFile, './dia1/dia1.lu')]).to.deep.equals('dia1_trigger')
+            expect(configObject[configObjKeys[1]][path.resolve(pathToFile, './dia3/dia3.lu')]).to.deep.equals('dia3_trigger')
         }catch(err){
             console.log(err)
         }
