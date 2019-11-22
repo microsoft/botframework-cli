@@ -1,4 +1,4 @@
-# Lubuild -> bf luis:make
+# Lubuild -> bf luis:up
 
 Lubuild is a preview CLI tool available in [botbuilder-tools repository][1]. As part of the migration of botbuilder-tools to BF-CLI, the **core** functionality of the existing lubuild tool will be brought forward to BF-CLI as
 
@@ -49,7 +49,7 @@ When the CLI route is attempting to infer the locale from the file name, we shou
 
 ## CLI Command
 
-`bf luis:make`
+`bf luis:up`
 
 | Parameters        | Description                                                                                                             |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------|
@@ -64,6 +64,7 @@ When the CLI route is attempting to infer the locale from the file name, we shou
 | --dialog          | [Optional] write out .dialog files                                                                                      |
 | --fallbacklocale  | [Optional] locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set. |
 
+<a name="dialog-files" id="dialog-files"></a>
 
 ## Writing out .dialog files
 All up:luis.settings.<environmentname>.<region>.json
