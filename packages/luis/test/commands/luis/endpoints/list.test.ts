@@ -29,7 +29,7 @@ describe('luis:endpoints:list', () => {
   .stdout()
   .command(['luis:endpoints:list', '--help'])
   .it('should print the help contents when --help is passed as an argument', ctx => {
-    expect(ctx.stdout).to.contain('Returns the available endpoint deployment regions and urls')
+    expect(ctx.stdout).to.contain('Returns available deployment endpoints')
   })
 
   test
