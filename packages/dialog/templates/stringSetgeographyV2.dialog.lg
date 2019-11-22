@@ -6,9 +6,15 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@geographyV2"
-               
+    "$type": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "@geographyV2",
+    "actions": [
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@geographyV2"          
+        }
+    ]               
 }
 ```

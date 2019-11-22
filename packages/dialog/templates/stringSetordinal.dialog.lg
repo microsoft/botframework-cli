@@ -6,9 +6,15 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@ordinal"
-               
+    "$type": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity":"@ordinal",
+    "actions": [
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@ordinal"          
+        }
+    ]               
 }
 ```

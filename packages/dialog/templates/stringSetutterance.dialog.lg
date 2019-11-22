@@ -6,8 +6,15 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@utterance"
+    "$type": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "@utterance",
+    "actions": [
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@utterance"          
+        }
+    ]               
 }
 ```
