@@ -5,14 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "antlr-debug",
-            "request": "launch",
-            "name": "Debug Current Grammar",
-            "input": "test/commands/dialog/forms/input.txt",
-            "startRule": "doc",
-            "visualParseTree": true
-        },
-        {
             "type": "node",
             "request": "launch",
             "name": "Dialog Merge Tests",
@@ -64,17 +56,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}\\bin\\run",
+            "name": "BotBuilder schema",
+            "program": "${workspaceFolder}/bin/run",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
             ],
             "args": [
                 "dialog:merge",
-                "-f",
-                "c:/source/github/botbuilder-dotnet/**/*.schema"
-            ]
+                "libraries/**/*.schema",
+                "-u",
+                "-b", "master",
+                "-o", "schemas/sdk.schema",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "c:/users/chrimc/source/repos/botbuilder-dotnet"
         },
         {
             "type": "node",
@@ -92,8 +89,6 @@
                 "${env:TEMP}/sandwich.out",
                 "--force",
                 "--verbose",
-                "--schema",
-                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },
@@ -107,7 +102,7 @@
                 "${workspaceFolder}/lib/**/*.js"
             ],
             "args": [
-                "dialog:form",
+                "dialog:generate",
                 "${workspaceFolder}/test/commands/dialog/forms/activity.form.dialog",
                 "-o",
                 "${env:TEMP}/activity.out",
@@ -128,7 +123,7 @@
                 "${workspaceFolder}/lib/**/*.js"
             ],
             "args": [
-                "dialog:form",
+                "dialog:generate",
                 "${workspaceFolder}/test/commands/dialog/forms/contact.form.dialog",
                 "-o",
                 "${env:TEMP}/contact.out",
@@ -149,7 +144,7 @@
                 "${workspaceFolder}/lib/**/*.js"
             ],
             "args": [
-                "dialog:form",
+                "dialog:generate",
                 "${workspaceFolder}/test/commands/dialog/forms/opportunity.form.dialog",
                 "-o",
                 "${env:TEMP}/opportunity.out",
