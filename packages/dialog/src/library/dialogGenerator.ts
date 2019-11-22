@@ -5,9 +5,9 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
-import * as expr from 'botframework-expressions'
+import * as expr from '@christopheranderson/botframework-expressions'
 import * as fs from 'fs-extra'
-import * as lg from 'botbuilder-lg'
+import * as lg from '@christopheranderson/botbuilder-lg'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
 import { processSchemas } from './processSchemas'
@@ -42,7 +42,7 @@ const expressionEngine = new expr.ExpressionEngine((func: any) => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
-        default: return expr.BuiltInFunctions.Lookup(func)
+        default: return expr.BuiltInFunctions.lookup(func)
     }
 })
 
@@ -85,13 +85,14 @@ function addLocale(name: string, locale: string, formName: string): string {
 }
 
 async function replaceAsync(str: string, re: RegExp, callback: (match: string) => Promise<string>): Promise<string> {
-    let parts = []
+    let parts :any[] = []
     let i = 0
     if (re.global) {
         re.lastIndex = i
     }
     let match
     while (match = re.exec(str)) {
+                                            // This probably needs to be awaited
         parts.push(str.slice(i, match.index), callback(match[0]))
         i = re.lastIndex
         if (!re.global) {
@@ -164,7 +165,7 @@ async function processTemplate(
                 // NOTE: Ignore templates that are defined, but are empty
                 if (template) {
                     let filename = addLocale(templateName, scope.locale, scope.formName)
-                    if (typeof template === 'object' && template.templates.some(f => f.Name === 'filename')) {
+                    if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
                         filename = template.evaluateTemplate('filename', scope)
                     }
                     outPath = ppath.join(outDir, scope.locale, filename)
@@ -175,7 +176,7 @@ async function processTemplate(
                             let result = template
                             if (typeof template === 'object') {
                                 result = template.evaluateTemplate('template', scope)
-                                if (template.templates.some(f => f.Name === 'filename')) {
+                                if (template.templates.some(f => f.name === 'filename')) {
                                     filename = template.evaluateTemplate('filename', scope)
                                 }
                             }
