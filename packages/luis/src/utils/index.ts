@@ -47,6 +47,15 @@ const getLUISClient = (subscriptionKey: string, endpoint: string) => {
   return luisClient
 }
 
+const isDirectory = (path: string): boolean => {
+  try {
+    const stats = fs.statSync(path)
+    return stats.isDirectory()
+  } catch {
+    return false
+  }
+}
+
 const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
   const allowedConfigValues = [`${prefix}appId`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`]
   const filtered = Object.keys(configObj)
@@ -89,9 +98,11 @@ const writeToConsole = (outputContents: string) => {
 }
 
 const writeToFile = async (outputLocation: string, content: any, force: boolean) => {
-  const validatedPath = utils.validatePath(outputLocation, '', force)
+  const isDir = isDirectory(outputLocation)
+  let writeFile = isDir ? path.join(outputLocation, 'export.json') : outputLocation
+  const validatedPath = utils.validatePath(writeFile, '', force)
   try {
-    await fs.ensureFile(outputLocation)
+    await fs.ensureFile(writeFile)
     await fs.writeJson(validatedPath, content, {spaces: 2})
   } catch (error) {
     throw new CLIError(error)
