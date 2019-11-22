@@ -6,9 +6,15 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@temperature"
-               
+    "$type": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "@temperature",
+    "actions": [
+        {
+            "$type": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@temperature"          
+        }
+    ]               
 }
 ```
