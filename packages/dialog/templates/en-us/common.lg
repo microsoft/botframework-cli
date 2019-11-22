@@ -31,7 +31,7 @@ Which value do you want for @{name(property)}?
 - Enter a value for @{name(property)}
 
 # askHelp
-- IF: @{and($retries, $retries > 0)}
+- IF: @{and($retries, $retries > 0, toLower($lastIntent)!='help')}
 - @{join(foreach($expectedProperties, expected, help1(expected)), '\n')}
 - ELSE:
 - 
