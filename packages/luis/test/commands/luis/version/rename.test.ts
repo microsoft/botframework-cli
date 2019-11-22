@@ -5,10 +5,6 @@ const utils = require('../../../../src/utils/index')
 
 describe('luis:version:rename', () => {
 
-  before(() => {
-    const newAppId = uuidv1()
-  })
-
   beforeEach(() => {
     sinon.stub(utils, 'processInputs').returnsArg(0)
   })
@@ -46,7 +42,6 @@ describe('luis:version:rename', () => {
   .reply(200)
   )
   .stdout()
-  .stderr()
   .command(['luis:version:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--name', 'sample-app', '--versionId', '0.1', '--newVersionId', '0.2'])
   .it('renames a LUIS application version and displays a success message', ctx => {
     expect(ctx.stdout).to.contain('App version successfully renamed')
