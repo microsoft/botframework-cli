@@ -274,7 +274,7 @@ export async function generate(
     }
 
     if (!metaSchema) {
-        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema'
+        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/form/schemas/sdk.schema'
     } else if (!metaSchema.startsWith('http')) {
         // Adjust relative to outDir
         metaSchema = ppath.relative(outDir, metaSchema)
