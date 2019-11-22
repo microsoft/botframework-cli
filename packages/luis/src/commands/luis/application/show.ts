@@ -14,7 +14,7 @@ export default class LuisApplicationShow extends Command {
     $ bf luis:application:show --appId {APPLICATION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
