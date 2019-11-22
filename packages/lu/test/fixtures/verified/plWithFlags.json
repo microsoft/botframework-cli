@@ -1,0 +1,42 @@
+{
+  "intents": [
+    {
+      "name": "getUserProfileIntent",
+      "features": [
+        {
+          "featureName": "city",
+          "featureType": "phraselist"
+        }
+      ]
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "test",
+      "intent": "getUserProfileIntent",
+      "entities": []
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [],
+  "luis_schema_version": "6.0.0",
+  "phraselists": [
+    {
+      "name": "city",
+      "words": "Seattle,SEATAC,SEA",
+      "mode": false,
+      "activated": false,
+      "enabledForAllModels": true
+    }
+  ],
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us"
+}

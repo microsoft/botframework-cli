@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-const parseFile = require('./../../../src/parser/lufile/parseFileContents');
+const parseFile = require('../../../src/parser/lufile/parseFileContents');
 var chai = require('chai');
 var assert = chai.assert;
 describe('V2 Entity definitions using @ notation', function () {
@@ -460,6 +460,97 @@ describe('V2 Entity definitions using @ notation', function () {
     });
 
     describe('Phrase lists are handled correctly', function(done){
+        it('Phrase lists can be marked as disabled inline', function(done){
+            let luFile = `
+                @ phraselist city disabled
+                @ city =
+                    - Seattle
+                    - SEATAC
+                    - SEA
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
+                    assert.equal(res.LUISJsonStructure.model_features[0].activated, false);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase lists can be marked as disabled in a separate line', function(done){
+            let luFile = `
+                @ phraselist city
+                @ city =
+                    - Seattle
+                    - SEATAC
+                    - SEA
+                @ city disabled
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'city');
+                    assert.equal(res.LUISJsonStructure.model_features[0].activated, false);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase lists can be marked as enabled for all models in a separate line', function(done){
+            let luFile = `
+                > phrase list as feature to intent (also applicable to entities)
+                @ intent getUserProfileIntent usesFeature city
+                
+                # getUserProfileIntent
+                - test
+                
+                @ phraselist city
+                @ city =
+                    - Seattle
+                    - SEATAC
+                    - SEA
+                
+                @ city enabledForAllModels
+                @ city disabled
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].activated, false);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('Phrase lists can be marked as enabled for all models inline', function(done){
+            let luFile = `
+                > phrase list as feature to intent (also applicable to entities)
+                @ intent getUserProfileIntent usesFeature city
+                
+                # getUserProfileIntent
+                - test
+                
+                @ phraselist city disabled, enabledForAllModels = 
+                    - Seattle
+                    - SEATAC
+                    - SEA
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                    assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
+                    assert.equal(res.LUISJsonStructure.phraselists[0].activated, false);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
         it('Basic phrase list definition is handled correctly', function(done) {
             let luFile = `
                 @phraselist xyz
@@ -469,7 +560,7 @@ describe('V2 Entity definitions using @ notation', function () {
                 .then(res => {
                     assert.equal(res.LUISJsonStructure.model_features.length, 1);
                     assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
-                    done();assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    done();
                 })
                 .catch(err => done(err))
         });

@@ -7,17 +7,11 @@
     "$schema": "@{appSchema}",
     "$type": "Microsoft.OnAsk",
     "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
-    "actions": [
+    "actions": [        
         {
-            "$type": "Microsoft.IfCondition",
-            "condition":"$lastExpectedProperty == '@{property}'",
-            "actions":[
-                {
-                    "$type": "Microsoft.SendActivity",
-                    "activity": "@{callHelp()}"
-                }
-                    
-            ]
+            "$type": "Microsoft.SetProperty",
+            "property": "$lastExpectedProperty",
+            "value": "'@{property}'"
         },
         {
             "$type": "Microsoft.Ask",
@@ -32,6 +26,3 @@
 
 # callAsk
 - @\{Ask{property}()}
-
-# callHelp
-- @\{help(@PropertyName)}
