@@ -15,7 +15,7 @@ export default class LuisVersionImport extends Command {
     $ echo {SERIALIZED_JSON} | bf luis:version:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
     appId: flags.string({description: 'LUIS application Id'}),
     versionId: flags.string({description: 'LUIS application version to import'}),
