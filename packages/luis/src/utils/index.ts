@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError} from '@microsoft/bf-cli-command'
+import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
@@ -16,6 +16,17 @@ const filterConfig = (config: any, prefix: string) => {
       filteredConfig[key] = config[key]
       return filteredConfig
     }, {})
+}
+
+const getInputFromFile = async (path: string): Promise<string> => {
+  if (path) {
+    try {
+      return await utils.readTextFile(path)
+    } catch (error) {
+      throw new CLIError(`Failed to read app JSON: ${error}`)
+    }
+  }
+  return ''
 }
 
 const getUserConfig = async (configPath: string) => {
@@ -36,17 +47,40 @@ const getLUISClient = (subscriptionKey: string, endpoint: string) => {
   return luisClient
 }
 
+const isDirectory = (path: string): boolean => {
+  try {
+    const stats = fs.statSync(path)
+    return stats.isDirectory()
+  } catch {
+    return false
+  }
+}
+
+const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
+  const allowedConfigValues = [`${prefix}appId`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`]
+  const filtered = Object.keys(configObj)
+  .filter(key => allowedConfigValues.includes(key))
+  .reduce((filteredConfigObj: any, key) => {
+    filteredConfigObj[key] = configObj[key]
+    return filteredConfigObj
+  }, {})
+  return filtered
+}
+
 const processInputs = async (flags: any, flagLabels: string[], configDir: string) => {
   const configPrefix = 'luis__'
-  let config = await getUserConfig(configDir)
+  let config = filterByAllowedConfigValues(await getUserConfig(configDir), configPrefix)
   config = config ? filterConfig(config, configPrefix) : config
   const input: any = {}
   flagLabels
     .filter(flag => flag !== 'help')
     .map((flag: string) => {
+      if (flag === 'in') {
+        // rename property since 'in' is a reserved keyword in Javascript
+        input[`${flag}Val`] = flags[flag]
+      }
       input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
     })
-
   return input
 }
 
@@ -58,7 +92,28 @@ const validateRequiredProps = (configObj: any) => {
   })
 }
 
+const writeToConsole = (outputContents: string) => {
+  const output = JSON.stringify(outputContents, null, 2)
+  process.stdout.write(output, 'utf-8')
+}
+
+const writeToFile = async (outputLocation: string, content: any, force: boolean) => {
+  const isDir = isDirectory(outputLocation)
+  let writeFile = isDir ? path.join(outputLocation, 'export.json') : outputLocation
+  const validatedPath = utils.validatePath(writeFile, '', force)
+  try {
+    await fs.ensureFile(writeFile)
+    await fs.writeJson(validatedPath, content, {spaces: 2})
+  } catch (error) {
+    throw new CLIError(error)
+  }
+  return validatedPath
+}
+
+module.exports.getInputFromFile = getInputFromFile
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs
 module.exports.validateRequiredProps = validateRequiredProps
+module.exports.writeToConsole = writeToConsole
+module.exports.writeToFile = writeToFile
