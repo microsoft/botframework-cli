@@ -8,7 +8,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisEndpointsList extends Command {
-  static description = 'Returns the available endpoint deployment regions and urls'
+  static description = 'Returns available deployment endpoints'
 
   static examples = [`
     $ bf luis:endpoints:list --appId {APPLICATION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --out {PATH_TO_JSON_FILE}
