@@ -14,27 +14,29 @@ const ReadPipedStdin = {
         return reject()
       }
 
-      const timer = setTimeout(async () => {
-        clearTimeout(timer)
-        if (input) return resolve(input)
-        reject(new Error('No input'))
-      }, 1000)
+      function buffer(chunk: string) {
+        clearTimeout(timer);
+        input += chunk;
+      }
 
-      stdin.on('data', chunk => {
+      function complete(err: Error) {
         clearTimeout(timer)
-        input += chunk
-      })
+        stdin.removeListener('data', buffer); 
+        stdin.removeListener('end', complete); // It's safe to call removeListener even if it's already been removed
+        stdin.removeListener('error', complete);
+        if(err) {
+          return reject(err);
+        } else if(!input) {
+          return reject(new Error('No input'));
+        }
+        resolve(input);
+      }
 
-      stdin.on('end', () => {
-        clearTimeout(timer)
-        resolve(input)
-      })
+      const timer = setTimeout(complete, 1000)
 
-      stdin.on('error', err => {
-        clearTimeout(timer)
-        reject(new Error(`No input ${err}`))
-      })
-
+      stdin.on('data', buffer);
+      stdin.once('end', complete);
+      stdin.once('error', complete);
     })
   }
 }

@@ -35,7 +35,7 @@ export default class DialogMerge extends Command {
     static flags: flags.Input<any> = {
         help: flags.help({ char: 'h' }),
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
-        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: '4.Future', required: false }),
+        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: 'master', required: false }),
         update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
         verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
@@ -64,7 +64,7 @@ export default class DialogMerge extends Command {
         this.failed = false
         this.missingTypes = new Set()
         try {
-            let schemaPaths = []
+            let schemaPaths: any[] = []
             if (update) {
                 if (!branch) {
                     this.error(`${this.currentFile}: error: Must specify -branch <branch> in order to use -update`)
