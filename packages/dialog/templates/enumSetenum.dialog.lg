@@ -10,27 +10,9 @@
     "entity": "@{property}Entity",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
-            "condition": "!turn.dialogevent.value.expected",
-            "actions":[               
-                {
-                    "$type": "Microsoft.IfCondition",
-                    "condition": "!${property}",
-                    "actions":[
-                        {
-                            "$type": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedSet()}"
-                        }
-                    ],
-                    "elseActions":[
-                        {
-                            "$type": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedChange()}"
-                        }
-                    ]
-                }                
-            ]           
-        },
+            "$type": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        },    
         {
             "$type": "Microsoft.SetProperty",
             "property": "${property}",
@@ -40,8 +22,5 @@
 }
 ```
 
-# callUnexpectedSet
-- @\{unexpectedPropertySet('@{property}', @@{property}Entity)}
-
-# callUnexpectedChange
-- @\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @@{property}Entity)}
