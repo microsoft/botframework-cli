@@ -20,26 +20,6 @@ let exec: any = util.promisify(require('child_process').exec)
 
 export default class DialogMerge extends Command {
 
-    static args = [
-        { name: 'glob1', required: true },
-        { name: 'glob2', required: false },
-        { name: 'glob3', required: false },
-        { name: 'glob4', required: false },
-        { name: 'glob5', required: false },
-        { name: 'glob6', required: false },
-        { name: 'glob7', required: false },
-        { name: 'glob8', required: false },
-        { name: 'glob9', required: false },
-    ]
-
-    static flags: flags.Input<any> = {
-        help: flags.help({ char: 'h' }),
-        output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
-        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: 'master', required: false }),
-        update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
-        verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
-    }
-
     private verbose? = false
     private failed = false
     private missingKinds = new Set()
@@ -552,6 +532,27 @@ export default class DialogMerge extends Command {
     errorMsg(kind: string, message: string): void {
         this.error(`${this.currentFile}: error:${kind}: ${message}`)
         this.failed = true
+    }
+
+    
+    static args = [
+        { name: 'glob1', required: true },
+        { name: 'glob2', required: false },
+        { name: 'glob3', required: false },
+        { name: 'glob4', required: false },
+        { name: 'glob5', required: false },
+        { name: 'glob6', required: false },
+        { name: 'glob7', required: false },
+        { name: 'glob8', required: false },
+        { name: 'glob9', required: false },
+    ]
+
+    static flags: flags.Input<any> = {
+        help: flags.help({ char: 'h' }),
+        output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
+        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: 'master', required: false }),
+        update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
+        verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
 
 }
