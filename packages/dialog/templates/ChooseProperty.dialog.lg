@@ -2,10 +2,10 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnChooseProperty",
+    "$kind": "Microsoft.OnChooseProperty",
     "actions": [
         {
-            "$type": "Microsoft.Ask",
+            "$kind": "Microsoft.Ask",
             "activity": "@{callChooseProperties()}",
             "expectedProperties": ["PROPERTYName"]
         }

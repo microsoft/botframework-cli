@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/4.Future/schemas/component.schema",
-    "$role": "unionType(IRecognizer)",
+    "$role": "unionKind(IRecognizer)",
     "properties": {
         "req": {
             "$role": "lg"

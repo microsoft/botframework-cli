@@ -4,11 +4,11 @@
         "recognizers": {
             "type": "array",
             "items": {
-                "$type": "IRecognizer"
+                "$kind": "IRecognizer"
             }
         },
         "prompt": {
-            "$type": "prompt"
+            "$kind": "prompt"
         },
         "condition": {
             "$role": "expression"

@@ -2,58 +2,82 @@
 
 # Merge
 
+Ths will merge together [Microsoft Bot Builder](https://github.com/Microsoft/BotBuilder) .schema JSON schema files into a single JSON schema file. You can point to the files either directly with a glob pattern or indirectly through a glob pattern that matches a package.json, packages.config or \*.csproj file. The .schema files should have a unique filename that is used to refer to that type using `$kind`. The .schema files can optionally include a `$schema: "https://raw.githubusercontent.com/Microsoft/botbuilder-tools/SchemaGen/packages/DialogSchema/src/dialogSchema.schema"` which defines the schema they are validated against. Within a schema definition you can use `$role:"unionKind(<kind>)` to project the type definition into union types defined using `$role:"unionKind"` while merging. To refer to a type in a property, just use `"$kind":"<kind>"`. The merger combines all of the component .schema files into a single .schema file that has resolved all external `$ref`, merged `allOf` and connected together schemas through `$role` and `$kind`.
+
+In addition to types you can also mark properties with a `$role` which will define the underlying type and restrictions. This is also useful information for UI tools to help you construct values. Roles include:
+
+- `$role: "expression"`which marks a string property which is expected to contain an expression string.
+- `$role: "lg"`which marks a string property which is used for lanuage generation and can refer to LG templates.
+- `$role: "memoryPath"`which marks a string property which is expected to contain a path in memory like `user.name`.
+
+For example look at these files:
+
+- [IRecognizer.schema](test/schemas/IRecognizer.schema) defines the place holder for `IRecognizer` including a default option which is a bare string.
+- [Recognizer.schema](test/schemas/Recognizer.schema) includes `$role:"unionKind(IRecognizer)"` which extends the `IRecognizer` definition when merged.
+- [root.schema](test/schemas/root.schema) is a schema file that includes `$kind:"IRecognizer"` in order to make use of the `IRecognizer` place holder.
+- [app.schema](test/examples/app.schema) was created by this tool shows how all of these defintions are merged together. In particular if you look at `IRecognizer` you will see the definition that includes a string, or the complete definition of `Recognizer`.
+
+[root.dialog](test/examples/root.dialog) Shows how you could use the resulting schema to enter in JSON schema and get intellisense.
+
 # Verify
 
 # Form
-The form command generates .lu, .lg, .qna and .dialog assets from a schema defined using JSON Schema.  The parameters to the command are:
-* **--force, -f** Force overwriting generated files.
-* **--help, -h** Generate help.
-* **--locale, -l** Locales to generate.  By default en-us.
-* **--output, -o** Output directory.
-* **--schema, -s** Path to your app.schema file. By default is the standard SDK app.schema.
-* **--templates, -t** Directories with templates to use for generating form assets.
-* **--verbose, -v** Verbose logging of generated files.
+
+The form command generates .lu, .lg, .qna and .dialog assets from a schema defined using JSON Schema. The parameters to the command are:
+
+- **--force, -f** Force overwriting generated files.
+- **--help, -h** Generate help.
+- **--locale, -l** Locales to generate. By default en-us.
+- **--output, -o** Output directory.
+- **--schema, -s** Path to your app.schema file. By default is the standard SDK app.schema.
+- **--templates, -t** Directories with templates to use for generating form assets.
+- **--verbose, -v** Verbose logging of generated files.
 
 ## Schema
-Schemas are specified using JSON Schema.  You can use the normal JSON Schema mechanisms including $ref and allOf which will be resolved into a single schema.  In addition there are a few extra keywords including:
-* **$mappings** List of entity names that can map to a property. The order of the entities also defines the precedence to use when resolving entities.  By default the mappings are based on the type:
-  * **enum**
-  * **number**, **string**
-* **$templates** The template names to use for generating assets. $templates can be defined at the top-level in a schema or per-property which by default are based on the type:
-  * **enum**
-  * **number**, **string**
-* **\$expectedOnly** A list of properties that are only possible if they are expected.
-* **\$requires** A list of JSON Schema to use for internal mechanisms.  You can use either actual paths or just the name of the schema to use if found in one of the template directories.  The standard schema is `standard.schema.dialog`.  The form schema and all of the required schemas will have the top-level `properties`, `definitions`, `required`, `$expectedOnly` and `$templates` merged.
-* **\$triggerIntent** Name of the trigger intent or by default the name of the form.
 
-`<form>.form.dialog` will be generated with the form schema in it.  `<form>.schema.dialog` will have the whole schema defined.
+Schemas are specified using JSON Schema. You can use the normal JSON Schema mechanisms including \$ref and allOf which will be resolved into a single schema. In addition there are a few extra keywords including:
+
+- **\$mappings** List of entity names that can map to a property. The order of the entities also defines the precedence to use when resolving entities. By default the mappings are based on the type:
+  - **enum**
+  - **number**, **string**
+- **\$templates** The template names to use for generating assets. \$templates can be defined at the top-level in a schema or per-property which by default are based on the type:
+  - **enum**
+  - **number**, **string**
+- **\$expectedOnly** A list of properties that are only possible if they are expected.
+- **\$requires** A list of JSON Schema to use for internal mechanisms. You can use either actual paths or just the name of the schema to use if found in one of the template directories. The standard schema is `standard.schema.dialog`. The form schema and all of the required schemas will have the top-level `properties`, `definitions`, `required`, `$expectedOnly` and `$templates` merged.
+- **\$triggerIntent** Name of the trigger intent or by default the name of the form.
+
+`<form>.form.dialog` will be generated with the form schema in it. `<form>.schema.dialog` will have the whole schema defined.
 
 ## Templates
-Each entity or property can have associated .lu, .lg, .qna and .dialog files that are generated by 
-copying or instantiating templates found in the template directories.  If a template name matches exactly it is
-just copied.  If the template ends with .lg then it is analyzed to see if it has a template named 'template' and optionally one named 'filename'.  If 'filename' is specified, then the filename will be the result of generating generated file is the result of evaluating that template, otherwise it defaults to `<formName>-<templateName>[.<locale>].<extension>`.  When evaluating templates there are a number of variables defined in the scope including:
-* **formName** The name of the form being generated.
-* **appSchema** The path to the app.schema to use. 
-* **form** The JSON Schema defining the form.
-* **schema** The JSON Schema of the form + internal properties.
-* **locales** The list of all locales being generated.
-* **properties** All of the form property names.
-* **entities** All of the types of schema entities being used.
-* **triggerIntent** $triggerIntent or the form name by default.
-* **locale** The locale being generated or empty if no locale.
-* **property** For per-property templates this the property name being generated.
-* **templates** Object with generated templates per lu, lg, qna, json and dialog.  The object contains:
-  * **name** Base name of the template without final extension.
-  * **fullName** The name of the template including the extension.
-  * **relative** Path relative to the output directory of where template is.
+
+Each entity or property can have associated .lu, .lg, .qna and .dialog files that are generated by
+copying or instantiating templates found in the template directories. If a template name matches exactly it is
+just copied. If the template ends with .lg then it is analyzed to see if it has a template named 'template' and optionally one named 'filename'. If 'filename' is specified, then the filename will be the result of generating generated file is the result of evaluating that template, otherwise it defaults to `<formName>-<templateName>[.<locale>].<extension>`. When evaluating templates there are a number of variables defined in the scope including:
+
+- **formName** The name of the form being generated.
+- **appSchema** The path to the app.schema to use.
+- **form** The JSON Schema defining the form.
+- **schema** The JSON Schema of the form + internal properties.
+- **locales** The list of all locales being generated.
+- **properties** All of the form property names.
+- **entities** All of the types of schema entities being used.
+- **triggerIntent** \$triggerIntent or the form name by default.
+- **locale** The locale being generated or empty if no locale.
+- **property** For per-property templates this the property name being generated.
+- **templates** Object with generated templates per lu, lg, qna, json and dialog. The object contains:
+  - **name** Base name of the template without final extension.
+  - **fullName** The name of the template including the extension.
+  - **relative** Path relative to the output directory of where template is.
 
 Templates are generated in the following order:
-* Generate per-locale language resources
-  * Per-entity generate .lg, .lu, .qna files
-  * Per-property
-    * Per-template in `<property>.$templates` generate .lg, .lu, .qna files.
-  * Per-template in `$templates` generate .lg, .lu, .qna files.
-* Generate non language resources
-  * Per-property
-    * Per-template in `<property>.$templates` generate .dialog and .json files.
-  * Per-template in `$templates` generate .dialog and .json files.
+
+- Generate per-locale language resources
+  - Per-entity generate .lg, .lu, .qna files
+  - Per-property
+    - Per-template in `<property>.$templates` generate .lg, .lu, .qna files.
+  - Per-template in `$templates` generate .lg, .lu, .qna files.
+- Generate non language resources
+  - Per-property
+    - Per-template in `<property>.$templates` generate .dialog and .json files.
+  - Per-template in `$templates` generate .dialog and .json files.

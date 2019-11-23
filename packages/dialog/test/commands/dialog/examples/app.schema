@@ -30,10 +30,10 @@
         "INothing": {
             "title": "Microsoft Nothing",
             "description": "Definition of a union type with no implementations.",
-            "$role": "unionType"
+            "$role": "union"
         },
         "IRecognizer": {
-            "$role": "unionType",
+            "$role": "union",
             "oneOf": [
                 {
                     "title": "Recognizer",
@@ -48,10 +48,10 @@
             ]
         },
         "Recognizer": {
-            "$role": "unionType(IRecognizer)",
+            "$role": "union(IRecognizer)",
             "properties": {
-                "$type": {
-                    "title": "$type",
+                "$kind": {
+                    "title": "$kind",
                     "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
                     "type": "string",
                     "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
@@ -110,17 +110,17 @@
                     "title": "Type",
                     "required": [
                         "req",
-                        "$type"
+                        "$kind"
                     ]
                 }
             ]
         },
         "RecognizerTypeMismatch": {
-            "$role": "unionType(IRecognizer)",
+            "$role": "union(IRecognizer)",
             "type": "object",
             "properties": {
-                "$type": {
-                    "title": "$type",
+                "$kind": {
+                    "title": "$kind",
                     "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
                     "type": "string",
                     "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
@@ -160,15 +160,15 @@
                 {
                     "title": "Type",
                     "required": [
-                        "$type"
+                        "$kind"
                     ]
                 }
             ]
         },
         "prompt": {
             "properties": {
-                "$type": {
-                    "title": "$type",
+                "$kind": {
+                    "title": "$kind",
                     "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
                     "type": "string",
                     "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
@@ -220,7 +220,7 @@
                     "title": "Type",
                     "required": [
                         "prompt",
-                        "$type"
+                        "$kind"
                     ]
                 }
             ]
@@ -228,8 +228,8 @@
         "root": {
             "$role$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/4.Future/schemas/component.schema",
             "properties": {
-                "$type": {
-                    "title": "$type",
+                "$kind": {
+                    "title": "$kind",
                     "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
                     "type": "string",
                     "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
@@ -255,12 +255,12 @@
                 "recognizers": {
                     "type": "array",
                     "items": {
-                        "$type": "IRecognizer",
+                        "$kind": "IRecognizer",
                         "$ref": "#/definitions/IRecognizer"
                     }
                 },
                 "prompt": {
-                    "$type": "prompt",
+                    "$kind": "prompt",
                     "$ref": "#/definitions/prompt"
                 },
                 "condition": {
@@ -293,7 +293,7 @@
                     "title": "Type",
                     "required": [
                         "recognizers",
-                        "$type"
+                        "$kind"
                     ]
                 }
             ]
