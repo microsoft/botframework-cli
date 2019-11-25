@@ -11,8 +11,7 @@ export default class LuisApplicationQuery extends Command {
   static description = 'Queries application for intent predictions'
 
   static examples = [`
-    $ bf luis:application:query --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --culture {CULTURE}
-    --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
+    $ bf luis:application:query --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --query {QUERY} --versionId {INITIAL_VERSION_ID}
   `]
 
   static flags: any = {
