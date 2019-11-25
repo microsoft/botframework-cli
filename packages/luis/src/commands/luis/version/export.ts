@@ -14,7 +14,7 @@ export default class LuisVersionExport extends Command {
     $ bf luis:version:export --appId {APP_ID} --versionId {VERSION_ID} --out {FILENAME.json or PATH/FILENAME.json} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
     appId: flags.string({description: 'LUIS application Id'}),
     versionId: flags.string({description: 'LUIS application version Id'}),
