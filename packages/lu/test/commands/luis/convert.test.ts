@@ -178,7 +178,7 @@ describe('luis:convert', () => {
     test
     .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/missing-utterance.lu')}`, '--log'])
-    .it('luis:convert writes out a warning when no utterances are found for an intent', async (ctx) => {
+    .it('luis:convert writes out a warning when no utterances are found for an intent', async (ctx: any) => {
       expect(ctx.stdout).to.contain('[WARN] line 1:0 - line 1:10: no utterances found for intent definition: "# Greeting"')
     })
 
@@ -192,14 +192,14 @@ describe('luis:convert', () => {
     test
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
-    .it('luis:convert writes out an error when invalid entity definition is found', async (ctx) => {
+    .it('luis:convert writes out an error when invalid entity definition is found', async (ctx: any) => {
       expect(ctx.stderr).to.contain("syntax error: missing ':'")
     })
 
     test
     .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/missing-synonyms.lu')}`, '--log'])
-    .it('luis:convert writes out a warning when no synonym definitions are found for a list entity', async (ctx) => {
+    .it('luis:convert writes out a warning when no synonym definitions are found for a list entity', async (ctx: any) => {
     expect(ctx.stdout).to.contain('[WARN] line 1:0 - line 1:14: no synonyms list found for list entity definition: "$TestList:one="')
     })
 
@@ -345,7 +345,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_2.lu')}`])
-    .it('luis:convert Invalid entity inherits information is skipped (prebuilt 2)', async (ctx) => {
+    .it('luis:convert Invalid entity inherits information is skipped (prebuilt 2)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @entity.inherits = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
@@ -354,7 +354,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_1.lu')}`])
-    .it('luis:convert Invalid intent inherits information is skipped (prebuilt 1)', async (ctx) => {
+    .it('luis:convert Invalid intent inherits information is skipped (prebuilt 1)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @intent.inherits = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
@@ -363,7 +363,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_3.lu')}`, '--log'])
-    .it('luis:convert Invalid entity inherits information is skipped (prebuilt 3)', async (ctx) => {
+    .it('luis:convert Invalid entity inherits information is skipped (prebuilt 3)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @entity.inherits2 = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
@@ -372,7 +372,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_4.lu')}`, '--log'])
-    .it('luis:convert Invalid intent inherits information is skipped (prebuilt 4)', async (ctx) => {
+    .it('luis:convert Invalid intent inherits information is skipped (prebuilt 4)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @intent.inherits2 = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
@@ -381,7 +381,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_model.lu')}`, '--log'])
-    .it('luis:convert Invalid intent inherits information is skipped (invalid model)', async (ctx) => {
+    .it('luis:convert Invalid intent inherits information is skipped (invalid model)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @app = test"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
     })
@@ -446,37 +446,37 @@ describe('luis:convert version 5 upgrade test', () => {
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/v5UpgradeTest.lu')}`, '--out', './results/root41.json'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/v5UpgradeTest.lu')}`, '--out', './results/root42.json'])
   .it('luis:convert successfully reconstructs a markdown file from a LUIS input file with v5 constructs', async () => {
-    expect(await compareLuFiles('./../../../results/root41.json', './../../fixtures/verified/v5Upgrade.json')).to.be.true
+    expect(await compareLuFiles('./../../../results/root42.json', './../../fixtures/verified/v5Upgrade.json')).to.be.true
   })
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/newEntityWithFeatures.lu')}`, '--out', './results/root42.json'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/newEntityWithFeatures.lu')}`, '--out', './results/root43.json'])
   .it('luis:convert successfully converts LU with ndepth entity and features to LUIS JSON model', async () => {
-    expect(await compareLuFiles('./../../../results/root42.json', './../../fixtures/verified/newEntityWithFeatures.json')).to.be.true
+    expect(await compareLuFiles('./../../../results/root43.json', './../../fixtures/verified/newEntityWithFeatures.json')).to.be.true
   })
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/newEntityWithFeatures.json')}`, '--out', './results/root43.lu'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/newEntityWithFeatures.json')}`, '--out', './results/root44.lu'])
   .it('luis:convert successfully converts LUIS JSON model with nDepth entity and features to LU', async () => {
-    expect(await compareLuFiles('./../../../results/root43.lu', './../../fixtures/verified/newEntityWithFeatures.lu')).to.be.true
+    expect(await compareLuFiles('./../../../results/root44.lu', './../../fixtures/verified/newEntityWithFeatures.lu')).to.be.true
   })
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/v6WithoutPhraseLists.lu')}`, '--out', './results/root44.json'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/v6WithoutPhraseLists.lu')}`, '--out', './results/root45.json'])
   .it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
-    expect(await compareLuFiles('./../../../results/root44.json', './../../fixtures/verified/v6WithoutPhraseLists.json')).to.be.true
+    expect(await compareLuFiles('./../../../results/root45.json', './../../fixtures/verified/v6WithoutPhraseLists.json')).to.be.true
   })
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/plWithFlags.lu')}`, '--out', './results/root39.json'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/plWithFlags.lu')}`, '--out', './results/root46.json'])
   .it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
-    expect(await compareLuFiles('./../../../results/root39.json', './../../fixtures/verified/plWithFlags.json')).to.be.true
+    expect(await compareLuFiles('./../../../results/root46.json', './../../fixtures/verified/plWithFlags.json')).to.be.true
   })
 })
 
@@ -484,26 +484,27 @@ describe('luis:convert negative tests', () => {
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3.lu')}`])
-  .it('luis:convert should show ERR message when no utterances are found for an intent', async (ctx) => {
+  .it('luis:convert should show ERR message when no utterances are found for an intent', async (ctx: any) => {
     expect(ctx.stderr).to.contain("[ERROR] line 4:0 - line 4:1: syntax error: invalid input 'i' detected.")
   })
 
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3a.lu')}`])
-  .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx) => {
+  .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx: any) => {
     expect(ctx.stderr).to.contain('[ERROR] line 4:0 - line 4:19: No labelled value found for entity: "tomato" in utterance: "-i wangt {tomato=}"')
   })
 
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad2.lu')}`])
-  .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx) => {
+  .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx: any) => {
     expect(ctx.stderr).to.contain("[ERROR] line 1:0 - line 1:1: syntax error: invalid input 'f' detected.")
   })
 })
 
-describe('luis:convert VA skill lu files', () => {
+describe('luis:convert VA skill lu files', function() {
+  this.timeout(60000);
   before(async function(){
     await fs.mkdirp(path.join(__dirname, './../../../results/'))
   })
@@ -514,25 +515,25 @@ describe('luis:convert VA skill lu files', () => {
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/Skills/Calendar')}`, '--out', './results/root45.json', '--name', 'Calendar'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/Skills/Calendar')}`, '--out', './results/root47.json', '--name', 'Calendar'])
   .it('luis:convert Calendar skill LU file parses correctly', async (ctx) => {
-    let parsedObjects = await parseJsonFiles('./../../../results/root45.json', './../../fixtures/verified/Skills/Calendar.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/root47.json', './../../fixtures/verified/Skills/Calendar.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
  })
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/Skills/Email')}`, '--out', './results/root46.json', '--name', 'Email'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/Skills/Email')}`, '--out', './results/root48.json', '--name', 'Email'])
   .it('luis:convert Email skill LU file parses correctly', async (ctx) => {
-    let parsedObjects = await parseJsonFiles('./../../../results/root46.json', './../../fixtures/verified/Skills/Email.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/root48.json', './../../fixtures/verified/Skills/Email.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
   })
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/Skills/Todo')}`, '--out', './results/root47.json', '--name', 'General'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/Skills/Todo')}`, '--out', './results/root49.json', '--name', 'General'])
   .it('luis:convert Todo skill LU file parses correctly', async (ctx) => {
-    let parsedObjects = await parseJsonFiles('./../../../results/root47.json', './../../fixtures/verified/Skills/Todo.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/root49.json', './../../fixtures/verified/Skills/Todo.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])})
 })
 
@@ -547,9 +548,9 @@ describe('luis:convert sort option enabled', () => {
 
   test
   .stdout()
-  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all.json')}`, '--out', './results/root48.lu', '--sort'])
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all.json')}`, '--out', './results/root50.lu', '--sort'])
   .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model', async () => {
-    expect(await compareLuFiles('./../../../results/root48.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
+    expect(await compareLuFiles('./../../../results/root50.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
   })
 })
 
@@ -581,7 +582,7 @@ describe('luis:convert file creation', () => {
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/newEntity1.json')}`, '--out', './newfolder/newEntity.lu'])
-  .it('luis:convert throws error if path to write doesnt exist', async (ctx) => {
+  .it('luis:convert throws error if path to write doesnt exist', async (ctx: any) => {
     expect(ctx.stderr).to.contain('Path not found:')
   })
 })
@@ -590,14 +591,14 @@ describe('luis:convert empty file handling', () => {
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.lu')}`])
-  .it('luis:convert errors out on empty lu file', async (ctx) => {
+  .it('luis:convert errors out on empty lu file', async (ctx: any) => {
     expect(ctx.stderr).to.contain('[ERROR] Cannot parse empty')
   })
 
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
-  .it('luis:convert errors out on empty json file', async (ctx) => {
+  .it('luis:convert errors out on empty json file', async (ctx: any) => {
     expect(ctx.stderr).to.contain('Sorry, error parsing content as Luis JSON\n')
   })
 })

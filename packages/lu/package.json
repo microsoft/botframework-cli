@@ -4,38 +4,6 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "main": "lib/parser/index.js",
-  "dependencies": {
-    "@microsoft/bf-cli-command": "1.0.0",
-    "@oclif/config": "~1.13.3",
-    "antlr4": "^4.7.2",
-    "chalk": "2.4.1",
-    "console-stream": "^0.1.1",
-    "deep-equal": "^1.0.1",
-    "fs-extra": "^8.1.0",
-    "get-stdin": "^6.0.0",
-    "intercept-stdout": "^0.1.2",
-    "lodash": "^4.17.15",
-    "node-fetch": "^2.1.2",
-    "semver": "^5.5.1",
-    "tslib": "^1.10.0"
-  },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
-    "@oclif/plugin-help": "^2.2.1",
-    "@oclif/test": "^1.2.5",
-    "@oclif/tslint": "^3.1.1",
-    "@types/chai": "^4.2.0",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^10.14.15",
-    "chai": "^4.2.0",
-    "globby": "^10.0.1",
-    "mocha": "^5.2.0",
-    "nock": "^10.0.6",
-    "nyc": "^13.3.0",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
-  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -58,11 +26,56 @@
   },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/lu",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
+    "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.**\"",
-    "version": "oclif-dev readme && git add README.md",
-    "documentation": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme && rimraf oclif.manifest.json"
+    "build":"tsc -b",
+    "clean":"rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
+    "test": "mocha",
+    "coverage": "nyc npm run test",
+    "report:coverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
+    "doc:readme":"oclif-dev manifest && oclif-dev readme",
+    "version": "npm run doc:readme && git add README.md"
+  },
+  "nyc": {
+    "exclude": [
+      "**/lufile/generated/**",
+      "test/**"
+    ]
+  },
+  "dependencies": {
+    "@microsoft/bf-cli-command": "1.0.0",
+    "@oclif/command": "~1.5.19",
+    "@oclif/config": "~1.13.3",
+    "@oclif/errors": "~1.2.2",
+    "antlr4": "^4.7.2",
+    "chalk": "2.4.1",
+    "console-stream": "^0.1.1",
+    "deep-equal": "^1.0.1",
+    "fs-extra": "^8.1.0",
+    "get-stdin": "^6.0.0",
+    "intercept-stdout": "^0.1.2",
+    "lodash": "^4.17.15",
+    "node-fetch": "^2.1.2",
+    "semver": "^5.5.1",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@oclif/plugin-help": "^2.2.1",
+    "@oclif/test": "^1.2.5",
+    "@oclif/tslint": "^3.1.1",
+    "@types/chai": "^4.2.0",
+    "@types/lodash": "~4.14.146",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.14.15",
+    "chai": "^4.2.0",
+    "globby": "^10.0.1",
+    "mocha": "^6.2.2",
+    "nock": "^11.7.0",
+    "nyc": "^14.1.1",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }

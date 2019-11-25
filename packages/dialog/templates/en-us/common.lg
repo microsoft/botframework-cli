@@ -16,7 +16,10 @@
 
 > TODO: We should look at the schema and if a few items list them or do cards or..
 # askEnum(property)
-- Which value do you want for @{name(property)}?
+- ```
+@{askHelp()}
+Which value do you want for @{name(property)}?
+```
 
 # askNumber(property)
 - IF: @{turn.schema.properties[property].minimum && turn.schema.properties[property].maximum}
@@ -26,6 +29,12 @@
 
 # askString(property)
 - Enter a value for @{name(property)}
+
+# askHelp
+- IF: @{and($retries, $retries > 0, toLower($lastIntent)!='help')}
+- @{join(foreach($expectedProperties, expected, help1(expected)), '\n')}
+- ELSE:
+- 
 
 # help(property)
 - IF: @{property}
@@ -51,20 +60,37 @@
 - ELSE:
 - 
 
+> TODO: We should enable this when where/foreach works over objects.
 # optionalProperties
-- IF: @{add(count(turn.schema.required),count(turn.schema.$expectedOnly)) < count(turn.schema.properties)}
-- Optional properties include: @{join(foreach(where(turn.form.properties, property, !contains(turn.schema.required && !contains(turn.schema.$expectedOnly, property), property)), property, name(property)), ', ')}\n
-- ELSE:
-- 
+-
+> - IF: @{add(count(turn.schema.required),count(turn.schema.$expectedOnly)) < count(turn.schema.properties)}
+> - Optional properties include: @{join(foreach(where(turn.schema.properties, property, !contains(turn.schema.required, property) && !contains(turn.schema.$expectedOnly, property)), property, name(property)), ', ')}\n
+> - ELSE:
+> - 
 
 # possibleValues(property)
 - @{foreach(turn.schema.properties[property].enum, enum, value(property, enum))}
 
 # clarifyEnumEntity(property)
-- Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
+- ```
+@{askHelp()}
+Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
+```
 
 # cancel
 - Do you want to end the conversation? (yes/no)
+
+# setPropertyMessage(property, val)
+- IF: @{contains($expectedProperties, property)}
+- 
+- ELSE:
+- @{setUnexpectedPropertyMessage(property, val)}
+
+# setUnexpectedPropertyMessage(property, val)
+- IF:@{dialog[property]}
+- @{unexpectedPropertyChange(property, val, dialog[property])}
+- ELSE:
+- @{unexpectedPropertySet(property, val)}
 
 # unexpectedPropertySet(property, val)
 - @{name(property)} is set as @{value(property, val)}.
@@ -110,8 +136,8 @@
 }
 ```
 
->>> TODO: It would be nice to able to include bound optional properties as well.  
->>> Once we have support in foreach for objects we can expand this.
+> TODO: It would be nice to able to include bound optional properties as well.  
+> Once we have support in foreach for objects we can expand this.
 # requiredFacts
 - @{join(foreach(dialog.requiredProperties, property, fact(property)), ', ')}
 
@@ -125,7 +151,7 @@
 - Which property do you want to change?
 
 # notUnderstood
-- Sorry, I do not understand @{join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}\n\n@{help(null)}
+- Sorry, I do not understand @{join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}\n
 
 # CompleteConfirmationName
 - confirmation
@@ -139,4 +165,6 @@
 # PropertyToChange(value)
 - @{PROPERTYName(value)}
 
-[PropertyNAME.lg]
+> TODO: Would be good to split out all the component pieces, i.e. help, cancel, confirmation into their own files
+[PROPERTYName.lg]
+[Confirmation.lg]
