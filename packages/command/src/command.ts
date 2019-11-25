@@ -39,7 +39,7 @@ export abstract class Command extends Base {
   }
 
   async catch(err: any) {
-    if (err instanceof CLIError || err instanceof OCLIFError) {
+    if (err instanceof CLIError || err instanceof OCLIFError || (err && err.oclif && err.message)) {
       if (!err.message.match(/EEXIT: 0/)) {
         this.error(err.message)
       }

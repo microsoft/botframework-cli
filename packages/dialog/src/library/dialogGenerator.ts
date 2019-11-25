@@ -5,9 +5,9 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
-import * as expr from 'botframework-expressions'
+import * as expr from '@christopheranderson/botframework-expressions'
 import * as fs from 'fs-extra'
-import * as lg from 'botbuilder-lg'
+import * as lg from '@christopheranderson/botbuilder-lg'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
 import { processSchemas } from './processSchemas'
@@ -42,7 +42,7 @@ const expressionEngine = new expr.ExpressionEngine((func: any) => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
-        default: return expr.BuiltInFunctions.Lookup(func)
+        default: return expr.BuiltInFunctions.lookup(func)
     }
 })
 
@@ -85,13 +85,14 @@ function addLocale(name: string, locale: string, formName: string): string {
 }
 
 async function replaceAsync(str: string, re: RegExp, callback: (match: string) => Promise<string>): Promise<string> {
-    let parts = []
+    let parts :any[] = []
     let i = 0
     if (re.global) {
         re.lastIndex = i
     }
     let match
     while (match = re.exec(str)) {
+                                            // This probably needs to be awaited
         parts.push(str.slice(i, match.index), callback(match[0]))
         i = re.lastIndex
         if (!re.global) {
@@ -107,19 +108,21 @@ async function replaceAsync(str: string, re: RegExp, callback: (match: string) =
 }
 
 const RefPattern = /^\s*\[[^\]\n\r]*\]\s*$/gm
+const LocalePattern = /\.[^.]+\.lg$/
 async function processLibraryTemplates(template: string, outPath: string, templateDirs: string[], outDir: string, form: any, scope: any, force: boolean, feedback: Feedback): Promise<string> {
     if (!template.startsWith('>>> Library')) {
         return replaceAsync(template, RefPattern, async (match: string): Promise<string> => {
             let replacement = await processTemplate(match.substring(match.indexOf('[') + 1, match.indexOf(']')), templateDirs, outDir, form, scope, force, feedback, false)
+            replacement = replacement.replace(LocalePattern, '.lg')
             let local = ppath.relative(ppath.dirname(outPath), replacement)
-            return Promise.resolve(`[${ppath.basename(replacement)}](${local})`)
+            return Promise.resolve(`\n[${ppath.basename(replacement)}](${local})`)
         });
     } else {
         return Promise.resolve(template)
     }
 }
 
-type FileRef = { name: string, fullName: string, relative: string }
+type FileRef = { name: string, fallbackName: string, fullName: string, relative: string }
 function addEntry(fullPath: string, outDir: string, tracker: any): FileRef | undefined {
     let ref: FileRef | undefined
     let basename = ppath.basename(fullPath, '.dialog')
@@ -128,6 +131,7 @@ function addEntry(fullPath: string, outDir: string, tracker: any): FileRef | und
     if (!arr.find(ref => ref.name === basename)) {
         ref = {
             name: basename,
+            fallbackName: basename.replace(/\.[^.]+\.lg/, '.lg'),
             fullName: ppath.basename(fullPath),
             relative: ppath.relative(outDir, fullPath)
         }
@@ -161,7 +165,7 @@ async function processTemplate(
                 // NOTE: Ignore templates that are defined, but are empty
                 if (template) {
                     let filename = addLocale(templateName, scope.locale, scope.formName)
-                    if (typeof template === 'object' && template.templates.some(f => f.Name === 'filename')) {
+                    if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
                         filename = template.evaluateTemplate('filename', scope)
                     }
                     outPath = ppath.join(outDir, scope.locale, filename)
@@ -172,7 +176,7 @@ async function processTemplate(
                             let result = template
                             if (typeof template === 'object') {
                                 result = template.evaluateTemplate('template', scope)
-                                if (template.templates.some(f => f.Name === 'filename')) {
+                                if (template.templates.some(f => f.name === 'filename')) {
                                     filename = template.evaluateTemplate('filename', scope)
                                 }
                             }
@@ -274,7 +278,7 @@ export async function generate(
     }
 
     if (!metaSchema) {
-        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema'
+        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/form/schemas/sdk.schema'
     } else if (!metaSchema.startsWith('http')) {
         // Adjust relative to outDir
         metaSchema = ppath.relative(outDir, metaSchema)

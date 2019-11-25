@@ -5,95 +5,98 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "antlr-debug",
-            "request": "launch",
-            "name": "Debug Current Grammar",
-            "input": "test/commands/dialog/forms/input.txt",
-            "startRule": "doc",
-            "visualParseTree": true
-        },
-        {
             "type": "node",
             "request": "launch",
             "name": "Dialog Merge Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}",
+            "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/dialog",
             "args": [
-                "-u",
-                "tdd",
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/test/commands/dialog/merge.test.ts"
+                "-g",
+                ".*Test schema merge.*"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Dialog Verify Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}",
-            "sourceMaps": false,
-            "args": [
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--colors",
-                "${workspaceFolder}/test/commands/dialog/verify.test.ts"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Dialog Generator Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "args": [
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--colors",
-                "${workspaceFolder}/test/commands/dialog/generator.test.ts"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${workspaceFolder}\\bin\\run",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "internalConsoleOptions": "openOnSessionStart",
+            "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/lib/**/*.js"
-            ],
-            "args": [
-                "dialog:merge",
-                "-f",
-                "c:/source/github/botbuilder-dotnet/**/*.schema"
+                "./package/dialog/lib/**"
             ]
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Generate Sandwich Form",
-            "program": "${workspaceFolder}/bin/run",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "name": "Dialog Verify Tests",
+            "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/dialog",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "-g",
+                ".*dialog:verify.*"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/lib/**/*.js"
+                "./package/dialog/lib/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Dialog Generator Tests",
+            "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/test/commands/dialog/generator.test.ts"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "sourceMaps": true,
+            "outFiles": [
+                "./package/dialog/lib/**"
+            ]
+        },
+
+        // TODO: (chrande) Keeping these but they should probably be rewritten to work on more
+        //       just chrismc's dev machine.
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "BotBuilder schema",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outFiles": [
+                "${workspaceFolder}/packages/dialog/lib/**/*.js"
+            ],
+            "args": [
+                "dialog:merge",
+                "libraries/**/*.schema",
+                "-u",
+                "-b", "master",
+                "-o", "schemas/sdk.schema",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "c:/users/chrimc/source/repos/botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Sandwich Form",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/packages/dialog/lib/**/*.js"
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/test/commands/dialog/forms/sandwich.form.dialog",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwich.form.dialog",
                 "-o",
                 "${env:TEMP}/sandwich.out",
                 "--force",
                 "--verbose",
-                "--schema",
-                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },
@@ -101,14 +104,14 @@
             "type": "node",
             "request": "launch",
             "name": "Generate Activity Form",
-            "program": "${workspaceFolder}/bin/run",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
-                "${workspaceFolder}/lib/**/*.js"
+                "${workspaceFolder}/packages/dialog/lib/**/*.js"
             ],
             "args": [
-                "dialog:form",
-                "${workspaceFolder}/test/commands/dialog/forms/activity.form.dialog",
+                "dialog:generate",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/activity.form.dialog",
                 "-o",
                 "${env:TEMP}/activity.out",
                 "--force",
@@ -122,14 +125,13 @@
             "type": "node",
             "request": "launch",
             "name": "Generate Contact Form",
-            "program": "${workspaceFolder}/bin/run",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [
-                "${workspaceFolder}/lib/**/*.js"
+                "${workspaceFolder}/packages/dialog/lib/**/*.js"
             ],
             "args": [
-                "dialog:form",
-                "${workspaceFolder}/test/commands/dialog/forms/contact.form.dialog",
+                "dialog:generate",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/contact.form.dialog",
                 "-o",
                 "${env:TEMP}/contact.out",
                 "--force",
@@ -143,14 +145,13 @@
             "type": "node",
             "request": "launch",
             "name": "Generate Opportunity Form",
-            "program": "${workspaceFolder}/bin/run",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [
-                "${workspaceFolder}/lib/**/*.js"
+                "${workspaceFolder}/packages/dialog/lib/**/*.js"
             ],
             "args": [
-                "dialog:form",
-                "${workspaceFolder}/test/commands/dialog/forms/opportunity.form.dialog",
+                "dialog:generate",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/opportunity.form.dialog",
                 "-o",
                 "${env:TEMP}/opportunity.out",
                 "--force",
