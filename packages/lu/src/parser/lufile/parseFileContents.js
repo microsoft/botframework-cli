@@ -145,7 +145,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
         var errors = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR));
         if (errors.length > 0) {
-            throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n')));
+            throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n'), errors));
         }
     }
 
@@ -217,8 +217,11 @@ const updateModelBasedOnNDepthEntities = function(utterances, entities) {
                         // Ensure each parent is also labelled in this utterance
                         let parentLabelled = utterance.entities.find(entityUtt => entityUtt.entity == parent);
                         if (!parentLabelled) {
-                            let errorMsg = `[ERROR]: Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                            const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
+                            const error = BuildDiagnostic({
+                                message: errorMsg
+                            });
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
                     })
                 }
@@ -255,13 +258,21 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
         if(child.instanceOf) {
             let baseEntityFound = entitiesAndRoles.find(i => i.name == child.instanceOf);
             if (!baseEntityFound) {
-                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
-                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                let errorMsg = `Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
+                const error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: child.context.line
+                });
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
             // base type can only be a list or regex or prebuilt.
             if (![EntityTypeEnum.LIST, EntityTypeEnum.REGEX, EntityTypeEnum.PREBUILT].includes(baseEntityFound.type)) {
-                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
-                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                let errorMsg = `Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
+                const error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: child.context.line
+                });
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
 
         }
@@ -278,8 +289,12 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                         child.features[idx] = new helperClass.featureToModel(feature, featureProperties.phraseListFeature);
                         featureHandled = true;
                     } else if (featureExists.type == EntityTypeEnum.PATTERNANY) {
-                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                        let errorMsg = `Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
+                        const error = BuildDiagnostic({
+                            message: errorMsg,
+                            line: child.context.line
+                        });
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     } else {
                         child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.entityFeatureToModel[featureExists.type]);
                         featureHandled = true;
@@ -292,8 +307,12 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                         child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.intentFeatureToModel);
                         featureHandled = true;
                     } else {
-                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                        let errorMsg = `Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
+                        const error = BuildDiagnostic({
+                            message: errorMsg,
+                            line: child.context.line
+                        });
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     }
                 }
             })
@@ -333,7 +352,7 @@ const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureT
                     message: errorMsg,
                     context: line
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
             break;
         default:
@@ -343,7 +362,7 @@ const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureT
                 message: errorMsg,
                 context: line
             })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             break;
     }
 }
@@ -363,7 +382,7 @@ const addFeatures = function(tgtItem, feature, featureType, line, featurePropert
             message: errorMsg,
             context: line
         })
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
     let featureAlreadyDefined = (tgtItem.features || []).find(item => item.modelName == feature || item.featureName == feature);
     switch (featureType) {
@@ -404,7 +423,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     message: errorMsg,
                     context: section.ParseTree.newEntityDefinition().newEntityLine()
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
             
             let intentExists = parsedContent.LUISJsonStructure.intents.find(item => item.name === section.Name);
@@ -438,7 +457,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                             message: errorMsg,
                             context: section.ParseTree.newEntityDefinition().newEntityLine()
                         })
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     }
                 })
             } else {
@@ -447,7 +466,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     message: errorMsg,
                     context: section.ParseTree.newEntityDefinition().newEntityLine()
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         } else {
             // handle as entity
@@ -485,7 +504,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                             message: errorMsg,
                             context: section.ParseTree.newEntityDefinition().newEntityLine()
                         })
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     }
                 });
             }
@@ -538,7 +557,11 @@ const updateDependencyList = function(type, parsedContent, dependencyList) {
                 }
                 let circularItemFound = dependencyList.find(item => item.value && item.value.slice(0)[0] == item.value.slice(-1)[0]);
                 if (circularItemFound) {
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Circular dependency found for usesFeature. ${circularItemFound.value.join(' -> ')}`));
+                    const errorMsg = `Circular dependency found for usesFeature. ${circularItemFound.value.join(' -> ')}`;
+                    const error = BuildDiagnostic({
+                        message: errorMsg
+                    });
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 }
                 
             })
@@ -587,7 +610,7 @@ const parseAndHandleImportSection = async function (parsedContent, luResource) {
                         context: luImport.ParseTree
                     })
 
-                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
                 }
 
                 if (!response.ok) {
@@ -597,7 +620,7 @@ const parseAndHandleImportSection = async function (parsedContent, luResource) {
                         context: luImport.ParseTree
                     })
 
-                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
                 }
 
                 let contentType = response.headers.get('content-type');
@@ -730,7 +753,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                 context: utteranceAndEntities.context
                             })
 
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
 
                         let newPattern = new helperClass.pattern(utterance, intentName);
@@ -795,7 +818,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                         context: utteranceAndEntities.context
                                     });
 
-                                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                 }
                             }
 
@@ -826,7 +849,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                             context: utteranceAndEntities.context
                                         });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                     }
                                 } else if (prebuiltExists !== undefined) {
                                     if (entity.role) {
@@ -838,7 +861,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                             context: utteranceAndEntities.context
                                         });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                     }
                                 } else if (regexExists !== undefined) {
                                     if (entity.role) {
@@ -850,7 +873,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                             context: utteranceAndEntities.context
                                         });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                     }
                                 } else if (patternAnyExists !== undefined) {
                                     if (entity.value != '') {
@@ -887,7 +910,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                     context: utteranceAndEntities.context
                                 })
 
-                                throw (new exception(retCode.errorCode.MISSING_LABELLED_VALUE, error.toString()));
+                                throw (new exception(retCode.errorCode.MISSING_LABELLED_VALUE, error.toString(), [error]));
                             }
 
                             let utteranceEntity = new helperClass.utteranceEntity(item.entity, item.startPos, item.endPos);
@@ -951,7 +974,7 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
                     message: errorMsg,
                     context: line
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             } 
         });
 
@@ -1004,7 +1027,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         message: errorMsg,
                         context: entity.ParseTree.newEntityDefinition().newEntityLine()
                     })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 };
 
                 if (entityType === entityName) {
@@ -1013,7 +1036,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         message: errorMsg,
                         context: entity.ParseTree.newEntityDefinition().newEntityLine()
                     })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 }
                 let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.ParseTree.newEntityDefinition().newEntityLine(), entityName, entityType);
                 let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, entityName, entityType, entity.ParseTree.newEntityDefinition().newEntityLine());
@@ -1099,8 +1122,12 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>[^\s]+) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
         let groupsFound = captureGroups.exec(child);
         if (!groupsFound) {
-            let errorMsg = `[ERROR] line ${defLine}: Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
-            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            let errorMsg = `Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
+            const error = BuildDiagnostic({
+                message: errorMsg,
+                line: defLine
+            });
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childEntityType = groupsFound.groups.instanceOf.trim();
@@ -1121,7 +1148,11 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         entityIdxByLevel.reverse();
         if (!currentParentEntity) {
             let errorMsg = `[ERROR] line ${defLine}: Invalid definition found for child "${child.trim()}". Parent of each child entity must be of type "${EntityTypeEnum.ML}".`;
-            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            const error = BuildDiagnostic({
+                message: errorMsg,
+                line: defLine
+            });
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let context = {line : defLine, definition: child.trim()};
         if (groupsFound.groups.instanceOf.toLowerCase().trim() === EntityTypeEnum.SIMPLE) {
@@ -1188,7 +1219,7 @@ const verifyUniqueEntityName = function(parsedContent, entityName, entityType, l
             message: errorMsg,
             context: line
         })
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
 }
 /**
@@ -1244,7 +1275,7 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
                 message: errorMsg,
                 context: entityLine
             })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         } 
         entityRoles = (PAEntityFound.roles.length !== 0) ? PAEntityFound.roles : [];
         parsedContent.LUISJsonStructure.patternAnyEntities.splice(PAIdx, 1);
@@ -1277,7 +1308,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                     context: currentLine
                 })
         
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         })
     }
@@ -1312,7 +1343,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                     context: currentLine
                 })
 
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         }
         let wordsSplit = pLEntityExists.words.split(',');
@@ -1356,7 +1387,7 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
             context: currentLine
         })
 
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
     let prebuiltCheck = builtInTypes.perLocaleAvailability[locale][entityType];
     if (prebuiltCheck === null) {
@@ -1370,7 +1401,7 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
                 context: currentLine
             })
 
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
     } else if (prebuiltCheck && prebuiltCheck.includes('datetime')) {
         if (log) {
@@ -1418,7 +1449,7 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
             context: currentLine
         })
 
-        throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString(), [error]));
     }
     // split the children based on ',' or ';' delimiter. Trim each child to remove white spaces.
     let compositeChildren = childDefinition !== "" ? childDefinition.split(new RegExp(/[,;]/g)).map(item => item.trim()) : [];
@@ -1439,7 +1470,7 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
                     context: currentLine
                 })
     
-                throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString(), [error]));
             }
         }
 
@@ -1504,7 +1535,7 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
                         context: currentLine
                     })
 
-                    throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString()));
+                    throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString(), [error]));
                 }
                 if (!nvExists.list.includes(item)) nvExists.list.push(item);
             })
@@ -1572,7 +1603,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                             context: entity.ParseTree.entityDefinition().entityLine()
                         })
 
-                        throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString()));
+                        throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString(), [error]));
                     }
                 } else {
                     // treat this as a LUIS list entity type
@@ -1630,7 +1661,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                         context: entity.ParseTree.entityDefinition().entityLine()
                     })
 
-                    throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
                 }
             } else {
                 // TODO: handle other entity types
@@ -1667,7 +1698,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
                 context: entityLine
             })
 
-            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
         }
     }
     
@@ -1684,7 +1715,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
                 context: entityLine
             })
 
-            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
         } else {
             // update roles
             addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.REGEX, regExEntity.name, entityRoles);
@@ -1871,7 +1902,7 @@ const VerifyAndUpdateSimpleEntityCollection = function (parsedContent, entityNam
                     message: errorMsg
                 });
 
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         });
     }

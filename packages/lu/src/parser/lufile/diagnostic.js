@@ -83,6 +83,8 @@ const BuildDiagnostic =function(parameter) {
         const startPosition = new Position(context.start.line, context.start.column);
         const stopPosition = new Position(context.stop.line, context.stop.column + context.stop.text.length);
         range = new Range(startPosition, stopPosition);
+    } else if (parameter.line !== undefined) {
+        range = new Range(new Position(parameter.line, 0), new Position(parameter.line, 1));
     }
         
     return new Diagnostic(range, message, severity);
