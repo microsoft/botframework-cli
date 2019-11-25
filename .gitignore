@@ -1,12 +1,10 @@
 # Logs
-logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 # Runtime data
-pids
 *.pid
 *.seed
 *.pid.lock
@@ -36,9 +34,6 @@ build/Release
 node_modules/
 jspm_packages/
 
-# TypeScript v1 declaration files
-typings/
-
 # Optional npm cache directory
 .npm
 
@@ -60,6 +55,13 @@ typings/
 # next.js build output
 .next
 
+# Common toolchain intermediate files
+temp
+
+# Rush files
+common/temp/**
+.rush/temp/**
+
 .DS_Store
 
 # Visual Studio setup
@@ -71,8 +73,6 @@ package-lock.json
 #tsconfig.tsbuildinfo
 tsconfig.tsbuildinfo
 
-#vscode files
-.vscode
 packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.csproj.CoreCompileInputs.cache
 packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.AssemblyInfo.cs
 packages/dialog/test/commands/dialog/projects/obj/Debug/netcoreapp2.1/LUISGen.AssemblyInfoInputs.cache

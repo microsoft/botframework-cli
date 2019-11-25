@@ -6,7 +6,8 @@
     "actions": [
         {
             "$type": "Microsoft.Ask",
-            "activity": "@{callChooseProperties()}"           
+            "activity": "@{callChooseProperties()}",
+            "expectedProperties": ["PROPERTYName"]
         }
     ]
 }

@@ -27,7 +27,7 @@ export async function getLuObjects(stdin: string, input: string | undefined, rec
 }
 
 async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
-  let filesToParse = []
+  let filesToParse: any[] = []
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
     filesToParse.push(input)
