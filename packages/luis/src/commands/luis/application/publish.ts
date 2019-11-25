@@ -19,7 +19,7 @@ export default class LuisApplicationPublish extends Command {
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
     appId: flags.string({description: 'LUIS applicaton id'}),
-    versionId: flags.string({description: 'LUIS application initial version Id'}),
+    versionId: flags.string({description: 'LUIS application version Id'}),
     staging: flags.string({description: 'Publishes application version to Staging slot, otherwise publish to production (default: false)'}),
     direct: flags.string({description: 'Available only in direct version query. Do not publish to staging or production (default: false)'})
   }

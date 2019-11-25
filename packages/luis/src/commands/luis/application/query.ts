@@ -20,6 +20,7 @@ export default class LuisApplicationQuery extends Command {
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: 'LUIS application initial version Id'}),
     query: flags.string({description: 'Query string to predict (mandatory)'}),
     verbose: flags.string({description: 'Returns all intents, otherwise only top scoring intent. (default: false)'}),
     spellcheck: flags.string({description: 'Performs spell checking (optional, default: false)'}),
@@ -38,6 +39,7 @@ export default class LuisApplicationQuery extends Command {
       endpoint,
       subscriptionKey,
       appId,
+      versionId,
       query,
       verbose,
       spellcheck,
@@ -47,19 +49,26 @@ export default class LuisApplicationQuery extends Command {
       log
     } = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, appId, query}
+    const requiredProps = {endpoint, subscriptionKey, appId, versionId, query}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-    const options = {}
-
-    const applicationCreateObject = {name, culture, description, versionId, usageScenario, tokenizerVersion}
+    const client = utils.getLUISClient(subscriptionKey, endpoint, true)
+    const options = {
+      verbose,
+      log
+    }
+    const predictionRequest = {
+      query,
+      options: {
+        datetimeReference: timezoneOffset,
+      }
+    }
 
     try {
-      const newAppId = await client.apps.add(applicationCreateObject, options)
-      this.log(`App successfully created with id ${newAppId}.`)
+      const predictionData = await client.predictionOperations.getVersionPrediction(appId, versionId, predictionRequest, options)
+      this.log(`Successfully fetched prediction data ${predictionData}.`)
     } catch (err) {
-      throw new CLIError(`Failed to create app: ${err}`)
+      throw new CLIError(`Failed to fetch prediction data: ${err}`)
     }
   }
 }
