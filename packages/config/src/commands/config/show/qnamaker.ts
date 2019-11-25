@@ -9,7 +9,7 @@ import {getConfigFile, Config} from '../../../utils/configfilehandler'
 export default class ConfigShowQnamaker extends Command {
   static description = 'Display QnAMaker settings'
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h', description: 'config:show:qnamaker help'})
   }
 
