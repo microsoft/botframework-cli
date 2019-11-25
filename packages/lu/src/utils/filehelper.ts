@@ -27,7 +27,7 @@ export async function getLuObjects(stdin: string, input: string, recurse = false
 }
 
 async function getLuFiles(inputPath: string, recurse = false, extType: string | undefined): Promise<Array<any>> {
-  let filesToParse = []
+  let filesToParse: string[] = []
   const inputs = inputPath.split(',')
   if (inputs) {
     for (const input of inputs) {
@@ -170,7 +170,7 @@ export async function detectLuContent(stdin: string, input: string) {
 }
 
 async function getConfigFiles(input: string, recurse = false): Promise<Array<any>> {
-  let filesToParse = []
+  let filesToParse: string[] = []
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
     filesToParse.push(input)
