@@ -14,7 +14,7 @@ export default class LuisApplicationDelete extends Command {
     $ bf luis:application:delete --appId {APP_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
     appId: flags.string({description: 'LUIS application Id'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
