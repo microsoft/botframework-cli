@@ -23,9 +23,6 @@ export default class LuisApplicationQuery extends Command {
     versionId: flags.string({description: 'LUIS application initial version Id'}),
     query: flags.string({description: 'Query string to predict (mandatory)'}),
     verbose: flags.string({description: 'Returns all intents, otherwise only top scoring intent. (default: false)'}),
-    spellcheck: flags.string({description: 'Performs spell checking (optional, default: false)'}),
-    staging: flags.string({description: 'Uses staging endpoint slot, otherwise prod endpoint (default: false)'}),
-    spellcheckKey: flags.string({description: 'Bing spell-check subscription key (required for spell checking, otherwise optional)'}),
     timezoneOffset: flags.string({description: 'Timezone offset for the location of the request in minutes (optional)'}),
     log: flags.string({description: 'Logs query operation on service (default: true)'}),
   }
@@ -42,9 +39,6 @@ export default class LuisApplicationQuery extends Command {
       versionId,
       query,
       verbose,
-      spellcheck,
-      staging,
-      spellcheckKey,
       timezoneOffset,
       log
     } = await utils.processInputs(flags, flagLabels, configDir)
@@ -53,23 +47,31 @@ export default class LuisApplicationQuery extends Command {
     utils.validateRequiredProps(requiredProps)
 
     const client = utils.getLUISClient(subscriptionKey, endpoint, true)
-    const options = {
-      verbose,
-      log
+    const options: any = {}
+
+    if (verbose) {
+      options.verbose = verbose
     }
+
+    if (log) {
+      options.log = log
+    }
+
+    const predictionRequestOptions: any = {}
     const predictionRequest = {
       query,
-      options: {
-        datetimeReference: timezoneOffset,
-      }
+      options: predictionRequestOptions
+    }
+
+    if (timezoneOffset) {
+      predictionRequest.options.datetimeReference = timezoneOffset
     }
 
     try {
       const predictionData = await client.predictionOperations.getVersionPrediction(appId, versionId, predictionRequest, options)
-      this.log(`Successfully fetched prediction data ${predictionData}.`)
+      this.log(`Successfully fetched prediction data ${JSON.stringify(predictionData)}.`)
     } catch (err) {
       throw new CLIError(`Failed to fetch prediction data: ${err}`)
     }
   }
 }
-
