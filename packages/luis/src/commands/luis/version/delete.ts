@@ -14,7 +14,7 @@ export default class LuisVersionDelete extends Command {
     $ bf luis:version:delete --appId {APP_ID} --versionId {VERSION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
     appId: flags.string({description: 'LUIS application Id'}),
     versionId: flags.string({description: 'LUIS application version Id'}),

@@ -9,7 +9,7 @@ import {getConfigFile, Config} from '../../utils/configfilehandler'
 export default class ConfigShow extends Command {
   static description = 'Displays the config file'
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h', description: 'config:show help'})
   }
 
