@@ -60,11 +60,13 @@ Which value do you want for @{name(property)}?
 - ELSE:
 - 
 
+> TODO: We should enable this when where/foreach works over objects.
 # optionalProperties
-- IF: @{add(count(turn.schema.required),count(turn.schema.$expectedOnly)) < count(turn.schema.properties)}
-- Optional properties include: @{join(foreach(where(turn.form.properties, property, !contains(turn.schema.required && !contains(turn.schema.$expectedOnly, property), property)), property, name(property)), ', ')}\n
-- ELSE:
-- 
+-
+> - IF: @{add(count(turn.schema.required),count(turn.schema.$expectedOnly)) < count(turn.schema.properties)}
+> - Optional properties include: @{join(foreach(where(turn.schema.properties, property, !contains(turn.schema.required, property) && !contains(turn.schema.$expectedOnly, property)), property, name(property)), ', ')}\n
+> - ELSE:
+> - 
 
 # possibleValues(property)
 - @{foreach(turn.schema.properties[property].enum, enum, value(property, enum))}
@@ -134,8 +136,8 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 }
 ```
 
->>> TODO: It would be nice to able to include bound optional properties as well.  
->>> Once we have support in foreach for objects we can expand this.
+> TODO: It would be nice to able to include bound optional properties as well.  
+> Once we have support in foreach for objects we can expand this.
 # requiredFacts
 - @{join(foreach(dialog.requiredProperties, property, fact(property)), ', ')}
 
@@ -163,4 +165,6 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 # PropertyToChange(value)
 - @{PROPERTYName(value)}
 
-[PropertyNAME.lg]
+> TODO: Would be good to split out all the component pieces, i.e. help, cancel, confirmation into their own files
+[PROPERTYName.lg]
+[Confirmation.lg]
