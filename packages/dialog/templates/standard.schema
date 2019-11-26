@@ -53,6 +53,7 @@
         "HelpIntent.dialog",
         "NotUnderstood.dialog",
         "TriggerIntent.dialog",
+        "PROPERTYName.schema",
         "luconfig.json",
         "lu.dialog",
         "Main.dialog"        

@@ -12,7 +12,7 @@ export default class GenerateDialog extends Command {
     async run() {
         const { args, flags } = this.parse(GenerateDialog)
         try {
-            let formName = ppath.basename(args.schema, '.schema.dialog')
+            let formName = ppath.basename(args.schema, '.schema')
             let outDir = flags.output
             if (!outDir) {
                 outDir = ppath.join(formName + '-resources')
@@ -46,7 +46,7 @@ export default class GenerateDialog extends Command {
     `]
 
     static args = [
-        { name: 'schema', required: true, description: 'JSON Schema file used to drive generation.' }
+        { name: 'schema', required: true, description: 'JSON Schema .schema file used to drive generation.' }
     ]
 
     static flags: flags.Input<any> = {

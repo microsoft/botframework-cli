@@ -7,7 +7,7 @@
         {
             "$kind": "Microsoft.Ask",
             "activity": "@{callChooseProperties()}",
-            "expectedProperties": ["PROPERTYName"]
+            "expectedProperties": ["PropertyToChange"]
         }
     ]
 }

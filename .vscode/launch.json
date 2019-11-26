@@ -83,7 +83,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Generate Sandwich Form",
+            "name": "Generate Sandwich",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [
@@ -91,7 +91,7 @@
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwich.form.dialog",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwich.schema",
                 "-o",
                 "${env:TEMP}/sandwich.out",
                 "--force",
