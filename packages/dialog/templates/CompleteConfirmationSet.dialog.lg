@@ -2,25 +2,25 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnSetProperty",
     "property": "CompleteConfirmation",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$CompleteConfirmation",
             "value": "@Confirmation"
         },
         {
-            "$type": "Microsoft.IfCondition",
+            "$kind": "Microsoft.IfCondition",
             "condition":"$CompleteConfirmation == 'no'",
             "actions": [
                 {
-                    "$type": "Microsoft.EndDialog"
+                    "$kind": "Microsoft.EndDialog"
                 }
             ],
             "elseActions":[
                 {
-                    "$type": "Microsoft.Ask",
+                    "$kind": "Microsoft.Ask",
                     "activity": "@{callChooseProperty()}",
                     "expectedProperties": [
                         "PropertyToChange"

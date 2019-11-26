@@ -5,26 +5,26 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnAsk",
+    "$kind": "Microsoft.OnAsk",
     "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
+            "$kind": "Microsoft.IfCondition",
             "condition":"$lastExpectedProperty == '@{property}'",
             "actions":[
                 {
-                    "$type": "Microsoft.SendActivity",
+                    "$kind": "Microsoft.SendActivity",
                     "activity": "@{callHelp()}"
                 }
                     
             ]
         },
         {
-            "$type": "Microsoft.IfCondition",
+            "$kind": "Microsoft.IfCondition",
             "condition": "contains(turn.schema.properties['@{property}'].$mappings, 'utterance')",
             "actions":[
                 {
-                    "$type": "Microsoft.Ask",
+                    "$kind": "Microsoft.Ask",
                     "activity": "@{callAsk()}",
                     "expectedProperties": [
                          "utterance","@{property}"
@@ -33,7 +33,7 @@
             ],
             "elseActions":[
                 {
-                    "$type": "Microsoft.Ask",
+                    "$kind": "Microsoft.Ask",
                     "activity": "@{callAsk()}",
                     "expectedProperties": [
                         "@{property}"
@@ -42,7 +42,7 @@
             ]
         },
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$lastExpectedProperty",
             "value": "'@{property}'"
         }

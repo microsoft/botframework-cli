@@ -2,12 +2,12 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnIntent",
+    "$kind": "Microsoft.OnIntent",
     "intent": "None",
     "condition": "count(turn.recognizedentities) == 0",
     "actions": [
         {
-            "$type": "Microsoft.SendActivity",
+            "$kind": "Microsoft.SendActivity",
             "activity": "@{callNotUnderstood()}"           
         }
     ]
