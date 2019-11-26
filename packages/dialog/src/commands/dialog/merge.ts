@@ -257,7 +257,7 @@ export default class DialogMerge extends Command {
                 result = stdout.substring(start + name.length).trim()
             }
         } catch (err) {
-            this.error(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n${err}`)
+            this.warn(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n${err}`)
         }
         return result
     }
