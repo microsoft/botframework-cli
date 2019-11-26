@@ -1,5 +1,5 @@
 {
     "$schema": "./promptOnly.schema",
-    "$type": "prompt",
+    "$kind": "prompt",
     "prompt": "Hello"
 }

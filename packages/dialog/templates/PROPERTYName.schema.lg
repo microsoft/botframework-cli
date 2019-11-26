@@ -1,0 +1,13 @@
+# template
+-```
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "PROPERTYName": {
+            "type": "string",
+            "enum": [@{foreach(properties, property, concat('"', property, '"'))}]
+        }
+    }
+}
+```

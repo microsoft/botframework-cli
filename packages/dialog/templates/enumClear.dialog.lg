@@ -5,11 +5,11 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnClearProperty",
+    "$kind": "Microsoft.OnClearProperty",
     "condition": "turn.dialogEvent.Value.Change.Slot == '@{property}'",
     "actions": [
         {
-            "$type": "Microsoft.DeleteProperty",
+            "$kind": "Microsoft.DeleteProperty",
             "property": "$@{PROPERTY}"
         }
     ]

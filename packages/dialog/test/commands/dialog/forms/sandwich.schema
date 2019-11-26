@@ -65,6 +65,6 @@
         "Cheese"
     ],
     "$requires": [
-        "standard.schema.dialog"
+        "standard.schema"
     ]
 }

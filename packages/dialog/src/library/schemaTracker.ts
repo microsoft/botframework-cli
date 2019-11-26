@@ -30,16 +30,16 @@ export class SchemaTracker {
             added = true
             if (schemaObject.oneOf) {
                 const defRef = '#/definitions/'
-                const unionRole = 'unionType('
+                const unionRole = 'union('
                 let processRole = (role: string, type: Type) => {
                     if (role.startsWith(unionRole)) {
                         role = role.substring(unionRole.length, role.length - 1)
-                        let unionType = this.typeToType.get(role)
-                        if (!unionType) {
-                            unionType = new Type(role)
-                            this.typeToType.set(role, unionType)
+                        let union = this.typeToType.get(role)
+                        if (!union) {
+                            union = new Type(role)
+                            this.typeToType.set(role, union)
                         }
-                        unionType.addImplementation(type)
+                        union.addImplementation(type)
                     }
                 }
                 for (let one of schemaObject.oneOf) {
@@ -135,13 +135,13 @@ export class Type {
     implementations: Type[]
 
     // Union types this type is part of.
-    unionTypes: Type[]
+    unions: Type[]
 
     constructor(name: string, schema?: any) {
         this.name = name
         this.lgProperties = []
         this.implementations = []
-        this.unionTypes = []
+        this.unions = []
         if (schema) {
             this.walkProps(schema, name)
         }
@@ -149,7 +149,7 @@ export class Type {
 
     addImplementation(type: Type) {
         this.implementations.push(type)
-        type.unionTypes.push(this)
+        type.unions.push(this)
     }
 
     toString(): string {
