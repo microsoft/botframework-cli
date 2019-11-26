@@ -5,16 +5,16 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnAsk",
+    "$kind": "Microsoft.OnAsk",
     "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
     "actions": [        
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$lastExpectedProperty",
             "value": "'@{property}'"
         },
         {
-            "$type": "Microsoft.Ask",
+            "$kind": "Microsoft.Ask",
             "activity": "@{callAsk()}",
             "expectedProperties": [
                 "@{property}"

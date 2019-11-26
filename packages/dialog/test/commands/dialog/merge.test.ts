@@ -15,7 +15,7 @@ import DialogMerge from '../../../src/commands/dialog/merge';
 import * as dt from '../../../src/library/dialogTracker';
 
 // TODO(chrande): these aren't working because they bring in a bunch of dotnet dependency stuff
-describe.skip('Test schema merge', async () => {
+describe('Test schema merge', async () => {
     let schemas = new dt.SchemaTracker();
     let tracker = new dt.DialogTracker(schemas);
 
@@ -43,9 +43,9 @@ describe.skip('Test schema merge', async () => {
 
         await fs.remove("examples/app.schema");
 
-        await DialogMerge.run(["-b", "4.Future", "-o", "examples/app.schema", "schemas/*.schema"]);
-        await DialogMerge.run(["-b", "4.Future", "-o", "examples/promptOnly.schema", "schemas/prompt.schema"]);
-        await DialogMerge.run(["-b", "4.Future", "-o", "examples/packages.schema", "package.json", "projects/*"]);
+        await DialogMerge.run(["-b", "master", "-o", "examples/app.schema", "schemas/*.schema"]);
+        await DialogMerge.run(["-b", "master", "-o", "examples/promptOnly.schema", "schemas/prompt.schema"]);
+        await DialogMerge.run(["-b", "master", "-o", "examples/packages.schema", "package.json", "projects/*"]);
 
         tracker.root = process.cwd();
         await tracker.addDialogFiles(["examples/*.dialog"]);
