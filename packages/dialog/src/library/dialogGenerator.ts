@@ -85,7 +85,7 @@ function addLocale(name: string, locale: string, formName: string): string {
 }
 
 async function replaceAsync(str: string, re: RegExp, callback: (match: string) => Promise<string>): Promise<string> {
-    let parts :any[] = []
+    let parts: any[] = []
     let i = 0
     if (re.global) {
         re.lastIndex = i

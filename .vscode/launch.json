@@ -8,6 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Dialog Merge Tests",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
             "cwd": "${workspaceFolder}/packages/dialog",
             "args": [
@@ -18,7 +19,6 @@
                 ".*Test schema merge.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "sourceMaps": true,
             "outFiles": [
                 "./package/dialog/lib/**"
             ]
@@ -27,6 +27,7 @@
             "type": "node",
             "request": "launch",
             "name": "Dialog Verify Tests",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
             "cwd": "${workspaceFolder}/packages/dialog",
             "args": [
@@ -37,7 +38,6 @@
                 ".*dialog:verify.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "sourceMaps": true,
             "outFiles": [
                 "./package/dialog/lib/**"
             ]
@@ -46,49 +46,48 @@
             "type": "node",
             "request": "launch",
             "name": "Dialog Generator Tests",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/dialog",
             "args": [
                 "--timeout",
                 "999999",
                 "--colors",
-                "${workspaceFolder}/test/commands/dialog/generator.test.ts"
+                "-g",
+                ".*dialog:generate.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "sourceMaps": true,
             "outFiles": [
                 "./package/dialog/lib/**"
             ]
         },
-
-        // TODO: (chrande) Keeping these but they should probably be rewritten to work on more
-        //       just chrismc's dev machine.
         {
             "type": "node",
             "request": "launch",
             "name": "BotBuilder schema",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [
-                "${workspaceFolder}/packages/dialog/lib/**/*.js"
+                "./packages/dialog/lib/**"
             ],
             "args": [
                 "dialog:merge",
                 "libraries/**/*.schema",
-                "-u",
-                "-b", "master",
-                "-o", "schemas/sdk.schema",
+                "-o",
+                "${env:TEMP}/sdk.schema",
                 "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "c:/users/chrimc/source/repos/botbuilder-dotnet"
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Generate Sandwich Form",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/packages/dialog/lib/**/*.js"
+                "./packages/dialog/lib/**"
             ],
             "args": [
                 "dialog:generate",
@@ -96,7 +95,7 @@
                 "-o",
                 "${env:TEMP}/sandwich.out",
                 "--force",
-                "--verbose",
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },
@@ -104,10 +103,10 @@
             "type": "node",
             "request": "launch",
             "name": "Generate Activity Form",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
-                "${workspaceFolder}/packages/dialog/lib/**/*.js"
+                "./packages/dialog/lib/**"
             ],
             "args": [
                 "dialog:generate",
@@ -125,9 +124,10 @@
             "type": "node",
             "request": "launch",
             "name": "Generate Contact Form",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [
-                "${workspaceFolder}/packages/dialog/lib/**/*.js"
+                "./packages/dialog/lib/**"
             ],
             "args": [
                 "dialog:generate",
@@ -145,9 +145,10 @@
             "type": "node",
             "request": "launch",
             "name": "Generate Opportunity Form",
+            "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [
-                "${workspaceFolder}/packages/dialog/lib/**/*.js"
+                "./packages/dialog/lib/**"
             ],
             "args": [
                 "dialog:generate",

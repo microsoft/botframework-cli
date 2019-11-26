@@ -5,7 +5,7 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.MultiLanguageRecognizer",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
         @{join(foreach(locales, locale, entry(locale, formName)), ',\n')},
         "": @{concat(file(locales[0], formName))}

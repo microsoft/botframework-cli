@@ -6,12 +6,12 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
     "entity": "@keyPhrase",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
             "value": "@keyPhrase"          
         }

@@ -35,7 +35,7 @@ USAGE
   $ bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
 
 OPTIONS
-  -b, --branch=branch  [default: 4.Future] The branch to use for the meta-schema component.schema.
+  -b, --branch=branch  [default: master] The branch to use for the meta-schema component.schema.
   -h, --help           show CLI help
   -o, --output=output  [default: app.schema] Output path and filename for merged schema. [default: app.schema]
 
@@ -78,7 +78,7 @@ USAGE
   $ bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
 
 OPTIONS
-  -b, --branch=branch  The branch to use for the meta-schema component.schema. [default: 4.Future] 
+  -b, --branch=branch  The branch to use for the meta-schema component.schema. [default: master] 
   -h, --help              show CLI help
   -o, --output=output  Output path and filename for merged schema. [default: app.schema]
   -u, --update         Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.
