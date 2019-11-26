@@ -30,17 +30,9 @@
             "$templates": [
                 "PropertyToChangeSet.dialog"
             ]
-        },
-        "lastExpectedProperty":{
-            "type":"string",
-            "$mappings": [
-                "PROPERTYName"
-            ],
-            "$templates": [                
-            ]
         }
     },
-    "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange", "lastExpectedProperty"],
+    "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
     "$templates": [
         "helpIntent.lu",
         "cancelIntent.lu",
