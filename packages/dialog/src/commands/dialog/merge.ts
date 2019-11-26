@@ -332,7 +332,7 @@ export default class DialogMerge extends Command {
     processRole(role: string, elt: any, kind: string, definitions: any, metaSchema: any, key?: string): void {
         const prefix = 'union('
         if (role === 'expression' || role === 'lg' || role === 'memoryPath') {
-            if (elt.type) {
+            if (elt.kind) {
                 this.error(`${this.currentFile}:error: $role ${role} must not have a type.`)
             }
             for (let prop in metaSchema.definitions[role]) {
@@ -372,7 +372,7 @@ export default class DialogMerge extends Command {
             if (val.oneOf) {
                 this.walkJSON(val.oneOf, def => {
                     if (def.type) {
-                        // NOTE: This overrides any existing title but prevents namespace collision
+                        // NOTE: For simple types, not kinds promote into title to prevent collisions
                         def.title = def.type
                     }
                     return false
@@ -415,7 +415,7 @@ export default class DialogMerge extends Command {
             if (!this.isUnion(definition)) {
                 // Reorder properties to put $ first.
                 let props: any = {
-                    $kind: clone(dialogSchema.definitions.type),
+                    $kind: clone(dialogSchema.definitions.kind),
                     $copy: dialogSchema.definitions.copy,
                     $id: dialogSchema.definitions.id,
                     $designer: dialogSchema.definitions.designer
@@ -533,7 +533,6 @@ export default class DialogMerge extends Command {
         this.error(`${this.currentFile}: error:${kind}: ${message}`)
         this.failed = true
     }
-
     
     static args = [
         { name: 'glob1', required: true },
