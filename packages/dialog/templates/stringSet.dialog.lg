@@ -6,18 +6,18 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
     "actions": [
         {
-            "$type": "Microsoft.SwitchCondition",
+            "$kind": "Microsoft.SwitchCondition",
             "condition": "turn.schema.properties['@{property}'].$mappings[0]",
             "cases":[
                 {
                     "value":"utterance",
                     "actions":[
                         {
-                            "$type": "Microsoft.SetProperty",
+                            "$kind": "Microsoft.SetProperty",
                             "property": "$@{property}",
                             "value": "@utterance"
                         }
@@ -27,7 +27,7 @@
                     "value":"datetime",
                     "actions":[
                         {
-                            "$type": "Microsoft.SetProperty",
+                            "$kind": "Microsoft.SetProperty",
                             "property": "$@{property}",
                             "value": "join(@datetime.timex,', ')"
                         }
@@ -37,7 +37,7 @@
                     "value":"datetimeV2",
                     "actions":[
                         {
-                            "$type": "Microsoft.SetProperty",
+                            "$kind": "Microsoft.SetProperty",
                             "property": "$@{property}",
                             "value": "join(@datetime.timex,', ')"
                         }
@@ -47,7 +47,7 @@
                     "value":"email",
                     "actions":[
                         {
-                            "$type": "Microsoft.SetProperty",
+                            "$kind": "Microsoft.SetProperty",
                             "property": "$@{property}",
                             "value": "@email"
                         }
@@ -56,7 +56,7 @@
             ],
             "default":[
                 {
-                    "$type": "Microsoft.SetProperty",
+                    "$kind": "Microsoft.SetProperty",
                     "property": "$@{property}",
                     "value": "turn.recognized.entities[turn.schema.properties['@{property}'].$mappings[0]]"
                 }

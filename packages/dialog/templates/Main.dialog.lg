@@ -5,7 +5,7 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.AdaptiveDialog",
+    "$kind": "Microsoft.AdaptiveDialog",
     "recognizer": "@{formName}.lu",
     "generator": "@{formName}.lg",
     "schema": "@{formName}.schema",
