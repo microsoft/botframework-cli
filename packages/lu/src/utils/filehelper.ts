@@ -11,7 +11,7 @@ const luObject = require('./../parser/lu/lu')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
-export async function getLuObjects(stdin: string, input: string, recurse = false, extType: string | undefined) {
+export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
     luObjects.push(new luObject(stdin, 'stdin'))
@@ -26,29 +26,23 @@ export async function getLuObjects(stdin: string, input: string, recurse = false
   return luObjects
 }
 
-async function getLuFiles(inputPath: string, recurse = false, extType: string | undefined): Promise<Array<any>> {
-  let filesToParse: string[] = []
-  const inputs = inputPath.split(',')
-  if (inputs) {
-    for (const input of inputs) {
-      let fileStat = await fs.stat(input)
-      if (fileStat.isFile()) {
-        filesToParse.push(input)
-        continue
-      }
-
-      if (!fileStat.isDirectory()) {
-        throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
-      }
-
-      filesToParse = helpers.findLUFiles(input, recurse, extType)
-
-      if (filesToParse.length === 0) {
-        throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
-      }
-    }
+async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
+  let filesToParse: any[] = []
+  let fileStat = await fs.stat(input)
+  if (fileStat.isFile()) {
+    filesToParse.push(input)
+    return filesToParse
   }
 
+  if (!fileStat.isDirectory()) {
+    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
+  }
+
+  filesToParse = helpers.findLUFiles(input, recurse, extType)
+
+  if (filesToParse.length === 0) {
+    throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
+  }
   return filesToParse
 }
 
@@ -167,68 +161,6 @@ export async function detectLuContent(stdin: string, input: string) {
     return true
   }
   return false
-}
-
-async function getConfigFiles(input: string, recurse = false): Promise<Array<any>> {
-  let filesToParse: string[] = []
-  let fileStat = await fs.stat(input)
-  if (fileStat.isFile()) {
-    filesToParse.push(input)
-    return filesToParse
-  }
-
-  if (!fileStat.isDirectory()) {
-    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
-  }
-
-  filesToParse = helpers.findConfigFiles(input, recurse)
-
-  if (filesToParse.length === 0) {
-    throw new CLIError('Sorry, no .lu files found in the specified folder.')
-  }
-  return filesToParse
-}
-
-export async function getConfigObject(input: string, recurse = false) {
-  const luConfigFiles = await getConfigFiles(input, recurse)
-  if (luConfigFiles.length === 0) {
-    throw new CLIError(`Sorry, no .json file found in the folder '${input}' and its sub folders`)
-  }
-
-  let finalLuConfigObj = Object.create(null)
-  for (const luConfigFile of luConfigFiles) {
-    const configFileDir = path.dirname(luConfigFile)
-    const luConfigContent = await getContentFromFile(luConfigFile)
-    if (luConfigContent && luConfigContent !== '') {
-      try {
-        const luConfigObj = JSON.parse(luConfigContent)
-        for (const rootluFilePath of Object.keys(luConfigObj)) {
-          const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
-          const destLuFileToIntent = luConfigObj[rootluFilePath]
-          for (const destLuFilePath of Object.keys(destLuFileToIntent)) {
-            const triggerIntent = destLuFileToIntent[destLuFilePath]
-            const destLuFileFullPath = path.resolve(configFileDir, destLuFilePath)
-            if (rootLuFileFullPath in finalLuConfigObj) {
-              const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
-              finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
-            } else {
-              let finalDestLuFileToIntent = Object.create(null)
-              finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
-              finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
-            }
-          }
-        }
-      } catch (err) {
-        if (err instanceof CLIError) {
-          throw err
-        } else {
-          throw new CLIError(`Sorry, invalid cross training config:\r\n${luConfigContent}`)
-        }
-      }
-    }
-  }
-
-  return finalLuConfigObj
 }
 
 export function parseJSON(input: string, appType: string) {
