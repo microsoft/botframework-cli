@@ -3,50 +3,84 @@ const LUFileLexer = require('./generated/LUFileLexer').LUFileLexer;
 const LUFileParser = require('./generated/LUFileParser').LUFileParser;
 const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext;
 const LUResource = require('./luResource');
-const LUIntent = require('./luIntent');
-const LUEntity = require('./luEntity');
-const LUNewEntity = require('./luNewEntity');
-const LUImport = require('./luImport');
-const LUQna = require('./luQna');
-const LUModelInfo = require('./luModelInfo');
+const NestedIntentSection = require('./nestedIntentSection');
+const SimpleIntentSection = require('./simpleIntentSection');
+const EntitySection = require('./entitySection');
+const NewEntitySection =  require('./newEntitySection');
+const ImportSection = require('./importSection');
+const QnaSection = require('./qnaSection');
+const ModelInfoSection = require('./modelInfoSection');
 const LUErrorListener = require('./luErrorListener');
+const SectionType = require('./../utils/enums/lusectiontypes');
+const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
+const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 
 class LUParser {
     /**
      * @param {string} text
      */
     static parse(text) {
-        let luIntents;
-        let luEntities;
-        let luNewEntities;
-        let luImports;
-        let qnas;
-        let modelInfos;
+        let sections = [];
+        let content = text;
 
         let { fileContent, errors } = this.getFileContent(text);
         if (errors.length > 0) {
-            return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
+            return new LUResource(sections, content, errors);
         }
 
-        luIntents = this.extractLUIntents(fileContent);
-        luIntents.forEach(luIntent => errors = errors.concat(luIntent.Errors));
+        let modelInfoSections = this.extractModelInfoSections(fileContent);
+        modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(modelInfoSections);
 
-        luEntities = this.extractLUEntities(fileContent);
-        luEntities.forEach(luEntity => errors = errors.concat(luEntity.Errors));
+        let isSectionEnabled = this.isSectionEnabled(sections);
 
-        luNewEntities = this.extractNewEntities(fileContent); 
-        luNewEntities.forEach(luNewEntity => errors = errors.concat(luNewEntities.Errors));
+        let nestedIntentSections = this.extractNestedIntentSections(fileContent);
+        nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
+        if (isSectionEnabled) {
+            sections = sections.concat(nestedIntentSections);
+        } else {
+            nestedIntentSections.forEach(section => {
+                let emptyIntentSection = new SimpleIntentSection();
+                emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
+                emptyIntentSection.Name = section.Name;
+                let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    context: emptyIntentSection.ParseTree,
+                    severity: DiagnosticSeverity.WARN
+                })
 
-        luImports = this.extractLUImports(fileContent);
-        luImports.forEach(luImport => errors = errors.concat(luImport.Errors));
+                errors.push(error);
+                sections.push(emptyIntentSection);
+
+                section.SimpleIntentSections.forEach(subSection => {
+                    sections.push(subSection);
+                    errors = errors.concat(subSection.Errors);
+                })
+            });
+        }
+
+        let simpleIntentSections = this.extractSimpleIntentSections(fileContent);
+        simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(simpleIntentSections);
+
+        let entitySections = this.extractEntitiesSections(fileContent);
+        entitySections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(entitySections);
+
+        let newEntitySections = this.extractNewEntitiesSections(fileContent);
+        newEntitySections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(newEntitySections);
+
+        let importSections = this.extractImportSections(fileContent);
+        importSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(importSections);
         
-        qnas = this.extractLUQnas(fileContent);
-        qnas.forEach(qna => errors = errors.concat(qna.Errors));
+        let qnaSections = this.extractQnaSections(fileContent);
+        qnaSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(qnaSections);
 
-        modelInfos = this.extractLUModelInfos(fileContent);
-        modelInfos.forEach(modelInfo => errors = errors.concat(modelInfo.Errors));
-        
-        return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
+        return new LUResource(sections, content, errors);
     }
 
     /**
@@ -77,105 +111,146 @@ class LUParser {
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUIntents(fileContext) {
+    static extractNestedIntentSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let intentDefinitions = fileContext.paragraph()
-            .map(x => x.intentDefinition())
+        let nestedIntentSections = fileContext.paragraph()
+            .map(x => x.nestedIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let intents = intentDefinitions.map(x => new LUIntent(x));
+        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x));
 
-        return intents;
-    }
-
-    static extractNewEntities(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.newEntityDefinition())
-            .filter(x => x !== undefined && x != null);
-
-        let entities = entityDefinitions.map(x => new LUNewEntity(x));
-
-        return entities;
-    }
-    /**
-     * @param {FileContext} fileContext 
-     */
-    static extractLUEntities(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.entityDefinition())
-            .filter(x => x !== undefined && x != null);
-
-        let entities = entityDefinitions.map(x => new LUEntity(x));
-
-        return entities;
+        return nestedIntentSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUImports(fileContext) {
+    static extractSimpleIntentSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.importDefinition())
-            .filter(x => x !== undefined && x != null);
+        let simpleIntentSections = fileContext.paragraph()
+            .map(x => x.simpleIntentSection())
+            .filter(x => x !== undefined && x !== null);
 
-        let imports = entityDefinitions.map(x => new LUImport(x));
+        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x));
 
-        return imports;
+        return simpleIntentSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUQnas(fileContext) {
+    static extractEntitiesSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let qnaDefinitions = fileContext.paragraph()
-            .map(x => x.qnaDefinition())
+        let entitySections = fileContext.paragraph()
+            .map(x => x.entitySection())
             .filter(x => x !== undefined && x != null);
 
-        let qnas = qnaDefinitions.map(x => new LUQna(x));
+        let entitySectionList = entitySections.map(x => new EntitySection(x));
 
-        return qnas;
+        return entitySectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUModelInfos(fileContext) {
+    static extractNewEntitiesSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let modelInfoDefinitions = fileContext.paragraph()
-            .map(x => x.modelInfoDefinition())
+        let entitySections = fileContext.paragraph()
+            .map(x => x.newEntitySection())
             .filter(x => x !== undefined && x != null);
 
-        let modelInfos = modelInfoDefinitions.map(x => new LUModelInfo(x));
+        let entitySectionList = entitySections.map(x => new NewEntitySection(x));
 
-        return modelInfos;
+        return entitySectionList;
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractImportSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let importSections = fileContext.paragraph()
+            .map(x => x.importSection())
+            .filter(x => x !== undefined && x != null);
+
+        let importSectionList = importSections.map(x => new ImportSection(x));
+
+        return importSectionList;
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractQnaSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let qnaSections = fileContext.paragraph()
+            .map(x => x.qnaSection())
+            .filter(x => x !== undefined && x != null);
+
+        let qnaSectionList = qnaSections.map(x => new QnaSection(x));
+
+        return qnaSectionList;
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractModelInfoSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let modelInfoSections = fileContext.paragraph()
+            .map(x => x.modelInfoSection())
+            .filter(x => x !== undefined && x != null);
+
+        let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
+
+        return modelInfoSectionList;
+    }
+
+    static isSectionEnabled(sections) {
+        let modelInfoSections = sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
+        let enableSections = false;
+        if (modelInfoSections && modelInfoSections.length > 0) {
+            for (const modelInfo of modelInfoSections) {
+                let line = modelInfo.ModelInfo
+                let kvPair = line.split(/@(enableSections).(.*)=/g).map(item => item.trim());
+                if (kvPair.length === 4) {
+                    if (kvPair[1] === 'enableSections' && kvPair[3] === 'true') {
+                        enableSections = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return enableSections;
     }
 }
 

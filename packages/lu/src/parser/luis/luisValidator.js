@@ -1,6 +1,7 @@
 const retCode = require('./../utils/enums/CLI-errors')
 const helpers = require('./../utils/helpers')
 const exception = require('./../utils/exception')
+const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 
 const validateLUIS = function(luisJSON) {
     // look for entity name collisions - list, simple, patternAny, phraselist
@@ -98,7 +99,7 @@ const validateEntities = function(entitiesList){
             let errorMsg = `Entity ${entity.name} has duplicate definitions.\r\n\t` + JSON.stringify(entity.type, 2, null);
             let error = BuildDiagnostic({ message: errorMsg });
 
-            throw (new exception(retCode.errorCode.DUPLICATE_ENTITIES, error.toString()));
+            throw (new exception(retCode.errorCode.DUPLICATE_ENTITIES, error.toString(), [error]));
         }
     });
 }
@@ -116,7 +117,7 @@ const validateUtterances = function(luisJSON, entitiesList){
             let errorMsg = `Utterance "${utterance.text}" has reference to PhraseList. \r\n\tYou cannot have utterances with phraselist references in them`;
             let error = BuildDiagnostic({ message: errorMsg });
 
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
     }
 }
@@ -135,7 +136,7 @@ const validateComposites = function(luisJSON, entitiesList){
             let errorMsg = `Composite entity "${composite.name}" includes pattern.any entity "${patternAnyEntityInComposite.name}".\r\n\tComposites cannot include pattern.any entity as a child.`;
             let error = BuildDiagnostic({ message: errorMsg });
 
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         // composite entity definitions must have valid child entity type definitions. 
         validateCompositeChildren(composite, entitiesList)
@@ -159,14 +160,14 @@ const validateCompositeChildren = function(composite, entitiesList){
             let errorMsg = `Composite entity "${composite.name}" includes an undefined child entity "${childEntityName}".\r\n\tAll children of composite entities must be explicitly defined or implicitly defined via an utterance or a pattern`;
             let error = BuildDiagnostic({ message: errorMsg });
 
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         if (childEntityRole != '' && 
             !compositeChildEntityFound.roles.includes(childEntityRole)) {
             let errorMsg = `Composite entity "${composite.name}" includes an undefined child entity role "${childEntityName}:${childEntityRole}".\r\n\tAll children of composite entities must be explicitly defined or implicitly defined via an utterance or a pattern`;
             let error = BuildDiagnostic({ message: errorMsg });
 
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
     })
 }

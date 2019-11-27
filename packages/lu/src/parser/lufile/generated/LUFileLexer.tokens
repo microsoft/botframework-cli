@@ -37,8 +37,10 @@ ENTITY_TEXT=36
 COLON_MARK=37
 WS_IN_QNA_IGNORED=38
 QNA_TEXT=39
+HASH_IN_NAME=40
 '**Filters:**'=12
 ','=16
 '='=17
+'#'=40
 '.'=28
 ':'=37
