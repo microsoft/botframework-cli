@@ -16,7 +16,7 @@ schedules:
 
 strategy:
   matrix:
-    linux:
+    windows:
       imageName: "windows-2019"
       nodeVersion: "12.x"
   maxParallel: 3
