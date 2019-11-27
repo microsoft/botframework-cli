@@ -110,7 +110,7 @@
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/activity.form.dialog",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/activity.schema",
                 "-o",
                 "${env:TEMP}/activity.out",
                 "--force",
@@ -131,7 +131,7 @@
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/contact.form.dialog",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/contact.schema",
                 "-o",
                 "${env:TEMP}/contact.out",
                 "--force",
@@ -152,7 +152,7 @@
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/opportunity.form.dialog",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/opportunity.schema",
                 "-o",
                 "${env:TEMP}/opportunity.out",
                 "--force",

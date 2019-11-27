@@ -1,6 +1,6 @@
 
 # filename
-- @{formName}-@{property}Setdatetime.dialog
+- @{schemaName}-@{property}Setdatetime.dialog
 
 # template
 - ```

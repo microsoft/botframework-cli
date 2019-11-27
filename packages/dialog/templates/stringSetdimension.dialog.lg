@@ -1,6 +1,6 @@
 
 # filename
-- @{formName}-@{property}Setdimension.dialog
+- @{schemaName}-@{property}Setdimension.dialog
 
 # template
 - ```

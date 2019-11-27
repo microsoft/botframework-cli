@@ -1,5 +1,5 @@
 # filename
-- @{formName}-@{property}Set@{property}Entity.dialog
+- @{schemaName}-@{property}Set@{property}Entity.dialog
 
 # template
 - ```

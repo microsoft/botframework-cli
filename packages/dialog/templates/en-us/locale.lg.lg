@@ -1,5 +1,5 @@
 # filename
-- @{formName}.@{locale}.lg
+- @{schemaName}.@{locale}.lg
 
 # template
 - >>> Library\n@{join(foreach(templates.lg, lg, concat('[', lg.fallbackName, '](', lg.fallbackName, ')')), '\n')}

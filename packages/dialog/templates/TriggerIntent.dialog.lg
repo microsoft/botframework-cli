@@ -1,5 +1,5 @@
 # filename
-- @{formName}-@{triggerIntent}Intent.dialog
+- @{schemaName}-@{triggerIntent}Intent.dialog
 
 # template
 - ```

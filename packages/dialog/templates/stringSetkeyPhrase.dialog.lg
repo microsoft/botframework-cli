@@ -1,6 +1,6 @@
 
 # filename
-- @{formName}-@{property}SetkeyPhrase.dialog
+- @{schemaName}-@{property}SetkeyPhrase.dialog
 
 # template
 - ```

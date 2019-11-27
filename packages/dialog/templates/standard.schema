@@ -23,13 +23,17 @@
             ]
         },
         "PropertyToChange": {
-            "type": "string",
-            "$mappings": [
-                "PROPERTYName"
-            ],
+            "$ref": "#/definitions/PROPERTYName",
             "$templates": [
                 "PropertyToChangeSet.dialog"
             ]
+        }
+    },
+    "definitions": {
+        "PROPERTYName": {
+            "type": "string",
+            "enum": "@{properties}",
+            "$mappings": ["PROPERTYName"]
         }
     },
     "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
@@ -45,7 +49,6 @@
         "HelpIntent.dialog",
         "NotUnderstood.dialog",
         "TriggerIntent.dialog",
-        "PROPERTYName.schema",
         "luconfig.json",
         "lu.dialog",
         "Main.dialog"        

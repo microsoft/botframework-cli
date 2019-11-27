@@ -1,5 +1,5 @@
 # filename
-- @{formName}-@{property}.@{locale}.lg
+- @{schemaName}-@{property}.@{locale}.lg
 
 # template
 - @{AskTemplate()}\n@{NameTemplate()}\n\[common.lg]

@@ -27,7 +27,7 @@ describe('Test schema merge', async () => {
         await fs.remove(tempDir);
         await fs.mkdirp(tempDir);
         
-        for (let file of await glob(["test/commands/dialog/**/*.schema", "test/commands/dialog/**/*.lg", "test/commands/dialog/**/*.dialog", "test/commands/dialog/**/*.cmd", "test/commands/dialog/projects/*", "test/commands/dialog/packages/**"])) {
+        for (let file of await glob(["test/commands/dialog/schemas/*.schema", "test/commands/dialog/schemas/*.lg", "test/commands/dialog/examples/*.dialog", "test/commands/dialog/**/*.cmd", "test/commands/dialog/projects/*", "test/commands/dialog/packages/**"])) {
             let target = ppath.join(tempDir, file.substring(file.indexOf("/") + 1).replace("commands/dialog", ""));
             await fs.copy(file, target);
         }
@@ -51,6 +51,7 @@ describe('Test schema merge', async () => {
         await tracker.addDialogFiles(["examples/*.dialog"]);
     });
 
+    // TODO: We should enable this test, but deal with dotnet being present or not
     xit('packages', async () => {
         let json = await fs.readJSON("examples/packages.schema");
         expect(json.definitions.packages, "Failed reading packages.config");

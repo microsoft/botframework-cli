@@ -1,6 +1,6 @@
 
 # filename
-- @{formName}-@{property}Setutterance.dialog
+- @{schemaName}-@{property}Setutterance.dialog
 
 # template
 - ```

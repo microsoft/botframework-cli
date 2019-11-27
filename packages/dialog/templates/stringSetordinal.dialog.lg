@@ -1,6 +1,6 @@
 
 # filename
-- @{formName}-@{property}Setordinal.dialog
+- @{schemaName}-@{property}Setordinal.dialog
 
 # template
 - ```
