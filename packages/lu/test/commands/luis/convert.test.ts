@@ -476,7 +476,7 @@ describe('luis:convert version 5 upgrade test', () => {
   .stdout()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/v6WithoutPhraseLists.lu')}`, '--out', './results/root38.json'])
   .it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
-    expect(await compareLuFiles('./../../../results/root45.json', './../../fixtures/verified/v6WithoutPhraseLists.json')).to.be.true
+    expect(await compareLuFiles('./../../../results/root38.json', './../../fixtures/verified/v6WithoutPhraseLists.json')).to.be.true
   })
 
   test
