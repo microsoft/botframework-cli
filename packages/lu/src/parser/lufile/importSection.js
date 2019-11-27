@@ -1,27 +1,30 @@
-const ImportDefinitionContext = require('./generated/LUFileParser').LUFileParser.ImportDefinitionContext;
-const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
+const ImportSectionContext = require('./generated/LUFileParser').LUFileParser.ImportSectionContext;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
+const uuidv4 = require('uuid/v4');
 
-class LUImport {
+class ImportSection {
     /**
      * 
-     * @param {ImportDefinitionContext} parseTree 
+     * @param {ImportSectionContext} parseTree 
      */
     constructor(parseTree) {
         this.ParseTree = parseTree;
+        this.SectionType = LUSectionTypes.IMPORTSECTION;
         this.Description = this.ExtractDescription(parseTree);
         let result = this.ExtractPath(parseTree);
         this.Path = result.importPath;
         this.Errors = result.errors;
+        this.Id = uuidv4();
     }
 
     ExtractDescription(parseTree) {
-        return parseTree.IMPORT_DESC().getText();
+        return parseTree.importDefinition().IMPORT_DESC().getText();
     }
 
     ExtractPath(parseTree) {
         let errors = [];
-        let importPath = parseTree.IMPORT_PATH().getText().replace('(', '').replace(')', '');
+        let importPath = parseTree.importDefinition().IMPORT_PATH().getText().replace('(', '').replace(')', '');
         if (importPath === undefined || importPath === '') {
             let errorMsg = `LU file reference path is empty: "${parseTree.getText()}"`;
             let error = BuildDiagnostic({
@@ -36,4 +39,4 @@ class LUImport {
     }
 }
 
-module.exports = LUImport;
+module.exports = ImportSection;

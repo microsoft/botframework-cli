@@ -79,15 +79,15 @@
       "roles": []
     },
     {
+      "name": "ContainsAll",
+      "roles": []
+    },
+    {
       "name": "ListType",
       "roles": []
     },
     {
       "name": "TaskContent",
-      "roles": []
-    },
-    {
-      "name": "ContainsAll",
       "roles": []
     }
   ],
