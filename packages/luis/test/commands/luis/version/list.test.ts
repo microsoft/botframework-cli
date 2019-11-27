@@ -29,7 +29,7 @@ describe('luis:version:list', () => {
   .stdout()
   .command(['luis:version:list', '--help'])
   .it('should print the help contents when --help is passed as an argument', ctx => {
-    expect(ctx.stdout).to.contain('Lists application version data')
+    expect(ctx.stdout).to.contain('Returns application\'s versions')
   })
 
   test

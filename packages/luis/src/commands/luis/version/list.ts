@@ -8,7 +8,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionList extends Command {
-  static description = 'Lists application version data'
+  static description = 'Returns application\'s versions'
 
   static examples = [`
     $ bf luis:version:list --appId {APPLICATION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --take 3
@@ -18,11 +18,11 @@ export default class LuisVersionList extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    appId: flags.string({description: 'LUIS application Id'}),
-    out: flags.string({char: 'o', description: 'Path to the directory where the exported file will be placed.'}),
-    skip: flags.string({description: 'The number of entries to skip. The default is 0 (no skips)'}),
-    take: flags.string({description: 'The number of etnries to return. The maximum page size is 500. The default is 100.'}),
+    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    out: flags.string({char: 'o', description: 'Output results to specified folder and/or file in JSON format, otherwise prints to STDOUT (optional)'}),
+    skip: flags.string({description: 'Number of entries to skip. Default: 0 (no skips)'}),
+    take: flags.string({description: 'Number of etnries to return. Maximum page size is 500. Default: 100'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
   }
 
