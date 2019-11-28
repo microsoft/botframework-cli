@@ -15,65 +15,64 @@ schedules:
     - master
 
 jobs:
-  name: CLI
-  strategy:
-    matrix:
-      windows:
-        imageName: "windows-2019"
-        nodeVersion: "12.x"
-    maxParallel: 3
-  pool:
-    vmImage: $(imageName)
-  variables:
-    _version: coalesce(variables.version, 4.7.0-preview.${{variables.Build.BuildId}})
+  - job: CLI
+    strategy:
+      matrix:
+        windows:
+          imageName: "windows-2019"
+          nodeVersion: "12.x"
+      maxParallel: 3
+    pool:
+      vmImage: $(imageName)
+    variables:
+      _version: coalesce(variables.version, 4.7.0-preview.${{variables.Build.BuildId}})
+    steps:
+    #Your build pipeline references the ‘version’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with version number'
+      inputs:
+        tags: 'Version=$(_version)'
 
-  steps:
-  #Your build pipeline references the ‘version’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
-  - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-    displayName: 'Tag Build with version number'
-    inputs:
-      tags: 'Version=$(_version)'
+    - task: NodeTool@0
+      displayName: 'Use Node $(nodeVersion)'
+      inputs:
+        versionSpec: $(nodeVersion)
 
-  - task: NodeTool@0
-    displayName: 'Use Node $(nodeVersion)'
-    inputs:
-      versionSpec: $(nodeVersion)
+    - task: Npm@1
+      displayName: 'Install rush'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'install --global @microsoft/rush'
 
-  - task: Npm@1
-    displayName: 'Install rush'
-    inputs:
-      command: custom
-      verbose: false
-      customCommand: 'install --global @microsoft/rush'
+    - script: 'rush update'
+      displayName: 'rush update'
 
-  - script: 'rush update'
-    displayName: 'rush update'
+    - script: 'rush build'
+      displayName: 'rush build'
 
-  - script: 'rush build'
-    displayName: 'rush build'
+    - script: 'rush test'
+      displayName: 'rush test'
 
-  - script: 'rush test'
-    displayName: 'rush test'
+    - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
+      displayName: 'Version and Pack'
 
-  - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
-    displayName: 'Version and Pack'
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: ./.output
+        Contents: '**/*.tgz'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        flattenFolders: true
 
-  - task: CopyFiles@2
-    displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
-    inputs:
-      SourceFolder: ./.output
-      Contents: '**/*.tgz'
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-      flattenFolders: true
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      inputs:
+        artifactName: 'drop'
 
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: drop'
-    inputs:
-      artifactName: 'drop'
+    - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+      displayName: 'Component Detection'
 
-  - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
-    displayName: 'Component Detection'
-
-  - script: 'rush report:coverage'
-    displayName: 'rush report:coverage'
-    enabled: false
+    - script: 'rush report:coverage'
+      displayName: 'rush report:coverage'
+      enabled: false
