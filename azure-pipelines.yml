@@ -25,13 +25,13 @@ jobs:
     pool:
       vmImage: $(imageName)
     variables:
-      _version: $(coalesce(variables.version, 4.7.0-preview.${{variables.Build.BuildId}})
+      _version: 4.7.0-preview.${{variables.Build.BuildId}}
     steps:
     #Your build pipeline references the ‘version’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
-        tags: 'Version=$(_version)'
+        tags: 'Version=${{coalesce(variables.version, variables._version}}'
 
     - task: NodeTool@0
       displayName: 'Use Node $(nodeVersion)'
@@ -54,7 +54,7 @@ jobs:
     - script: 'rush test'
       displayName: 'rush test'
 
-    - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
+    - script: 'node ./common/scripts/version-and-pack.js --version ${{coalesce(variables.version, variables._version)}}'
       displayName: 'Version and Pack'
 
     - task: CopyFiles@2
