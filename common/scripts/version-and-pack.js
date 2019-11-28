@@ -53,45 +53,33 @@ async function main() {
         plog("Could not create output directory");
         throw e;
     }
-
-    const ps = [];
     for (const project of projects) {
-        ps.push(new Promise(async (resolve, reject) => {
-            const plog = prettyLogger('version-and-pack', 'main', project.packageName);
-            try {
-                plog("Bumping version for " + project.packageName + " to " + version);
-                const pathToPackage = path.join(__dirname, "../../", project.projectFolder);
-                await exec(npm, ['version', version, '--allow-same-version'], { cwd: pathToPackage });
+        plog("Bumping version for " + project.packageName + " to " + version);
+        const pathToPackage = path.join(__dirname, "../../", project.projectFolder);
+        await exec(npm, ['version', version, '--allow-same-version'], { cwd: pathToPackage });
 
-                plog("Updating dependencies in package.json");
-                const packageJsonPath = path.join(pathToPackage, 'package.json');
-                const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+        plog("Updating dependencies in package.json");
+        const packageJsonPath = path.join(pathToPackage, 'package.json');
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
-                for (const dep of projects) {
-                    if (packageJson.dependencies[dep.packageName]) {
-                        plog("Updating version in " + project.packageName + ": " + dep.packageName + " -> " + version);
-                        packageJson.dependencies[dep.packageName] = version;
-                    }
-                }
-
-                fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, ' ') + '\n', {
-                    encoding: 'utf8'
-                });
-
-                plog("Packing " + project.packageName);
-                const output = await exec(npm, ['pack'], { cwd: pathToPackage });
-                const tgz = parseTgz(output);
-                plog('found tgz: ' + tgz);
-                fs.copyFileSync(path.join(pathToPackage, tgz), path.join(packDir, tgz));
-                resolve();
-            } catch (e) {
-                plog(e);
-                reject(e);
+        for (const dep of projects) {
+            if (packageJson.dependencies[dep.packageName]) {
+                plog("Updating version in " + project.packageName + ": " + dep.packageName + " -> " + version);
+                packageJson.dependencies[dep.packageName] = version;
             }
-        }));
+        }
+
+        fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, ' ') + '\n', {
+            encoding: 'utf8'
+        });
+
+        plog("Packing " + project.packageName);
+        const output = await exec(npm, ['pack'], { cwd: pathToPackage });
+        const tgz = parseTgz(output);
+        plog('found tgz: ' + tgz);
+        fs.copyFileSync(path.join(pathToPackage, tgz), path.join(packDir, tgz));
     }
 
-    await Promise.all(ps);
     plog('Complete');
 }
 
