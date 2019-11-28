@@ -14,7 +14,7 @@ schedules:
     include:
     - master
 
-job:
+jobs:
   name: CLI
   strategy:
     matrix:
