@@ -14,15 +14,14 @@ schedules:
     include:
     - master
 
-strategy:
-  matrix:
-    windows:
-      imageName: "windows-2019"
-      nodeVersion: "12.x"
-  maxParallel: 3
-
 job:
-  name: CLI $(imageName) $(nodeVersion)
+  name: CLI
+  strategy:
+    matrix:
+      windows:
+        imageName: "windows-2019"
+        nodeVersion: "12.x"
+    maxParallel: 3
   pool:
     vmImage: $(imageName)
   variables:
