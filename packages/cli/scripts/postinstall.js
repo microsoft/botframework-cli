@@ -37,7 +37,7 @@ const getUserConfig = async () => {
   try {
     const userConfig = await getUserConfig()
     userConfig.lastVersionCheck = new Date()
-    if (userConfig.telemetry === null) {
+    if (userConfig.telemetry === null && process.stdin.isTTY) {
       const disableTelemetry = await cli.prompt(chalk.red('Help us improve products by allowing Microsoft to collect anonymous command and flags usage: (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
         userConfig.telemetry = true

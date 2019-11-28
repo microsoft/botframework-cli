@@ -24,7 +24,7 @@ const hook: Hook<'init'> = async function (opts) {
 
   try {
     // if config file exists, load settings
-    if (configFileExists) {
+    if (configFileExists && process.stdin.isTTY) {
       userConfig = await fs.readJSON(path.join(this.config.configDir, 'config.json'))
     } else {
       // otherwise create in-memory config
