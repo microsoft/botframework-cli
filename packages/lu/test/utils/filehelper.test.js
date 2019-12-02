@@ -16,7 +16,6 @@ describe('utils/filehelper test', () => {
         }catch(err){
             console.log(err)
         }
-
     })
 
     it('File helper correctly  builds a luObject list from stdin', async function(){
