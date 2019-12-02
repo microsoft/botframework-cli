@@ -8,7 +8,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionImport extends Command {
-  static description = 'Imports a new version into a LUIS application'
+  static description = 'Imports a new version into a LUIS application from JSON or LU content.'
 
   static examples = [`
     $ bf luis:version:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --in {PATH_TO_JSON} --versionId {VERSION_ID}
@@ -17,11 +17,11 @@ export default class LuisVersionImport extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id'}),
-    versionId: flags.string({description: 'LUIS application version to import'}),
+    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: 'Version to export (mandatory, defaults to config:LUIS:versionId)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    in: flags.string({char: 'i', description: 'File path containing LUIS application contents'})
+    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    in: flags.string({char: 'i', description: 'File path containing LUIS application contents, uses STDOUT if not specified (mandatory)'})
   }
 
   async run() {
