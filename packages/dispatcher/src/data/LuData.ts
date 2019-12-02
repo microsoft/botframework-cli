@@ -16,23 +16,25 @@ export class LuData extends Data {
 
     public static async createLuDataFromFilteringExistingLuDataUtterances(
         existingLuData: LuData,
-        filteringIndexSet: Set<number>): Promise<LuData> {
+        filteringIndexSet: Set<number>,
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<LuData> {
         // -------------------------------------------------------------------
         const luData: LuData =
             await LuData.createLuData(
                 existingLuData.getContent(),
-                existingLuData.getFeaturizer());
+                existingLuData.getFeaturizer(),
+                toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
         const luJsonStructure: any =
             luData.getLuJsonStructure();
         const utterancesArray: any[] =
-            luData.retrieveLuUtterances(luData.luJsonStructure);
+            luData.retrieveLuUtterances(luJsonStructure);
         luJsonStructure.utterances = utterancesArray.filter(
             (value: any, index: number, array: any[]) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
-        luData.luUtterances = luData.retrieveLuUtterances(luData.luJsonStructure);
+        luData.luUtterances = luData.retrieveLuUtterances(luJsonStructure);
         // -------------------------------------------------------------------
         luData.intentInstanceIndexMapArray =
             luData.collectIntents(luData.luUtterances);
@@ -42,6 +44,11 @@ export class LuData extends Data {
             (entry: any) => entry.intent as string);
         luData.intentsUtterances.utterances = luData.luUtterances.map(
             (entry: any) => entry.text as string);
+        // -------------------------------------------------------------------
+        if (toResetFeaturizerLabelFeatureMaps) {
+            luData.resetFeaturizerLabelFeatureMaps();
+        }
+        // -------------------------------------------------------------------
         luData.featurizeIntentsUtterances();
         // -------------------------------------------------------------------
         return luData;
@@ -49,7 +56,8 @@ export class LuData extends Data {
 
     public static async createLuData(
         content: string,
-        featurizer: NgramSubwordFeaturizer): Promise<LuData> {
+        featurizer: NgramSubwordFeaturizer,
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<LuData> {
         // -------------------------------------------------------------------
         const luData: LuData =
             new LuData(featurizer);
@@ -61,7 +69,7 @@ export class LuData extends Data {
         luData.luJsonStructure =
             luData.luObject.LUISJsonStructure;
         // -------------------------------------------------------------------
-        luData.luUtterances = luData.retrieveLuUtterances(luData.luJsonStructure);
+        luData.luUtterances = luData.retrieveLuUtterances(luData.getLuJsonStructure());
         // -------------------------------------------------------------------
         luData.intentInstanceIndexMapArray =
             luData.collectIntents(luData.luUtterances);
@@ -71,6 +79,11 @@ export class LuData extends Data {
             (entry: any) => entry.intent as string);
         luData.intentsUtterances.utterances = luData.luUtterances.map(
             (entry: any) => entry.text as string);
+        // -------------------------------------------------------------------
+        if (toResetFeaturizerLabelFeatureMaps) {
+            luData.resetFeaturizerLabelFeatureMaps();
+        }
+        // -------------------------------------------------------------------
         luData.featurizeIntentsUtterances();
         // -------------------------------------------------------------------
         return luData;

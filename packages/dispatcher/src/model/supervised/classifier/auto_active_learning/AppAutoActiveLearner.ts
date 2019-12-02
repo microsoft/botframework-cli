@@ -51,7 +51,8 @@ export async function mainAutoActiveLearnerWithLuContent(
     const luData: LuData =
         await LuData.createLuData(
             luContent,
-            new NgramSubwordFeaturizer());
+            new NgramSubwordFeaturizer(),
+            true);
     // -----------------------------------------------------------------------
     const results =
         luData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
@@ -147,7 +148,8 @@ export async function mainAutoActiveLearnerWithLuContent(
         learned.learner;
     const newLuData: LuData = await LuData.createLuDataFromFilteringExistingLuDataUtterances(
         luData,
-        new Set<number>(aalSampledInstanceIndexArray));
+        new Set<number>(aalSampledInstanceIndexArray),
+        false);
     return { newLuData, learner };
     // -----------------------------------------------------------------------
 }
@@ -189,7 +191,8 @@ export function mainAutoActiveLearnerWithColumnarContent(
             new NgramSubwordFeaturizer(),
             labelColumnIndex,
             textColumnIndex,
-            linesToSkip);
+            linesToSkip,
+            true);
     // -----------------------------------------------------------------------
     const results =
         columnarData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
@@ -288,7 +291,8 @@ export function mainAutoActiveLearnerWithColumnarContent(
         labelColumnIndex,
         textColumnIndex,
         linesToSkip,
-        new Set<number>(aalSampledInstanceIndexArray));
+        new Set<number>(aalSampledInstanceIndexArray),
+        false);
     return { newColumnarData, learner };
     // -----------------------------------------------------------------------
 }
@@ -333,6 +337,7 @@ export async function mainAutoActiveLearner(): Promise<void> {
     parser.addArgument(
         ["-d", "--debug"],
         {
+            defaultValue: false,
             help: "enable printing debug information",
             required: false,
         },
@@ -459,6 +464,7 @@ export async function mainAutoActiveLearner(): Promise<void> {
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // console.dir(args);
+    // -----------------------------------------------------------------------
     const filename: string =
         args.filename;
     let outputFilename: string = args.outputFilename;
@@ -565,7 +571,7 @@ export async function mainAutoActiveLearner(): Promise<void> {
         const aalResult: {
             "newColumnarData": ColumnarData,
             "learner": SoftmaxRegressionSparse,
-            }  = mainAutoActiveLearnerWithColumnarContent(
+            } = mainAutoActiveLearnerWithColumnarContent(
             content,
             labelColumnIndex,
             textColumnIndex,
@@ -580,7 +586,7 @@ export async function mainAutoActiveLearner(): Promise<void> {
             learnerParameterL2Regularization,
             learnerParameterLossEarlyStopRatio,
             learnerParameterLearningRate,
-             learnerParameterToCalculateOverallLossAfterEpoch);
+            learnerParameterToCalculateOverallLossAfterEpoch);
         const columnarData: ColumnarData =
             aalResult.newColumnarData;
         const learner: SoftmaxRegressionSparse =

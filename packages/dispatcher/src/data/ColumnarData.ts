@@ -16,7 +16,8 @@ export class ColumnarData extends Data {
         labelColumnIndex: number,
         textColumnIndex: number,
         linesToSkip: number,
-        filteringIndexSet: Set<number>): ColumnarData {
+        filteringIndexSet: Set<number>,
+        toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
         // -------------------------------------------------------------------
         const columnarData: ColumnarData =
             ColumnarData.createColumnarData(
@@ -24,16 +25,18 @@ export class ColumnarData extends Data {
                 existingColumnarData.getFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
-                linesToSkip);
+                linesToSkip,
+                toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
         const utterancesArray: any[] =
-            columnarData.retrieveLuUtterances(columnarData.content);
+            columnarData.retrieveColumnarUtterances(columnarData.content);
         columnarData.luUtterances = utterancesArray.filter(
             (value: any, index: number, array: any[]) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
-        // columnarData.luUtterances = columnarData.retrieveLuUtterances(columnarData.content);
+        // columnarData.luUtterances =
+        //     columnarData.retrieveColumnarUtterances(columnarData.content);
         // -------------------------------------------------------------------
         columnarData.intentInstanceIndexMapArray =
             columnarData.collectIntents(columnarData.luUtterances);
@@ -43,6 +46,11 @@ export class ColumnarData extends Data {
             (entry: any) => entry.intent as string);
         columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
             (entry: any) => entry.text as string);
+        // -------------------------------------------------------------------
+        if (toResetFeaturizerLabelFeatureMaps) {
+            columnarData.resetFeaturizerLabelFeatureMaps();
+        }
+        // -------------------------------------------------------------------
         columnarData.featurizeIntentsUtterances();
         // -------------------------------------------------------------------
         return columnarData;
@@ -53,7 +61,8 @@ export class ColumnarData extends Data {
         featurizer: NgramSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
-        linesToSkip: number): ColumnarData {
+        linesToSkip: number,
+        toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
         // -------------------------------------------------------------------
         const columnarData: ColumnarData =
             new ColumnarData(
@@ -64,7 +73,7 @@ export class ColumnarData extends Data {
         columnarData.content =
             content;
         // -------------------------------------------------------------------
-        columnarData.luUtterances = columnarData.retrieveLuUtterances(content);
+        columnarData.luUtterances = columnarData.retrieveColumnarUtterances(content);
         // -------------------------------------------------------------------
         columnarData.intentInstanceIndexMapArray =
             columnarData.collectIntents(columnarData.luUtterances);
@@ -74,6 +83,11 @@ export class ColumnarData extends Data {
             (entry: any) => entry.intent as string);
         columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
             (entry: any) => entry.text as string);
+        // -------------------------------------------------------------------
+        if (toResetFeaturizerLabelFeatureMaps) {
+            columnarData.resetFeaturizerLabelFeatureMaps();
+        }
+        // -------------------------------------------------------------------
         columnarData.featurizeIntentsUtterances();
         // -------------------------------------------------------------------
         return columnarData;
@@ -97,16 +111,15 @@ export class ColumnarData extends Data {
         this.linesToSkip = linesToSkip;
     }
 
-    public retrieveLuUtterances(content: any): any[] {
+    public retrieveColumnarUtterances(content: any): any[] {
         const intentsUtterances: { "intents": string[], "utterances": string[] } =
             Utility.loadLabelTextColumnarContent(
-                content,             // ---- filename: string,
+                content,               // ---- filename: string,
                 this.getLabelColumnIndex(), // ---- labelColumnIndex: number = 0,
                 this.getTextColumnIndex(),  // ---- textColumnIndex: number = 1,
                 this.getLinesToSkip(), // ---- lineIndexToStart: number = 0,
                 "\t",                  // ---- columnDelimiter: string = "\t",
                 "\n",                  // ---- rowDelimiter: string = "\n",
-                "utf8",                // ---- encoding: string = "utf8",
                 -1,                    // ---- lineIndexToEnd: number = -1
             );
         const luUtterances: any[] = [];
@@ -114,11 +127,12 @@ export class ColumnarData extends Data {
         const utterances: string[] = intentsUtterances.utterances;
         for (let i = 0; i < intents.length; i++) {
             const intent: string = intents[i];
-            const utterance: string = utterances[i];
+            const text: string = utterances[i];
             const luUtterance: any = {
                 entities: [],
+                partOfSpeechTags: [],
                 intent,
-                text: utterance,
+                text,
             };
             luUtterances.push(luUtterance);
         }
@@ -146,6 +160,8 @@ export class ColumnarData extends Data {
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
+        // ==== NOTE-TODO ==== a ColumnarData source does not have a LU structure,
+        // ==== NOTE-TODO ==== need to develope a transform logic!
         // Utility.dumpFile(
         //     filename,
         //     JSON.stringify(
@@ -157,6 +173,8 @@ export class ColumnarData extends Data {
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
+        // ==== NOTE-TODO ==== a ColumnarData source does not have a LU JSON structure,
+        // ==== NOTE-TODO ==== need to develope a transform logic!
         // Utility.dumpFile(
         //     filename,
         //     JSON.stringify(

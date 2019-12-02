@@ -1491,7 +1491,6 @@ describe("Test Suite - utility/Utility", () => {
         const lineIndexToStart: number = 1;
         const columnDelimiter: string = "\t";
         const rowDelimiter: string = "\n";
-        const encoding: string = "utf8";
         const lineIndexToEnd: number = -1;
         const result: { "intents": string[], "utterances": string[] } =
             Utility.loadLabelTextColumnarContent(
@@ -1501,7 +1500,6 @@ describe("Test Suite - utility/Utility", () => {
                 lineIndexToStart,
                 columnDelimiter,
                 rowDelimiter,
-                encoding,
                 lineIndexToEnd);
         const intents: string[] =
             result.intents;
@@ -1513,7 +1511,92 @@ describe("Test Suite - utility/Utility", () => {
             `utterances.length=${utterances.length}`);
     });
 
-    it("Test.1100 loadFile()", function() {
+    it("Test.1100 loadEntityAnnotatedCorpusFile()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        Utility.debuggingLog(
+            `process.cwd()=${process.cwd()}`);
+        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.csv";
+        const lineIndexToStart: number = 1;
+        const columnDelimiter: string = ",";
+        const rowDelimiter: string = "\n";
+        const encoding: string = "utf8";
+        const lineIndexToEnd: number = -1;
+        const result: {
+            "ids": string[],
+            "wordArrays": string[][],
+            "partOfSpeechTagArrays": string[][],
+            "entityTagArrays": string[][] } =
+        Utility.loadEntityAnnotatedCorpusFile(
+            filename,
+            lineIndexToStart,
+            columnDelimiter,
+            rowDelimiter,
+            encoding,
+            lineIndexToEnd);
+        const ids: string[] =
+            result.ids;
+        const wordArrays: string[][] =
+            result.wordArrays;
+        const partOfSpeechTagArrays: string[][] =
+            result.partOfSpeechTagArrays;
+        const entityTagArrays: string[][] =
+            result.entityTagArrays;
+        Utility.debuggingLog(
+            `ids.length=${ids.length}`);
+        assert.ok(ids.length === 47959,
+            `ids.length=${ids.length}`);
+        assert.ok(wordArrays.length === 47959,
+            `wordArrays.length=${wordArrays.length}`);
+        assert.ok(partOfSpeechTagArrays.length === 47959,
+            `partOfSpeechTagArrays.length=${partOfSpeechTagArrays.length}`);
+        assert.ok(entityTagArrays.length === 47959,
+            `entityTagArrays.length=${entityTagArrays.length}`);
+    });
+    it("Test.1101 loadEntityAnnotatedCorpusContent()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        Utility.debuggingLog(
+            `process.cwd()=${process.cwd()}`);
+        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.csv";
+        const fileContent: string =
+            Utility.loadFile(filename);
+        const lineIndexToStart: number = 1;
+        const columnDelimiter: string = ",";
+        const rowDelimiter: string = "\n";
+        const lineIndexToEnd: number = -1;
+        const result: {
+            "ids": string[],
+            "wordArrays": string[][],
+            "partOfSpeechTagArrays": string[][],
+            "entityTagArrays": string[][] } =
+        Utility.loadEntityAnnotatedCorpusContent(
+            fileContent,
+            lineIndexToStart,
+            columnDelimiter,
+            rowDelimiter,
+            lineIndexToEnd);
+        const ids: string[] =
+            result.ids;
+        const wordArrays: string[][] =
+            result.wordArrays;
+        const partOfSpeechTagArrays: string[][] =
+            result.partOfSpeechTagArrays;
+        const entityTagArrays: string[][] =
+            result.entityTagArrays;
+        Utility.debuggingLog(
+            `ids.length=${ids.length}`);
+        assert.ok(ids.length === 47959,
+            `ids.length=${ids.length}`);
+        assert.ok(wordArrays.length === 47959,
+            `wordArrays.length=${wordArrays.length}`);
+        assert.ok(partOfSpeechTagArrays.length === 47959,
+            `partOfSpeechTagArrays.length=${partOfSpeechTagArrays.length}`);
+        assert.ok(entityTagArrays.length === 47959,
+            `entityTagArrays.length=${entityTagArrays.length}`);
+    });
+
+    it("Test.1200 loadFile()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
@@ -1526,7 +1609,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(fileContent.length === 25892,
             `fileContent.length=${fileContent.length}`);
     });
-    // ---- TODO ---- it("Test.1101 dumpFile()", function() {
+    // ---- TODO ---- it("Test.1201 dumpFile()", function() {
     // ---- TODO ----     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     // ---- TODO ----     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     // ---- TODO ----     Utility.debuggingLog(
@@ -1539,7 +1622,7 @@ describe("Test Suite - utility/Utility", () => {
     // ---- TODO ----     assert.ok(fileContent.length === 25892,
     // ---- TODO ----         `fileContent.length=${fileContent.length}`);
     // ---- TODO ---- });
-    it("Test.1102 exists()", function() {
+    it("Test.1202 exists()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
@@ -1550,7 +1633,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(fileExists,
             `filename=${filename}`);
     });
-    it("Test.1103 exists()", function() {
+    it("Test.1203 exists()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
@@ -1562,7 +1645,7 @@ describe("Test Suite - utility/Utility", () => {
             `filename=${filename}`);
     });
 
-    it("Test.1200 getObjectMd5Hash()", function() {
+    it("Test.1300 getObjectMd5Hash()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
@@ -1573,7 +1656,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(messageMd5Hash === "7959b2c4af2fd6d142ba32babd30ceb7",
             `messageMd5Hash=${messageMd5Hash}`);
     });
-    it("Test.1201 getStringMd5Hash()", function() {
+    it("Test.1301 getStringMd5Hash()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
@@ -1585,7 +1668,7 @@ describe("Test Suite - utility/Utility", () => {
             `messageMd5Hash=${messageMd5Hash}`);
     });
 
-    it("Test.1300 getPositiveObjectHashCode()", function() {
+    it("Test.1400 getPositiveObjectHashCode()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
@@ -1596,7 +1679,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(messageMd5Hash === 1064999089,
             `messageMd5Hash=${messageMd5Hash}`);
     });
-    it("Test.1301 getObjectHashCode()", function() {
+    it("Test.1401 getObjectHashCode()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
@@ -1607,7 +1690,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(messageMd5Hash === -1064999089,
             `messageMd5Hash=${messageMd5Hash}`);
     });
-    it("Test.1302 getPositiveStringHashCode()", function() {
+    it("Test.1402 getPositiveStringHashCode()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
@@ -1618,7 +1701,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(messageMd5Hash === 1498789909,
             `messageMd5Hash=${messageMd5Hash}`);
     });
-    it("Test.1303 getStringHashCode()", function() {
+    it("Test.1403 getStringHashCode()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
@@ -1630,7 +1713,7 @@ describe("Test Suite - utility/Utility", () => {
             `messageMd5Hash=${messageMd5Hash}`);
     });
 
-    it("Test.1400 isEmptyNumberF32I32U8Array()", function() {
+    it("Test.1500 isEmptyNumberF32I32U8Array()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: Float32Array = new Float32Array();
@@ -1639,7 +1722,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1401 isEmptyNumberF32I32U8Array()", function() {
+    it("Test.1501 isEmptyNumberF32I32U8Array()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: Float32Array = new Float32Array(1);
@@ -1648,7 +1731,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!isEmpty,
             `input=${input}`);
     });
-    it("Test.1402 isEmptyBooleanArrays()", function() {
+    it("Test.1502 isEmptyBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[][] = [];
@@ -1657,7 +1740,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1403 isEmptyBooleanArrays()", function() {
+    it("Test.1503 isEmptyBooleanArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[][] = [[false]];
@@ -1666,7 +1749,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!isEmpty,
             `input=${input}`);
     });
-    it("Test.1404 isEmptyNumberArrays()", function() {
+    it("Test.1504 isEmptyNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[][] = [];
@@ -1675,7 +1758,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1405 isEmptyNumberArrays()", function() {
+    it("Test.1505 isEmptyNumberArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[][] = [[0]];
@@ -1684,7 +1767,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!isEmpty,
             `input=${input}`);
     });
-    it("Test.1406 isEmptyArrays()", function() {
+    it("Test.1506 isEmptyArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[][] = [];
@@ -1693,7 +1776,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1407 isEmptyArrays()", function() {
+    it("Test.1507 isEmptyArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[][] = [["0" as any]];
@@ -1702,7 +1785,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!isEmpty,
             `input=${input}`);
     });
-    it("Test.1408 isEmptyBooleanArray()", function() {
+    it("Test.1508 isEmptyBooleanArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[] = [];
@@ -1711,7 +1794,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1409 isEmptyBooleanArray()", function() {
+    it("Test.1509 isEmptyBooleanArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[] = [false];
@@ -1720,7 +1803,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!isEmpty,
             `input=${input}`);
     });
-    it("Test.1410 isEmptyNumberArray()", function() {
+    it("Test.1510 isEmptyNumberArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[] = [];
@@ -1729,7 +1812,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1411 isEmptyNumberArray()", function() {
+    it("Test.1511 isEmptyNumberArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[] = [0];
@@ -1738,7 +1821,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!isEmpty,
             `input=${input}`);
     });
-    it("Test.1412 isEmptyArray()", function() {
+    it("Test.1512 isEmptyArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[] = [];
@@ -1747,7 +1830,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1413 isEmptyArray()", function() {
+    it("Test.1513 isEmptyArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[] = ["0" as any];
@@ -1756,7 +1839,25 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!isEmpty,
             `input=${input}`);
     });
-    it("Test.1414 isEmptyString()", function() {
+    it("Test.1514 isEmptyStringArray()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const input: string[] = [];
+        const isEmpty: boolean =
+            Utility.isEmptyStringArray(input);
+        assert.ok(isEmpty,
+            `input=${input}`);
+    });
+    it("Test.1515 isEmptyStringArray()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const input: string[] = ["0"];
+        const isEmpty: boolean =
+            Utility.isEmptyStringArray(input);
+        assert.ok(!isEmpty,
+            `input=${input}`);
+    });
+    it("Test.1516 isEmptyString()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "";
@@ -1765,7 +1866,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(isEmpty,
             `input=${input}`);
     });
-    it("Test.1415 isEmptyString()", function() {
+    it("Test.1517 isEmptyString()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "0";
@@ -1775,7 +1876,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
 
-    it("Test.1500 getSetLength()", function() {
+    it("Test.1600 getSetLength()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: Set<string> = new Set<string>(["0"]);
@@ -1784,7 +1885,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(length === 1,
             `input=${input}`);
     });
-    it("Test.1501 getMapLength()", function() {
+    it("Test.1601 getMapLength()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: { [id: string]: number } = {a: 0};
@@ -1794,7 +1895,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
 
-    it("Test.1600 getJsonStringified()", function() {
+    it("Test.1700 getJsonStringified()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["a"];
@@ -1806,7 +1907,7 @@ describe("Test Suite - utility/Utility", () => {
             `jsonStringified=${jsonStringified}`);
     });
 
-    it("Test.1700 debuggingLog()", function() {
+    it("Test.1800 debuggingLog()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["a"];
@@ -1818,7 +1919,7 @@ describe("Test Suite - utility/Utility", () => {
             `jsonStringified=${jsonStringified}`);
     });
 
-    it("Test.1800 debuggingThrow()", function() {
+    it("Test.1900 debuggingThrow()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.throws(
@@ -1828,7 +1929,7 @@ describe("Test Suite - utility/Utility", () => {
             });
     });
 
-    it("Test.1900 almostEqual()", function() {
+    it("Test.2000 almostEqual()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
@@ -1840,7 +1941,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(Utility.almostEqual(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1901 almostEqual()", function() {
+    it("Test.2001 almostEqual()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.001;
@@ -1852,7 +1953,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!Utility.almostEqual(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1902 almostEqualRough()", function() {
+    it("Test.2002 almostEqualRough()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.01;
@@ -1864,7 +1965,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(Utility.almostEqualRough(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1903 almostEqualRough()", function() {
+    it("Test.2003 almostEqualRough()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.1;
@@ -1876,7 +1977,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!Utility.almostEqualRough(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1904 getAlmostEqualPercentage()", function() {
+    it("Test.2004 getAlmostEqualPercentage()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
@@ -1890,7 +1991,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(Utility.almostEqual(almostEuqalPercentage, 0.00009998000399918915),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1905 almostEqualAbsolute()", function() {
+    it("Test.2005 almostEqualAbsolute()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
@@ -1902,7 +2003,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(Utility.almostEqualAbsolute(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1906 almostEqualAbsolute()", function() {
+    it("Test.2006 almostEqualAbsolute()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.001;
@@ -1914,7 +2015,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!Utility.almostEqualAbsolute(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1907 almostEqualAbsoluteRough()", function() {
+    it("Test.2007 almostEqualAbsoluteRough()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.001;
@@ -1926,7 +2027,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(Utility.almostEqualAbsoluteRough(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1908 almostEqualAbsoluteRough()", function() {
+    it("Test.2008 almostEqualAbsoluteRough()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.01;
@@ -1938,7 +2039,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(!Utility.almostEqualAbsoluteRough(number0, number1),
             `number0=${number0}, number1=${number1}`);
     });
-    it("Test.1909 getAlmostEqualAbsolute()", function() {
+    it("Test.2009 getAlmostEqualAbsolute()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
@@ -1953,84 +2054,97 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
 
-    it("Test.2000 toBoolean()", function() {
+    it("Test.2100 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean(true));
     });
-    it("Test.2001 toBoolean()", function() {
+    it("Test.2101 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("true"));
     });
-    it("Test.2002 toBoolean()", function() {
+    it("Test.2102 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean(1));
     });
-    it("Test.2003 toBoolean()", function() {
+    it("Test.2103 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("1"));
     });
-    it("Test.2004 toBoolean()", function() {
+    it("Test.2104 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("on"));
     });
-    it("Test.2005 toBoolean()", function() {
+    it("Test.2105 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("yes"));
     });
-    it("Test.2006 toBoolean()", function() {
+    it("Test.2106 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("positive"));
     });
-    it("Test.2007 toBoolean()", function() {
+    it("Test.2107 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean(false));
     });
-    it("Test.2008 toBoolean()", function() {
+    it("Test.2108 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("false"));
     });
-    it("Test.2009 toBoolean()", function() {
+    it("Test.2109 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean(0));
     });
-    it("Test.2010 toBoolean()", function() {
+    it("Test.2110 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("0"));
     });
-    it("Test.2011 toBoolean()", function() {
+    it("Test.2111 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("off"));
     });
-    it("Test.2012 toBoolean()", function() {
+    it("Test.2112 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("no"));
     });
-    it("Test.2013 toBoolean()", function() {
+    it("Test.2113 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("negative"));
     });
-    it("Test.2014 toBoolean()", function() {
+    it("Test.2114 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("TRUE"));
     });
-    it("Test.2015 toBoolean()", function() {
+    it("Test.2115 toBoolean()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("FALSE"));
+    });
+
+    it("Test.2200 iterableIteratorToArray()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const aMap: Map<string, string> = new Map<string, string>();
+        aMap.set("a", "0");
+        aMap.set("b", "0");
+        aMap.set("a", "0");
+        aMap.set("c", "0");
+        const anIterableIterator: IterableIterator<string> = aMap.keys();
+        const anArray: string[] = Utility.iterableIteratorToArray(anIterableIterator);
+        assert.ok(anArray.length === 3, `anArray.length=${anArray.length}`);
     });
 });

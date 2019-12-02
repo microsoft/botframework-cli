@@ -11,7 +11,7 @@ import { Utility } from "../../src/utility/Utility";
 
 import { UnitTestHelper } from "../utility/Utility.test";
 
-describe("Test Suite - data/app_columnar_data", () => {
+describe("Test Suite - data/AppColumnarData", () => {
     it("Test.0000 exampleFunctionData", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());

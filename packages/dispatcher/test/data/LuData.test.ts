@@ -746,7 +746,8 @@ export async function exampleFunctionDataWithLuContent(
     // -----------------------------------------------------------------------
     const luData: LuData = await LuData.createLuData(
         luContent,
-        new NgramSubwordFeaturizer());
+        new NgramSubwordFeaturizer(),
+        true);
     const luUtterances: any[] = luData.getLuUtterances();
     Utility.debuggingLog(`luJsonStructure=${Utility.getJsonStringified(luUtterances)}`);
     assert.ok(luUtterances, `luUtterances=${luUtterances}`);
@@ -884,7 +885,7 @@ export async function exampleFunctionDataWithLuContent(
     // -----------------------------------------------------------------------
 }
 
-describe("Test Suite - data/lu_data/LuData", () => {
+describe("Test Suite - data/LuData/LuData", () => {
     it("Test.0000 exampleFunctionDataWithLuContent()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());

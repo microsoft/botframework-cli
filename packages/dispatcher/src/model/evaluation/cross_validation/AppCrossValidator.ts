@@ -47,7 +47,8 @@ export async function mainCrossValidatorWithLuContent(
     const luData: LuData =
         await LuData.createLuData(
             luContent,
-            new NgramSubwordFeaturizer());
+            new NgramSubwordFeaturizer(),
+            true);
     // -----------------------------------------------------------------------
     // const results =
     //     luData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
@@ -172,7 +173,8 @@ export function mainCrossValidatorWithColumnarContent(
             new NgramSubwordFeaturizer(),
             labelColumnIndex,
             textColumnIndex,
-            linesToSkip);
+            linesToSkip,
+            true);
     // -----------------------------------------------------------------------
     // const results =
     //     columnarData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
@@ -275,7 +277,7 @@ export async function mainCrossValidator(): Promise<void> {
     // -----------------------------------------------------------------------
     const parser = new ArgumentParser({
         addHelp: true,
-        description: "app_cross_validator",
+        description: "AppCrossValidator",
         version: "0.0.1",
     });
     parser.addArgument(
@@ -411,6 +413,7 @@ export async function mainCrossValidator(): Promise<void> {
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // console.dir(args);
+    // -----------------------------------------------------------------------
     const filename: string =
         args.filename;
     if (!Utility.exists(filename)) {
@@ -461,8 +464,9 @@ export async function mainCrossValidator(): Promise<void> {
     //     args.outputModelFilename;
     const content: string =
         Utility.loadFile(filename);
+    let confusionMatrixCrossValidation: ConfusionMatrix;
     if (filename.endsWith(".lu")) {
-        const confusionMatrixCrossValidation: ConfusionMatrix =
+        confusionMatrixCrossValidation =
             await mainCrossValidatorWithLuContent(
                 content,
                 numberOfCrossValidationFolds,
@@ -488,7 +492,7 @@ export async function mainCrossValidator(): Promise<void> {
             `textColumnIndex=${textColumnIndex}`);
         Utility.debuggingLog(
             `linesToSkip=${linesToSkip}`);
-        const confusionMatrixCrossValidation: ConfusionMatrix =
+        confusionMatrixCrossValidation =
             mainCrossValidatorWithColumnarContent(
                 content,
                 labelColumnIndex,
@@ -502,27 +506,27 @@ export async function mainCrossValidator(): Promise<void> {
                 learnerParameterLossEarlyStopRatio,
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
-        const confusionMatrixMetricStructure: { "confusionMatrix": ConfusionMatrix,
-            "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
-            "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
-            "macroAverageMetrics": { "averagePrecision": number,
-                                     "averageRecall": number,
-                                     "averageF1Score": number,
-                                     "totalMacroAverage": number },
-            "microAverageMetrics": { "accuracy": number,
-                                     "truePositives": number,
-                                     "totalMicroAverage": number },
-            "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                     "weightedAverageRecall": number,
-                                     "weightedAverageF1Score": number,
-                                     "weightedTotalMacroAverage": number } } =
-            ConfusionMatrix.generateConfusionMatrixMetricStructure(
-                confusionMatrixCrossValidation);
-        if (!Utility.isEmptyString(outputFilename)) {
-            Utility.dumpFile(
-                outputFilename,
-                JSON.stringify(confusionMatrixMetricStructure, undefined, 4));
-        }
+    }
+    const confusionMatrixMetricStructure: { "confusionMatrix": ConfusionMatrix,
+        "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
+        "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
+        "macroAverageMetrics": { "averagePrecision": number,
+                                 "averageRecall": number,
+                                 "averageF1Score": number,
+                                 "totalMacroAverage": number },
+        "microAverageMetrics": { "accuracy": number,
+                                 "truePositives": number,
+                                 "totalMicroAverage": number },
+        "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
+                                 "weightedAverageRecall": number,
+                                 "weightedAverageF1Score": number,
+                                 "weightedTotalMacroAverage": number } } =
+        ConfusionMatrix.generateConfusionMatrixMetricStructure(
+            confusionMatrixCrossValidation);
+    if (!Utility.isEmptyString(outputFilename)) {
+        Utility.dumpFile(
+            outputFilename,
+            JSON.stringify(confusionMatrixMetricStructure, undefined, 4));
     }
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();

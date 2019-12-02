@@ -15,7 +15,7 @@ export async function exampleFunctionData(): Promise<void> {
     // -----------------------------------------------------------------------
     const parser = new ArgumentParser({
         addHelp: true,
-        description: "app_lu_data",
+        description: "AppLuData",
         version: "0.0.1",
     });
     parser.addArgument(
@@ -61,7 +61,8 @@ export async function exampleFunctionData(): Promise<void> {
     const luContent: string = Utility.loadFile(filename);
     const luData: LuData = await LuData.createLuData(
         luContent,
-        new NgramSubwordFeaturizer());
+        new NgramSubwordFeaturizer(),
+        true);
     luData.dumpLuJsonStructure(outputFilename, undefined, 4);
     // -----------------------------------------------------------------------
 }

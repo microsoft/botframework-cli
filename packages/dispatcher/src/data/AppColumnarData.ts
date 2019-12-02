@@ -17,7 +17,7 @@ export function exampleFunctionData(): ColumnarData {
     // -----------------------------------------------------------------------
     const parser = new ArgumentParser({
         addHelp: true,
-        description: "app_columnar_data",
+        description: "AppColumnarData",
         version: "0.0.1",
     });
     parser.addArgument(
@@ -93,7 +93,8 @@ export function exampleFunctionData(): ColumnarData {
         new NgramSubwordFeaturizer(),
         labelColumnIndex,
         textColumnIndex,
-        linesToSkips);
+        linesToSkips,
+        true);
     // columnarData.dumpLuJsonStructure(outputFilename);
     return columnarData;
     // -----------------------------------------------------------------------

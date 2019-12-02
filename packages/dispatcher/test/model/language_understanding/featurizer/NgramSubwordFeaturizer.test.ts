@@ -19,20 +19,25 @@ function getNgramSubwordFeaturizerForUnitTests(
     subwordNgramBegin: number = 3,
     subwordNgramEnd: number = 4,
     toLowercase: boolean = true,
-    toRemovePunctuation: boolean = false,
+    toRemovePunctuations: boolean = false,
+    toRemoveEmptyElements: boolean = true,
+    splitDelimiter: string = " ",
     numberHashingFeaturesSetting: number = 0): NgramSubwordFeaturizer {
     const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer(
         subwordNgramBegin,
         subwordNgramEnd,
         toLowercase,
-        toRemovePunctuation,
+        toRemovePunctuations,
+        toRemoveEmptyElements,
+        splitDelimiter,
         numberHashingFeaturesSetting);
     const columnarData: ColumnarData = ColumnarData.createColumnarData(
         ColumnarContentEmail,
         featurizer,
         0,
         2,
-        1);
+        1,
+        true);
     return featurizer;
 }
 
@@ -40,20 +45,25 @@ function getHashingNgramSubwordFeaturizerForUnitTests(
     subwordNgramBegin: number = 3,
     subwordNgramEnd: number = 4,
     toLowercase: boolean = true,
-    toRemovePunctuation: boolean = false,
+    toRemovePunctuations: boolean = false,
+    toRemoveEmptyElements: boolean  = true,
+    splitDelimiter: string = " ",
     numberHashingFeaturesSetting: number = 1024): NgramSubwordFeaturizer {
     const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer(
         subwordNgramBegin,
         subwordNgramEnd,
         toLowercase,
-        toRemovePunctuation,
+        toRemovePunctuations,
+        toRemoveEmptyElements,
+        splitDelimiter,
         numberHashingFeaturesSetting);
     const columnarData: ColumnarData = ColumnarData.createColumnarData(
         ColumnarContentEmail,
         featurizer,
         0,
         2,
-        1);
+        1,
+        true);
     return featurizer;
 }
 
@@ -923,20 +933,25 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         const subwordNgramBegin: number = 3;
         const subwordNgramEnd: number = 4;
         const toLowercase: boolean = true;
-        const toRemovePunctuation: boolean = false;
+        const toRemovePunctuations: boolean = false;
+        const toRemoveEmptyElements: boolean = true;
+        const splitDelimiter: string = " ";
         const numberHashingFeaturesSetting: number = 0;
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer(
             subwordNgramBegin,
             subwordNgramEnd,
             toLowercase,
-            toRemovePunctuation,
+            toRemovePunctuations,
+            toRemoveEmptyElements,
+            splitDelimiter,
             numberHashingFeaturesSetting);
         const columnarData: ColumnarData = ColumnarData.createColumnarData(
             ColumnarContentEmail,
             featurizer,
             0,
             2,
-            1);
+            1,
+            true);
     });
 
     it("Test.2700 serializeToJsonString()", function() {
@@ -945,20 +960,25 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         const subwordNgramBegin: number = 3;
         const subwordNgramEnd: number = 4;
         const toLowercase: boolean = true;
-        const toRemovePunctuation: boolean = false;
+        const toRemovePunctuations: boolean = false;
+        const toRemoveEmptyElements: boolean = true;
+        const splitDelimiter: string = " ";
         const numberHashingFeaturesSetting: number = 0;
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer(
             subwordNgramBegin,
             subwordNgramEnd,
             toLowercase,
-            toRemovePunctuation,
+            toRemovePunctuations,
+            toRemoveEmptyElements,
+            splitDelimiter,
             numberHashingFeaturesSetting);
         const columnarData: ColumnarData = ColumnarData.createColumnarData(
             ColumnarContentEmail,
             featurizer,
             0,
             2,
-            1);
+            1,
+            true);
         const serializedJsonString: string = featurizer.serializeToJsonString(undefined, 4);
         Utility.debuggingLog(
             `serializedJsonString=${serializedJsonString}`);
@@ -970,20 +990,25 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         const subwordNgramBegin: number = 3;
         const subwordNgramEnd: number = 4;
         const toLowercase: boolean = true;
-        const toRemovePunctuation: boolean = false;
+        const toRemovePunctuations: boolean = false;
+        const toRemoveEmptyElements: boolean = true;
+        const splitDelimiter: string = " ";
         const numberHashingFeaturesSetting: number = 0;
         const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer(
             subwordNgramBegin,
             subwordNgramEnd,
             toLowercase,
-            toRemovePunctuation,
+            toRemovePunctuations,
+            toRemoveEmptyElements,
+            splitDelimiter,
             numberHashingFeaturesSetting);
         const columnarData: ColumnarData = ColumnarData.createColumnarData(
             ColumnarContentEmail,
             featurizer,
             0,
             2,
-            1);
+            1,
+            true);
         const serializedJsonString: string = featurizer.serializeToJsonString(undefined, 4);
         Utility.debuggingLog(
             `serializedJsonString=${serializedJsonString}`);

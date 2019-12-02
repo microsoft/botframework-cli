@@ -17,6 +17,216 @@ export class Utility {
     public static epsilon: number = 0.0001;
     public static epsilonRough: number = 0.01;
 
+    public static readonly LanguageTokenPunctuationDelimiters: string[] = [
+        // ---- // ---- "\0",
+        // ---- // ---- "\u0001",
+        // ---- // ---- "\u0002",
+        // ---- // ---- "\u0003",
+        // ---- // ---- "\u0004",
+        // ---- // ---- "\u0005",
+        // ---- // ---- "\u0006",
+        // ---- // ---- "\a",
+        // ---- // ---- "\b",
+        // ---- // ---- "\t",
+        // ---- // ---- "\n",
+        // ---- // ---- "\v",
+        // ---- // ---- "\f",
+        // ---- // ---- "\r",
+        // ---- // ---- "\u000E",
+        // ---- // ---- "\u000F",
+        // ---- // ---- "\u0010",
+        // ---- // ---- "\u0011",
+        // ---- // ---- "\u0012",
+        // ---- // ---- "\u0013",
+        // ---- // ---- "\u0014",
+        // ---- // ---- "\u0015",
+        // ---- // ---- "\u0016",
+        // ---- // ---- "\u0017",
+        // ---- // ---- "\u0018",
+        // ---- // ---- "\u0019",
+        // ---- // ---- "\u001A",
+        // ---- // ---- "\u001B",
+        // ---- // ---- "\u001C",
+        // ---- // ---- "\u001D",
+        // ---- // ---- "\u001E",
+        // ---- // ---- "\u001F",
+        // ---- // ---- " ",
+        "!",
+        "\"",
+        "#",
+        "$",
+        "%",
+        "&",
+        "\"",
+        "(",
+        ")",
+        "*",
+        "+",
+        ",",
+        "-",
+        ".",
+        "/",
+        ":",
+        ";",
+        "<",
+        "=",
+        ">",
+        "?",
+        "@",
+        "[",
+        "\\",
+        "]",
+        "^",
+        "`",
+        "{",
+        "|",
+        "}",
+        "~",
+        // ---- // ---- "\u007F"
+    ];
+
+    public static readonly LanguageTokenPunctuationDelimitersSet: Set<string> =
+        new Set(Utility.LanguageTokenPunctuationDelimiters);
+
+    public static readonly LanguageTokenPunctuationReplacementDelimiters: string[] = [
+        // ---- // ---- " \0 ",
+        // ---- // ---- " \u0001 ",
+        // ---- // ---- " \u0002 ",
+        // ---- // ---- " \u0003 ",
+        // ---- // ---- " \u0004 ",
+        // ---- // ---- " \u0005 ",
+        // ---- // ---- " \u0006 ",
+        // ---- // ---- " \a ",
+        // ---- // ---- " \b ",
+        // ---- // ---- " \t ",
+        // ---- // ---- " \n ",
+        // ---- // ---- " \v ",
+        // ---- // ---- " \f ",
+        // ---- // ---- " \r ",
+        // ---- // ---- " \u000E ",
+        // ---- // ---- " \u000F ",
+        // ---- // ---- " \u0010 ",
+        // ---- // ---- " \u0011 ",
+        // ---- // ---- " \u0012 ",
+        // ---- // ---- " \u0013 ",
+        // ---- // ---- " \u0014 ",
+        // ---- // ---- " \u0015 ",
+        // ---- // ---- " \u0016 ",
+        // ---- // ---- " \u0017 ",
+        // ---- // ---- " \u0018 ",
+        // ---- // ---- " \u0019 ",
+        // ---- // ---- " \u001A ",
+        // ---- // ---- " \u001B ",
+        // ---- // ---- " \u001C ",
+        // ---- // ---- " \u001D ",
+        // ---- // ---- " \u001E ",
+        // ---- // ---- " \u001F ",
+        // ---- // ---- " ",
+        " ! ",
+        " \" ",
+        " # ",
+        " $ ",
+        " % ",
+        " & ",
+        " \" ",
+        " ( ",
+        " ) ",
+        " * ",
+        " + ",
+        " , ",
+        " - ",
+        " . ",
+        " / ",
+        " : ",
+        " ; ",
+        " < ",
+        " = ",
+        " > ",
+        " ? ",
+        " @ ",
+        " [ ",
+        " \\ ",
+        " ] ",
+        " ^ ",
+        " ` ",
+        " { ",
+        " | ",
+        " } ",
+        " ~ ",
+        // ---- // ---- " \u007F "
+    ];
+
+    public static readonly LanguageTokenSpaceDelimiters: string[] = [
+        "\0",
+        "\u0001",
+        "\u0002",
+        "\u0003",
+        "\u0004",
+        "\u0005",
+        "\u0006",
+        "\a",
+        "\b",
+        "\t",
+        "\n",
+        "\v",
+        "\f",
+        "\r",
+        "\u000E",
+        "\u000F",
+        "\u0010",
+        "\u0011",
+        "\u0012",
+        "\u0013",
+        "\u0014",
+        "\u0015",
+        "\u0016",
+        "\u0017",
+        "\u0018",
+        "\u0019",
+        "\u001A",
+        "\u001B",
+        "\u001C",
+        "\u001D",
+        "\u001E",
+        "\u001F",
+        " ",
+        // ---- // ---- "!",
+        // ---- // ---- "\"",
+        // ---- // ---- "#",
+        // ---- // ---- "$",
+        // ---- // ---- "%",
+        // ---- // ---- "&",
+        // ---- // ---- "\"",
+        // ---- // ---- "(",
+        // ---- // ---- ")",
+        // ---- // ---- "*",
+        // ---- // ---- "+",
+        // ---- // ---- ",",
+        // ---- // ---- "-",
+        // ---- // ---- ".",
+        // ---- // ---- "/",
+        // ---- // ---- ":",
+        // ---- // ---- ";",
+        // ---- // ---- "<",
+        // ---- // ---- "=",
+        // ---- // ---- ">",
+        // ---- // ---- "?",
+        // ---- // ---- "@",
+        // ---- // ---- "[",
+        // ---- // ---- "\\",
+        // ---- // ---- "]",
+        // ---- // ---- "^",
+        // ---- // ---- "`",
+        // ---- // ---- "{",
+        // ---- // ---- "|",
+        // ---- // ---- "}",
+        // ---- // ---- "~",
+        "\u007F",
+    ];
+
+    public static LanguageTokenSpaceDelimitersSet: Set<string> =
+        new Set(Utility.LanguageTokenSpaceDelimiters);
+
     public static incrementKeyValueNumberMap<K>(
         keyNumberMap: Map<K, number>,
         key: K,
@@ -653,6 +863,9 @@ export class Utility {
         rowDelimiter: string = "\n",
         encoding: string = "utf8",
         lineIndexToEnd: number = -1): { "intents": string[], "utterances": string[] } {
+        if (encoding == null) {
+            encoding = "utf8";
+        }
         const fileContent: string = Utility.loadFile(
             filename,
             encoding);
@@ -663,7 +876,6 @@ export class Utility {
             lineIndexToStart,
             columnDelimiter,
             rowDelimiter,
-            encoding,
             lineIndexToEnd);
     }
     public static loadLabelTextColumnarContent(
@@ -673,7 +885,6 @@ export class Utility {
         lineIndexToStart: number = 0,
         columnDelimiter: string = "\t",
         rowDelimiter: string = "\n",
-        encoding: string = "utf8",
         lineIndexToEnd: number = -1):
         { "intents": string[], "utterances": string[] } {
         if (labelColumnIndex < 0) {
@@ -690,9 +901,6 @@ export class Utility {
         }
         if (rowDelimiter == null) {
             rowDelimiter = "\n";
-        }
-        if (encoding == null) {
-            encoding = "utf8";
         }
         const intents: string[] = [];
         const utterances: string[] = [];
@@ -728,6 +936,307 @@ export class Utility {
             utterances.push(utterance);
         }
         return { intents, utterances };
+    }
+
+    public static luUtterancesToEntityAnnotatedCorpusTypes(
+        luUtterances: any[],
+        utteranceReconstructionDelimiter: string = " ",
+        defaultEntityTag: string = "O",
+        defaultPartOfSpeechTag: string = "",
+        useIntentForId: boolean = false): {
+            "ids": string[],
+            "wordArrays": string[][],
+            "partOfSpeechTagArrays": string[][],
+            "entityTagArrays": string[][] } {
+        const ids: string[] = [];
+        const wordArrays: string[][] = [];
+        const partOfSpeechTagArrays: string[][] = [];
+        const entityTagArrays: string[][] = [];
+        const numberInstances = luUtterances.length;
+        for (let index: number = 0; index < numberInstances; index++) {
+            const luUtterance: any = luUtterances[index];
+            const text: string = luUtterance.text;
+            const intent: string = luUtterance.intent;
+            const entities: any[] = luUtterance.entities;
+            const partOfSpeechTags: any[] = luUtterance.partOfSpeechTags;
+            if (useIntentForId) {
+                ids.push(intent);
+            } else {
+                ids.push(index.toString());
+            }
+            const wordArray: string[] = Utility.splitByPunctuation(
+                text,
+                utteranceReconstructionDelimiter);
+            wordArrays.push(wordArray);
+            const numberWords: number = wordArrays.length;
+            const entityTagArray: string[] = [];
+            if (!Utility.isEmptyArrays(entities)) {
+                let utteranceCurrentIndex: number = 0;
+                for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
+                    const wordCurrent: string = wordArray[wordIndex];
+                    const currentWordInUtteranceIndex: number = text.substr(utteranceCurrentIndex).indexOf(wordCurrent);
+                    const currentWordInUtteranceIndexEnd: number = currentWordInUtteranceIndex + wordCurrent.length;
+                    let wordEntityTag: string = defaultEntityTag;
+                    for (const entity of entities) {
+                        const entityTag: string = entity.entity;
+                        const entityStartPos: number  = entity.startPos;
+                        const entityEndPos: number  = entity.endPos;
+                        if ((currentWordInUtteranceIndex >= entityStartPos) &&
+                            (currentWordInUtteranceIndexEnd <= entityEndPos)) {
+                            wordEntityTag = entityTag;
+                            break;
+                        }
+                    }
+                    entityTagArray.push(wordEntityTag);
+                    utteranceCurrentIndex = currentWordInUtteranceIndexEnd;
+                }
+            }
+            entityTagArrays.push(entityTagArray);
+            const partOfSpeechTagArray: string[] = [];
+            if (!Utility.isEmptyArrays(partOfSpeechTags)) {
+                let utteranceCurrentIndex: number = 0;
+                for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
+                    const wordCurrent: string = wordArray[wordIndex];
+                    const currentWordInUtteranceIndex: number = text.substr(utteranceCurrentIndex).indexOf(wordCurrent);
+                    const currentWordInUtteranceIndexEnd: number = currentWordInUtteranceIndex + wordCurrent.length;
+                    let wordPartOfSpeechTag: string = defaultPartOfSpeechTag;
+                    for (const partOfSpeechTag of partOfSpeechTags) {
+                        const partOfSpeechTagString: string = partOfSpeechTag.partOfSpeechTag;
+                        const partOfSpeechStartPos: number  = partOfSpeechTag.startPos;
+                        const partOfSpeechEndPos: number  = partOfSpeechTag.endPos;
+                        if ((currentWordInUtteranceIndex >= partOfSpeechStartPos) &&
+                            (currentWordInUtteranceIndexEnd <= partOfSpeechEndPos)) {
+                            wordPartOfSpeechTag = partOfSpeechTagString;
+                            break;
+                        }
+                    }
+                    partOfSpeechTagArray.push(wordPartOfSpeechTag);
+                    utteranceCurrentIndex = currentWordInUtteranceIndexEnd;
+                }
+            }
+            partOfSpeechTagArrays.push(partOfSpeechTagArray);
+        }
+        return {ids, wordArrays, partOfSpeechTagArrays, entityTagArrays};
+    }
+    public static entityAnnotatedCorpusTypesToEntityAnnotatedCorpusUtterances(
+        entityAnnotatedCorpusTypes: {
+            "ids": string[],
+            "wordArrays": string[][],
+            "partOfSpeechTagArrays": string[][],
+            "entityTagArrays": string[][] },
+        includePartOfSpeechTagTagAsEntities: boolean = true,
+        utteranceReconstructionDelimiter: string = " ",
+        defaultEntityTag: string = "O",
+        useIdForIntent: boolean = true): any[] {
+        if (Utility.isEmptyString(utteranceReconstructionDelimiter)) {
+            utteranceReconstructionDelimiter = " ";
+        }
+        const utteranceReconstructionDelimiterLength: number = utteranceReconstructionDelimiter.length;
+        const ids: string[] = entityAnnotatedCorpusTypes.ids;
+        const wordArrays: string[][] = entityAnnotatedCorpusTypes.wordArrays;
+        const partOfSpeechTagArrays: string[][] = entityAnnotatedCorpusTypes.partOfSpeechTagArrays;
+        const entityTagArrays: string[][] = entityAnnotatedCorpusTypes.entityTagArrays;
+        if (Utility.isEmptyStringArray(ids)) {
+            Utility.debuggingThrow("ids is empty");
+        }
+        if (Utility.isEmptyArray(wordArrays)) {
+            Utility.debuggingThrow("wordArrays is empty");
+        }
+        if (includePartOfSpeechTagTagAsEntities) {
+            if (Utility.isEmptyArray(partOfSpeechTagArrays)) {
+                Utility.debuggingThrow("partOfSpeechTagArrays is empty");
+            }
+        }
+        if (Utility.isEmptyArray(entityTagArrays)) {
+            Utility.debuggingThrow("entityTagArrays is empty");
+        }
+        const numberInstances: number = ids.length;
+        if (wordArrays.length !== numberInstances) {
+            Utility.debuggingThrow(
+                `wordArrays.length|${wordArrays.length}|!==numberInstances|${numberInstances}|`);
+        }
+        if (includePartOfSpeechTagTagAsEntities) {
+            if (partOfSpeechTagArrays.length !== numberInstances) {
+            Utility.debuggingThrow(`partOfSpeechTagArrays.length|${partOfSpeechTagArrays.length}|!==numberInstances|${numberInstances}|`);
+            }
+        }
+        if (entityTagArrays.length !== numberInstances) {
+            Utility.debuggingThrow(
+                `entityTagArrays.length|${entityTagArrays.length}|!==numberInstances|${numberInstances}|`);
+        }
+        const luUtterances: any[] = [];
+        for (let index: number = 0; index < numberInstances; index++) {
+            let intent = "";
+            const id: string = ids[index];
+            if (useIdForIntent) {
+                intent = id;
+            }
+            const wordArray: string[] = wordArrays[index];
+            const numberWords: number = wordArray.length;
+            let partOfSpeechTagArray: string[] = [];
+            if (includePartOfSpeechTagTagAsEntities) {
+                partOfSpeechTagArray = partOfSpeechTagArrays[index];
+                if (partOfSpeechTagArray.length !== numberWords) {
+                    Utility.debuggingThrow(
+                        `partOfSpeechTagArray.length|${partOfSpeechTagArray.length}|!==numberWords|${numberWords}|`);
+                }
+            }
+            const entityTagArray: string[] = entityTagArrays[index];
+            if (entityTagArray.length !== numberWords) {
+                Utility.debuggingThrow(
+                    `entityTagArray.length|${entityTagArray.length}|!==numberWords|${numberWords}|`);
+            }
+            const text: string = wordArray.join(utteranceReconstructionDelimiter);
+            const entities: any[] = [];
+            {
+                let currentUtteranceBeginIndex: number = 0;
+                for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
+                    const word: string = wordArray[wordIndex];
+                    const wordLength: number = word.length;
+                    const currentUtteranceEndIndex: number = currentUtteranceBeginIndex + wordLength;
+                    {
+                        const entityTag = entityTagArray[wordIndex];
+                        if (entityTag !== defaultEntityTag) {
+                            const entityStructure: any = {
+                                entity: entityTag,
+                                startPos: currentUtteranceBeginIndex,
+                                endPos: currentUtteranceEndIndex,
+                            };
+                            entities.push(entityStructure);
+                        }
+                    }
+                    currentUtteranceBeginIndex = currentUtteranceEndIndex + utteranceReconstructionDelimiterLength;
+                }
+            }
+            const partOfSpeechTags: any[] = [];
+            if (includePartOfSpeechTagTagAsEntities) {
+                let currentUtteranceBeginIndex: number = 0;
+                for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
+                    const word: string = wordArray[wordIndex];
+                    const wordLength: number = word.length;
+                    const currentUtteranceEndIndex: number = currentUtteranceBeginIndex + wordLength;
+                    const partOfSpeechTag: string = partOfSpeechTagArray[wordIndex];
+                    const partOfSpeechStructure: any = {
+                        partOfSpeechTag,
+                        startPos: currentUtteranceBeginIndex,
+                        endPos: currentUtteranceEndIndex,
+                    };
+                    partOfSpeechTags.push(partOfSpeechStructure);
+                    currentUtteranceBeginIndex = currentUtteranceEndIndex + utteranceReconstructionDelimiterLength;
+                }
+            }
+            const luUtterance: any = {
+                entities,
+                partOfSpeechTags,
+                intent,
+                text,
+            };
+            luUtterances.push(luUtterance);
+        }
+        return luUtterances;
+    }
+
+    public static loadEntityAnnotatedCorpusFile(
+        filename: string,
+        lineIndexToStart: number = 0,
+        columnDelimiter: string = ",",
+        rowDelimiter: string = "\n",
+        encoding: string = "utf8",
+        lineIndexToEnd: number = -1): {
+            "ids": string[],
+            "wordArrays": string[][],
+            "partOfSpeechTagArrays": string[][],
+            "entityTagArrays": string[][] } {
+        if (encoding == null) {
+            encoding = "utf8";
+        }
+        const fileContent: string = Utility.loadFile(
+            filename,
+            encoding);
+        return Utility.loadEntityAnnotatedCorpusContent(
+            fileContent,
+            lineIndexToStart,
+            columnDelimiter,
+            rowDelimiter,
+            lineIndexToEnd);
+    }
+    public static loadEntityAnnotatedCorpusContent(
+        fileContent: string,
+        lineIndexToStart: number = 1,
+        columnDelimiter: string = ",",
+        rowDelimiter: string = "\n",
+        lineIndexToEnd: number = -1): {
+            "ids": string[],
+            "wordArrays": string[][],
+            "partOfSpeechTagArrays": string[][],
+            "entityTagArrays": string[][] } {
+        if (lineIndexToStart < 0) {
+            lineIndexToStart = 0;
+        }
+        if (columnDelimiter == null) {
+            columnDelimiter = ",";
+        }
+        if (rowDelimiter == null) {
+            rowDelimiter = "\n";
+        }
+        const ids: string[] = [];
+        const wordArrays: string[][] = [];
+        const partOfSpeechTagArrays: string[][] = [];
+        const entityTagArrays: string[][] = [];
+        let currentId: string = "";
+        let currentWordArray: string[] = [];
+        let currentPartOfSpeechTagArray: string[] = [];
+        let currentTagArray: string[] = [];
+        let isFirst: boolean = true;
+        const fileLines: string[] = fileContent.split(rowDelimiter);
+        for (let lineIndex = lineIndexToStart;
+            (lineIndex < fileLines.length) && ((lineIndexToEnd < 0) || (lineIndex < lineIndexToEnd));
+            lineIndex++) {
+            const line: string = fileLines[lineIndex].trim();
+            if (Utility.isEmptyString(line)) {
+                continue;
+            }
+            const lineColumns: string[] = Utility.splitStringWithColumnDelimitersFilteredByQuotingDelimiters(
+                line,
+                columnDelimiter,
+                "\"");
+            if (lineColumns.length !== 4) {
+                Utility.debuggingThrow(
+                    `lineColumns.length|${lineColumns.length}|!=4` +
+                    `,line=$${line}$` +
+                    `,lineColumns=$${JSON.stringify(lineColumns)}$`);
+            }
+            const id: string = lineColumns[0];
+            const word: string  = lineColumns[1];
+            const partOfSpeechTag: string  = lineColumns[2];
+            const entityTag: string  = lineColumns[3];
+            const isIdEmpty: boolean = Utility.isEmptyString(id);
+            if (isIdEmpty) {
+                currentWordArray.push(word);
+                currentPartOfSpeechTagArray.push(partOfSpeechTag);
+                currentTagArray.push(entityTag);
+            } else {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    ids.push(currentId);
+                    wordArrays.push(currentWordArray);
+                    partOfSpeechTagArrays.push(currentPartOfSpeechTagArray);
+                    entityTagArrays.push(currentTagArray);
+                }
+                currentId = id;
+                currentWordArray = [word];
+                currentPartOfSpeechTagArray = [partOfSpeechTag];
+                currentTagArray = [entityTag];
+            }
+        }
+        if (!Utility.isEmptyString(currentId)) {
+            ids.push(currentId);
+            wordArrays.push(currentWordArray);
+            partOfSpeechTagArrays.push(currentPartOfSpeechTagArray);
+            entityTagArrays.push(currentTagArray);
+        }
+        return {ids, wordArrays, partOfSpeechTagArrays, entityTagArrays};
     }
 
     public static loadFile(
@@ -808,6 +1317,9 @@ export class Utility {
         return !(inputArray && inputArray.length > 0);
     }
     public static isEmptyNumberArray(inputArray: number[]): boolean {
+        return !(inputArray && inputArray.length > 0);
+    }
+    public static isEmptyStringArray(inputArray: string[]): boolean {
         return !(inputArray && inputArray.length > 0);
     }
     public static isEmptyArray(inputArray: object[]): boolean {
@@ -903,6 +1415,160 @@ export class Utility {
             default:
                 return false;
         }
+    }
+
+    public static splitByPunctuation(
+        input: string,
+        splitDelimiter: string = " ",
+        toRemoveEmptyElements: boolean = true): string[] {
+        const delimiters: string[] = Utility.LanguageTokenPunctuationDelimiters;
+        const replacementDelimiters: string[] = Utility.LanguageTokenPunctuationReplacementDelimiters;
+        const numberDelimiters: number = delimiters.length;
+        for (let i = 0; i < numberDelimiters; i++) {
+            input = input.replace(delimiters[i], replacementDelimiters[i]);
+        }
+        let result: string[] = input.split(splitDelimiter);
+        if (toRemoveEmptyElements) {
+            result = result.filter((element: string) => {
+                return (element && (element !== ""));
+            });
+        }
+        return result;
+    }
+
+    public static iterableIteratorToArray<K>(iterator: IterableIterator<K>): K[] {
+        const anArray: K[] = [];
+        for (const element of iterator) {
+            anArray.push(element);
+        }
+        return anArray;
+    }
+
+    public static splitStringWithCommaDelimitersFilteredByDoubleQuotes(input: string): string[] {
+        return Utility.splitStringWithColumnDelimitersFilteredByQuotingDelimiters(
+            input,
+            ",",
+            "\"");
+        // ---- NOTE-FOR-REFERENCE ---- const splittedStrings: string[] = [];
+        // ---- NOTE-FOR-REFERENCE ---- const commaIndexIndexes: number[] =
+        // ---- NOTE-FOR-REFERENCE ----     Utility.getCommaIndexesFilteredByDoubleQuotes(input);
+        // ---- NOTE-FOR-REFERENCE ---- let index: number = 0;
+        // ---- NOTE-FOR-REFERENCE ---- for (const commaIndex of commaIndexIndexes) {
+        // ---- NOTE-FOR-REFERENCE ----     splittedStrings.push(input.substring(index, commaIndex));
+        // ---- NOTE-FOR-REFERENCE ----     index = commaIndex + 1;
+        // ---- NOTE-FOR-REFERENCE ---- }
+        // ---- NOTE-FOR-REFERENCE ---- return splittedStrings;
+    }
+    public static splitStringWithColumnDelimitersFilteredByQuotingDelimiters(
+        input: string,
+        delimiter: string,
+        delimiterQuoting: string): string[] {
+        const splittedStrings: string[] = [];
+        const commaIndexIndexes: number[] = Utility.getColumnDelimiterIndexesFilteredByQuotingDelimiters(
+            input,
+            delimiter,
+            delimiterQuoting);
+        let index: number = 0;
+        for (const commaIndex of commaIndexIndexes) {
+            splittedStrings.push(input.substring(index, commaIndex));
+            index = commaIndex + 1;
+        }
+        splittedStrings.push(input.substring(index));
+        return splittedStrings;
+    }
+
+    public static getCommaIndexesFilteredByDoubleQuotes(input: string): number[] {
+        return Utility.getColumnDelimiterIndexesFilteredByQuotingDelimiters(
+            input,
+            ",",
+            "\"");
+        // ---- NOTE-FOR-REFERENCE ---- const commaIndexes: number[] = Utility.getCommaIndexes(input);
+        // ---- NOTE-FOR-REFERENCE ---- return Utility.filterOrderedNumberArrayFromOrderedRanges(
+        // ---- NOTE-FOR-REFERENCE ----     commaIndexes,
+        // ---- NOTE-FOR-REFERENCE ----     Utility.getDoubleQuoteIndexPairs(input));
+    }
+    public static getColumnDelimiterIndexesFilteredByQuotingDelimiters(
+        input: string,
+        delimiter: string,
+        delimiterQuoting: string): number[] {
+        const delimiterIndexes: number[] = Utility.getDelimiterIndexes(input, delimiter);
+        return Utility.filterOrderedNumberArrayFromOrderedRanges(
+            delimiterIndexes,
+            Utility.getDelimiterIndexPairs(input, delimiterQuoting));
+    }
+    public static filterOrderedNumberArrayFromOrderedRanges(
+        anArray: number[],
+        filteringRanges: number[][]): number[] {
+        const filteredArray: number[] = [];
+        let indexArray: number = 0;
+        const arrayLength: number = anArray.length;
+        let indexfilteringRanges: number = 0;
+        const filteringRangesLength: number = filteringRanges.length;
+        while (indexArray < arrayLength) {
+            const element: number = anArray[indexArray++];
+            let filtered: boolean = false;
+            while (indexfilteringRanges < filteringRangesLength) {
+                const filteringRange: number[] = filteringRanges[indexfilteringRanges];
+                const filteringRangeBegin: number = filteringRange[0];
+                const filteringRangeEnd: number = filteringRange[1];
+                if (element < filteringRangeBegin) {
+                    break;
+                }
+                if (element < filteringRangeEnd) {
+                    filtered = true;
+                    break;
+                }
+                if (element >= filteringRangeEnd) {
+                    indexfilteringRanges++;
+                }
+            }
+            if (!filtered) {
+                filteredArray.push(element);
+            }
+        }
+        return filteredArray;
+    }
+
+    public static getDoubleQuoteIndexPairs(input: string): number[][] {
+        return Utility.arrayToPairArray(Utility.getDoubleQuoteIndexes(input), input.length);
+    }
+    public static getDelimiterIndexPairs(input: string, delimiter: string): number[][] {
+        return Utility.arrayToPairArray(Utility.getDelimiterIndexes(input, delimiter), input.length);
+    }
+    public static arrayToPairArray<T>(anArray: T[], lastElement: T): T[][] {
+        const pairArray: T[][] = [];
+        const arrayLength: number = anArray.length;
+        let index: number = 0;
+        while (index < arrayLength) {
+            const firstElement: T = anArray[index++];
+            let secondElement: T = lastElement;
+            if (index < arrayLength) {
+                secondElement = anArray[index++];
+            }
+            pairArray.push([firstElement, secondElement]);
+        }
+        return pairArray;
+    }
+
+    public static getCommaIndexes(input: string): number[] {
+        return Utility.getDelimiterIndexes(input, ",");
+    }
+    public static getDoubleQuoteIndexes(input: string): number[] {
+        return Utility.getDelimiterIndexes(input, "\"");
+    }
+    public static getDelimiterIndexes(input: string, delimiter: string): number[] {
+        const delimiterIndexes: number[] = [];
+        const inputLength: number = input.length;
+        let inputIndex: number = 0;
+        while (inputIndex < inputLength) {
+            const delimiterIndex: number = input.indexOf(delimiter, inputIndex);
+            if (delimiterIndex < 0) {
+                break;
+            }
+            delimiterIndexes.push(delimiterIndex);
+            inputIndex = delimiterIndex + 1;
+        }
+        return delimiterIndexes;
     }
 
     protected static rngBurninIterations: number = 16384;

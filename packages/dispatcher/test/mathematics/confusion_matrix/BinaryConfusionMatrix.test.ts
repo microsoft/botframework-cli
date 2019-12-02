@@ -270,8 +270,10 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
                 totalTesting,
                 cell11Testing,
                 row1Testing,
-                    column1Testing,
-            false);
+                column1Testing,
+                0,
+                0,
+                false);
         assert.throws(() => { binaryConfusionMatrixMetricsTesting.validate(true); },
             `binaryConfusionMatrixMetrics.getCell11()=${binaryConfusionMatrixMetrics.getCell11()}` +
             `binaryConfusionMatrixMetrics.getRow1()=${binaryConfusionMatrixMetrics.getRow1()}` +
@@ -291,6 +293,8 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
                 cell11Testing,
                 row1Testing,
                 column1Testing,
+                0,
+                0,
                 false);
         assert.throws(() => { binaryConfusionMatrixMetricsTesting.validate(true); },
             `binaryConfusionMatrixMetrics.getCell11()=${binaryConfusionMatrixMetrics.getCell11()}` +
@@ -311,6 +315,8 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
                 cell11Testing,
                 row1Testing,
                 column1Testing,
+                0,
+                0,
                 false);
         assert.throws(() => { binaryConfusionMatrixMetricsTesting.validate(true); },
             `binaryConfusionMatrixMetrics.getCell11()=${binaryConfusionMatrixMetrics.getCell11()}` +
@@ -331,6 +337,8 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
                 cell11Testing,
                 row1Testing,
                 column1Testing,
+                0,
+                0,
                 false);
         assert.throws(() => { binaryConfusionMatrixMetricsTesting.validate(true); },
             `binaryConfusionMatrixMetrics.getCell11()=${binaryConfusionMatrixMetrics.getCell11()}` +
@@ -351,6 +359,8 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
                 cell11Testing,
                 row1Testing,
                 column1Testing,
+                0,
+                0,
                 false);
         assert.throws(() => { binaryConfusionMatrixMetricsTesting.validate(true); },
             `binaryConfusionMatrixMetrics.getCell11()=${binaryConfusionMatrixMetrics.getCell11()}` +
@@ -560,10 +570,10 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
             `binaryConfusionMatrixMetrics.getColumn1()=${binaryConfusionMatrixMetrics.getColumn1()}`);
     });
 
-    it("Test.0500 getDerivedMetrics()", function() {
+    it("Test.0500 getBasicMetrics()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        assert.ok(binaryConfusionMatrixMetrics.getDerivedMetrics().support === 2,
+        assert.ok(binaryConfusionMatrixMetrics.getBasicMetrics().support === 2,
             `binaryConfusionMatrixMetrics.getTotal()=${binaryConfusionMatrixMetrics.getTotal()}` +
             `binaryConfusionMatrixMetrics.getCell11()=${binaryConfusionMatrixMetrics.getCell11()}` +
             `binaryConfusionMatrixMetrics.getRow1()=${binaryConfusionMatrixMetrics.getRow1()}` +

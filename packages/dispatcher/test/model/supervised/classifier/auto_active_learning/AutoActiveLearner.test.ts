@@ -121,7 +121,8 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
-                linesToSkip);
+                linesToSkip,
+                true);
         // -----------------------------------------------------------------------
         const results =
             columnarData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();

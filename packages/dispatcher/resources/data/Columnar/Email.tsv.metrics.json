@@ -713,7 +713,9 @@
             "ratioColumn2": 0.9534109816971714,
             "ratioCell12": 0.004991680532445923,
             "ratioCell21": 0,
-            "ratioCell22": 0.9484193011647255
+            "ratioCell22": 0.9484193011647255,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "AddMore": {
             "total": 601,
@@ -738,7 +740,9 @@
             "ratioColumn2": 0.8885191347753744,
             "ratioCell12": 0.0066555740432612314,
             "ratioCell21": 0.009983361064891847,
-            "ratioCell22": 0.8818635607321131
+            "ratioCell22": 0.8818635607321131,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "CancelMessages": {
             "total": 601,
@@ -763,7 +767,9 @@
             "ratioColumn2": 0.9234608985024958,
             "ratioCell12": 0.014975041597337771,
             "ratioCell21": 0.014975041597337771,
-            "ratioCell22": 0.908485856905158
+            "ratioCell22": 0.908485856905158,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "CheckMessages": {
             "total": 601,
@@ -788,7 +794,9 @@
             "ratioColumn2": 0.9284525790349417,
             "ratioCell12": 0.008319467554076539,
             "ratioCell21": 0.004991680532445923,
-            "ratioCell22": 0.9201331114808652
+            "ratioCell22": 0.9201331114808652,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "ConfirmMessages": {
             "total": 601,
@@ -813,7 +821,9 @@
             "ratioColumn2": 0.9800332778702163,
             "ratioCell12": 0.014975041597337771,
             "ratioCell21": 0,
-            "ratioCell22": 0.9650582362728786
+            "ratioCell22": 0.9650582362728786,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "Delete": {
             "total": 601,
@@ -838,7 +848,9 @@
             "ratioColumn2": 0.9650582362728786,
             "ratioCell12": 0.016638935108153077,
             "ratioCell21": 0.008319467554076539,
-            "ratioCell22": 0.9484193011647255
+            "ratioCell22": 0.9484193011647255,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "Forward": {
             "total": 601,
@@ -863,7 +875,9 @@
             "ratioColumn2": 0.9434276206322796,
             "ratioCell12": 0,
             "ratioCell21": 0.0033277870216306157,
-            "ratioCell22": 0.9434276206322796
+            "ratioCell22": 0.9434276206322796,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "None": {
             "total": 601,
@@ -888,7 +902,9 @@
             "ratioColumn2": 1,
             "ratioCell12": 0.009983361064891847,
             "ratioCell21": 0,
-            "ratioCell22": 0.9900166389351082
+            "ratioCell22": 0.9900166389351082,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "QueryLastText": {
             "total": 601,
@@ -913,7 +929,9 @@
             "ratioColumn2": 0.9417637271214643,
             "ratioCell12": 0.0033277870216306157,
             "ratioCell21": 0.008319467554076539,
-            "ratioCell22": 0.9384359400998337
+            "ratioCell22": 0.9384359400998337,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "ReadAloud": {
             "total": 601,
@@ -938,7 +956,9 @@
             "ratioColumn2": 0.8502495840266223,
             "ratioCell12": 0,
             "ratioCell21": 0.016638935108153077,
-            "ratioCell22": 0.8502495840266223
+            "ratioCell22": 0.8502495840266223,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "Reply": {
             "total": 601,
@@ -963,7 +983,9 @@
             "ratioColumn2": 0.9633943427620633,
             "ratioCell12": 0.016638935108153077,
             "ratioCell21": 0.0016638935108153079,
-            "ratioCell22": 0.9467554076539102
+            "ratioCell22": 0.9467554076539102,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "SearchMessages": {
             "total": 601,
@@ -988,7 +1010,9 @@
             "ratioColumn2": 0.9068219633943427,
             "ratioCell12": 0.008319467554076539,
             "ratioCell21": 0.019966722129783693,
-            "ratioCell22": 0.8985024958402662
+            "ratioCell22": 0.8985024958402662,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "SendEmail": {
             "total": 601,
@@ -1013,7 +1037,9 @@
             "ratioColumn2": 0.8019966722129783,
             "ratioCell12": 0.0033277870216306157,
             "ratioCell21": 0.03494176372712146,
-            "ratioCell22": 0.7986688851913477
+            "ratioCell22": 0.7986688851913477,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "ShowNext": {
             "total": 601,
@@ -1038,7 +1064,9 @@
             "ratioColumn2": 0.9733777038269551,
             "ratioCell12": 0.009983361064891847,
             "ratioCell21": 0.0016638935108153079,
-            "ratioCell22": 0.9633943427620633
+            "ratioCell22": 0.9633943427620633,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         },
         "ShowPrevious": {
             "total": 601,
@@ -1063,7 +1091,9 @@
             "ratioColumn2": 0.9800332778702163,
             "ratioCell12": 0.0066555740432612314,
             "ratioCell21": 0,
-            "ratioCell22": 0.9733777038269551
+            "ratioCell22": 0.9733777038269551,
+            "potentialRow1": 0,
+            "potentialRow2": 0
         }
     },
     "macroAverageMetrics": {

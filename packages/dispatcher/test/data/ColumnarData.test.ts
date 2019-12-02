@@ -633,12 +633,15 @@ export function exampleFunctionDataWithColumnarContent(
         new NgramSubwordFeaturizer(),
         labelColumnIndex,
         textColumnIndex,
-        linesToSkip);
+        linesToSkip,
+        true);
     const luUtterances: any[] = columnarData.getLuUtterances();
-    // Utility.debuggingLog(`luJsonStructure=${Utility.getJsonStringified(luUtterances)}`);
+    // Utility.debuggingLog(`luJsonStructure=` +
+    //     `${Utility.getJsonStringified(luUtterances)}`);
     assert.ok(luUtterances, `luUtterances=${luUtterances}`);
     const intentInstanceIndexMapArray: Map<string, number[]> = columnarData.getIntentInstanceIndexMapArray();
-    // Utility.debuggingLog(`intentInstanceIndexMapSet=${Utility.stringMapArrayToJson(intentInstanceIndexMapArray)}`);
+    // Utility.debuggingLog(`intentInstanceIndexMapSet=` +
+    //     `${Utility.stringMapArrayToJson(intentInstanceIndexMapArray)}`);
     const entityTypeInstanceIndexMapArray: Map<string, number[]> = columnarData.getEntityTypeInstanceIndexMapArray();
     // Utility.debuggingLog(`entityTypeInstanceIndexMapSet=` +
     //     `${Utility.stringMapArrayToJson(entityTypeInstanceIndexMapArray)}`);
@@ -772,7 +775,7 @@ export function exampleFunctionDataWithColumnarContent(
     // -----------------------------------------------------------------------
 }
 
-describe("Test Suite - data/columnar_data/ColumnarData - Email", () => {
+describe("Test Suite - data/ColumnarData/ColumnarData - Email", () => {
     it("Test.0000 exampleFunctionDataWithColumnarContent()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());

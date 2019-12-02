@@ -18,7 +18,7 @@ export class SoftmaxRegressionSparse {
     protected lossEarlyStopRatio: number = 0.01;
 
     constructor(
-        numberInputUnits: number,
+        numberInputUnits: number = -1,
         numberOutputUnits: number = 2,
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01,
@@ -95,10 +95,10 @@ export class SoftmaxRegressionSparse {
                 const logLossInGradientUpdate: number = MathematicsHelper.softmaxLogLoss(
                     softmaxVectors,
                     groundTruthPositiveLabelIndexes);
-                // Utility.debuggingLog(
-                //     `A-fit-epoch=${epoch}/${epochs}` +
-                //     `, numberInstances=${numberInstances}` +
-                //     `, logLossInGradientUpdate=${logLossInGradientUpdate}`);
+                Utility.debuggingLog(
+                    `A-fit-epoch=${epoch}/${epochs}` +
+                    `, numberInstances=${numberInstances}` +
+                    `, logLossInGradientUpdate=${logLossInGradientUpdate}`);
                 logLossVectorInGradientUpdate.push(logLossInGradientUpdate);
             }
             if (toCalculateOverallLossAfterEpoch) {
@@ -111,10 +111,10 @@ export class SoftmaxRegressionSparse {
                 const logLossAfterEpoch: number = MathematicsHelper.softmaxLogLoss(
                     softmaxVectorsAfterGradientUpdate,
                     groundTruthPositiveLabelIndexes);
-                // Utility.debuggingLog(
-                //     `B--fit-epoch=${epoch}/${epochs}` +
-                //     `, numberInstances=${numberInstances}` +
-                //     `, logLossAfterEpoch=${logLossAfterEpoch}`);
+                Utility.debuggingLog(
+                    `B-fit-epoch=${epoch}/${epochs}` +
+                    `, numberInstances=${numberInstances}` +
+                    `, logLossAfterEpoch=${logLossAfterEpoch}`);
                 logLossVectorAfterEpoch.push(logLossAfterEpoch);
                 // -----------------------------------------------------------
                 if (this.lossEarlyStopRatio > 0) {
@@ -126,6 +126,12 @@ export class SoftmaxRegressionSparse {
                     const logLossRatio: number =
                         (logLossAfterEpoch - previousLogLossAfterEpoch) / previousLogLossAfterEpoch;
                     if (Math.abs(logLossRatio) < this.lossEarlyStopRatio) {
+                        Utility.debuggingLog(
+                            `F-fit-epoch=${epoch}/${epochs}` +
+                            `, numberInstances=${numberInstances}` +
+                            `, logLossAfterEpoch=${logLossAfterEpoch}` +
+                            `, logLossRatio=${logLossRatio}` +
+                            `, this.lossEarlyStopRatio=${this.lossEarlyStopRatio}`);
                         break;
                     }
                 }
@@ -162,6 +168,11 @@ export class SoftmaxRegressionSparse {
             const logLossVectorInGradientUpdate: number[] = new Array<number>();
             while (true) {
                 if (miniBatchIndexBegin >= numberInstances) {
+                    Utility.debuggingLog(
+                        `G-epoch=${epoch}/${epochs}` +
+                        `, numberInstances=${numberInstances}` +
+                        `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                        `, numberInstances=${numberInstances}`);
                     break;
                 }
                 // Utility.debuggingLog(
@@ -268,6 +279,12 @@ export class SoftmaxRegressionSparse {
                     const logLossRatio: number =
                         (logLossAfterEpoch - previousLogLossAfterEpoch) / previousLogLossAfterEpoch;
                     if (Math.abs(logLossRatio) < this.lossEarlyStopRatio) {
+                        Utility.debuggingLog(
+                            `F-epoch=${epoch}/${epochs}` +
+                            `, numberInstances=${numberInstances}` +
+                            `, logLossAfterEpoch=${logLossAfterEpoch}` +
+                            `, logLossRatio=${logLossRatio}` +
+                            `, this.lossEarlyStopRatio=${this.lossEarlyStopRatio}`);
                         break;
                     }
                 }

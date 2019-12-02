@@ -7,223 +7,14 @@ import { Utility } from "../../../utility/Utility";
 
 export class NgramSubwordFeaturizer {
 
-    protected static LanguageTokenPunctuationDelimiters: string[] = [
-        // ---- // ---- "\0",
-        // ---- // ---- "\u0001",
-        // ---- // ---- "\u0002",
-        // ---- // ---- "\u0003",
-        // ---- // ---- "\u0004",
-        // ---- // ---- "\u0005",
-        // ---- // ---- "\u0006",
-        // ---- // ---- "\a",
-        // ---- // ---- "\b",
-        // ---- // ---- "\t",
-        // ---- // ---- "\n",
-        // ---- // ---- "\v",
-        // ---- // ---- "\f",
-        // ---- // ---- "\r",
-        // ---- // ---- "\u000E",
-        // ---- // ---- "\u000F",
-        // ---- // ---- "\u0010",
-        // ---- // ---- "\u0011",
-        // ---- // ---- "\u0012",
-        // ---- // ---- "\u0013",
-        // ---- // ---- "\u0014",
-        // ---- // ---- "\u0015",
-        // ---- // ---- "\u0016",
-        // ---- // ---- "\u0017",
-        // ---- // ---- "\u0018",
-        // ---- // ---- "\u0019",
-        // ---- // ---- "\u001A",
-        // ---- // ---- "\u001B",
-        // ---- // ---- "\u001C",
-        // ---- // ---- "\u001D",
-        // ---- // ---- "\u001E",
-        // ---- // ---- "\u001F",
-        // ---- // ---- " ",
-        "!",
-        "\"",
-        "#",
-        "$",
-        "%",
-        "&",
-        "\"",
-        "(",
-        ")",
-        "*",
-        "+",
-        ",",
-        "-",
-        ".",
-        "/",
-        ":",
-        ";",
-        "<",
-        "=",
-        ">",
-        "?",
-        "@",
-        "[",
-        "\\",
-        "]",
-        "^",
-        "`",
-        "{",
-        "|",
-        "}",
-        "~",
-        // ---- // ---- "\u007F"
-    ];
-
-    protected static LanguageTokenPunctuationDelimitersSet: Set<string> =
-        new Set(NgramSubwordFeaturizer.LanguageTokenPunctuationDelimiters);
-
-    protected static LanguageTokenPunctuationReplacementDelimiters: string[] = [
-        // ---- // ---- " \0 ",
-        // ---- // ---- " \u0001 ",
-        // ---- // ---- " \u0002 ",
-        // ---- // ---- " \u0003 ",
-        // ---- // ---- " \u0004 ",
-        // ---- // ---- " \u0005 ",
-        // ---- // ---- " \u0006 ",
-        // ---- // ---- " \a ",
-        // ---- // ---- " \b ",
-        // ---- // ---- " \t ",
-        // ---- // ---- " \n ",
-        // ---- // ---- " \v ",
-        // ---- // ---- " \f ",
-        // ---- // ---- " \r ",
-        // ---- // ---- " \u000E ",
-        // ---- // ---- " \u000F ",
-        // ---- // ---- " \u0010 ",
-        // ---- // ---- " \u0011 ",
-        // ---- // ---- " \u0012 ",
-        // ---- // ---- " \u0013 ",
-        // ---- // ---- " \u0014 ",
-        // ---- // ---- " \u0015 ",
-        // ---- // ---- " \u0016 ",
-        // ---- // ---- " \u0017 ",
-        // ---- // ---- " \u0018 ",
-        // ---- // ---- " \u0019 ",
-        // ---- // ---- " \u001A ",
-        // ---- // ---- " \u001B ",
-        // ---- // ---- " \u001C ",
-        // ---- // ---- " \u001D ",
-        // ---- // ---- " \u001E ",
-        // ---- // ---- " \u001F ",
-        // ---- // ---- " ",
-        " ! ",
-        " \" ",
-        " # ",
-        " $ ",
-        " % ",
-        " & ",
-        " \" ",
-        " ( ",
-        " ) ",
-        " * ",
-        " + ",
-        " , ",
-        " - ",
-        " . ",
-        " / ",
-        " : ",
-        " ; ",
-        " < ",
-        " = ",
-        " > ",
-        " ? ",
-        " @ ",
-        " [ ",
-        " \\ ",
-        " ] ",
-        " ^ ",
-        " ` ",
-        " { ",
-        " | ",
-        " } ",
-        " ~ ",
-        // ---- // ---- " \u007F "
-    ];
-
-    protected static LanguageTokenSpaceDelimiters: string[] = [
-        "\0",
-        "\u0001",
-        "\u0002",
-        "\u0003",
-        "\u0004",
-        "\u0005",
-        "\u0006",
-        "\a",
-        "\b",
-        "\t",
-        "\n",
-        "\v",
-        "\f",
-        "\r",
-        "\u000E",
-        "\u000F",
-        "\u0010",
-        "\u0011",
-        "\u0012",
-        "\u0013",
-        "\u0014",
-        "\u0015",
-        "\u0016",
-        "\u0017",
-        "\u0018",
-        "\u0019",
-        "\u001A",
-        "\u001B",
-        "\u001C",
-        "\u001D",
-        "\u001E",
-        "\u001F",
-        " ",
-        // ---- // ---- "!",
-        // ---- // ---- "\"",
-        // ---- // ---- "#",
-        // ---- // ---- "$",
-        // ---- // ---- "%",
-        // ---- // ---- "&",
-        // ---- // ---- "\"",
-        // ---- // ---- "(",
-        // ---- // ---- ")",
-        // ---- // ---- "*",
-        // ---- // ---- "+",
-        // ---- // ---- ",",
-        // ---- // ---- "-",
-        // ---- // ---- ".",
-        // ---- // ---- "/",
-        // ---- // ---- ":",
-        // ---- // ---- ";",
-        // ---- // ---- "<",
-        // ---- // ---- "=",
-        // ---- // ---- ">",
-        // ---- // ---- "?",
-        // ---- // ---- "@",
-        // ---- // ---- "[",
-        // ---- // ---- "\\",
-        // ---- // ---- "]",
-        // ---- // ---- "^",
-        // ---- // ---- "`",
-        // ---- // ---- "{",
-        // ---- // ---- "|",
-        // ---- // ---- "}",
-        // ---- // ---- "~",
-        "\u007F",
-    ];
-
-    protected static LanguageTokenSpaceDelimitersSet: Set<string> =
-        new Set(NgramSubwordFeaturizer.LanguageTokenSpaceDelimiters);
-
     protected numberHashingFeaturesSetting: number = 0;
 
     protected subwordNgramBegin: number = 3;
     protected subwordNgramEnd: number = 4;
-
     protected toLowercase: boolean = true;
-    protected toRemovePunctuation: boolean = false;
+    protected toRemovePunctuations: boolean = false;
+    protected toRemoveEmptyElements: boolean = true;
+    protected splitDelimiter: string = " ";
 
     protected intentsUtterances:
         { "intents": string[], "utterances": string[] } = { intents: [], utterances: [] };
@@ -238,13 +29,17 @@ export class NgramSubwordFeaturizer {
         subwordNgramBegin: number = 3,
         subwordNgramEnd: number = 4,
         toLowercase: boolean = true,
-        toRemovePunctuation: boolean = false,
+        toRemovePunctuations: boolean = false,
+        toRemoveEmptyElements: boolean = true,
+        splitDelimiter: string = " ",
         numberHashingFeaturesSetting: number = 0) {
-        this.numberHashingFeaturesSetting = numberHashingFeaturesSetting;
         this.subwordNgramBegin = subwordNgramBegin;
         this.subwordNgramEnd = subwordNgramEnd;
         this.toLowercase = toLowercase;
-        this.toRemovePunctuation = toRemovePunctuation;
+        this.toRemovePunctuations = toRemovePunctuations;
+        this.toRemoveEmptyElements = toRemoveEmptyElements;
+        this.splitDelimiter = splitDelimiter;
+        this.numberHashingFeaturesSetting = numberHashingFeaturesSetting;
     }
 
     public getIntentsUtterances(): { "intents": string[], "utterances": string[] } {
@@ -293,7 +88,7 @@ export class NgramSubwordFeaturizer {
     }
 
     public getLabelIndex(label: string, throwIfNonExistentLabel: boolean = true): number {
-        if (!label) {
+        if (Utility.isEmptyString(label)) {
             Utility.debuggingThrow("label == null");
         }
         let labelId: number = -1;
@@ -448,7 +243,7 @@ export class NgramSubwordFeaturizer {
     public createLabelOneHotEncoderBooleanArray(
         label: string,
         throwIfNonExistentLabel: boolean = true): boolean[] {
-        if (!label) {
+        if (Utility.isEmptyString(label)) {
             Utility.debuggingThrow("label == null");
         }
         let labelId: number = -1;
@@ -472,7 +267,7 @@ export class NgramSubwordFeaturizer {
     public createLabelOneHotEncoderNumberArray(
         label: string,
         throwIfNonExistentLabel: boolean = true): number[] {
-        if (!label) {
+        if (Utility.isEmptyString(label)) {
             Utility.debuggingThrow("label == null");
         }
         let labelId: number = -1;
@@ -719,31 +514,24 @@ export class NgramSubwordFeaturizer {
     }
 
     public featurize(input: string): string[] {
+        if (this.toLowercase) {
+            input = input.toLowerCase();
+        }
         let result: string[] = this.split(input);
-        if (this.toRemovePunctuation) {
+        if (this.toRemovePunctuations) {
             result = result.filter((element: string) => {
-                return (!NgramSubwordFeaturizer.LanguageTokenPunctuationDelimitersSet.has(element as string));
+                return (!Utility.LanguageTokenPunctuationDelimitersSet.has(element as string));
             });
         }
-        const subwordFeatures: string[] = this.generateSubwords(result.join(" "));
+        const subwordFeatures: string[] = this.generateSubwords(result.join(this.splitDelimiter));
         return result.concat(subwordFeatures);
     }
 
     public split(input: string): string[] {
-        if (this.toLowercase) {
-            input = input.toLowerCase();
-        }
-        const delimiters: string[] = NgramSubwordFeaturizer.LanguageTokenPunctuationDelimiters;
-        const replacementDelimiters: string[] = NgramSubwordFeaturizer.LanguageTokenPunctuationReplacementDelimiters;
-        const numberDelimiters: number = delimiters.length;
-        for (let i = 0; i < numberDelimiters; i++) {
-            input = input.replace(delimiters[i], replacementDelimiters[i]);
-        }
-        let result: string[] = input.split(" ");
-        result = result.filter((element: string) => {
-            return (element && (element !== ""));
-        });
-        return result;
+        return Utility.splitByPunctuation(
+            input,
+            this.splitDelimiter,
+            this.toRemoveEmptyElements);
     }
 
     public generateSubwords(input: string): string[] {
@@ -832,7 +620,9 @@ export class NgramSubwordFeaturizer {
         this.subwordNgramBegin = deserialized.subwordNgramBegin;
         this.subwordNgramEnd = deserialized.subwordNgramEnd;
         this.toLowercase = deserialized.toLowercase;
-        this.toRemovePunctuation = deserialized.toRemovePunctuation;
+        this.toRemovePunctuations = deserialized.toRemovePunctuations;
+        this.toRemoveEmptyElements = deserialized.toRemoveEmptyElements;
+        this.splitDelimiter = deserialized.splitDelimiter;
         this.intentsUtterances = deserialized.intentsUtterances;
         this.labels = deserialized.labels;
         this.labelMap = deserialized.labelMap;

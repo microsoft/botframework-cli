@@ -143,9 +143,11 @@ export class Data {
         return this.intentUtteranceSparseIndexArrays.utteranceFeatureIndexArrays;
     }
 
-    public featurizeIntentsUtterances(): void {
+    public resetFeaturizerLabelFeatureMaps(): void {
         this.getFeaturizer().resetLabelFeatureMaps(
             this.getIntentsUtterances());
+    }
+    public featurizeIntentsUtterances(): void {
         this.intentUtteranceSparseIndexArrays =
             this.getFeaturizer().createIntentUtteranceSparseIndexArrays(
                 this.getIntentsUtterances());
@@ -233,8 +235,9 @@ export class Data {
                 new Set<string>();
             const entityTypeSet: Set<string> =
                 new Set<string>();
-            for (let i: number = 0; i < luUtteranceIndexes.length; i++) {
-                const luUtteranceIndex: number = luUtteranceIndexes[i];
+            for (const luUtteranceIndex of luUtteranceIndexes) {
+            // for (let i: number = 0; i < luUtteranceIndexes.length; i++) {
+                // const luUtteranceIndex: number = luUtteranceIndexes[i];
                 const luUtterance: any = this.luUtterances[luUtteranceIndex];
                 let hasNewUtteranceFoundForCoveringAllIntentEntityLabels: boolean = false;
                 if (toEnsureEachIntentHasOneUtteranceLabel) {
@@ -243,13 +246,13 @@ export class Data {
                         if (!(intentSet.has(intent))) {
                             intentSet.add(intent);
                             hasNewUtteranceFoundForCoveringAllIntentEntityLabels = true;
-                            Utility.debuggingLog(
-                                `i=${i}, ` +
-                                `luUtteranceIndex=${luUtteranceIndex}, ` +
-                                `intent=${intent}, ` +
-                                `intentSet.size=${intentSet.size}, ` +
-                                `smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
-                                `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
+                            // Utility.debuggingLog(
+                            //     `i=${i}, ` +
+                            //     `luUtteranceIndex=${luUtteranceIndex}, ` +
+                            //     `intent=${intent}, ` +
+                            //     `intentSet.size=${intentSet.size}, ` +
+                            //     `smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
+                            //     `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
                         }
                     }
                 }
@@ -262,13 +265,13 @@ export class Data {
                                 if (!(entityTypeSet.has(entityType))) {
                                     entityTypeSet.add(entityType);
                                     hasNewUtteranceFoundForCoveringAllIntentEntityLabels = true;
-                                    Utility.debuggingLog(
-                                        `i=${i}, ` +
-                                        `luUtteranceIndex=${luUtteranceIndex}, ` +
-                                        `entityType=${entityType}, ` +
-                                        `entityTypeSet.size=${entityTypeSet.size}, ` +
-                                        `smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
-                                        `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
+                                    // Utility.debuggingLog(
+                                    //     `i=${i}, ` +
+                                    //     `luUtteranceIndex=${luUtteranceIndex}, ` +
+                                    //     `entityType=${entityType}, ` +
+                                    //     `entityTypeSet.size=${entityTypeSet.size}, ` +
+                                    //     `smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
+                                    //     `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
                                 }
                             }
                         });
@@ -297,11 +300,11 @@ export class Data {
                             }
                         });
                     }
-                    Utility.debuggingLog(
-                        `i=${i}, ` +
-                        `luUtteranceIndex=${luUtteranceIndex}, ` +
-                        `smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
-                        `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
+                    // Utility.debuggingLog(
+                    //     `i=${i}, ` +
+                    //     `luUtteranceIndex=${luUtteranceIndex}, ` +
+                    //     `smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
+                    //     `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
                 }
                 if (toEnsureEachIntentHasOneUtteranceLabel && (intentSet.size < numberIntents)) {
                     continue;

@@ -31,7 +31,7 @@ export class ConfusionMatrix {
         const labelBinaryConfusionMatrixDerivedMetricMap: { [id: string]: { [id: string]: number }; } =
             Object.entries(labelMap).reduce(
                 (accumulant, [id, value]) =>
-                ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value].getDerivedMetrics()}), {});
+                ({...accumulant, [id]: crossValidationBinaryConfusionMatrixMetrics[value].getBasicMetrics()}), {});
         const labelBinaryConfusionMatrixMetricMap: { [id: string]: BinaryConfusionMatrixMetrics; } =
             Object.entries(labelMap).reduce(
                 (accumulant, [id, value]) =>

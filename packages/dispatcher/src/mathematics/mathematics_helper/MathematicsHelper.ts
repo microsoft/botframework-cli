@@ -332,23 +332,28 @@ export class MathematicsHelper {
         }
         const factorConstant: number =
             learningRate / numberInstances;
-        MathematicsHelper.matrixDenseSubtractScaledFrom(
-            matrixWeightDenseArrays,
-            matrixWeightGradientDenseArrays,
-            factorConstant);
-        MathematicsHelper.vectorDenseSubtractScaledFrom(
-            biasVectorDenseValueArray,
-            biasVectorGradientDenseValueArray,
-            factorConstant);
         if ((l1Regularization > 0) || (l2Regularization > 0)) {
-            MathematicsHelper.matrixDenseL1l2RegularizedSparseTo(
+            MathematicsHelper.matrixDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
                 matrixWeightDenseArrays,
+                matrixWeightGradientDenseArrays,
+                factorConstant,
                 l1Regularization,
                 l2Regularization);
-            MathematicsHelper.vectorDenseL1l2RegularizedSparseTo(
+            MathematicsHelper.vectorDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
                 biasVectorDenseValueArray,
+                biasVectorGradientDenseValueArray,
+                factorConstant,
                 l1Regularization,
                 l2Regularization);
+        } else {
+            MathematicsHelper.matrixDenseSubtractScaledFrom(
+                matrixWeightDenseArrays,
+                matrixWeightGradientDenseArrays,
+                factorConstant);
+            MathematicsHelper.vectorDenseSubtractScaledFrom(
+                biasVectorDenseValueArray,
+                biasVectorGradientDenseValueArray,
+                factorConstant);
         }
         return softmaxVectors;
     }
@@ -724,6 +729,87 @@ export class MathematicsHelper {
             dotProduct += valueArray[i] * weights[i];
         }
         return (dotProduct + weightBias);
+    }
+
+    public static matrixDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
+        valueArray0: number[][],
+        valueArray1: number[][],
+        constant: number,
+        l1Regularization: number,
+        l2Regularization: number): number[][] {
+        const rows: number = valueArray0.length;
+        const columns: number = valueArray0[0].length;
+        for (let row: number = 0; row < rows; row++) {
+            for (let column: number = 0; column < columns; column++) {
+                const adjustment: number = valueArray1[row][column];
+                valueArray0[row][column] -= (constant * adjustment);
+                if (adjustment !== 0) {
+                    valueArray0[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
+                        valueArray0[row][column],
+                        l1Regularization,
+                        l2Regularization);
+                }
+            }
+        }
+        return valueArray0;
+    }
+    public static matrixDenseSubtractScaledFromAndL1l2RegularizedDenseTo(
+        valueArray0: number[][],
+        valueArray1: number[][],
+        constant: number,
+        l1Regularization: number,
+        l2Regularization: number): number[][] {
+        const rows: number = valueArray0.length;
+        const columns: number = valueArray0[0].length;
+        for (let row: number = 0; row < rows; row++) {
+            for (let column: number = 0; column < columns; column++) {
+                const adjustment: number = valueArray1[row][column];
+                valueArray0[row][column] -= (constant * adjustment);
+                if (adjustment !== 0) {
+                    valueArray0[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
+                        valueArray0[row][column],
+                        l1Regularization,
+                        l2Regularization);
+                }
+            }
+        }
+        return valueArray0;
+    }
+    public static vectorDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
+        valueArray0: number[],
+        valueArray1: number[],
+        constant: number,
+        l1Regularization: number,
+        l2Regularization: number): number[] {
+        for (let i: number = 0; i < valueArray0.length; i++) {
+            const adjustment: number = valueArray1[i];
+            valueArray0[i] -= (constant * adjustment);
+            if (adjustment !== 0) {
+                valueArray0[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
+                    valueArray0[i],
+                    l1Regularization,
+                    l2Regularization);
+            }
+        }
+        return valueArray0;
+    }
+    public static vectorDenseSubtractScaledFromAndL1l2RegularizedDenseTo(
+        valueArray0: number[],
+        valueArray1: number[],
+        constant: number,
+        l1Regularization: number,
+        l2Regularization: number): number[] {
+        for (let i: number = 0; i < valueArray0.length; i++) {
+            const adjustment: number = valueArray1[i];
+            valueArray0[i] -= (constant * adjustment);
+            if (adjustment !== 0) {
+                valueArray0[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
+                    valueArray0[i],
+                    l1Regularization,
+                    l2Regularization);
+            }
+        }
+        return valueArray0;
     }
 
     public static matrixDenseL1l2RegularizedSparseTo(

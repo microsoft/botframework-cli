@@ -152,7 +152,9 @@ export class LearnerUtility {
         subwordNgramBegin: number = 3,
         subwordNgramEnd: number = 4,
         toLowercase: boolean = true,
-        toRemovePunctuation: boolean = false) {
+        toRemovePunctuations: boolean = false,
+        toRemoveEmptyElements: boolean = true,
+        splitDelimiter: string = " ") {
         if (!Utility.exists(filename)) {
             Utility.debuggingThrow(
                 `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
@@ -172,7 +174,9 @@ export class LearnerUtility {
             subwordNgramBegin,
             subwordNgramEnd,
             toLowercase,
-            toRemovePunctuation,
+            toRemovePunctuations,
+            toRemoveEmptyElements,
+            splitDelimiter,
             numberHashingFeaturesSetting);
         featurizer.resetLabelFeatureMaps(intentsUtterances);
         return featurizer;

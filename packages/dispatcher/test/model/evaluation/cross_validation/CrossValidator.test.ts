@@ -49,7 +49,8 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
         const luData: LuData =
             await LuData.createLuData(
                 luContent,
-                new NgramSubwordFeaturizer());
+                new NgramSubwordFeaturizer(),
+                true);
         const intentLabelIndexArray: number[] =
             luData.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
@@ -110,7 +111,8 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
-                linesToSkip);
+                linesToSkip,
+                true);
         const intentLabelIndexArray: number[] =
             columnarData.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
