@@ -17,7 +17,7 @@ describe('luis:version:delete', () => {
   .stdout()
   .command(['luis:version:delete', '--help'])
   .it('should print the help contents when --help is passed as an argument', ctx => {
-    expect(ctx.stdout).to.contain('Deletes a version of a LUIS application')
+    expect(ctx.stdout).to.contain('Deletes a LUIS application version')
   })
 
   test
