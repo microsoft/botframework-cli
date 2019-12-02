@@ -84,7 +84,7 @@
     "report:coverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
     "doc:readme":"oclif-dev manifest && oclif-dev readme",
-    "version": "npm run doc:readme && git add README.md"
+    "version": ""
   },
   "types": "lib/index.d.ts"
 }
