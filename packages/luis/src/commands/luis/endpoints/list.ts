@@ -17,9 +17,9 @@ export default class LuisEndpointsList extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    appId: flags.string({description: 'LUIS application Id'}),
-    out: flags.string({char: 'o', description: 'Path to the directory where the exported file will be placed.'}),
+    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    out: flags.string({char: 'o', description: 'Output results to specified file in JSON format, otherwise prints to STDOUT (optional)'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
   }
 

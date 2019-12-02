@@ -18,7 +18,7 @@ describe('luis:version:import', () => {
   .stdout()
   .command(['luis:version:import', '--help'])
   .it('should print the help contents when --help is passed as an argument', ctx => {
-    expect(ctx.stdout).to.contain('Imports a new version into a LUIS application')
+    expect(ctx.stdout).to.contain('Imports a new version into a LUIS application from JSON or LU content.')
   })
 
   test

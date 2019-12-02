@@ -8,6 +8,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
 const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
+const {LUISRuntimeClient} = require('azure-cognitiveservices-luis-runtime')
 
 const filterConfig = (config: any, prefix: string) => {
   return Object.keys(config)
@@ -35,15 +36,19 @@ const getUserConfig = async (configPath: string) => {
   }
 }
 
-const getLUISClient = (subscriptionKey: string, endpoint: string) => {
+const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
   const token = {
     inHeader: {
       'Ocp-Apim-Subscription-Key': subscriptionKey
     }
   }
   const creds = new msRest.ApiKeyCredentials(token)
-  const luisClient = new LUISAuthoringClient(creds, endpoint)
-  luisClient.baseUri = 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
+  const luisClient = runtime ?
+    new LUISRuntimeClient(creds, endpoint) :
+    new LUISAuthoringClient(creds, endpoint)
+  luisClient.baseUri = runtime ?
+  'https://westus.api.cognitive.microsoft.com/luis/prediction/v3.0-preview/' :
+  'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
   return luisClient
 }
 
