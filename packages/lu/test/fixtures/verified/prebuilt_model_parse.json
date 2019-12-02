@@ -1,24 +1,24 @@
 {
   "intents": [
     {
-      "name": "None"
-    },
-    {
       "name": "Web.WebSearch",
       "inherits": {
         "domain_name": "Web",
         "model_name": "WebSearch"
       }
+    },
+    {
+      "name": "None"
     }
   ],
   "entities": [
     {
       "name": "Web.SearchText",
-      "roles": [],
       "inherits": {
         "domain_name": "Web",
         "model_name": "SearchText"
-      }
+      },
+      "roles": []
     }
   ],
   "composites": [],
@@ -1443,8 +1443,8 @@
   "patternAnyEntities": [],
   "prebuiltEntities": [],
   "name": "imports",
-  "desc": "",
   "culture": "en-us",
   "versionId": "0.1",
-  "luis_schema_version": "3.2.0"
+  "luis_schema_version": "3.2.0",
+  "desc": ""
 }

@@ -3,9 +3,7 @@
 ![Bot Framework CLI](./media/BFCLI-header.png)
 
 # BF Command Line Interface
-
-[![Build Status](https://fuselabs.visualstudio.com/SDK_v4/_apis/build/status/CLI/Botframework-CLI-CI-PR?branchName=master)](https://fuselabs.visualstudio.com/SDK_v4/_build/latest?definitionId=537&branchName=master)
-[![Coverage Status](https://img.shields.io/coveralls/github/microsoft/botframework-cli/master)](https://coveralls.io/github/microsoft/botframework-cli?branch=master)
+[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=master)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=master)
 
 The new BF Command Line Interface (CLI) tool replaces the collection of standalone tools used to manage Bot Framework bots and related services. We have ported most tools and are in process of porting the rest. The new BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
 
