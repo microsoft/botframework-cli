@@ -1,6 +1,6 @@
 
 # filename
-- @{formName}-@{property}Setage.dialog
+- @{schemaName}-@{property}Setage.dialog
 
 # template
 - ```

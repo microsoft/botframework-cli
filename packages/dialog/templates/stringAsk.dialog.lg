@@ -1,24 +1,13 @@
 # filename
-- @{formName}-@{property}Ask.dialog
+- @{schemaName}-@{property}Ask.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAsk",
-    "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
+    "condition":"!$@{property} && contains(dialog.requiredProperties, '@{property}')",
     "actions": [
-        {
-            "$kind": "Microsoft.IfCondition",
-            "condition":"$lastExpectedProperty == '@{property}'",
-            "actions":[
-                {
-                    "$kind": "Microsoft.SendActivity",
-                    "activity": "@{callHelp()}"
-                }
-                    
-            ]
-        },
         {
             "$kind": "Microsoft.IfCondition",
             "condition": "contains(turn.schema.properties['@{property}'].$mappings, 'utterance')",
@@ -28,7 +17,7 @@
                     "activity": "@{callAsk()}",
                     "expectedProperties": [
                          "utterance","@{property}"
-            ]
+                    ]
                 }
             ],
             "elseActions":[
@@ -41,11 +30,6 @@
                 }
             ]
         },
-        {
-            "$kind": "Microsoft.SetProperty",
-            "property": "$lastExpectedProperty",
-            "value": "'@{property}'"
-        }
     ]
 }
 ```

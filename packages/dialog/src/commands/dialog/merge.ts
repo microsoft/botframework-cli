@@ -333,7 +333,7 @@ export default class DialogMerge extends Command {
         const prefix = 'union('
         if (role === 'expression' || role === 'lg' || role === 'memoryPath') {
             if (elt.kind) {
-                this.error(`${this.currentFile}:error: $role ${role} must not have a type.`)
+                this.error(`${this.currentFile}:error: $role ${role} must not have a kind.`)
             }
             for (let prop in metaSchema.definitions[role]) {
                 if (!elt[prop]) {

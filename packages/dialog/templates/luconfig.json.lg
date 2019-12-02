@@ -4,10 +4,10 @@
 # template
 - ```
 {
-    "name": "@{formName}",
+    "name": "@{schemaName}",
     "defaultLanguage": "@{locales[0]}",
     "models": [
-        @{join(foreach(locales, locale, concat('"', locale, '/', formName, '.', locale, '.lu"')), ',\n')}
+        @{join(foreach(locales, locale, concat('"', locale, '/', schemaName, '.', locale, '.lu"')), ',\n')}
     ]
 }
 ```

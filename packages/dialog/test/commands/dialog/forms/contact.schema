@@ -52,6 +52,6 @@
     },
     "required":["HomeStreet", "HomeCity", "HomeState", "HomeZip", "HomePhone", "WorkStreet", "WorkCity", "WorkState", "WorkZip", "WorkPhone"],
     "$requires": [
-        "standard.schema.dialog"
+        "standard.schema"
     ]
 }

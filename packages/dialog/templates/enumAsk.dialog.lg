@@ -1,18 +1,13 @@
 # filename
-- @{formName}-@{property}Ask.dialog
+- @{schemaName}-@{property}Ask.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAsk",
-    "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
+    "condition":"!$@{property} && contains(dialog.requiredProperties, '@{property}')",
     "actions": [        
-        {
-            "$kind": "Microsoft.SetProperty",
-            "property": "$lastExpectedProperty",
-            "value": "'@{property}'"
-        },
         {
             "$kind": "Microsoft.Ask",
             "activity": "@{callAsk()}",

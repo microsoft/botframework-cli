@@ -20,7 +20,7 @@
     },
     "required":["Subject", "ActivityType", "StartDate"],
     "$requires": [
-        "standard.schema.dialog"
+        "standard.schema"
     ]
 }
     

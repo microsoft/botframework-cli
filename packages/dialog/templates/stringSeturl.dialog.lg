@@ -1,6 +1,6 @@
 
 # filename
-- @{formName}-@{property}Seturl.dialog
+- @{schemaName}-@{property}Seturl.dialog
 
 # template
 - ```

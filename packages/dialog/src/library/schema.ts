@@ -58,7 +58,7 @@ export class Schema {
             throw new Error(message)
         }
         if (schema.type !== 'object') {
-            throw new Error('Form schema must be of type object.')
+            throw new Error('Root schema must be of type object.')
         }
         return new Schema(schemaPath, schema)
     }
