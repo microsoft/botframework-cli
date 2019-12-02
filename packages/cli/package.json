@@ -74,7 +74,7 @@
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/cli",
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
-    "prepack": "npm run clean && npm run build && npm run doc:readme",
+    "prepack": "npm run clean && npm run build",
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "build":"tsc -b",
