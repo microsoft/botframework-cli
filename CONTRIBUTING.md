@@ -161,7 +161,7 @@ CLI contribution Software Development Lifecycle is as follows:
 
 ## ❓ FAQ
 
-### Why rush/pnpm?
+### Why rush & pnpm?
 
 Rush and pnpm are newer tools and not all that popular outside of Microsoft, why use them? 
 
