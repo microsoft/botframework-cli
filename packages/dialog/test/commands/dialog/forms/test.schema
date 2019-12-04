@@ -73,6 +73,6 @@
         ["Name","Quantity", "Length", "Meat", "Bread", "Cheese"],
     "$requires": [
         "standard.schema",
-        "address.schema"
+        "packages/dialog/test/commands/dialog/forms/address.schema"
     ]
 }
