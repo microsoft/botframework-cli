@@ -4,6 +4,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "CompleteConfirmation",
+    "entity": "Confirmation",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
