@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/botframework-cli",
-  "version": "4.7.0-previewCHRIS",
+  "version": "1.0.0",
   "description": "One-stop-shop CLI to manage your bot’s resources. BF CLI and AZ CLI together cover your end-to-end bot development workflow needs.",
   "author": "Microsoft",
   "bin": {
