@@ -2,13 +2,26 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "properties": {
+        "Name": {
+            "type": "string",
+            "$mappings": [
+                "personName"
+            ]
+        },
+        "$ref": "address.schema#/definitions/address/properties",        
         "Quantity": {
-            "type": "number",
+            "type": "string",
+            "$mappings": [
+                "number"
+            ],
             "minimum": 1,
             "maximum": 10
         },
         "Directions": {
             "type": "string",
+            "$mappings": [
+                "utterance"
+            ],
             "$comment": "This indicates the whole string is what maps to this."
         },
         "Length": {
@@ -54,21 +67,12 @@
                 "turkey",
                 "none"
             ]
-        },
-        "Name": {
-            "type": "string"
-        },
-        "Price": {
-            "$ref": "template:currency.schema#/currency"
         }
     },
-    "required": [
-        "Name",
-        "Meat",
-        "Bread",
-        "Cheese"
-    ],
+    "required": 
+        ["Name","Quantity", "Length", "Meat", "Bread", "Cheese"],
     "$requires": [
-        "standard.schema"
+        "standard.schema",
+        "address.schema"
     ]
 }
