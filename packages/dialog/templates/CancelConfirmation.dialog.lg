@@ -6,11 +6,17 @@
     "intent": "Cancel",
     "actions": [
         {
-            "$kind": "Microsoft.Ask",
-            "activity": "@{callCancel()}",
-            "expectedProperties": [
-                "CancelConfirmation"
-            ]
+            "$kind": "Microsoft.IfCondition",
+            "condition": "@{greater(turn.recognized.score, 0.5)}",
+            "actions":[
+                {
+                    "$kind": "Microsoft.Ask",
+                    "activity": "@{callCancel()}",
+                    "expectedProperties": [
+                        "CancelConfirmation"
+                    ]
+                }
+            ]           
         }
     ]
 }

@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
-    "entity": "@geographyV2",
+    "entity": "geographyV2",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
