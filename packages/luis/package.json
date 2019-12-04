@@ -40,9 +40,11 @@
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.13.3",
+    "@oclif/errors": "^1.2.2",
     "@types/sinon": "^7.5.0",
     "azure-cognitiveservices-luis-authoring": "2.1.1",
     "azure-cognitiveservices-luis-runtime": "~3.0.0",
+    "cli-ux": "~5.3.3",
     "fs-extra": "^8.1.0",
     "ms-rest": "2.5.3",
     "tslib": "^1.10.0"

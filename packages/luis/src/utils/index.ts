@@ -7,8 +7,11 @@ import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
+const {cli} = require('cli-ux')
 const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
 const {LUISRuntimeClient} = require('azure-cognitiveservices-luis-runtime')
+
+const configPrefix = 'luis__'
 
 const filterConfig = (config: any, prefix: string) => {
   return Object.keys(config)
@@ -34,6 +37,36 @@ const getUserConfig = async (configPath: string) => {
   if (fs.existsSync(path.join(configPath, 'config.json'))) {
     return fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
   }
+  return null
+}
+
+const createConfigFile = async (configPath: string) => {
+  await fs.mkdirp(configPath)
+  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify({}, null, 2))
+}
+
+const promptSaveConfig = async (flags: any, configPath: string) => {
+  let userConfig = await getUserConfig(configPath)
+  if (userConfig === null) {
+    await createConfigFile(configPath)
+    userConfig = {}
+  }
+  const saveConfigOptIn = await cli.prompt('Would you like to save the provided values to your global config file? (Y/N)')
+  if (saveConfigOptIn) {
+    // save config
+    const flagLabels = Object.keys(flags)
+    flagLabels.map(label => {
+      userConfig[`${configPrefix}${label}`] = flags[label]
+    })
+    await writeUserConfig(userConfig, configPath)
+    return true
+  }
+  return false
+}
+
+const writeUserConfig = async (userconfig: any, configPath: string) => {
+  await fs.mkdirp(configPath)
+  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify(userconfig, null, 2))
 }
 
 const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
@@ -73,7 +106,6 @@ const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
 }
 
 const processInputs = async (flags: any, flagLabels: string[], configDir: string) => {
-  const configPrefix = 'luis__'
   let config = filterByAllowedConfigValues(await getUserConfig(configDir), configPrefix)
   config = config ? filterConfig(config, configPrefix) : config
   const input: any = {}
@@ -119,6 +151,7 @@ module.exports.getInputFromFile = getInputFromFile
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs
+module.exports.promptSaveConfig = promptSaveConfig
 module.exports.validateRequiredProps = validateRequiredProps
 module.exports.writeToConsole = writeToConsole
 module.exports.writeToFile = writeToFile
