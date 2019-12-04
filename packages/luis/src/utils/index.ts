@@ -7,7 +7,6 @@ import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
-const {cli} = require('cli-ux')
 const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
 const {LUISRuntimeClient} = require('azure-cognitiveservices-luis-runtime')
 
@@ -43,25 +42,6 @@ const getUserConfig = async (configPath: string) => {
 const createConfigFile = async (configPath: string) => {
   await fs.mkdirp(configPath)
   await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify({}, null, 2))
-}
-
-const promptSaveConfig = async (flags: any, configPath: string) => {
-  let userConfig = await getUserConfig(configPath)
-  if (userConfig === null) {
-    await createConfigFile(configPath)
-    userConfig = {}
-  }
-  const saveConfigOptIn = await cli.prompt('Would you like to save the provided values to your global config file? (Y/N)')
-  if (saveConfigOptIn) {
-    // save config
-    const flagLabels = Object.keys(flags)
-    flagLabels.map(label => {
-      userConfig[`${configPrefix}${label}`] = flags[label]
-    })
-    await writeUserConfig(userConfig, configPath)
-    return true
-  }
-  return false
 }
 
 const writeUserConfig = async (userconfig: any, configPath: string) => {
@@ -147,11 +127,12 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
   return validatedPath
 }
 
+module.exports.createConfigFile = createConfigFile
 module.exports.getInputFromFile = getInputFromFile
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs
-module.exports.promptSaveConfig = promptSaveConfig
 module.exports.validateRequiredProps = validateRequiredProps
 module.exports.writeToConsole = writeToConsole
 module.exports.writeToFile = writeToFile
+module.exports.writeUserConfig = writeUserConfig

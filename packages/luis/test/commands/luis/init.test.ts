@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import LuisInit from '../../../src/commands/luis/init'
 const sinon = require('sinon')
 const uuidv1 = require('uuid/v1')
 const utils = require('../../../src/utils/index')
@@ -8,7 +9,7 @@ import * as rimraf from 'rimraf'
 describe('luis:version:list', () => {
 
   beforeEach(() => {
-    sinon.stub(utils, 'promptSaveConfig').returns(true)
+    sinon.stub(LuisInit.prototype, 'promptSaveConfig').returns(true)
   })
 
   afterEach(() => {

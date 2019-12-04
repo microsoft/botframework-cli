@@ -5,7 +5,7 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import { throws } from 'assert'
-
+const {cli} = require('cli-ux')
 const utils = require('../../utils/index')
 
 export default class LuisInit extends Command {
@@ -32,12 +32,32 @@ export default class LuisInit extends Command {
     }
 
     try {
-      const response = await utils.promptSaveConfig(flags, configDir)
+      const response = await this.promptSaveConfig(flags, configDir)
       if (response) return this.log('Config settings saved')
       return this.log('Unable to save config settings')
     } catch (err) {
       this.log(`Unable to save config settings: ${err}`)
     }
+  }
+
+  async promptSaveConfig(flags: any, configPath: string) {
+    const configPrefix = 'luis__'
+    let userConfig = await utils.getUserConfig(configPath)
+    if (userConfig === null) {
+      await utils.createConfigFile(configPath)
+      userConfig = {}
+    }
+    const saveConfigOptIn = await cli.confirm('Would you like to save the provided values to your global config file? (Y/N)')
+    if (saveConfigOptIn) {
+      // save config
+      const flagLabels = Object.keys(flags)
+      flagLabels.map(label => {
+        userConfig[`${configPrefix}${label}`] = flags[label]
+      })
+      await utils.writeUserConfig(userConfig, configPath)
+      return true
+    }
+    return false
   }
 
 }
