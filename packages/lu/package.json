@@ -28,13 +28,13 @@
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "build":"tsc -b",
-    "clean":"rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
+    "build": "tsc -b",
+    "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "coverage": "nyc npm run test",
-    "report:coverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
-    "doc:readme":"oclif-dev manifest && oclif-dev readme",
+    "doc:readme": "oclif-dev manifest && oclif-dev readme",
     "version": "npm run doc:readme && git add README.md"
   },
   "nyc": {
@@ -58,7 +58,8 @@
     "lodash": "^4.17.15",
     "node-fetch": "^2.1.2",
     "semver": "^5.5.1",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "uuid": "~3.3.3"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
