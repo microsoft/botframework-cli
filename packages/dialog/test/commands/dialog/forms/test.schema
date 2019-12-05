@@ -2,15 +2,63 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "properties": {
+        "$ref": "address.schema#/definitions/address/properties",        
         "Name": {
             "type": "string",
             "$mappings": [
                 "personName"
             ]
         },
-        "$ref": "address.schema#/definitions/address/properties",        
-        "Quantity": {
+        "Age": {
+            "type": "number",
+            "$mappings": [
+                "number"
+            ]
+        },
+        "DatetimeV2": {
             "type": "string",
+            "$mappings": [
+                "datetimeV2"
+            ]
+        },
+        "GeographyV2": {
+            "type": "string",
+            "$mappings": [
+                "geographyV2"
+            ]
+        },
+        "KeyPhrase": {
+            "type": "string",
+            "$mappings": [
+                "keyPhrase"
+            ]
+        },
+        "Money": {
+            "type": "string",
+            "$mappings": [
+                "money"
+            ]
+        },
+        "Percentage": {
+            "type": "string",
+            "$mappings": [
+                "percentage"
+            ]
+        },
+        "Temperature": {
+            "type": "string",
+            "$mappings": [
+                "temperature"
+            ]
+        },
+        "Url": {
+            "type": "string",
+            "$mappings": [
+                "url"
+            ]
+        },       
+        "Quantity": {
+            "type": "number",
             "$mappings": [
                 "number"
             ],
@@ -54,23 +102,10 @@
                 "swiss",
                 "none"
             ]
-        },
-        "Meat": {
-            "type": "string",
-            "enum": [
-                "bacon",
-                "chicken",
-                "ham",
-                "pulled pork",
-                "roast beef",
-                "salami",
-                "turkey",
-                "none"
-            ]
         }
     },
     "required": 
-        ["Name","Quantity", "Length", "Meat", "Bread", "Cheese"],
+        ["Name", "Quantity", "Length", "Bread", "Cheese", "Age", "GeographyV2", "KeyPhrase", "Money", "Percentage", "Temperature", "Url"],
     "$requires": [
         "standard.schema",
         "packages/dialog/test/commands/dialog/forms/address.schema"

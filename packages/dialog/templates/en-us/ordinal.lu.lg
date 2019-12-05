@@ -2,6 +2,6 @@
 - @{entityFilename()}
 
 # template
-- $PREBUILT:phoneNumber @{roles()}
+- $PREBUILT:ordinal @{roles()}
 
 [generator.lg](../generator.lg)
