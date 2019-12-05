@@ -8,10 +8,6 @@
                     "type": "string",
                     "$mappings": ["utterance"]
                 },
-                "HomeCity": { 
-                    "type": "string",
-                    "$mappings": ["utterance"]
-                },
                 "HomeZip": { 
                     "type": "string",
                     "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
@@ -21,8 +17,8 @@
                     "type": "string",
                     "$mappings": ["email"]
                 }
-                },
-            "required":["HomeStreet", "HomeCity", "HomeZip", "Email"],
+            },
+            "required":["HomeStreet", "HomeZip", "Email"],
             "$requires": [
                 "standard.schema"
             ]
