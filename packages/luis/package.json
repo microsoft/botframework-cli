@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/bf-luis-cli",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "bugs": "https://github.com/packages/bf-luis-cli/issues",
   "engines": {
     "node": ">=8.0.0"
