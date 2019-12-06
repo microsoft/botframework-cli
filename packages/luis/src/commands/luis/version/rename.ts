@@ -19,7 +19,6 @@ export default class LuisVersionRename extends Command {
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    name: flags.string({description: 'LUIS applicaton name'}),
     versionId: flags.string({description: 'Version to update (mandatory, defaults to config:LUIS:versionId)'}),
     newVersionId: flags.string({description: 'New version name (mandatory)'}),
   }
@@ -33,17 +32,16 @@ export default class LuisVersionRename extends Command {
       endpoint,
       subscriptionKey,
       appId,
-      name,
       versionId,
       newVersionId,
     } = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, appId, name, newVersionId}
+    const requiredProps = {endpoint, subscriptionKey, appId, versionId, newVersionId}
     utils.validateRequiredProps(requiredProps)
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
-    const versionUpdateObject = {name, version: newVersionId}
+    const versionUpdateObject = {version: newVersionId}
 
     try {
       await client.versions.update(appId, versionId, versionUpdateObject)

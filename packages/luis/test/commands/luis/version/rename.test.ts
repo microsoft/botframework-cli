@@ -23,15 +23,15 @@ describe('luis:version:rename', () => {
   test
   .stdout()
   .stderr()
-  .command(['luis:version:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--versionId', '0.1', '--newVersionId', '0.2'])
+  .command(['luis:version:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--versionId', '0.1'])
   .it('displays an error if any required input parameters are missing', ctx => {
-    expect(ctx.stderr).to.contain(`Required input property 'name' missing.`)
+    expect(ctx.stderr).to.contain(`Required input property 'newVersionId' missing.`)
   })
 
   test
   .stdout()
   .stderr()
-  .command(['luis:version:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--name', 'sample-app', '--versionId', '0.1', '--newVersionId', '0.2'])
+  .command(['luis:version:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--versionId', '0.1', '--newVersionId', '0.2'])
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })
@@ -42,7 +42,7 @@ describe('luis:version:rename', () => {
   .reply(200)
   )
   .stdout()
-  .command(['luis:version:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--name', 'sample-app', '--versionId', '0.1', '--newVersionId', '0.2'])
+  .command(['luis:version:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--versionId', '0.1', '--newVersionId', '0.2'])
   .it('renames a LUIS application version and displays a success message', ctx => {
     expect(ctx.stdout).to.contain('App version successfully renamed')
   })
@@ -50,7 +50,7 @@ describe('luis:version:rename', () => {
   test
   .stdout()
   .stderr()
-  .command(['luis:version:rename', '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--name', 'sample-app', '--versionId', '0.1', '--newVersionId', '0.2'])
+  .command(['luis:version:rename', '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--versionId', '0.1', '--newVersionId', '0.2'])
   .it('fails to rename application version and displays an error message if the endpoint is null', ctx => {
     expect(ctx.stderr).to.contain('Access denied due to invalid subscription key or wrong API endpoint.')
   })
