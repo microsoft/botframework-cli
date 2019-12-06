@@ -40,9 +40,7 @@ Enter a value for @{name(property)}
 - 
 
 # help(property)
-- IF: @{greater(0.5, turn.recognized.score)}
-- 
-- ELSEIF: @{property}
+- IF: @{property}
 - @{help1(property)}
 - ELSEIF: @{$expectedProperties}
 - @{join(foreach($expectedProperties, expected, help1(expected)), '\n')}
