@@ -13,8 +13,6 @@
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
             "value": "turn.recognized.entities[turn.schema.properties['@{property}'].$mappings[0]]"
-                
-            
         }
     ]
 }
