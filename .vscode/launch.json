@@ -110,7 +110,7 @@
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/test.schema",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/test2.schema",
                 "-o",
                 "${env:TEMP}/test.out",
                 "--force",
