@@ -105,7 +105,7 @@
         }
     },
     "required": 
-         ["Name", "Quantity", "Length", "Bread", "Cheese", "Age", "GeographyV2", "KeyPhrase", "Money", "Percentage", "Temperature", "Url"],
+        ["DTProp"],
     "$requires": [
         "standard.schema",
         "packages/dialog/test/commands/dialog/forms/address.schema"
