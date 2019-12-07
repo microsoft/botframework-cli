@@ -56,14 +56,13 @@ export default class LuisApplicationQuery extends Command {
       options.log = log
     }
 
-    const predictionRequestOptions: any = {}
-    const predictionRequest = {
-      query,
-      options: predictionRequestOptions
-    }
+    const predictionRequest: any = {query}
 
     if (timezoneOffset) {
-      predictionRequest.options.datetimeReference = timezoneOffset
+      const options: any = {
+        datetimeReference: timezoneOffset
+      }
+      predictionRequest.options = options
     }
 
     try {
