@@ -11,7 +11,7 @@ export default class LuisApplicationQuery extends Command {
   static description = 'Queries application for intent predictions'
 
   static examples = [`
-    $ bf luis:application:query --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --query {QUERY} --versionId {INITIAL_VERSION_ID}
+    $ bf luis:application:query --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --query {QUERY} --slot {SLOT_NAME}
   `]
 
   static flags: any = {
@@ -19,7 +19,6 @@ export default class LuisApplicationQuery extends Command {
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'LUIS application initial version Id'}),
     query: flags.string({description: 'Query string to predict (mandatory)'}),
     slot: flags.string({description: "The slot to used in the prediction"}),
     verbose: flags.string({description: 'Returns all intents, otherwise only top scoring intent. (default: false)'}),
@@ -37,14 +36,13 @@ export default class LuisApplicationQuery extends Command {
       subscriptionKey,
       appId,
       slot,
-      versionId,
       query,
       verbose,
       timezoneOffset,
       log
     } = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, appId, slot, versionId, query}
+    const requiredProps = {endpoint, subscriptionKey, appId, slot, query}
     utils.validateRequiredProps(requiredProps)
 
     const client = utils.getLUISClient(subscriptionKey, endpoint, true)
