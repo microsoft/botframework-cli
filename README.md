@@ -33,7 +33,6 @@ The following commands are currently available:
 
 #### Future Commands
 The following commands will be ported in upcoming releases:
-* LUIS (API)
 * Dispatch
 
 See [Porting Map](https://github.com/microsoft/botframework-cli/blob/master/PortingMap.md) for a mapping reference between old and new tools

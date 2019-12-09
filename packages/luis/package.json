@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/bf-luis-cli",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "bugs": "https://github.com/packages/bf-luis-cli/issues",
   "engines": {
     "node": ">=8.0.0"
@@ -38,20 +38,22 @@
   },
   "dependencies": {
     "@microsoft/bf-cli-command": "1.0.0",
-    "@oclif/command": "^1.5.19",
-    "@oclif/config": "^1.13.3",
+    "@oclif/command": "~1.5.19",
+    "@oclif/config": "~1.13.3",
+    "@oclif/errors": "~1.2.2",
     "@types/sinon": "^7.5.0",
     "azure-cognitiveservices-luis-authoring": "2.1.1",
-    "azure-cognitiveservices-luis-runtime": "~3.0.0",
+    "azure-cognitiveservices-luis-runtime": "3.0.0",
+    "cli-ux": "~5.3.3",
     "fs-extra": "^8.1.0",
     "ms-rest": "2.5.3",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
-    "@oclif/plugin-help": "^2.2.1",
-    "@oclif/test": "^1.2.5",
-    "@oclif/tslint": "^3.1.1",
+    "@oclif/dev-cli": "~1.22.2",
+    "@oclif/plugin-help": "~2.2.1",
+    "@oclif/test": "~1.2.5",
+    "@oclif/tslint": "~3.1.1",
     "@types/chai": "^4.2.4",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.17.4",

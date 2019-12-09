@@ -11,7 +11,7 @@ export default class LuisApplicationQuery extends Command {
   static description = 'Queries application for intent predictions'
 
   static examples = [`
-    $ bf luis:application:query --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --query {QUERY} --versionId {INITIAL_VERSION_ID}
+    $ bf luis:application:query --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --query {QUERY} --prod {BOOLEAN}
   `]
 
   static flags: any = {
@@ -19,8 +19,8 @@ export default class LuisApplicationQuery extends Command {
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'LUIS application initial version Id'}),
     query: flags.string({description: 'Query string to predict (mandatory)'}),
+    staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production'}),
     verbose: flags.string({description: 'Returns all intents, otherwise only top scoring intent. (default: false)'}),
     timezoneOffset: flags.string({description: 'Timezone offset for the location of the request in minutes (optional)'}),
     log: flags.string({description: 'Logs query operation on service (default: true)'}),
@@ -35,18 +35,22 @@ export default class LuisApplicationQuery extends Command {
       endpoint,
       subscriptionKey,
       appId,
-      versionId,
+      staging,
       query,
       verbose,
       timezoneOffset,
       log
     } = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, appId, versionId, query}
+    const requiredProps = {endpoint, subscriptionKey, appId, query}
     utils.validateRequiredProps(requiredProps)
 
     const client = utils.getLUISClient(subscriptionKey, endpoint, true)
     const options: any = {}
+
+    let slotName = 'production'
+
+    if (staging) slotName = 'staging'
 
     if (verbose) {
       options.verbose = verbose
@@ -56,18 +60,17 @@ export default class LuisApplicationQuery extends Command {
       options.log = log
     }
 
-    const predictionRequestOptions: any = {}
-    const predictionRequest = {
-      query,
-      options: predictionRequestOptions
-    }
+    const predictionRequest: any = {query}
 
     if (timezoneOffset) {
-      predictionRequest.options.datetimeReference = timezoneOffset
+      const options: any = {
+        datetimeReference: timezoneOffset
+      }
+      predictionRequest.options = options
     }
 
     try {
-      const predictionData = await client.predictionOperations.getVersionPrediction(appId, versionId, predictionRequest, options)
+      const predictionData = await client.predictionOperations.getSlotPrediction(appId, slotName, predictionRequest, options)
       this.log(`Successfully fetched prediction data ${JSON.stringify(predictionData)}.`)
     } catch (err) {
       throw new CLIError(`Failed to fetch prediction data: ${err}`)
