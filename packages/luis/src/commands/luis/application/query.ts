@@ -20,7 +20,7 @@ export default class LuisApplicationQuery extends Command {
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
     query: flags.string({description: 'Query string to predict (mandatory)'}),
-    staging: flags.string({description: 'A value of \'true\' targets the staging app, \'false\' defaults to production'}),
+    staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production'}),
     verbose: flags.string({description: 'Returns all intents, otherwise only top scoring intent. (default: false)'}),
     timezoneOffset: flags.string({description: 'Timezone offset for the location of the request in minutes (optional)'}),
     log: flags.string({description: 'Logs query operation on service (default: true)'}),
@@ -50,7 +50,7 @@ export default class LuisApplicationQuery extends Command {
 
     let slotName = 'production'
 
-    if (staging === 'true') slotName = 'staging'
+    if (staging) slotName = 'staging'
 
     if (verbose) {
       options.verbose = verbose
