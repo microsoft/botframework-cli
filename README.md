@@ -30,7 +30,6 @@ The following commands are currently available:
 * [QnAMaker](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
 * [Luis](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-luis)
-* [Luis CLI](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-luis-cli)
 
 #### Future Commands
 The following commands will be ported in upcoming releases:
