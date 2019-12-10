@@ -9,7 +9,7 @@ const qnaconfig = require('../../../../utils/qnaconfig')
 const qnamaker = require('./../../../../utils/index')
 const Knowledgebase = require('./../../../../utils/api/knowledgebase')
 const Endpointkeys = require('./../../../../utils/api/endpointkeys')
-const createKbJSON = require('./../../../../utils/payloads/createKb')
+const createKbJSON = require('./../../../../utils/payloads/createkb')
 
 const readlineSync = require('readline-sync')
 
