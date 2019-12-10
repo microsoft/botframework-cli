@@ -51,7 +51,6 @@ export default class LuisVersionExport extends Command {
         this.log(`File successfully written: ${writtenFilePath}`)
       } else {
         await utils.writeToConsole(appJSON)
-        this.log('App successfully exported\n')
       }
     } catch (error) {
       throw new CLIError(error)
