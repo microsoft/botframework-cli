@@ -16,11 +16,11 @@ export default class LuisVersionClone extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id'}),
-    versionId: flags.string({description: 'LUIS version Id'}),
-    targetVersionId: flags.string({description: 'LUIS target version Id'}),
+    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: 'Source version to clone (mandatory, defaults to config:LUIS:versionId)'}),
+    targetVersionId: flags.string({description: 'Destination version to create (mandatory)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
+    subscriptionKey: flags.string({description: 'LUIS authoring (Ocp-Apim-subscription) key'}),
   }
 
   async run() {

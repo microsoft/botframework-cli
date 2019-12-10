@@ -8,58 +8,72 @@ pr:
 - master
 
 schedules:
-- cron: "0 0 * * *"
+- cron: "0 8 * * *"
   displayName: Daily midnight build
   branches:
     include:
     - master
 
-strategy:
-  matrix:
-    linux:
-      imageName: "windows-2019"
-      nodeVersion: "12.x"
-  maxParallel: 3
+jobs:
+  - job: CLI
+    strategy:
+      matrix:
+        windows:
+          imageName: "windows-2019"
+          nodeVersion: "12.x"
+      maxParallel: 3
+    pool:
+      vmImage: $(imageName)
+    variables:
+      buildVersion: '4.8.0-preview.$(Build.BuildId)'
+      _version: ${{coalesce(variables.version, variables.buildVersion)}}
+    steps:
+    #Your build pipeline references the ‘version’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with version number'
+      inputs:
+        tags: 'Version=$(_version)'
 
-pool:
-  vmImage: $(imageName)
+    - task: NodeTool@0
+      displayName: 'Use Node $(nodeVersion)'
+      inputs:
+        versionSpec: $(nodeVersion)
 
-steps:
-- powershell: 'Get-ChildItem env:* | sort-object name'
-  displayName: 'Log environment variables'
-  continueOnError: true
+    - task: Npm@1
+      displayName: 'Install rush'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'install --global @microsoft/rush'
 
-- task: NodeTool@0
-  displayName: 'Use Node 12.x'
-  inputs:
-    versionSpec: $(nodeVersion)
+    - script: 'rush update'
+      displayName: 'rush update'
 
-- task: Npm@1
-  displayName: 'Install rush'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'install --global @microsoft/rush'
+    - script: 'rush build'
+      displayName: 'rush build'
 
-- script: 'rush update'
-  displayName: 'rush update'
+    - script: 'rush test'
+      displayName: 'rush test'
 
-- script: 'rush build'
-  displayName: 'rush build'
+    - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
+      displayName: 'Version and Pack'
 
-- script: 'rush test'
-  displayName: 'rush test'
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: ./.output
+        Contents: '**/*.tgz'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        flattenFolders: true
 
-- task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
-  displayName: 'Component Detection'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      inputs:
+        artifactName: 'drop'
 
-- script: 'rush report:coverage'
-  displayName: 'rush report:coverage'
-  enabled: false
+    - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+      displayName: 'Component Detection'
 
-- task: PublishBuildArtifacts@1
-  enabled: false
-  displayName: 'Publish Artifact: nyc_output'
-  inputs:
-    PathtoPublish: '$(Build.SourcesDirectory)\.nyc_output'
-    ArtifactName: 'nyc_output'
+    - script: 'rush report:coverage'
+      displayName: 'rush report:coverage'
+      enabled: false

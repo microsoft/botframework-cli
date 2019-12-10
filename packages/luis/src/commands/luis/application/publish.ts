@@ -8,7 +8,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationPublish extends Command {
-  static description = 'Publishes a specific version of the application'
+  static description = 'Publishes application\'s version'
 
   static examples = [`
     $ bf luis:application:publish --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {INITIAL_VERSION_ID} --appId {APP_ID} --staging {BOOLEAN}
@@ -17,9 +17,9 @@ export default class LuisApplicationPublish extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    appId: flags.string({description: 'LUIS applicaton id'}),
-    versionId: flags.string({description: 'LUIS application initial version Id'}),
+    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: 'Version to publish (mandatory, defaults to config:LUIS:versionId)'}),
     staging: flags.string({description: 'Publishes application version to Staging slot, otherwise publish to production (default: false)'}),
     direct: flags.string({description: 'Available only in direct version query. Do not publish to staging or production (default: false)'})
   }

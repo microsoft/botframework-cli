@@ -8,6 +8,9 @@ const path = require('path')
 const fs = require('fs-extra')
 const msRest = require('ms-rest')
 const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
+const {LUISRuntimeClient} = require('azure-cognitiveservices-luis-runtime')
+
+const configPrefix = 'luis__'
 
 const filterConfig = (config: any, prefix: string) => {
   return Object.keys(config)
@@ -33,17 +36,32 @@ const getUserConfig = async (configPath: string) => {
   if (fs.existsSync(path.join(configPath, 'config.json'))) {
     return fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
   }
+  return null
 }
 
-const getLUISClient = (subscriptionKey: string, endpoint: string) => {
+const createConfigFile = async (configPath: string) => {
+  await fs.mkdirp(configPath)
+  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify({}, null, 2))
+}
+
+const writeUserConfig = async (userconfig: any, configPath: string) => {
+  await fs.mkdirp(configPath)
+  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify(userconfig, null, 2))
+}
+
+const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
   const token = {
     inHeader: {
       'Ocp-Apim-Subscription-Key': subscriptionKey
     }
   }
   const creds = new msRest.ApiKeyCredentials(token)
-  const luisClient = new LUISAuthoringClient(creds, endpoint)
-  luisClient.baseUri = 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
+  const luisClient = runtime ?
+    new LUISRuntimeClient(creds, endpoint) :
+    new LUISAuthoringClient(creds, endpoint)
+  luisClient.baseUri = runtime ?
+  'https://westus.api.cognitive.microsoft.com/luis/prediction/v3.0/' :
+  'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
   return luisClient
 }
 
@@ -68,7 +86,6 @@ const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
 }
 
 const processInputs = async (flags: any, flagLabels: string[], configDir: string) => {
-  const configPrefix = 'luis__'
   let config = filterByAllowedConfigValues(await getUserConfig(configDir), configPrefix)
   config = config ? filterConfig(config, configPrefix) : config
   const input: any = {}
@@ -110,6 +127,7 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
   return validatedPath
 }
 
+module.exports.createConfigFile = createConfigFile
 module.exports.getInputFromFile = getInputFromFile
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
@@ -117,3 +135,4 @@ module.exports.processInputs = processInputs
 module.exports.validateRequiredProps = validateRequiredProps
 module.exports.writeToConsole = writeToConsole
 module.exports.writeToFile = writeToFile
+module.exports.writeUserConfig = writeUserConfig

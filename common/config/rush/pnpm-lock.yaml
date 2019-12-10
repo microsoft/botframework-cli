@@ -25,7 +25,8 @@ dependencies:
   applicationinsights: 1.6.0
   await-delay: 1.0.0
   azure-cognitiveservices-luis-authoring: 2.1.1
-  botframework-schema: 4.6.1
+  azure-cognitiveservices-luis-runtime: 3.0.0
+  botframework-schema: 4.6.2
   camelcase: 4.1.0
   chai: 4.2.0
   cli-table3: 0.5.1
@@ -74,35 +75,35 @@ packages:
     dev: false
     resolution:
       integrity: sha512-27d4lZoomVyo51VegxI20xZPuSHusqbQag/ztrBC7wegWoQ1nLREPVSKSW8byhTlzTKyNE4ifaTA6lCp7JjpFw==
-  /@babel/generator/7.7.2:
+  /@babel/generator/7.7.4:
     dependencies:
-      '@babel/types': 7.7.2
+      '@babel/types': 7.7.4
       jsesc: 2.5.2
       lodash: 4.17.15
       source-map: 0.5.7
     dev: false
     resolution:
-      integrity: sha512-WthSArvAjYLz4TcbKOi88me+KmDJdKSlfwwN8CnUYn9jBkzhq0ZEPuBfkAWIvjJ3AdEV1Cf/+eSQTnp3IDJKlQ==
-  /@babel/helper-function-name/7.7.0:
+      integrity: sha512-m5qo2WgdOJeyYngKImbkyQrnUN1mPceaG5BV+G0E3gWsa4l/jCSryWJdM2x8OuGAOyh+3d5pVYfZWCiNFtynxg==
+  /@babel/helper-function-name/7.7.4:
     dependencies:
-      '@babel/helper-get-function-arity': 7.7.0
-      '@babel/template': 7.7.0
-      '@babel/types': 7.7.2
+      '@babel/helper-get-function-arity': 7.7.4
+      '@babel/template': 7.7.4
+      '@babel/types': 7.7.4
     dev: false
     resolution:
-      integrity: sha512-tDsJgMUAP00Ugv8O2aGEua5I2apkaQO7lBGUq1ocwN3G23JE5Dcq0uh3GvFTChPa4b40AWiAsLvCZOA2rdnQ7Q==
-  /@babel/helper-get-function-arity/7.7.0:
+      integrity: sha512-AnkGIdiBhEuiwdoMnKm7jfPfqItZhgRaZfMg1XX3bS25INOnLPjPG1Ppnajh8eqgt5kPJnfqrRHqFqmjKDZLzQ==
+  /@babel/helper-get-function-arity/7.7.4:
     dependencies:
-      '@babel/types': 7.7.2
+      '@babel/types': 7.7.4
     dev: false
     resolution:
-      integrity: sha512-tLdojOTz4vWcEnHWHCuPN5P85JLZWbm5Fx5ZsMEMPhF3Uoe3O7awrbM2nQ04bDOUToH/2tH/ezKEOR8zEYzqyw==
-  /@babel/helper-split-export-declaration/7.7.0:
+      integrity: sha512-QTGKEdCkjgzgfJ3bAyRwF4yyT3pg+vDgan8DSivq1eS0gwi+KGKE5x8kRcbeFTb/673mkO5SN1IZfmCfA5o+EA==
+  /@babel/helper-split-export-declaration/7.7.4:
     dependencies:
-      '@babel/types': 7.7.2
+      '@babel/types': 7.7.4
     dev: false
     resolution:
-      integrity: sha512-HgYSI8rH08neWlAH3CcdkFg9qX9YsZysZI5GD8LjhQib/mM0jGOZOVkoUiiV2Hu978fRtjtsGsW6w0pKHUWtqA==
+      integrity: sha512-guAg1SXFcVr04Guk9eq0S4/rWS++sbmyqosJzVs8+1fH5NI+ZcmkaSkc7dmtAFbHFva6yRJnjW3yAcGxjueDug==
   /@babel/highlight/7.5.0:
     dependencies:
       chalk: 2.4.2
@@ -111,48 +112,48 @@ packages:
     dev: false
     resolution:
       integrity: sha512-7dV4eu9gBxoM0dAnj/BCFDW9LFU0zvTrkq0ugM7pnHEgguOEeOz1so2ZghEdzviYzQEED0r4EAgpsBChKy1TRQ==
-  /@babel/parser/7.7.3:
+  /@babel/parser/7.7.4:
     dev: false
     engines:
       node: '>=6.0.0'
     hasBin: true
     resolution:
-      integrity: sha512-bqv+iCo9i+uLVbI0ILzKkvMorqxouI+GbV13ivcARXn9NNEabi2IEz912IgNpT/60BNXac5dgcfjb94NjsF33A==
-  /@babel/template/7.7.0:
+      integrity: sha512-jIwvLO0zCL+O/LmEJQjWA75MQTWwx3c3u2JOTDK5D3/9egrWRRA0/0hk9XXywYnXZVVpzrBYeIQTmhwUaePI9g==
+  /@babel/template/7.7.4:
     dependencies:
       '@babel/code-frame': 7.5.5
-      '@babel/parser': 7.7.3
-      '@babel/types': 7.7.2
+      '@babel/parser': 7.7.4
+      '@babel/types': 7.7.4
     dev: false
     resolution:
-      integrity: sha512-OKcwSYOW1mhWbnTBgQY5lvg1Fxg+VyfQGjcBduZFljfc044J5iDlnDSfhQ867O17XHiSCxYHUxHg2b7ryitbUQ==
-  /@babel/traverse/7.7.2:
+      integrity: sha512-qUzihgVPguAzXCK7WXw8pqs6cEwi54s3E+HrejlkuWO6ivMKx9hZl3Y2fSXp9i5HgyWmj7RKP+ulaYnKM4yYxw==
+  /@babel/traverse/7.7.4:
     dependencies:
       '@babel/code-frame': 7.5.5
-      '@babel/generator': 7.7.2
-      '@babel/helper-function-name': 7.7.0
-      '@babel/helper-split-export-declaration': 7.7.0
-      '@babel/parser': 7.7.3
-      '@babel/types': 7.7.2
+      '@babel/generator': 7.7.4
+      '@babel/helper-function-name': 7.7.4
+      '@babel/helper-split-export-declaration': 7.7.4
+      '@babel/parser': 7.7.4
+      '@babel/types': 7.7.4
       debug: 4.1.1
       globals: 11.12.0
       lodash: 4.17.15
     dev: false
     resolution:
-      integrity: sha512-TM01cXib2+rgIZrGJOLaHV/iZUAxf4A0dt5auY6KNZ+cm6aschuJGqKJM3ROTt3raPUdIDk9siAufIFEleRwtw==
-  /@babel/types/7.7.2:
+      integrity: sha512-P1L58hQyupn8+ezVA2z5KBm4/Zr4lCC8dwKCMYzsa5jFMDMQAzaBNy9W5VjB+KAmBjb40U7a/H6ao+Xo+9saIw==
+  /@babel/types/7.7.4:
     dependencies:
       esutils: 2.0.3
       lodash: 4.17.15
       to-fast-properties: 2.0.0
     dev: false
     resolution:
-      integrity: sha512-YTf6PXoh3+eZgRCBzzP25Bugd2ngmpQVrk7kXX0i5N9BO7TFBtIgZYs7WtxtOGs8e6A4ZI7ECkbBCEHeXocvOA==
+      integrity: sha512-cz5Ji23KCi4T+YIE/BolWosrJuSmoZeN1EFnRtBwF+KKLi8GG/Z2c2hOJJeCXPk4mwk4QFvTmwIodJowXgttRA==
   /@christopheranderson/botbuilder-lg/4.7.0-a0-b6513caa:
     dependencies:
       '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
       antlr4ts: 0.5.0-alpha.1
-      botbuilder-core: 4.6.1
+      botbuilder-core: 4.6.2
       lodash: 4.17.15
       uuid: 3.3.3
     dev: false
@@ -452,13 +453,13 @@ packages:
       integrity: sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
   /@types/fs-extra/5.1.0:
     dependencies:
-      '@types/node': 11.15.2
+      '@types/node': 11.15.3
     dev: false
     resolution:
       integrity: sha512-AInn5+UBFIK9FK5xc9yP5e3TQSPNNgjHByqYcj9g5elVBnDQcQL7PlO1CIRy2gWlbwK7UPYqi7vRvFA44dCmYQ==
   /@types/fs-extra/8.0.1:
     dependencies:
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
     dev: false
     resolution:
       integrity: sha512-J00cVDALmi/hJOYsunyT52Hva5TnJeKP5yd1r+mH/ZU0mbYZflR0Z5kw5kITtKTRYMhm1JMClOFYdHnQszEvqw==
@@ -466,7 +467,7 @@ packages:
     dependencies:
       '@types/events': 3.0.0
       '@types/minimatch': 3.0.3
-      '@types/node': 12.12.11
+      '@types/node': 12.12.14
     dev: false
     resolution:
       integrity: sha512-1Bh06cbWJUHMC97acuD6UMG29nMt0Aqz1vF3guLfG+kHHJhy3AyohZFFxYk2f7Q1SQIrNwvncxAE0N/9s70F2w==
@@ -501,22 +502,22 @@ packages:
       integrity: sha512-jI/ewavBQ7X5178262JQR0ewicPAcJhXS/iFaNJl0VHLfyosZ/kwSrsa6VNQNSO8i9d8SqdRgOtZSOKJ/+iNMw==
   /@types/nock/9.3.1:
     dependencies:
-      '@types/node': 11.15.2
+      '@types/node': 11.15.3
     dev: false
     resolution:
       integrity: sha512-eOVHXS5RnWOjTVhu3deCM/ruy9E6JCgeix2g7wpFiekQh3AaEAK1cz43tZDukKmtSmQnwvSySq7ubijCA32I7Q==
-  /@types/node/10.17.5:
+  /@types/node/10.17.6:
     dev: false
     resolution:
-      integrity: sha512-RElZIr/7JreF1eY6oD5RF3kpmdcreuQPjg5ri4oQ5g9sq7YWU8HkfB3eH8GwAwxf5OaCh0VPi7r4N/yoTGelrA==
-  /@types/node/11.15.2:
+      integrity: sha512-0a2X6cgN3RdPBL2MIlR6Lt0KlM7fOFsutuXcdglcOq6WvLnYXgPQSh0Mx6tO1KCAE8MxbHSOSTWDoUxRq+l3DA==
+  /@types/node/11.15.3:
     dev: false
     resolution:
-      integrity: sha512-BqCU9uIFkUH9Sgo2uLYbmIiFB1T+VBiM8AI/El3LIAI5KzwtckeSG+3WOYZr9aMoX4UIvRFBWBeSaOu6hFue2Q==
-  /@types/node/12.12.11:
+      integrity: sha512-5RzvXVietaB8S4dwDjxjltAOHtTO87fiksjqjWGZih97j6KSrdCDaRfmYMNrgrLM87odGBrsTHAl6N3fLraQaw==
+  /@types/node/12.12.14:
     dev: false
     resolution:
-      integrity: sha512-O+x6uIpa6oMNTkPuHDa9MhMMehlxLAd5QcOvKRjAFsBVpeFWTOPnXbDvILvFgFFZfQ1xh1EZi1FbXxUix+zpsQ==
+      integrity: sha512-u/SJDyXwuihpwjXy7hOOghagLEV1KdAST6syfnOk6QZAMzZuWZqXy5aYYZbh8Jdpd4escVFP0MvftHNDb9pruA==
   /@types/proxyquire/1.3.28:
     dev: false
     resolution:
@@ -524,7 +525,7 @@ packages:
   /@types/rimraf/2.0.3:
     dependencies:
       '@types/glob': 7.1.1
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
     dev: false
     resolution:
       integrity: sha512-dZfyfL/u9l/oi984hEXdmAjX3JHry7TLWw43u1HQ8HhPv6KtfxnrZ3T/bleJ0GEvnk9t5sM7eePkgMqz3yBcGg==
@@ -542,7 +543,7 @@ packages:
       integrity: sha512-WxwTXnHTIsk7srax1icjLgX+6w1MUAJbhyCpRP/45paEElsPDQUJZDgr1UpKuL2S3Tb+ZyX9MjWwmcSD4bUoOQ==
   /@types/xml2js/0.4.5:
     dependencies:
-      '@types/node': 12.12.11
+      '@types/node': 12.12.14
     dev: false
     resolution:
       integrity: sha512-yohU3zMn0fkhlape1nxXG2bLEGZRc1FeqF80RoHaYXJN7uibaauXfhzhOJr1Xh36sn+/tx21QAOf07b/xYVk1w==
@@ -632,10 +633,10 @@ packages:
     dev: false
     resolution:
       integrity: sha1-+cjBN1fMHde8N5rHeyxipcKGjEA=
-  /arg/4.1.1:
+  /arg/4.1.2:
     dev: false
     resolution:
-      integrity: sha512-SlmP3fEA88MBv0PypnXZ8ZfJhwmDeIE3SP71j37AiXQBXYosPV0x6uISAaHYSlSVhmHOVkomen0tbGk6Anlebw==
+      integrity: sha512-+ytCkGcBtHZ3V2r2Z06AncYO8jz46UEamcspGoU8lHcEbpn6J77QK0vdWvChsclg/tM5XIJC5tnjmPp7Eq6Obg==
   /argparse/1.0.10:
     dependencies:
       sprintf-js: 1.0.3
@@ -772,6 +773,12 @@ packages:
     requiresBuild: true
     resolution:
       integrity: sha512-EL+efZmZIRAKDPkHMW3UzbGnBEyfQOCMBOos/N4+4iOGwh0XVyMbfShcVb9zmxp0kUVwh4MhSFdduLEvFkbNjw==
+  /azure-cognitiveservices-luis-runtime/3.0.0:
+    dependencies:
+      ms-rest: 2.5.3
+    dev: false
+    resolution:
+      integrity: sha512-S50fyMEeKPjb/YfZDERlFJE8+E/MU6XAnlh33hlC4OivcRF2vHIZhenN6Apq1GWDF2fcn0TK4i7JtrrRHG72bg==
   /babel-polyfill/6.26.0:
     dependencies:
       babel-runtime: 6.26.0
@@ -817,17 +824,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-EUAyP5UHU5hxF8BPT0LKW8gjYLhq1DQIcneOX/pL/m2Alo+OYDQAJlHq+yseMP50Os2nHXOSic6Ss3vSQeyf4A==
-  /botbuilder-core/4.6.1:
+  /botbuilder-core/4.6.2:
     dependencies:
       assert: 1.5.0
-      botframework-schema: 4.6.1
+      botframework-schema: 4.6.2
     dev: false
     resolution:
-      integrity: sha512-PsGsh1jWY7TjTGx9ZdPp6Rmep+8upatRZiKvVw2yY/sN8asfSgaHAzheTwz0e24ZKxXzoU+GV2ozKe2ctxzlWg==
-  /botframework-schema/4.6.1:
+      integrity: sha512-Y81wWjyodNmGaI0ST05dPpuTP/yjrgLMK1MlHn7GwLitKoBaK8HTHurnBwGF1Mj4OTskb/DAQTB99X+sZg4LHw==
+  /botframework-schema/4.6.2:
     dev: false
     resolution:
-      integrity: sha512-/01Si3tmNr2QrhSQhB2RnVStl4/tOy2rTY74XBRYHjEGFWr1kkQVjlwbQS0OaZFMgznVxtgPtpLkXLf6BSq1sQ==
+      integrity: sha512-je27+DnZQBVuQ0alO7dR0Ld5BRz6wQ+WA2FHjwoQe5U1MbGT8GV/U7LzdLcu5q5s7DBsfGGscAvD/XTdsnTDqw==
   /brace-expansion/1.1.11:
     dependencies:
       balanced-match: 1.0.0
@@ -1482,7 +1489,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==
-  /es-abstract/1.16.0:
+  /es-abstract/1.16.2:
     dependencies:
       es-to-primitive: 1.2.1
       function-bind: 1.1.1
@@ -1498,7 +1505,7 @@ packages:
     engines:
       node: '>= 0.4'
     resolution:
-      integrity: sha512-xdQnfykZ9JMEiasTAJZJdMWCQ1Vm00NBw79/AWi7ELfZuuPCSOMDZbT9mkOfSctVtfhb+sAAzrm+j//GjjLHLg==
+      integrity: sha512-jYo/J8XU2emLXl3OLwfwtuFfuF2w6DYPs+xy9ZfVyPkDcrauu6LYrw/q2TyCtrbc/KUdCiC5e9UajRhgNkVopA==
   /es-to-primitive/1.2.1:
     dependencies:
       is-callable: 1.1.4
@@ -1630,7 +1637,7 @@ packages:
       '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
-      '@types/node': 12.12.11
+      '@types/node': 12.12.14
       '@types/sinon': 7.5.1
       lodash: 4.17.15
       mock-stdin: 0.3.1
@@ -2046,7 +2053,7 @@ packages:
       node: '>=0.4.7'
     hasBin: true
     optionalDependencies:
-      uglify-js: 3.6.9
+      uglify-js: 3.7.0
     resolution:
       integrity: sha512-3yPecJoJHK/4c6aZhSvxOyG4vJKDshV36VHp0iVCDVh7o9w2vwi3NSnL2MMPj3YdduqaBcu7cGbggJQM0br9xA==
   /har-schema/2.0.0:
@@ -2535,11 +2542,11 @@ packages:
       integrity: sha512-vrRztU9VRRFDyC+aklfLoeXyNdTfga2EI3udDGn4cZ6fpSXpHLV9X6CHvfoMCPtggg8zvDDmC4b9xfu0z6/llA==
   /istanbul-lib-instrument/3.3.0:
     dependencies:
-      '@babel/generator': 7.7.2
-      '@babel/parser': 7.7.3
-      '@babel/template': 7.7.0
-      '@babel/traverse': 7.7.2
-      '@babel/types': 7.7.2
+      '@babel/generator': 7.7.4
+      '@babel/parser': 7.7.4
+      '@babel/template': 7.7.4
+      '@babel/traverse': 7.7.4
+      '@babel/types': 7.7.4
       istanbul-lib-coverage: 2.0.5
       semver: 6.3.0
     dev: false
@@ -3186,7 +3193,7 @@ packages:
   /normalize-package-data/2.5.0:
     dependencies:
       hosted-git-info: 2.8.5
-      resolve: 1.12.2
+      resolve: 1.13.1
       semver: 5.7.1
       validate-npm-package-license: 3.0.4
     dev: false
@@ -3309,7 +3316,7 @@ packages:
   /object.getownpropertydescriptors/2.0.3:
     dependencies:
       define-properties: 1.1.3
-      es-abstract: 1.16.0
+      es-abstract: 1.16.2
     dev: false
     engines:
       node: '>= 0.8'
@@ -3617,7 +3624,7 @@ packages:
     dependencies:
       fill-keys: 1.0.2
       module-not-found-error: 1.0.1
-      resolve: 1.12.2
+      resolve: 1.13.1
     dev: false
     resolution:
       integrity: sha512-BQWfCqYM+QINd+yawJz23tbBM40VIGXOdDw3X344KcclI/gtBbdWF6SlQ4nK/bYhF9d27KYug9WzljHC6B9Ysg==
@@ -3685,7 +3692,7 @@ packages:
   /quibble/0.5.7:
     dependencies:
       lodash: 4.17.15
-      resolve: 1.12.2
+      resolve: 1.13.1
     dev: false
     engines:
       iojs: '>= 1.0.0'
@@ -3894,12 +3901,12 @@ packages:
     dev: false
     resolution:
       integrity: sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
-  /resolve/1.12.2:
+  /resolve/1.13.1:
     dependencies:
       path-parse: 1.0.6
     dev: false
     resolution:
-      integrity: sha512-cAVTI2VLHWYsGOirfeYVVQ7ZDejtQ9fp4YhYckWDEkFfqbVjaT11iM8k6xSAfGFMM+gDpZjMnFssPu8we+mqFw==
+      integrity: sha512-CxqObCX8K8YtAhOBRg+lrcdn+LK+WYOS8tSjqSFbjtrI5PnS63QPhZl4+yKfrU9tdsbMu9Anr/amegT87M9Z6w==
   /responselike/1.0.2:
     dependencies:
       lowercase-keys: 1.0.0
@@ -4486,7 +4493,7 @@ packages:
       integrity: sha512-1m4RA7xVAJrSGrrXGs0L3YTwyvBs2S8PbRHaLZAkFw7JR8oIFwYtysxlBZhYIa7xSyiYJKZ3iGrrk55cGA3i9A==
   /ts-node/8.5.2_typescript@3.7.2:
     dependencies:
-      arg: 4.1.1
+      arg: 4.1.2
       diff: 4.0.1
       make-error: 1.3.5
       source-map-support: 0.5.16
@@ -4562,7 +4569,7 @@ packages:
       js-yaml: 3.13.1
       minimatch: 3.0.4
       mkdirp: 0.5.1
-      resolve: 1.12.2
+      resolve: 1.13.1
       semver: 5.7.1
       tslib: 1.10.0
       tsutils: 2.29.0_typescript@3.7.2
@@ -4657,7 +4664,7 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-ml7V7JfiN2Xwvcer+XAf2csGO1bPBdRbFCkYBczNZggrBZ9c7G3riSUeJmqEU5uOtXNPMhE3n+R4FA/3YOAWOQ==
-  /uglify-js/3.6.9:
+  /uglify-js/3.7.0:
     dependencies:
       commander: 2.20.3
       source-map: 0.6.1
@@ -4667,7 +4674,7 @@ packages:
     hasBin: true
     optional: true
     resolution:
-      integrity: sha512-pcnnhaoG6RtrvHJ1dFncAe8Od6Nuy30oaJ82ts6//sGSXOP5UjBMEthiProjXmMNHOfd93sqlkztifFMcb+4yw==
+      integrity: sha512-PC/ee458NEMITe1OufAjal65i6lB58R1HWMRcxwvdz1UopW0DYqlRL3xdu3IcTvTXsB02CRHykidkTRL+A3hQA==
   /union-value/1.0.1:
     dependencies:
       arr-union: 3.1.0
@@ -4994,9 +5001,9 @@ packages:
       '@oclif/tslint': 3.1.1
       '@types/chai': 4.2.5
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
       '@types/rimraf': 2.0.3
-      botframework-schema: 4.6.1
+      botframework-schema: 4.6.2
       chai: 4.2.0
       chalk: 2.4.1
       cli-table3: 0.5.1
@@ -5038,7 +5045,7 @@ packages:
       '@types/fs-extra': 5.1.0
       '@types/mocha': 5.2.7
       '@types/nock': 9.3.1
-      '@types/node': 11.15.2
+      '@types/node': 11.15.3
       '@types/proxyquire': 1.3.28
       '@types/sinon': 7.5.1
       '@types/supports-color': 5.3.0
@@ -5076,7 +5083,7 @@ packages:
       '@oclif/tslint': 3.1.1
       '@types/chai': 4.2.5
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
       chai: 4.2.0
       cli-ux: 5.3.3
       fs-extra: 7.0.1
@@ -5107,7 +5114,7 @@ packages:
       '@types/fs-extra': 8.0.1
       '@types/lru-cache': 5.1.0
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
       '@types/semver': 6.2.0
       '@types/xml2js': 0.4.5
       ajv: 6.10.2
@@ -5147,7 +5154,7 @@ packages:
       '@types/chai': 4.2.5
       '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
       antlr4: 4.7.2
       chai: 4.2.0
       chalk: 2.4.1
@@ -5183,10 +5190,11 @@ packages:
       '@oclif/tslint': 3.1.1
       '@types/chai': 4.2.5
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
       '@types/rimraf': 2.0.3
       '@types/sinon': 7.5.1
       azure-cognitiveservices-luis-authoring: 2.1.1
+      azure-cognitiveservices-luis-runtime: 3.0.0
       chai: 4.2.0
       fs-extra: 8.1.0
       globby: 10.0.1
@@ -5203,7 +5211,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-sQN7UBvo8aDP1CdRrT2kaBF1idsW34oAEeK/oIddqtf00105sVtJZX9KUqWA3pu4doKSdkJubSqHRt80MEd2pg==
+      integrity: sha512-E6f+yAl/XwWjr5M5jOm73KV6T//8MkgBnWIqcYPd38zkMNqmrEpGAoCkF7n7VCf0RFAmEEdzR5yzuHEUYrhDJw==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -5218,7 +5226,7 @@ packages:
       '@types/chai': 4.2.5
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
       await-delay: 1.0.0
       camelcase: 4.1.0
       chai: 4.2.0
@@ -5264,7 +5272,7 @@ packages:
       '@types/chai': 4.2.5
       '@types/fs-extra': 5.1.0
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.5
+      '@types/node': 10.17.6
       chai: 4.2.0
       chalk: 2.4.1
       cli-ux: 5.3.3
@@ -5285,6 +5293,7 @@ packages:
       integrity: sha512-nTNbavQ8voUiv6ZouZE0ZWE1jMv5WvyXCelsyjCiLVMn6ghXuU/zPD7PhxVjvksLAY1+/4CEGjvvROFRW6sYbg==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
+registry: ''
 specifiers:
   '@christopheranderson/botbuilder-lg': 4.7.0-a0-b6513caa
   '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
@@ -5312,6 +5321,7 @@ specifiers:
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
   azure-cognitiveservices-luis-authoring: 2.1.1
+  azure-cognitiveservices-luis-runtime: ~3.0.0
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0

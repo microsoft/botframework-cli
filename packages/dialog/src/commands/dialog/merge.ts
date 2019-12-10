@@ -20,29 +20,9 @@ let exec: any = util.promisify(require('child_process').exec)
 
 export default class DialogMerge extends Command {
 
-    static args = [
-        { name: 'glob1', required: true },
-        { name: 'glob2', required: false },
-        { name: 'glob3', required: false },
-        { name: 'glob4', required: false },
-        { name: 'glob5', required: false },
-        { name: 'glob6', required: false },
-        { name: 'glob7', required: false },
-        { name: 'glob8', required: false },
-        { name: 'glob9', required: false },
-    ]
-
-    static flags: flags.Input<any> = {
-        help: flags.help({ char: 'h' }),
-        output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
-        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: 'master', required: false }),
-        update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
-        verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
-    }
-
     private verbose? = false
     private failed = false
-    private missingTypes = new Set()
+    private missingKinds = new Set()
     private currentFile = ''
     private readonly jsonOptions = { spaces: 4, EOL: os.EOL }
 
@@ -62,7 +42,7 @@ export default class DialogMerge extends Command {
     async mergeSchemas(patterns: string[], output?: string, branch?: string, update?: boolean, verbose?: boolean): Promise<boolean> {
         this.verbose = verbose
         this.failed = false
-        this.missingTypes = new Set()
+        this.missingKinds = new Set()
         try {
             let schemaPaths: any[] = []
             if (update) {
@@ -140,17 +120,17 @@ export default class DialogMerge extends Command {
                             }
                         }
                         let filename = schemaPath.split(/[\\\/]/).pop() as string
-                        let type = filename.substr(0, filename.lastIndexOf('.'))
-                        if (!schema.type && !this.isUnionType(schema)) {
+                        let kind = filename.substr(0, filename.lastIndexOf('.'))
+                        if (!schema.type && !this.isUnion(schema)) {
                             schema.type = 'object'
                         }
-                        definitions[type] = schema
+                        definitions[kind] = schema
                     }
                 }
                 this.fixDefinitionReferences(definitions)
                 this.processRoles(definitions, metaSchema)
-                this.addTypeTitles(definitions)
-                this.expandTypes(definitions)
+                this.addKindTitles(definitions)
+                this.expandKinds(definitions)
                 this.addStandardProperties(definitions, metaSchema)
                 this.sortUnions(definitions)
                 let finalDefinitions: any = {}
@@ -161,10 +141,10 @@ export default class DialogMerge extends Command {
                     $schema: metaSchema.$id,
                     $id: ppath.basename(output),
                     type: 'object',
-                    title: 'Component types',
-                    description: 'These are all of the types that can be created by the loader.',
+                    title: 'Component kinds',
+                    description: 'These are all of the kinds that can be created by the loader.',
                     oneOf: Object.keys(definitions)
-                        .filter(schemaName => !this.isUnionType(definitions[schemaName]))
+                        .filter(schemaName => !this.isUnion(definitions[schemaName]))
                         .sort()
                         .map(schemaName => {
                             return {
@@ -277,7 +257,7 @@ export default class DialogMerge extends Command {
                 result = stdout.substring(start + name.length).trim()
             }
         } catch (err) {
-            this.error(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n${err}`)
+            this.warn(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n${err}`)
         }
         return result
     }
@@ -333,14 +313,14 @@ export default class DialogMerge extends Command {
     }
 
     processRoles(definitions: any, metaSchema: any): void {
-        for (let type in definitions) {
-            this.walkJSON(definitions[type], (val: any, _obj, key) => {
+        for (let kind in definitions) {
+            this.walkJSON(definitions[kind], (val: any, _obj, key) => {
                 if (val.$role) {
                     if (typeof val.$role === 'string') {
-                        this.processRole(val.$role, val, type, definitions, metaSchema, key)
+                        this.processRole(val.$role, val, kind, definitions, metaSchema, key)
                     } else {
                         for (let role of val.$role) {
-                            this.processRole(role, val, type, definitions, metaSchema, key)
+                            this.processRole(role, val, kind, definitions, metaSchema, key)
                         }
                     }
                 }
@@ -349,37 +329,37 @@ export default class DialogMerge extends Command {
         }
     }
 
-    processRole(role: string, elt: any, type: string, definitions: any, metaSchema: any, key?: string): void {
-        const prefix = 'unionType('
+    processRole(role: string, elt: any, kind: string, definitions: any, metaSchema: any, key?: string): void {
+        const prefix = 'union('
         if (role === 'expression' || role === 'lg' || role === 'memoryPath') {
-            if (elt.type) {
-                this.error(`${this.currentFile}:error: $role ${role} must not have a type.`)
+            if (elt.kind) {
+                this.error(`${this.currentFile}:error: $role ${role} must not have a kind.`)
             }
             for (let prop in metaSchema.definitions[role]) {
                 if (!elt[prop]) {
                     elt[prop] = metaSchema.definitions[role][prop]
                 }
             }
-        } else if (role === 'unionType') {
+        } else if (role === 'union') {
             if (key) {
-                this.error(`${this.currentFile}:error: unionType $role can only be defined at the top of the schema definition.`)
+                this.error(`${this.currentFile}:error: union $role can only be defined at the top of the schema definition.`)
             }
         } else if (role.startsWith(prefix) && role.endsWith(')')) {
-            let unionType = role.substring(prefix.length, role.length - 1)
-            if (!definitions[unionType]) {
-                this.error(`${this.currentFile}:error: union type ${unionType} is not defined.`)
-            } else if (!this.isUnionType(definitions[unionType])) {
-                this.error(`${this.currentFile}:error: is missing $role of unionType.`)
+            let union = role.substring(prefix.length, role.length - 1)
+            if (!definitions[union]) {
+                this.error(`${this.currentFile}:error: union ${union} is not defined.`)
+            } else if (!this.isUnion(definitions[union])) {
+                this.error(`${this.currentFile}:error: is missing $role of union.`)
             } else {
-                let definition = definitions[type]
-                let unionDefinition = definitions[unionType]
+                let definition = definitions[kind]
+                let unionDefinition = definitions[union]
                 if (!unionDefinition.oneOf) {
                     unionDefinition.oneOf = []
                 }
                 unionDefinition.oneOf.push({
-                    title: type,
+                    title: kind,
                     description: definition.description || '',
-                    $ref: `#/definitions/${type}`
+                    $ref: `#/definitions/${kind}`
                 })
             }
         } else {
@@ -387,12 +367,12 @@ export default class DialogMerge extends Command {
         }
     }
 
-    addTypeTitles(definitions: any): void {
+    addKindTitles(definitions: any): void {
         this.walkJSON(definitions, val => {
             if (val.oneOf) {
                 this.walkJSON(val.oneOf, def => {
                     if (def.type) {
-                        // NOTE: This overrides any existing title but prevents namespace collision
+                        // NOTE: For simple types, not kinds promote into title to prevent collisions
                         def.title = def.type
                     }
                     return false
@@ -403,12 +383,12 @@ export default class DialogMerge extends Command {
     }
 
     fixDefinitionReferences(definitions: any): void {
-        for (let type in definitions) {
-            this.walkJSON(definitions[type], (val: any) => {
+        for (let kind in definitions) {
+            this.walkJSON(definitions[kind], (val: any) => {
                 if (val.$ref && typeof val.$ref === 'string') {
                     let ref: string = val.$ref
                     if (ref.startsWith('#/definitions/')) {
-                        val.$ref = '#/definitions/' + type + '/definitions' + ref.substr(ref.indexOf('/'))
+                        val.$ref = '#/definitions/' + kind + '/definitions' + ref.substr(ref.indexOf('/'))
                     }
                 }
                 return false
@@ -416,13 +396,13 @@ export default class DialogMerge extends Command {
         }
     }
 
-    expandTypes(definitions: any): void {
+    expandKinds(definitions: any): void {
         this.walkJSON(definitions, val => {
-            if (val.$type) {
-                if (definitions.hasOwnProperty(val.$type)) {
-                    val.$ref = '#/definitions/' + val.$type
+            if (val.$kind) {
+                if (definitions.hasOwnProperty(val.$kind)) {
+                    val.$ref = '#/definitions/' + val.$kind
                 } else {
-                    this.missing(val.$type)
+                    this.missing(val.$kind)
                 }
             }
             return false
@@ -430,17 +410,17 @@ export default class DialogMerge extends Command {
     }
 
     addStandardProperties(definitions: any, dialogSchema: any): void {
-        for (let type in definitions) {
-            let definition = definitions[type]
-            if (!this.isUnionType(definition)) {
+        for (let kind in definitions) {
+            let definition = definitions[kind]
+            if (!this.isUnion(definition)) {
                 // Reorder properties to put $ first.
                 let props: any = {
-                    $type: clone(dialogSchema.definitions.type),
+                    $kind: clone(dialogSchema.definitions.kind),
                     $copy: dialogSchema.definitions.copy,
                     $id: dialogSchema.definitions.id,
                     $designer: dialogSchema.definitions.designer
                 }
-                props.$type.const = type
+                props.$kind.const = kind
                 if (definition.properties) {
                     for (let prop in definition.properties) {
                         props[prop] = definition.properties[prop]
@@ -451,9 +431,9 @@ export default class DialogMerge extends Command {
                 definition.patternProperties = { '^\\$': { type: 'string' } }
                 let required = definition.required
                 if (required) {
-                    required.push('$type')
+                    required.push('$kind')
                 } else {
-                    required = ['$type']
+                    required = ['$kind']
                 }
                 delete definition.required
                 definition.anyOf = [
@@ -473,7 +453,7 @@ export default class DialogMerge extends Command {
     sortUnions(definitions: any): void {
         for (let key in definitions) {
             let definition = definitions[key]
-            if (this.isUnionType(definition) && definition.oneOf) {
+            if (this.isUnion(definition) && definition.oneOf) {
                 definition.oneOf = definition.oneOf.sort((a: any, b: any) => a.title.localeCompare(b.title))
             }
         }
@@ -526,14 +506,15 @@ export default class DialogMerge extends Command {
             })
         })
     }
-    isUnionType(schema: any): boolean {
-        return schema.$role === 'unionType'
+
+    isUnion(schema: any): boolean {
+        return schema.$role === 'union'
     }
 
-    missing(type: string): void {
-        if (!this.missingTypes.has(type)) {
-            this.error(`${this.currentFile}: error: Missing ${type} schema file from merge.`)
-            this.missingTypes.add(type)
+    missing(kind: string): void {
+        if (!this.missingKinds.has(kind)) {
+            this.error(`${this.currentFile}: error: Missing ${kind} schema file from merge.`)
+            this.missingKinds.add(kind)
             this.failed = true
         }
     }
@@ -548,9 +529,29 @@ export default class DialogMerge extends Command {
         this.failed = true
     }
 
-    errorMsg(type: string, message: string): void {
-        this.error(`${this.currentFile}: error:${type}: ${message}`)
+    errorMsg(kind: string, message: string): void {
+        this.error(`${this.currentFile}: error:${kind}: ${message}`)
         this.failed = true
+    }
+    
+    static args = [
+        { name: 'glob1', required: true },
+        { name: 'glob2', required: false },
+        { name: 'glob3', required: false },
+        { name: 'glob4', required: false },
+        { name: 'glob5', required: false },
+        { name: 'glob6', required: false },
+        { name: 'glob7', required: false },
+        { name: 'glob8', required: false },
+        { name: 'glob9', required: false },
+    ]
+
+    static flags: flags.Input<any> = {
+        help: flags.help({ char: 'h' }),
+        output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
+        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: 'master', required: false }),
+        update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
+        verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
 
 }

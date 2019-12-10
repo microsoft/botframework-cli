@@ -7,14 +7,61 @@
     "bf": "./bin/run"
   },
   "bugs": "https://github.com/microsoft/botframework-cli",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/scripts",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/microsoft/botframework-cli",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "bin": "bf",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@microsoft/bf-chatdown",
+      "@microsoft/bf-cli-config",
+      "@microsoft/bf-qnamaker",
+      "@microsoft/bf-lu",
+      "@microsoft/bf-luis-cli"
+    ],
+    "hooks": {
+      "init": "./lib/hooks/init/inithook"
+    }
+  },
+  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/cli",
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js",
+    "prepack": "npm run clean && npm run build",
+    "postpack": "rimraf oclif.manifest.json",
+    "posttest": "tslint -p test -t stylish",
+    "build": "tsc -b",
+    "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
+    "test": "mocha",
+    "coverage": "nyc npm run test",
+    "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
+    "doc:readme": "oclif-dev manifest && oclif-dev readme",
+    "version": "oclif-dev manifest"
+  },
+  "types": "lib/index.d.ts",
   "dependencies": {
     "@microsoft/bf-chatdown": "1.0.0",
     "@microsoft/bf-cli-config": "1.0.0",
-    "@microsoft/bf-dialog": "1.0.0",
     "@microsoft/bf-lu": "1.0.0",
+    "@microsoft/bf-luis-cli": "1.0.0",
     "@microsoft/bf-qnamaker": "1.0.0",
     "@oclif/command": "~1.5.13",
     "@oclif/config": "~1.13.0",
+    "@oclif/errors": "~1.2.2",
     "@oclif/plugin-help": "~2.1.6",
     "chalk": "2.4.1",
     "cli-ux": "^5.3.0",
@@ -39,52 +86,5 @@
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5"
-  },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "/bin",
-    "/lib",
-    "/scripts",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/microsoft/botframework-cli",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "MIT",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./lib/commands",
-    "bin": "bf",
-    "plugins": [
-      "@oclif/plugin-help",
-      "@microsoft/bf-chatdown",
-      "@microsoft/bf-cli-config",
-      "@microsoft/bf-dialog",
-      "@microsoft/bf-qnamaker",
-      "@microsoft/bf-lu"
-    ],
-    "hooks": {
-      "init": "./lib/hooks/init/inithook"
-    }
-  },
-  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/cli",
-  "scripts": {
-    "postinstall": "node scripts/postinstall.js",
-    "prepack": "npm run clean && npm run build && npm run doc:readme",
-    "postpack": "rimraf oclif.manifest.json",
-    "posttest": "tslint -p test -t stylish",
-    "build":"tsc -b",
-    "clean":"rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
-    "test": "mocha",
-    "coverage": "nyc npm run test",
-    "report:coverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
-    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
-    "doc:readme":"oclif-dev manifest && oclif-dev readme",
-    "version": "npm run doc:readme && git add README.md"
-  },
-  "types": "lib/index.d.ts"
+  }
 }

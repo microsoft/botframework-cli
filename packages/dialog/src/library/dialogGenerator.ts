@@ -5,7 +5,7 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
-import * as expr from '@christopheranderson/botframework-expressions'
+import * as expressions from '@christopheranderson/botframework-expressions'
 import * as fs from 'fs-extra'
 import * as lg from '@christopheranderson/botbuilder-lg'
 import * as ppath from 'path'
@@ -38,11 +38,11 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
     }
 }
 
-const expressionEngine = new expr.ExpressionEngine((func: any) => {
+const expressionEngine = new expressions.ExpressionEngine((func: any) => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
-        default: return expr.BuiltInFunctions.lookup(func)
+        default: return expressions.BuiltInFunctions.lookup(func)
     }
 })
 
@@ -68,10 +68,10 @@ async function findTemplate(name: string, templateDirs: string[], locale?: strin
     return template
 }
 
-function addLocale(name: string, locale: string, formName: string): string {
-    let result = `${formName}-${name}`
+function addLocale(name: string, locale: string, schemaName: string): string {
+    let result = `${schemaName}-${name}`
     if (locale) {
-        let base = `${formName}-${ppath.basename(name, '.lg')}`
+        let base = `${schemaName}-${ppath.basename(name, '.lg')}`
         let extStart = base.indexOf('.')
         let filename
         if (extStart < 0) {
@@ -85,14 +85,14 @@ function addLocale(name: string, locale: string, formName: string): string {
 }
 
 async function replaceAsync(str: string, re: RegExp, callback: (match: string) => Promise<string>): Promise<string> {
-    let parts :any[] = []
+    let parts: any[] = []
     let i = 0
     if (re.global) {
         re.lastIndex = i
     }
     let match
     while (match = re.exec(str)) {
-                                            // This probably needs to be awaited
+        // This probably needs to be awaited
         parts.push(str.slice(i, match.index), callback(match[0]))
         i = re.lastIndex
         if (!re.global) {
@@ -109,10 +109,10 @@ async function replaceAsync(str: string, re: RegExp, callback: (match: string) =
 
 const RefPattern = /^\s*\[[^\]\n\r]*\]\s*$/gm
 const LocalePattern = /\.[^.]+\.lg$/
-async function processLibraryTemplates(template: string, outPath: string, templateDirs: string[], outDir: string, form: any, scope: any, force: boolean, feedback: Feedback): Promise<string> {
+async function processLibraryTemplates(template: string, outPath: string, templateDirs: string[], outDir: string, scope: any, force: boolean, feedback: Feedback): Promise<string> {
     if (!template.startsWith('>>> Library')) {
         return replaceAsync(template, RefPattern, async (match: string): Promise<string> => {
-            let replacement = await processTemplate(match.substring(match.indexOf('[') + 1, match.indexOf(']')), templateDirs, outDir, form, scope, force, feedback, false)
+            let replacement = await processTemplate(match.substring(match.indexOf('[') + 1, match.indexOf(']')), templateDirs, outDir, scope, force, feedback, false)
             replacement = replacement.replace(LocalePattern, '.lg')
             let local = ppath.relative(ppath.dirname(outPath), replacement)
             return Promise.resolve(`\n[${ppath.basename(replacement)}](${local})`)
@@ -149,7 +149,6 @@ async function processTemplate(
     templateName: string,
     templateDirs: string[],
     outDir: string,
-    form: s.Schema,
     scope: any,
     force: boolean,
     feedback: Feedback,
@@ -164,7 +163,7 @@ async function processTemplate(
             if (template !== undefined) {
                 // NOTE: Ignore templates that are defined, but are empty
                 if (template) {
-                    let filename = addLocale(templateName, scope.locale, scope.formName)
+                    let filename = addLocale(templateName, scope.locale, scope.schemaName)
                     if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
                         filename = template.evaluateTemplate('filename', scope)
                     }
@@ -180,7 +179,7 @@ async function processTemplate(
                                     filename = template.evaluateTemplate('filename', scope)
                                 }
                             }
-                            result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, form, scope, force, feedback)
+                            result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, scope, force, feedback)
                             await fs.writeFile(outPath, result)
                             scope.templates[ppath.extname(outPath).substring(1)].push(ref)
                         } else {
@@ -199,7 +198,6 @@ async function processTemplate(
 }
 
 async function processTemplates(
-    form: s.Schema,
     schema: s.Schema,
     extensions: string[],
     templateDirs: string[],
@@ -223,7 +221,7 @@ async function processTemplates(
         scope.role = role
         for (let ext of ['.lu', '.lg', '.qna', '.dialog']) {
             if (extensions.includes(ext)) {
-                await processTemplate(entityName + ext, templateDirs, outDir, schema, scope, force, feedback, true)
+                await processTemplate(entityName + ext, templateDirs, outDir, scope, force, feedback, true)
             }
         }
     }
@@ -237,7 +235,7 @@ async function processTemplates(
         // Property templates
         for (let templateName of prop.templates()) {
             if (extensions.includes(ppath.extname(templateName))) {
-                await processTemplate(templateName, templateDirs, outDir, schema, scope, force, feedback, false)
+                await processTemplate(templateName, templateDirs, outDir, scope, force, feedback, false)
             }
         }
     }
@@ -247,10 +245,39 @@ async function processTemplates(
     if (schema.schema.$templates) {
         for (let templateName of schema.schema.$templates) {
             if (extensions.includes(ppath.extname(templateName))) {
-                await processTemplate(templateName, templateDirs, outDir, form, scope, force, feedback, false)
+                await processTemplate(templateName, templateDirs, outDir, scope, force, feedback, false)
             }
         }
     }
+}
+
+// Expand strings with @{} expression in them by evaluating and then interpreting as JSON.
+function expandSchema(schema: any, scope: any): any {
+    let newSchema = schema
+    if (Array.isArray(schema)) {
+        newSchema = []
+        for (let val of schema) {
+            let newVal = expandSchema(val, scope)
+            newSchema.push(newVal)
+        }
+    } else if (typeof schema === 'object') {
+        newSchema = {}
+        for (let [key, val] of Object.entries(schema)) {
+            let newVal = expandSchema(val, scope)
+            newSchema[key] = newVal
+        }
+    } else if (typeof schema === 'string' && schema.startsWith('@{')) {
+        let expr = schema.substring(2, schema.length - 1)
+        try {
+            let { value, error } = expressionEngine.parse(expr).tryEvaluate(scope)
+            if (!error) {
+                newSchema = value
+            }
+        } catch (e) {
+            throw new Error(`${expr}: ${e.message}`)
+        }
+    }
+    return newSchema
 }
 
 /**
@@ -264,7 +291,7 @@ async function processTemplates(
  * @param feedback Callback function for progress and errors.
  */
 export async function generate(
-    formPath: string,
+    schemaPath: string,
     outDir: string,
     metaSchema?: string,
     allLocales?: string[],
@@ -272,17 +299,18 @@ export async function generate(
     force?: boolean,
     feedback?: Feedback)
     : Promise<void> {
-        
+
     if (!feedback) {
         feedback = (_info, _message) => true
     }
 
     if (!metaSchema) {
+        // TODO: This should change to master once checked in
         metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/form/schemas/sdk.schema'
     } else if (!metaSchema.startsWith('http')) {
         // Adjust relative to outDir
         metaSchema = ppath.relative(outDir, metaSchema)
-    } 
+    }
 
     if (!allLocales) {
         allLocales = ['en-us']
@@ -297,30 +325,35 @@ export async function generate(
         force = false
         op = 'Generating'
     }
-    feedback(FeedbackType.message, `${op} resources for ${ppath.basename(formPath, '.form')} in ${outDir}`)
+    feedback(FeedbackType.message, `${op} resources for ${ppath.basename(schemaPath, '.schema')} in ${outDir}`)
     feedback(FeedbackType.message, `Locales: ${JSON.stringify(allLocales)} `)
     feedback(FeedbackType.message, `Templates: ${JSON.stringify(templateDirs)} `)
     feedback(FeedbackType.message, `App.schema: ${metaSchema} `)
     try {
         await fs.ensureDir(outDir)
-        let { form, schema } = await processSchemas(formPath, templateDirs, outDir, force, feedback)
+        let schema = await processSchemas(schemaPath, templateDirs, feedback)
         let scope: any = {
             locales: allLocales,
-            form: form.schema,
-            formName: form.name(),
+            schemaName: schema.name(),
             schema: schema.schema,
-            properties: Object.keys(form.schema.properties),
+            properties: schema.schema.$public,
             entities: schema.entityTypes(),
-            triggerIntent: form.triggerIntent(),
+            triggerIntent: schema.triggerIntent(),
             appSchema: metaSchema
         }
         for (let currentLoc of allLocales) {
             await fs.ensureDir(ppath.join(outDir, currentLoc))
             scope.locale = currentLoc
-            await processTemplates(form, schema, ['.lg', '.lu', '.qna'], templateDirs, outDir, scope, force, feedback)
+            await processTemplates(schema, ['.lg', '.lu', '.qna'], templateDirs, outDir, scope, force, feedback)
         }
         scope.locale = ''
-        await processTemplates(form, schema, ['.dialog', '.json'], templateDirs, outDir, scope, force, feedback)
+        await processTemplates(schema, ['.dialog', '.json'], templateDirs, outDir, scope, force, feedback)
+
+        // Expand schema expressions
+        let name = s.Schema.basename(schemaPath)
+        let expanded = expandSchema(schema.schema, scope)
+        let body = JSON.stringify(expanded, (key, val) => (key === '$templates' || key === '$requires') ? undefined : val, 4)
+        await writeFile(ppath.join(outDir, `${name}.schema.dialog`), body, force, feedback)
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }

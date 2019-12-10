@@ -11,23 +11,6 @@ import { Definition, DialogTracker, SchemaTracker } from '../../library/dialogTr
 
 export default class DialogVerify extends Command {
 
-    static args = [
-        { name: 'glob1', required: true },
-        { name: 'glob2', required: false },
-        { name: 'glob3', required: false },
-        { name: 'glob4', required: false },
-        { name: 'glob5', required: false },
-        { name: 'glob6', required: false },
-        { name: 'glob7', required: false },
-        { name: 'glob8', required: false },
-        { name: 'glob9', required: false },
-    ]
-
-    static flags: flags.Input<any> = {
-        help: flags.help({ char: 'h' }),
-        verbose: flags.boolean({ description: 'Show verbose output', default: false }),
-    }
-
     private currentFile = ''
     private files = 0
     private errors = 0
@@ -74,7 +57,7 @@ export default class DialogVerify extends Command {
             }
 
             for (let def of tracker.missingTypes) {
-                this.consoleError(`Missing $type for ${def}`, 'DLG004')
+                this.consoleError(`Missing $kind for ${def}`, 'DLG004')
             }
 
             for (let def of tracker.unusedIDs()) {
@@ -114,5 +97,22 @@ export default class DialogVerify extends Command {
     consoleError(msg: string, code: string): void {
         this.errors++
         this.error(`${this.currentFile} - error ${code || ''}: ${msg}`)
+    }
+
+    static args = [
+        { name: 'glob1', required: true },
+        { name: 'glob2', required: false },
+        { name: 'glob3', required: false },
+        { name: 'glob4', required: false },
+        { name: 'glob5', required: false },
+        { name: 'glob6', required: false },
+        { name: 'glob7', required: false },
+        { name: 'glob8', required: false },
+        { name: 'glob9', required: false },
+    ]
+
+    static flags: flags.Input<any> = {
+        help: flags.help({ char: 'h' }),
+        verbose: flags.boolean({ description: 'Show verbose output', default: false }),
     }
 }

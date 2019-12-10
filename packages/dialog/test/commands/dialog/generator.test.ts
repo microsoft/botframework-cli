@@ -1,5 +1,5 @@
-/**
- * Copyright(c) Microsoft Corporation.All rights reserved.
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
 // tslint:disable:no-console
@@ -16,9 +16,9 @@ import { fail } from 'assert';
 
 describe('dialog:generate', async () => {
     let output = ppath.join(os.tmpdir(), 'sandwich.out')
-    let schemaPath = 'test/commands/dialog/forms/sandwich.form.dialog'
-    let badSchema = 'test/commands/dialog/forms/bad-schema.form.dialog'
-    let notObject = 'test/commands/dialog/forms/not-object.form.dialog'
+    let schemaPath = 'test/commands/dialog/forms/sandwich.schema'
+    let badSchema = 'test/commands/dialog/forms/bad-schema.schema'
+    let notObject = 'test/commands/dialog/forms/not-object.schema'
     beforeEach(async () => {
         await fs.remove(output)
     })

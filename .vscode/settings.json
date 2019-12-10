@@ -1,0 +1,4 @@
+{
+    "typescript.disableAutomaticTypeAcquisition": true,
+    "npm.packageManager": "npm"
+}

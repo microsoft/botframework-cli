@@ -1,14 +1,14 @@
 # filename
-- @{formName}.lu.dialog
+- @{schemaName}.lu.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.MultiLanguageRecognizer",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
-        @{join(foreach(locales, locale, entry(locale, formName)), ',\n')},
-        "": @{concat(file(locales[0], formName))}
+        @{join(foreach(locales, locale, entry(locale, schemaName)), ',\n')},
+        "": @{concat(file(locales[0], schemaName))}
     }
 }
 ```

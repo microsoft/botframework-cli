@@ -1,30 +1,30 @@
 # filename
-- @{formName}-@{property}Set@{property}Entity.dialog
+- @{schemaName}-@{property}Set@{property}Entity.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
     "entity": "@{property}Entity",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
+            "$kind": "Microsoft.IfCondition",
             "condition": "!turn.dialogevent.value.expected",
             "actions":[               
                 {
-                    "$type": "Microsoft.IfCondition",
+                    "$kind": "Microsoft.IfCondition",
                     "condition": "!${property}",
                     "actions":[
                         {
-                            "$type": "Microsoft.SendActivity",
+                            "$kind": "Microsoft.SendActivity",
                             "activity": "@{callUnexpectedSet()}"
                         }
                     ],
                     "elseActions":[
                         {
-                            "$type": "Microsoft.SendActivity",
+                            "$kind": "Microsoft.SendActivity",
                             "activity": "@{callUnexpectedChange()}"
                         }
                     ]
@@ -32,7 +32,7 @@
             ]           
         },
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "${property}",
             "value": "@@{property}Entity"
         }

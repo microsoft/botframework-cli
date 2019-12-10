@@ -16,7 +16,7 @@ type idToSchema = { [id: string]: any }
 async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): Promise<idToSchema> {
     let map: idToSchema = {}
     for (let dir of templateDirs) {
-        for (let file of await glob(ppath.join(dir, '**/*.schema*'))) {
+        for (let file of await glob(ppath.join(dir, '**/*.schema'))) {
             let schema = await getSchema(file, feedback)
             let id: string = schema.$id || ppath.basename(file)
             if (!map[id]) {
@@ -63,14 +63,22 @@ async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): P
     return schema
 }
 
-// Process the form schema to generate all schemas
+function mergeSchemas(allSchema: any, schemas: any[]) {
+    for (let schema of schemas) {
+        allSchema.properties = { ...allSchema.properties, ...schema.properties }
+        allSchema.definitions = { ...allSchema.definitions, ...schema.definitions }
+        if (schema.required) allSchema.required = allSchema.required.concat(schema.required)
+        if (schema.$expectedOnly) allSchema.$expectedOnly = allSchema.$expectedOnly.concat(schema.$expectedOnly)
+        if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
+        if (schema.$public) allSchema.$public = allSchema.$public.concat(schema.$public)
+    }
+}
+
+// Process the root schema to generate all schemas
 // 1) A property can $ref to a property definition to reuse a type like address. Ref resolver includes.
-// 2) $requires:[] can be in a property or at the top.  This is handled by finding all of them and then merging
-//    properties, definition and required.  
-//    The assumption here is that the required properties are orthogonal to the form so unique names are important.
-export type Schemas = { form: s.Schema, schema: s.Schema }
-export async function processSchemas(formPath: string, templateDirs: string[], outDir: string, force: boolean, feedback: fg.Feedback)
-    : Promise<Schemas> {
+// 2) $requires:[] can be in a property or at the top.  This is handled by finding all of the referenced schemas and then merging.  
+export async function processSchemas(schemaPath: string, templateDirs: string[], feedback: fg.Feedback)
+    : Promise<any> {
     let allRequired = await templateSchemas(templateDirs, feedback)
     let resolver: any = {
         canRead: true,
@@ -78,22 +86,20 @@ export async function processSchemas(formPath: string, templateDirs: string[], o
             return allRequired[ppath.basename(file)]
         }
     }
-    let formSchema = await getSchema(formPath, feedback, resolver)
+    let formSchema = await getSchema(schemaPath, feedback, resolver)
     let required = {}
     await findRequires(formSchema, allRequired, required, feedback)
     let allSchema = clone(formSchema)
     if (!allSchema.required) allSchema.required = []
     if (!allSchema.$expectedOnly) allSchema.$expectedOnly = []
     if (!allSchema.$templates) allSchema.$templates = []
-    for (let schema of Object.values(allRequired)) {
-        allSchema.properties = { ...allSchema.properties, ...schema.properties }
-        allSchema.definition = { ...allSchema.definition, ...schema.definition }
-        if (schema.required) allSchema.required = allSchema.required.concat(schema.required)
-        if (schema.$expectedOnly) allSchema.$expectedOnly = allSchema.$expectedOnly.concat(schema.$expectedOnly)
-        if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
+    if (formSchema.$public) {
+        allSchema.$public = formSchema.$public
+    } else {
+        // Default to properties in root schema
+        allSchema.$public = Object.keys(formSchema.properties)
     }
-    let name = s.Schema.basename(formPath)
-    await fg.writeFile(ppath.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema, undefined, 4), force, feedback)
-    await fg.writeFile(ppath.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema, undefined, 4), force, feedback)
-    return { form: new s.Schema(formPath, formSchema), schema: new s.Schema(formPath, allSchema) }
+    mergeSchemas(allSchema, Object.values(allRequired));
+
+    return new s.Schema(schemaPath, allSchema)
 }

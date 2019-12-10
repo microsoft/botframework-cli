@@ -58,9 +58,12 @@ const parseIntentsToLu = function(luisObj, luisJSON){
         fileContent += parseUtterancesToLu(intent.utterances, luisJSON)
         fileContent += NEWLINE + NEWLINE;
         if (intent.intent.features) {
-            fileContent += `@ intent ${intent.intent.name}`;
-            fileContent += addRolesAndFeatures(intent.intent);
-            fileContent += NEWLINE + NEWLINE;
+            let rolesAndFeatures = addRolesAndFeatures(intent.intent);
+            if (rolesAndFeatures !== '') {
+                fileContent += `@ intent ${intent.intent.name}`;
+                fileContent += rolesAndFeatures;
+                fileContent += NEWLINE + NEWLINE;
+            }
         }
     });
     return fileContent

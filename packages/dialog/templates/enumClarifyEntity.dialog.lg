@@ -1,15 +1,15 @@
 # filename
-- @{formName}-@{property}EntityClarify.dialog
+- @{schemaName}-@{property}EntityClarify.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnClarifyEntity",
+    "$kind": "Microsoft.OnClarifyEntity",
     "entity": "@{property}Entity",
     "actions": [
         {
-            "$type": "Microsoft.Ask",
+            "$kind": "Microsoft.Ask",
             "activity": "@{callClarify()}",
             "expectedProperties": ["@{property}"]
         }

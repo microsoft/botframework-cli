@@ -1,17 +1,17 @@
 
 # filename
-- @{formName}-@{property}Setemail.dialog
+- @{schemaName}-@{property}Setemail.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
     "entity": "@email",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
             "value": "@email"          
         }

@@ -25,6 +25,13 @@
       "summary": "Cleans non-rush content. Use rush unlink/purge/tableflip.",
       "enableParallelism": true
     },
+    {
+      "commandKind": "global",
+      "name": "pack",
+      "summary": "Create .tgz packages for publishing in CI",
+      "description":"This doesn't currently work because rush doesn't allow the passing of arbitrary commands like version numbers yet. \n Use  node ./common/scripts/version-and-pack.js --version X.X.X-tag instead.",
+      "shellCommand": "node -e \"throw new Error(`Not supported yet. \\nUse node ./common/scripts/version-and-pack.js --version X.X.X-tag instead`)\""
+    },
     /**
      * Disable parallelism because it makes the results flakier
      */

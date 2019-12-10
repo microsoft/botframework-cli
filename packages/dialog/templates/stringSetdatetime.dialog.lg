@@ -1,17 +1,17 @@
 
 # filename
-- @{formName}-@{property}Setdatetime.dialog
+- @{schemaName}-@{property}Setdatetime.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
     "entity": "@datetime",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
             "value": "join(@datetime.timex,', ')"                              
         }

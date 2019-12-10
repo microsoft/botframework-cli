@@ -21,7 +21,7 @@ describe('luis:application:publish', () => {
   .stdout()
   .command(['luis:application:publish', '--help'])
   .it('should print the help contents when --help is passed as an argument', ctx => {
-    expect(ctx.stdout).to.contain('Publishes a specific version of the application')
+    expect(ctx.stdout).to.contain('Publishes application\'s version')
   })
 
   test

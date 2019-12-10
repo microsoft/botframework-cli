@@ -18,12 +18,13 @@ export default class LuisApplicationCreate extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    name: flags.string({description: 'LUIS application name'}),
-    culture: flags.string({description: 'LUIS application culture'}),
-    description: flags.string({description: 'LUIS application description'}),
-    versionId: flags.string({description: 'LUIS application initial version Id'}),
-    tokenizerVersion: flags.string({description: 'Version specifies how sentences are tokenized.'}),
+    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    name: flags.string({description: 'Name of LUIS application'}),
+    culture: flags.string({description: 'Specify culture language (default: en-us)'}),
+    description: flags.string({description: 'Description of LUIS application'}),
+    versionId: flags.string({description: 'LUIS version Id. (mandatory, defaults to config:LUIS:versionId)'}),
+    tokenizerVersion: flags.string({description: 'Version specifies how sentences are tokenized (optional). See also: https://aka.ms/luistokens'}),
+    save: flags.string({description: 'Save configuration settings from imported app (appId & endpoint)'}),
   }
 
   async run() {
@@ -38,6 +39,7 @@ export default class LuisApplicationCreate extends Command {
       culture,
       description,
       versionId,
+      save,
       tokenizerVersion
     } = await utils.processInputs(flags, flagLabels, configDir)
 
@@ -54,8 +56,32 @@ export default class LuisApplicationCreate extends Command {
     try {
       const newAppId = await client.apps.add(applicationCreateObject, options)
       this.log(`App successfully created with id ${newAppId}.`)
+      if (save) {
+        const config = {
+          appId: newAppId,
+          endpoint
+        }
+        const response = await this.saveImportedConfig(config, configDir)
+        if (response) this.log('Config settings saved')
+      }
     } catch (err) {
       throw new CLIError(`Failed to create app: ${err}`)
     }
+  }
+
+  async saveImportedConfig(configSettings: any, configDir: string) {
+    const configPrefix = 'luis__'
+    let userConfig = await utils.getUserConfig(configDir)
+    if (userConfig === null) {
+      await utils.createConfigFile(configDir)
+      userConfig = {}
+    }
+    // save config
+    const configLabels = Object.keys(configSettings)
+    configLabels.map(config => {
+      userConfig[`${configPrefix}${config}`] = configSettings[config]
+    })
+    await utils.writeUserConfig(userConfig, configDir)
+    return true
   }
 }

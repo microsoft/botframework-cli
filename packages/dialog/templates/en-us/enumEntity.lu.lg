@@ -1,5 +1,5 @@
 # filename
-- @{formName}-@{property}Entity.@{locale}.lu
+- @{schemaName}-@{property}Entity.@{locale}.lu
 
 # template
 - @{Entity()}

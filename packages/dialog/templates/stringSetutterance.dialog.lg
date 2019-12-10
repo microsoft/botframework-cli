@@ -1,17 +1,17 @@
 
 # filename
-- @{formName}-@{property}Setutterance.dialog
+- @{schemaName}-@{property}Setutterance.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
     "entity": "@utterance",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
             "value": "@utterance"          
         }

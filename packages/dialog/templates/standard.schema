@@ -23,24 +23,20 @@
             ]
         },
         "PropertyToChange": {
-            "type": "string",
-            "$mappings": [
-                "PROPERTYName"
-            ],
+            "$ref": "#/definitions/PROPERTYName",
             "$templates": [
                 "PropertyToChangeSet.dialog"
             ]
-        },
-        "lastExpectedProperty":{
-            "type":"string",
-            "$mappings": [
-                "PROPERTYName"
-            ],
-            "$templates": [                
-            ]
         }
     },
-    "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange", "lastExpectedProperty"],
+    "definitions": {
+        "PROPERTYName": {
+            "type": "string",
+            "enum": "@{properties}",
+            "$mappings": ["PROPERTYName"]
+        }
+    },
+    "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
     "$templates": [
         "helpIntent.lu",
         "cancelIntent.lu",
