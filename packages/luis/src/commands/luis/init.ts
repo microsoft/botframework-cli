@@ -20,7 +20,7 @@ export default class LuisInit extends Command {
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
     appId: flags.string({description: 'LUIS application Id'}),
     versionId: flags.string({description: 'LUIS version Id'}),
-    region: flags.string({description: 'LUIS application region. Will be prepended to endpoint hostname: <region>.api.cognitive.microsoft.com. Available Regions: westus, westeurope, australiaeast'}),
+    endpoint: flags.string({description: 'LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com'}),
   }
 
   async run() {
