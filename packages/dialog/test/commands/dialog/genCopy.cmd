@@ -25,7 +25,7 @@ xcopy /s * %outdir%
 
 if "%dobuild%" NEQ "yes" goto pop
 cd %outdir%
-call lubuild --dialogs
+call lubuild
 
 :pop
 popd

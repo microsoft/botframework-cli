@@ -44,6 +44,7 @@
         "triggerIntent.lu",
         "locale.lu",
         "locale.lg",
+        "luis.lu",
         "BeginDialog.dialog",
         "ChooseProperty.dialog",
         "HelpIntent.dialog",
