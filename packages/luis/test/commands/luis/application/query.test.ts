@@ -55,7 +55,6 @@ describe('luis:application:query', () => {
   .stderr()
   .command(['luis:application:query', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--staging', '--query', 'test query'])
   .it('queries an application for intent predictions and displays the results', ctx => {
-    expect(ctx.stdout).to.contain('Successfully fetched prediction data')
     expect(ctx.stdout).to.contain('test intent')
   })
 
