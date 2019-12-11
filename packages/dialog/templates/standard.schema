@@ -35,6 +35,25 @@
             "type": "string",
             "enum": "@{properties}",
             "$mappings": ["PROPERTYName"]
+        },
+        "money":{
+            "type": "object",
+            "properties": {
+                "number": { 
+                    "type": "number",
+                    "$mappings": ["number"]
+                },
+                "units": { 
+                    "type": "string",
+                    "$mappings": ["utterance"]
+                }
+            },
+            "required":["number", "units"],
+            "$templates": [
+                "money.lg",
+                "money.lu",
+                "objectSetmoney.dialog"
+            ]   
         }
     },
     "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
