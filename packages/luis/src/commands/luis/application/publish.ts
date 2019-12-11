@@ -20,8 +20,8 @@ export default class LuisApplicationPublish extends Command {
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: 'Version to publish (mandatory, defaults to config:LUIS:versionId)'}),
-    staging: flags.string({description: 'Publishes application version to Staging slot, otherwise publish to production (default: false)'}),
-    direct: flags.string({description: 'Available only in direct version query. Do not publish to staging or production (default: false)'})
+    staging: flags.boolean({description: 'Publishes application version to Staging slot, otherwise publish to production (default: false)'}),
+    direct: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production (default: false)'})
   }
 
   async run() {
@@ -43,15 +43,15 @@ export default class LuisApplicationPublish extends Command {
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
-    const applicationCreateObject = {
+    const applicationPublishObject = {
       versionId,
-      isStaging: (staging === 'true'),
-      directVersionPublish: (direct === 'true')
+      isStaging: staging,
+      directVersionPublish: direct
     }
 
     try {
-      const publishedAppData = await client.apps.publish(appId, applicationCreateObject)
-      this.log(`App successfully published.\n${JSON.stringify(publishedAppData)}`)
+      const publishedAppData = await client.apps.publish(appId, applicationPublishObject)
+      this.log(`${JSON.stringify(publishedAppData, null, 2)}`)
     } catch (err) {
       throw new CLIError(`Failed to publish app: ${err}`)
     }
