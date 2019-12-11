@@ -51,7 +51,7 @@ export default class LuisApplicationPublish extends Command {
 
     try {
       const publishedAppData = await client.apps.publish(appId, applicationCreateObject)
-      this.log(`App successfully published.\n${JSON.stringify(publishedAppData)}`)
+      this.log(`App successfully published.\n${JSON.stringify(publishedAppData, null, 2)}`)
     } catch (err) {
       throw new CLIError(`Failed to publish app: ${err}`)
     }
