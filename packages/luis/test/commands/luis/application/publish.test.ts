@@ -60,7 +60,7 @@ describe('luis:application:publish', () => {
   .reply(201, {"versionId":"0.1","isStaging":true,"endpointUrl":"https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/4e3d6aec-f79e-4688-b686-feaf6dc2feee","region":"westus","endpointRegion":"westus","failedRegions":"","publishedDateTime":"2019-11-21T21:54:30Z"})
   )
   .stdout()
-  .command(['luis:application:publish', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--versionId', '0.01', '--staging', 'true', '--direct', 'false' ])
+  .command(['luis:application:publish', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--versionId', '0.01', '--direct', '--staging' ])
   .it('publishes a luis app with optional flags and displays the published app data', ctx => {
     expect(ctx.stdout).to.contain('versionId')
     expect(ctx.stdout).to.contain('isStaging')
