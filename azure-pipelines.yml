@@ -25,7 +25,7 @@ jobs:
     pool:
       vmImage: $(imageName)
     variables:
-      buildVersion: '4.7.0-rc0'
+      buildVersion: '4.7.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
     steps:
     #Your build pipeline references the ‘version’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
