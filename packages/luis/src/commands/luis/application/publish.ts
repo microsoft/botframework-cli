@@ -43,14 +43,14 @@ export default class LuisApplicationPublish extends Command {
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
-    const applicationCreateObject = {
+    const applicationPublishObject = {
       versionId,
       isStaging: staging,
       directVersionPublish: direct
     }
 
     try {
-      const publishedAppData = await client.apps.publish(appId, applicationCreateObject)
+      const publishedAppData = await client.apps.publish(appId, applicationPublishObject)
       this.log(`${JSON.stringify(publishedAppData, null, 2)}`)
     } catch (err) {
       throw new CLIError(`Failed to publish app: ${err}`)
