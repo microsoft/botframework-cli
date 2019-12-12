@@ -13,6 +13,7 @@ let parser: any = require('json-schema-ref-parser')
 
 type idToSchema = { [id: string]: any }
 
+// All .schema files found in template directories
 async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): Promise<idToSchema> {
     let map: idToSchema = {}
     for (let dir of templateDirs) {
@@ -27,6 +28,7 @@ async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): P
     return map
 }
 
+// Find recursive requires
 async function findRequires(schema: any, map: idToSchema, found: idToSchema, feedback: fg.Feedback): Promise<void> {
     let addRequired = async (required: string) => {
         if (!found[required]) {
@@ -55,7 +57,7 @@ async function findRequires(schema: any, map: idToSchema, found: idToSchema, fee
 async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): Promise<any> {
     let schema
     try {
-        let noref = await parser.dereference(path, { template: resolver })
+        let noref = await parser.dereference(path, { resolve: { template: resolver }})
         schema = allof(noref)
     } catch (err) {
         feedback(fg.FeedbackType.error, err)
@@ -81,9 +83,10 @@ export async function processSchemas(schemaPath: string, templateDirs: string[],
     : Promise<any> {
     let allRequired = await templateSchemas(templateDirs, feedback)
     let resolver: any = {
-        canRead: true,
-        read(file: string): any {
-            return allRequired[ppath.basename(file)]
+        canRead: /template:/,
+        read(file: any): any {
+            let base = file.url.substring(file.url.indexOf(':') + 1)
+            return allRequired[base]
         }
     }
     let formSchema = await getSchema(schemaPath, feedback, resolver)
@@ -99,7 +102,7 @@ export async function processSchemas(schemaPath: string, templateDirs: string[],
         // Default to properties in root schema
         allSchema.$public = Object.keys(formSchema.properties)
     }
-    mergeSchemas(allSchema, Object.values(allRequired));
+    mergeSchemas(allSchema, Object.values(required));
 
     return new s.Schema(schemaPath, allSchema)
 }

@@ -141,8 +141,11 @@ export class Schema {
     mappings(): string[] {
         let mappings: string[] = this.schema.$mappings
         if (!mappings && this.path) {
-            if (this.schema.type === 'number') {
+            let type = this.typeName()
+            if (type === 'number') {
                 mappings = [`number:${this.path}`, 'number']
+            } else if (type === 'string') {
+                mappings = [this.path + 'Entity', 'utterance']
             } else {
                 mappings = [this.path + 'Entity']
             }
