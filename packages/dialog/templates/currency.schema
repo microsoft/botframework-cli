@@ -10,6 +10,7 @@
                 "type": "string"
             }
         },
-        "$templates": []
+        "$templates": [],
+        "$mappings": [ "money" ]
     }
 }
