@@ -13,6 +13,7 @@ let parser: any = require('json-schema-ref-parser')
 
 type idToSchema = { [id: string]: any }
 
+// All .schema files found in template directories
 async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): Promise<idToSchema> {
     let map: idToSchema = {}
     for (let dir of templateDirs) {
@@ -27,10 +28,11 @@ async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): P
     return map
 }
 
-async function findRequires(schema: any, map: idToSchema, found: idToSchema, feedback: fg.Feedback): Promise<void> {
+// Find recursive requires
+async function findRequires(schema: any, map: idToSchema, found: idToSchema, resolver: any, feedback: fg.Feedback): Promise<void> {
     let addRequired = async (required: string) => {
         if (!found[required]) {
-            let schema = map[required] || await getSchema(required, feedback)
+            let schema = map[required] || await getSchema(required, feedback, resolver)
             if (!schema) {
                 feedback(fg.FeedbackType.error, `Schema ${required} cannot be found`)
             } else {
@@ -45,7 +47,7 @@ async function findRequires(schema: any, map: idToSchema, found: idToSchema, fee
                     await addRequired(required)
                 }
             } else {
-                await findRequires(val, map, found, feedback)
+                await findRequires(val, map, found, resolver, feedback)
             }
         }
     }
@@ -55,7 +57,7 @@ async function findRequires(schema: any, map: idToSchema, found: idToSchema, fee
 async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): Promise<any> {
     let schema
     try {
-        let noref = await parser.dereference(path, { template: resolver })
+        let noref = await parser.dereference(path, { resolve: { template: resolver } })
         schema = allof(noref)
     } catch (err) {
         feedback(fg.FeedbackType.error, err)
@@ -63,6 +65,7 @@ async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): P
     return schema
 }
 
+// Merge together multiple schemas
 function mergeSchemas(allSchema: any, schemas: any[]) {
     for (let schema of schemas) {
         allSchema.properties = { ...allSchema.properties, ...schema.properties }
@@ -75,20 +78,23 @@ function mergeSchemas(allSchema: any, schemas: any[]) {
 }
 
 // Process the root schema to generate all schemas
-// 1) A property can $ref to a property definition to reuse a type like address. Ref resolver includes.
-// 2) $requires:[] can be in a property or at the top.  This is handled by finding all of the referenced schemas and then merging.  
+// 1) A property can $ref to a property definition to reuse a type like address. 
+//    Ref resolver includes template: for referring to template files.
+// 2) $requires:[] can be in a property or at the top.  
+//    This is handled by finding all of the referenced schemas and then merging.  
 export async function processSchemas(schemaPath: string, templateDirs: string[], feedback: fg.Feedback)
     : Promise<any> {
     let allRequired = await templateSchemas(templateDirs, feedback)
     let resolver: any = {
-        canRead: true,
-        read(file: string): any {
-            return allRequired[ppath.basename(file)]
+        canRead: /template:/,
+        read(file: any): any {
+            let base = file.url.substring(file.url.indexOf(':') + 1)
+            return allRequired[base]
         }
     }
     let formSchema = await getSchema(schemaPath, feedback, resolver)
     let required = {}
-    await findRequires(formSchema, allRequired, required, feedback)
+    await findRequires(formSchema, allRequired, required, resolver, feedback)
     let allSchema = clone(formSchema)
     if (!allSchema.required) allSchema.required = []
     if (!allSchema.$expectedOnly) allSchema.$expectedOnly = []
@@ -99,7 +105,7 @@ export async function processSchemas(schemaPath: string, templateDirs: string[],
         // Default to properties in root schema
         allSchema.$public = Object.keys(formSchema.properties)
     }
-    mergeSchemas(allSchema, Object.values(allRequired));
+    mergeSchemas(allSchema, Object.values(required));
 
     return new s.Schema(schemaPath, allSchema)
 }
