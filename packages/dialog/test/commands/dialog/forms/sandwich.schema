@@ -57,9 +57,13 @@
         },
         "Name": {
             "type": "string"
+        },
+        "Price": {
+            "$ref": "template:currency.schema#/currency"
         }
     },
     "required": [
+        "Name",
         "Meat",
         "Bread",
         "Cheese"
