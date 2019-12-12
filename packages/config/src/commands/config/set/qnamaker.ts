@@ -29,7 +29,6 @@ export default class ConfigSetQnamaker extends Command {
   async run() {
     const {flags} = this.parse(ConfigSetQnamaker)
     let userConfig: Config = await getConfigFile(this.config.configDir)
-
     if (flags.subscriptionKey) {
       this.setValue('subscriptionKey', flags.subscriptionKey, userConfig)
     }
