@@ -54,7 +54,6 @@ export default class LuisUp extends Command {
     let files = fileHelper.getLuFiles(flags.in, false, fileExtEnum.LUFile);
 
     files.forEach((file: any) => {
-      
         let fileCulture: string;
         let fileName: string;
         const fileContent = fileHelper.getContentFromFile(file);
@@ -87,14 +86,16 @@ export default class LuisUp extends Command {
 
     const { recognizers, multiRecognizer, luisSettings } = await LuBuildCore.CreateOrUpdateApplication(luConfig);
 
-    if (flags.force || flags.dialog) {
+    if (flags.dialog) {
       const dialogFileContent = await LuBuildCore.GenerateDeclarativeAssets(recognizers, multiRecognizer, luisSettings);
       const contents = dialogFileContent.Contents;
       for (const content of contents) {
         if (flags.out) {
           await fs.writeFile(path.join(flags.out, path.basename(content.Path)), content.Content, 'utf-8');
         } else {
-          await fs.writeFile(content.Path, content.Content, 'utf-8');
+          if (flags.force || !fs.existsSync(content.Path)) {
+            await fs.writeFile(content.Path, content.Content, 'utf-8');
+          }
         }
       }
     }
