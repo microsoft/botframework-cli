@@ -4,7 +4,7 @@
  * Licensed under the MIT License.
  */
 
- /* tslint:disable:no-unused */
+/* tslint:disable:no-unused */
 export * from './schema'
 import * as Validator from 'ajv'
 import * as os from 'os'
@@ -67,7 +67,7 @@ export class Schema {
         let name = ppath.basename(loc)
         return name.substring(0, name.indexOf('.'))
     }
-    
+
     /** 
      * Path to this schema definition. 
      */
@@ -174,7 +174,7 @@ export class Schema {
      */
     entityTypes(): string[] {
         let found: string[] = []
-        for(let entity of Object.keys(this.entities())) {
+        for (let entity of Object.keys(this.entities())) {
             let [entityName, _] = entity.split(':')
             if (!found.includes(entityName)) {
                 found.push(entityName)
@@ -187,7 +187,7 @@ export class Schema {
      * Return the roles or entity types found in schema.
      */
     * roles(): Iterable<string> {
-        for(let entity of Object.keys(this.entities())) {
+        for (let entity of Object.keys(this.entities())) {
             let [entityName, role] = entity.split(':')
             yield role || entityName
         }
@@ -201,8 +201,11 @@ export class Schema {
                 entities[mapping] = entity
             }
         }
-        for (let prop of this.schemaProperties()) {
-            prop.addEntities(entities)
+        // Don't explore properties below an explicit mapping
+        if (!this.schema.$mappings) {
+            for (let prop of this.schemaProperties()) {
+                prop.addEntities(entities)
+            }
         }
     }
 }
