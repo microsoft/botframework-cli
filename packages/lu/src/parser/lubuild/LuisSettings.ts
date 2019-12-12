@@ -2,9 +2,9 @@ export class LuisSettings  {
     public luis: any;
     private settingsPath: string;
 
-    constructor(settingsPath: string) {
+    constructor(settingsPath: string, luis: any) {
         this.settingsPath = settingsPath;
-        this.luis = {};
+        this.luis = luis;
     }
 
     save(): string {

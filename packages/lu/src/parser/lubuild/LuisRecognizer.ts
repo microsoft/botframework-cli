@@ -43,7 +43,7 @@ export class LuisRecognizer {
         return this.luFile;
     }
 
-    versionId: string | undefined;
+    versionId: string;
     readonly applicationId: string | undefined;
     readonly endpoint: string | undefined;
     readonly endpointKey: string | undefined;

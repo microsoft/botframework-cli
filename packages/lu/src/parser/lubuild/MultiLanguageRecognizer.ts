@@ -2,9 +2,9 @@ export class MultiLanguageRecognizer {
     public recognizers: any;
     private dialogPath: string;
 
-    constructor(dialogPath: string) {
+    constructor(dialogPath: string, recognizers: any) {
         this.dialogPath = dialogPath;
-        this.recognizers = {};
+        this.recognizers = recognizers;
     }
 
     save(): string {

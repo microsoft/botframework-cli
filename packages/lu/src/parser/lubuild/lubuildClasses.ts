@@ -43,8 +43,8 @@ export class LUISConfig {
     public GenerateDialogFileContent:boolean = false;
     public FallBackLocale:string = 'en-us';
     public LuContents: Array<Content>;
-    public MultiLangRecognizerDialogPath: string;
-    public LuisSettingsPath: string;
+    public MultiLangRecognizerContent: Content;
+    public LuisSettingsContent: Content;
 
     constructor(
         authoringKey: string, 
@@ -55,8 +55,8 @@ export class LUISConfig {
         generateDialogFileContent: boolean,
         fallBackLocale: string,
         luContents: Array<Content>,
-        multiLangRecognizerDialogPath: string,
-        luisSettingsPath: string) {
+        multiLangRecognizerContent: Content,
+        luisSettingsContent: Content) {
             this.AuthoringKey = authoringKey,
             this.BotName = botName,
             this.Culture = culture,
@@ -65,7 +65,7 @@ export class LUISConfig {
             this.GenerateDialogFileContent = generateDialogFileContent,
             this.FallBackLocale = fallBackLocale,
             this.LuContents = luContents,
-            this.MultiLangRecognizerDialogPath = multiLangRecognizerDialogPath,
-            this.LuisSettingsPath = luisSettingsPath
+            this.MultiLangRecognizerContent = multiLangRecognizerContent,
+            this.LuisSettingsContent = luisSettingsContent
         }
 };

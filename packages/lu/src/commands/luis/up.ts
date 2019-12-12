@@ -15,7 +15,7 @@ export default class LuisUp extends Command {
   static description = 'Build lu files and train and publish luis applications'
 
   static examples = [`
-    $ bf luis:up --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
+    $ bf luis:up --in {INPUT_FILE_OR_FOLDER} --authoringkey {AUTHORING_KEY} --botname {BOT_NAME}
   `]
 
   static flags: any = {
@@ -27,7 +27,7 @@ export default class LuisUp extends Command {
     culture: flags.string({ description: '[Optional] culture code for the content. Infer from .lu if available. Defaults to en-us', default: 'en-us' }),
     authoringregion: flags.string({ description: '[Optional] LUIS authoring region', default: 'westus' }),
     environmentname: flags.string({ description: '[Optional] environment name to include in LUIS app name', default: 'dev' }),
-    force: flags.boolean({ description: 'force write dialog and settings files', default: false }),
+    force: flags.boolean({ description: '[Optional] force write dialog and settings files', default: false }),
     dialog: flags.boolean({ description: '[Optional] write out .dialog files', default: false }),
     fallbacklocale: flags.string({ description: '[Optional] locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set', default: 'en-us' })
   }
@@ -51,26 +51,49 @@ export default class LuisUp extends Command {
       throw new CLIError('No bot name is provided!');
     }
 
-    let files = fileHelper.getLuFiles(flags.in, false, fileExtEnum.LUFile);
+    let files = await fileHelper.getLuFiles(flags.in, false, fileExtEnum.LUFile);
 
-    files.forEach((file: any) => {
-        let fileCulture: string;
-        let fileName: string;
-        const fileContent = fileHelper.getContentFromFile(file);
-        let cultureFromPath = this.getCultureFromPath(file);
-        if (cultureFromPath) {
-          fileCulture = cultureFromPath;
-          let fileNameWithCulture = path.basename(file, path.extname(file));
-          fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1);
-        } else {
-          fileCulture = flags.culture;
-          fileName = path.basename(file, path.extname(file));
-          multiRecognizerDialogPath = path.join(path.dirname(file), `${fileName}.lu.dialog`);
-          luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.environmentname}.${flags.authoringregion}.json`);
-        }
+    for (const file of files) {
+      let fileCulture: string;
+      let fileName: string;
+      const fileContent = await fileHelper.getContentFromFile(file);
+      let cultureFromPath = this.getCultureFromPath(file);
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath;
+        let fileNameWithCulture = path.basename(file, path.extname(file));
+        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1);
+      } else {
+        fileCulture = flags.culture;
+        fileName = path.basename(file, path.extname(file));
+        multiRecognizerDialogPath = path.join(path.dirname(file), `${fileName}.lu.dialog`);
+        luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.environmentname}.${flags.authoringregion}.json`);
+      }
 
-        luContents.push(new Content(fileName, file, fileContent, fileCulture));
-      })
+      luContents.push(new Content(fileName, file, fileContent, fileCulture));
+    }
+
+    let multiRecognizerFileContent: any = {
+      "$type": "Microsoft.MultiLanguageRecognizer",
+      "recognizers": {
+      }
+    }
+
+    if (fs.existsSync(multiRecognizerDialogPath)) {
+      multiRecognizerFileContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerDialogPath));
+    }
+
+    let multiRecognizerContent = new Content(path.basename(multiRecognizerDialogPath), multiRecognizerDialogPath, JSON.stringify(multiRecognizerFileContent));
+
+    let luisSettingsFileContent: any = {
+      "luis": {
+      }
+    }
+
+    if (fs.existsSync(luisSettingsPath)) {
+      luisSettingsFileContent = JSON.parse(await fileHelper.getContentFromFile(luisSettingsPath));
+    }
+
+    let luisSettingsContent = new Content(path.basename(luisSettingsPath), luisSettingsPath, JSON.stringify(luisSettingsFileContent));
 
     const luConfig: LUISConfig = new LUISConfig(
       flags.authoringkey,
@@ -81,8 +104,8 @@ export default class LuisUp extends Command {
       flags.dialog,
       flags.fallbacklocale,
       luContents,
-      multiRecognizerDialogPath,
-      luisSettingsPath);
+      multiRecognizerContent,
+      luisSettingsContent);
 
     const { recognizers, multiRecognizer, luisSettings } = await LuBuildCore.CreateOrUpdateApplication(luConfig);
 
@@ -91,10 +114,10 @@ export default class LuisUp extends Command {
       const contents = dialogFileContent.Contents;
       for (const content of contents) {
         if (flags.out) {
-          await fs.writeFile(path.join(flags.out, path.basename(content.Path)), content.Content, 'utf-8');
+          await fs.writeJson(path.join(flags.out, path.basename(content.Path)), JSON.parse(content.Content), 'utf-8');
         } else {
           if (flags.force || !fs.existsSync(content.Path)) {
-            await fs.writeFile(content.Path, content.Content, 'utf-8');
+            await fs.writeJson(content.Path, JSON.parse(content.Content), 'utf-8');
           }
         }
       }
