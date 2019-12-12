@@ -1,8 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
-    "properties": {
-        "$ref": "address.schema#/definitions/address/properties",        
+    "properties": {      
         "Name": {
             "type": "string",
             "$mappings": [
@@ -34,10 +33,7 @@
             ]
         },
         "Money": {
-            "type": "string",
-            "$mappings": [
-                "money"
-            ]
+            "$ref": "template:money.schema#/money"
         },
         "Percentage": {
             "type": "string",
@@ -102,12 +98,24 @@
                 "swiss",
                 "none"
             ]
+        },
+        "HomeStreet": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "HomeZip": { 
+            "type": "string",
+            "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
+            "$mappings": ["utterance","number"]
+        },
+        "Email": {
+            "type": "string",
+            "$mappings": ["email"]
         }
     },
     "required": 
-         ["Name", "Quantity", "Length", "Bread", "Cheese", "Age", "GeographyV2", "KeyPhrase", "Money", "Percentage", "Temperature", "Url"],
+         ["Money"],
     "$requires": [
-        "standard.schema",
-        "packages/dialog/test/commands/dialog/forms/address.schema"
+        "standard.schema"
     ]
 }
