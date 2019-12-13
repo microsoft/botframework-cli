@@ -59,7 +59,7 @@ export default class LuisUp extends Command {
       let fileName: string;
       const fileContent = await fileHelper.getContentFromFile(file);
       process.stdout.write(`${file} loaded\n`);
-      let cultureFromPath = this.getCultureFromPath(file);
+      let cultureFromPath = fileHelper.getCultureFromPath(file);
       if (cultureFromPath) {
         fileCulture = cultureFromPath;
         let fileNameWithCulture = path.basename(file, path.extname(file));
@@ -137,28 +137,5 @@ export default class LuisUp extends Command {
     }
 
     process.stdout.write(`All tasks done\n`);
-  }
-
-  getCultureFromPath(file: string): string | null {
-    let fn = path.basename(file, path.extname(file));
-    let lang = path.extname(fn).substring(1);
-    switch (lang.toLowerCase()) {
-      case 'en-us':
-      case 'zh-cn':
-      case 'nl-nl':
-      case 'fr-fr':
-      case 'fr-ca':
-      case 'de-de':
-      case 'it-it':
-      case 'ja-jp':
-      case 'ko-kr':
-      case 'pt-br':
-      case 'es-es':
-      case 'es-mx':
-      case 'tr-tr':
-        return lang;
-      default:
-        return null;
-    }
   }
 }
