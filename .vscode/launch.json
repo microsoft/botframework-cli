@@ -102,6 +102,25 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Generate Test",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:generate",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/test2.schema",
+                "-o",
+                "${env:TEMP}/test.out",
+                "--force",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Generate Activity Form",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
@@ -159,6 +178,24 @@
                 "--verbose",
                 "--schema",
                 "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LUBuild",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/lu/bin/run",
+            "outFiles": [
+                "./packages/lu/lib/**"
+            ],
+            "args": [
+                "luis:convert",
+                "--in",
+                "${env:TEMP}/sandwich.out/en-us/sandwich.en-us.lu",
+                "--out",
+                "${env:TEMP}/sandwich.en-us.lu"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         }

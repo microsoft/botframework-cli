@@ -21,9 +21,9 @@ export default class LuisApplicationQuery extends Command {
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
     query: flags.string({description: 'Query string to predict (mandatory)'}),
     staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production'}),
-    verbose: flags.string({description: 'Returns all intents, otherwise only top scoring intent. (default: false)'}),
+    verbose: flags.boolean({description: 'Returns all intents, otherwise only top scoring intent. (default: false)'}),
     timezoneOffset: flags.string({description: 'Timezone offset for the location of the request in minutes (optional)'}),
-    log: flags.string({description: 'Logs query operation on service (default: true)'}),
+    log: flags.boolean({description: 'Logs query operation on service (default: true)'}),
   }
 
   async run() {
@@ -71,7 +71,7 @@ export default class LuisApplicationQuery extends Command {
 
     try {
       const predictionData = await client.predictionOperations.getSlotPrediction(appId, slotName, predictionRequest, options)
-      this.log(`Successfully fetched prediction data ${JSON.stringify(predictionData, null, 2)}.`)
+      this.log(`${JSON.stringify(predictionData, null, 2)}`)
     } catch (err) {
       throw new CLIError(`Failed to fetch prediction data: ${err}`)
     }

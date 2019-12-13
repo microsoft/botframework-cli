@@ -1,0 +1,121 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {      
+        "Name": {
+            "type": "string",
+            "$mappings": [
+                "personName"
+            ]
+        },
+        "Age": {
+            "type": "number",
+            "$mappings": [
+                "number"
+            ]
+        },
+        "Ordinal": {
+            "type": "string",
+            "$mappings": [
+                "ordinal"
+            ]
+        },
+        "GeographyV2": {
+            "type": "string",
+            "$mappings": [
+                "geographyV2"
+            ]
+        },
+        "KeyPhrase": {
+            "type": "string",
+            "$mappings": [
+                "keyPhrase"
+            ]
+        },
+        "Money": {
+            "$ref": "template:money.schema#/money"
+        },
+        "Percentage": {
+            "type": "string",
+            "$mappings": [
+                "percentage"
+            ]
+        },
+        "Temperature": {
+            "type": "string",
+            "$mappings": [
+                "temperature"
+            ]
+        },
+        "Url": {
+            "type": "string",
+            "$mappings": [
+                "url"
+            ]
+        },       
+        "Quantity": {
+            "type": "number",
+            "$mappings": [
+                "number"
+            ],
+            "minimum": 1,
+            "maximum": 10
+        },
+        "Directions": {
+            "type": "string",
+            "$mappings": [
+                "utterance"
+            ],
+            "$comment": "This indicates the whole string is what maps to this."
+        },
+        "Length": {
+            "type": "number",
+            "$mappings": [
+                "dimension",
+                "number"
+            ],
+            "$comment": "This is used by the mapping to convert underlying dimensions to inches.",
+            "$units": "inches"
+        },
+        "Bread": {
+            "type": "string",
+            "enum": [
+                "multiGrainWheat",
+                "rye",
+                "white",
+                "wholeWheat"
+            ]
+        },
+        "Cheese": {
+            "type": "string",
+            "enum": [
+                "american",
+                "cheddar",
+                "feta",
+                "gouda",
+                "pepper jack",
+                "provolone",
+                "swiss",
+                "none"
+            ]
+        },
+        "HomeStreet": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "HomeZip": { 
+            "type": "string",
+            "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
+            "$mappings": ["utterance","number"]
+        },
+        "Email": {
+            "type": "string",
+            "$mappings": ["email"]
+        }
+    },
+    "required": 
+         ["Money"],
+    "$requires": [
+        "standard.schema"
+    ]
+}

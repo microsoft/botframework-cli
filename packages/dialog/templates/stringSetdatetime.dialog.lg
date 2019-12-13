@@ -8,12 +8,12 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
-    "entity": "@datetime",
+    "entity": "datetime",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "join(@datetime.timex,', ')"                              
+            "value": "@datetime"                              
         }
     ]
 }

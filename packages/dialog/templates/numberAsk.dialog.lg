@@ -7,20 +7,17 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAsk",
     "condition":"!$@{property} && contains(dialog.requiredProperties, '@{property}')",
-    "actions": [
+    "actions": [        
         {
             "$kind": "Microsoft.Ask",
             "activity": "@{callAsk()}",
             "expectedProperties": [
                 "@{property}"
             ]
-        },
+        }
     ]
 }
 ```
 
 # callAsk
 - @\{Ask@{property}()}
-
-# callHelp
-- @\{help(@PropertyName)}

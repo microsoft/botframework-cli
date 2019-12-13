@@ -7,10 +7,6 @@
             "minimum": 1,
             "maximum": 10
         },
-        "Directions": {
-            "type": "string",
-            "$comment": "This indicates the whole string is what maps to this."
-        },
         "Length": {
             "type": "number",
             "$mappings": [
@@ -19,6 +15,9 @@
             ],
             "$comment": "This is used by the mapping to convert underlying dimensions to inches.",
             "$units": "inches"
+        },
+        "Name": {
+            "type": "string"
         },
         "Bread": {
             "type": "string",
@@ -55,13 +54,14 @@
                 "none"
             ]
         },
-        "Name": {
-            "type": "string"
+        "Price": {
+            "$ref": "template:currency.schema#/currency"
         }
     },
     "required": [
-        "Meat",
+        "Name",
         "Bread",
+        "Meat",
         "Cheese"
     ],
     "$requires": [
