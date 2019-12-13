@@ -31,7 +31,7 @@ export default class LuisApplicationImport extends Command {
 
     let {endpoint, subscriptionKey, name, inVal} = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, name}
+    const requiredProps = {endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
 
     inVal = inVal ? inVal.trim() : flags.in

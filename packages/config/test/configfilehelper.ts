@@ -27,7 +27,8 @@ export async function initTestConfigFile() {
     qnamaker__subscriptionKey: "222222cccccctttttth223kk3k33",
     qnamaker__hostname: "https://somehost.net",
     qnamaker__endpointKey: "xxxxxxxxxxxxxxxxxxx",
-    qnamaker__kbId: "xxxxxxxxxxxxxxxxxxxxxxx"
+    qnamaker__kbId: "xxxxxxxxxxxxxxxxxxxxxxx",
+    luis__appId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
   }
   
   await fs.mkdirp(pathToConfigJson)

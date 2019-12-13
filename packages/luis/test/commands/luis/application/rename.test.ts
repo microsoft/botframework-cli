@@ -29,7 +29,8 @@ describe('luis:application:rename', () => {
   .stderr()
   .command(['luis:application:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--description', 'test description'])
   .it('displays an error if any required input parameters are missing', ctx => {
-    expect(ctx.stderr).to.contain(`Required input property 'name' missing.`)
+    expect(ctx.stderr).to.contain('Missing required flag:')
+    expect(ctx.stderr).to.contain('--name NAME')
   })
 
   test
