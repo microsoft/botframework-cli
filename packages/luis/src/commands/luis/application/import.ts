@@ -42,7 +42,6 @@ export default class LuisApplicationImport extends Command {
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     const options: any = {}
-
     if (name) options.appName = name
 
     try {
