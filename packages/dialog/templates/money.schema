@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "money": {
+        "type": "money",
+        "$mappings": ["money"],
+        "properties": {
+            "number": {
+                "type": "number"
+            },
+            "units": {
+                "type": "string"
+            }
+        },
+        "required": ["number", "units"],
+        "$templates": ["money.lu","money.lg", "moneyAsk.dialog","moneySet.dialog"]
+    }
+}
