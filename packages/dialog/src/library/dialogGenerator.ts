@@ -252,29 +252,39 @@ async function processTemplates(
 }
 
 // Expand strings with @{} expression in them by evaluating and then interpreting as JSON.
-function expandSchema(schema: any, scope: any): any {
+function expandSchema(schema: any, scope: any, path: string, inProperties: boolean, missingIsError: boolean, feedback: Feedback): any {
     let newSchema = schema
     if (Array.isArray(schema)) {
         newSchema = []
         for (let val of schema) {
-            let newVal = expandSchema(val, scope)
+            let newVal = expandSchema(val, scope, path, false, missingIsError, feedback)
             newSchema.push(newVal)
         }
     } else if (typeof schema === 'object') {
         newSchema = {}
         for (let [key, val] of Object.entries(schema)) {
-            let newVal = expandSchema(val, scope)
+            let newPath = path
+            if (inProperties) {
+                newPath += newPath === '' ? key : '.' + key;
+            }
+            let newVal = expandSchema(val, { ...scope, property: newPath}, newPath, key === 'properties', missingIsError, feedback)
             newSchema[key] = newVal
         }
     } else if (typeof schema === 'string' && schema.startsWith('@{')) {
         let expr = schema.substring(2, schema.length - 1)
         try {
             let { value, error } = expressionEngine.parse(expr).tryEvaluate(scope)
-            if (!error) {
+            if (!error && value) {
                 newSchema = value
+            } else {
+                if (missingIsError) {
+                    feedback(FeedbackType.error, `${expr}: ${error}`)
+                } else {
+                    newSchema = expr;
+                }
             }
         } catch (e) {
-            throw new Error(`${expr}: ${e.message}`)
+            feedback(FeedbackType.error, `${expr}: ${e.message}`)
         }
     }
     return newSchema
@@ -332,6 +342,7 @@ export async function generate(
     try {
         await fs.ensureDir(outDir)
         let schema = await processSchemas(schemaPath, templateDirs, feedback)
+        schema.schema = expandSchema(schema.schema, {}, '', false, false, feedback)
         let scope: any = {
             locales: allLocales,
             schemaName: schema.name(),
@@ -351,7 +362,7 @@ export async function generate(
 
         // Expand schema expressions
         let name = s.Schema.basename(schemaPath)
-        let expanded = expandSchema(schema.schema, scope)
+        let expanded = expandSchema(schema.schema, scope, '', false, true, feedback)
         let body = JSON.stringify(expanded, (key, val) => (key === '$templates' || key === '$requires') ? undefined : val, 4)
         await writeFile(ppath.join(outDir, `${name}.schema.dialog`), body, force, feedback)
     } catch (e) {
