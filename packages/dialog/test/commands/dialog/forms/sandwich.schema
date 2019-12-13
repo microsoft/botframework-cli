@@ -17,7 +17,10 @@
             "$units": "inches"
         },
         "Name": {
-            "type": "string"
+            "type": "string",
+            "$mappings": [
+                "personName"
+            ]
         },
         "Bread": {
             "type": "string",
@@ -55,14 +58,15 @@
             ]
         },
         "Price": {
-            "$ref": "template:currency.schema#/currency"
+            "$ref": "template:money.schema#/money"
         }
     },
     "required": [
         "Name",
         "Bread",
         "Meat",
-        "Cheese"
+        "Cheese",
+        "Price"
     ],
     "$requires": [
         "standard.schema"
