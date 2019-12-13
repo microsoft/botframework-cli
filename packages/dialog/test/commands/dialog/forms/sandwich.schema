@@ -19,7 +19,7 @@
         "Name": {
             "type": "string",
             "$mappings": [
-                "personName"
+                "personName", "utterance"
             ]
         },
         "Bread": {
