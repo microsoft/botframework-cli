@@ -1,16 +1,17 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "currency": {
+    "age": {
         "type": "object",
+        "$mappings": ["age"],
         "properties": {
-            "quantity": {
+            "number": {
                 "type": "number"
             },
-            "currency": {
+            "units": {
                 "type": "string"
             }
         },
-        "$templates": [],
-        "$mappings": [ "money", "@{concat('money:', property)}" ]
+        "required": ["number", "units"],
+        "$templates": ["age.lu","age.lg", "ask.dialog","ageSet.dialog"]
     }
 }

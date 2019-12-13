@@ -9,10 +9,7 @@
             ]
         },
         "Age": {
-            "type": "number",
-            "$mappings": [
-                "number"
-            ]
+            "$ref": "template:age.schema#/age"
         },
         "Ordinal": {
             "type": "string",
@@ -114,7 +111,7 @@
         }
     },
     "required": 
-         ["Money"],
+         ["Money", "Age"],
     "$requires": [
         "standard.schema"
     ]

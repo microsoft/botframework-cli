@@ -1,0 +1,25 @@
+
+# filename
+- @{schemaName}-@{property}Setmoney.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "age",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.number",
+            "value": "@age['number']"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.units",
+            "value": "@age['units']"          
+        }
+    ]               
+}
+```
