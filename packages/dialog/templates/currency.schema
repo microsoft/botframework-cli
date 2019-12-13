@@ -11,6 +11,6 @@
             }
         },
         "$templates": [],
-        "$mappings": [ "money" ]
+        "$mappings": [ "money", "@{concat('money:', property)}" ]
     }
 }
