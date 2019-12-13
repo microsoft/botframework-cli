@@ -41,8 +41,12 @@ export default class LuisApplicationImport extends Command {
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
+    const options: any = {}
+
+    if (name) options.appName = name
+
     try {
-      const newAppId = await client.apps.importMethod(JSON.parse(appJSON), undefined)
+      const newAppId = await client.apps.importMethod(JSON.parse(appJSON), options)
       this.log(`App successfully imported with id ${newAppId}.`)
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)
