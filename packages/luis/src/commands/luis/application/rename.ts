@@ -19,8 +19,8 @@ export default class LuisApplicationRename extends Command {
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    name: flags.string({description: 'Name of LUIS application (mandatory)'}),
-    description: flags.string({description: 'Description of LUIS application (mandatory)'}),
+    name: flags.string({description: 'Name of LUIS application (mandatory)', required: true}),
+    description: flags.string({description: 'Description of LUIS application'}),
   }
 
   async run() {
@@ -36,7 +36,7 @@ export default class LuisApplicationRename extends Command {
       description
     } = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, appId, name}
+    const requiredProps = {endpoint, subscriptionKey, appId}
     utils.validateRequiredProps(requiredProps)
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
