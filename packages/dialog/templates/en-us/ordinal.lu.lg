@@ -2,6 +2,6 @@
 - @{entityFilename()}
 
 # template
-- $PREBUILT:datetimeV2 @{roles()}
+- $PREBUILT:ordinal @{roles()}
 
 [generator.lg](../generator.lg)

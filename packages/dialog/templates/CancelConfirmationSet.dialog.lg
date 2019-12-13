@@ -4,6 +4,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "CancelConfirmation",
+    "entity": "Confirmation",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",

@@ -1,6 +1,4 @@
 import {expect, test} from '@oclif/test'
-import LuisInit from '../../../src/commands/luis/init'
-const sinon = require('sinon')
 
 describe('luis:index', () => {
 
