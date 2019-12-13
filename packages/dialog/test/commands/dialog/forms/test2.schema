@@ -66,13 +66,7 @@
             "$comment": "This indicates the whole string is what maps to this."
         },
         "Length": {
-            "type": "number",
-            "$mappings": [
-                "dimension",
-                "number"
-            ],
-            "$comment": "This is used by the mapping to convert underlying dimensions to inches.",
-            "$units": "inches"
+            "$ref": "template:dimension.schema#/dimension"
         },
         "Bread": {
             "type": "string",
@@ -111,7 +105,7 @@
         }
     },
     "required": 
-         ["Money", "Age"],
+         ["Money", "Age", "Length"],
     "$requires": [
         "standard.schema"
     ]
