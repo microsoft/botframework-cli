@@ -102,6 +102,25 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Generate Test",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:generate",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/test2.schema",
+                "-o",
+                "${env:TEMP}/test.out",
+                "--force",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Generate Activity Form",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",

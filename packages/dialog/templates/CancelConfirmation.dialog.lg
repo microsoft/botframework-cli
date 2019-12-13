@@ -9,8 +9,8 @@
             "$kind": "Microsoft.Ask",
             "activity": "@{callCancel()}",
             "expectedProperties": [
-                "CancelConfirmation"
-            ]
+                "CancelConfirmation"                    
+            ]           
         }
     ]
 }

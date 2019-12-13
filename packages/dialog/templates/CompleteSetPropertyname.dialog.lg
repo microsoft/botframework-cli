@@ -3,13 +3,16 @@
 {
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
-    "property": "PropertyToChange",
+    "property": "CompleteConfirmation",
     "entity": "PROPERTYName",
     "actions": [
         {
             "$kind": "Microsoft.DeleteProperty",
-            "property": "dialog[@PROPERTYName]"            
+            "property": "dialog[@PROPERTYName]"                        
         }
     ]
 }
 ```
+
+# callChooseProperty
+- @\{chooseProperty()}

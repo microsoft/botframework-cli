@@ -7,7 +7,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
-    "entity": "@{property}Entity",
+    "entity": "{property}Entity",
     "actions": [
         {
             "$kind": "Microsoft.IfCondition",
