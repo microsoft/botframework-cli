@@ -30,7 +30,7 @@ export async function getLuFiles(input: string | undefined, recurse = false, ext
   let filesToParse: any[] = []
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
-    filesToParse.push(input)
+    filesToParse.push(path.resolve(input))
     return filesToParse
   }
 

@@ -4,8 +4,8 @@
  */
 
 import { CLIError, Command, flags } from '@microsoft/bf-cli-command'
-import { LuBuildCore } from '../../parser/lubuild/lubuildCore'
-import { LUISConfig, Content } from '../../parser/lubuild/lubuildClasses'
+import { LuBuildCore } from '../../parser/lubuild/core'
+import { LUISConfig, Content } from '../../parser/lubuild/types'
 const path = require('path');
 const fs = require('fs-extra');
 const fileHelper = require('./../../utils/filehelper');
@@ -15,7 +15,7 @@ export default class LuisUp extends Command {
   static description = 'Build lu files and train and publish luis applications'
 
   static examples = [`
-    $ bf luis:up --in {INPUT_FILE_OR_FOLDER} --authoringkey {AUTHORING_KEY} --botname {BOT_NAME}
+    $ bf luis:up --in {INPUT_FILE_OR_FOLDER} --authoringkey {AUTHORING_KEY} --botname {BOT_NAME} --dialog {true}
   `]
 
   static flags: any = {
@@ -51,12 +51,14 @@ export default class LuisUp extends Command {
       throw new CLIError('No bot name is provided!');
     }
 
+    process.stdout.write('Start to load lu files\n');
     let files = await fileHelper.getLuFiles(flags.in, false, fileExtEnum.LUFile);
 
     for (const file of files) {
       let fileCulture: string;
       let fileName: string;
       const fileContent = await fileHelper.getContentFromFile(file);
+      process.stdout.write(`${file} loaded\n`);
       let cultureFromPath = this.getCultureFromPath(file);
       if (cultureFromPath) {
         fileCulture = cultureFromPath;
@@ -65,7 +67,13 @@ export default class LuisUp extends Command {
       } else {
         fileCulture = flags.culture;
         fileName = path.basename(file, path.extname(file));
+      }
+
+      if (multiRecognizerDialogPath === '') {
         multiRecognizerDialogPath = path.join(path.dirname(file), `${fileName}.lu.dialog`);
+      }
+
+      if(luisSettingsPath === '') {
         luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.environmentname}.${flags.authoringregion}.json`);
       }
 
@@ -80,6 +88,7 @@ export default class LuisUp extends Command {
 
     if (fs.existsSync(multiRecognizerDialogPath)) {
       multiRecognizerFileContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerDialogPath));
+      process.stdout.write(`${multiRecognizerDialogPath} loaded\n`);
     }
 
     let multiRecognizerContent = new Content(path.basename(multiRecognizerDialogPath), multiRecognizerDialogPath, JSON.stringify(multiRecognizerFileContent));
@@ -91,6 +100,7 @@ export default class LuisUp extends Command {
 
     if (fs.existsSync(luisSettingsPath)) {
       luisSettingsFileContent = JSON.parse(await fileHelper.getContentFromFile(luisSettingsPath));
+      process.stdout.write(`${luisSettingsPath} loaded\n`);
     }
 
     let luisSettingsContent = new Content(path.basename(luisSettingsPath), luisSettingsPath, JSON.stringify(luisSettingsFileContent));
@@ -107,6 +117,7 @@ export default class LuisUp extends Command {
       multiRecognizerContent,
       luisSettingsContent);
 
+    process.stdout.write(`Start to handle applications\n`);
     const { recognizers, multiRecognizer, luisSettings } = await LuBuildCore.CreateOrUpdateApplication(luConfig);
 
     if (flags.dialog) {
@@ -114,14 +125,18 @@ export default class LuisUp extends Command {
       const contents = dialogFileContent.Contents;
       for (const content of contents) {
         if (flags.out) {
-          await fs.writeJson(path.join(flags.out, path.basename(content.Path)), JSON.parse(content.Content), 'utf-8');
+          process.stdout.write(`Writing to ${content.Path}\n`);
+          await fs.writeFile(path.join(flags.out, path.basename(content.Path)), content.Content, 'utf-8');
         } else {
           if (flags.force || !fs.existsSync(content.Path)) {
-            await fs.writeJson(content.Path, JSON.parse(content.Content), 'utf-8');
+            process.stdout.write(`Writing to ${content.Path}\n`);
+            await fs.writeFile(content.Path, content.Content, 'utf-8');
           }
         }
       }
     }
+
+    process.stdout.write(`All tasks done\n`);
   }
 
   getCultureFromPath(file: string): string | null {

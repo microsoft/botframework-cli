@@ -1,13 +1,13 @@
-import {LUISConfig, Content, DialogFileContent} from './lubuildClasses'
-import { parser } from './../index';
+import {LUISConfig, Content, DialogFileContent} from './types'
+import { parser } from '../index';
+import { LuisAuthoring } from 'luis-apis';
+import { LuisRecognizer } from './luisRecognizer';
+import { MultiLanguageRecognizer } from './multiLanguageRecognizer';
+import { LuisSettings } from './luisSettings';
+import { AppsGetResponse, AzureClouds, AzureRegions, LuisApp } from 'luis-apis/typings/lib/models';
+import { isEqual, differenceWith } from 'lodash'
 import * as msRest from '@azure/ms-rest-js';
 import * as path from 'path';
-import { LuisAuthoring } from 'luis-apis';
-import { LuisRecognizer } from './LuisRecognizer';
-import { MultiLanguageRecognizer } from './MultiLanguageRecognizer';
-import { LuisSettings } from './LuisSettings';
-import { AppsAddResponse, AppsGetResponse, AzureClouds, AzureRegions, LuisApp } from 'luis-apis/typings/lib/models';
-import { isEqual } from 'lodash'
 const delay = require('await-delay');
 
 export class LuBuildCore {
@@ -60,9 +60,8 @@ export class LuBuildCore {
                 multiRecognizer.recognizers[''] = path.basename(dialogFile, '.dialog');
             }
 
-            let appInfo: AppsGetResponse;
-            try {
-                appInfo = await client.apps.get(<AzureRegions>luConfig.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId());
+            if (recognizer.getAppId() !== '') {
+                let appInfo = await client.apps.get(<AzureRegions>luConfig.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId());
                 recognizer.versionId = <string>appInfo.activeVersion;
                 
                 // compare and train model
@@ -73,11 +72,11 @@ export class LuBuildCore {
                     await this.publishApplication(luConfig, client, recognizer);
                 }
 
-            } catch (err) {
+            } else {
                 // create the application with version 0.1
                 await this.createApplication(parsedLUISObj, luConfig, client, recognizer, appName, locale);
 
-                this.publishApplication(luConfig, client, recognizer);
+                await this.publishApplication(luConfig, client, recognizer);
             }
           
             luisSettings.luis[content.Name.split('.').join('_')] = recognizer.getAppId();
@@ -119,7 +118,7 @@ export class LuBuildCore {
     }
 
     private static async createApplication(currentApp: LuisApp, config: LUISConfig, client: LuisAuthoring, recognizer: LuisRecognizer, name: string, culture: string): Promise<boolean> {
-        console.log(`creating LUIS.ai application: ${name} version:0.1`);
+        process.stdout.write(`Creating LUIS.ai application: ${name} version:0.1\n`);
         currentApp.name = name;
         currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${config.BotName} app, targetting ${config.EnvironmentName}`;
         currentApp.culture = culture;
@@ -146,29 +145,40 @@ export class LuBuildCore {
         currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc;
         currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture;
         currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId !== existingApp.versionId ? currentApp.versionId : existingApp.versionId;
+        
+        // convert utterance text from lu file to lower case
+        // as utterances from luis api are all converted to lower case automatically
+        (currentApp.utterances || []).forEach((u: any) => {
+            u.text = u.text.toLowerCase();
+        });
+
+        currentApp.name = existingApp.name;
 
         if (!this.isApplicationEqual(currentApp, existingApp)) {
             let newVersionId: string;
-            if (currentApp.versionId && currentApp.versionId != '') {
+            if (currentApp.versionId && currentApp.versionId !== existingApp.versionId) {
                 newVersionId = currentApp.versionId;
             } else {
-                newVersionId = this.updateVersion(<string>appInfo.activeVersion).toString();
+                newVersionId = this.updateVersion(<string>existingApp.versionId);
             }
 
             currentApp.versionId = newVersionId;
             recognizer.versionId = newVersionId;
 
-            await client.versions.importMethod(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), currentApp, { versionId: newVersionId });
-            // console.log(JSON.stringify(importResult.body));
+            const options: any = {};
+            options.versionId = newVersionId;
+            process.stdout.write(`${recognizer.getLuPath()} creating version=${newVersionId}\n`);
+            await client.versions.importMethod(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), currentApp, options);
             await delay(500);
 
             // train the version
+            process.stdout.write(`${recognizer.getLuPath()} training version=${newVersionId}\n`);
             await client.train.trainVersion(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), newVersionId);
 
             await delay(500);
             return true;
         } else {
-            console.log(`Luis application ${appInfo.name} has no changes`);
+            process.stdout.write(`${recognizer.getLuPath()} no changes\n`);
             return false;
         }
     }
@@ -194,14 +204,14 @@ export class LuBuildCore {
         process.stdout.write('done\n');
     
         // publish the version
-        console.log(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}`);
+        process.stdout.write(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`);
         await client.apps.publish(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(),
             {
                 "versionId": <string>recognizer.versionId,
                 "isStaging": false
             });
     
-        console.log(`${recognizer.getLuPath()} finished`);
+        process.stdout.write(`${recognizer.getLuPath()} finished\n`);
     }
 
     private static updateVersion(versionId: string) {
@@ -217,13 +227,13 @@ export class LuBuildCore {
                 } else {
                     const newVersionId = numberVersionId + 0.1;
 
-                    return strVersion + '-' + newVersionId;
+                    return strVersion + '-' + newVersionId.toFixed(1);
                 }
             } else {
                 return versionId + '-0.1';
             }
         } else {
-            return numberVersionId + 0.1;
+            return (numberVersionId + 0.1).toFixed(1);
         }
     }
 
@@ -232,27 +242,43 @@ export class LuBuildCore {
         equal = equal && isEqual(appA.desc, appB.desc);
         equal = equal && isEqual(appA.versionId, appB.versionId);
         equal = equal && isEqual(appA.culture, appB.culture);
-        equal = equal && isEqual(JSON.stringify(appA.closedLists), JSON.stringify(appB.closedLists));
-        equal = equal && isEqual(JSON.stringify(appA.composites), JSON.stringify(appB.composites));
-        equal = equal && isEqual(JSON.stringify(appA.entities), JSON.stringify(appB.entities));
-        equal = equal && isEqual(JSON.stringify(appA.modelFeatures), JSON.stringify(appB.modelFeatures));
-        equal = equal && isEqual(JSON.stringify(appA.patternAnyEntities), JSON.stringify(appB.patternAnyEntities));
-        equal = equal && isEqual(JSON.stringify(appA.patterns), JSON.stringify(appB.patterns));
-        equal = equal && isEqual(JSON.stringify(appA.prebuiltEntities), JSON.stringify(appB.prebuiltEntities));
-        equal = equal && isEqual(JSON.stringify(appA.regexEntities), JSON.stringify(appB.regexEntities));
-        equal = equal && isEqual(JSON.stringify(appA.regexFeatures), JSON.stringify(appB.regexFeatures));
-        equal = equal && isEqual(JSON.stringify(appA.utterances), JSON.stringify(appB.utterances));
+        equal = equal && this.isArrayEqual(appA.closedLists, appB.closedLists);
+        equal = equal && this.isArrayEqual(appA.composites, appB.composites);
+        equal = equal && this.isArrayEqual(appA.entities, appB.entities);
+        equal = equal && this.isArrayEqual(appA.modelFeatures, appB.modelFeatures);
+        equal = equal && this.isArrayEqual(appA.patternAnyEntities, appB.patternAnyEntities);
+        equal = equal && this.isArrayEqual(appA.patterns, appB.patterns);
+        equal = equal && this.isArrayEqual(appA.prebuiltEntities, appB.prebuiltEntities);
+        equal = equal && this.isArrayEqual(appA.regexEntities, appB.regexEntities);
+        equal = equal && this.isArrayEqual(appA.regexFeatures, appB.regexFeatures);
+        equal = equal && this.isArrayEqual(appA.utterances, appB.utterances);
 
         // handle exception for none intent which is default added in luis portal
         if (equal) {
             if (appA.intents && !appA.intents.some(x => x.name === 'None')) {
                 const appBWithoutNoneIntent = (<any[]>appB.intents).filter(x => x.name !== 'None');
-                equal = equal && isEqual(JSON.stringify(appA.intents), JSON.stringify(appBWithoutNoneIntent));
+                equal = equal && this.isArrayEqual(appA.intents, appBWithoutNoneIntent);
             } else {
-                equal = equal && isEqual(JSON.stringify(appA.intents), JSON.stringify(appB.intents));
+                equal = equal && this.isArrayEqual(appA.intents, appB.intents);
             }
         }
 
         return equal;
     }
+
+    // compare object arrays
+    private static isArrayEqual(x: any, y: any) {
+        let xObj = [];
+        let yObj = [];
+
+        if (x && x.length > 0) {
+            xObj = JSON.parse(JSON.stringify(x));
+        }
+
+        if (y && y.length > 0) {
+            yObj = JSON.parse(JSON.stringify(y));
+        }
+
+        return differenceWith(xObj, yObj, isEqual).length === 0;
+      };
 };

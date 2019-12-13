@@ -13,7 +13,7 @@ export class MultiLanguageRecognizer {
             "recognizers": this.recognizers
         };
 
-        return JSON.stringify(output);
+        return JSON.stringify(output, null, 4);
     }
 
     getDialogPath(): string {

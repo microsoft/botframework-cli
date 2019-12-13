@@ -12,7 +12,7 @@ export class LuisSettings  {
             "luis": this.luis
         };
 
-        return JSON.stringify(output);
+        return JSON.stringify(output, null, 4);
     }
 
     getSettingsPath(): string {

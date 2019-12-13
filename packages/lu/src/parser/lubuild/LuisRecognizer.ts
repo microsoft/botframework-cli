@@ -24,7 +24,7 @@ export class LuisRecognizer {
             endpointKey: this.endpointKey
         };
 
-        return JSON.stringify(output);
+        return JSON.stringify(output, null, 4);
     }
 
     getAppId(): string {
