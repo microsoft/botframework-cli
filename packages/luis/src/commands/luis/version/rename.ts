@@ -20,7 +20,7 @@ export default class LuisVersionRename extends Command {
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: 'Version to update (mandatory, defaults to config:LUIS:versionId)'}),
-    newVersionId: flags.string({description: 'New version name (mandatory)'}),
+    newVersionId: flags.string({description: 'New version id (mandatory)'}),
   }
 
   async run() {
