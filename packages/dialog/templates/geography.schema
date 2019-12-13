@@ -1,0 +1,17 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "geographyV2": {
+        "type": "object",
+        "$mappings": ["geographyV2"],
+        "properties": {
+            "type": {
+                "type": "type"
+            },
+            "location": {
+                "type": "location"
+            }
+        },
+        "required": ["type", "location"],
+        "$templates": ["geographyV2.lu","geographyV2.lg", "ask.dialog","geographyV2Set.dialog"]
+    }
+}

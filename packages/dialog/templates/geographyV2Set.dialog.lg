@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setage.dialog
+- @{schemaName}-@{property}SetgeographyV2.dialog
 
 # template
 - ```
@@ -8,17 +8,17 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
-    "entity": "age",
+    "entity": "geographyV2",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.number",
-            "value": "@age['number']"          
+            "property": "$@{property}.type",
+            "value": "@geographyV2['type']"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.units",
-            "value": "@age['units']"          
+            "property": "$@{property}.location",
+            "value": "@geographyV2['location']"          
         }
     ]               
 }

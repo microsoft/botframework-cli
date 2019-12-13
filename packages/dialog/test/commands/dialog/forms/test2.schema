@@ -17,11 +17,8 @@
                 "ordinal"
             ]
         },
-        "GeographyV2": {
-            "type": "string",
-            "$mappings": [
-                "geographyV2"
-            ]
+        "Location": {
+            "$ref": "template:geography.schema#/geographyV2"
         },
         "KeyPhrase": {
             "type": "string",
@@ -105,7 +102,7 @@
         }
     },
     "required": 
-         ["Money", "Age", "Length"],
+         ["Money", "Age", "Length", "Location"],
     "$requires": [
         "standard.schema"
     ]
