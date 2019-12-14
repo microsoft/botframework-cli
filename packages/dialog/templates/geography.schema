@@ -12,6 +12,6 @@
             }
         },
         "required": ["type", "location"],
-        "$templates": ["geographyV2.lu","geographyV2.lg", "ask.dialog","geographyV2Set.dialog"]
+        "$templates": ["geographyV2.lu","geographyV2.lg", "stringAsk.dialog","geographyV2Set.dialog"]
     }
 }

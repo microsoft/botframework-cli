@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["money.lu","money.lg", "ask.dialog","moneySet.dialog"]
+        "$templates": ["money.lu","money.lg", "stringAsk.dialog","moneySet.dialog"]
     }
 }

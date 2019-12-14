@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["dimension.lu","dimension.lg", "ask.dialog","dimensionSet.dialog"]
+        "$templates": ["dimension.lu","dimension.lg", "stringAsk.dialog","dimensionSet.dialog"]
     }
 }

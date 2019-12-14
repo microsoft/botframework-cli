@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["age.lu","age.lg", "ask.dialog","ageSet.dialog"]
+        "$templates": ["age.lu","age.lg", "stringAsk.dialog","ageSet.dialog"]
     }
 }

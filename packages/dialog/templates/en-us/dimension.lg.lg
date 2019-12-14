@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}.@{locale}.lg
+- @{schemaName}-dimension.@{locale}.lg
 
 # template
 - @{AskTemplate()}\n@{NameTemplate()}\n\[common.lg]
