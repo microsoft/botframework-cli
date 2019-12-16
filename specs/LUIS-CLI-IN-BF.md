@@ -26,6 +26,10 @@ LUIS cognitive service covers a wide surface area via the authoring API. This is
 
 **P0 list (MUST HAVE)**
 
+**Spec Redirect:** Refer to [LUIS-CLI-Usage-Spec.md](./LUIS-CLI-Usage-Spec.md) for authoritative command line form, parameter, usage, and descriptions.
+
+
+
 | Functionality                                                     | API group           | API name                         | BF command group            |
 |-------------------------------------------------------------------|---------------------|----------------------------------|-----------------------------|
 | Version: Clone a version tied to an application                   | Authoring/ Versions | [Clone version][8]               | BF luis:clone:version       |

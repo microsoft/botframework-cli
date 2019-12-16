@@ -1,0 +1,7 @@
+# filename
+- @{schemaName}-money.@{locale}.lu
+
+# template
+- $PREBUILT:money @{roles()}
+
+[generator.lg](../generator.lg)

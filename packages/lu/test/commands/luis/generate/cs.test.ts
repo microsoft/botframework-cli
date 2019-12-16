@@ -111,6 +111,17 @@ describe('luis:generate:cs', () => {
     .stdout()
     .command(['luis:generate:cs',
       '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/FlightBooking.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/FlightBooking.cs')}`])
+    .it('FlightBooking sample json generated correct cs class', async () => {
+      await compareSourceFiles('../../../fixtures/generate/FlightBooking.cs', '../../../fixtures/generate/results/FlightBooking.cs')
+    })
+
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
       `${path.join(__dirname, '../../../fixtures/generate/Intents.json')}`])
     .it('Prints to console if no --out', async ctx => {
       expect(ctx.stdout).to.include('Generating file at stdout')

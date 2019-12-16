@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:phoneNumber @{roles()}
+
+[generator.lg](../generator.lg)

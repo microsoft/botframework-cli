@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 const parseFile = require('../../../src/parser/lufile/parseFileContents');
-const validateLUISBlob = require('../../../src/parser/luisfile/parseLuisFile').validateLUISBlob;
 var chai = require('chai');
 var assert = chai.assert;
 describe('Model as feature definitions', function () {
@@ -220,7 +219,7 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
                         assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
                         assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, undefined);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, true);
                         done();
                     })
                     .catch(err => done(err))
@@ -299,7 +298,7 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
                         assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
                         assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, undefined);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, true);
                         done();
                     })
                     .catch(err => done(err))
@@ -464,7 +463,7 @@ describe('Model as feature definitions', function () {
                         assert.equal(res.LUISJsonStructure.phraselists[1].mode, true);
                         assert.equal(res.LUISJsonStructure.phraselists[1].words, 'portland,PDX');
                         assert.equal(res.LUISJsonStructure.phraselists[1].activated, true);
-                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, undefined);
+                        assert.equal(res.LUISJsonStructure.phraselists[1].enabledForAllModels, true);
                         done();
                     })
                     .catch(err => done(err))

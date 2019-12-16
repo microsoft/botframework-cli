@@ -1,0 +1,21 @@
+# filename
+- @{schemaName}.lu.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
+    "recognizers": {
+        @{join(foreach(locales, locale, entry(locale, schemaName)), ',\n')},
+        "": @{concat(file(locales[0], schemaName))}
+    }
+}
+```
+
+# entry(locale, name)
+- @{concat('"', locale, '": ', file(locale, name))}
+
+# file(locale, name)
+- @{concat('"', name, '.', locale, '.lu"')}
+

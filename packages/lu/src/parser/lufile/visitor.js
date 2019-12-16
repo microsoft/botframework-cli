@@ -1,5 +1,5 @@
 const lp = require('./generated/LUFileParser').LUFileParser;
-const LUISObjNameEnum = require('./enums/luisobjenum');
+const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 
 class Visitor {
     /**
@@ -50,7 +50,7 @@ class Visitor {
             }
         }
 
-        return { utterance, entities, errorMsgs };
+        return { utterance: utterance.trim(), entities, errorMsgs };
     }
 
     /**

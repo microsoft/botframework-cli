@@ -1,0 +1,14 @@
+# filename
+- @{schemaName}-@{property}.@{locale}.lg
+
+# template
+- @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{schemaName}-@{property}Entity.@{locale}.lg]\n\[common.lg]
+
+# AskTemplate
+- # Ask@{property}\n- @\{askString('@{property}')\}\n
+
+# ValueTemplate
+- # @{property}(val)\n- @\{@{concat(property, 'Entity')}(val)}\n
+
+# NameTemplate
+- # @{property}Name\n- @{phrase(property, locale)}\n

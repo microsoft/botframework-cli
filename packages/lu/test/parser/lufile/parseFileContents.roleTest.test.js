@@ -5,8 +5,8 @@
 const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile
-const collateLUISFiles = require('./../../../src/parser/converters/lutoluisconverter').collateLUISFiles
-const toLU = require('./../../../src/parser/converters/luistoluconverter').constructMdFromLUISJSON
+const toLU = require('./../../../src/parser/luis/luConverter')
+const luis = require('./../../../src/parser/luis/luis')
 describe('Roles in LU files', function() {
     it('Correctly parses prebuilt entity with roles defined via labelled utterance', function(done) {
         let fileContent = `> # Intent definitions
@@ -421,7 +421,7 @@ $test:[fromTime]`;
                 let LUISJSon = res.LUISJsonStructure;
                 assert.equal(LUISJSon.entities.length, 1);
                 assert.equal(LUISJSon.entities[0].roles.length, 3);
-                assert.deepEqual(LUISJSon.entities[0].roles, ['middlename', 'firstname', 'lastname']);
+                assert.deepEqual(LUISJSon.entities[0].roles, ["firstname","lastname","middlename"]);
                 done();
             })
             .catch (err => done(`Test failed - ${JSON.stringify(err)}`))
@@ -440,7 +440,7 @@ $test:[fromTime]`;
                 let LUISJSon = res.LUISJsonStructure;
                 assert.equal(LUISJSon.entities.length, 1);
                 assert.equal(LUISJSon.entities[0].roles.length, 3);
-                assert.deepEqual(LUISJSon.entities[0].roles, ['middlename', 'firstname', 'lastname']);
+                assert.deepEqual(LUISJSon.entities[0].roles, ["firstname","lastname","middlename"]);
                 done();
             })
             .catch (err => done(`Test failed - ${JSON.stringify(err)}`))
@@ -629,18 +629,21 @@ $test:[fromTime]`;
             .then(res1 => {
                 parseFile(testLU2, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                assert.equal(res.entities.length, 1);
-                                assert.equal(res.entities[0].roles.length, 2);
-                                assert.deepEqual(res.entities[0].roles, ['firstName', 'lastName']);
+                            try {
+                                let luisObj = new luis()
+                                let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                                luisObj.collate(luisList)
+                                assert.equal(luisObj.entities.length, 1);
+                                assert.equal(luisObj.entities[0].roles.length, 2);
+                                assert.deepEqual(luisObj.entities[0].roles, ['firstName', 'lastName']);
                                 done();
-                            })
-                            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                            } catch(err) { 
+                                done(`Test failed - ${err}`)
+                            }
                     })
-                    .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                    .catch(err => done(`Test failed - ${err}`))
             })
-            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+            .catch(err => done(`Test failed - ${err}`))
     })
 
     it ('Roles for prebuilt entities defined across lu files are collated correctly', function(done) {
@@ -651,14 +654,17 @@ $test:[fromTime]`;
             .then(res1 => {
                 parseFile(testLU2, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                assert.equal(res.prebuiltEntities.length, 1);
-                                assert.equal(res.prebuiltEntities[0].roles.length, 2);
-                                assert.deepEqual(res.prebuiltEntities[0].roles, ['fromDate', 'toDate']);
-                                done();
-                            })
-                            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                        try {
+                            let luisObj = new luis()
+                            let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                            luisObj.collate(luisList)
+                            assert.equal(luisObj.prebuiltEntities.length, 1);
+                            assert.equal(luisObj.prebuiltEntities[0].roles.length, 2);
+                            assert.deepEqual(luisObj.prebuiltEntities[0].roles, ['fromDate', 'toDate']);
+                            done();
+                        } catch(err) {
+                            done(`Test failed - ${err}`)
+                        }
                     })
                     .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
             })
@@ -675,14 +681,17 @@ $test:[fromTime]`;
             .then(res1 => {
                 parseFile(testLU2, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                assert.equal(res.closedLists.length, 1);
-                                assert.equal(res.closedLists[0].roles.length, 2);
-                                assert.deepEqual(res.closedLists[0].roles, ['fromCity', 'toCity']);
+                            try {
+                                let luisObj = new luis()
+                                let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                                luisObj.collate(luisList)
+                                assert.equal(luisObj.closedLists.length, 1);
+                                assert.equal(luisObj.closedLists[0].roles.length, 2);
+                                assert.deepEqual(luisObj.closedLists[0].roles, ['fromCity', 'toCity']);
                                 done();
-                            })
-                            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                            } catch (err) {
+                                done(`Test failed - ${err}`)
+                            }
                     })
                     .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
             })
@@ -698,14 +707,17 @@ $test:[fromTime]`;
             .then(res1 => {
                 parseFile(testLU2, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                assert.equal(res.regex_entities.length, 1);
-                                assert.equal(res.regex_entities[0].roles.length, 2);
-                                assert.deepEqual(res.regex_entities[0].roles, ['fromNumber', 'toNumber']);
-                                done();
-                            })
-                            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                        try {
+                            let luisObj = new luis()
+                            let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                            luisObj.collate(luisList)
+                            assert.equal(luisObj.regex_entities.length, 1);
+                            assert.equal(luisObj.regex_entities[0].roles.length, 2);
+                            assert.deepEqual(luisObj.regex_entities[0].roles, ['fromNumber', 'toNumber']);
+                            done();
+                        } catch(err) {
+                            done(`Test failed - ${err}`)
+                        }
                     })
                     .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
             })
@@ -720,14 +732,17 @@ $test:[fromTime]`;
             .then(res1 => {
                 parseFile(testLU2, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                assert.equal(res.composites.length, 1);
-                                assert.equal(res.composites[0].roles.length, 2);
-                                assert.deepEqual(res.composites[0].roles, ['from', 'to']);
+                            try {
+                                let luisObj = new luis()
+                                let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                                luisObj.collate(luisList)
+                                assert.equal(luisObj.composites.length, 1);
+                                assert.equal(luisObj.composites[0].roles.length, 2);
+                                assert.deepEqual(luisObj.composites[0].roles, ['from', 'to']);
                                 done();
-                            })
-                            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                            } catch(err) {
+                                done(`Test failed - ${err}`)
+                            }
                     })
                     .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
             })
@@ -744,14 +759,17 @@ $test:[fromTime]`;
             .then(res1 => {
                 parseFile(testLU2, false) 
                     .then(res2 => {
-                        collateLUISFiles([res1, res2])
-                            .then(res => {
-                                assert.equal(res.patternAnyEntities.length, 1);
-                                assert.equal(res.patternAnyEntities[0].roles.length, 2);
-                                assert.deepEqual(res.patternAnyEntities[0].roles, ['fromTime', 'toTime']);
-                                done();
-                            })
-                            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
+                        try {
+                            let luisObj = new luis()
+                            let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                            luisObj.collate(luisList)
+                            assert.equal(luisObj.patternAnyEntities.length, 1);
+                            assert.equal(luisObj.patternAnyEntities[0].roles.length, 2);
+                            assert.deepEqual(luisObj.patternAnyEntities[0].roles, ['fromTime', 'toTime']);
+                            done();
+                        } catch(err) {
+                            done(`Test failed - ${err}`)
+                        }
                     })
                     .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
             })
@@ -898,16 +916,16 @@ $test:[fromTime]`;
             "desc": "",
             "culture": "en-us"
           }`;
-          toLU(JSON.parse(testModel))
-            .then(res => {
-                assert.isTrue(res.includes(`- my name is {@firstName=vishwac}`));
-                assert.isTrue(res.includes(`- book a flight to {@toCity=london}`));
-                assert.isTrue(res.includes(`@ ml userName hasRole firstName`));
-                assert.isTrue(res.includes(`@ composite location hasRoles fromCity,toCity = [city]`));
-                done();
-            })
-            .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
-
+          try {
+            let res = toLU(JSON.parse(testModel))
+            assert.isTrue(res.includes(`- my name is {@firstName=vishwac}`));
+            assert.isTrue(res.includes(`- book a flight to {@toCity=london}`));
+            assert.isTrue(res.includes(`@ ml userName hasRole firstName`));
+            assert.isTrue(res.includes(`@ composite location hasRoles fromCity,toCity = [city]`));
+            done();
+          } catch (error) {
+            done(`Test failed - ${JSON.stringify(error)}`)
+          }
     })
 
     it ('prebuilt entities with inline as well as explicit role definition is handled correctly', function(done){

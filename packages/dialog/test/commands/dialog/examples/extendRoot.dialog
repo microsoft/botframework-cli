@@ -1,9 +1,9 @@
 {
     "$schema": "./app.schema",
-    "$type": "root",
+    "$kind": "root",
     "recognizers": [
         {
-            "$type": "Recognizer",
+            "$kind": "Recognizer",
             "$copy": "root#inlineRecognizer",
             "$comment": "Refer to id in another file."
         }

@@ -1,0 +1,26 @@
+# filename
+- @{schemaName}-@{property}Set@{property}Entity.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "@{property}Entity",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        },    
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "${property}",
+            "value": "@@{property}Entity"
+        }
+    ]
+}
+```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @@{property}Entity)}

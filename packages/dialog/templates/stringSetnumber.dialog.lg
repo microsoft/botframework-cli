@@ -1,0 +1,20 @@
+
+# filename
+- @{schemaName}-@{property}Setnumber.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "number",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@number"          
+        }
+    ]               
+}
+```

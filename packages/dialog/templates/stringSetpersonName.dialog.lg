@@ -1,0 +1,20 @@
+
+# filename
+- @{schemaName}-@{property}SetpersonName.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "personName", 
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@personName"          
+        }
+    ]               
+}
+```

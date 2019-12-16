@@ -1,0 +1,74 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "Quantity": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
+        },
+        "Length": {
+            "type": "number",
+            "$mappings": [
+                "dimension",
+                "number"
+            ],
+            "$comment": "This is used by the mapping to convert underlying dimensions to inches.",
+            "$units": "inches"
+        },
+        "Name": {
+            "type": "string",
+            "$mappings": [
+                "personName", "utterance"
+            ]
+        },
+        "Bread": {
+            "type": "string",
+            "enum": [
+                "multiGrainWheat",
+                "rye",
+                "white",
+                "wholeWheat"
+            ]
+        },
+        "Cheese": {
+            "type": "string",
+            "enum": [
+                "american",
+                "cheddar",
+                "feta",
+                "gouda",
+                "pepper jack",
+                "provolone",
+                "swiss",
+                "none"
+            ]
+        },
+        "Meat": {
+            "type": "string",
+            "enum": [
+                "bacon",
+                "chicken",
+                "ham",
+                "pulled pork",
+                "roast beef",
+                "salami",
+                "turkey",
+                "none"
+            ]
+        },
+        "Price": {
+            "$ref": "template:money.schema#/money"
+        }
+    },
+    "required": [
+        "Name",
+        "Bread",
+        "Meat",
+        "Cheese",
+        "Price"
+    ],
+    "$requires": [
+        "standard.schema"
+    ]
+}

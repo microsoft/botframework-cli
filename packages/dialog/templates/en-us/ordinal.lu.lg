@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:ordinal @{roles()}
+
+[generator.lg](../generator.lg)

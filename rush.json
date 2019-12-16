@@ -1,0 +1,43 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
+  "rushVersion": "5.17.1",
+  "pnpmVersion": "4.3.0",
+  "pnpmOptions": {
+  },
+  "nodeSupportedVersionRange": ">=10.13.0 <13.0.0",
+
+  "projects": [
+    {
+      "packageName": "@microsoft/bf-cli-command",
+      "projectFolder": "packages/command"
+    }, 
+    {
+      "packageName": "@microsoft/bf-chatdown",
+      "projectFolder": "packages/chatdown"
+    },
+    {
+      "packageName": "@microsoft/bf-cli-config",
+      "projectFolder": "packages/config"
+    },
+    {
+      "packageName": "@microsoft/bf-dialog",
+      "projectFolder": "packages/dialog"
+    },
+    {
+      "packageName": "@microsoft/bf-lu",
+      "projectFolder": "packages/lu"
+    },
+    {
+      "packageName": "@microsoft/bf-luis-cli",
+      "projectFolder": "packages/luis"
+    },
+    {
+      "packageName": "@microsoft/bf-qnamaker",
+      "projectFolder": "packages/qnamaker"
+    },
+    {
+      "packageName": "@microsoft/botframework-cli",
+      "projectFolder": "packages/cli"
+    }
+  ]
+}

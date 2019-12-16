@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:dimension @{roles()}
+
+[generator.lg](../generator.lg)

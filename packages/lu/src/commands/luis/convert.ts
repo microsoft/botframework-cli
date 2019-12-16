@@ -4,12 +4,12 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-const exception = require('./../../parser/lufile/classes/exception')
+const exception = require('./../../parser/utils/exception')
 const fs = require('fs-extra')
 const file = require('./../../utils/filehelper')
-const luConverter = require('./../../parser/converters/lutoluisconverter')
-const luisConverter = require('./../../parser/converters/luistoluconverter')
-const fileExtEnum = require('./../../parser/lufile/helpers').FileExtTypeEnum
+const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
+const Luis = require('./../../parser/luis/luis')
+const LuisBuilder = require('./../../parser/luis/luisBuilder')
 
 export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
@@ -33,25 +33,31 @@ export default class LuisConvert extends Command {
     try {
       const {flags} = this.parse(LuisConvert)
       // Check if data piped in stdin
-      let stdin = await this.readStdin()
+      const stdin = await this.readStdin()
 
       //Check if file or folder
       //if folder, only lu to luis is supported
-      let isLu = await file.detectLuContent(stdin, flags.in)
+      const isLu = await file.detectLuContent(stdin, flags.in)
 
       // Parse the object depending on the input
       let result: any
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
-        result = await luConverter.parseLuToLuis(luFiles, flags.log, flags.culture)
+        result = await LuisBuilder.build(luFiles, flags.log, flags.culture)
+        if (!result.hasContent()) {
+          throw new CLIError('No LU or Luis content parsed!')
+        }
       } else {
-        const luisFile = stdin ? stdin : await file.getContentFromFile(flags.in)
-        result = await luisConverter.parseLuisObjectToLu(luisFile, flags.sort, flags.in)
-      }
+        const luisContent = stdin ? stdin : await file.getContentFromFile(flags.in)
+        const luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
+        if (flags.sort) {
+          luisObject.sort()
+        }
 
-      // If result is null or undefined return
-      if (!result) {
-        throw new CLIError('No LU or Luis content parsed!')
+        result = luisObject.parseToLuContent()
+        if (!result) {
+          throw new CLIError('No LU or Luis content parsed!')
+        }
       }
 
        // Add headers to Luis Json

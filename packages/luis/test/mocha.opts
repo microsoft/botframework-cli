@@ -1,0 +1,6 @@
+--require test/hook.js
+--require source-map-support/register
+--recursive
+--reporter spec
+--timeout 60000
+**/*.test.{ts,js}
