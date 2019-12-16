@@ -1,4 +1,4 @@
-# Lubuild -> bf luis:up
+# Lubuild -> bf luis:build
 
 Lubuild is a preview CLI tool available in [botbuilder-tools repository][1]. As part of the migration of botbuilder-tools to BF-CLI, the **core** functionality of the existing lubuild tool will be brought forward to BF-CLI as
 
@@ -49,25 +49,27 @@ When the CLI route is attempting to infer the locale from the file name, we shou
 
 ## CLI Command
 
-`bf luis:up`
+`bf luis:build`
 
 | Parameters        | Description                                                                                                             |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------|
 | --in              | lu file or folder                                                                                                       |
-| --force           | force write                                                                                                             |
+| --force           | [optional] force write                                                                                                             |
 | --authoringkey    | LUIS authoring key                                                                                                      |
 | --botname         | bot name                                                                                                                |
 | --out             | [Optional] output location                                                                                              |
 | --culture         | [Optional] culture code for the content. Infer from .lu if available. Defaults to `en-us`                               |
-| --authoringregion | [Optional] LUIS authoring region                                                                                        |
-| --environmentname | [Optional] nvironment name to include in LUIS app name                                                                  |
+| --region | [Optional] LUIS authoring region                                                                                        |
+| --suffix | [Optional] environment name as a suffix identifier to include in LUIS app name                                                                  |
 | --dialog          | [Optional] write out .dialog files                                                                                      |
 | --fallbacklocale  | [Optional] locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set. |
 
-<a name="dialog-files" id="dialog-files"></a>
+
+`bf luis:
+<a id="dialog-files"></a>
 
 ## Writing out .dialog files
-All up:luis.settings.<environmentname>.<region>.json
+All up:luis.settings.\<environmentname>.\<region>.json
 ```json
 {
     "luis": {
@@ -76,7 +78,7 @@ All up:luis.settings.<environmentname>.<region>.json
 }
 ```
 For each LU file: 
-<lufilename>_<locale>.dialog
+\<lufilename>_\<locale>.dialog
 ```json
 {
     "$type": "Microsoft.LuisRecognizer",
@@ -86,7 +88,7 @@ For each LU file:
 }
 ```
 
-<lufilename>.lu.dialog
+\<lufilename>.lu.dialog
 ```json
 {
     "$type": "Microsoft.MultiLanguageRecognizer",
@@ -107,7 +109,7 @@ export class LuBuild {
         return new Array<LuBuildResult>();
     }
 
-    public async GenerateDeclarativeAssets(LuisAppList:List<LUISApps>):Promise<DialogFileContent>;
+    public async GenerateDeclarativeAssets(LuisAppList:List<LUISApps>):Promise<Array<DialogFileContent>>;
 };
 
 export class DialogFileContent {
@@ -137,8 +139,7 @@ export class LUISConfig {
     public EnvironmentName:string = 'dev';
     public GenerateDialogFileContent:boolean = false;
     public FallBackLocale:string = 'en-us';
-    public IDs:List<string>;
-    public Content:List<Content>;
+    public LuContent:Array<Content>;
 };
 ```
 
