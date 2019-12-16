@@ -36,10 +36,7 @@
             ]
         },
         "Temperature": {
-            "type": "string",
-            "$mappings": [
-                "temperature"
-            ]
+            "$ref": "template:temperature.schema#/temperature"
         },
         "Url": {
             "type": "string",
@@ -102,7 +99,7 @@
         }
     },
     "required": 
-         ["Money", "Age", "Length", "Location"],
+         ["Name", "Age", "Ordinal", "Location", "KeyPhrase", "Money", "Percentage", "Temperature", "Url", "Quantity", "Directions", "Length", "Bread", "Cheese", "HomeStreet", "HomeZip", "Email"],
     "$requires": [
         "standard.schema"
     ]
