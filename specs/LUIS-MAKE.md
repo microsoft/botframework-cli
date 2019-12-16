@@ -65,7 +65,6 @@ When the CLI route is attempting to infer the locale from the file name, we shou
 | --fallbacklocale  | [Optional] locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set. |
 
 
-`bf luis:
 <a id="dialog-files"></a>
 
 ## Writing out .dialog files
