@@ -20,7 +20,7 @@
         "Geographyv2": {
             "$ref": "template:geography.schema#/geographyV2"
         },
-        "Keyphrase": {
+        "Keyphraseproperty": {
             "type": "string",
             "$mappings": [
                 "keyPhrase"
@@ -52,7 +52,7 @@
             "minimum": 1,
             "maximum": 10
         },
-        "Utterance": {
+        "Utteranceproperty": {
             "type": "string",
             "$mappings": [
                 "utterance"
@@ -95,7 +95,7 @@
         }
     },
     "required": 
-         ["Personname", "Age", "Ordinal", "Geographyv2", "KeyPhrase", "Money", "Percentage", "Temperature", "Url", "Quantity", "Utterance", "Dimension", "Enum1", "Enum2", "Zipcodepattern","Email"],
+         ["Personname", "Age", "Ordinal", "Geographyv2", "Keyphraseproperty", "Money", "Percentage", "Temperature", "Url", "Quantity", "Utteranceproperty", "Dimension", "Enum1", "Enum2", "Zipcodepattern","Email"],
     "$requires": [
         "standard.schema"
     ]
