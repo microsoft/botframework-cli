@@ -10,6 +10,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const fileHelper = require('./../../utils/filehelper');
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
+const LuisBuilder = require('./../../parser/luis/luisBuilder')
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
@@ -57,12 +58,14 @@ export default class LuisBuild extends Command {
     }
 
     process.stdout.write('Start to load lu files\n');
-    let files = await fileHelper.getLuFiles(flags.in, false, fileExtEnum.LUFile);
+    let files = await fileHelper.getLuFiles(flags.in, true, fileExtEnum.LUFile);
 
     for (const file of files) {
       let fileCulture: string;
       let fileName: string;
-      const fileContent = await fileHelper.getContentFromFile(file);
+      const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile);
+      const result = await LuisBuilder.build(luFiles, true, flags.culture);
+      const fileContent = result.parseToLuContent();
       process.stdout.write(`${file} loaded\n`);
       let cultureFromPath = fileHelper.getCultureFromPath(file);
       if (cultureFromPath) {
