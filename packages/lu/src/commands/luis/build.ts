@@ -20,21 +20,26 @@ export default class LuisBuild extends Command {
 
   static flags: any = {
     help: flags.help({ char: 'h' }),
-    in: flags.string({ char: 'i', description: 'lu file or folder' }),
-    authoringkey: flags.string({ description: 'LUIS authoring key' }),
-    botname: flags.string({ description: 'bot name' }),
-    out: flags.string({ description: '[Optional] output location' }),
-    culture: flags.string({ description: '[Optional] culture code for the content. Infer from .lu if available. Defaults to en-us', default: 'en-us' }),
-    region: flags.string({ description: '[Optional] LUIS authoring region', default: 'westus' }),
-    suffix: flags.string({ description: '[Optional] environment name as a suffix identifier to include in LUIS app name', default: 'dev' }),
-    force: flags.boolean({ description: '[Optional] force write dialog and settings files', default: false }),
-    dialog: flags.boolean({ description: '[Optional] write out .dialog files', default: false }),
-    fallbacklocale: flags.string({ description: '[Optional] locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set', default: 'en-us' })
+    in: flags.string({ char: 'i', description: 'Lu file or folder', required: true }),
+    authoringkey: flags.string({ description: 'LUIS authoring key', required: true }),
+    botname: flags.string({ description: 'Bot name', required: true }),
+    out: flags.string({ description: 'Output location' }),
+    culture: flags.string({ description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us' }),
+    region: flags.string({ description: 'LUIS authoring region' }),
+    suffix: flags.string({ description: 'Environment name as a suffix identifier to include in LUIS app name' }),
+    force: flags.boolean({ char: 'f', description: 'Force write dialog and settings files', default: false }),
+    dialog: flags.boolean({ description: 'Write out .dialog files', default: false }),
+    fallbacklocale: flags.string({ description: 'Locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set' })
   }
 
   async run() {
     const { flags } = this.parse(LuisBuild)
 
+    flags.culture = flags.culture && flags.culture !== '' ? flags.culture : 'en-us';
+    flags.region = flags.region && flags.region !== '' ? flags.region : 'westus';
+    flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development';
+    flags.fallbacklocale = flags.fallbacklocale && flags.fallbacklocale !== '' ? flags.fallbacklocale : 'en-us'
+ 
     const luContents: Array<Content> = [];
     let multiRecognizerDialogPath: string = '';
     let luisSettingsPath: string = '';
