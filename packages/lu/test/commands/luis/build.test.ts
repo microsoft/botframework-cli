@@ -7,7 +7,7 @@ describe('luis:build cli parameters test', () => {
     .stdout()
     .command(['luis:build', '--help'])
     .it('should print the help contents when --help is passed as an argument', ctx => {
-      expect(ctx.stdout).to.contain('Build lu files and train and publish luis applications')
+      expect(ctx.stdout).to.contain('Build lu files to train and publish luis applications')
     })
 
   test
