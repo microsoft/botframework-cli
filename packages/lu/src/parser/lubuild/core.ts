@@ -125,7 +125,7 @@ export class LuBuildCore {
         currentApp.versionId = "0.1";
         recognizer.versionId = "0.1";
 
-        let response = await client.apps.importMethod(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", currentApp, { appName: name });
+        let response = await client.apps.importMethod(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", currentApp);
 
         recognizer.setAppId(response.body);
 
