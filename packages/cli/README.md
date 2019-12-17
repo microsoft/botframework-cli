@@ -18,9 +18,11 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf chatdown`](#bf-chatdown)
 * [`bf chatdown:convert`](#bf-chatdownconvert)
 * [`bf config`](#bf-config)
+* [`bf config:set:luis`](#bf-configsetluis)
 * [`bf config:set:qnamaker`](#bf-configsetqnamaker)
 * [`bf config:set:telemetry`](#bf-configsettelemetry)
 * [`bf config:show`](#bf-configshow)
+* [`bf config:show:luis`](#bf-configshowluis)
 * [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
 * [`bf help [COMMAND]`](#bf-help-command)
@@ -37,7 +39,6 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf luis:endpoints:list`](#bf-luisendpointslist)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
-* [`bf luis:init`](#bf-luisinit)
 * [`bf luis:train:run`](#bf-luistrainrun)
 * [`bf luis:train:show`](#bf-luistrainshow)
 * [`bf luis:translate`](#bf-luistranslate)
@@ -86,7 +87,7 @@ OPTIONS
   -h, --help  Chatdown command help
 ```
 
-_See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/index.ts)_
+_See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src\commands\chatdown\index.ts)_
 
 ## `bf chatdown:convert`
 
@@ -118,7 +119,7 @@ EXAMPLE
      $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static
 ```
 
-_See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
+_See code: [@microsoft/bf-chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src\commands\chatdown\convert.ts)_
 
 ## `bf config`
 
@@ -132,7 +133,30 @@ OPTIONS
   -h, --help  config help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/index.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\index.ts)_
+
+## `bf config:set:luis`
+
+Stores default LUIS application values in global config.
+
+```
+USAGE
+  $ bf config:set:luis
+
+OPTIONS
+  -h, --help                         show CLI help
+  --appId=appId                      LUIS application Id
+  --endpoint=endpoint                LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com
+  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
+  --versionId=versionId              LUIS version Id
+
+EXAMPLE
+
+       $ bf luis:init --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region 
+  {REGION}
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\set\luis.ts)_
 
 ## `bf config:set:qnamaker`
 
@@ -159,7 +183,7 @@ EXAMPLE
      }
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/qnamaker.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\set\qnamaker.ts)_
 
 ## `bf config:set:telemetry`
 
@@ -175,7 +199,7 @@ OPTIONS
   -h, --help     config:set:telemetry help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/telemetry.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\set\telemetry.ts)_
 
 ## `bf config:show`
 
@@ -189,7 +213,21 @@ OPTIONS
   -h, --help  config:show help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\show.ts)_
+
+## `bf config:show:luis`
+
+Display LUIS settings
+
+```
+USAGE
+  $ bf config:show:luis
+
+OPTIONS
+  -h, --help  config:show:luis help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\show\luis.ts)_
 
 ## `bf config:show:qnamaker`
 
@@ -203,7 +241,7 @@ OPTIONS
   -h, --help  config:show:qnamaker help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/qnamaker.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\show\qnamaker.ts)_
 
 ## `bf config:show:telemetry`
 
@@ -217,7 +255,7 @@ OPTIONS
   -h, --help  config:show:telemetry help
 ```
 
-_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/telemetry.ts)_
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src\commands\config\show\telemetry.ts)_
 
 ## `bf help [COMMAND]`
 
@@ -234,21 +272,21 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src\commands\help.ts)_
 
 ## `bf luis`
 
-Converts, translates luis/lu files or generates source code.
+Manages LUIS assets on service and/or locally.
 
 ```
 USAGE
   $ bf luis
 
 OPTIONS
-  -h, --help  Display Luis available commands
+  -h, --help  LUIS command help
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/index.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\index.ts)_
 
 ## `bf luis:application:create`
 
@@ -263,16 +301,16 @@ OPTIONS
   --culture=culture                    Specify culture language (default: en-us)
   --description=description            Description of LUIS application
   --endpoint=endpoint                  LUIS endpoint hostname
-  --name=name                          Name of LUIS application
-  --save=save                          Save configuration settings from imported app (appId & endpoint)
+  --name=name                          (required) Name of LUIS application
+  --save                               Save configuration settings from imported app (appId & endpoint)
 
-  --subscriptionKey=subscriptionKey    LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey    (required) LUIS cognitive services subscription key (default:
                                        config:LUIS:subscriptionKey)
 
   --tokenizerVersion=tokenizerVersion  Version specifies how sentences are tokenized (optional). See also:
                                        https://aka.ms/luistokens
 
-  --versionId=versionId                LUIS version Id. (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId                (required) LUIS version Id. (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -281,7 +319,7 @@ EXAMPLE
        --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/create.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\create.ts)_
 
 ## `bf luis:application:delete`
 
@@ -293,10 +331,10 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -304,7 +342,7 @@ EXAMPLE
        $ bf luis:application:delete --appId {APP_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/delete.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\delete.ts)_
 
 ## `bf luis:application:import`
 
@@ -317,14 +355,14 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
 
-  -i, --in=in                        File path containing LUIS application contents, uses STDOUT if not specified
-                                     (mandatory)
+  -i, --in=in                        (required) File path containing LUIS application contents, uses STDOUT if not
+                                     specified
 
   --endpoint=endpoint                LUIS endpoint hostname
 
   --name=name                        LUIS application name (optional)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -335,7 +373,7 @@ EXAMPLE
   --name {NAME}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/import.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\import.ts)_
 
 ## `bf luis:application:list`
 
@@ -356,7 +394,7 @@ OPTIONS
 
   --skip=skip                        Number of entries to skip. Default: 0 (no skips)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
   --take=take                        Number of etnries to return. Maximum page size is 500. Default: 100
@@ -367,7 +405,7 @@ EXAMPLE
        $ bf luis:application:list --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --out {PATH_TO_JSON_FILE}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/list.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\list.ts)_
 
 ## `bf luis:application:publish`
 
@@ -379,20 +417,20 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
-  --direct=direct                    Available only in direct version query. Do not publish to staging or production
+  --direct                           Available only in direct version query. Do not publish to staging or production
                                      (default: false)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --staging=staging                  Publishes application version to Staging slot, otherwise publish to production
+  --staging                          Publishes application version to Staging slot, otherwise publish to production
                                      (default: false)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to publish (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to publish (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -400,7 +438,7 @@ EXAMPLE
   {INITIAL_VERSION_ID} --appId {APP_ID} --staging {BOOLEAN}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/publish.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\publish.ts)_
 
 ## `bf luis:application:query`
 
@@ -412,18 +450,18 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
-  --log=log                          Logs query operation on service (default: true)
-  --query=query                      Query string to predict (mandatory)
+  --log                              Logs query operation on service (default: true)
+  --query=query                      (required) Query string to predict
   --staging                          Presence of flag targets the staging app, if no flag passed defaults to production
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
   --timezoneOffset=timezoneOffset    Timezone offset for the location of the request in minutes (optional)
 
-  --verbose=verbose                  Returns all intents, otherwise only top scoring intent. (default: false)
+  --verbose                          Returns all intents, otherwise only top scoring intent. (default: false)
 
 EXAMPLE
 
@@ -431,7 +469,7 @@ EXAMPLE
   {QUERY} --prod {BOOLEAN}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/query.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\query.ts)_
 
 ## `bf luis:application:rename`
 
@@ -443,12 +481,12 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
-  --description=description          Description of LUIS application (mandatory)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
+  --description=description          Description of LUIS application
   --endpoint=endpoint                LUIS endpoint hostname
-  --name=name                        Name of LUIS application (mandatory)
+  --name=name                        (required) (required) Name of LUIS application
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -457,7 +495,7 @@ EXAMPLE
   {NAME} --description {DESCRIPTION}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/rename.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\rename.ts)_
 
 ## `bf luis:application:show`
 
@@ -469,10 +507,10 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -480,7 +518,7 @@ EXAMPLE
        $ bf luis:application:show --appId {APPLICATION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/show.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\application\show.ts)_
 
 ## `bf luis:convert`
 
@@ -505,7 +543,7 @@ OPTIONS
   --versionid=versionid          Version ID of the LUIS application
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/convert.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src\commands\luis\convert.ts)_
 
 ## `bf luis:endpoints:list`
 
@@ -522,11 +560,11 @@ OPTIONS
   -o, --out=out                      Output results to specified file in JSON format, otherwise prints to STDOUT
                                      (optional)
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -535,7 +573,7 @@ EXAMPLE
   --out {PATH_TO_JSON_FILE}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/endpoints/list.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\endpoints\list.ts)_
 
 ## `bf luis:generate:cs`
 
@@ -553,7 +591,7 @@ OPTIONS
   --className=className  Name of the autogenerated class (can include namespace)
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/generate/cs.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src\commands\luis\generate\cs.ts)_
 
 ## `bf luis:generate:ts`
 
@@ -571,35 +609,7 @@ OPTIONS
   --className=className  Name of the autogenerated class
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/generate/ts.ts)_
-
-## `bf luis:init`
-
-Stores default LUIS application values in global config.
-
-```
-USAGE
-  $ bf luis:init
-
-OPTIONS
-  -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id
-
-  --region=region                    LUIS application region. Will be prepended to endpoint hostname:
-                                     <region>.api.cognitive.microsoft.com. Available Regions: westus, westeurope,
-                                     australiaeast
-
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
-
-  --versionId=versionId              LUIS version Id
-
-EXAMPLE
-
-       $ bf luis:init --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region 
-  {REGION}
-```
-
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/init.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src\commands\luis\generate\ts.ts)_
 
 ## `bf luis:train:run`
 
@@ -611,13 +621,13 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to show training status (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to show training status (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -625,7 +635,7 @@ EXAMPLE
   {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/train/run.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\train\run.ts)_
 
 ## `bf luis:train:show`
 
@@ -637,13 +647,13 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to show training status (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to show training status (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -651,7 +661,7 @@ EXAMPLE
   {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/train/show.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\train\show.ts)_
 
 ## `bf luis:translate`
 
@@ -674,7 +684,7 @@ OPTIONS
   --translatekey=translatekey  (required) Machine translation endpoint key.
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/translate.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src\commands\luis\translate.ts)_
 
 ## `bf luis:version:clone`
 
@@ -686,11 +696,11 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
   --subscriptionKey=subscriptionKey  LUIS authoring (Ocp-Apim-subscription) key
-  --targetVersionId=targetVersionId  Destination version to create (mandatory)
-  --versionId=versionId              Source version to clone (mandatory, defaults to config:LUIS:versionId)
+  --targetVersionId=targetVersionId  (required) Destination version to create
+  --versionId=versionId              (required) Source version to clone (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -698,7 +708,7 @@ EXAMPLE
   --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/clone.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\version\clone.ts)_
 
 ## `bf luis:version:delete`
 
@@ -710,13 +720,13 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to delete (mandatory)
+  --versionId=versionId              (required) Version to delete
 
 EXAMPLE
 
@@ -724,7 +734,7 @@ EXAMPLE
   {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/delete.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\version\delete.ts)_
 
 ## `bf luis:version:export`
 
@@ -743,14 +753,14 @@ OPTIONS
   -o, --out=out                      Save exported application to specified file, uses STDOUT if not specified
                                      (optional)
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to export (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to export (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -758,7 +768,7 @@ EXAMPLE
   --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/export.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\version\export.ts)_
 
 ## `bf luis:version:import`
 
@@ -771,17 +781,17 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
 
-  -i, --in=in                        File path containing LUIS application contents, uses STDOUT if not specified
-                                     (mandatory)
+  -i, --in=in                        (required) File path containing LUIS application contents, uses STDIN if not
+                                     specified
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to export (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              Version to export (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -791,7 +801,7 @@ EXAMPLE
   --appId {APP_ID}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/import.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\version\import.ts)_
 
 ## `bf luis:version:list`
 
@@ -808,13 +818,13 @@ OPTIONS
   -o, --out=out                      Output results to specified folder and/or file in JSON format, otherwise prints to
                                      STDOUT (optional)
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
   --skip=skip                        Number of entries to skip. Default: 0 (no skips)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
   --take=take                        Number of etnries to return. Maximum page size is 500. Default: 100
@@ -826,7 +836,7 @@ EXAMPLE
        $ bf luis:version:list --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --out {PATH_TO_JSON_FILE}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/list.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\version\list.ts)_
 
 ## `bf luis:version:rename`
 
@@ -838,14 +848,14 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
-  --newVersionId=newVersionId        New version name (mandatory)
+  --newVersionId=newVersionId        (required) New version id
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to update (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to update (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -853,7 +863,7 @@ EXAMPLE
   {NAME} --description {DESCRIPTION}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/rename.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/packages/bf-luis-cli/src\commands\luis\version\rename.ts)_
 
 ## `bf qnamaker`
 
@@ -867,7 +877,7 @@ OPTIONS
   -h, --help  Display QnA Maker CLI available commands
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/index.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\index.ts)_
 
 ## `bf qnamaker:alterations`
 
@@ -881,7 +891,7 @@ OPTIONS
   -h, --help  display qnamaker:alterations available commands
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/alterations/index.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\alterations\index.ts)_
 
 ## `bf qnamaker:alterations:list`
 
@@ -900,7 +910,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/alterations/list.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\alterations\list.ts)_
 
 ## `bf qnamaker:alterations:replace`
 
@@ -920,7 +930,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/alterations/replace.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\alterations\replace.ts)_
 
 ## `bf qnamaker:convert`
 
@@ -942,7 +952,7 @@ OPTIONS
   --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/qnamaker/convert.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src\commands\qnamaker\convert.ts)_
 
 ## `bf qnamaker:endpointkeys`
 
@@ -956,7 +966,7 @@ OPTIONS
   -h, --help  display qnamaker:endpointkeys available commands
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/endpointkeys/index.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\endpointkeys\index.ts)_
 
 ## `bf qnamaker:endpointkeys:list`
 
@@ -975,7 +985,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/endpointkeys/list.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\endpointkeys\list.ts)_
 
 ## `bf qnamaker:endpointkeys:refresh`
 
@@ -995,7 +1005,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/endpointkeys/refresh.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\endpointkeys\refresh.ts)_
 
 ## `bf qnamaker:endpointsettings`
 
@@ -1009,7 +1019,7 @@ OPTIONS
   -h, --help  display qnamaker:update available commands
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/endpointsettings/index.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\endpointsettings\index.ts)_
 
 ## `bf qnamaker:endpointsettings:get`
 
@@ -1029,7 +1039,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/endpointsettings/get.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\endpointsettings\get.ts)_
 
 ## `bf qnamaker:endpointsettings:update`
 
@@ -1049,7 +1059,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/endpointsettings/update.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\endpointsettings\update.ts)_
 
 ## `bf qnamaker:init`
 
@@ -1064,7 +1074,7 @@ OPTIONS
   --endpoint=endpoint  Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/init.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\init.ts)_
 
 ## `bf qnamaker:kb`
 
@@ -1078,7 +1088,7 @@ OPTIONS
   -h, --help  display qnamaker:kb available commands
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/index.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\index.ts)_
 
 ## `bf qnamaker:kb:create`
 
@@ -1103,7 +1113,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/create.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\create.ts)_
 
 ## `bf qnamaker:kb:delete`
 
@@ -1126,7 +1136,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/delete.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\delete.ts)_
 
 ## `bf qnamaker:kb:export`
 
@@ -1149,7 +1159,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/export.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\export.ts)_
 
 ## `bf qnamaker:kb:get`
 
@@ -1171,7 +1181,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/get.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\get.ts)_
 
 ## `bf qnamaker:kb:list`
 
@@ -1190,7 +1200,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/list.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\list.ts)_
 
 ## `bf qnamaker:kb:publish`
 
@@ -1210,7 +1220,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/publish.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\publish.ts)_
 
 ## `bf qnamaker:kb:replace`
 
@@ -1231,7 +1241,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/replace.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\replace.ts)_
 
 ## `bf qnamaker:kb:update`
 
@@ -1258,7 +1268,7 @@ OPTIONS
   --wait                             Wait for the operation to complete.
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/kb/update.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\kb\update.ts)_
 
 ## `bf qnamaker:operationdetails`
 
@@ -1272,7 +1282,7 @@ OPTIONS
   -h, --help  display qnamaker:operationdetails available commands
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/operationdetails/index.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\operationdetails\index.ts)_
 
 ## `bf qnamaker:operationdetails:get`
 
@@ -1292,7 +1302,7 @@ OPTIONS
                                      subscriptionkey value present in the config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/operationdetails/get.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\operationdetails\get.ts)_
 
 ## `bf qnamaker:query`
 
@@ -1327,7 +1337,7 @@ OPTIONS
   --top=top                        Specifies the number of matching results
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/query.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\query.ts)_
 
 ## `bf qnamaker:train`
 
@@ -1356,7 +1366,7 @@ OPTIONS
                                      subscriptionkey value present in config
 ```
 
-_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/train.ts)_
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src\commands\qnamaker\train.ts)_
 
 ## `bf qnamaker:translate`
 
@@ -1379,5 +1389,7 @@ OPTIONS
   --translatekey=translatekey  (required) Machine translation endpoint key.
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/qnamaker/translate.ts)_
+_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src\commands\qnamaker\translate.ts)_
+<!-- commandsstop -->
+
 <!-- commandsstop -->
