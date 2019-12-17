@@ -17,7 +17,7 @@ export class LuBuildCore {
         const client = new LuisAuthoring(<any>credentials, {});
         const luContents = luConfig.LuContents;
 
-        let apps = await client.apps.list(<AzureRegions>luConfig.AuthoringRegion, <AzureClouds>"com");
+        let apps = await client.apps.list(<AzureRegions>luConfig.Region, <AzureClouds>"com");
 
         // new settings
         let existingLuisSettings = JSON.parse(luConfig.LuisSettingsContent.Content).luis;
@@ -41,7 +41,7 @@ export class LuBuildCore {
             appName = parsedLUISObj.name && parsedLUISObj.name !== '' ? parsedLUISObj.name : appName;
 
             if (appName === '') {
-                appName = `${luConfig.BotName}(${luConfig.EnvironmentName})-${content.Name}`;
+                appName = `${luConfig.BotName}(${luConfig.Suffix})-${content.Name}`;
             }
 
             let dialogFile = path.join(path.dirname(content.Path), `${content.Name}.dialog`);
@@ -61,7 +61,7 @@ export class LuBuildCore {
             }
 
             if (recognizer.getAppId() !== '') {
-                let appInfo = await client.apps.get(<AzureRegions>luConfig.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId());
+                let appInfo = await client.apps.get(<AzureRegions>luConfig.Region, <AzureClouds>"com", recognizer.getAppId());
                 recognizer.versionId = <string>appInfo.activeVersion;
                 
                 // compare and train model
@@ -120,19 +120,19 @@ export class LuBuildCore {
     private static async createApplication(currentApp: LuisApp, config: LUISConfig, client: LuisAuthoring, recognizer: LuisRecognizer, name: string, culture: string): Promise<boolean> {
         process.stdout.write(`Creating LUIS.ai application: ${name} version:0.1\n`);
         currentApp.name = name;
-        currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${config.BotName} app, targetting ${config.EnvironmentName}`;
+        currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${config.BotName} app, targetting ${config.Suffix}`;
         currentApp.culture = culture;
         currentApp.versionId = "0.1";
         recognizer.versionId = "0.1";
 
-        let response = await client.apps.importMethod(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", currentApp);
+        let response = await client.apps.importMethod(<AzureRegions>config.Region, <AzureClouds>"com", currentApp);
 
         recognizer.setAppId(response.body);
 
         await delay(500);
 
         // train the version
-        await client.train.trainVersion(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), currentApp.versionId);
+        await client.train.trainVersion(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), currentApp.versionId);
 
         await delay(500);
         return true;
@@ -140,7 +140,7 @@ export class LuBuildCore {
 
     private static async updateApplication(currentApp: LuisApp, config: LUISConfig, client: LuisAuthoring, recognizer: LuisRecognizer, appInfo: AppsGetResponse): Promise<boolean> {
         // get existing app
-        const response = await client.versions.exportMethod(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), recognizer.versionId);
+        const response = await client.versions.exportMethod(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), recognizer.versionId);
         const existingApp: LuisApp = response._response.parsedBody;
         currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc;
         currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture;
@@ -168,12 +168,12 @@ export class LuBuildCore {
             const options: any = {};
             options.versionId = newVersionId;
             process.stdout.write(`${recognizer.getLuPath()} creating version=${newVersionId}\n`);
-            await client.versions.importMethod(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), currentApp, options);
+            await client.versions.importMethod(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), currentApp, options);
             await delay(500);
 
             // train the version
             process.stdout.write(`${recognizer.getLuPath()} training version=${newVersionId}\n`);
-            await client.train.trainVersion(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), newVersionId);
+            await client.train.trainVersion(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), newVersionId);
 
             await delay(500);
             return true;
@@ -189,7 +189,7 @@ export class LuBuildCore {
         do {
             await delay(5000);
             await process.stdout.write('.');
-            let trainingStatus = await client.train.getStatus(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(), <string>recognizer.versionId);
+            let trainingStatus = await client.train.getStatus(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), <string>recognizer.versionId);
     
             done = true;
             for (let status of trainingStatus) {
@@ -205,7 +205,7 @@ export class LuBuildCore {
     
         // publish the version
         process.stdout.write(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`);
-        await client.apps.publish(<AzureRegions>config.AuthoringRegion, <AzureClouds>"com", recognizer.getAppId(),
+        await client.apps.publish(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(),
             {
                 "versionId": <string>recognizer.versionId,
                 "isStaging": false

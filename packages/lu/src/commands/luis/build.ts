@@ -79,7 +79,7 @@ export default class LuisBuild extends Command {
       }
 
       if(luisSettingsPath === '') {
-        luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.environmentname}.${flags.authoringregion}.json`);
+        luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.suffix}.${flags.region}.json`);
       }
 
       luContents.push(new Content(fileName, file, fileContent, fileCulture));
@@ -114,8 +114,8 @@ export default class LuisBuild extends Command {
       flags.authoringkey,
       flags.botname,
       flags.culture,
-      flags.authoringregion,
-      flags.environmentname,
+      flags.region,
+      flags.suffix,
       flags.dialog,
       flags.fallbacklocale,
       luContents,

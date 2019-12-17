@@ -38,8 +38,8 @@ export class LUISConfig {
     public AuthoringKey:string;
     public BotName:string;
     public Culture:string = 'en-us';
-    public AuthoringRegion:string = 'westus';
-    public EnvironmentName:string = 'dev';
+    public Region:string = 'westus';
+    public Suffix:string = 'development';
     public GenerateDialogFileContent:boolean = false;
     public FallBackLocale:string = 'en-us';
     public LuContents: Array<Content>;
@@ -50,8 +50,8 @@ export class LUISConfig {
         authoringKey: string, 
         botName: string,
         culture: string,
-        authoringRegion: string,
-        environmentName: string,
+        region: string,
+        suffix: string,
         generateDialogFileContent: boolean,
         fallBackLocale: string,
         luContents: Array<Content>,
@@ -60,8 +60,8 @@ export class LUISConfig {
             this.AuthoringKey = authoringKey,
             this.BotName = botName,
             this.Culture = culture,
-            this.AuthoringRegion = authoringRegion,
-            this.EnvironmentName = environmentName,
+            this.Region = region,
+            this.Suffix = suffix,
             this.GenerateDialogFileContent = generateDialogFileContent,
             this.FallBackLocale = fallBackLocale,
             this.LuContents = luContents,
