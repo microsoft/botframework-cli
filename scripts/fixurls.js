@@ -11,7 +11,7 @@ const updateUrls = async () => {
 const cleanUrls = async function(plugin) {
   let readmePath = path.join(__dirname, `./../packages/${plugin}/README.md`)
   let fileContent = await fs.readFile(readmePath)
-  fileContent = fileContent.toString().replace(/\/blob\/v1\.0\.0/g, "")
+  fileContent = fileContent.toString().replace(/\/blob\/v1\.0\.0/g, "").replace(/\\/g, "/")
   await fs.writeFile(readmePath, fileContent)
 }
 
