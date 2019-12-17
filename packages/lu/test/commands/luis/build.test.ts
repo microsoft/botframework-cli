@@ -2,10 +2,10 @@ import { expect, test } from '@oclif/test'
 const path = require('path')
 const uuidv1 = require('uuid/v1')
 
-describe('luis:up cli parameters test', () => {
+describe('luis:build cli parameters test', () => {
   test
     .stdout()
-    .command(['luis:up', '--help'])
+    .command(['luis:build', '--help'])
     .it('should print the help contents when --help is passed as an argument', ctx => {
       expect(ctx.stdout).to.contain('Build lu files and train and publish luis applications')
     })
@@ -13,7 +13,7 @@ describe('luis:up cli parameters test', () => {
   test
     .stdout()
     .stderr()
-    .command(['luis:up', '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botname', 'Contoso'])
+    .command(['luis:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botname', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain(`No authoring key is provided!`)
     })
@@ -21,7 +21,7 @@ describe('luis:up cli parameters test', () => {
   test
     .stdout()
     .stderr()
-    .command(['luis:up', '--authoringkey', uuidv1(), '--botname', 'Contoso'])
+    .command(['luis:build', '--authoringkey', uuidv1(), '--botname', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain(`No lu file or folder is provided!`)
     })
@@ -29,7 +29,7 @@ describe('luis:up cli parameters test', () => {
   test
     .stdout()
     .stderr()
-    .command(['luis:up', '--authoringkey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`])
+    .command(['luis:build', '--authoringkey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain(`No bot name is provided!`)
     })

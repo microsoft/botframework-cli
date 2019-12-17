@@ -11,11 +11,11 @@ const fs = require('fs-extra');
 const fileHelper = require('./../../utils/filehelper');
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 
-export default class LuisUp extends Command {
-  static description = 'Build lu files and train and publish luis applications'
+export default class LuisBuild extends Command {
+  static description = 'Build lu files to train and publish luis applications'
 
   static examples = [`
-    $ bf luis:up --in {INPUT_FILE_OR_FOLDER} --authoringkey {AUTHORING_KEY} --botname {BOT_NAME} --dialog {true}
+    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringkey {AUTHORING_KEY} --botname {BOT_NAME} --dialog {true}
   `]
 
   static flags: any = {
@@ -25,15 +25,15 @@ export default class LuisUp extends Command {
     botname: flags.string({ description: 'bot name' }),
     out: flags.string({ description: '[Optional] output location' }),
     culture: flags.string({ description: '[Optional] culture code for the content. Infer from .lu if available. Defaults to en-us', default: 'en-us' }),
-    authoringregion: flags.string({ description: '[Optional] LUIS authoring region', default: 'westus' }),
-    environmentname: flags.string({ description: '[Optional] environment name to include in LUIS app name', default: 'dev' }),
+    region: flags.string({ description: '[Optional] LUIS authoring region', default: 'westus' }),
+    suffix: flags.string({ description: '[Optional] environment name as a suffix identifier to include in LUIS app name', default: 'dev' }),
     force: flags.boolean({ description: '[Optional] force write dialog and settings files', default: false }),
     dialog: flags.boolean({ description: '[Optional] write out .dialog files', default: false }),
     fallbacklocale: flags.string({ description: '[Optional] locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set', default: 'en-us' })
   }
 
   async run() {
-    const { flags } = this.parse(LuisUp)
+    const { flags } = this.parse(LuisBuild)
 
     const luContents: Array<Content> = [];
     let multiRecognizerDialogPath: string = '';
