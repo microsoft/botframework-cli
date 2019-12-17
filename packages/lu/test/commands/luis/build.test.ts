@@ -15,7 +15,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botname', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`No authoring key is provided!`)
+      expect(ctx.stderr).to.contain(`Missing required flag:\n --authoringkey AUTHORINGKEY`)
     })
 
   test
@@ -23,7 +23,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringkey', uuidv1(), '--botname', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`No lu file or folder is provided!`)
+      expect(ctx.stderr).to.contain(`Missing required flag:\n -i, --in IN  Lu file or folder`)
     })
 
   test
@@ -31,6 +31,6 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringkey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`No bot name is provided!`)
+      expect(ctx.stderr).to.contain(`Missing required flag:\n --botname BOTNAME  Bot name`)
     })
 })

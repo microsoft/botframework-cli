@@ -45,18 +45,6 @@ export default class LuisBuild extends Command {
     let multiRecognizerDialogPath: string = '';
     let luisSettingsPath: string = '';
 
-    if (flags.in === undefined) {
-      throw new CLIError('No lu file or folder is provided!');
-    }
-
-    if (flags.authoringkey === undefined) {
-      throw new CLIError('No authoring key is provided!');
-    }
-
-    if (flags.botname === undefined) {
-      throw new CLIError('No bot name is provided!');
-    }
-
     process.stdout.write('Start to load lu files\n');
     let files = await fileHelper.getLuFiles(flags.in, true, fileExtEnum.LUFile);
 
