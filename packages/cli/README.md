@@ -18,9 +18,11 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf chatdown`](#bf-chatdown)
 * [`bf chatdown:convert`](#bf-chatdownconvert)
 * [`bf config`](#bf-config)
+* [`bf config:set:luis`](#bf-configsetluis)
 * [`bf config:set:qnamaker`](#bf-configsetqnamaker)
 * [`bf config:set:telemetry`](#bf-configsettelemetry)
 * [`bf config:show`](#bf-configshow)
+* [`bf config:show:luis`](#bf-configshowluis)
 * [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
 * [`bf help [COMMAND]`](#bf-help-command)
@@ -37,7 +39,6 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf luis:endpoints:list`](#bf-luisendpointslist)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
-* [`bf luis:init`](#bf-luisinit)
 * [`bf luis:train:run`](#bf-luistrainrun)
 * [`bf luis:train:show`](#bf-luistrainshow)
 * [`bf luis:translate`](#bf-luistranslate)
@@ -134,6 +135,29 @@ OPTIONS
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/index.ts)_
 
+## `bf config:set:luis`
+
+Stores default LUIS application values in global config.
+
+```
+USAGE
+  $ bf config:set:luis
+
+OPTIONS
+  -h, --help                         show CLI help
+  --appId=appId                      LUIS application Id
+  --endpoint=endpoint                LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com
+  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
+  --versionId=versionId              LUIS version Id
+
+EXAMPLE
+
+       $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} 
+  --region {REGION}
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/luis.ts)_
+
 ## `bf config:set:qnamaker`
 
 Set the QnAMaker config data
@@ -191,6 +215,20 @@ OPTIONS
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show.ts)_
 
+## `bf config:show:luis`
+
+Display LUIS settings
+
+```
+USAGE
+  $ bf config:show:luis
+
+OPTIONS
+  -h, --help  config:show:luis help
+```
+
+_See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/luis.ts)_
+
 ## `bf config:show:qnamaker`
 
 Display QnAMaker settings
@@ -238,17 +276,17 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `bf luis`
 
-Converts, translates luis/lu files or generates source code.
+Manages LUIS assets on service and/or locally.
 
 ```
 USAGE
   $ bf luis
 
 OPTIONS
-  -h, --help  Display Luis available commands
+  -h, --help  LUIS command help
 ```
 
-_See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/index.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/index.ts)_
 
 ## `bf luis:application:create`
 
@@ -263,16 +301,16 @@ OPTIONS
   --culture=culture                    Specify culture language (default: en-us)
   --description=description            Description of LUIS application
   --endpoint=endpoint                  LUIS endpoint hostname
-  --name=name                          Name of LUIS application
-  --save=save                          Save configuration settings from imported app (appId & endpoint)
+  --name=name                          (required) Name of LUIS application
+  --save                               Save configuration settings from imported app (appId & endpoint)
 
-  --subscriptionKey=subscriptionKey    LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey    (required) LUIS cognitive services subscription key (default:
                                        config:LUIS:subscriptionKey)
 
   --tokenizerVersion=tokenizerVersion  Version specifies how sentences are tokenized (optional). See also:
                                        https://aka.ms/luistokens
 
-  --versionId=versionId                LUIS version Id. (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId                (required) LUIS version Id. (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -293,10 +331,10 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -317,14 +355,14 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
 
-  -i, --in=in                        File path containing LUIS application contents, uses STDOUT if not specified
-                                     (mandatory)
+  -i, --in=in                        (required) File path containing LUIS application contents, uses STDOUT if not
+                                     specified
 
   --endpoint=endpoint                LUIS endpoint hostname
 
   --name=name                        LUIS application name (optional)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -356,7 +394,7 @@ OPTIONS
 
   --skip=skip                        Number of entries to skip. Default: 0 (no skips)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
   --take=take                        Number of etnries to return. Maximum page size is 500. Default: 100
@@ -379,20 +417,20 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
-  --direct=direct                    Available only in direct version query. Do not publish to staging or production
+  --direct                           Available only in direct version query. Do not publish to staging or production
                                      (default: false)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --staging=staging                  Publishes application version to Staging slot, otherwise publish to production
+  --staging                          Publishes application version to Staging slot, otherwise publish to production
                                      (default: false)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to publish (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to publish (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -412,18 +450,18 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
-  --log=log                          Logs query operation on service (default: true)
-  --query=query                      Query string to predict (mandatory)
+  --log                              Logs query operation on service (default: true)
+  --query=query                      (required) Query string to predict
   --staging                          Presence of flag targets the staging app, if no flag passed defaults to production
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
   --timezoneOffset=timezoneOffset    Timezone offset for the location of the request in minutes (optional)
 
-  --verbose=verbose                  Returns all intents, otherwise only top scoring intent. (default: false)
+  --verbose                          Returns all intents, otherwise only top scoring intent. (default: false)
 
 EXAMPLE
 
@@ -443,12 +481,12 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
-  --description=description          Description of LUIS application (mandatory)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
+  --description=description          Description of LUIS application
   --endpoint=endpoint                LUIS endpoint hostname
-  --name=name                        Name of LUIS application (mandatory)
+  --name=name                        (required) (required) Name of LUIS application
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -469,10 +507,10 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -522,11 +560,11 @@ OPTIONS
   -o, --out=out                      Output results to specified file in JSON format, otherwise prints to STDOUT
                                      (optional)
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
 EXAMPLE
@@ -573,34 +611,6 @@ OPTIONS
 
 _See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/generate/ts.ts)_
 
-## `bf luis:init`
-
-Stores default LUIS application values in global config.
-
-```
-USAGE
-  $ bf luis:init
-
-OPTIONS
-  -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id
-
-  --region=region                    LUIS application region. Will be prepended to endpoint hostname:
-                                     <region>.api.cognitive.microsoft.com. Available Regions: westus, westeurope,
-                                     australiaeast
-
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
-
-  --versionId=versionId              LUIS version Id
-
-EXAMPLE
-
-       $ bf luis:init --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region 
-  {REGION}
-```
-
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/init.ts)_
-
 ## `bf luis:train:run`
 
 Issues asynchronous training request for LUIS application
@@ -611,13 +621,13 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to show training status (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to show training status (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -637,13 +647,13 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to show training status (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to show training status (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -686,11 +696,11 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
   --subscriptionKey=subscriptionKey  LUIS authoring (Ocp-Apim-subscription) key
-  --targetVersionId=targetVersionId  Destination version to create (mandatory)
-  --versionId=versionId              Source version to clone (mandatory, defaults to config:LUIS:versionId)
+  --targetVersionId=targetVersionId  (required) Destination version to create
+  --versionId=versionId              (required) Source version to clone (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -710,13 +720,13 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to delete (mandatory)
+  --versionId=versionId              (required) Version to delete
 
 EXAMPLE
 
@@ -743,14 +753,14 @@ OPTIONS
   -o, --out=out                      Save exported application to specified file, uses STDOUT if not specified
                                      (optional)
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to export (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to export (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -771,17 +781,17 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
 
-  -i, --in=in                        File path containing LUIS application contents, uses STDOUT if not specified
-                                     (mandatory)
+  -i, --in=in                        (required) File path containing LUIS application contents, uses STDIN if not
+                                     specified
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to export (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              Version to export (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -808,13 +818,13 @@ OPTIONS
   -o, --out=out                      Output results to specified folder and/or file in JSON format, otherwise prints to
                                      STDOUT (optional)
 
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
 
   --endpoint=endpoint                LUIS endpoint hostname
 
   --skip=skip                        Number of entries to skip. Default: 0 (no skips)
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
   --take=take                        Number of etnries to return. Maximum page size is 500. Default: 100
@@ -838,14 +848,14 @@ USAGE
 
 OPTIONS
   -h, --help                         show CLI help
-  --appId=appId                      LUIS application Id (mandatory, defaults to config:LUIS:appId)
+  --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
-  --newVersionId=newVersionId        New version name (mandatory)
+  --newVersionId=newVersionId        (required) New version id
 
-  --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (mandatory, default:
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to update (mandatory, defaults to config:LUIS:versionId)
+  --versionId=versionId              (required) Version to update (defaults to config:LUIS:versionId)
 
 EXAMPLE
 

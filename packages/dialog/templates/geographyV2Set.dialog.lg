@@ -1,0 +1,25 @@
+
+# filename
+- @{schemaName}-@{property}SetgeographyV2.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "geographyV2",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.type",
+            "value": "@geographyV2['type']"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.location",
+            "value": "@geographyV2['location']"          
+        }
+    ]               
+}
+```
