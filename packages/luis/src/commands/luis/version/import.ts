@@ -17,11 +17,11 @@ export default class LuisVersionImport extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: 'Version to export (defaults to config:LUIS:versionId)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
-    in: flags.string({char: 'i', description: 'File path containing LUIS application contents, uses STDIN if not specified (mandatory)'})
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'})
   }
 
   async run() {

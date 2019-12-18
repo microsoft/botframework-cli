@@ -11,7 +11,7 @@ export default class ConfigSetLuis extends Command {
   static description = 'Stores default LUIS application values in global config.'
 
   static examples = [`
-    $ bf luis:init --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region {REGION}
+    $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region {REGION}
   `]
 
   static flags: any = {
