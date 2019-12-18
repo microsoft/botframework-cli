@@ -5,9 +5,9 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
-import * as expressions from '@christopheranderson/botframework-expressions'
+import * as expressions from 'botframework-expressions'
 import * as fs from 'fs-extra'
-import * as lg from '@christopheranderson/botbuilder-lg'
+import * as lg from 'botbuilder-lg'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
 import { processSchemas } from './processSchemas'
