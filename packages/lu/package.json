@@ -50,7 +50,6 @@
     "@oclif/errors": "~1.2.2",
     "@azure/ms-rest-js": "1.7.0",
     "antlr4": "^4.7.2",
-    "await-delay": "^1.0.0",
     "chalk": "2.4.1",
     "console-stream": "^0.1.1",
     "deep-equal": "^1.0.1",

@@ -8,7 +8,6 @@ import { AppsGetResponse, AzureClouds, AzureRegions, LuisApp } from 'luis-apis/t
 import { isEqual, differenceWith } from 'lodash'
 import * as msRest from '@azure/ms-rest-js';
 import * as path from 'path';
-const delay = require('await-delay');
 
 export class LuBuildCore {
     public static async CreateOrUpdateApplication(luConfig: LUISConfig)
@@ -129,12 +128,9 @@ export class LuBuildCore {
 
         recognizer.setAppId(response.body);
 
-        await delay(500);
-
         // train the version
         await client.train.trainVersion(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), currentApp.versionId);
 
-        await delay(500);
         return true;
     }
 
@@ -169,13 +165,11 @@ export class LuBuildCore {
             options.versionId = newVersionId;
             process.stdout.write(`${recognizer.getLuPath()} creating version=${newVersionId}\n`);
             await client.versions.importMethod(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), currentApp, options);
-            await delay(500);
 
             // train the version
             process.stdout.write(`${recognizer.getLuPath()} training version=${newVersionId}\n`);
             await client.train.trainVersion(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), newVersionId);
 
-            await delay(500);
             return true;
         } else {
             process.stdout.write(`${recognizer.getLuPath()} no changes\n`);
@@ -187,14 +181,13 @@ export class LuBuildCore {
         process.stdout.write(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`);
         let done = true;
         do {
-            await delay(5000);
             await process.stdout.write('.');
             let trainingStatus = await client.train.getStatus(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), <string>recognizer.versionId);
     
             done = true;
             for (let status of trainingStatus) {
                 if (status.details) {
-                    if (status.details.status == 'InProgress') {
+                    if (status.details.status === 'InProgress') {
                         done = false;
                         break;
                     }
