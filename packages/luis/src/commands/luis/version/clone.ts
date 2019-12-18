@@ -16,9 +16,9 @@ export default class LuisVersionClone extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'Source version to clone (mandatory, defaults to config:LUIS:versionId)'}),
-    targetVersionId: flags.string({description: 'Destination version to create (mandatory)'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: '(required) Source version to clone (defaults to config:LUIS:versionId)'}),
+    targetVersionId: flags.string({description: '(required) Destination version to create'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS authoring (Ocp-Apim-subscription) key'}),
   }

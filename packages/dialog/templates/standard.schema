@@ -53,6 +53,6 @@
         "TriggerIntent.dialog",
         "luconfig.json",
         "lu.dialog",
-        "Main.dialog"        
+        "Main.dialog"     
     ]
 }
