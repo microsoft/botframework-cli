@@ -1,7 +1,7 @@
 {
   "name": "@microsoft/bf-luis-cli",
   "version": "1.0.0",
-  "bugs": "https://github.com/packages/bf-luis-cli/issues",
+  "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "engines": {
     "node": ">=8.0.0"
   },
@@ -11,7 +11,7 @@
     "/oclif.manifest.json",
     "/yarn.lock"
   ],
-  "homepage": "https://github.com/packages/bf-luis-cli",
+  "homepage": "https://github.com/microsoft/botframework-cli",
   "keywords": [
     "oclif-plugin"
   ],
@@ -23,7 +23,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "packages/bf-luis-cli",
+  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/luis",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",

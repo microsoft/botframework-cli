@@ -18,8 +18,8 @@ export default class LuisVersionList extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
-    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     out: flags.string({char: 'o', description: 'Output results to specified folder and/or file in JSON format, otherwise prints to STDOUT (optional)'}),
     skip: flags.string({description: 'Number of entries to skip. Default: 0 (no skips)'}),
     take: flags.string({description: 'Number of etnries to return. Maximum page size is 500. Default: 100'}),
