@@ -16,10 +16,10 @@ export default class LuisVersionDelete extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'Version to delete (mandatory)'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: '(required) Version to delete'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
   }
 
   async run() {
