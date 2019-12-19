@@ -1,0 +1,25 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnSetProperty",
+    "property": "CancelConfirmation",
+    "entity": "Confirmation",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$CancelConfirmation",
+            "value": "@Confirmation"
+        },
+        {
+            "$kind": "Microsoft.IfCondition",
+            "condition":"$CancelConfirmation == 'yes'",
+            "actions": [
+                {
+                    "$kind": "Microsoft.EndDialog"
+                }
+            ]
+        }
+    ]
+}
+```

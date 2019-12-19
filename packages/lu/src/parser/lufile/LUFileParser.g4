@@ -8,12 +8,13 @@ file
 
 paragraph
     : newline
-    | intentDefinition
-    | newEntityDefinition
-    | entityDefinition
-    | importDefinition
-    | qnaDefinition
-    | modelInfoDefinition
+    | nestedIntentSection
+    | simpleIntentSection
+    | entitySection
+    | newEntitySection
+    | importSection
+    | qnaSection
+    | modelInfoSection
     ;
 
 // Treat EOF as newline to hanle file end gracefully
@@ -23,20 +24,44 @@ newline
     : WS* (NEWLINE | EOF)
     ;
 
+nestedIntentSection
+    : nestedIntentNameLine newline+ nestedIntentBodyDefinition
+    ;
+
+nestedIntentNameLine
+    : WS* HASH nestedIntentName
+    ;
+
+nestedIntentName
+    : nameIdentifier (WS|nameIdentifier)*
+    ;
+
+nameIdentifier
+    : IDENTIFIER (DOT IDENTIFIER)*
+    ;
+
+nestedIntentBodyDefinition
+    : subIntentDefinition+
+    ;
+
+subIntentDefinition
+    : WS* HASH simpleIntentSection
+    ;
+
+simpleIntentSection
+    : intentDefinition (entitySection | newEntitySection)*
+    ;
+
 intentDefinition
 	: intentNameLine newline intentBody?
 	;
 
 intentNameLine
-	: WS* HASH intentName
+	: WS* HASH HASH? intentName
 	;
 
 intentName
-    : intentNameIdentifier (WS|intentNameIdentifier)*
-    ;
-
-intentNameIdentifier
-    : IDENTIFIER (DOT IDENTIFIER)*
+    : nameIdentifier (WS|nameIdentifier)*
     ;
 
 intentBody
@@ -50,6 +75,10 @@ normalIntentBody
 normalIntentString
 	: WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
+
+newEntitySection
+    : newEntityDefinition
+    ;
 
 newEntityDefinition
     : newEntityLine newline newEntityListbody?
@@ -99,6 +128,10 @@ newEntityNameWithWS
     : NEW_ENTITY_IDENTIFIER_WITH_WS
     ;
 
+entitySection
+    : entityDefinition
+    ;
+
 entityDefinition
     : entityLine newline entityListBody?
     ;
@@ -108,11 +141,11 @@ entityLine
     ;
 
 entityName
-    : (entityIdentifier|WS)*
+    : (ENTITY_TEXT|WS)*
     ;
 
 entityType
-    : (entityIdentifier|compositeEntityIdentifier|regexEntityIdentifier|SPECIAL_CHAR_MARK|COLON_MARK|WS)*
+    : (compositeEntityIdentifier|regexEntityIdentifier|ENTITY_TEXT|COLON_MARK|WS)*
     ;
 
 compositeEntityIdentifier
@@ -123,10 +156,6 @@ regexEntityIdentifier
     : REGEX_ENTITY
     ;
 
-entityIdentifier
-    : ENTITY_IDENTIFIER
-    ;
-
 entityListBody
     : (normalItemString newline)+
     ;
@@ -135,8 +164,16 @@ normalItemString
     : WS* DASH (WS|TEXT|EXPRESSION)*
     ;
 
+importSection
+    : importDefinition
+    ;
+
 importDefinition
     : IMPORT_DESC IMPORT_PATH
+    ;
+
+qnaSection
+    : qnaDefinition
     ;
 
 qnaDefinition
@@ -173,6 +210,10 @@ filterLine
 
 multiLineAnswer
     : WS* MULTI_LINE_TEXT
+    ;
+
+modelInfoSection
+    : modelInfoDefinition
     ;
 
 modelInfoDefinition

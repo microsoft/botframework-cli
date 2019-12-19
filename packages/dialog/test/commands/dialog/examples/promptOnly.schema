@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/4.Future/schemas/component.schema",
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/component.schema",
     "$id": "promptOnly.schema",
     "type": "object",
     "title": "Component types",
@@ -14,8 +14,8 @@
     "definitions": {
         "prompt": {
             "properties": {
-                "$type": {
-                    "title": "$type",
+                "$kind": {
+                    "title": "$kind",
                     "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
                     "type": "string",
                     "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
@@ -67,7 +67,7 @@
                     "title": "Type",
                     "required": [
                         "prompt",
-                        "$type"
+                        "$kind"
                     ]
                 }
             ]

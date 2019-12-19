@@ -46,7 +46,7 @@ describe('qnamaker:init', () => {
     .stub(cli, 'prompt', () => async () => 'abcdefg')
     .stub(cli, 'confirm', () => async () => 'y')
     .command(['qnamaker:init'])
-    .do(async output => {
+    .do(async () => {
       let config = await fs.readJSON(getConfigFile())
       expect(config.qnamaker__subscriptionKey).to.contain('abcdefg')
     })

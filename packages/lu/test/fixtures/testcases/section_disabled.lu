@@ -1,0 +1,7 @@
+# Greeting
+## HelloGreeting
+- Hi {userName=vishwac}
+- Hello my name is {userName=vishwac}
+
+> # Entity definitions
+@ simple Hello

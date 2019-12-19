@@ -1,0 +1,7 @@
+# filename
+- @{entityFilename()}
+
+# template
+- $PREBUILT:email @{roles()}
+
+[generator.lg](../generator.lg)

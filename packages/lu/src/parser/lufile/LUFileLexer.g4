@@ -1,7 +1,7 @@
 lexer grammar LUFileLexer;
 
 @lexer::members {
-  this.ignoreWS = true;             // usually we ignore whitespace, but inside template, whitespace is significant
+  this.ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
 }
 
 fragment LETTER: 'a'..'z' | 'A'..'Z';
@@ -34,7 +34,7 @@ QNA
   ;
 
 HASH
-  : '#'+ {this.ignoreWS = true;} -> pushMode(INTENT_NAME_MODE)
+  : '#' {this.ignoreWS = true;} -> pushMode(INTENT_NAME_MODE)
   ;
 
 DASH
@@ -133,6 +133,10 @@ WS_IN_NAME
   : WHITESPACE+ -> type(WS)
   ;
 
+HASH_IN_NAME
+  : '#' -> type(HASH)
+  ;
+  
 NEWLINE_IN_NAME
   : '\r'? '\n' -> type(NEWLINE), popMode
   ;
@@ -186,10 +190,6 @@ NEWLINE_IN_ENTITY
   : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
   ;
 
-ENTITY_IDENTIFIER
-  : (LETTER | NUMBER | '_' | '-' | '|' | '.')+ { this.ignoreWS = false;}
-  ;
-
 COMPOSITE_ENTITY
   : '[' (~[\r\n{}[()])*
   ;
@@ -198,12 +198,12 @@ REGEX_ENTITY
   : '/' (~[\r\n])*
   ;
 
-COLON_MARK
-  : ':'
+ENTITY_TEXT
+  : ~[ \t\r\n:]+ { this.ignoreWS = false;}
   ;
 
-SPECIAL_CHAR_MARK 
-  : '=' | ',' | '!'
+COLON_MARK
+  : ':'
   ;
 
 mode QNA_MODE;

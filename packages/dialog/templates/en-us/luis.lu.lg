@@ -1,0 +1,25 @@
+# filename
+- @{schemaName}.@{locale}.lu.dialog
+
+# template
+-```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.LuisRecognizer",
+    "applicationId": "@{lu()}",
+    "endpoint": "@{endpoint()}",
+    "endpointKey": "@{endpointKey()}",
+    "predictionOptions": {
+        "includeInstanceData": true
+    }
+}
+```
+
+# lu
+- \{settings.luis.@{schemaName}_@{locale}_lu\}
+
+# endpoint
+- \{settings.luis.endpoint\}
+
+# endpointKey
+- \{settings.luis.endpointKey\}

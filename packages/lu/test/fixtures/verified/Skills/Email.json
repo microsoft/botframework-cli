@@ -90,11 +90,7 @@
   ],
   "entities": [
     {
-      "name": "OrderReference",
-      "roles": []
-    },
-    {
-      "name": "SenderName",
+      "name": "Attachment",
       "roles": []
     },
     {
@@ -106,35 +102,7 @@
       "roles": []
     },
     {
-      "name": "Attachment",
-      "roles": []
-    },
-    {
-      "name": "Message",
-      "roles": []
-    },
-    {
-      "name": "RelationshipName",
-      "roles": []
-    },
-    {
-      "name": "Time",
-      "roles": []
-    },
-    {
-      "name": "Line",
-      "roles": []
-    },
-    {
-      "name": "PositionReference",
-      "roles": []
-    },
-    {
       "name": "Date",
-      "roles": []
-    },
-    {
-      "name": "FromRelationshipName",
       "roles": []
     },
     {
@@ -142,7 +110,39 @@
       "roles": []
     },
     {
+      "name": "FromRelationshipName",
+      "roles": []
+    },
+    {
+      "name": "Line",
+      "roles": []
+    },
+    {
+      "name": "Message",
+      "roles": []
+    },
+    {
+      "name": "OrderReference",
+      "roles": []
+    },
+    {
+      "name": "PositionReference",
+      "roles": []
+    },
+    {
+      "name": "RelationshipName",
+      "roles": []
+    },
+    {
       "name": "SearchTexts",
+      "roles": []
+    },
+    {
+      "name": "SenderName",
+      "roles": []
+    },
+    {
+      "name": "Time",
       "roles": []
     },
     {
@@ -8910,21 +8910,21 @@
   ],
   "patternAnyEntities": [
     {
-          "explicitList": [],
-          "name": "Message.Any",
-          "roles": []
-        },
-        {
-          "explicitList": [],
-          "name": "EmailSubject.Any",
-          "roles": []
-        },
-        {
-          "explicitList": [],
-          "name": "SearchTexts.Any",
-          "roles": []
-        }
-      ],
+      "name": "Message.Any",
+      "explicitList": [],
+      "roles": []
+    },
+    {
+      "name": "EmailSubject.Any",
+      "explicitList": [],
+      "roles": []
+    },
+    {
+      "name": "SearchTexts.Any",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
   "prebuiltEntities": [
     {
       "name": "email",

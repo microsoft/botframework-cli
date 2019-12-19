@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "currency": {
+        "type": "object",
+        "properties": {
+            "quantity": {
+                "type": "number"
+            },
+            "currency": {
+                "type": "string"
+            }
+        },
+        "$templates": [],
+        "$mappings": [ "money" ]
+    }
+}

@@ -5,6 +5,7 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+const {cli} = require('cli-ux')
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationDelete extends Command {
@@ -14,11 +15,11 @@ export default class LuisApplicationDelete extends Command {
     $ bf luis:application:delete --appId {APP_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id'}),
+    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
+    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
   }
 
   async run() {
@@ -36,6 +37,13 @@ export default class LuisApplicationDelete extends Command {
     utils.validateRequiredProps(requiredProps)
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
+
+    if(!flags.appId) {
+      const deleteAppConfirmation = await cli.confirm(`Are you sure you would like to delete app with id: ${appId}? (Y/N)`)
+      if (!deleteAppConfirmation) {
+        return this.log('No action taken')
+      }
+    }
 
     try {
       const result = await client.apps.deleteMethod(appId)

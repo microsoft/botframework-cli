@@ -58,9 +58,12 @@ const parseIntentsToLu = function(luisObj, luisJSON){
         fileContent += parseUtterancesToLu(intent.utterances, luisJSON)
         fileContent += NEWLINE + NEWLINE;
         if (intent.intent.features) {
-            fileContent += `@ intent ${intent.intent.name}`;
-            fileContent += addRolesAndFeatures(intent.intent);
-            fileContent += NEWLINE + NEWLINE;
+            let rolesAndFeatures = addRolesAndFeatures(intent.intent);
+            if (rolesAndFeatures !== '') {
+                fileContent += `@ intent ${intent.intent.name}`;
+                fileContent += rolesAndFeatures;
+                fileContent += NEWLINE + NEWLINE;
+            }
         }
     });
     return fileContent
@@ -221,7 +224,13 @@ const handlePhraseLists = function(collection) {
     }
     fileContent = '> # Phrase list definitions' + NEWLINE + NEWLINE;
     collection.forEach(function(entity) {
+        let flags = '';
         fileContent += `@ phraselist ${entity.name}${(entity.mode ? `(interchangeable)` : ``)}`;
+        if (entity.activated !== undefined && !entity.activated) flags += `disabled`;
+        if (entity.enabledForAllModels !== undefined && entity.enabledForAllModels) {
+            flags += (flags !== '') ? `, enabledForAllModels` : `enabledForAllModels`;
+        }
+        if (flags !== '') fileContent += ` ${flags}`;
         if (entity.words && entity.words !== '') {
             fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
         }

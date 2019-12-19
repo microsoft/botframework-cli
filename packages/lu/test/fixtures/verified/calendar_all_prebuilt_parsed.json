@@ -153,52 +153,52 @@
   ],
   "entities": [
     {
-      "name": "Calendar.StartDate",
-      "roles": [],
-      "inherits": {
-        "domain_name": "Calendar",
-        "model_name": "StartDate"
-      }
-    },
-    {
-      "name": "Calendar.Subject",
-      "roles": [],
-      "inherits": {
-        "domain_name": "Calendar",
-        "model_name": "Subject"
-      }
-    },
-    {
-      "name": "Calendar.StartTime",
-      "roles": [],
-      "inherits": {
-        "domain_name": "Calendar",
-        "model_name": "StartTime"
-      }
-    },
-    {
-      "name": "Calendar.EndTime",
-      "roles": [],
-      "inherits": {
-        "domain_name": "Calendar",
-        "model_name": "EndTime"
-      }
-    },
-    {
       "name": "Calendar.EndDate",
-      "roles": [],
       "inherits": {
         "domain_name": "Calendar",
         "model_name": "EndDate"
-      }
+      },
+      "roles": []
+    },
+    {
+      "name": "Calendar.EndTime",
+      "inherits": {
+        "domain_name": "Calendar",
+        "model_name": "EndTime"
+      },
+      "roles": []
     },
     {
       "name": "Calendar.Message",
-      "roles": [],
       "inherits": {
         "domain_name": "Calendar",
         "model_name": "Message"
-      }
+      },
+      "roles": []
+    },
+    {
+      "name": "Calendar.StartDate",
+      "inherits": {
+        "domain_name": "Calendar",
+        "model_name": "StartDate"
+      },
+      "roles": []
+    },
+    {
+      "name": "Calendar.StartTime",
+      "inherits": {
+        "domain_name": "Calendar",
+        "model_name": "StartTime"
+      },
+      "roles": []
+    },
+    {
+      "name": "Calendar.Subject",
+      "inherits": {
+        "domain_name": "Calendar",
+        "model_name": "Subject"
+      },
+      "roles": []
     }
   ],
   "composites": [],
@@ -13039,8 +13039,8 @@
     }
   ],
   "name": "all_imports",
-  "desc": "",
   "culture": "en-us",
   "versionId": "0.1",
-  "luis_schema_version": "3.2.0"
+  "luis_schema_version": "3.2.0",
+  "desc": ""
 }

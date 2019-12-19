@@ -1,0 +1,20 @@
+
+# filename
+- @{schemaName}-@{property}Settemperature.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnSetProperty",
+    "property": "@{property}",
+    "entity": "temperature",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@temperature"          
+        }
+    ]               
+}
+```

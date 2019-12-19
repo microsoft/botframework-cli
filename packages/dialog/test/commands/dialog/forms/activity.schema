@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "Subject": { 
+            "type": "string",
+            "$mappings": ["utterance"]
+        },
+        "ActivityType": { 
+            "type": "string",
+            "enum": [
+                "Task",
+                "PhoneCall"
+            ]
+        },
+        "StartDate": { 
+            "type": "string",
+            "$mappings": [ "datetime" ]
+        }
+    },
+    "required":["Subject", "ActivityType", "StartDate"],
+    "$requires": [
+        "standard.schema"
+    ]
+}
+    
