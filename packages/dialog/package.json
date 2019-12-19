@@ -37,8 +37,6 @@
     "version": "npm run doc:readme && git add README.md"
   },
   "dependencies": {
-    "@christopheranderson/botbuilder-lg": "4.7.0-a0-b6513caa",
-    "@christopheranderson/botframework-expressions": "4.7.0-a0-b6513caa",
     "@microsoft/bf-cli-command": "~1.0.0",
     "@oclif/command": "~1.5.13",
     "@oclif/errors": "~1.2.2",
@@ -46,6 +44,8 @@
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
     "ajv": "^6.9.1",
+    "botbuilder-lg": "~4.7.0-preview",
+    "botframework-expressions": "~4.7.0-preview",
     "chalk": "^2.4.2",
     "clone": "^2.1.2",
     "fs-extra": "^8.1.0",
