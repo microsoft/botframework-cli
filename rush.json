@@ -8,6 +8,10 @@
 
   "projects": [
     {
+      "packageName": "@microsoft/bf-dispatcher",
+      "projectFolder": "packages/dispatcher"
+    },
+    {
       "packageName": "@microsoft/bf-cli-command",
       "projectFolder": "packages/command"
     }, 
