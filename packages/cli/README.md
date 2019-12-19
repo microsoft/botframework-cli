@@ -286,7 +286,7 @@ OPTIONS
   -h, --help  LUIS command help
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/index.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/index.ts)_
 
 ## `bf luis:application:create`
 
@@ -319,7 +319,7 @@ EXAMPLE
        --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/create.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/create.ts)_
 
 ## `bf luis:application:delete`
 
@@ -342,7 +342,7 @@ EXAMPLE
        $ bf luis:application:delete --appId {APP_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/delete.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/delete.ts)_
 
 ## `bf luis:application:import`
 
@@ -373,7 +373,7 @@ EXAMPLE
   --name {NAME}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/import.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/import.ts)_
 
 ## `bf luis:application:list`
 
@@ -405,7 +405,7 @@ EXAMPLE
        $ bf luis:application:list --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --out {PATH_TO_JSON_FILE}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/list.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/list.ts)_
 
 ## `bf luis:application:publish`
 
@@ -438,7 +438,7 @@ EXAMPLE
   {INITIAL_VERSION_ID} --appId {APP_ID} --staging {BOOLEAN}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/publish.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/publish.ts)_
 
 ## `bf luis:application:query`
 
@@ -469,7 +469,7 @@ EXAMPLE
   {QUERY} --prod {BOOLEAN}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/query.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/query.ts)_
 
 ## `bf luis:application:rename`
 
@@ -495,7 +495,7 @@ EXAMPLE
   {NAME} --description {DESCRIPTION}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/rename.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/rename.ts)_
 
 ## `bf luis:application:show`
 
@@ -518,7 +518,7 @@ EXAMPLE
        $ bf luis:application:show --appId {APPLICATION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/application/show.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/show.ts)_
 
 ## `bf luis:convert`
 
@@ -573,7 +573,7 @@ EXAMPLE
   --out {PATH_TO_JSON_FILE}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/endpoints/list.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/endpoints/list.ts)_
 
 ## `bf luis:generate:cs`
 
@@ -635,7 +635,7 @@ EXAMPLE
   {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/train/run.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/train/run.ts)_
 
 ## `bf luis:train:show`
 
@@ -661,7 +661,7 @@ EXAMPLE
   {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/train/show.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/train/show.ts)_
 
 ## `bf luis:translate`
 
@@ -708,7 +708,7 @@ EXAMPLE
   --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/clone.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/clone.ts)_
 
 ## `bf luis:version:delete`
 
@@ -734,7 +734,7 @@ EXAMPLE
   {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/delete.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/delete.ts)_
 
 ## `bf luis:version:export`
 
@@ -768,7 +768,7 @@ EXAMPLE
   --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/export.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/export.ts)_
 
 ## `bf luis:version:import`
 
@@ -801,7 +801,7 @@ EXAMPLE
   --appId {APP_ID}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/import.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/import.ts)_
 
 ## `bf luis:version:list`
 
@@ -836,7 +836,7 @@ EXAMPLE
        $ bf luis:version:list --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --out {PATH_TO_JSON_FILE}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/list.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/list.ts)_
 
 ## `bf luis:version:rename`
 
@@ -863,7 +863,7 @@ EXAMPLE
   {NAME} --description {DESCRIPTION}
 ```
 
-_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/bf-luis-cli/src/commands/luis/version/rename.ts)_
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/rename.ts)_
 
 ## `bf qnamaker`
 
@@ -1390,4 +1390,6 @@ OPTIONS
 ```
 
 _See code: [@microsoft/bf-lu](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/qnamaker/translate.ts)_
+<!-- commandsstop -->
+
 <!-- commandsstop -->
