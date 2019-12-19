@@ -1,0 +1,96 @@
+{
+    "id": "dc28e910-44e2-4c2a-9c2a-1eb72b891d68",
+    "name": "bot-deployment",
+    "friendlyName": "Bot Deployment",
+    "description": "Deploys a bot to Azure",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "SOUTHWORKS",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Bot Deployment",
+    "groups": [
+        {
+            "name": "azure",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "template",
+            "displayName": "Template",
+            "isExpanded": true
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "azureSubscription",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment",
+            "groupname": "azure"
+        },
+        {
+            "name": "resourceGroup",
+            "type": "text",
+            "label": "Resource Group",
+            "required": true,
+            "helpMarkDown": "Provide the name of a resource group",
+            "groupname": "azure"
+        },
+        {
+            "name": "location",
+            "type": "text",
+            "label": "Location",
+            "required": true,
+            "helpMarkDown": "Location for deploying the resource group",
+            "groupname": "azure"
+        },
+        {
+            "name": "template",
+            "type": "filepath",
+            "label": "Template",
+            "required": true,
+            "helpMarkDown": "Specify the path or a pattern pointing to the Azure Resource Manager template",
+            "groupname": "template"
+        },
+        {
+            "name": "appId",
+            "type": "text",
+            "label": "App ID",
+            "required": true,
+            "helpMarkDown": "Provide an Azure App ID",
+            "groupname": "template"
+        },
+        {
+            "name": "appSecret",
+            "type": "text",
+            "label": "App Secret",
+            "required": true,
+            "helpMarkDown": "Provide an Azure App Secret",
+            "groupname": "template"
+        },
+        {
+            "name": "botName",
+            "type": "text",
+            "label": "Bot's Name",
+            "required": true,
+            "helpMarkDown": "Provide a name for the bot",
+            "groupname": "template"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

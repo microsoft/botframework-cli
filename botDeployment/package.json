@@ -1,0 +1,26 @@
+{
+  "name": "botdeployment",
+  "version": "1.0.0",
+  "description": "Deployment of a bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/southworks/SOUTHWORKS-azure-pipelines-tasks.git"
+  },
+  "author": "SOUTHWORKS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/southworks/SOUTHWORKS-azure-pipelines-tasks/issues"
+  },
+  "homepage": "https://github.com/southworks/SOUTHWORKS-azure-pipelines-tasks#readme",
+  "dependencies": {
+    "azure-pipelines-task-lib": "^2.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.21",
+    "@types/q": "^1.5.2"
+  }
+}
