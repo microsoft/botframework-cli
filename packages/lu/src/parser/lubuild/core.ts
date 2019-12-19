@@ -1,22 +1,18 @@
 import {LUISConfig, Content, DialogFileContent} from './types'
 import { parser } from '../index';
-import { LuisAuthoring } from 'luis-apis';
 import { LuisRecognizer } from './luisRecognizer';
 import { MultiLanguageRecognizer } from './multiLanguageRecognizer';
 import { LuisSettings } from './luisSettings';
-import { AppsGetResponse, AzureClouds, AzureRegions, LuisApp } from 'luis-apis/typings/lib/models';
 import { isEqual, differenceWith } from 'lodash'
-import * as msRest from '@azure/ms-rest-js';
 import * as path from 'path';
+const luisUtils = require('@microsoft/bf-luis-cli/lib/utils/index');
 
 export class LuBuildCore {
     public static async CreateOrUpdateApplication(luConfig: LUISConfig)
         : Promise<{recognizers: LuisRecognizer[], multiRecognizer: MultiLanguageRecognizer, luisSettings: LuisSettings}> {
-        let credentials = new msRest.ApiKeyCredentials({ inHeader: { "Ocp-Apim-Subscription-Key": luConfig.AuthoringKey } });
-        const client = new LuisAuthoring(<any>credentials, {});
-        const luContents = luConfig.LuContents;
-
-        let apps = await client.apps.list(<AzureRegions>luConfig.Region, <AzureClouds>"com");
+        
+        // new luis api client
+        const client = luisUtils.getLUISClient(luConfig.AuthoringKey, luConfig.Endpoint);
 
         // new settings
         let existingLuisSettings = JSON.parse(luConfig.LuisSettingsContent.Content).luis;
@@ -29,22 +25,27 @@ export class LuBuildCore {
         // new luis recognizer
         let recognizers: LuisRecognizer[] = [];
 
+        // list all apps of current key
+        let apps = await client.apps.list(undefined, undefined);
+
+        const luContents = luConfig.LuContents;
         for (const content of luContents) {
             let locale = content.Locale || luConfig.Culture;
             let appName: string = '';
 
             const response = await parser.parseFile(content.Content, false, locale);
             await parser.validateLUISBlob(response.LUISJsonStructure);
-            let parsedLUISObj = <LuisApp>response.LUISJsonStructure;
+            let parsedLUISObj = <any>response.LUISJsonStructure;
             locale = parsedLUISObj.culture && parsedLUISObj.culture !== '' ? parsedLUISObj.culture : locale;
             appName = parsedLUISObj.name && parsedLUISObj.name !== '' ? parsedLUISObj.name : appName;
+            parsedLUISObj.luis_schema_version = parsedLUISObj.luis_schema_version && parsedLUISObj.luis_schema_version !== '' ? parsedLUISObj.luis_schema_version : luConfig.LuisSchemaVersion;
 
             if (appName === '') {
                 appName = `${luConfig.BotName}(${luConfig.Suffix})-${content.Name}`;
             }
 
             let dialogFile = path.join(path.dirname(content.Path), `${content.Name}.dialog`);
-            let recognizer = await LuisRecognizer.load(content.Path, content.Name, dialogFile);
+            let recognizer = LuisRecognizer.load(content.Path, content.Name, dialogFile);
 
             for (let app of apps) {
                 if (app.name === appName) {
@@ -60,11 +61,11 @@ export class LuBuildCore {
             }
 
             if (recognizer.getAppId() !== '') {
-                let appInfo = await client.apps.get(<AzureRegions>luConfig.Region, <AzureClouds>"com", recognizer.getAppId());
+                let appInfo = await client.apps.get(recognizer.getAppId());
                 recognizer.versionId = <string>appInfo.activeVersion;
                 
                 // compare and train model
-                let training = await this.updateApplication(parsedLUISObj, luConfig, client, recognizer, appInfo);
+                let training = await this.updateApplication(parsedLUISObj, luConfig, client, recognizer);
                 
                 // publish model
                 if (training) {
@@ -116,36 +117,55 @@ export class LuBuildCore {
         return dialogFileContent;
     }
 
-    private static async createApplication(currentApp: LuisApp, config: LUISConfig, client: LuisAuthoring, recognizer: LuisRecognizer, name: string, culture: string): Promise<boolean> {
+    private static async createApplication(currentApp: any, config: LUISConfig, client: any, recognizer: LuisRecognizer, name: string, culture: string): Promise<boolean> {
         process.stdout.write(`Creating LUIS.ai application: ${name} version:0.1\n`);
         currentApp.name = name;
         currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${config.BotName} app, targetting ${config.Suffix}`;
         currentApp.culture = culture;
+        currentApp.luis_schema_version = config.LuisSchemaVersion,
         currentApp.versionId = "0.1";
         recognizer.versionId = "0.1";
 
-        let response = await client.apps.importMethod(<AzureRegions>config.Region, <AzureClouds>"com", currentApp);
-
-        recognizer.setAppId(response.body);
+        let response = await client.apps.importMethod(currentApp);
+        recognizer.setAppId(response);
 
         // train the version
-        await client.train.trainVersion(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), currentApp.versionId);
+        await client.train.trainVersion(recognizer.getAppId(), currentApp.versionId);
 
         return true;
     }
 
-    private static async updateApplication(currentApp: LuisApp, config: LUISConfig, client: LuisAuthoring, recognizer: LuisRecognizer, appInfo: AppsGetResponse): Promise<boolean> {
+    private static async updateApplication(currentApp: any, config: LUISConfig, client: any, recognizer: LuisRecognizer): Promise<boolean> {
         // get existing app
-        const response = await client.versions.exportMethod(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), recognizer.versionId);
-        const existingApp: LuisApp = response._response.parsedBody;
+        const response = await client.versions.exportMethod(recognizer.getAppId(), recognizer.versionId);
+        const existingApp = response;
         currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc;
         currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture;
         currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId !== existingApp.versionId ? currentApp.versionId : existingApp.versionId;
-        
+        currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' && currentApp.luis_schema_version !== config.LuisSchemaVersion ? currentApp.luis_schema_version : config.LuisSchemaVersion;
+
         // convert utterance text from lu file to lower case
         // as utterances from luis api are all converted to lower case automatically
         (currentApp.utterances || []).forEach((u: any) => {
             u.text = u.text.toLowerCase();
+        });
+
+        // convert list entities to remove synonyms word in list which is same with canonicalForm
+        (currentApp.closedLists || []).forEach((c: any) => {
+            (c.subLists || []).forEach((s: any) => {
+                if (s.list) {
+                    const foundIndex = s.list.indexOf(s.canonicalForm);
+                    if (foundIndex > -1 ) {
+                        s.list.splice(foundIndex, 1);
+                    }
+                }
+            });
+        });
+
+        (currentApp.entities || []).forEach((e: any) => {
+            if (e.children === undefined) {
+                e.children = [];
+            }
         });
 
         currentApp.name = existingApp.name;
@@ -164,11 +184,11 @@ export class LuBuildCore {
             const options: any = {};
             options.versionId = newVersionId;
             process.stdout.write(`${recognizer.getLuPath()} creating version=${newVersionId}\n`);
-            await client.versions.importMethod(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), currentApp, options);
+            await client.versions.importMethod(recognizer.getAppId(), currentApp, options);
 
             // train the version
             process.stdout.write(`${recognizer.getLuPath()} training version=${newVersionId}\n`);
-            await client.train.trainVersion(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), newVersionId);
+            await client.train.trainVersion(recognizer.getAppId(), newVersionId);
 
             return true;
         } else {
@@ -177,17 +197,17 @@ export class LuBuildCore {
         }
     }
 
-    private static async publishApplication(config: LUISConfig, client: LuisAuthoring, recognizer: LuisRecognizer): Promise<void> {    
+    private static async publishApplication(config: LUISConfig, client: any, recognizer: LuisRecognizer): Promise<void> {    
         process.stdout.write(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`);
         let done = true;
         do {
             await process.stdout.write('.');
-            let trainingStatus = await client.train.getStatus(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(), <string>recognizer.versionId);
+            let trainingStatus = await client.train.getStatus(recognizer.getAppId(), recognizer.versionId);
     
             done = true;
             for (let status of trainingStatus) {
                 if (status.details) {
-                    if (status.details.status === 'InProgress') {
+                    if (status.details.status === 'InProgress' || status.details.status === 'Queued') {
                         done = false;
                         break;
                     }
@@ -198,9 +218,9 @@ export class LuBuildCore {
     
         // publish the version
         process.stdout.write(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`);
-        await client.apps.publish(<AzureRegions>config.Region, <AzureClouds>"com", recognizer.getAppId(),
+        await client.apps.publish(recognizer.getAppId(),
             {
-                "versionId": <string>recognizer.versionId,
+                "versionId": recognizer.versionId,
                 "isStaging": false
             });
     
@@ -230,7 +250,7 @@ export class LuBuildCore {
         }
     }
 
-    private static isApplicationEqual(appA: LuisApp, appB: LuisApp): boolean {
+    private static isApplicationEqual(appA: any, appB: any): boolean {
         let equal = true;
         equal = equal && isEqual(appA.desc, appB.desc);
         equal = equal && isEqual(appA.versionId, appB.versionId);
@@ -248,7 +268,7 @@ export class LuBuildCore {
 
         // handle exception for none intent which is default added in luis portal
         if (equal) {
-            if (appA.intents && !appA.intents.some(x => x.name === 'None')) {
+            if (appA.intents && !appA.intents.some((x: any) => x.name === 'None')) {
                 const appBWithoutNoneIntent = (<any[]>appB.intents).filter(x => x.name !== 'None');
                 equal = equal && this.isArrayEqual(appA.intents, appBWithoutNoneIntent);
             } else {

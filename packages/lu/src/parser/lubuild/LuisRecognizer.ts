@@ -10,7 +10,7 @@ export class LuisRecognizer {
         this.versionId = '0.1';
     }
 
-    static async load(luFile: string, targetFileName: string, dialogPath: string): Promise<LuisRecognizer> {
+    static load(luFile: string, targetFileName: string, dialogPath: string): LuisRecognizer {
         var recognizer = new LuisRecognizer(luFile, targetFileName);
         recognizer.dialogPath = dialogPath;
         return recognizer;

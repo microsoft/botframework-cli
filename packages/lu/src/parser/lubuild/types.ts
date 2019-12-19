@@ -7,7 +7,7 @@ export class DialogFileContent {
 }
 
 export class Content {
-    public ID: string; 
+    public ID: string;
     public Path: string;
     public Content: string;
     public Locale: string | undefined;
@@ -35,37 +35,43 @@ export class Content {
 };
 
 export class LUISConfig {
-    public AuthoringKey:string;
-    public BotName:string;
-    public Culture:string = 'en-us';
-    public Region:string = 'westus';
-    public Suffix:string = 'development';
-    public GenerateDialogFileContent:boolean = false;
-    public FallBackLocale:string = 'en-us';
+    public AuthoringKey: string;
+    public BotName: string;
+    public Culture: string = 'en-us';
+    public Region: string = 'westus';
+    public Endpoint: string = 'https://westus.api.cognitive.microsoft.com';
+    public Suffix: string = 'development';
+    public LuisSchemaVersion: string = '4.0.0';
+    public GenerateDialogFileContent: boolean = false;
+    public FallBackLocale: string = 'en-us';
     public LuContents: Array<Content>;
     public MultiLangRecognizerContent: Content;
     public LuisSettingsContent: Content;
 
     constructor(
-        authoringKey: string, 
+        authoringKey: string,
         botName: string,
         culture: string,
         region: string,
+        endpoint: string,
         suffix: string,
+        luisSchemeVersion: string,
         generateDialogFileContent: boolean,
         fallBackLocale: string,
         luContents: Array<Content>,
         multiLangRecognizerContent: Content,
         luisSettingsContent: Content) {
-            this.AuthoringKey = authoringKey,
+        this.AuthoringKey = authoringKey,
             this.BotName = botName,
             this.Culture = culture,
             this.Region = region,
+            this.Endpoint = endpoint,
             this.Suffix = suffix,
+            this.LuisSchemaVersion = luisSchemeVersion,
             this.GenerateDialogFileContent = generateDialogFileContent,
             this.FallBackLocale = fallBackLocale,
             this.LuContents = luContents,
             this.MultiLangRecognizerContent = multiLangRecognizerContent,
             this.LuisSettingsContent = luisSettingsContent
-        }
+    }
 };
