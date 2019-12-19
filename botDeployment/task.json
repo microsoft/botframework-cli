@@ -8,8 +8,8 @@
     "author": "SOUTHWORKS",
     "version": {
         "Major": 0,
-        "Minor": 1,
-        "Patch": 0
+        "Minor": 2,
+        "Patch": 1
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -21,6 +21,11 @@
         {
             "name": "template",
             "displayName": "Template",
+            "isExpanded": true
+        },
+        {
+            "name": "bot",
+            "displayName": "Bot",
             "isExpanded": true
         },
         {
@@ -85,7 +90,15 @@
             "label": "Bot's Name",
             "required": true,
             "helpMarkDown": "Provide a name for the bot",
-            "groupname": "template"
+            "groupname": "bot"
+        },
+        {
+            "name": "zipFile",
+            "type": "filepath",
+            "label": "Zipped Bot",
+            "required": true,
+            "helpMarkDown": "Specify the path to the compressed zip folder containing the bot",
+            "groupname": "bot"
         }
     ],
     "execution": {

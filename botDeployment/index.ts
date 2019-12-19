@@ -1,15 +1,19 @@
 import taskLibrary = require('azure-pipelines-task-lib/task');
 import { execSync } from "child_process";
 import { SubscriptionHelper } from './subscriptionHelper';
+import { InputValues } from './inputValues';
+
+const input = new InputValues();
 
 const azureLogin = (helper: SubscriptionHelper): void => {
-    let userName = helper.getServicePrincipalClientId();
-    let password = helper.getServicePrincipalKey();
-    let tenantId = helper.getTenantId();
+    const userName = helper.getServicePrincipalClientId();
+    const password = helper.getServicePrincipalKey();
+    const tenantId = helper.getTenantId();
 
     try {
         console.log('Logging in to Azure...');
-        let loginCommand = `az login --service-principal --username "${ userName }" --password "${ password }" --tenant "${ tenantId }"`;
+        const loginCommand = `az login --service-principal --username "${ userName }" --password "${ password }" --tenant "${ tenantId }"`;
+        
         execSync(loginCommand);
         console.log('Successful login');
     } catch (error) {
@@ -21,16 +25,10 @@ const azureLogin = (helper: SubscriptionHelper): void => {
 const resourcesDeployment = (): void => {
     try {
         console.log('Deploying resources to Azure...');
-        let resourceGroup = taskLibrary.getInput('resourceGroup', true);
-        let location = taskLibrary.getInput('location', true);
-        let template = taskLibrary.getInput('template', true);
-        let appId = taskLibrary.getInput('appId', true);
-        let appSecret = taskLibrary.getInput('appSecret', true);
-        let botName = taskLibrary.getInput('botName', true);
-
-        let command = `az deployment create --name "${ resourceGroup }" --location "${ location }" --template-file "${ template }" `;
-        command += `--parameters appId="${ appId }" appSecret="${ appSecret }" botId="${ botName }" `;
-        command += `botSku=F0 newAppServicePlanName="${ botName }" newWebAppName=${ botName } groupName="${ resourceGroup }" groupLocation="${ location }" newAppServicePlanLocation="${ location }"`;
+        let command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.template }" `;
+            command += `--parameters appId="${ input.appId }" appSecret="${ input.appSecret }" botId="${ input.botName }" `;
+            command += `botSku=F0 newAppServicePlanName="${ input.botName }" newWebAppName=${ input.botName } groupName="${ input.resourceGroup }" groupLocation="${ input.location }" newAppServicePlanLocation="${ input.location }"`;
+        
         execSync(command);
         console.log('Successful deployment');      
     } catch (error) {
@@ -39,13 +37,27 @@ const resourcesDeployment = (): void => {
     }
 }
 
+const botDeployment = (): void => {
+    try {
+        console.log('Deploying bot to Azure...');
+        const command = `az webapp deployment source config-zip --resource-group "${ input.resourceGroup }" --name "${ input.botName }" --src "${ input.zipFile }"`;
+        
+        execSync(command);
+        console.log('Bot successfully deployed');
+    } catch (error) {
+        console.log('Error in bot deployment: ' + error);    
+        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
+    }
+}
+
 const run = (): void => {
     try {
-        let subscription = taskLibrary.getInput('azureSubscription', true) as string;
-        let helper = new SubscriptionHelper(subscription);
+        const subscription = taskLibrary.getInput('azureSubscription', true) as string;
+        const helper = new SubscriptionHelper(subscription);
 
         azureLogin(helper);
         resourcesDeployment();   
+        botDeployment();
     } catch (error) {
         taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
     }
