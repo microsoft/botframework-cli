@@ -1,7 +1,7 @@
 lexer grammar LUFileLexer;
 
 @lexer::members {
-  this.ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
+  var ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
 }
 
 fragment LETTER: 'a'..'z' | 'A'..'Z';

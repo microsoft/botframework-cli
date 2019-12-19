@@ -544,7 +544,7 @@ LUFileLexer.prototype.ruleNames = [ "LETTER", "NUMBER", "WHITESPACE", "UTTERANCE
 LUFileLexer.prototype.grammarFileName = "LUFileLexer.g4";
 
 
-  this.ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
+  var ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
 
 
 LUFileLexer.prototype.action = function(localctx, ruleIndex, actionIndex) {
