@@ -3,16 +3,15 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import { throws } from 'assert'
+import {Command, flags} from '@microsoft/bf-cli-command'
 const {cli} = require('cli-ux')
-const utils = require('../../utils/index')
+import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfilehandler'
 
-export default class LuisInit extends Command {
+export default class ConfigSetLuis extends Command {
   static description = 'Stores default LUIS application values in global config.'
 
   static examples = [`
-    $ bf luis:init --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region {REGION}
+    $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region {REGION}
   `]
 
   static flags: any = {
@@ -24,7 +23,7 @@ export default class LuisInit extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(LuisInit)
+    const {flags} = this.parse(ConfigSetLuis)
     const configDir = this.config.configDir
 
     if (Object.entries(flags).length === 0 && flags.constructor === Object) {
@@ -37,24 +36,20 @@ export default class LuisInit extends Command {
       return this.log('Unable to save config settings')
     } catch (err) {
       this.log(`Unable to save config settings: ${err}`)
+      this._help()
     }
   }
 
   async promptSaveConfig(flags: any, configPath: string) {
     const configPrefix = 'luis__'
-    let userConfig = await utils.getUserConfig(configPath)
-    if (userConfig === null) {
-      await utils.createConfigFile(configPath)
-      userConfig = {}
-    }
+    let userConfig: Config = await getConfigFile(configPath)
     const saveConfigOptIn = await cli.confirm('Would you like to save the provided values to your global config file? (Y/N)')
     if (saveConfigOptIn) {
-      // save config
       const flagLabels = Object.keys(flags)
       flagLabels.map(label => {
         userConfig[`${configPrefix}${label}`] = flags[label]
       })
-      await utils.writeUserConfig(userConfig, configPath)
+      await writeConfigFile(configPath, userConfig)
       return true
     }
     return false

@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setmoney.dialog
+- @{schemaName}-@{property}Setdimension.dialog
 
 # template
 - ```
@@ -8,12 +8,12 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
-    "entity": "@money",
+    "entity": "dimension",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "@money"          
+            "value": "@dimension"          
         }
     ]               
 }

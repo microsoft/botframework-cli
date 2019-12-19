@@ -15,11 +15,12 @@
         "CompleteConfirmation": {
             "type": "string",
             "$mappings": [
-                "Confirmation"
+                "Confirmation", "PROPERTYName"
             ],
             "$templates": [
                 "CompleteConfirmation.dialog",
-                "CompleteConfirmationSet.dialog"
+                "CompleteSetConfirmation.dialog",
+                "CompleteSetPropertyname.dialog"
             ]
         },
         "PropertyToChange": {
@@ -52,6 +53,6 @@
         "TriggerIntent.dialog",
         "luconfig.json",
         "lu.dialog",
-        "Main.dialog"        
+        "Main.dialog"     
     ]
 }

@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
-    "entity": "@ordinalV2",
+    "entity": "ordinalV2",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",

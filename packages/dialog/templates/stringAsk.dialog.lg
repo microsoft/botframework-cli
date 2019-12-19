@@ -9,25 +9,10 @@
     "condition":"!$@{property} && contains(dialog.requiredProperties, '@{property}')",
     "actions": [
         {
-            "$kind": "Microsoft.IfCondition",
-            "condition": "contains(turn.schema.properties['@{property}'].$mappings, 'utterance')",
-            "actions":[
-                {
-                    "$kind": "Microsoft.Ask",
-                    "activity": "@{callAsk()}",
-                    "expectedProperties": [
-                         "utterance","@{property}"
-                    ]
-                }
-            ],
-            "elseActions":[
-                {
-                    "$kind": "Microsoft.Ask",
-                    "activity": "@{callAsk()}",
-                    "expectedProperties": [
-                        "@{property}"
-                    ]
-                }
+            "$kind": "Microsoft.Ask",
+            "activity": "@{callAsk()}",
+            "expectedProperties": [
+                "@{property}"
             ]
         },
     ]

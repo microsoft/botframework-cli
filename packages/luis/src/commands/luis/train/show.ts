@@ -17,9 +17,9 @@ export default class LuisTrainShow extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
-    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'Version to show training status (mandatory, defaults to config:LUIS:versionId)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: '(required) Version to show training status (defaults to config:LUIS:versionId)'}),
   }
 
   async run() {

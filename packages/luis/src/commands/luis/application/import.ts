@@ -18,9 +18,9 @@ export default class LuisApplicationImport extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
     name: flags.string({description: 'LUIS application name (optional)'}),
-    in: flags.string({char: 'i', description: 'File path containing LUIS application contents, uses STDOUT if not specified (mandatory)'})
+    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDOUT if not specified'})
   }
 
   async run() {
@@ -31,7 +31,7 @@ export default class LuisApplicationImport extends Command {
 
     let {endpoint, subscriptionKey, name, inVal} = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, name}
+    const requiredProps = {endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
 
     inVal = inVal ? inVal.trim() : flags.in
@@ -41,8 +41,11 @@ export default class LuisApplicationImport extends Command {
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
+    const options: any = {}
+    if (name) options.appName = name
+
     try {
-      const newAppId = await client.apps.importMethod(JSON.parse(appJSON), undefined)
+      const newAppId = await client.apps.importMethod(JSON.parse(appJSON), options)
       this.log(`App successfully imported with id ${newAppId}.`)
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)

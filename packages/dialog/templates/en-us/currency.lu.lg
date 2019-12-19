@@ -1,7 +1,0 @@
-# filename
-- @{entityFilename()}
-
-# template
-- $PREBUILT:currency @{roles()}
-
-[generator.lg](../generator.lg)
