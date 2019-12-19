@@ -4,6 +4,8 @@ import { SubscriptionHelper } from './subscriptionHelper';
 import { InputValues } from './inputValues';
 
 const input = new InputValues();
+const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
+const outputFile = `"${ rootPath }/DirectLineCreate.json`;
 
 const azureLogin = (helper: SubscriptionHelper): void => {
     const userName = helper.getServicePrincipalClientId();
@@ -27,7 +29,8 @@ const resourcesDeployment = (): void => {
         console.log('Deploying resources to Azure...');
         let command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.template }" `;
             command += `--parameters appId="${ input.appId }" appSecret="${ input.appSecret }" botId="${ input.botName }" `;
-            command += `botSku=F0 newAppServicePlanName="${ input.botName }" newWebAppName=${ input.botName } groupName="${ input.resourceGroup }" groupLocation="${ input.location }" newAppServicePlanLocation="${ input.location }"`;
+            command += `botSku=F0 newAppServicePlanName="${ input.botName }" newWebAppName=${ input.botName } groupName="${ input.resourceGroup }" `;
+            command += `groupLocation="${ input.location }" newAppServicePlanLocation="${ input.location }"`;
         
         execSync(command);
         console.log('Successful deployment');      
@@ -50,6 +53,19 @@ const botDeployment = (): void => {
     }
 }
 
+const directLineConnection = (): void => {
+    try {
+        console.log('Connecting to Channel: Direct Line...');         
+        const command = `az bot directline create -n "${ input.botName }" -g "${ input.resourceGroup }" > "${ outputFile }"`;
+    
+        execSync(command);
+        console.log('Connection with Direct Line succeeded'); 
+    } catch (error) {
+        console.log('Error in Direct Line connection: ' + error);    
+        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
+    }
+}
+
 const run = (): void => {
     try {
         const subscription = taskLibrary.getInput('azureSubscription', true) as string;
@@ -58,6 +74,7 @@ const run = (): void => {
         azureLogin(helper);
         resourcesDeployment();   
         botDeployment();
+        directLineConnection();
     } catch (error) {
         taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
     }
