@@ -54,6 +54,9 @@ jobs:
 
     - script: 'rush test'
       displayName: 'rush test'
+    
+    - script: 'rush posttest'
+      displayName: 'rush posttest'
 
     - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
       displayName: 'Version and Pack'
