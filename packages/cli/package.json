@@ -30,8 +30,8 @@
       "@microsoft/bf-chatdown",
       "@microsoft/bf-cli-config",
       "@microsoft/bf-qnamaker",
-      "@microsoft/bf-lu",
-      "@microsoft/bf-luis-cli"
+      "@microsoft/bf-luis-cli",
+      "@microsoft/bf-lu"
     ],
     "hooks": {
       "init": "./lib/hooks/init/inithook"
