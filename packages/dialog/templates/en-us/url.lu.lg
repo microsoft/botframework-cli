@@ -1,5 +1,5 @@
 # filename
-- @{entityFilename()}
+- @{schemaName}-url.@{locale}.lu
 
 # template
 - $PREBUILT:url @{roles()}

@@ -44,7 +44,7 @@ describe('luis:application:create', () => {
   .reply(201, '99999')
   )
   .stdout()
-  .command(['luis:application:create', '--save', 'true', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--name', 'orange_app', '--subscriptionKey', uuidv1(), '--culture', 'en-us', '--description', 'test description', '--versionId', '0.04'])
+  .command(['luis:application:create', '--save', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--name', 'orange_app', '--subscriptionKey', uuidv1(), '--culture', 'en-us', '--description', 'test description', '--versionId', '0.04'])
   .it('creates a luis app and returns the new app\'s id', ctx => {
     expect(ctx.stdout).to.contain('App successfully created with id 99999')
     expect(ctx.stdout).to.contain('Config settings saved')

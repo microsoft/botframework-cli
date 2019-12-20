@@ -1,5 +1,5 @@
 # filename
-- @{entityFilename()}
+- @{schemaName}-temperature.@{locale}.lu
 
 # template
 - $PREBUILT:temperature @{roles()}

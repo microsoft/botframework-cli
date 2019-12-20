@@ -16,12 +16,12 @@ export default class LuisVersionExport extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id (mandatory, defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'Version to export (mandatory, defaults to config:LUIS:versionId)'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: '(required) Version to export (defaults to config:LUIS:versionId)'}),
     out: flags.string({char: 'o', description: 'Save exported application to specified file, uses STDOUT if not specified (optional)'}),
     force: flags.boolean({char: 'f', description: 'Overwrites output file if exists, otherwise creates a parallel numbered file (optional)', default: false}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
   }
 
   async run() {
@@ -51,7 +51,6 @@ export default class LuisVersionExport extends Command {
         this.log(`File successfully written: ${writtenFilePath}`)
       } else {
         await utils.writeToConsole(appJSON)
-        this.log('App successfully exported\n')
       }
     } catch (error) {
       throw new CLIError(error)

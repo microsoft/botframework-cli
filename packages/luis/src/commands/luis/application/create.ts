@@ -18,13 +18,13 @@ export default class LuisApplicationCreate extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
-    name: flags.string({description: 'Name of LUIS application'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    name: flags.string({description: '(required) Name of LUIS application'}),
     culture: flags.string({description: 'Specify culture language (default: en-us)'}),
     description: flags.string({description: 'Description of LUIS application'}),
-    versionId: flags.string({description: 'LUIS version Id. (mandatory, defaults to config:LUIS:versionId)'}),
+    versionId: flags.string({description: '(required) LUIS version Id. (defaults to config:LUIS:versionId)'}),
     tokenizerVersion: flags.string({description: 'Version specifies how sentences are tokenized (optional). See also: https://aka.ms/luistokens'}),
-    save: flags.string({description: 'Save configuration settings from imported app (appId & endpoint)'}),
+    save: flags.boolean({description: 'Save configuration settings from imported app (appId & endpoint)'}),
   }
 
   async run() {
@@ -32,7 +32,7 @@ export default class LuisApplicationCreate extends Command {
     const flagLabels = Object.keys(LuisApplicationCreate.flags)
     const configDir = this.config.configDir
 
-    const {
+    let {
       endpoint,
       subscriptionKey,
       name,
@@ -44,6 +44,8 @@ export default class LuisApplicationCreate extends Command {
     } = await utils.processInputs(flags, flagLabels, configDir)
 
     const usageScenario = 'Bot Framework'
+
+    if (!culture) culture = 'en-us'
 
     const requiredProps = {endpoint, subscriptionKey, name}
     utils.validateRequiredProps(requiredProps)
@@ -59,7 +61,8 @@ export default class LuisApplicationCreate extends Command {
       if (save) {
         const config = {
           appId: newAppId,
-          endpoint
+          endpoint,
+          subscriptionKey
         }
         const response = await this.saveImportedConfig(config, configDir)
         if (response) this.log('Config settings saved')

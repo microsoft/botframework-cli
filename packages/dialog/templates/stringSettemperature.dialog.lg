@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnSetProperty",
     "property": "@{property}",
-    "entity": "@temperature",
+    "entity": "temperature",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
