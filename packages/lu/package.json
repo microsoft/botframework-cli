@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@microsoft/bf-cli-command": "1.0.0",
-    "@microsoft/bf-luis-cli": "4.7.0",
+    "@microsoft/bf-luis-cli": "1.0.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",

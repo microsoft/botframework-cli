@@ -1,4 +1,4 @@
-export class LuisRecognizer {
+export class Recognizer {
     private appId: string;
     private dialogPath: string | undefined;
 
@@ -10,8 +10,8 @@ export class LuisRecognizer {
         this.versionId = '0.1';
     }
 
-    static load(luFile: string, targetFileName: string, dialogPath: string): LuisRecognizer {
-        var recognizer = new LuisRecognizer(luFile, targetFileName);
+    static load(luFile: string, targetFileName: string, dialogPath: string): Recognizer {
+        var recognizer = new Recognizer(luFile, targetFileName);
         recognizer.dialogPath = dialogPath;
         return recognizer;
     }

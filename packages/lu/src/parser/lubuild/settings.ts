@@ -1,4 +1,4 @@
-export class LuisSettings  {
+export class Settings  {
     public luis: any;
     private settingsPath: string;
 
