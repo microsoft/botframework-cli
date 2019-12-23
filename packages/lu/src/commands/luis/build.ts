@@ -127,7 +127,7 @@ export default class LuisBuild extends Command {
       currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion;
 
       if (appName === '') {
-        appName = `${flags.botName}(${flags.suffix})-${content.Name}`;
+        appName = `${flags.botname}(${flags.suffix})-${content.Name}`;
       }
 
       let dialogFile = path.join(path.dirname(content.Path), `${content.Name}.dialog`);
@@ -142,7 +142,7 @@ export default class LuisBuild extends Command {
 
       // add to multiLanguageRecognizer
       multiRecognizer.recognizers[locale] = path.basename(dialogFile, '.dialog');
-      if (locale.toLowerCase() === flags.fallBackLocale.toLowerCase()) {
+      if (locale.toLowerCase() === flags.fallbacklocale.toLowerCase()) {
         multiRecognizer.recognizers[''] = path.basename(dialogFile, '.dialog');
       }
 
@@ -171,7 +171,7 @@ export default class LuisBuild extends Command {
       } else {
         // create the application with version 0.1
         currentApp.name = appName;
-        currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botName} app, targetting ${flags.suffix}`;
+        currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botname} app, targetting ${flags.suffix}`;
         currentApp.culture = locale;
         currentApp.versionId = "0.1";
         recognizer.versionId = "0.1";
@@ -183,12 +183,11 @@ export default class LuisBuild extends Command {
 
       if (needTrainAndPublish) {
         this.log(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`);
-        LuBuildCore.TrainApplication(client, recognizer.getAppId(), recognizer.versionId);
+        await LuBuildCore.TrainApplication(client, recognizer.getAppId(), recognizer.versionId);
 
         this.log(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`);
         let done = true;
         do {
-          this.log('.');
           let trainingStatus = await LuBuildCore.GetTrainingStatus(client, recognizer.getAppId(), recognizer.versionId);
           done = true;
           for (let status of trainingStatus) {
@@ -204,7 +203,7 @@ export default class LuisBuild extends Command {
 
         // publish the version
         this.log(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`);
-        LuBuildCore.PublishApplication(client, recognizer.getAppId(), recognizer.versionId);
+        await LuBuildCore.PublishApplication(client, recognizer.getAppId(), recognizer.versionId);
 
         this.log(`${recognizer.getLuPath()} publishing finished\n`);
       }
