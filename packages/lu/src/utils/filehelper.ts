@@ -172,24 +172,24 @@ export function parseJSON(input: string, appType: string) {
 }
 
 export function getCultureFromPath(file: string): string | null {
-  let fn = path.basename(file, path.extname(file));
-  let lang = path.extname(fn).substring(1);
+  let fn = path.basename(file, path.extname(file))
+  let lang = path.extname(fn).substring(1)
   switch (lang.toLowerCase()) {
-    case 'en-us':
-    case 'zh-cn':
-    case 'nl-nl':
-    case 'fr-fr':
-    case 'fr-ca':
-    case 'de-de':
-    case 'it-it':
-    case 'ja-jp':
-    case 'ko-kr':
-    case 'pt-br':
-    case 'es-es':
-    case 'es-mx':
-    case 'tr-tr':
-      return lang;
-    default:
-      return null;
+  case 'en-us':
+  case 'zh-cn':
+  case 'nl-nl':
+  case 'fr-fr':
+  case 'fr-ca':
+  case 'de-de':
+  case 'it-it':
+  case 'ja-jp':
+  case 'ko-kr':
+  case 'pt-br':
+  case 'es-es':
+  case 'es-mx':
+  case 'tr-tr':
+    return lang
+  default:
+    return null
   }
 }
