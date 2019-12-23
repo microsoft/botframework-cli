@@ -1,21 +1,21 @@
 export class Settings  {
-    public luis: any;
-    private settingsPath: string;
+    public luis: any
+    private settingsPath: string
 
     constructor(settingsPath: string, luis: any) {
-        this.settingsPath = settingsPath;
-        this.luis = luis;
+        this.settingsPath = settingsPath
+        this.luis = luis
     }
 
     save(): string {
         let output = {
             "luis": this.luis
-        };
+        }
 
-        return JSON.stringify(output, null, 4);
+        return JSON.stringify(output, null, 4)
     }
 
     getSettingsPath(): string {
-        return this.settingsPath;
+        return this.settingsPath
     }
 }

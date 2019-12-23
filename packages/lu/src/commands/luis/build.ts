@@ -9,9 +9,9 @@ import { Content } from './../../parser/lubuild/content'
 import { Settings } from './../../parser/lubuild/settings'
 import { MultiLanguageRecognizer } from './../../parser/lubuild/multiLanguageRecognizer'
 import { Recognizer } from './../../parser/lubuild/recognizer'
-const path = require('path');
-const fs = require('fs-extra');
-const fileHelper = require('./../../utils/filehelper');
+const path = require('path')
+const fs = require('fs-extra')
+const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('./../../parser/luis/luisBuilder')
 
@@ -39,194 +39,194 @@ export default class LuisBuild extends Command {
   async run() {
     const { flags } = this.parse(LuisBuild)
 
-    flags.culture = flags.culture && flags.culture !== '' ? flags.culture : 'en-us';
-    flags.region = flags.region && flags.region !== '' ? flags.region : 'westus';
-    flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development';
+    flags.culture = flags.culture && flags.culture !== '' ? flags.culture : 'en-us'
+    flags.region = flags.region && flags.region !== '' ? flags.region : 'westus'
+    flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
     flags.fallbacklocale = flags.fallbacklocale && flags.fallbacklocale !== '' ? flags.fallbacklocale : 'en-us'
 
-    const luContents: Array<Content> = [];
-    let multiRecognizerDialogPath: string = '';
-    let luisSettingsPath: string = '';
+    const luContents: Array<Content> = []
+    let multiRecognizerDialogPath: string = ''
+    let luisSettingsPath: string = ''
 
     // Check if data piped in stdin
-    const stdin = await this.readStdin();
+    const stdin = await this.readStdin()
     if (stdin && stdin !== '') {
-      this.log('Load lu content from stdin');
-      const lucontentFromStdin = new Content('stdin', path.join(process.cwd(), 'stdin'), stdin, flags.culture);
-      luContents.push(lucontentFromStdin);
-      multiRecognizerDialogPath = path.join(process.cwd(), `stdin.lu.dialog`);
-      luisSettingsPath = path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`);
+      this.log('Load lu content from stdin')
+      const lucontentFromStdin = new Content('stdin', path.join(process.cwd(), 'stdin'), stdin, flags.culture)
+      luContents.push(lucontentFromStdin)
+      multiRecognizerDialogPath = path.join(process.cwd(), `stdin.lu.dialog`)
+      luisSettingsPath = path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`)
     } else {
-      this.log('Start to load lu files\n');
+      this.log('Start to load lu files\n')
 
-      let files = await fileHelper.getLuFiles(flags.in, true, fileExtEnum.LUFile);
+      let files = await fileHelper.getLuFiles(flags.in, true, fileExtEnum.LUFile)
 
       for (const file of files) {
-        let fileCulture: string;
-        let fileName: string;
-        const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile);
-        const result = await LuisBuilder.build(luFiles, true, flags.culture);
-        const fileContent = result.parseToLuContent();
-        this.log(`${file} loaded\n`);
-        let cultureFromPath = fileHelper.getCultureFromPath(file);
+        let fileCulture: string
+        let fileName: string
+        const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
+        const result = await LuisBuilder.build(luFiles, true, flags.culture)
+        const fileContent = result.parseToLuContent()
+        this.log(`${file} loaded\n`)
+        let cultureFromPath = fileHelper.getCultureFromPath(file)
         if (cultureFromPath) {
-          fileCulture = cultureFromPath;
-          let fileNameWithCulture = path.basename(file, path.extname(file));
-          fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1);
+          fileCulture = cultureFromPath
+          let fileNameWithCulture = path.basename(file, path.extname(file))
+          fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
         } else {
-          fileCulture = flags.culture;
-          fileName = path.basename(file, path.extname(file));
+          fileCulture = flags.culture
+          fileName = path.basename(file, path.extname(file))
         }
 
         if (multiRecognizerDialogPath === '') {
-          multiRecognizerDialogPath = path.join(path.dirname(file), `${fileName}.lu.dialog`);
+          multiRecognizerDialogPath = path.join(path.dirname(file), `${fileName}.lu.dialog`)
         }
 
         if (luisSettingsPath === '') {
-          luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.suffix}.${flags.region}.json`);
+          luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.suffix}.${flags.region}.json`)
         }
 
-        luContents.push(new Content(fileName, file, fileContent, fileCulture));
+        luContents.push(new Content(fileName, file, fileContent, fileCulture))
       }
     }
 
     let multiRecognizerContent: any = {}
 
     if (fs.existsSync(multiRecognizerDialogPath)) {
-      multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerDialogPath)).recognizers;
-      this.log(`${multiRecognizerDialogPath} loaded\n`);
+      multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerDialogPath)).recognizers
+      this.log(`${multiRecognizerDialogPath} loaded\n`)
     }
 
-    let multiRecognizer = new MultiLanguageRecognizer(multiRecognizerDialogPath, multiRecognizerContent);
+    let multiRecognizer = new MultiLanguageRecognizer(multiRecognizerDialogPath, multiRecognizerContent)
 
-    let luisSettingsContent: any = {};
+    let luisSettingsContent: any = {}
 
     if (fs.existsSync(luisSettingsPath)) {
-      luisSettingsContent = JSON.parse(await fileHelper.getContentFromFile(luisSettingsPath)).luis;
-      this.log(`${luisSettingsPath} loaded\n`);
+      luisSettingsContent = JSON.parse(await fileHelper.getContentFromFile(luisSettingsPath)).luis
+      this.log(`${luisSettingsPath} loaded\n`)
     }
 
-    let luisSettings = new Settings(luisSettingsPath, luisSettingsContent);
+    let luisSettings = new Settings(luisSettingsPath, luisSettingsContent)
 
-    let recognizers: Recognizer[] = [];
+    let recognizers: Recognizer[] = []
 
-    this.log(`Start to handle applications\n`);
+    this.log(`Start to handle applications\n`)
 
-    const defaultLuisSchemeVersion = "4.0.0";
-    const client = LuBuildCore.InitLuisClient(flags.authoringkey, `https://${flags.region}.api.cognitive.microsoft.com`);
-    const apps = await LuBuildCore.GetApplicationList(client);
+    const defaultLuisSchemeVersion = "4.0.0"
+    const client = LuBuildCore.InitLuisClient(flags.authoringkey, `https://${flags.region}.api.cognitive.microsoft.com`)
+    const apps = await LuBuildCore.GetApplicationList(client)
     for (const content of luContents) {
-      let locale = content.Locale || flags.culture;
-      let appName: string = '';
+      let locale = content.Locale || flags.culture
+      let appName: string = ''
 
-      let currentApp = await LuBuildCore.ParseLuContent(content.Content, locale);
+      let currentApp = await LuBuildCore.ParseLuContent(content.Content, locale)
 
-      locale = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : locale;
-      appName = currentApp.name && currentApp.name !== '' ? currentApp.name : appName;
+      locale = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : locale
+      appName = currentApp.name && currentApp.name !== '' ? currentApp.name : appName
 
-      currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion;
+      currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
 
       if (appName === '') {
-        appName = `${flags.botname}(${flags.suffix})-${content.Name}`;
+        appName = `${flags.botname}(${flags.suffix})-${content.Name}`
       }
 
-      let dialogFile = path.join(path.dirname(content.Path), `${content.Name}.dialog`);
-      let recognizer = Recognizer.load(content.Path, content.Name, dialogFile);
+      let dialogFile = path.join(path.dirname(content.Path), `${content.Name}.dialog`)
+      let recognizer = Recognizer.load(content.Path, content.Name, dialogFile)
 
       for (let app of apps) {
         if (app.name === appName) {
-          recognizer.setAppId(<string>app.id);
-          break;
+          recognizer.setAppId(<string>app.id)
+          break
         }
       }
 
       // add to multiLanguageRecognizer
-      multiRecognizer.recognizers[locale] = path.basename(dialogFile, '.dialog');
+      multiRecognizer.recognizers[locale] = path.basename(dialogFile, '.dialog')
       if (locale.toLowerCase() === flags.fallbacklocale.toLowerCase()) {
-        multiRecognizer.recognizers[''] = path.basename(dialogFile, '.dialog');
+        multiRecognizer.recognizers[''] = path.basename(dialogFile, '.dialog')
       }
 
-      let needTrainAndPublish = false;
+      let needTrainAndPublish = false
       if (recognizer.getAppId() !== '') {
-        let appInfo = await client.apps.get(recognizer.getAppId());
-        recognizer.versionId = <string>appInfo.activeVersion;
+        let appInfo = await client.apps.get(recognizer.getAppId())
+        recognizer.versionId = <string>appInfo.activeVersion
 
         // export model from luis
-        const existingApp = LuBuildCore.ExportApplication(client, recognizer.getAppId(), recognizer.versionId);
+        const existingApp = LuBuildCore.ExportApplication(client, recognizer.getAppId(), recognizer.versionId)
 
         // compare models
-        const needUpdate = LuBuildCore.CompareApplications(currentApp, existingApp);
+        const needUpdate = LuBuildCore.CompareApplications(currentApp, existingApp)
 
         if (needUpdate) {
-          const newVersionId = LuBuildCore.UpdateVersion(currentApp, existingApp);
-          recognizer.versionId = newVersionId;
-          const options: any = {};
-          options.versionId = newVersionId;
-          this.log(`${recognizer.getLuPath()} creating version=${newVersionId}\n`);
-          LuBuildCore.ImportNewVersion(client, recognizer.getAppId(), currentApp, options);
-          needTrainAndPublish = true;
+          const newVersionId = LuBuildCore.UpdateVersion(currentApp, existingApp)
+          recognizer.versionId = newVersionId
+          const options: any = {}
+          options.versionId = newVersionId
+          this.log(`${recognizer.getLuPath()} creating version=${newVersionId}\n`)
+          LuBuildCore.ImportNewVersion(client, recognizer.getAppId(), currentApp, options)
+          needTrainAndPublish = true
         } else {
-          this.log(`${recognizer.getLuPath()} no changes\n`);
+          this.log(`${recognizer.getLuPath()} no changes\n`)
         }
       } else {
         // create the application with version 0.1
-        currentApp.name = appName;
-        currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botname} app, targetting ${flags.suffix}`;
-        currentApp.culture = locale;
-        currentApp.versionId = "0.1";
-        recognizer.versionId = "0.1";
-        this.log(`Creating LUIS.ai application: ${appName} version:0.1\n`);
-        const appId = await LuBuildCore.ImportApplication(client, currentApp);
-        recognizer.setAppId(appId);
-        needTrainAndPublish = true;
+        currentApp.name = appName
+        currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botname} app, targetting ${flags.suffix}`
+        currentApp.culture = locale
+        currentApp.versionId = "0.1"
+        recognizer.versionId = "0.1"
+        this.log(`Creating LUIS.ai application: ${appName} version:0.1\n`)
+        const appId = await LuBuildCore.ImportApplication(client, currentApp)
+        recognizer.setAppId(appId)
+        needTrainAndPublish = true
       }
 
       if (needTrainAndPublish) {
-        this.log(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`);
-        await LuBuildCore.TrainApplication(client, recognizer.getAppId(), recognizer.versionId);
+        this.log(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
+        await LuBuildCore.TrainApplication(client, recognizer.getAppId(), recognizer.versionId)
 
-        this.log(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`);
-        let done = true;
+        this.log(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`)
+        let done = true
         do {
-          let trainingStatus = await LuBuildCore.GetTrainingStatus(client, recognizer.getAppId(), recognizer.versionId);
-          done = true;
+          let trainingStatus = await LuBuildCore.GetTrainingStatus(client, recognizer.getAppId(), recognizer.versionId)
+          done = true
           for (let status of trainingStatus) {
             if (status.details) {
               if (status.details.status === 'InProgress' || status.details.status === 'Queued') {
-                done = false;
-                break;
+                done = false
+                break
               }
             }
           }
-        } while (!done);
-        this.log('done\n');
+        } while (!done)
+        this.log('done\n')
 
         // publish the version
-        this.log(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`);
-        await LuBuildCore.PublishApplication(client, recognizer.getAppId(), recognizer.versionId);
+        this.log(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
+        await LuBuildCore.PublishApplication(client, recognizer.getAppId(), recognizer.versionId)
 
-        this.log(`${recognizer.getLuPath()} publishing finished\n`);
+        this.log(`${recognizer.getLuPath()} publishing finished\n`)
       }
 
-      luisSettings.luis[content.Name.split('.').join('_')] = recognizer.getAppId();
-      recognizers.push(recognizer);
+      luisSettings.luis[content.Name.split('.').join('_')] = recognizer.getAppId()
+      recognizers.push(recognizer)
     }
 
     if (flags.dialog) {
-      const contents = await LuBuildCore.GenerateDeclarativeAssets(recognizers, multiRecognizer, luisSettings);
+      const contents = await LuBuildCore.GenerateDeclarativeAssets(recognizers, multiRecognizer, luisSettings)
       for (const content of contents) {
         if (flags.out) {
-          this.log(`Writing to ${content.Path}\n`);
-          await fs.writeFile(path.join(flags.out, path.basename(content.Path)), content.Content, 'utf-8');
+          this.log(`Writing to ${content.Path}\n`)
+          await fs.writeFile(path.join(flags.out, path.basename(content.Path)), content.Content, 'utf-8')
         } else {
           if (flags.force || !fs.existsSync(content.Path)) {
-            this.log(`Writing to ${content.Path}\n`);
-            await fs.writeFile(content.Path, content.Content, 'utf-8');
+            this.log(`Writing to ${content.Path}\n`)
+            await fs.writeFile(content.Path, content.Content, 'utf-8')
           }
         }
       }
     }
 
-    this.log(`All tasks done\n`);
+    this.log(`All tasks done\n`)
   }
 }
