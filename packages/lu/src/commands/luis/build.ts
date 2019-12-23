@@ -3,12 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import { CLIError, Command, flags } from '@microsoft/bf-cli-command'
-import { LuBuildCore } from './../../parser/lubuild/core'
-import { Content } from './../../parser/lubuild/content'
-import { Settings } from './../../parser/lubuild/settings'
-import { MultiLanguageRecognizer } from './../../parser/lubuild/multiLanguageRecognizer'
-import { Recognizer } from './../../parser/lubuild/recognizer'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {LuBuildCore} from './../../parser/lubuild/core'
+import {Content} from './../../parser/lubuild/content'
+import {Settings} from './../../parser/lubuild/settings'
+import {MultiLanguageRecognizer} from './../../parser/lubuild/multiLanguageRecognizer'
+import {Recognizer} from './../../parser/lubuild/recognizer'
 const path = require('path')
 const fs = require('fs-extra')
 const fileHelper = require('./../../utils/filehelper')
