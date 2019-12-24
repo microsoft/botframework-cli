@@ -28,7 +28,7 @@ export class LuBuildCore {
 
   public async ParseLuContent(content: string, locale: string): Promise<any> {
     const response = await parser.parseFile(content, false, locale)
-    await parser.validateLUISBlob(response.LUISJsonStructure)
+    parser.validateLUISBlob(response.LUISJsonStructure)
     let parsedLUISObj = response.LUISJsonStructure
 
     return parsedLUISObj
@@ -46,7 +46,7 @@ export class LuBuildCore {
     return response
   }
 
-  public async CompareApplications(currentApp: any, existingApp: any): Promise<boolean> {
+  public CompareApplications(currentApp: any, existingApp: any) {
     currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture
     currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId !== existingApp.versionId ? currentApp.versionId : existingApp.versionId;
@@ -119,10 +119,10 @@ export class LuBuildCore {
       })
   }
 
-  public GenerateDeclarativeAssets(luisRecognizers: Array<Recognizer>, multiRecognizer: MultiLanguageRecognizer, luisSettings: Settings)
+  public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings)
     : Array<Content> {
     let contents = new Array<Content>()
-    for (const recognizer of luisRecognizers) {
+    for (const recognizer of recognizers) {
       let content = new Content(
         path.basename(recognizer.getDialogPath()),
         recognizer.getDialogPath(),
@@ -131,19 +131,21 @@ export class LuBuildCore {
       contents.push(content)
     }
 
-    const multiLangContent = new Content(
-      path.basename(multiRecognizer.getDialogPath()),
-      multiRecognizer.getDialogPath(),
-      multiRecognizer.save())
+    for (const multiRecognizer of multiRecognizers) {
+      const multiLangContent = new Content(
+        path.basename(multiRecognizer.getDialogPath()),
+        multiRecognizer.getDialogPath(),
+        multiRecognizer.save())
 
-    contents.push(multiLangContent)
+      contents.push(multiLangContent)
+    }
 
-    const luisSettingsContent = new Content(
-      path.basename(luisSettings.getSettingsPath()),
-      luisSettings.getSettingsPath(),
-      luisSettings.save())
+    const settingsContent = new Content(
+      path.basename(settings.getSettingsPath()),
+      settings.getSettingsPath(),
+      settings.save())
 
-    contents.push(luisSettingsContent)
+    contents.push(settingsContent)
 
     return contents
   }

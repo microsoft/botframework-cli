@@ -44,9 +44,11 @@ export default class LuisBuild extends Command {
     flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
     flags.fallbacklocale = flags.fallbacklocale && flags.fallbacklocale !== '' ? flags.fallbacklocale : 'en-us'
 
-    const luContents: Array<Content> = []
-    let multiRecognizerDialogPath = ''
-    let luisSettingsPath = ''
+    let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
+    let settings: Settings
+    let recognizers: Recognizer[] = []
+    let luContents: Array<Content> = []
+    let dialogFilePath = process.cwd;
 
     // Check if data piped in stdin
     const stdin = await this.readStdin()
@@ -54,10 +56,12 @@ export default class LuisBuild extends Command {
       this.log('Load lu content from stdin')
       const lucontentFromStdin = new Content('stdin', path.join(process.cwd(), 'stdin'), stdin, flags.culture)
       luContents.push(lucontentFromStdin)
-      multiRecognizerDialogPath = path.join(process.cwd(), 'stdin.lu.dialog')
-      luisSettingsPath = path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`)
+      multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
+      settings = new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {})
     } else {
       this.log('Start to load lu files\n')
+
+      dialogFilePath = flags.in.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
 
       let files = await fileHelper.getLuFiles(flags.in, true, fileExtEnum.LUFile)
 
@@ -78,37 +82,29 @@ export default class LuisBuild extends Command {
           fileName = path.basename(file, path.extname(file))
         }
 
-        if (multiRecognizerDialogPath === '') {
-          multiRecognizerDialogPath = path.join(path.dirname(file), `${fileName}.lu.dialog`)
-        }
+        const multiRecognizerPath = path.join(dialogFilePath, `${fileName}.lu.dialog`)
+        if (!multiRecognizers.has(fileName)) {
+          let multiRecognizerContent = {}
+          if (fs.existsSync(multiRecognizerPath)) {
+            multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath)).recognizers
+            this.log(`${multiRecognizerPath} loaded\n`)
+          }
 
-        if (luisSettingsPath === '') {
-          luisSettingsPath = path.join(path.dirname(file), `luis.settings.${flags.suffix}.${flags.region}.json`)
+          multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent))
         }
 
         luContents.push(new Content(fileName, file, fileContent, fileCulture))
       }
+
+      let settingsPath = path.join(dialogFilePath, `luis.settings.${flags.suffix}.${flags.region}.json`)
+      let settingsContent: any = {}
+      if (fs.existsSync(settingsPath)) {
+        settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).luis
+        this.log(`${settingsPath} loaded\n`)
+      }
+
+      settings = new Settings(settingsPath, settingsContent)
     }
-
-    let multiRecognizerContent: any = {}
-
-    if (fs.existsSync(multiRecognizerDialogPath)) {
-      multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerDialogPath)).recognizers
-      this.log(`${multiRecognizerDialogPath} loaded\n`)
-    }
-
-    let multiRecognizer = new MultiLanguageRecognizer(multiRecognizerDialogPath, multiRecognizerContent)
-
-    let luisSettingsContent: any = {}
-
-    if (fs.existsSync(luisSettingsPath)) {
-      luisSettingsContent = JSON.parse(await fileHelper.getContentFromFile(luisSettingsPath)).luis
-      this.log(`${luisSettingsPath} loaded\n`)
-    }
-
-    let luisSettings = new Settings(luisSettingsPath, luisSettingsContent)
-
-    let recognizers: Recognizer[] = []
 
     this.log('Start to handle applications\n')
 
@@ -131,7 +127,7 @@ export default class LuisBuild extends Command {
         appName = `${flags.botname}(${flags.suffix})-${content.Name}`
       }
 
-      let dialogFile = path.join(path.dirname(content.Path), `${content.Name}.dialog`)
+      let dialogFile = path.join(dialogFilePath, `${content.Name}.dialog`)
       let recognizer = Recognizer.load(content.Path, content.Name, dialogFile)
 
       for (let app of apps) {
@@ -142,9 +138,12 @@ export default class LuisBuild extends Command {
       }
 
       // add to multiLanguageRecognizer
-      multiRecognizer.recognizers[locale] = path.basename(dialogFile, '.dialog')
-      if (locale.toLowerCase() === flags.fallbacklocale.toLowerCase()) {
-        multiRecognizer.recognizers[''] = path.basename(dialogFile, '.dialog')
+      if (multiRecognizers.has(content.ID)) {
+        let multiRecognizer = multiRecognizers.get(content.ID) as MultiLanguageRecognizer
+        multiRecognizer.recognizers[locale] = path.basename(dialogFile, '.dialog')
+        if (locale.toLowerCase() === flags.fallbacklocale.toLowerCase()) {
+          multiRecognizer.recognizers[''] = path.basename(dialogFile, '.dialog')
+        }
       }
 
       let needTrainAndPublish = false
@@ -209,12 +208,12 @@ export default class LuisBuild extends Command {
         this.log(`${recognizer.getLuPath()} publishing finished\n`)
       }
 
-      luisSettings.luis[content.Name.split('.').join('_')] = recognizer.getAppId()
+      settings.luis[content.Name.split('.').join('_')] = recognizer.getAppId()
       recognizers.push(recognizer)
     }
 
     if (flags.dialog) {
-      const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, multiRecognizer, luisSettings)
+      const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
       for (const content of contents) {
         if (flags.out) {
           this.log(`Writing to ${content.Path}\n`)
