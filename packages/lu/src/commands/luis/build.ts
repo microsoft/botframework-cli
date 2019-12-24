@@ -109,7 +109,7 @@ export default class LuisBuild extends Command {
     // validate if there are duplicated files with same name and locale
     let setOfContents = new Set()
     const hasDuplicates = luContents.some(function (currentObj) {
-      return setOfContents.size === setOfContents.add(currentObj.ID).size
+      return setOfContents.size === setOfContents.add(currentObj.Name).size
     })
 
     if (hasDuplicates) {
