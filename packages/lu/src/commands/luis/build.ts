@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {LuBuildCore} from './../../parser/lubuild/core'
 import {Content} from './../../parser/lubuild/content'
 import {Settings} from './../../parser/lubuild/settings'
@@ -104,6 +104,16 @@ export default class LuisBuild extends Command {
       }
 
       settings = new Settings(settingsPath, settingsContent)
+    }
+
+    // validate if there are duplicated files with same name and locale
+    let setOfContents = new Set()
+    const hasDuplicates = luContents.some(function (currentObj) {
+      return setOfContents.size === setOfContents.add(currentObj.ID).size
+    })
+
+    if (hasDuplicates) {
+      throw new CLIError('Files with same name and locale are found.')
     }
 
     this.log('Start to handle applications\n')
