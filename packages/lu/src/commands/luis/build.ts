@@ -48,7 +48,7 @@ export default class LuisBuild extends Command {
     let settings: Settings
     let recognizers: Recognizer[] = []
     let luContents: Array<Content> = []
-    let dialogFilePath = process.cwd;
+    let dialogFilePath = process.cwd
 
     // Check if data piped in stdin
     const stdin = await this.readStdin()
