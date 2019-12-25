@@ -26,6 +26,12 @@ export class LuBuildCore {
     return apps
   }
 
+  public async GetApplicationInfo(client: any, appId: string) {
+    let appInfo = await client.apps.get(appId)
+
+    return appInfo
+  }
+
   public async ParseLuContent(content: string, locale: string): Promise<any> {
     const response = await parser.parseFile(content, false, locale)
     parser.validateLUISBlob(response.LUISJsonStructure)
@@ -148,6 +154,10 @@ export class LuBuildCore {
     contents.push(settingsContent)
 
     return contents
+  }
+
+  public async Delay(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   private updateVersion(versionId: string) {
