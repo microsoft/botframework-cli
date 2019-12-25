@@ -157,7 +157,7 @@ export class LuBuildCore {
   }
 
   public async Delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise(() => setTimeout(function () { }, ms))
   }
 
   private updateVersion(versionId: string) {
