@@ -156,10 +156,6 @@ export class LuBuildCore {
     return contents
   }
 
-  public async Delay(ms: number) {
-    return new Promise(() => setTimeout(function () { }, ms))
-  }
-
   private updateVersion(versionId: string) {
     let numberVersionId = parseFloat(versionId)
     if (isNaN(numberVersionId)) {

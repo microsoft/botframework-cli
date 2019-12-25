@@ -11,6 +11,7 @@ import {MultiLanguageRecognizer} from '../../parser/lubuild/multi-language-recog
 import {Recognizer} from './../../parser/lubuild/recognizer'
 const path = require('path')
 const fs = require('fs-extra')
+const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('./../../parser/luis/luisBuilder')
@@ -53,6 +54,9 @@ export default class LuisBuild extends Command {
     // luis api qps which means 5 concurrent calls to luis api in 1 second
     // can set to other value if switched to a higher qps key
     let luisApiQps = 5
+
+    // set luis call delay duration to 1005 millisecond because 1000 can hit corner case of rate limit
+    let delayDuration = 1005
 
     // Check if data piped in stdin
     const stdin = await this.readStdin()
@@ -168,11 +172,11 @@ export default class LuisBuild extends Command {
 
           let needTrainAndPublish = false
           if (recognizer.getAppId() !== '') {
-            await luBuildCore.Delay(1000)
+            await delay(delayDuration)
             const appInfo = await luBuildCore.GetApplicationInfo(client, recognizer.getAppId())
             recognizer.versionId = appInfo.activeVersion
 
-            await luBuildCore.Delay(1000)
+            await delay(delayDuration)
             const existingApp = await luBuildCore.ExportApplication(client, recognizer.getAppId(), recognizer.versionId)
 
             // compare models
@@ -185,7 +189,7 @@ export default class LuisBuild extends Command {
               options.versionId = newVersionId
 
               this.log(`${recognizer.getLuPath()} creating version=${newVersionId}\n`)
-              await luBuildCore.Delay(1000)
+              await delay(delayDuration)
               await luBuildCore.ImportNewVersion(client, recognizer.getAppId(), currentApp, options)
               needTrainAndPublish = true
             } else {
@@ -200,7 +204,7 @@ export default class LuisBuild extends Command {
             recognizer.versionId = '0.1'
 
             this.log(`Creating LUIS.ai application: ${appName} version:0.1\n`)
-            await luBuildCore.Delay(1000)
+            await delay(delayDuration)
             const appId = await luBuildCore.ImportApplication(client, currentApp)
             recognizer.setAppId(appId)
             needTrainAndPublish = true
@@ -208,13 +212,13 @@ export default class LuisBuild extends Command {
 
           if (needTrainAndPublish) {
             this.log(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
-            await luBuildCore.Delay(1000)
+            await delay(delayDuration)
             await luBuildCore.TrainApplication(client, recognizer.getAppId(), recognizer.versionId)
 
             this.log(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`)
             let done = true
             do {
-              await luBuildCore.Delay(1000)
+              await delay(delayDuration)
               let trainingStatus = await luBuildCore.GetTrainingStatus(client, recognizer.getAppId(), recognizer.versionId)
               done = true
               for (let status of trainingStatus) {
@@ -231,7 +235,7 @@ export default class LuisBuild extends Command {
             // publish the version
             this.log(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
 
-            await luBuildCore.Delay(1000)
+            await delay(delayDuration)
             await luBuildCore.PublishApplication(client, recognizer.getAppId(), recognizer.versionId)
             this.log(`${recognizer.getLuPath()} publishing finished\n`)
           }
