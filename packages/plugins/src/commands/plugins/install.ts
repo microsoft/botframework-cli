@@ -14,8 +14,6 @@ export default class PluginsInstall extends Command {
   e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command will override the core plugin implementation. This is useful if a user needs to update core plugin functionality in the CLI without the need to patch and update the whole CLI.
   `
 
-  static usage = 'bf plugins:install PLUGIN...'
-
   static strict = false
 
   static args = [{name: 'plugin', description: 'plugin to install', required: true}]

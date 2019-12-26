@@ -11,8 +11,6 @@ import cli from 'cli-ux'
 export default class PluginsUninstall extends Command {
   static description = 'Removes a plugin from the BF CLI'
 
-  static usage = 'bf plugins:uninstall PLUGIN...'
-
   static variableArgs = true
 
   static args = [{name: 'plugin', description: 'plugin to uninstall'}]

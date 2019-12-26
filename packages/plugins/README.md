@@ -16,47 +16,44 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @microsoft/bf-cli-plugins
-$ oclif-example COMMAND
+$ bf COMMAND
 running command...
-$ oclif-example (-v|--version|version)
+$ bf (-v|--version|version)
 @microsoft/bf-cli-plugins/1.0.0 darwin-x64 node-v12.1.0
-$ oclif-example --help [COMMAND]
+$ bf --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ bf COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example plugins`](#oclif-example-plugins)
-* [`oclif-example bf plugins:install PLUGIN...`](#oclif-example-bf-pluginsinstall-plugin)
-* [`oclif-example plugins:list [FILE]`](#oclif-example-pluginslist-file)
-* [`oclif-example bf plugins:uninstall PLUGIN...`](#oclif-example-bf-pluginsuninstall-plugin)
+* [`bf plugins`](#bf-plugins)
+* [`bf plugins:install PLUGIN`](#bf-pluginsinstall-plugin)
+* [`bf plugins:list`](#bf-pluginslist)
+* [`bf plugins:uninstall [PLUGIN]`](#bf-pluginsuninstall-plugin)
 
-## `oclif-example plugins`
+## `bf plugins`
 
-List installed plugins
+Install, uninstall and show installed plugins
 
 ```
 USAGE
-  $ oclif-example plugins
+  $ bf plugins
 
 OPTIONS
-  --core  show core plugins
-
-EXAMPLE
-  $ oclif-example plugins
+  --help  Display plugins commands help.
 ```
 
-_See code: [src/commands/plugins/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/blob/v1.0.0/src/commands/plugins/index.ts)_
+_See code: [src/commands/plugins/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/src/commands/plugins/index.ts)_
 
-## `oclif-example bf plugins:install PLUGIN...`
+## `bf plugins:install PLUGIN`
 
 installs a plugin into the BF CLI
 
 ```
 USAGE
-  $ oclif-example bf plugins:install PLUGIN...
+  $ bf plugins:install PLUGIN
 
 ARGUMENTS
   PLUGIN  plugin to install
@@ -74,34 +71,32 @@ DESCRIPTION
   functionality in the CLI without the need to patch and update the whole CLI.
 
 ALIASES
-  $ oclif-example plugins:add
+  $ bf plugins:add
 ```
 
-_See code: [src/commands/plugins/install.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/blob/v1.0.0/src/commands/plugins/install.ts)_
+_See code: [src/commands/plugins/install.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/src/commands/plugins/install.ts)_
 
-## `oclif-example plugins:list [FILE]`
+## `bf plugins:list`
 
-describe the command here
+List installed plugins
 
 ```
 USAGE
-  $ oclif-example plugins:list [FILE]
+  $ bf plugins:list
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  --core  show core plugins
 ```
 
-_See code: [src/commands/plugins/list.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/blob/v1.0.0/src/commands/plugins/list.ts)_
+_See code: [src/commands/plugins/list.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/src/commands/plugins/list.ts)_
 
-## `oclif-example bf plugins:uninstall PLUGIN...`
+## `bf plugins:uninstall [PLUGIN]`
 
 Removes a plugin from the BF CLI
 
 ```
 USAGE
-  $ oclif-example bf plugins:uninstall PLUGIN...
+  $ bf plugins:uninstall [PLUGIN]
 
 ARGUMENTS
   PLUGIN  plugin to uninstall
@@ -111,5 +106,5 @@ OPTIONS
   -v, --verbose
 ```
 
-_See code: [src/commands/plugins/uninstall.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/blob/v1.0.0/src/commands/plugins/uninstall.ts)_
+_See code: [src/commands/plugins/uninstall.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/src/commands/plugins/uninstall.ts)_
 <!-- commandsstop -->
