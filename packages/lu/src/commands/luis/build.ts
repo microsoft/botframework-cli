@@ -51,12 +51,12 @@ export default class LuisBuild extends Command {
     let luContents: Array<Content> = []
     let dialogFilePath = process.cwd
 
-    // luis api qps which means 5 concurrent calls to luis api in 1 second
-    // can set to other value if switched to a higher qps key
+    // luis api TPS which means 5 concurrent transactions to luis api in 1 second
+    // can set to other value if switched to a higher TPS key
     let luisApiQps = 5
 
-    // set luis call delay duration to 1005 millisecond because 1000 can hit corner case of rate limit
-    let delayDuration = 1005
+    // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
+    let delayDuration = 1100
 
     // Check if data piped in stdin
     const stdin = await this.readStdin()
@@ -144,7 +144,6 @@ export default class LuisBuild extends Command {
 
           locale = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : locale
           appName = currentApp.name && currentApp.name !== '' ? currentApp.name : appName
-
           currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
 
           if (appName === '') {
@@ -200,8 +199,8 @@ export default class LuisBuild extends Command {
             currentApp.name = appName
             currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botname} app, targetting ${flags.suffix}`
             currentApp.culture = locale
-            currentApp.versionId = '0.1'
-            recognizer.versionId = '0.1'
+            currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' ? currentApp.versionId : '0.1'
+            recognizer.versionId = currentApp.versionId
 
             this.log(`Creating LUIS.ai application: ${appName} version:0.1\n`)
             await delay(delayDuration)
