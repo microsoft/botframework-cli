@@ -9,23 +9,8 @@
 [![License](https://img.shields.io/npm/l/@microsoft/bf-cli-plugins.svg)](https://github.com/https://github.com/microsoft//botframework-cli/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @microsoft/bf-cli-plugins
-$ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-@microsoft/bf-cli-plugins/1.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
-...
-```
-<!-- usagestop -->
 # Commands
 <!-- commands -->
 * [`bf plugins`](#bf-plugins)
