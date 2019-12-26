@@ -36,6 +36,10 @@
       "projectFolder": "packages/qnamaker"
     },
     {
+      "packageName": "@microsoft/bf-cli-plugins",
+      "projectFolder": "packages/plugins"
+    }, 
+    {
       "packageName": "@microsoft/botframework-cli",
       "projectFolder": "packages/cli"
     }
