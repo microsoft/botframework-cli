@@ -2,7 +2,7 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnAssignEntity",
     "property": "CompleteConfirmation",
     "entity": "Confirmation",
     "actions": [
