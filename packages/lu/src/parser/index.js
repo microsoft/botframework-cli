@@ -5,7 +5,8 @@
 const modules = {
     parser: {
         parseFile: require('./lufile/parseFileContents').parseFile,
-        validateLUISBlob: require('./luis/luisValidator')
+        validateLUISBlob: require('./luis/luisValidator'),
+        parseToLUResource: require('./lufile/luParser').parse
     },
     refresh: {
         constructMdFromLUIS: require('./luis/luConverter'),
