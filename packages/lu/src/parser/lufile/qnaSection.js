@@ -14,7 +14,7 @@ class QnaSection {
         this.FilterPairs = this.ExtractFilterPairs(parseTree);
         this.Answer = this.ExtractAnswer(parseTree);
         this.Errors = [];
-        this.Id = `${this.SectionType}_${this.Questions.toString()}`;
+        this.Id = `${this.SectionType}_${this.Questions.join('_')}`;
     }
 
     ExtractQuestion(parseTree) {
