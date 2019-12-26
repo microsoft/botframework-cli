@@ -5,8 +5,7 @@
 const modules = {
     parser: {
         parseFile: require('./lufile/parseFileContents').parseFile,
-        validateLUISBlob: require('./luis/luisValidator'),
-        luParser: require('./lufile/luParser')
+        validateLUISBlob: require('./luis/luisValidator')
     },
     refresh: {
         constructMdFromLUIS: require('./luis/luConverter'),
@@ -26,6 +25,11 @@ const modules = {
         LUIS: require('./luis/luis'),
         QnA: require('./qna/qnamaker/qnamaker'),
         Parser: require('./lufile/classes/parserObject')
+    },
+    sectionHandler: {
+        luParser: require('./lufile/luParser'),
+        sectionOperator: require('./lufile/sectionOperator'),
+        luSectionTypes: require('./utils/enums/lusectiontypes')
     }
 };
 module.exports = modules;
