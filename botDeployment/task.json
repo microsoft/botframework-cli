@@ -8,8 +8,8 @@
     "author": "SOUTHWORKS",
     "version": {
         "Major": 0,
-        "Minor": 3,
-        "Patch": 1
+        "Minor": 4,
+        "Patch": 6
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -26,6 +26,11 @@
         {
             "name": "bot",
             "displayName": "Bot",
+            "isExpanded": true
+        },
+        {
+            "name": "channels",
+            "displayName": "Channels",
             "isExpanded": true
         },
         {
@@ -69,6 +74,27 @@
             "groupname": "template"
         },
         {
+            "name": "templateParameters",
+            "type": "filePath",
+            "label": "Template parameters",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Specify the path or a pattern pointing for the parameters file for the Azure Resource Manager template.",
+            "groupName": "template"
+        },
+        {
+            "name": "overrideParameters",
+            "type": "multiLine",
+            "label": "Override template parameters",
+            "defaultValue": "",
+            "required": false,
+            "groupName": "template",
+            "helpMarkDown": "To view the template parameters in a grid, click on “…” next to Override Parameters textbox. This feature requires that CORS rules are enabled at the source. If templates are in Azure storage blob, refer to [this](https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/Cross-Origin-Resource-Sharing--CORS--Support-for-the-Azure-Storage-Services?redirectedfrom=MSDN#understanding-cors-requests) to enable CORS. Or type the template parameters to override in the textbox. Example, <br>–storageName fabrikam –adminUsername $(vmusername) -adminPassword $(password) –azureKeyVaultName $(fabrikamFibre).<br>If the parameter value you're using has multiple words, enclose them in quotes, even if you're passing them using variables. For example, -name \"parameter value\" -name2 \"$(var)\"<br>To override object type parameters use stringified JSON objects. For example, -options [\"option1\"] -map {\"key1\": \"value1\" }. ",
+            "properties": {
+                "editorExtension": "ms.vss-services-azure.azurerg-parameters-grid"
+            }
+        },
+        {
             "name": "appId",
             "type": "text",
             "label": "App ID",
@@ -99,6 +125,51 @@
             "required": true,
             "helpMarkDown": "Specify the path to the compressed zip folder containing the bot",
             "groupname": "bot"
+        },
+        {
+            "name": "directLineChannel",
+            "type": "boolean",
+            "label": "Direct Line",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check to connect the bot with the Direct Line Channel",
+            "groupname": "channels"
+        },
+        {
+            "name": "slackChannel",
+            "type": "boolean",
+            "label": "Slack",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check to connect the bot with the Slack Channel",
+            "groupname": "channels"
+        },
+        {
+            "name": "slackVerificationToken",
+            "type": "text",
+            "label": "Slack Verification Token",
+            "required": false,
+            "helpMarkDown": "Provide the verification token from the Slack Application",
+            "groupname": "channels",
+            "visibleRule": "slackChannel = TRUE"
+        },
+        {
+            "name": "slackBotToken",
+            "type": "text",
+            "label": "Slack Bot Token",
+            "required": false,
+            "helpMarkDown": "Provide the bot token from the Slack Application",
+            "groupname": "channels",
+            "visibleRule": "slackChannel = TRUE"
+        },
+        {
+            "name": "slackClientSigningSecret",
+            "type": "text",
+            "label": "Slack Client Signing Secret",
+            "required": false,
+            "helpMarkDown": "Provide the client signing secret from the Slack Application",
+            "groupname": "channels",
+            "visibleRule": "slackChannel = TRUE"
         }
     ],
     "execution": {

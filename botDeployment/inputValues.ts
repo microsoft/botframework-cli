@@ -1,4 +1,5 @@
-import task = require('azure-pipelines-task-lib/task');
+import { getInput, getBoolInput } from "azure-pipelines-task-lib";
+import { existsSync } from "fs";
 
 export class InputValues {
 
@@ -9,14 +10,41 @@ export class InputValues {
     public appSecret: string;
     public botName: string;
     public zipFile: string;
+    public templateParameters?: string;
+    public overrideParameters?: string;
+    public directLineChannel?: boolean;
+    public slackChannel?: boolean;
+    public slackVerificationToken?: string = '';
+    public slackBotToken?: string = '';
+    public slackClientSigningSecret?: string = '';
 
     constructor() {
-        this.resourceGroup = task.getInput('resourceGroup', true) as string;
-        this.location = task.getInput('location', true) as string;
-        this.template = task.getInput('template', true) as string;
-        this.appId = task.getInput('appId', true) as string;
-        this.appSecret = task.getInput('appSecret', true) as string;
-        this.botName = task.getInput('botName', true) as string;
-        this.zipFile = task.getInput('zipFile', true) as string;
+        this.resourceGroup = getInput('resourceGroup', true) as string;
+        this.location = getInput('location', true) as string;
+        this.template = this.validatePath('template');
+        this.appId = getInput('appId', true) as string;
+        this.appSecret = getInput('appSecret', true) as string;
+        this.botName = getInput('botName', true) as string;
+        this.zipFile = this.validatePath('zipFile');
+        this.templateParameters = getInput('templateParameters',false) as string;
+        this.overrideParameters = getInput('overrideParameters', false) as string;
+        this.directLineChannel = getBoolInput('directLineChannel', false);        
+        this.slackChannel = getBoolInput('slackChannel', false);
+        
+        if (this.slackChannel) {
+            this.slackVerificationToken = getInput('slackVerificationToken', false);
+            this.slackBotToken = getInput('slackBotToken', false);
+            this.slackClientSigningSecret = getInput('slackClientSigningSecret', false);
+        }
     }
+
+    private validatePath = (inputName: string): string => {
+        const path = getInput(inputName) as string;
+        
+        if (!existsSync(path)) {
+            throw new Error(`The file or directory "${ path }" specified in "${ inputName }" does not exist.`);
+        }
+    
+        return path;
+    }    
 }

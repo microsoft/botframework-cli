@@ -19,24 +19,32 @@ const azureLogin = (helper: SubscriptionHelper): void => {
         execSync(loginCommand);
         console.log('Successful login');
     } catch (error) {
-        console.log('Error in login: ' + error);
-        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
+        throw new Error('Error in login: ' + error);
     }
+}
+
+const getOptionalParameters = (): string => {
+    let command = input.slackVerificationToken? ` slackVerificationToken="${ input.slackVerificationToken }"`: '';
+    command += input.slackBotToken ? ` slackBotToken="${ input.slackBotToken }"` : '';
+    command += input.slackClientSigningSecret ? ` slackClientSigningSecret="${ input.slackClientSigningSecret }"` : '';
+
+    return command;
 }
 
 const resourcesDeployment = (): void => {
     try {
         console.log('Deploying resources to Azure...');
+
         let command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.template }" `;
             command += `--parameters appId="${ input.appId }" appSecret="${ input.appSecret }" botId="${ input.botName }" `;
             command += `botSku=F0 newAppServicePlanName="${ input.botName }" newWebAppName=${ input.botName } groupName="${ input.resourceGroup }" `;
             command += `groupLocation="${ input.location }" newAppServicePlanLocation="${ input.location }"`;
-        
+            command += getOptionalParameters();
+
         execSync(command);
         console.log('Successful deployment');      
     } catch (error) {
-        console.log('Error in deploy: ' + error);    
-        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);    
+        throw new Error('Error in deploy: ' + error);    
     }
 }
 
@@ -48,8 +56,7 @@ const botDeployment = (): void => {
         execSync(command);
         console.log('Bot successfully deployed');
     } catch (error) {
-        console.log('Error in bot deployment: ' + error);    
-        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
+        throw new Error('Error in bot deployment: ' + error);    
     }
 }
 
@@ -61,22 +68,20 @@ const directLineConnection = (): void => {
         execSync(command);
         console.log('Connection with Direct Line succeeded'); 
     } catch (error) {
-        console.log('Error in Direct Line connection: ' + error);    
-        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
+        throw new Error('Error in Direct Line connection: ' + error);    
     }
 }
 
 const run = (): void => {
-    try {
-        const subscription = taskLibrary.getInput('azureSubscription', true) as string;
-        const helper = new SubscriptionHelper(subscription);
+    const subscription = taskLibrary.getInput('azureSubscription', true) as string;
+    const helper = new SubscriptionHelper(subscription);
 
-        azureLogin(helper);
-        resourcesDeployment();   
-        botDeployment();
+    azureLogin(helper);
+    resourcesDeployment();   
+    botDeployment();
+    
+    if (input.directLineChannel) {
         directLineConnection();
-    } catch (error) {
-        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error);
     }
 }
 
