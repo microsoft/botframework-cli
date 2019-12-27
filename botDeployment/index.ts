@@ -31,6 +31,23 @@ const getOptionalParameters = (): string => {
     return command;
 }
 
+const validateDeployment = (): void => {
+    try {
+        console.log('Validating Deployment...');
+
+        let command = `az deployment validate --location "${ input.location }" --template-file "${ input.template }" `;
+            command += `--parameters appId="${ input.appId }" appSecret="${ input.appSecret }" botId="${ input.botName }" `;
+            command += `botSku="${ input.botSku }" newAppServicePlanName="${ input.botName }" newWebAppName=${ input.botName } groupName="${ input.resourceGroup }" `;
+            command += `groupLocation="${ input.location }" newAppServicePlanLocation="${ input.location }"`;
+            command += getOptionalParameters();
+
+        execSync(command);
+        console.log('Deployment successfully validated');      
+    } catch (error) {
+        throw new Error('Error in deployment validation: ' + error);    
+    }
+}
+
 const resourcesDeployment = (): void => {
     try {
         console.log('Deploying resources to Azure...');
@@ -75,13 +92,19 @@ const directLineConnection = (): void => {
 const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
-
-    azureLogin(helper);
-    resourcesDeployment();   
-    botDeployment();
     
-    if (input.directLineChannel) {
-        directLineConnection();
+    azureLogin(helper);
+
+    if (input.validationMode) {
+        validateDeployment();
+    }
+    else {
+        resourcesDeployment();   
+        botDeployment();
+        
+        if (input.directLineChannel) {
+            directLineConnection();
+        }
     }
 }
 

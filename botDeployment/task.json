@@ -9,7 +9,7 @@
     "version": {
         "Major": 0,
         "Minor": 5,
-        "Patch": 0
+        "Patch": 1
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -163,6 +163,14 @@
             "helpMarkDown": "Provide the client signing secret from the Slack Application.",
             "groupname": "channels",
             "visibleRule": "slackChannel = TRUE"
+        },
+        {
+            "name": "validationMode",
+            "type": "boolean",
+            "label": "Validation Mode",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check for validate whether the template is syntactically correct."
         }
     ],
     "dataSourceBindings": [

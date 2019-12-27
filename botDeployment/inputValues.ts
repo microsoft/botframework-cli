@@ -16,6 +16,7 @@ export class InputValues {
     public slackVerificationToken?: string = '';
     public slackBotToken?: string = '';
     public slackClientSigningSecret?: string = '';
+    public validationMode?: boolean;
 
     constructor() {
         this.resourceGroup = getInput('resourceGroup', true) as string;
@@ -34,6 +35,8 @@ export class InputValues {
             this.slackBotToken = getInput('slackBotToken', false);
             this.slackClientSigningSecret = getInput('slackClientSigningSecret', false);
         }
+
+        this.validationMode = getBoolInput('validationMode', false);
     }
 
     private validatePath = (inputName: string): string => {
