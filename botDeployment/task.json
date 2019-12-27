@@ -8,8 +8,8 @@
     "author": "SOUTHWORKS",
     "version": {
         "Major": 0,
-        "Minor": 4,
-        "Patch": 6
+        "Minor": 5,
+        "Patch": 0
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -46,23 +46,29 @@
             "label": "Azure Subscription",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment",
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
             "groupname": "azure"
         },
         {
             "name": "resourceGroup",
-            "type": "text",
+            "type": "picklist",
             "label": "Resource Group",
             "required": true,
-            "helpMarkDown": "Provide the name of a resource group",
+            "helpMarkDown": "Provide the name of a resource group.",
+            "properties": {
+                "EditableOptions": "True"
+            },
             "groupname": "azure"
         },
         {
             "name": "location",
-            "type": "text",
+            "type": "pickList",
             "label": "Location",
             "required": true,
-            "helpMarkDown": "Location for deploying the resource group",
+            "helpMarkDown": "Location for deploying the resource group.",
+            "properties": {
+                "EditableOptions": "True"
+            },
             "groupname": "azure"
         },
         {
@@ -70,36 +76,15 @@
             "type": "filepath",
             "label": "Template",
             "required": true,
-            "helpMarkDown": "Specify the path or a pattern pointing to the Azure Resource Manager template",
+            "helpMarkDown": "Specify the path or a pattern pointing to the Azure Resource Manager template.",
             "groupname": "template"
-        },
-        {
-            "name": "templateParameters",
-            "type": "filePath",
-            "label": "Template parameters",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "Specify the path or a pattern pointing for the parameters file for the Azure Resource Manager template.",
-            "groupName": "template"
-        },
-        {
-            "name": "overrideParameters",
-            "type": "multiLine",
-            "label": "Override template parameters",
-            "defaultValue": "",
-            "required": false,
-            "groupName": "template",
-            "helpMarkDown": "To view the template parameters in a grid, click on “…” next to Override Parameters textbox. This feature requires that CORS rules are enabled at the source. If templates are in Azure storage blob, refer to [this](https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/Cross-Origin-Resource-Sharing--CORS--Support-for-the-Azure-Storage-Services?redirectedfrom=MSDN#understanding-cors-requests) to enable CORS. Or type the template parameters to override in the textbox. Example, <br>–storageName fabrikam –adminUsername $(vmusername) -adminPassword $(password) –azureKeyVaultName $(fabrikamFibre).<br>If the parameter value you're using has multiple words, enclose them in quotes, even if you're passing them using variables. For example, -name \"parameter value\" -name2 \"$(var)\"<br>To override object type parameters use stringified JSON objects. For example, -options [\"option1\"] -map {\"key1\": \"value1\" }. ",
-            "properties": {
-                "editorExtension": "ms.vss-services-azure.azurerg-parameters-grid"
-            }
         },
         {
             "name": "appId",
             "type": "text",
             "label": "App ID",
             "required": true,
-            "helpMarkDown": "Provide an Azure App ID",
+            "helpMarkDown": "Provide an Azure App ID.",
             "groupname": "template"
         },
         {
@@ -107,7 +92,7 @@
             "type": "text",
             "label": "App Secret",
             "required": true,
-            "helpMarkDown": "Provide an Azure App Secret",
+            "helpMarkDown": "Provide an Azure App Secret.",
             "groupname": "template"
         },
         {
@@ -115,7 +100,7 @@
             "type": "text",
             "label": "Bot's Name",
             "required": true,
-            "helpMarkDown": "Provide a name for the bot",
+            "helpMarkDown": "Provide a name for the bot.",
             "groupname": "bot"
         },
         {
@@ -123,7 +108,15 @@
             "type": "filepath",
             "label": "Zipped Bot",
             "required": true,
-            "helpMarkDown": "Specify the path to the compressed zip folder containing the bot",
+            "helpMarkDown": "Specify the path to the compressed zip folder containing the bot.",
+            "groupname": "bot"
+        },
+        {
+            "name": "botSku",
+            "type": "text",
+            "label": "Bot Sku",
+            "required": false,
+            "helpMarkDown": "Specify the pricing tier of the Bot Service Registration. Acceptable values are F0 and S1. Default to F0.",
             "groupname": "bot"
         },
         {
@@ -132,7 +125,7 @@
             "label": "Direct Line",
             "required": false,
             "defaultValue": false,
-            "helpMarkDown": "Check to connect the bot with the Direct Line Channel",
+            "helpMarkDown": "Check to connect the bot with the Direct Line Channel.",
             "groupname": "channels"
         },
         {
@@ -141,7 +134,7 @@
             "label": "Slack",
             "required": false,
             "defaultValue": false,
-            "helpMarkDown": "Check to connect the bot with the Slack Channel",
+            "helpMarkDown": "Check to connect the bot with the Slack Channel.",
             "groupname": "channels"
         },
         {
@@ -149,7 +142,7 @@
             "type": "text",
             "label": "Slack Verification Token",
             "required": false,
-            "helpMarkDown": "Provide the verification token from the Slack Application",
+            "helpMarkDown": "Provide the verification token from the Slack Application.",
             "groupname": "channels",
             "visibleRule": "slackChannel = TRUE"
         },
@@ -158,7 +151,7 @@
             "type": "text",
             "label": "Slack Bot Token",
             "required": false,
-            "helpMarkDown": "Provide the bot token from the Slack Application",
+            "helpMarkDown": "Provide the bot token from the Slack Application.",
             "groupname": "channels",
             "visibleRule": "slackChannel = TRUE"
         },
@@ -167,11 +160,23 @@
             "type": "text",
             "label": "Slack Client Signing Secret",
             "required": false,
-            "helpMarkDown": "Provide the client signing secret from the Slack Application",
+            "helpMarkDown": "Provide the client signing secret from the Slack Application.",
             "groupname": "channels",
             "visibleRule": "slackChannel = TRUE"
         }
     ],
+    "dataSourceBindings": [
+        {
+            "target": "resourceGroup",
+            "endpointId": "$(azureSubscription)",
+            "dataSourceName": "AzureResourceGroups"
+        },
+        {
+            "target": "location",
+            "endpointId": "$(azureSubscription)",
+            "dataSourceName": "AzureLocations"
+        }
+      ],
     "execution": {
         "Node": {
             "target": "index.js"

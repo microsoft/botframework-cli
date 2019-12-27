@@ -37,7 +37,7 @@ const resourcesDeployment = (): void => {
 
         let command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.template }" `;
             command += `--parameters appId="${ input.appId }" appSecret="${ input.appSecret }" botId="${ input.botName }" `;
-            command += `botSku=F0 newAppServicePlanName="${ input.botName }" newWebAppName=${ input.botName } groupName="${ input.resourceGroup }" `;
+            command += `botSku="${ input.botSku }" newAppServicePlanName="${ input.botName }" newWebAppName=${ input.botName } groupName="${ input.resourceGroup }" `;
             command += `groupLocation="${ input.location }" newAppServicePlanLocation="${ input.location }"`;
             command += getOptionalParameters();
 

@@ -10,8 +10,7 @@ export class InputValues {
     public appSecret: string;
     public botName: string;
     public zipFile: string;
-    public templateParameters?: string;
-    public overrideParameters?: string;
+    public botSku?: string = 'F0';
     public directLineChannel?: boolean;
     public slackChannel?: boolean;
     public slackVerificationToken?: string = '';
@@ -26,8 +25,7 @@ export class InputValues {
         this.appSecret = getInput('appSecret', true) as string;
         this.botName = getInput('botName', true) as string;
         this.zipFile = this.validatePath('zipFile');
-        this.templateParameters = getInput('templateParameters',false) as string;
-        this.overrideParameters = getInput('overrideParameters', false) as string;
+        this.botSku = getInput('botSku', false) as string;
         this.directLineChannel = getBoolInput('directLineChannel', false);        
         this.slackChannel = getBoolInput('slackChannel', false);
         
