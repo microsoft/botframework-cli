@@ -19,7 +19,7 @@ This specification outlines requirements to do something similar to this related
     - (a) If the .qna file has a @kb.name property, we should use that as the KB name to find. **.OR.**
     - (b) Find an application with the following naming convention - \<BotName>(\<environment>)-\<qnaFileNameOrId>.\<locale>.qna
 4. To determine if a new version needs to be created, we will
-    - (a) Finds the KB information using the subscription key provided via call to []
+    - (a) Finds the KB information using the subscription key provided via call to [List all KB][31]
     - (b) Get the latest published KB version (to either TEST or PROD) via call to [Export KB][3]
     - (c) [Transform][5] and perform a diff against the current QNA JSON .vs. what's in latest version. Create a new version if the content is different or no content exists.
 5. If [qnamaker-configuration](#QnAMaker-configuration) requests .dialog files be generated, then generate .dialog files with the newly created/ updated QnA Maker KB information. See [dialog-files](#dialog-files) to learn more about the logic for creating .dialog and related files. 
@@ -97,3 +97,4 @@ For each QnA file:
 [4]:https://westus.dev.cognitive.microsoft.com/docs/services/5890b47c39e2bb17b84a55ff/operations/5890b47c39e2bb052c5b9c40
 [5]:https://github.com/microsoft/botframework-cli/blob/787b11503cfaaaf40e254b7030db242cc1269729/packages/lu/src/parser/lufile/helpers.js#L156
 [30]:https://github.com/microsoft/botframework-cli/blob/master/specs/LUIS-MAKE.md
+[31]:https://docs.microsoft.com/en-us/rest/api/cognitiveservices/qnamaker/knowledgebase/listall
