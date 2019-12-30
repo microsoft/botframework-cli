@@ -8,7 +8,8 @@ This task is used to deploy a bot in Azure. The task creates the resource group 
 
 #### Azure Subscription
 
-To deploy to Azure, an Azure subscription has to be linked to Team Foundation Server or to Azure Pipelines using the Services tab in the Account Administration section. Add the Azure subscription to use in the Build or Release Management definition by opening the Account Administration screen (gear icon on the top-right of the screen) and then click on the Services Tab. Create a service endpoint of 'Azure Resource Manager' type. For more troubleshooting guidance around endpoint creation, refer [this](https://www.visualstudio.com/en-us/docs/build/actions/azure-rm-endpoint).
+To deploy to Azure, an Azure subscription has to be linked to Team Foundation Server or to Azure Pipelines using the Services tab in the Account Administration section.
+Add the Azure Subscription to use in the Build or Release Management definition following [this guide](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) and create a service endpoint of '[Azure Resource Manager](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml#sep-azure-rm)' type. For more troubleshooting guidance around endpoint creation, view [here](https://www.visualstudio.com/en-us/docs/build/actions/azure-rm-endpoint).
 
 ### Parameters of the task
 
@@ -21,7 +22,11 @@ The parameters of the task are described in details, to show how to input the pa
  * **Location**\*: The location where the resource group will be created.
 
  * **Template**\*: The template file is the Azure templates available at [GitHub](https://github.com/Azure/azure-quickstart-templates) or in the [Azure gallery](https://azure.microsoft.com/en-in/documentation/articles/powershell-azure-resource-manager/). To get started immediately use [this](https://aka.ms/sampletemplate) template that is available on GitHub. 
-	- Be sure to specify the full path like $(Build.Repository.LocalPath)\Azure Templates\AzureRGDeploy.json. Wildcards like \*\*\\\*.json are supported.
+	- Be sure to specify the full path like:
+    ```
+        $(Build.Repository.LocalPath)\Azure Templates\AzureRGDeploy.json
+    ```
+    Wildcards like \*\*\\\*.json are supported.
 
  * **App ID**\*: Enter the Active Directory App ID, set as MicrosoftAppId in the Web App's Application Settings.
 
