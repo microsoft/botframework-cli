@@ -1,7 +1,17 @@
 import {expect, test} from '@oclif/test'
 const path = require('path')
+const fs = require('fs-extra')
 const uuidv1 = require('uuid/v1')
 const nock = require('nock')
+
+const compareFiles = async function (file1: string, file2: string) {
+  let result = await fs.readFile(path.join(__dirname, file1))
+  let fixtureFile = await fs.readFile(path.join(__dirname, file2))
+  result = result.toString().replace(/\r\n/g, '\n')
+  fixtureFile = fixtureFile.toString().replace(/\r\n/g, '\n')
+  expect(fixtureFile).to.deep.equal(result)
+  return result === fixtureFile
+}
 
 describe('luis:build cli parameters test', () => {
   test
@@ -168,7 +178,6 @@ describe('luis:build update application succeed when utterances added', () => {
 
 describe('luis:build not update application if no changes', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/test(development)-sandwich.en-us.lu.json')
-  console.log(existingLuisApp)
   before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
@@ -196,5 +205,44 @@ describe('luis:build not update application if no changes', () => {
     .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
       expect(ctx.stdout).to.contain('Start to handle applications')
       expect(ctx.stdout).to.contain('no changes')
+    })
+})
+
+describe('luis:build write dialog asserts successfully if --dialog set', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/test(development)-sandwich.en-us.lu.json')
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/sandwich.en-us.lu', '--authoringkey', uuidv1(), '--botname', 'test', '--dialog', '--out', './results'])
+    .it('should write dialog asserts successfully when --dialog set', async ctx => {
+      expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/luis.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/sandwich.en-us.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/sandwich.lu.dialog')).to.be.true
     })
 })
