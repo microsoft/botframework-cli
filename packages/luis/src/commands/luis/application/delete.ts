@@ -38,7 +38,7 @@ export default class LuisApplicationDelete extends Command {
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
-    if(!flags.appId) {
+    if (!flags.appId) {
       const deleteAppConfirmation = await cli.confirm(`Are you sure you would like to delete app with id: ${appId}? (Y/N)`)
       if (!deleteAppConfirmation) {
         return this.log('No action taken')
