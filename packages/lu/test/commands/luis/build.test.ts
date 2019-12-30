@@ -24,7 +24,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringkey', uuidv1(), '--botname', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`Missing required flag:\n -i, --in IN  Lu file or folder`)
+      expect(ctx.stderr).to.contain(`Missing input. Please use stdin or pass a file or folder location with --in flag`)
     })
 
   test

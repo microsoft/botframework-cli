@@ -3,30 +3,23 @@
  * Licensed under the MIT License.
  */
 
-export class Content {
-  public ID: string
-  public Path: string
-  public Content: string
-  public Locale: string | undefined
-  public Name: string // defaults to "<id>.<locale>.lu" for lu files
+const Lu = require('./../lu/lu')
 
-  constructor(id: string, path: string, content: string, locale?: string, name?: string) {
-    this.ID = id
-    this.Path = path
-    this.Content = content
-    this.Locale = locale
-    if (name && name !== '') {
-      this.Name = name
-    } else {
-      if (this.Locale) {
-        if (this.Locale !== '') {
-          this.Name = id + '.' + this.Locale + '.lu'
-        } else {
-          this.Name = id + '.lu'
-        }
+export class Content extends Lu {
+  public path: string
+  public name: string
+
+  constructor(id: string, path: string, content: string, locale?: string) {
+    super(content, id, true, locale)
+    this.path = path
+    if (this.language) {
+      if (this.language !== '') {
+        this.name = id + '.' + this.language + '.lu'
       } else {
-        this.Name = this.ID
+        this.name = id + '.lu'
       }
+    } else {
+      this.name = this.id
     }
   }
 }

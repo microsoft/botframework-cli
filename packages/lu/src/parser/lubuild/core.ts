@@ -4,7 +4,6 @@
  */
 
 import {Content} from './content'
-import {parser} from '../index'
 import {Recognizer} from './recognizer'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
@@ -13,41 +12,33 @@ import * as path from 'path'
 const luisUtils = require('@microsoft/bf-luis-cli/lib/utils/index')
 
 export class LuBuildCore {
-  public InitLuisClient(authoringKey: string, endpoint: string): any {
-    // new luis api client
-    const client = luisUtils.getLUISClient(authoringKey, endpoint)
+  private readonly client: any
 
-    return client
+  constructor(authoringKey: string, endpoint: string) {
+    // new luis api client
+    this.client = luisUtils.getLUISClient(authoringKey, endpoint)
   }
 
-  public async GetApplicationList(client: any) {
-    let apps = await client.apps.list(undefined, undefined)
+  public async GetApplicationList() {
+    let apps = await this.client.apps.list(undefined, undefined)
 
     return apps
   }
 
-  public async GetApplicationInfo(client: any, appId: string) {
-    let appInfo = await client.apps.get(appId)
+  public async GetApplicationInfo(appId: string) {
+    let appInfo = await this.client.apps.get(appId)
 
     return appInfo
   }
 
-  public async ParseLuContent(content: string, locale: string): Promise<any> {
-    const response = await parser.parseFile(content, false, locale)
-    parser.validateLUISBlob(response.LUISJsonStructure)
-    let parsedLUISObj = response.LUISJsonStructure
-
-    return parsedLUISObj
-  }
-
-  public async ImportApplication(client: any, currentApp: any): Promise<any> {
-    let response = await client.apps.importMethod(currentApp)
+  public async ImportApplication(currentApp: any): Promise<any> {
+    let response = await this.client.apps.importMethod(currentApp)
 
     return response
   }
 
-  public async ExportApplication(client: any, appId: string, versionId: string) {
-    const response = await client.versions.exportMethod(appId, versionId)
+  public async ExportApplication(appId: string, versionId: string) {
+    const response = await this.client.versions.exportMethod(appId, versionId)
 
     return response
   }
@@ -106,22 +97,22 @@ export class LuBuildCore {
     return newVersionId
   }
 
-  public async ImportNewVersion(client: any, appId: string, app: any, options: any) {
-    await client.versions.importMethod(appId, app, options)
+  public async ImportNewVersion(appId: string, app: any, options: any) {
+    await this.client.versions.importMethod(appId, app, options)
   }
 
-  public async TrainApplication(client: any, appId: string, versionId: string) {
-    await client.train.trainVersion(appId, versionId)
+  public async TrainApplication(appId: string, versionId: string) {
+    await this.client.train.trainVersion(appId, versionId)
   }
 
-  public async GetTrainingStatus(client: any, appId: string, versionId: string) {
-    const status = client.train.getStatus(appId, versionId)
+  public async GetTrainingStatus(appId: string, versionId: string) {
+    const status = this.client.train.getStatus(appId, versionId)
 
     return status
   }
 
-  public async PublishApplication(client: any, appId: string, versionId: string) {
-    client.apps.publish(appId,
+  public async PublishApplication(appId: string, versionId: string) {
+    this.client.apps.publish(appId,
       {
         versionId,
         isStaging: false
