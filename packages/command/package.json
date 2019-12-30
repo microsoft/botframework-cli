@@ -29,8 +29,8 @@
   },
   "types": "./lib/index.d.ts",
   "dependencies": {
-    "@oclif/command": "~1.5.13",
-    "@oclif/config": "~1.12.12",
+    "@oclif/command": "~1.5.19",
+    "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "applicationinsights": "^1.0.8",
     "chalk": "2.4.1",

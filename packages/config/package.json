@@ -39,8 +39,8 @@
   "telemetry": null,
   "dependencies": {
     "@microsoft/bf-cli-command": "1.0.0",
-    "@oclif/command": "~1.5.13",
-    "@oclif/config": "~1.13.0",
+    "@oclif/command": "~1.5.19",
+    "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "cli-ux": "^5.3.0",
     "fs-extra": "^7.0.1",
