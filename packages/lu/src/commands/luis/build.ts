@@ -5,7 +5,6 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {LuBuildCore} from './../../parser/lubuild/core'
-import {Content} from './../../parser/lubuild/content'
 import {Settings} from './../../parser/lubuild/settings'
 import {MultiLanguageRecognizer} from '../../parser/lubuild/multi-language-recognizer'
 import {Recognizer} from './../../parser/lubuild/recognizer'
@@ -15,6 +14,7 @@ const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('./../../parser/luis/luisBuilder')
+const Content = require('./../../parser/lu/lu')
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
@@ -54,7 +54,7 @@ export default class LuisBuild extends Command {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings: Settings
     let recognizers: Recognizer[] = []
-    let luContents: Array<Content> = []
+    let luContents: Array<any> = []
     let dialogFilePath = process.cwd()
 
     // luis api TPS which means 5 concurrent transactions to luis api in 1 second
@@ -66,8 +66,7 @@ export default class LuisBuild extends Command {
 
     if (stdin && stdin !== '') {
       this.log('Load lu content from stdin')
-      const lucontentFromStdin = new Content('stdin', path.join(process.cwd(), 'stdin'), stdin, flags.culture)
-      luContents.push(lucontentFromStdin)
+      luContents.push(new Content(stdin, 'stdin', true, flags.culture, path.join(process.cwd(), 'stdin')))
       multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
       settings = new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {})
     } else {
@@ -102,7 +101,7 @@ export default class LuisBuild extends Command {
           multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent))
         }
 
-        luContents.push(new Content(fileName, file, fileContent, fileCulture))
+        luContents.push(new Content(fileContent, fileName, true, fileCulture, file))
       }
 
       let settingsPath = path.join(dialogFilePath, `luis.settings.${flags.suffix}.${flags.region}.json`)
@@ -206,7 +205,7 @@ export default class LuisBuild extends Command {
     this.log('All tasks done\n')
   }
 
-  async InitApplicationFromLuContent(content: Content, flags: any, defaultLuisSchemeVersion: string) {
+  async InitApplicationFromLuContent(content: any, flags: any, defaultLuisSchemeVersion: string) {
     let currentApp = await content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : content.language as string
     currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion

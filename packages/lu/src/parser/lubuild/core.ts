@@ -3,13 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import {Content} from './content'
 import {Recognizer} from './recognizer'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
 import {isEqual, differenceWith} from 'lodash'
 import * as path from 'path'
 const luisUtils = require('@microsoft/bf-luis-cli/lib/utils/index')
+const Content = require('./../lu/lu')
 
 export class LuBuildCore {
   private readonly client: any
@@ -120,31 +120,19 @@ export class LuBuildCore {
   }
 
   public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings)
-    : Array<Content> {
-    let contents = new Array<Content>()
+    : Array<any> {
+    let contents = new Array<any>()
     for (const recognizer of recognizers) {
-      let content = new Content(
-        path.basename(recognizer.getDialogPath()),
-        recognizer.getDialogPath(),
-        recognizer.save())
-
+      let content = new Content(recognizer.save(), path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath())
       contents.push(content)
     }
 
     for (const multiRecognizer of multiRecognizers) {
-      const multiLangContent = new Content(
-        path.basename(multiRecognizer.getDialogPath()),
-        multiRecognizer.getDialogPath(),
-        multiRecognizer.save())
-
+      const multiLangContent = new Content(multiRecognizer.save(), path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath())
       contents.push(multiLangContent)
     }
 
-    const settingsContent = new Content(
-      path.basename(settings.getSettingsPath()),
-      settings.getSettingsPath(),
-      settings.save())
-
+    const settingsContent = new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
     contents.push(settingsContent)
 
     return contents
