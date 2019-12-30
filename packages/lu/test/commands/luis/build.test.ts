@@ -36,7 +36,8 @@ describe('luis:build cli parameters test', () => {
     })
 })
 
-describe('luis:build update application', () => {
+describe('luis:build update application succeed when utterances changed', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/test(development)-sandwich.utteranceChanged.en-us.lu.json')
   before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
@@ -55,10 +56,7 @@ describe('luis:build update application', () => {
 
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('export'))
-      .reply(200, {
-        name: 'test(development)-sandwich.en-us.lu',
-        versionId: '0.1'
-      })
+      .reply(200, existingLuisApp)
 
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('import'))
@@ -93,12 +91,110 @@ describe('luis:build update application', () => {
   test
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/sandwich.en-us.lu', '--authoringkey', uuidv1(), '--botname', 'test'])
-    .it('should update a luis application when lu file is updated', ctx => {
+    .it('should update a luis application when utterances changed', ctx => {
       expect(ctx.stdout).to.contain('Start to handle applications')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('training version=0.2')
       expect(ctx.stdout).to.contain('waiting for training for version=0.2')
       expect(ctx.stdout).to.contain('publishing version=0.2')
       expect(ctx.stdout).to.contain('publishing finished')
+    })
+})
+
+describe('luis:build update application succeed when utterances added', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/test(development)-sandwich.utteranceAdded.en-us.lu.json')
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('import'))
+      .reply(201, '0.2')
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.2',
+        isStaging: true
+      })
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/sandwich.en-us.lu', '--authoringkey', uuidv1(), '--botname', 'test'])
+    .it('should update a luis application when utterances added', ctx => {
+      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('creating version=0.2')
+      expect(ctx.stdout).to.contain('training version=0.2')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.2')
+      expect(ctx.stdout).to.contain('publishing version=0.2')
+      expect(ctx.stdout).to.contain('publishing finished')
+    })
+})
+
+describe('luis:build not update application if no changes', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/test(development)-sandwich.en-us.lu.json')
+  console.log(existingLuisApp)
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/sandwich.en-us.lu', '--authoringkey', uuidv1(), '--botname', 'test'])
+    .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
+      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('no changes')
     })
 })

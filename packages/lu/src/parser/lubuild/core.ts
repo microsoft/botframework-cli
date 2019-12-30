@@ -76,8 +76,11 @@ export class LuBuildCore {
     });
 
     (currentApp.entities || []).forEach((e: any) => {
-      if (e.children === undefined) {
-        e.children = []
+      if (e.children === undefined && existingApp.entities) {
+        let matchedEntities = existingApp.entities.filter((x: any) => x.name === e.name)
+        if (matchedEntities && matchedEntities[0].children !== undefined) {
+          e.children = []
+        }
       }
     })
 
@@ -221,6 +224,10 @@ export class LuBuildCore {
       yObj = JSON.parse(JSON.stringify(y))
     }
 
-    return differenceWith(xObj, yObj, isEqual).length === 0
+    if (xObj.length !== yObj.length) return false
+
+    if (differenceWith(xObj, yObj, isEqual).length > 0) return false
+
+    return true
   }
 }
