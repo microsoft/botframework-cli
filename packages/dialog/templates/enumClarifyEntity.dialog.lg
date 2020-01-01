@@ -5,7 +5,7 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnClarifyEntity",
+    "$kind": "Microsoft.OnChooseEntity",
     "entity": "@{property}Entity",
     "actions": [
         {
