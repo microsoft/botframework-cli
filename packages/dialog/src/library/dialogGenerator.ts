@@ -315,8 +315,7 @@ export async function generate(
     }
 
     if (!metaSchema) {
-        // TODO: This should change to master once checked in
-        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/form/schemas/sdk.schema'
+        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/sdk.schema'
     } else if (!metaSchema.startsWith('http')) {
         // Adjust relative to outDir
         metaSchema = ppath.relative(outDir, metaSchema)
