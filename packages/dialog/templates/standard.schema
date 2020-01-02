@@ -4,7 +4,7 @@
     "properties": {
         "CancelConfirmation": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "Confirmation"
             ],
             "$templates": [
@@ -14,7 +14,7 @@
         },
         "CompleteConfirmation": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "Confirmation", "PROPERTYName"
             ],
             "$templates": [
@@ -34,7 +34,7 @@
         "PROPERTYName": {
             "type": "string",
             "enum": "@{properties}",
-            "$mappings": ["PROPERTYName"]
+            "$entities": ["PROPERTYName"]
         }
     },
     "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],

@@ -4,7 +4,7 @@
     "properties": {      
         "Personname": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "personName"
             ]
         },
@@ -13,7 +13,7 @@
         },
         "Ordinal": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "ordinal"
             ]
         },
@@ -22,7 +22,7 @@
         },
         "Keyphraseproperty": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "keyPhrase"
             ]
         },
@@ -31,7 +31,7 @@
         },
         "Percentage": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "percentage"
             ]
         },
@@ -40,13 +40,13 @@
         },
         "Url": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "url"
             ]
         },       
         "Quantity": {
             "type": "number",
-            "$mappings": [
+            "$entities": [
                 "number"
             ],
             "minimum": 1,
@@ -54,7 +54,7 @@
         },
         "Utteranceproperty": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "utterance"
             ],
             "$comment": "This indicates the whole string is what maps to this."
@@ -87,11 +87,11 @@
         "Zipcodepattern": { 
             "type": "string",
             "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
-            "$mappings": ["utterance","number"]
+            "$entities": ["utterance","number"]
         },
         "Email": {
             "type": "string",
-            "$mappings": ["email"]
+            "$entities": ["email"]
         }
     },
     "required": 

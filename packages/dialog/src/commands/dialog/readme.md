@@ -39,7 +39,7 @@ Schemas are specified using JSON Schema. You can use the normal JSON Schema mech
 You can also use expression syntax, i.e. `@{<expr>}` to compute schema. 
 In addition there are a few extra keywords including:
 
-- **\$mappings** List of entity names that can map to a property. The order of the entities also defines the precedence to use when resolving entities. By default the mappings are based on the type:
+- **\$entities** List of entity names that can map to a property. The order of the entities also defines the precedence to use when resolving entities. By default the mappings are based on the type:
   - **enum**
   - **number**, **string**
 - **\$templates** The template names to use for generating assets. \$templates can be defined at the top-level in a schema or per-property which by default are based on the type:

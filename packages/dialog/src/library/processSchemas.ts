@@ -77,6 +77,55 @@ function mergeSchemas(allSchema: any, schemas: any[]) {
     }
 }
 
+export function typeName(property: any): string {
+    var type = property.type
+    let isArray = false
+    if (type === 'array') {
+        property = property.items
+        type = property.type
+        isArray = true
+    }
+    if (property.enum) {
+        type = 'enum'
+    }
+    if (isArray) {
+        type = type + '[]'
+    }
+    return type
+}
+
+function addMissingEntities(property: any, path: string) {
+    let entities: string[] = property.$entities
+    if (!entities) {
+        let type = typeName(property)
+        if (type === 'number') {
+            entities = [`number:${path}`, 'number']
+        } else if (type === 'string') {
+            entities = [path + 'Entity', 'utterance']
+        } else if (type === 'object') {
+            // For objects go to leaves
+            for (let childPath of Object.keys(property.properties)) {
+                let child = property.properties[childPath]
+                addMissingEntities(child, path + '.' + child)
+            }
+        } else {
+            entities = [path + 'Entity']
+        }
+        if (!entities) {
+            entities = []
+        }
+        property.$entities = entities
+    }
+}
+
+// Fill in $entities if missing
+function addMissing(schema: any) {
+    for (let path of Object.keys(schema.properties)) {
+        let property = schema.properties[path]
+        addMissingEntities(property, path)
+    }
+}
+
 // Process the root schema to generate all schemas
 // 1) A property can $ref to a property definition to reuse a type like address. 
 //    Ref resolver includes template: for referring to template files.
@@ -96,6 +145,7 @@ export async function processSchemas(schemaPath: string, templateDirs: string[],
     let required = {}
     await findRequires(formSchema, allRequired, required, resolver, feedback)
     let allSchema = clone(formSchema)
+    addMissing(allSchema)
     if (!allSchema.required) allSchema.required = []
     if (!allSchema.$expectedOnly) allSchema.$expectedOnly = []
     if (!allSchema.$templates) allSchema.$templates = []

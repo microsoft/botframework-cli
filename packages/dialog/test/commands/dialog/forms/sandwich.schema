@@ -9,7 +9,7 @@
         },
         "Length": {
             "type": "number",
-            "$mappings": [
+            "$entities": [
                 "dimension",
                 "number"
             ],
@@ -18,7 +18,7 @@
         },
         "Name": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "personName", "utterance"
             ]
         },
