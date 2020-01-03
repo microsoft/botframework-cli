@@ -43,3 +43,4 @@ The parameters of the task are described in details, to show how to input the pa
  * **Connection with Channels**
     - **Direct Line**: Check this box to connect the bot with Direct Line. The generated key will be written in a JSON file in the root directory (DirectLineCreate.json).
     - **Slack**: Chech this box to connect the bot with Slack. The necessary credentials for the connection will we required once the box is checked. Follow [this guide](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-slack?view=azure-bot-service-4.0) to know how to obtain the Slack Verification Token, the Slack Bot Token, and the Slack Client Signing Secret.
+    - **Teams**: Chech this box to connect the bot with Teams.
