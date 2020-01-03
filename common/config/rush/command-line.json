@@ -54,6 +54,14 @@
       "summary": "clean everything up",
       "shellCommand": "rush unlink & rush purge & npx rimraf ./node_modules ./packages/chatdown/node_modules ./packages/cli/node_modules ./packages/command/node_modules ./packages/config/node_modules ./packages/dialog/node_modules ./packages/lu/node_modules ./packages/luis/node_modules ./packages/qnamaker/node_modules & rush update",
       "safeForSimultaneousRushProcesses": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "posttest",
+      "summary": "Run all posttest scripts",
+      "description": "This runs all posttest scrips which perform linting",
+      "enableParallelism": true,
+      "allowWarningsInSuccessfulBuild": true
     }
     // {
     //   /**

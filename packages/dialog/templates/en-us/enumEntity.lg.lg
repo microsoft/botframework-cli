@@ -6,7 +6,7 @@
 - @{propertyEntity()}\n@{clarifyEntity()}\n\[common.lg]\n
 
 # clarifyEntity
-- # clarify{property}Entity\n- @\{clarifyEnumEntity(@{concat("'", property, "'")})\}\n
+- # clarify@{property}Entity\n- @\{clarifyEnumEntity(@{concat("'", property, "'")})\}\n
 
 # propertyEntity
 - @{join(createArray(namePlusSwitch(), cases(), default()), '\n')}\n

@@ -5,8 +5,9 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnAsk",
-    "condition":"!$@{property} && contains(dialog.requiredProperties, '@{property}')",
+    "$kind": "Microsoft.OnEndOfActions",
+    "condition":"!$@{property}",
+    "priority": "indexOf(dialog.requiredProperties, '@{property}')",
     "actions": [        
         {
             "$kind": "Microsoft.Ask",

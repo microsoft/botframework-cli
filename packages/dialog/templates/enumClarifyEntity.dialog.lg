@@ -5,7 +5,7 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnClarifyEntity",
+    "$kind": "Microsoft.OnChooseEntity",
     "entity": "@{property}Entity",
     "actions": [
         {
@@ -18,4 +18,4 @@
 ```
 
 # callClarify
-- @\{clarify{property}Entity()}
+- @\{clarify@{property}Entity()}

@@ -5,7 +5,7 @@
 - # PROPERTYName(value) \n- SWITCH: @\{value\}
 
 # case(option)
-- - CASE: @\{'{option}'\} \n - @{phrase(option)}
+- - CASE: @\{'@{option}'\} \n - @{phrase(option)}
 
 # cases
 - @{join(foreach(properties, prop, case(prop)), '\n')}

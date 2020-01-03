@@ -75,7 +75,9 @@
                 "libraries/**/*.schema",
                 "-o",
                 "${env:TEMP}/sdk.schema",
-                "--verbose"
+                "--verbose",
+                "-u",
+                "master"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet"
