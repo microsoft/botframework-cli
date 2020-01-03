@@ -13,6 +13,7 @@ export class InputValues {
     public botSku?: string = 'F0';
     public directLineChannel?: boolean;
     public slackChannel?: boolean;
+    public teamsChannel?: boolean;
     public slackVerificationToken?: string = '';
     public slackBotToken?: string = '';
     public slackClientSigningSecret?: string = '';
@@ -29,6 +30,7 @@ export class InputValues {
         this.botSku = getInput('botSku', false) as string;
         this.directLineChannel = getBoolInput('directLineChannel', false);        
         this.slackChannel = getBoolInput('slackChannel', false);
+        this.teamsChannel = getBoolInput('teamsChannel', false); 
         
         if (this.slackChannel) {
             this.slackVerificationToken = getInput('slackVerificationToken', false);

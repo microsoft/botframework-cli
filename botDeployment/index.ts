@@ -80,7 +80,19 @@ const botDeployment = (): void => {
 const directLineConnection = (): void => {
     try {
         console.log('Connecting to Channel: Direct Line...');         
-        const command = `az bot directline create -n "${ input.botName }" -g "${ input.resourceGroup }" > "${ outputFile }"`;
+        const command = `az bot directline create -n "${ input.botName }" -g "${ input.resourceGroup }"`;
+    
+        execSync(command);
+        console.log('Connection with Teams succeeded'); 
+    } catch (error) {
+        throw new Error('Error in Teams connection: ' + error);    
+    }
+}
+
+const teamsConnection = (): void => {
+    try {
+        console.log('Connecting to Channel: Teams...');         
+        const command = `az bot msteams create -n "${ input.botName }" -g "${ input.resourceGroup }" > "${ outputFile }"`;
     
         execSync(command);
         console.log('Connection with Direct Line succeeded'); 
@@ -104,6 +116,10 @@ const run = (): void => {
         
         if (input.directLineChannel) {
             directLineConnection();
+        }
+
+        if (input.teamsChannel) {
+            teamsConnection();
         }
     }
 }

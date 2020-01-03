@@ -8,7 +8,7 @@
     "author": "SOUTHWORKS",
     "version": {
         "Major": 0,
-        "Minor": 5,
+        "Minor": 7,
         "Patch": 1
     },
     "instanceNameFormat": "Bot Deployment",
@@ -135,6 +135,15 @@
             "required": false,
             "defaultValue": false,
             "helpMarkDown": "Check to connect the bot with the Slack Channel.",
+            "groupname": "channels"
+        },
+        {
+            "name": "teamsChannel",
+            "type": "boolean",
+            "label": "Teams",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check to connect the bot with the Teams Channel.",
             "groupname": "channels"
         },
         {
