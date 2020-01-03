@@ -1,0 +1,17 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnIntent",
+    "intent": "ReadProperty",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callTextProperty()}"           
+        }
+    ]
+}
+```
+
+# callTextProperty
+- @\{textProperty(@PropertyName)}

@@ -117,7 +117,10 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 - @{join(foreach(dialog.requiredProperties, property, textProperty(property)), ', ')}
 
 # textProperty(property)
+- IF: @{dialog[property]}
 - @{toLower(property)}=@{value(property, dialog[property])}
+- ELSE: 
+- The value of @{toLower(property)} is empty.
 
 # formCard
 -```
