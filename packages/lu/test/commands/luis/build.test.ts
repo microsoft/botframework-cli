@@ -44,6 +44,14 @@ describe('luis:build cli parameters test', () => {
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain(`Missing required flag:\n --botname BOTNAME  Bot name`)
     })
+  
+  test
+    .stdout()
+    .stderr()
+    .command(['luis:build', '--authoringkey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botname', 'Contoso'])
+    .it('displays an error if files with same name and locale are found', ctx => {
+      expect(ctx.stderr).to.contain(`Files with same name and locale are found`)
+    })
 })
 
 describe('luis:build create a new application successfully', () => {
