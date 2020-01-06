@@ -16,10 +16,7 @@ echo Output: %outdir%
 echo lubuild: %dobuild%
 
 pushd %indir%
-if "%dobuild%" NEQ "yes" goto copy
 rd /s %outdir%
-
-:copy
 xcopy /s * %outdir%
 
 if "%dobuild%" NEQ "yes" goto pop

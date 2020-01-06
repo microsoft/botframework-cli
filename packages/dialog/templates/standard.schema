@@ -37,7 +37,7 @@
             "$entities": ["PROPERTYName"]
         }
     },
-    "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
+    "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
     "$templates": [
         "helpIntent.lu",
         "cancelIntent.lu",

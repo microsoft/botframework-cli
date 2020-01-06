@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}EntityClarify.dialog
+- @{schemaName}-@{property}EntityChoose.dialog
 
 # template
 - ```
@@ -10,12 +10,12 @@
     "actions": [
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callClarify()}",
+            "activity": "@{callChoose()}",
             "expectedProperties": ["@{property}"]
         }
     ]
 }
 ```
 
-# callClarify
-- @\{clarify@{property}Entity()}
+# callChoose
+- @\{choose@{property}Entity()}

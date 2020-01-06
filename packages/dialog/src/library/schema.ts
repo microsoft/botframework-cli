@@ -113,7 +113,7 @@ export class Schema {
                 if (entityName === this.path + 'Entity') {
                     templates.push(`${type}Set${type}.dialog`)
                     if (type === 'enum') {
-                        templates.push(`${type}ClarifyEntity.dialog`)
+                        templates.push(`${type}ChooseEntity.dialog`)
                     }
                 } else {
                     templates.push(`${type}Set${entityName}.dialog`)
