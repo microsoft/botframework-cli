@@ -7,8 +7,9 @@ import {Recognizer} from './recognizer'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
 import {isEqual, differenceWith} from 'lodash'
+import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
+import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import * as path from 'path'
-const luisUtils = require('@microsoft/bf-luis-cli/lib/utils/index')
 const Content = require('./../lu/lu')
 
 export class LuBuildCore {
@@ -16,7 +17,8 @@ export class LuBuildCore {
 
   constructor(authoringKey: string, endpoint: string) {
     // new luis api client
-    this.client = luisUtils.getLUISClient(authoringKey, endpoint)
+    const creds = new CognitiveServicesCredentials(authoringKey)
+    this.client = new LUISAuthoringClient(creds, endpoint)
   }
 
   public async GetApplicationList() {
@@ -77,11 +79,7 @@ export class LuBuildCore {
 
     currentApp.name = existingApp.name
 
-    if (!this.isApplicationEqual(currentApp, existingApp)) {
-      return true
-    } else {
-      return false
-    }
+    return !this.isApplicationEqual(currentApp, existingApp)
   }
 
   public UpdateVersion(currentApp: any, existingApp: any) {
