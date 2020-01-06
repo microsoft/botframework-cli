@@ -1,0 +1,9 @@
+> !# @enableSections = true
+> !# @enableMergeIntents = true
+
+# railway
+## bookRailway
+- book a train ticket from Seattle to Portland
+
+## railwayTime
+- When do you want to leave from Seattle train station

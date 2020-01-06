@@ -1,0 +1,10 @@
+{
+    "./main/main.lu": {
+        "./dia1/dia1.lu": "dia1_trigger"
+    },
+    "./dia1/dia1.lu": {
+        "./dia2/dia2.lu": "dia2_trigger",
+        "./dia3/dia3.lu": "dia2_trigger",
+        "./dia4/dia4.lu": "dia3_trigger"
+    }
+}

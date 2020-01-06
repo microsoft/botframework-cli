@@ -1,0 +1,14 @@
+{
+    "./main/main.lu": {
+        "./dia1/dia1.lu": "dia1_trigger",
+        "./dia2/dia2.lu": "dia2_trigger"
+    },
+    "./dia2/dia2.lu": {
+        "./dia3/dia3.lu": "dia3_trigger",
+        "./dia4/dia4.lu": "dia4_trigger"
+    },
+    "./main/main.fr-fr.lu": {
+        "./dia1/dia1.fr-fr.lu": "dia1_trigger",
+        "./dia2/dia2.fr-fr.lu": "dia2_trigger"
+    }
+}
