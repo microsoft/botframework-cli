@@ -210,7 +210,6 @@ export default class LuisBuild extends Command {
     currentApp.culture = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : content.language as string
     currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
     currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botname} app, targetting ${flags.suffix}`
-    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' ? currentApp.versionId : '0.1'
 
     if (currentApp.name === undefined || currentApp.name === '') {
       currentApp.name = `${flags.botname}(${flags.suffix})-${content.name}`
@@ -247,11 +246,12 @@ export default class LuisBuild extends Command {
   }
 
   async CreateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number) {
+    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' ? currentApp.versionId : '0.1'
     recognizer.versionId = currentApp.versionId
     this.log(`Creating LUIS.ai application: ${currentApp.name} version:${currentApp.versionId}\n`)
     await delay(delayDuration)
-    const appId = await luBuildCore.ImportApplication(currentApp)
-    recognizer.setAppId(appId)
+    const response = await luBuildCore.ImportApplication(currentApp)
+    recognizer.setAppId(response.body)
     return true
   }
 
