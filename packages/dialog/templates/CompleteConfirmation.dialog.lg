@@ -2,7 +2,7 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnAsk",
+    "$kind": "Microsoft.OnEndOfActions",
     "condition": "empty(where(dialog.requiredProperties, property, !dialog[property]))",
     "actions": [
         {
