@@ -46,6 +46,60 @@ describe('luis:build cli parameters test', () => {
     })
 })
 
+describe('luis:build create a new application successfully', () => {
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test.en-us.lu',
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('import'))
+      .reply(201, {
+        appId: 'f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.2',
+        isStaging: true
+      })
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/sandwich.en-us.lu', '--authoringkey', uuidv1(), '--botname', 'test'])
+    .it('should create a new application successfully', ctx => {
+      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Creating LUIS.ai application')
+      expect(ctx.stdout).to.contain('training version=0.1')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.1')
+      expect(ctx.stdout).to.contain('publishing version=0.1')
+      expect(ctx.stdout).to.contain('publishing finished')
+    })
+})
+
 describe('luis:build update application succeed when utterances changed', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/test(development)-sandwich.utteranceChanged.en-us.lu.json')
   before(function () {

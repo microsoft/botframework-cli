@@ -251,7 +251,7 @@ export default class LuisBuild extends Command {
     this.log(`Creating LUIS.ai application: ${currentApp.name} version:${currentApp.versionId}\n`)
     await delay(delayDuration)
     const response = await luBuildCore.ImportApplication(currentApp)
-    recognizer.setAppId(response.body)
+    recognizer.setAppId(typeof response.body === 'string' ? response.body : response.body[Object.keys(response.body)[0]])
     return true
   }
 
