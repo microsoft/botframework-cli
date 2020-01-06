@@ -20,6 +20,10 @@ class LUParser {
      * @param {string} text
      */
     static parse(text) {
+        if (text === undefined || text === '') {
+            return new LUResource([], '', []);
+        }
+
         let sections = [];
         let content = text;
 
