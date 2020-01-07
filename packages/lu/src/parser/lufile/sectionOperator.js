@@ -10,8 +10,7 @@ class SectionOperator {
         this.Luresource = luresource;
     }
 
-    // TODO
-    // After CRUD, section Ids will be Scrambled and regenerated.
+    // After CRUD, section Ids will keep same unless you change section name.
     addSection(sectionContent) {
         sectionContent = helpers.sanitizeNewLines(sectionContent);
         var newContent = `${this.Luresource.Content}\r\n${sectionContent}`;

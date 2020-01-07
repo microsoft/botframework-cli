@@ -55,6 +55,8 @@ describe('Section CRUD test', () => {
         - check my email
         - show my emails
         - check my mail box please`;
+
+        let sectionId = luresource.Sections[1].Id;
         luresource = new SectionOperator(luresource).updateSection(luresource.Sections[1].Id, newFileConent);
 
         assert.equal(luresource.Errors.length, 0);
@@ -62,6 +64,7 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[1].Errors.length, 0);
         assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
         assert.equal(luresource.Sections[1].Name, 'CheckEmail');
+        assert.equal(luresource.Sections[1].Id, sectionId);
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap.length, 3);
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[0].utterance, 'check my email');
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[1].utterance, 'show my emails');
