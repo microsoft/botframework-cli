@@ -17,16 +17,16 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.number",
-            "value": "@money['number']"          
+            "value": "@money.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.units",
-            "value": "@money['units']"          
+            "value": "@money.units"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', concat(@money['number'], " ", @money['units'])}
+- @\{setPropertyMessage('@{property}', concat(@money.number, " ", @money.units)}
