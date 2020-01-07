@@ -7,6 +7,10 @@
 # entityPattern(entity)
 - IF: @{equals(entity, 'utterance')}
 - 
+- ELSEIF: @{equals(entity, 'personName')}
+- 
+- ELSEIF: @{equals(entity, 'keyPhrase')}
+- 
 - ELSEIF: @{equals(entity, 'datetime')}
 - - \{datetimeV2\}
 - ELSE:
