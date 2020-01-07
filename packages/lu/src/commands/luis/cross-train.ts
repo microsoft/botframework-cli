@@ -33,9 +33,11 @@ export default class LuisCrossTrian extends Command {
       const isLu = await file.detectLuContent(undefined, flags.in)
 
       // Parse the object depending on the input
-      let result: any
+      let luResult: any
+      let qnaResult: any
       if (isLu && flags.root) {
         const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile)
+        const qnaFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.QnAFile)
         const rootFiles = await file.getLuObjects(undefined, flags.root, flags.recurse, fileExtEnum.LUFile)
         const luConfigObject = await file.getConfigObject(flags.in, flags.recurse)
 
@@ -46,15 +48,17 @@ export default class LuisCrossTrian extends Command {
           verbose: flags.log
         }
 
-        result = await luCrossTrainer.luCrossTrain(luFiles, JSON.stringify(crossTrainConfig))
+        luResult = await luCrossTrainer.luCrossTrain(luFiles, JSON.stringify(crossTrainConfig))
+        qnaResult = await luCrossTrainer.qnaCrossTrain(qnaFiles, luResult, crossTrainConfig.verbose)
       }
 
       // If result is null or undefined return
-      if (!result) {
+      if (!luResult) {
         throw new CLIError('No LU content parsed!')
       }
 
-      await this.writeLuFiles(result, flags)
+      await this.writeFiles(luResult, flags)
+      await this.writeFiles(qnaResult, flags)
     } catch (err) {
       if (err instanceof exception) {
         throw new CLIError(err.text)
@@ -63,7 +67,7 @@ export default class LuisCrossTrian extends Command {
     }
   }
 
-  private async writeLuFiles(fileIdToLuResourceMap: Map<string, any>, flags?: any) {
+  private async writeFiles(fileIdToLuResourceMap: Map<string, any>, flags?: any) {
     let newFolder
     if (flags && flags.out) {
       newFolder = flags.out

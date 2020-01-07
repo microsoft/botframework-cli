@@ -49,10 +49,8 @@ module.exports = {
     }
   },
 
-  qnaCrossTrain: async function (qnaObjectArray, luFileIdToLuResourceMap, crossTrainConfig) {
+  qnaCrossTrain: async function (qnaObjectArray, luFileIdToLuResourceMap, verbose) {
     try {
-      const crossTrainConfigObj = JSON.parse(crossTrainConfig)
-      const verbose = crossTrainConfigObj.verbose
       let qnaFileIdToLuResourceMap = this.parseAndValidateLuContent(qnaObjectArray, verbose)
       
       for (const luObjectId of Array.from(luFileIdToLuResourceMap.keys())) {
@@ -62,6 +60,8 @@ module.exports = {
           qnaCrossTrainCore(luFileIdToLuResourceMap.get(luObjectId), qnaFileIdToLuResourceMap.get(qnaObjectId), name)
         }
       }
+
+      return qnaFileIdToLuResourceMap
     } catch (err) {
       throw (err)
     }
