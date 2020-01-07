@@ -11,6 +11,10 @@
     "entity": "age",
     "actions": [
         {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.number",
             "value": "@age['number']"          
@@ -23,3 +27,6 @@
     ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', concat(@age['number'], " ", @age['units'])}

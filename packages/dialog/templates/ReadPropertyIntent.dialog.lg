@@ -8,6 +8,18 @@
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callTextProperty()}"           
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$PropertyToRemember",
+            "value": "@PROPERTYName" 
+        },
+        {
+            "$kind": "Microsoft.Ask",
+            "activity": "@{callConfirmChangeProperty()}",
+            "expectedProperties": [
+                "ChangePropertyConfirmation"
+            ]
         }
     ]
 }
@@ -15,3 +27,6 @@
 
 # callTextProperty
 - @\{textProperty(@PropertyName)}
+
+# callConfirmChangeProperty
+- @\{confirmChangeProperty(@PropertyName)}

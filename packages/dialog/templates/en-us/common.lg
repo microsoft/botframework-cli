@@ -122,6 +122,12 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 - ELSE: 
 - The value of @{toLower(property)} is empty.
 
+# confirmChangeProperty(property)
+- IF: @{dialog[property]}
+- Do you want to change the value of @{toLower(property)}? (yes or no)
+- ELSE: 
+- Do you want to add a value for @{toLower(property)}? (yes or no)
+
 # formCard
 -```
 {

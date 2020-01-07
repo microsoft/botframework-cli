@@ -11,6 +11,10 @@
     "entity": "geographyV2",
     "actions": [
         {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.type",
             "value": "@geographyV2['type']"          
@@ -23,3 +27,6 @@
     ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', concat(@geographyV2['type'], " ", @geographyV2['location'])}

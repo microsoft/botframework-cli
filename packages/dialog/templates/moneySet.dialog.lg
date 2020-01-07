@@ -11,6 +11,10 @@
     "entity": "money",
     "actions": [
         {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.number",
             "value": "@money['number']"          
@@ -23,3 +27,6 @@
     ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', concat(@money['number'], " ", @money['units'])}

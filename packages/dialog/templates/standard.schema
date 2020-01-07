@@ -12,6 +12,15 @@
                 "CancelConfirmationSet.dialog"
             ]
         },
+        "ChangePropertyConfirmation": {
+            "type": "string",
+            "$mappings": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "ChangePropertyConfirmationSet.dialog"
+            ]
+        },
         "CompleteConfirmation": {
             "type": "string",
             "$entities": [
@@ -27,6 +36,12 @@
             "$ref": "#/definitions/PROPERTYName",
             "$templates": [
                 "PropertyToChangeSet.dialog"
+            ]
+        },
+        "PropertyToRemember": {
+            "$ref": "#/definitions/PROPERTYName",
+            "$templates": [
+                "PropertyToRememberSet.dialog"
             ]
         }
     },
