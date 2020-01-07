@@ -26,11 +26,11 @@ export async function getLuObjects(stdin: string, input: string | undefined, rec
   return luObjects
 }
 
-async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
+export async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
   let filesToParse: any[] = []
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
-    filesToParse.push(input)
+    filesToParse.push(path.resolve(input))
     return filesToParse
   }
 
@@ -168,5 +168,28 @@ export function parseJSON(input: string, appType: string) {
     return JSON.parse(input)
   } catch (error) {
     throw new CLIError(`Sorry, error parsing content as ${appType} JSON`)
+  }
+}
+
+export function getCultureFromPath(file: string): string | null {
+  let fn = path.basename(file, path.extname(file))
+  let lang = path.extname(fn).substring(1)
+  switch (lang.toLowerCase()) {
+  case 'en-us':
+  case 'zh-cn':
+  case 'nl-nl':
+  case 'fr-fr':
+  case 'fr-ca':
+  case 'de-de':
+  case 'it-it':
+  case 'ja-jp':
+  case 'ko-kr':
+  case 'pt-br':
+  case 'es-es':
+  case 'es-mx':
+  case 'tr-tr':
+    return lang
+  default:
+    return null
   }
 }
