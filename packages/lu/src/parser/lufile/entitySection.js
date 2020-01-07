@@ -2,7 +2,6 @@ const EntitySectionContext = require('./generated/LUFileParser').LUFileParser.En
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
-const uuidv4 = require('uuid/v4');
 
 class EntitySection {
     /**
@@ -17,7 +16,7 @@ class EntitySection {
         const result = this.ExtractSynonymsOrPhraseList(parseTree);
         this.SynonymsOrPhraseList = result.synonymsOrPhraseList;
         this.Errors = result.errors;
-        this.Id = uuidv4();
+        this.Id = `${this.SectionType}_${this.Name}`;
     }
 
     ExtractName(parseTree) {
