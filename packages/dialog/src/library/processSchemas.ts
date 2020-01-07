@@ -78,7 +78,7 @@ function mergeSchemas(allSchema: any, schemas: any[]) {
 }
 
 export function typeName(property: any): string {
-    var type = property.type
+    let type = property.type
     let isArray = false
     if (type === 'array') {
         property = property.items
