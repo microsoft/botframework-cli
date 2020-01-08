@@ -104,7 +104,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Generate Test",
+            "name": "Generate Unit Test",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [

@@ -9,7 +9,7 @@
         },
         "Length": {
             "type": "number",
-            "$mappings": [
+            "$entities": [
                 "dimension",
                 "number"
             ],
@@ -18,8 +18,9 @@
         },
         "Name": {
             "type": "string",
-            "$mappings": [
-                "personName", "utterance"
+            "$entities": [
+                "personName",
+                "utterance"
             ]
         },
         "Bread": {
@@ -29,19 +30,6 @@
                 "rye",
                 "white",
                 "wholeWheat"
-            ]
-        },
-        "Cheese": {
-            "type": "string",
-            "enum": [
-                "american",
-                "cheddar",
-                "feta",
-                "gouda",
-                "pepper jack",
-                "provolone",
-                "swiss",
-                "none"
             ]
         },
         "Meat": {
@@ -57,6 +45,19 @@
                 "none"
             ]
         },
+        "Cheese": {
+            "type": "string",
+            "enum": [
+                "american",
+                "cheddar",
+                "feta",
+                "gouda",
+                "pepper jack",
+                "provolone",
+                "swiss",
+                "none"
+            ]
+        },
         "Price": {
             "$ref": "template:money.schema#/money"
         }
@@ -64,8 +65,8 @@
     "required": [
         "Name",
         "Bread",
-        "Meat",
         "Cheese",
+        "Meat",
         "Price"
     ],
     "$requires": [

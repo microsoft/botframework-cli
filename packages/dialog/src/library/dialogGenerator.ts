@@ -215,7 +215,7 @@ async function processTemplates(
     }
 
     // Entities first--ok to ignore templates because they might be property specific
-    for (let entity of Object.keys(schema.entities())) {
+    for (let entity of Object.keys(schema.allEntities())) {
         let [entityName, role] = entity.split(':')
         scope.entity = entityName
         scope.role = role

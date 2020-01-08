@@ -4,50 +4,50 @@
     "properties": {
         "HomeStreet": { 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "HomeCity": { 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "HomeState": { 
             "type": "string",
-            "$mappings": [ "USSTATE" ]
+            "$entities": [ "USSTATE" ]
         },
         "HomeZip": { 
             "type": "string",
             "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "HomeLatitude": { "type": "number" },
         "HomeLongitude": { "type": "number" },
         "HomePhone": { 
             "type": "string", 
-            "$mappings": [ "utterance" ]
+            "$entities": [ "utterance" ]
         },
 
         "WorkStreet": { 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "WorkCity": { 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "WorkState": { 
             "type": "string",
-            "$mappings": [ "USSTATE" ]
+            "$entities": [ "USSTATE" ]
         },
         "WorkZip": { 
             "type": "string",
             "pattern": "^[0-9]{5}(?:-[0-9]{4})?$",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "WorkLatitude": { "type": "number" },
         "WorkLongitude": { "type": "number" },
         "WorkPhone": { 
             "type": "string", 
-            "$mappings": [ "utterance" ]
+            "$entities": [ "utterance" ]
         }
     },
     "required":["HomeStreet", "HomeCity", "HomeState", "HomeZip", "HomePhone", "WorkStreet", "WorkCity", "WorkState", "WorkZip", "WorkPhone"],
