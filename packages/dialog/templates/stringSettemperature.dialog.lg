@@ -1,0 +1,27 @@
+
+# filename
+- @{schemaName}-@{property}Settemperature.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "temperature",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@temperature"          
+        }
+    ]               
+}
+```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @temperature)}

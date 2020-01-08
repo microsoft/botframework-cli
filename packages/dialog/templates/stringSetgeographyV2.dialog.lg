@@ -1,0 +1,27 @@
+
+# filename
+- @{schemaName}-@{property}SetgeographyV2.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "geographyV2",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "@geographyV2"          
+        }
+    ]               
+}
+```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @geographyV2)}
