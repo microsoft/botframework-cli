@@ -11,6 +11,8 @@
 - 
 - ELSEIF: @{equals(entity, 'keyPhrase')}
 - 
+- ELSEIF: @{equals(entity, 'PROPERTYName')}
+-
 - ELSEIF: @{equals(entity, 'datetime')}
 - - \{datetimeV2\}
 - ELSE:

@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setmoney.dialog
+- @{schemaName}-@{property}Settemperature.dialog
 
 # template
 - ```
@@ -29,4 +29,4 @@
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', concat(@temperature.number, " ", @temperature.units)}
+- @\{setObjectPropertyMessage('@{property}', concat(string(@temperature.number), ' ', @temperature.units))}

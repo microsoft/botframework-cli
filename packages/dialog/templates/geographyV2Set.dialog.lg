@@ -29,4 +29,4 @@
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', concat(@geographyV2.type, " ", @geographyV2.location)}
+- @\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}

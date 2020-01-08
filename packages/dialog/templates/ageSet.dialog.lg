@@ -28,5 +28,5 @@
 }
 ```
 
-# callSetMessage
-- @\{setPropertyMessage('@{property}', concat(@age.number, " ", @age.units)}
+# callSetMessage()
+- @\{setObjectPropertyMessage('@{property}', concat(string(@age.number), ' ', @age.units))}

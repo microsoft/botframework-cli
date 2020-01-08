@@ -14,7 +14,7 @@
         },
         "ChangePropertyConfirmation": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "Confirmation"
             ],
             "$templates": [
