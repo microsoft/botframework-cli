@@ -27,6 +27,10 @@ const getOptionalParameters = (): string => {
     let command = input.slackVerificationToken? ` slackVerificationToken="${ input.slackVerificationToken }"`: '';
     command += input.slackBotToken ? ` slackBotToken="${ input.slackBotToken }"` : '';
     command += input.slackClientSigningSecret ? ` slackClientSigningSecret="${ input.slackClientSigningSecret }"` : '';
+    command += input.webexChannel ? ` webexPublicAddress=https://"${ input.botName }".azurewebsites.net` : '';
+    command += input.webexAccessToken ? ` webexAccessToken="${ input.webexAccessToken }"` : '';
+    command += input.webexSecret ? ` webexSecret="${ input.webexSecret }"` : '';
+    command += input.webexWebhookName ? ` webexWebhookName="${ input.webexWebhookName }"` : '';
 
     return command;
 }

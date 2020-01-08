@@ -2,14 +2,14 @@
     "id": "dc28e910-44e2-4c2a-9c2a-1eb72b891d68",
     "name": "bot-deployment",
     "friendlyName": "Bot Deployment",
-    "description": "Deploys a bot to Azure",
+    "description": "Deploys a bot to Azure and connects it with channels",
     "helpMarkDown": "",
     "category": "Utility",
     "author": "SOUTHWORKS",
     "version": {
         "Major": 0,
         "Minor": 8,
-        "Patch": 6
+        "Patch": 11
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -147,6 +147,15 @@
             "groupname": "channels"
         },
         {
+            "name": "webexChannel",
+            "type": "boolean",
+            "label": "Webex",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check to connect the bot with the Webex Channel. A Webhook must be previously created with the following targetUrl: 'https://{your-bots-name}.azurewebsites.net/api/messages'",
+            "groupname": "channels"
+        },
+        {
             "name": "slackVerificationToken",
             "type": "text",
             "label": "Slack Verification Token",
@@ -172,6 +181,33 @@
             "helpMarkDown": "Provide the client signing secret from the Slack Application.",
             "groupname": "channels",
             "visibleRule": "slackChannel = TRUE"
+        },
+        {
+            "name": "webexAccessToken",
+            "type": "text",
+            "label": "Webex Access Token",
+            "required": false,
+            "helpMarkDown": "Provide the access token for the bot. Get one from 'https://developer.webex.com/'",
+            "groupname": "channels",
+            "visibleRule": "webexChannel = TRUE"
+        },
+        {
+            "name": "webexSecret",
+            "type": "text",
+            "label": "Webex Secret",
+            "required": false,
+            "helpMarkDown": "Provide the secret configured in the webhook.",
+            "groupname": "channels",
+            "visibleRule": "webexChannel = TRUE"
+        },
+        {
+            "name": "webexWebhookName",
+            "type": "text",
+            "label": "Webex Webhook Name",
+            "required": false,
+            "helpMarkDown": "Provide the name of the webhook.",
+            "groupname": "channels",
+            "visibleRule": "webexChannel = TRUE"
         },
         {
             "name": "validationMode",

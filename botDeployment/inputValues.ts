@@ -14,9 +14,13 @@ export class InputValues {
     public directLineChannel?: boolean;
     public slackChannel?: boolean;
     public teamsChannel?: boolean;
+    public webexChannel?: boolean;
     public slackVerificationToken?: string = '';
     public slackBotToken?: string = '';
     public slackClientSigningSecret?: string = '';
+    public webexAccessToken?: string = '';
+    public webexSecret?: string = '';
+    public webexWebhookName?: string = '';
     public validationMode?: boolean;
 
     constructor() {
@@ -31,11 +35,18 @@ export class InputValues {
         this.directLineChannel = getBoolInput('directLineChannel', false);        
         this.slackChannel = getBoolInput('slackChannel', false);
         this.teamsChannel = getBoolInput('teamsChannel', false); 
+        this.webexChannel = getBoolInput('webexChannel', false); 
         
         if (this.slackChannel) {
             this.slackVerificationToken = getInput('slackVerificationToken', false);
             this.slackBotToken = getInput('slackBotToken', false);
             this.slackClientSigningSecret = getInput('slackClientSigningSecret', false);
+        }
+
+        if (this.webexChannel) {
+            this.webexAccessToken = getInput('webexAccessToken', false);
+            this.webexSecret = getInput('webexSecret', false);
+            this.webexWebhookName = getInput('webexWebhookName', false);
         }
 
         this.validationMode = getBoolInput('validationMode', false);

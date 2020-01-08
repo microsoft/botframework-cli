@@ -2,14 +2,14 @@
     "manifestVersion": 1,
      "id": "bot-deployment",
      "name": "Bot Deployment",
-     "version": "0.8.6",
+     "version": "0.8.11",
      "publisher": "Southworks-Pipelines-Test",
      "targets": [
          {
              "id": "Microsoft.VisualStudio.Services"
          }
      ],    
-    "description": "Deploy a bot to Azure",
+    "description": "Deploy a bot to Azure and connect it with channels",
     "categories": [
          "Azure Pipelines"
      ],
