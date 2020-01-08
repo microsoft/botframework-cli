@@ -20,13 +20,19 @@ describe('luis:convert interuption intent among lu files', () => {
     .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interuption')}`, '--root', `${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.lu')},${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.fr-fr.lu')}`, '--out', 'interuptionGen', '--intentname', '_Interuption', '--recurse'])
     .it('luis:convert interuption intents when interuption intents are set', async () => {
       expect(await compareLuFiles('./../../../interuptionGen/main.lu', './../../fixtures/verified/interuption/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/main.qna', './../../fixtures/verified/interuption/main.qna')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia1.lu', './../../fixtures/verified/interuption/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/dia1.qna', './../../fixtures/verified/interuption/dia1.qna')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia2.lu', './../../fixtures/verified/interuption/dia2.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/dia2.qna', './../../fixtures/verified/interuption/dia2.qna')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia3.lu', './../../fixtures/verified/interuption/dia3.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia4.lu', './../../fixtures/verified/interuption/dia4.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/main.fr-fr.lu', './../../fixtures/verified/interuption/main.fr-fr.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia1.fr-fr.lu', './../../fixtures/verified/interuption/dia1.fr-fr.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia2.fr-fr.lu', './../../fixtures/verified/interuption/dia2.fr-fr.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/main.fr-fr.qna', './../../fixtures/verified/interuption/main.fr-fr.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/dia1.fr-fr.qna', './../../fixtures/verified/interuption/dia1.fr-fr.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interuptionGen/dia2.fr-fr.qna', './../../fixtures/verified/interuption/dia2.fr-fr.qna')).to.be.true
     })
 
   test

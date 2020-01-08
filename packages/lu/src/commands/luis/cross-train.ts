@@ -16,12 +16,12 @@ export default class LuisCrossTrian extends Command {
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'luis:cross-train help'}),
-    in: flags.string({char: 'i', description: 'Source .lu file(s)'}),
-    out: flags.string({char: 'o', description: 'Output folder name. If not specified, source lu file(s) will be updated'}),
-    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
-    log: flags.boolean({description: 'Enables log messages', default: false}),
-    root: flags.string({description: 'Root lu files to do cross training. Separated by comma if multiple root files exist.'}),
-    intentname: flags.string({description: 'Interuption intent name', default: '_Interuption'})
+    in: flags.string({char: 'i', description: 'source .lu file(s)'}),
+    out: flags.string({char: 'o', description: 'output folder name. If not specified, source lu file(s) will be updated'}),
+    recurse: flags.boolean({char: 'r', description: 'indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
+    log: flags.boolean({description: 'enable log messages', default: false}),
+    root: flags.string({description: 'root lu files to do cross training. Separated by comma if multiple root files exist.'}),
+    intentname: flags.string({description: 'interuption intent name', default: '_Interuption'})
   }
 
   async run() {
@@ -48,8 +48,10 @@ export default class LuisCrossTrian extends Command {
           verbose: flags.log
         }
 
-        luResult = await luCrossTrainer.luCrossTrain(luFiles, JSON.stringify(crossTrainConfig))
-        qnaResult = await luCrossTrainer.qnaCrossTrain(qnaFiles, luResult, crossTrainConfig.verbose)
+        luResult = luCrossTrainer.luCrossTrain(luFiles, JSON.stringify(crossTrainConfig))
+        if (qnaFiles && qnaFiles.length > 0) {
+          qnaResult = luCrossTrainer.qnaCrossTrain(qnaFiles, luResult, crossTrainConfig.verbose)
+        }
       }
 
       // If result is null or undefined return
@@ -68,6 +70,8 @@ export default class LuisCrossTrian extends Command {
   }
 
   private async writeFiles(fileIdToLuResourceMap: Map<string, any>, flags?: any) {
+    if (fileIdToLuResourceMap === undefined) return
+    
     let newFolder
     if (flags && flags.out) {
       newFolder = flags.out
@@ -86,10 +90,10 @@ export default class LuisCrossTrian extends Command {
           const fileName = path.basename(fileId)
           const newFileId = path.join(newFolder, fileName)
           await fs.writeFile(newFileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
-          this.log('Successfully wrote LUIS model to ' + newFileId)
+          this.log('Successfully wrote to ' + newFileId)
         } else {
           await fs.writeFile(fileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
-          this.log('Successfully wrote LUIS model to ' + fileId)
+          this.log('Successfully wrote to ' + fileId)
         }
       } catch (err) {
         throw new CLIError('Unable to write file - ' + fileId + ' Error: ' + err.message)

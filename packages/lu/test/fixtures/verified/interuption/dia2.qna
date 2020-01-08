@@ -1,0 +1,25 @@
+# ?sing song
+- can you sing a song
+- make some tunes
+
+**Filters:**
+- dialogname=dia2
+
+```markdown
+    Sure, I can help with that.
+```
+
+> Source:cross training. Please do not edit these directly!
+# ?book a flight from Seattle to Beijing
+- which {flightTime} do you prefer
+- book a train ticket from Seattle to Portland
+- When do you want to leave from Seattle train station
+- book a hotel in Seattle
+- Which type of hotel do you prefer
+
+**Filters:**
+- dialogname=dia2
+
+```markdown
+intent=DeferToRecognizer_LUIS_dia2
+```

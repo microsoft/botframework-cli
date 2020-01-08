@@ -42,10 +42,6 @@ async function getLuFiles(inputPath: string, recurse = false, extType: string | 
       }
 
       filesToParse = helpers.findLUFiles(input, recurse, extType)
-
-      if (filesToParse.length === 0) {
-        throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
-      }
     }
   }
 

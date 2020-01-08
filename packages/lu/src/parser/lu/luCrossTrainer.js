@@ -1,12 +1,14 @@
 const retCode = require('./../utils/enums/CLI-errors')
 const helpers = require('./../utils/helpers')
 const exception = require('./../utils/exception')
-const luParser = require('./../lufile/luParser');
-const SectionOperator = require('./../lufile/sectionOperator');
-const LUSectionTypes = require('./../utils/enums/lusectiontypes');
-const DiagnosticSeverity = require('./../lufile/diagnostic').DiagnosticSeverity;
-const NEWLINE = require('os').EOL;
-const path = require('path');
+const luParser = require('./../lufile/luParser')
+const SectionOperator = require('./../lufile/sectionOperator')
+const LUSectionTypes = require('./../utils/enums/lusectiontypes')
+const LUResource = require('./../lufile/luResource')
+const DiagnosticSeverity = require('./../lufile/diagnostic').DiagnosticSeverity
+const fileHelper = require('./../../utils/filehelper')
+const NEWLINE = require('os').EOL
+const path = require('path')
 
 module.exports = {
   /**
@@ -16,30 +18,30 @@ module.exports = {
    * @returns {Map<string, LUResource>} Map of file id and luResource
    * @throws {exception} Throws on errors. exception object includes errCode and text
    */
-  luCrossTrain: async function (luObjectArray, crossTrainConfig) {
+  luCrossTrain: function (luObjectArray, crossTrainConfig) {
     try {
-      const crossTrainConfigObj = JSON.parse(crossTrainConfig);
-      const rootObjectIds = crossTrainConfigObj.rootIds;
-      const triggerRules = crossTrainConfigObj.triggerRules;
-      const intentName = crossTrainConfigObj.intentName;
-      const verbose = crossTrainConfigObj.verbose;
+      const crossTrainConfigObj = JSON.parse(crossTrainConfig)
+      const rootObjectIds = crossTrainConfigObj.rootIds
+      const triggerRules = crossTrainConfigObj.triggerRules
+      const intentName = crossTrainConfigObj.intentName
+      const verbose = crossTrainConfigObj.verbose
 
       // parse lu content to LUResource object
-      let fileIdToLuResourceMap = this.parseAndValidateLuContent(luObjectArray, verbose);
+      let fileIdToLuResourceMap = this.parseAndValidateLuContent(luObjectArray, verbose)
 
       // construct resource tree to build the father-children relationship among lu files
-      let resources = this.constructResoureTree(fileIdToLuResourceMap, triggerRules);
+      let resources = this.constructResoureTree(fileIdToLuResourceMap, triggerRules)
 
       // do cross training from roots. One root one core training
       for (const rootObjectId of rootObjectIds) {
         if (resources.some(r => r.id === rootObjectId)) {
           // do cross training for each root at top level
-          const result = this.crossTrain(rootObjectId, resources, intentName);
+          const result = this.crossTrain(rootObjectId, resources, intentName)
           for (const res of result) {
             fileIdToLuResourceMap.set(res.id, res.content);
           }
         } else {
-          throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, root lu file '${rootObjectId}' does not exist`));
+          throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, root lu file '${rootObjectId}' does not exist`))
         }
       }
 
@@ -49,15 +51,19 @@ module.exports = {
     }
   },
 
-  qnaCrossTrain: async function (qnaObjectArray, luFileIdToLuResourceMap, verbose) {
+  qnaCrossTrain: function (qnaObjectArray, luFileIdToLuResourceMap, verbose) {
     try {
       let qnaFileIdToLuResourceMap = this.parseAndValidateLuContent(qnaObjectArray, verbose)
-      
       for (const luObjectId of Array.from(luFileIdToLuResourceMap.keys())) {
-        const qnaObjectId = path.concat(path.dirname(luObjectId), path.basename(luObjectId, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
-        const name = path.basename(luObjectId, helpers.FileExtTypeEnum.LUFile)
-        if (Array.from(qnaFileIdToLuResourceMap.keys()).some(q => q.id === qnaObjectId)) {
-          qnaCrossTrainCore(luFileIdToLuResourceMap.get(luObjectId), qnaFileIdToLuResourceMap.get(qnaObjectId), name)
+        const qnaObjectId = path.join(path.dirname(luObjectId), path.basename(luObjectId, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
+        let fileName = path.basename(luObjectId, path.extname(luObjectId))
+        const culture = fileHelper.getCultureFromPath(luObjectId)
+        fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
+
+        if (Array.from(qnaFileIdToLuResourceMap.keys()).some(q => q === qnaObjectId)) {
+          const { luResource, qnaResource } = this.qnaCrossTrainCore(luFileIdToLuResourceMap.get(luObjectId), qnaFileIdToLuResourceMap.get(qnaObjectId), fileName)
+          luFileIdToLuResourceMap.set(luObjectId, luResource)
+          qnaFileIdToLuResourceMap.set(qnaObjectId, qnaResource)
         }
       }
 
@@ -74,49 +80,33 @@ module.exports = {
     qnaSections.forEach(q => questions = questions.concat(q.Questions))
     questions = questions.map(q => '- '.concat(q))
     let questionsContent = questions.join(NEWLINE)
-    const questionsToUtterances =
-      `# DeferToRecognizer_QnA_${name}
-       ${questionsContent}`
+    const questionsToUtterances = `# DeferToRecognizer_QnA_${name}${NEWLINE}${questionsContent}`
 
     // extract utterances
     const intentSections = luResource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION)
     let utterances = []
     intentSections.forEach(i => utterances = utterances.concat(i.UtteranceAndEntitiesMap.map(u => u.utterance)))
     let utterancesContent = utterances.join(NEWLINE + '- ')
-    const utterancesToQuestion =
-      `> Source:cross training. Please do not edit these directly!
-       # ?${utterancesContent}
-
-       \`\`\`markdown
-       intent=DeferToRecognizer_LUIS_${name}
-       \`\`\``
+    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogname=${name}${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
 
     // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${name}
     luResource = new SectionOperator(luResource).addSection(questionsToUtterances)
 
-    // add utterances from lu file to corresponding qna file with question set to all utterances
-    qnaResource = new SectionOperator(qnaResource).addSection(utterancesToQuestion)
-
     // update qna filters
     let qnaSectionContents = []
-    const updatedQnaSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.QNASECTION)
-    for (const qnaSection of updatedQnaSections) {
-      qnaSection.FilterPairs.push({key: 'dialogName', value: name})
-      const qnaSectionContent = 
-      `# ?${qnaSection.Questions.join(NEWLINE + '- ')}
-      
-      **filters**
-      - ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}
-      
-      \`\`\`markdown
-      ${qnaSection.Answer}
-      \`\`\``
-
+    for (const qnaSection of qnaSections) {
+      qnaSection.FilterPairs.push({key: 'dialogname', value: name})
+      const qnaSectionContent = `# ?${qnaSection.Questions.join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`markdown${qnaSection.Answer}\`\`\``
       qnaSectionContents.push(qnaSectionContent)
     }
 
     const qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
-    qnaResource = new SectionOperator(qnaResource).addSection(qnaContents)
+    qnaResource = new SectionOperator(new LUResource([], '', [])).addSection(qnaContents)
+
+    // add utterances from lu file to corresponding qna file with question set to all utterances
+    qnaResource = new SectionOperator(qnaResource).addSection(utterancesToQuestion)
+
+    return {luResource, qnaResource}
   },
 
   /**
@@ -161,7 +151,7 @@ module.exports = {
    * @returns {any[]} Object array of LUResource with id and children properties 
    * @throws {exception} Throws on errors. exception object includes errCode and text
    */
-  constructResoureTree(fileIdToLuResourceMap, triggerRules) {
+  constructResoureTree: function (fileIdToLuResourceMap, triggerRules) {
     let visitedChildren = new Set();
     let resources = [];
     let fileIdsFromInput = Array.from(fileIdToLuResourceMap.keys());
@@ -303,8 +293,12 @@ module.exports = {
       });
 
       if (newFileContent === '') return toResource;
-
-      newFileContent = toInteruption.ParseTree.intentDefinition().getText().trim() + NEWLINE + newFileContent;
+      let existingContent = toInteruption.ParseTree.intentDefinition().getText().trim()
+      if (existingContent.endsWith('<EOF>')) {
+        existingContent = existingContent.slice(0, existingContent.length - 5)
+      }
+      
+      newFileContent = existingContent + NEWLINE + newFileContent
       let lines = newFileContent.split(/\r?\n/);
       let newLines = [];
       lines.forEach(line => {
@@ -324,8 +318,8 @@ module.exports = {
     } else {
       // construct new content here
       if (fromUtterances && fromUtterances.length > 0) {
-        let newFileContent = NEWLINE + `# ${intentName}` + NEWLINE;
-        fromUtterances.forEach(utterance => newFileContent += '- ' + utterance + NEWLINE);
+        let newFileContent = `# ${intentName}${NEWLINE}- `
+        newFileContent += fromUtterances.join(`${NEWLINE}- `)
 
         // add section here
         toResource.content = new SectionOperator(toResource.content).addSection(newFileContent);
