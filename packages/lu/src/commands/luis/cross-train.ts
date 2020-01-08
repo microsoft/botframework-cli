@@ -3,99 +3,79 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-const exception = require('./../../parser/utils/exception')
 const fs = require('fs-extra')
 const path = require('path')
 const file = require('./../../utils/filehelper')
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./../../parser/lu/crossTrainer')
 
-export default class LuisCrossTrian extends Command {
-  static description = 'Convert interuption intents among .lu file(s)'
+export const CrossTrain = {
+  /**
+   * Cross train lu and qna files
+   * @param input input lu and qna files folder
+   * @param root root lu files to do cross training. Separated by comma if multiple root files exist.
+   * @param intentname interuption intent name. Default value is _Interuption
+   * @param out output folder name. If not specified, source lu and qna files will be updated
+   * @returns trainedResult of luResult and qnaResult or undefined
+   */
+  async train(input: string, root: string, intentname = '_Interuption')
+    : Promise<{luResult: any, qnaResult: any}> {
+    let trainedResult: any
+    //Check if file or folder
+    //if folder, only lu to luis is supported
+    const isLu = await file.detectLuContent(undefined, input)
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'luis:cross-train help'}),
-    in: flags.string({char: 'i', description: 'source .lu file(s)'}),
-    out: flags.string({char: 'o', description: 'output folder name. If not specified, source lu file(s) will be updated'}),
-    recurse: flags.boolean({char: 'r', description: 'indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
-    log: flags.boolean({description: 'enable log messages', default: false}),
-    root: flags.string({description: 'root lu files to do cross training. Separated by comma if multiple root files exist.'}),
-    intentname: flags.string({description: 'interuption intent name', default: '_Interuption'})
-  }
+    // Parse the object depending on the input
+    if (isLu && root) {
+      const luObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.LUFile)
+      const qnaObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.QnAFile)
+      const rootObjects = await file.getLuObjects(undefined, root, true, fileExtEnum.LUFile)
+      const luConfigObject = await file.getConfigObject(input, true)
 
-  async run() {
-    try {
-      const {flags} = this.parse(LuisCrossTrian)
-
-      //Check if file or folder
-      //if folder, only lu to luis is supported
-      const isLu = await file.detectLuContent(undefined, flags.in)
-
-      // Parse the object depending on the input
-      let luResult: any
-      let qnaResult: any
-      if (isLu && flags.root) {
-        const luObjects = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile)
-        const qnaObjects = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.QnAFile)
-        const rootObjects = await file.getLuObjects(undefined, flags.root, flags.recurse, fileExtEnum.LUFile)
-        const luConfigObject = await file.getConfigObject(flags.in, flags.recurse)
-
-        let crossTrainConfig = {
-          rootIds: rootObjects.map((r: any) => r.id),
-          triggerRules: luConfigObject,
-          intentName: flags.intentname,
-          verbose: flags.log
-        }
-
-        const trainedResult = crossTrainer.crossTrain(luObjects, qnaObjects, JSON.stringify(crossTrainConfig))
-        luResult = trainedResult.luResult
-        qnaResult = trainedResult.qnaResult
+      let crossTrainConfig = {
+        rootIds: rootObjects.map((r: any) => r.id),
+        triggerRules: luConfigObject,
+        intentName: intentname,
+        verbose: true
       }
 
-      // If result is null or undefined return
-      if (!luResult) {
-        throw new CLIError('No LU content parsed!')
-      }
-
-      await this.writeFiles(luResult, flags)
-      await this.writeFiles(qnaResult, flags)
-    } catch (err) {
-      if (err instanceof exception) {
-        throw new CLIError(err.text)
-      }
-      throw err
-    }
-  }
-
-  private async writeFiles(fileIdToLuResourceMap: Map<string, any>, flags?: any) {
-    if (fileIdToLuResourceMap === undefined) return
-    
-    let newFolder
-    if (flags && flags.out) {
-      newFolder = flags.out
-      if (!path.isAbsolute(flags.out)) {
-        newFolder = path.resolve(flags.out)
-      }
-
-      if (!fs.existsSync(newFolder)) {
-        fs.mkdirSync(newFolder)
-      }
+      trainedResult = crossTrainer.crossTrain(luObjects, qnaObjects, JSON.stringify(crossTrainConfig))
     }
 
-    for (const fileId of fileIdToLuResourceMap.keys()) {
-      try {
-        if (newFolder) {
-          const fileName = path.basename(fileId)
-          const newFileId = path.join(newFolder, fileName)
-          await fs.writeFile(newFileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
-          this.log('Successfully wrote to ' + newFileId)
-        } else {
-          await fs.writeFile(fileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
-          this.log('Successfully wrote to ' + fileId)
+    return trainedResult
+  },
+
+  /**
+   * Write lu and qna files
+   * @param fileIdToLuResourceMap lu or qna file id to lu resource map
+   * @param out output folder name. If not specified, source lu and qna files will be updated
+   */
+  async writeFiles(fileIdToLuResourceMap: Map<string, any>, out?: string) {
+    if (fileIdToLuResourceMap) {
+      let newFolder
+      if (out) {
+        newFolder = out
+        if (!path.isAbsolute(out)) {
+          newFolder = path.resolve(out)
         }
-      } catch (err) {
-        throw new CLIError('Unable to write file - ' + fileId + ' Error: ' + err.message)
+
+        if (!fs.existsSync(newFolder)) {
+          fs.mkdirSync(newFolder)
+        }
+      }
+
+      for (const fileId of fileIdToLuResourceMap.keys()) {
+        try {
+          if (newFolder) {
+            const fileName = path.basename(fileId)
+            const newFileId = path.join(newFolder, fileName)
+            await fs.writeFile(newFileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
+          } else {
+            await fs.writeFile(fileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
+          }
+        } catch (err) {
+          throw new Error('Unable to write file - ' + fileId + ' Error: ' + err.message)
+        }
       }
     }
   }
