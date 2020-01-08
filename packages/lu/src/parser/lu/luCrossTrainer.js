@@ -74,23 +74,20 @@ module.exports = {
   },
 
   qnaCrossTrainCore: function (luResource, qnaResource, name) {
+    let trainedLuResource = luResource
+    let trainedQnaResource = qnaResource
     // extract questions
     const qnaSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.QNASECTION);
     let questions = []
     qnaSections.forEach(q => questions = questions.concat(q.Questions))
     questions = questions.map(q => '- '.concat(q))
     let questionsContent = questions.join(NEWLINE)
-    const questionsToUtterances = `# DeferToRecognizer_QnA_${name}${NEWLINE}${questionsContent}`
-
-    // extract utterances
-    const intentSections = luResource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION)
-    let utterances = []
-    intentSections.forEach(i => utterances = utterances.concat(i.UtteranceAndEntitiesMap.map(u => u.utterance)))
-    let utterancesContent = utterances.join(NEWLINE + '- ')
-    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogname=${name}${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
 
     // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${name}
-    luResource = new SectionOperator(luResource).addSection(questionsToUtterances)
+    if (questionsContent && questionsContent !== '') {
+      const questionsToUtterances = `# DeferToRecognizer_QnA_${name}${NEWLINE}${questionsContent}`
+      trainedLuResource = new SectionOperator(luResource).addSection(questionsToUtterances)
+    }
 
     // update qna filters
     let qnaSectionContents = []
@@ -101,12 +98,23 @@ module.exports = {
     }
 
     const qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
-    qnaResource = new SectionOperator(new LUResource([], '', [])).addSection(qnaContents)
+    if (qnaContents && qnaContents !== '') {
+      trainedQnaResource = new SectionOperator(new LUResource([], '', [])).addSection(qnaContents)
+    }
+
+    // extract utterances
+    const intentSections = luResource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION)
+    let utterances = []
+    intentSections.forEach(i => utterances = utterances.concat(i.UtteranceAndEntitiesMap.map(u => u.utterance)))
+    let utterancesContent = utterances.join(NEWLINE + '- ')
 
     // add utterances from lu file to corresponding qna file with question set to all utterances
-    qnaResource = new SectionOperator(qnaResource).addSection(utterancesToQuestion)
+    if (utterancesContent && utterancesContent !== '') {
+      const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogname=${name}${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
+      trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
+    }
 
-    return {luResource, qnaResource}
+    return {luResource: trainedLuResource, qnaResource: trainedQnaResource}
   },
 
   /**
@@ -121,8 +129,6 @@ module.exports = {
     for (const luObject of luObjectArray) {
       let luContent = luObject.content;
       luContent = helpers.sanitizeNewLines(luContent);
-      if (luContent === undefined || luContent === '') continue;
-
       let luResource = luParser.parse(luContent);
       if (luResource.Errors && luResource.Errors.length > 0) {
         if (verbose) {
@@ -322,7 +328,10 @@ module.exports = {
         newFileContent += fromUtterances.join(`${NEWLINE}- `)
 
         // add section here
-        toResource.content = new SectionOperator(toResource.content).addSection(newFileContent);
+        // not add the interuption intent if original file is empty
+        if (toResource.content.Content !== '') {
+          toResource.content = new SectionOperator(toResource.content).addSection(newFileContent)
+        }
       }
     }
 
