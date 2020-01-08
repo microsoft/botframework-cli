@@ -9,7 +9,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const file = require('./../../utils/filehelper')
 const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
-const luCrossTrainer = require('./../../parser/lu/luCrossTrainer')
+const crossTrainer = require('./../../parser/lu/crossTrainer')
 
 export default class LuisCrossTrian extends Command {
   static description = 'Convert interuption intents among .lu file(s)'
@@ -36,22 +36,21 @@ export default class LuisCrossTrian extends Command {
       let luResult: any
       let qnaResult: any
       if (isLu && flags.root) {
-        const luFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile)
-        const qnaFiles = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.QnAFile)
-        const rootFiles = await file.getLuObjects(undefined, flags.root, flags.recurse, fileExtEnum.LUFile)
+        const luObjects = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.LUFile)
+        const qnaObjects = await file.getLuObjects(undefined, flags.in, flags.recurse, fileExtEnum.QnAFile)
+        const rootObjects = await file.getLuObjects(undefined, flags.root, flags.recurse, fileExtEnum.LUFile)
         const luConfigObject = await file.getConfigObject(flags.in, flags.recurse)
 
         let crossTrainConfig = {
-          rootIds: rootFiles.map((r: any) => r.id),
+          rootIds: rootObjects.map((r: any) => r.id),
           triggerRules: luConfigObject,
           intentName: flags.intentname,
           verbose: flags.log
         }
 
-        luResult = luCrossTrainer.luCrossTrain(luFiles, JSON.stringify(crossTrainConfig))
-        if (qnaFiles && qnaFiles.length > 0) {
-          qnaResult = luCrossTrainer.qnaCrossTrain(qnaFiles, luResult, crossTrainConfig.verbose)
-        }
+        const trainedResult = crossTrainer.crossTrain(luObjects, qnaObjects, JSON.stringify(crossTrainConfig))
+        luResult = trainedResult.luResult
+        qnaResult = trainedResult.qnaResult
       }
 
       // If result is null or undefined return
