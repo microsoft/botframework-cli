@@ -18,9 +18,9 @@
                 {
                     "$kind": "Microsoft.Ask",
                     "activity": "@{callAsk()}",
-                    "expectedProperties": [
-                        "$PropertyToRemember"
-                    ]
+                    "expectedProperties": 
+                        "createArray($PropertyToRemember)"
+                    
                 }
             ]
         }

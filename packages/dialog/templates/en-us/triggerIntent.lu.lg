@@ -5,14 +5,8 @@
 - # @{triggerIntent}\n@{join(foreach(entities, entity, entityPattern(entity)), '\n')}
 
 # entityPattern(entity)
-- IF: @{equals(entity, 'utterance')}
+- IF: @{contains(schema.$expectedOnly, entity)}
 - 
-- ELSEIF: @{equals(entity, 'personName')}
-- 
-- ELSEIF: @{equals(entity, 'keyPhrase')}
-- 
-- ELSEIF: @{equals(entity, 'PROPERTYName')}
--
 - ELSEIF: @{equals(entity, 'datetime')}
 - - \{datetimeV2\}
 - ELSE:
