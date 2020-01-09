@@ -5,22 +5,21 @@
 
 const fs = require('fs-extra')
 const path = require('path')
-const file = require('./../../utils/filehelper')
-const fileExtEnum = require('./../../parser/utils/helpers').FileExtTypeEnum
-const crossTrainer = require('./../../parser/lu/crossTrainer')
+const file = require('../../utils/filehelper')
+const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
+const crossTrainer = require('./crossTrainer')
 
-export const CrossTrain = {
+module.exports = {
   /**
-   * Cross train lu and qna files
-   * @param input input lu and qna files folder
-   * @param root root lu files to do cross training. Separated by comma if multiple root files exist.
-   * @param intentname interuption intent name. Default value is _Interuption
-   * @param out output folder name. If not specified, source lu and qna files will be updated
-   * @returns trainedResult of luResult and qnaResult or undefined
+   * Cross train lu and qna files.
+   * @param {string} input input lu and qna files folder.
+   * @param {string} root root lu files to do cross training. Separated by comma if multiple root files exist.
+   * @param {string} intentname interuption intent name. Default value is _Interuption.
+   * @param {string} out output folder name. If not specified, source lu and qna files will be updated.
+   * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined.
    */
-  async train(input: string, root: string, intentname = '_Interuption')
-    : Promise<{luResult: any, qnaResult: any}> {
-    let trainedResult: any
+  train: async function (input, root, intentname = '_Interuption') {
+    let trainedResult
     //Check if file or folder
     //if folder, only lu to luis is supported
     const isLu = await file.detectLuContent(undefined, input)
@@ -33,7 +32,7 @@ export const CrossTrain = {
       const luConfigObject = await file.getConfigObject(input, true)
 
       let crossTrainConfig = {
-        rootIds: rootObjects.map((r: any) => r.id),
+        rootIds: rootObjects.map(r => r.id),
         triggerRules: luConfigObject,
         intentName: intentname,
         verbose: true
@@ -47,10 +46,11 @@ export const CrossTrain = {
 
   /**
    * Write lu and qna files
-   * @param fileIdToLuResourceMap lu or qna file id to lu resource map
-   * @param out output folder name. If not specified, source lu and qna files will be updated
+   * @param {Map<string, any>} fileIdToLuResourceMap lu or qna file id to lu resource map.
+   * @param {string} out output folder name. If not specified, source lu and qna files will be updated.
+   * @throws {exception} Throws on errors.
    */
-  async writeFiles(fileIdToLuResourceMap: Map<string, any>, out?: string) {
+  writeFiles: async function (fileIdToLuResourceMap, out) {
     if (fileIdToLuResourceMap) {
       let newFolder
       if (out) {

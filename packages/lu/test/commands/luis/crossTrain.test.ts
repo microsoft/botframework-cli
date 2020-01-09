@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
-import {CrossTrain} from './../../../src/commands/luis/cross-train'
 const fs = require('fs-extra')
 const path = require('path')
+const crossTrain = require('./../../../src/parser/lu/cross-train')
 
 const compareLuFiles = async function (file1: string, file2: string) {
   let result = await fs.readFile(path.join(__dirname, file1))
@@ -19,13 +19,13 @@ describe('luis:convert interuption intent among lu files', () => {
   test
     .stdout()
     .it('luis:convert interuption intents and qna', async () => {
-      const trainedResult = await CrossTrain.train(
+      const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption')}`,
         `${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.lu')},${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.fr-fr.lu')}`,
         '_Interuption')
 
-      await CrossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
-      await CrossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
 
       expect(await compareLuFiles('./../../../interuptionGen/main.lu', './../../fixtures/verified/interuption/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/main.qna', './../../fixtures/verified/interuption/main.qna')).to.be.true
@@ -47,13 +47,13 @@ describe('luis:convert interuption intent among lu files', () => {
   test
     .stdout()
     .it('luis:convert interuption intents when empty lu file occurs', async () => {
-      const trainedResult = await CrossTrain.train(
+      const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption2')}`,
         `${path.join(__dirname, './../../fixtures/testcases/interuption2/main/main.lu')}`,
         '_Interuption')
 
-      await CrossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
-      await CrossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
 
       expect(await compareLuFiles('./../../../interuptionGen/main.lu', './../../fixtures/verified/interuption2/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia1.lu', './../../fixtures/verified/interuption2/dia1.lu')).to.be.true
@@ -64,13 +64,13 @@ describe('luis:convert interuption intent among lu files', () => {
   test
     .stdout()
     .it('luis:convert interuption intents when nestedIntentSection is enabled', async () => {
-      const trainedResult = await CrossTrain.train(
+      const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption3')}`,
         `${path.join(__dirname, './../../fixtures/testcases/interuption3/main/main.lu')}`,
         '_Interuption')
 
-      await CrossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
-      await CrossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
 
       expect(await compareLuFiles('./../../../interuptionGen/main.lu', './../../fixtures/verified/interuption3/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia1.lu', './../../fixtures/verified/interuption3/dia1.lu')).to.be.true
@@ -82,13 +82,13 @@ describe('luis:convert interuption intent among lu files', () => {
   test
     .stdout()
     .it('luis:convert interuption intents when local intents occur', async () => {
-      const trainedResult = await CrossTrain.train(
+      const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption4')}`,
         `${path.join(__dirname, './../../fixtures/testcases/interuption4/main/main.lu')}`,
         '_Interuption')
 
-      await CrossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
-      await CrossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
 
       expect(await compareLuFiles('./../../../interuptionGen/main.lu', './../../fixtures/verified/interuption4/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia1.lu', './../../fixtures/verified/interuption4/dia1.lu')).to.be.true
@@ -99,13 +99,13 @@ describe('luis:convert interuption intent among lu files', () => {
   test
     .stdout()
     .it('luis:convert interuption intents when multiple dialog invocations occur in same trigger', async () => {
-      const trainedResult = await CrossTrain.train(
+      const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption5')}`,
         `${path.join(__dirname, './../../fixtures/testcases/interuption5/main/main.lu')}`,
         '_Interuption')
 
-      await CrossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
-      await CrossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
+      await crossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
 
       expect(await compareLuFiles('./../../../interuptionGen/main.lu', './../../fixtures/verified/interuption5/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia1.lu', './../../fixtures/verified/interuption5/dia1.lu')).to.be.true
@@ -119,7 +119,7 @@ describe('luis:convert interuption intent among lu files', () => {
     .stderr()
     .it('luis:convert should throw exception when dialog call loop is detected in config', async (ctx) => {
       try {
-        await CrossTrain.train(
+        await crossTrain.train(
           `${path.join(__dirname, './../../fixtures/testcases/interuption6')}`,
           `${path.join(__dirname, './../../fixtures/testcases/interuption6/main/main.lu')}`,
           '_Interuption')
