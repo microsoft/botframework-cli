@@ -44,8 +44,8 @@
     ]
   },
   "dependencies": {
-    "@azure/ms-rest-azure-js": "2.0.1",
     "@azure/cognitiveservices-luis-authoring": "3.0.1",
+    "@azure/ms-rest-azure-js": "2.0.1",
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
@@ -80,6 +80,7 @@
     "rimraf": "^2.6.3",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "uuid": "^3.3.3"
   }
 }
