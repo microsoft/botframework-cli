@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import { Command, flags, CLIError } from '@microsoft/bf-cli-command'
-import { LuBuildCore } from './../../parser/lubuild/core'
-import { Settings } from './../../parser/lubuild/settings'
-import { MultiLanguageRecognizer } from '../../parser/lubuild/multi-language-recognizer'
-import { Recognizer } from './../../parser/lubuild/recognizer'
+import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {LuBuildCore} from './../../parser/lubuild/core'
+import {Settings} from './../../parser/lubuild/settings'
+import {MultiLanguageRecognizer} from '../../parser/lubuild/multi-language-recognizer'
+import {Recognizer} from './../../parser/lubuild/recognizer'
 const path = require('path')
 const fs = require('fs-extra')
 const delay = require('delay')
@@ -17,13 +17,31 @@ const LuisBuilder = require('./../../parser/luis/luisBuilder')
 const Content = require('./../../parser/lu/lu')
 
 export default class LuisBuild extends Command {
+  static description = 'Build lu files to train and publish luis applications'
+
+  static examples = [`
+    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringkey {AUTHORING_KEY} --botname {BOT_NAME} --dialog {true}
+  `]
+
+  static flags: any = {
+    help: flags.help({char: 'h'}),
+    in: flags.string({char: 'i', description: 'Lu file or folder'}),
+    authoringkey: flags.string({description: 'LUIS authoring key', required: true}),
+    botname: flags.string({description: 'Bot name', required: true}),
+    out: flags.string({description: 'Output location'}),
+    culture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
+    region: flags.string({description: 'LUIS authoring region'}),
+    suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name'}),
+    force: flags.boolean({char: 'f', description: 'Force write dialog and settings files', default: false}),
+    dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
+    fallbacklocale: flags.string({description: 'Locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set'})
+  }
 
   async run() {
-    const { flags } = this.parse(LuisBuild)
+    const {flags} = this.parse(LuisBuild)
 
     // Check stdin or in parameter
     const stdin = await this.readStdin()
-    console.log(`{flags.authoringKey}`)
     if (!stdin && !flags.in) {
       throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
     }
@@ -168,14 +186,18 @@ export default class LuisBuild extends Command {
       }))
     }
 
-    // write dialog assets
+    // write dialog asserts
     if (flags.dialog) {
       const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
       for (const content of contents) {
-        let cpath = flags.out ? path.join(flags.out, path.basename(content.path)) : content.path;
-        if (flags.force || !fs.existsSync(cpath)) {
-          this.log(`Writing to ${cpath}\n`)
-          await fs.writeFile(cpath, content.content, 'utf-8')
+        if (flags.out) {
+          this.log(`Writing to ${content.path}\n`)
+          await fs.writeFile(path.join(flags.out, path.basename(content.path)), content.content, 'utf-8')
+        } else {
+          if (flags.force || !fs.existsSync(content.path)) {
+            this.log(`Writing to ${content.path}\n`)
+            await fs.writeFile(content.path, content.content, 'utf-8')
+          }
         }
       }
     }
@@ -187,10 +209,10 @@ export default class LuisBuild extends Command {
     let currentApp = await content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : content.language as string
     currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
-    currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botName} app, targetting ${flags.suffix}`
+    currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botname} app, targetting ${flags.suffix}`
 
     if (currentApp.name === undefined || currentApp.name === '') {
-      currentApp.name = `${flags.botName}(${flags.suffix})-${content.name}`
+      currentApp.name = `${flags.botname}(${flags.suffix})-${content.name}`
     }
 
     return currentApp
@@ -262,25 +284,5 @@ export default class LuisBuild extends Command {
     await delay(delayDuration)
     await luBuildCore.PublishApplication(recognizer.getAppId(), recognizer.versionId)
     this.log(`${recognizer.getLuPath()} publishing finished\n`)
-  }
-
-  static description = 'Create, train and publish .LU files to LUIS applications.'
-
-  static examples = [`
-    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog
-  `]
-
-  static flags: any = {
-    help: flags.help({ char: 'h' }),
-    in: flags.string({ char: 'i', description: '.LU file or folder' }),
-    authoringKey: flags.string({ description: 'LUIS authoring key', required: true }),
-    botName: flags.string({ description: 'Bot name', required: true }),
-    out: flags.string({ description: 'Output location' }),
-    culture: flags.string({ description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us' }),
-    region: flags.string({ description: 'LUIS authoring region' }),
-    suffix: flags.string({ description: 'Environment name as a suffix identifier to include in LUIS app name' }),
-    force: flags.boolean({ char: 'f', description: 'Force write dialog and settings files', default: false }),
-    dialog: flags.boolean({ description: 'Write out .dialog files', default: false }),
-    fallbacklocale: flags.string({ description: 'Locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set' })
   }
 }
