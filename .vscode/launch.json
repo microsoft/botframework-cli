@@ -104,6 +104,25 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "LUIS Build Sandwich",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/lu/bin/run",
+            "outFiles": [
+                "./packages/lu/lib/**"
+            ],
+            "args": [
+                "luis:build",
+                "--in", ".",
+                "--authoringKey", "${env:LUIS_AUTHORING_KEY}",
+                "--botName", "sandwich",
+                "--dialog"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${env:TEMP}/sandwich.out/luis"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Generate Sandwich",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
