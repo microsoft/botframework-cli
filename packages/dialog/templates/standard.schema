@@ -68,8 +68,6 @@
         "NotUnderstood.dialog",
         "TriggerIntent.dialog",
         "ReadPropertyIntent.dialog",
-        "luconfig.json",
-        "lu.dialog",
         "Main.dialog"     
     ]
 }

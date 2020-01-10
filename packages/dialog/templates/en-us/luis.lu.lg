@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}.@{locale}.lu.dialog
+- ../luis/@{schemaName}.@{locale}.lu.dialog
 
 # template
 -```
