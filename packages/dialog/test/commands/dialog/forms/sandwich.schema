@@ -8,12 +8,7 @@
             "maximum": 10
         },
         "Length": {
-            "type": "number",
-            "$entities": [
-                "number"
-            ],
-            "$comment": "This is used by the mapping to convert underlying dimensions to inches.",
-            "$units": "inches"
+            "$ref": "template:dimension.schema#/dimension"
         },
         "Name": {
             "type": "string",
@@ -66,7 +61,8 @@
         "Bread",
         "Cheese",
         "Meat",
-        "Price"
+        "Price",
+        "Length"
     ],
     "$requires": [
         "standard.schema"
