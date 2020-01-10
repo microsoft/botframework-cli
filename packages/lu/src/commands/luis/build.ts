@@ -196,8 +196,8 @@ export default class LuisBuild extends Command {
     }
 
     // write dialog asserts
+    const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
     if (flags.dialog) {
-      const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
       for (const content of contents) {
         if (flags.out) {
           const outFilePath = path.join(path.resolve(flags.out), path.basename(content.path))
@@ -211,6 +211,12 @@ export default class LuisBuild extends Command {
             await fs.writeFile(content.path, content.content, 'utf-8')
           }
         }
+      }
+    } else {
+      if (contents.length > 0) {
+        this.log('The published application ids:')
+        this.log(JSON.parse(contents[contents.length - 1].content).luis)
+        this.log('\n')
       }
     }
 
