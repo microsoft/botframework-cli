@@ -3,10 +3,23 @@
  * Licensed under the MIT License.
  */
 
+import {Settings} from './settings'
+import * as path from 'path'
+
 export class Recognizer {
-  static load(luFile: string, targetFileName: string, dialogPath: string): Recognizer {
+  static load(luFile: string, targetFileName: string, dialogPath: string, luisSettings: Settings, existingRecognizer: any): Recognizer {
+    if (existingRecognizer) {
+      let recognizer = new Recognizer(luFile, targetFileName)
+      recognizer.dialogPath = dialogPath
+      Object.assign(recognizer, existingRecognizer)
+      recognizer.setAppId(luisSettings.luis[path.basename(luFile).split('.').join('_')])
+
+      return recognizer
+    }
+
     let recognizer = new Recognizer(luFile, targetFileName)
     recognizer.dialogPath = dialogPath
+
     return recognizer
   }
 

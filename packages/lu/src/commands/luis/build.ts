@@ -20,21 +20,21 @@ export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
 
   static examples = [`
-    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringkey {AUTHORING_KEY} --botname {BOT_NAME} --dialog {true}
+    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
   `]
 
   static flags: any = {
     help: flags.help({char: 'h'}),
     in: flags.string({char: 'i', description: 'Lu file or folder'}),
-    authoringkey: flags.string({description: 'LUIS authoring key', required: true}),
-    botname: flags.string({description: 'Bot name', required: true}),
+    authoringKey: flags.string({description: 'LUIS authoring key', required: true}),
+    botName: flags.string({description: 'Bot name', required: true}),
     out: flags.string({description: 'Output location'}),
     culture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
     region: flags.string({description: 'LUIS authoring region'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name'}),
     force: flags.boolean({char: 'f', description: 'Force write dialog and settings files', default: false}),
     dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
-    fallbacklocale: flags.string({description: 'Locale to be used at the fall back if no locale specific recognizer is found. Only valid if --dialog is set'})
+    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'})
   }
 
   async run() {
@@ -49,7 +49,7 @@ export default class LuisBuild extends Command {
     flags.culture = flags.culture && flags.culture !== '' ? flags.culture : 'en-us'
     flags.region = flags.region && flags.region !== '' ? flags.region : 'westus'
     flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
-    flags.fallbacklocale = flags.fallbacklocale && flags.fallbacklocale !== '' ? flags.fallbacklocale : 'en-us'
+    flags.fallbackLocale = flags.fallbackLocale && flags.fallbackLocale !== '' ? flags.fallbackLocale : 'en-us'
 
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings: Settings
@@ -126,7 +126,7 @@ export default class LuisBuild extends Command {
 
     this.log('Start to handle applications\n')
     const defaultLuisSchemeVersion = '4.0.0'
-    const luBuildCore = new LuBuildCore(flags.authoringkey, `https://${flags.region}.api.cognitive.microsoft.com`)
+    const luBuildCore = new LuBuildCore(flags.authoringKey, `https://${flags.region}.api.cognitive.microsoft.com`)
     const apps = await luBuildCore.GetApplicationList()
 
     // here we do a while loop to make full use of luis tps capacity
@@ -141,13 +141,22 @@ export default class LuisBuild extends Command {
 
         // init recogizer of current app
         let dialogFile = path.join(dialogFilePath, `${content.name}.dialog`)
-        let recognizer = Recognizer.load(content.path, content.name, dialogFile)
+
+        let existingDialogObj: any
+        if (fs.existsSync(dialogFile)) {
+          existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
+          this.log(`${dialogFile} loaded\n`)
+        }
+
+        let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj)
 
         // find if there is a matched name with current app under current authoring key
-        for (let app of apps) {
-          if (app.name === currentApp.name) {
-            recognizer.setAppId(app.id)
-            break
+        if (!recognizer.getAppId()) {
+          for (let app of apps) {
+            if (app.name === currentApp.name) {
+              recognizer.setAppId(app.id)
+              break
+            }
           }
         }
 
@@ -173,7 +182,7 @@ export default class LuisBuild extends Command {
         if (multiRecognizers.has(content.id)) {
           let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
           multiRecognizer.recognizers[currentApp.culture] = path.basename(dialogFile, '.dialog')
-          if (currentApp.culture.toLowerCase() === flags.fallbacklocale.toLowerCase()) {
+          if (currentApp.culture.toLowerCase() === flags.fallbackLocale.toLowerCase()) {
             multiRecognizer.recognizers[''] = path.basename(dialogFile, '.dialog')
           }
         }
@@ -187,18 +196,27 @@ export default class LuisBuild extends Command {
     }
 
     // write dialog asserts
+    const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
     if (flags.dialog) {
-      const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
       for (const content of contents) {
         if (flags.out) {
-          this.log(`Writing to ${content.path}\n`)
-          await fs.writeFile(path.join(flags.out, path.basename(content.path)), content.content, 'utf-8')
+          const outFilePath = path.join(path.resolve(flags.out), path.basename(content.path))
+          if (flags.force || !fs.existsSync(outFilePath)) {
+            this.log(`Writing to ${outFilePath}\n`)
+            await fs.writeFile(outFilePath, content.content, 'utf-8')
+          }
         } else {
           if (flags.force || !fs.existsSync(content.path)) {
             this.log(`Writing to ${content.path}\n`)
             await fs.writeFile(content.path, content.content, 'utf-8')
           }
         }
+      }
+    } else {
+      if (contents.length > 0) {
+        this.log('The published application ids:')
+        this.log(JSON.parse(contents[contents.length - 1].content).luis)
+        this.log('\n')
       }
     }
 
@@ -209,10 +227,10 @@ export default class LuisBuild extends Command {
     let currentApp = await content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : content.language as string
     currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
-    currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botname} app, targetting ${flags.suffix}`
+    currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botName} app, targetting ${flags.suffix}`
 
     if (currentApp.name === undefined || currentApp.name === '') {
-      currentApp.name = `${flags.botname}(${flags.suffix})-${content.name}`
+      currentApp.name = `${flags.botName}(${flags.suffix})-${content.name}`
     }
 
     return currentApp
