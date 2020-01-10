@@ -11,6 +11,10 @@
     "entity": "utterance",
     "actions": [
         {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        },
+        {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
             "value": "@utterance"          
@@ -18,3 +22,6 @@
     ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @utterance)}

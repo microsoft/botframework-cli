@@ -12,6 +12,15 @@
                 "CancelConfirmationSet.dialog"
             ]
         },
+        "ChangePropertyConfirmation": {
+            "type": "string",
+            "$entities": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "ChangePropertyConfirmationSet.dialog"
+            ]
+        },
         "CompleteConfirmation": {
             "type": "string",
             "$entities": [
@@ -28,6 +37,12 @@
             "$templates": [
                 "PropertyToChangeSet.dialog"
             ]
+        },
+        "PropertyToRemember": {
+            "$ref": "#/definitions/PROPERTYName",
+            "$templates": [
+                "PropertyToRememberSet.dialog"
+            ]
         }
     },
     "definitions": {
@@ -43,6 +58,7 @@
         "cancelIntent.lu",
         "noneIntent.lu",
         "triggerIntent.lu",
+        "readPropertyIntent.lu",
         "locale.lu",
         "locale.lg",
         "luis.lu",
@@ -51,6 +67,7 @@
         "HelpIntent.dialog",
         "NotUnderstood.dialog",
         "TriggerIntent.dialog",
+        "ReadPropertyIntent.dialog",
         "luconfig.json",
         "lu.dialog",
         "Main.dialog"     
