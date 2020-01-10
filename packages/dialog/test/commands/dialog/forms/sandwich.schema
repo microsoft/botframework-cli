@@ -61,8 +61,7 @@
         "Bread",
         "Cheese",
         "Meat",
-        "Price",
-        "Length"
+        "Price"
     ],
     "$requires": [
         "standard.schema"
