@@ -200,8 +200,11 @@ export default class LuisBuild extends Command {
       const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
       for (const content of contents) {
         if (flags.out) {
-          this.log(`Writing to ${content.path}\n`)
-          await fs.writeFile(path.join(flags.out, path.basename(content.path)), content.content, 'utf-8')
+          const outFilePath = path.join(path.resolve(flags.out), path.basename(content.path))
+          if (flags.force || !fs.existsSync(outFilePath)) {
+            this.log(`Writing to ${outFilePath}\n`)
+            await fs.writeFile(outFilePath, content.content, 'utf-8')
+          }
         } else {
           if (flags.force || !fs.existsSync(content.path)) {
             this.log(`Writing to ${content.path}\n`)
