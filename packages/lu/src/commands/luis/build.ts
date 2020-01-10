@@ -29,7 +29,7 @@ export default class LuisBuild extends Command {
     authoringKey: flags.string({description: 'LUIS authoring key', required: true}),
     botName: flags.string({description: 'Bot name', required: true}),
     out: flags.string({description: 'Output location'}),
-    locale: flags.string({description: 'Locale code for the content. Infer from .lu if available. Defaults to en-us'}),
+    culture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
     region: flags.string({description: 'LUIS authoring region'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name'}),
     force: flags.boolean({char: 'f', description: 'Force write dialog and settings files', default: false}),
