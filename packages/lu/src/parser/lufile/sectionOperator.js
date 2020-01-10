@@ -1,5 +1,6 @@
 const luParser = require('./luParser');
 const helpers = require('./../utils/helpers');
+const NEWLINE = require('os').EOL;
 
 class SectionOperator {
 
@@ -13,7 +14,7 @@ class SectionOperator {
   // After CRUD, section Ids will keep same unless you change section name.
   addSection(sectionContent) {
     sectionContent = helpers.sanitizeNewLines(sectionContent);
-    var newContent = `${this.Luresource.Content}\r\n${sectionContent}`;
+    var newContent = `${this.Luresource.Content}${NEWLINE}${sectionContent}`;
 
     const result = luParser.parse(newContent);
     return result;
@@ -68,7 +69,7 @@ class SectionOperator {
 
     destList.push(...originList.slice(stopLine + 1));
 
-    return destList.join('\n');
+    return destList.join(NEWLINE);
   }
 }
 
