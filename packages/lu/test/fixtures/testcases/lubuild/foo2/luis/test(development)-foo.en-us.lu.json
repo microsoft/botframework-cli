@@ -1,0 +1,48 @@
+{
+  "luis_schema_version": "4.0.0",
+  "versionId": "0.1",
+  "name": "test(development)-foo.en-us.lu",
+  "desc": "Model for test app, targetting development",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "None"
+    },
+    {
+      "name": "YoCarlos"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [
+    {
+      "text": "hello",
+      "intent": "YoCarlos",
+      "entities": []
+    },
+    {
+      "text": "hey carlos!",
+      "intent": "YoCarlos",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "YoCarlos",
+      "entities": []
+    },
+    {
+      "text": "yo carlos!",
+      "intent": "YoCarlos",
+      "entities": []
+    }
+  ],
+  "settings": []
+}
