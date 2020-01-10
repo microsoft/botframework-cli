@@ -104,6 +104,7 @@ To see dialog generation in action:
    3.  `npm config set registry https://registry.npmjs.org/`
 3. Download an [example sandwich JSON schema](https://raw.githubusercontent.com/microsoft/botframework-cli/master/packages/dialog/test/commands/dialog/forms/sandwich.schema)
 4. `bf dialog:generate sandwich.schema -o bot`
-5. This will generate .lg, .lu and .dialog assets.  In order to run them, you will need to build a LUIS model.
-   1. `bf luis:build --subscriptionKey <yourKey> --
-6. 
+5. This will generate .lg, .lu and .dialog assets in the bot directory.  In order to run them, you will need to build a LUIS model.
+   1. `bf luis:build --in bot\luis --authoringKey <yourKey> --botName sandwich --dialog`
+6. At this point you have a complete bot rooted in `bot\sandwich.main.dialog`.
+7. TBD how to run the bot easily.
