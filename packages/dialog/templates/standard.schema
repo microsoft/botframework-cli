@@ -51,8 +51,6 @@
         "HelpIntent.dialog",
         "NotUnderstood.dialog",
         "TriggerIntent.dialog",
-        "luconfig.json",
-        "lu.dialog",
         "Main.dialog"     
     ]
 }

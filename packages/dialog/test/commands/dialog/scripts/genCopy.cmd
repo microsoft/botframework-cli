@@ -23,8 +23,10 @@ rd /s %outdir%
 xcopy /s * %outdir%
 
 if "%dobuild%" NEQ "yes" goto pop
-cd %outdir%
-call lubuild
+if "%LUIS_AUTHORING_KEY%" EQU "" goto help
+cd %outdir%luis
+FOR %%i IN (%outdir:~0,-1%) DO set botname=%%~nxi
+bf luis:build --in . --authoringKey %LUIS_AUTHORING_KEY% --botName=%botname% --dialog
 
 :pop
 popd
@@ -34,5 +36,6 @@ goto done
 echo genCopy [input] [output] [lubuild=yes]
 echo Copies input to output and publishes to LUIS if lubuild=yes
 echo Environment variable REPOS should also be set to the root of your github repos
+echo and LUIS_AUTHORING_KEY to your LUIS authoring key
 
 :done

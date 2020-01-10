@@ -29,6 +29,8 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
     try {
         if (force || !await fs.pathExists(path)) {
             feedback(FeedbackType.info, `Generating ${path}`)
+            let dir = ppath.dirname(path)
+            await fs.ensureDir(dir)
             await fs.writeFile(path, val)
         } else {
             feedback(FeedbackType.info, `Skipping already existing ${path}`)
@@ -180,6 +182,8 @@ async function processTemplate(
                                 }
                             }
                             result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, scope, force, feedback)
+                            let dir = ppath.dirname(outPath)
+                            await fs.ensureDir(dir)
                             await fs.writeFile(outPath, result)
                             scope.templates[ppath.extname(outPath).substring(1)].push(ref)
                         } else {
