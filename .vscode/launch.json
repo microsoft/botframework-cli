@@ -115,7 +115,8 @@
                 "--in", ".",
                 "--authoringKey", "${env:LUIS_AUTHORING_KEY}",
                 "--botName", "sandwich",
-                "--dialog"
+                "--dialog",
+                "--suffix", "${env:USERNAME}"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${env:TEMP}/sandwich.out/luis"
