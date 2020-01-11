@@ -105,6 +105,10 @@ To see dialog generation in action:
 3. Download an [example sandwich JSON schema](https://raw.githubusercontent.com/microsoft/botframework-cli/master/packages/dialog/test/commands/dialog/forms/sandwich.schema)
 4. `bf dialog:generate sandwich.schema -o bot`
 5. This will generate .lg, .lu and .dialog assets in the bot directory.  In order to run them, you will need to build a LUIS model.
-   1. `bf luis:build --in bot\luis --authoringKey <yourKey> --botName sandwich --dialog`
+   1. `bf luis:build --in bot\luis --authoringKey <yourKey> --botName sandwich --dialog --suffix %USERNAME%`
 6. At this point you have a complete bot rooted in `bot\sandwich.main.dialog`.
-7. TBD how to run the bot easily.
+7. You can run this bot and test in the emulator either through the composer or like this:
+   1. Add your LUIS authoring key to your user secrets like this: `dotnet user-secrets set luis:endpointKey <yourKey> --id TestBot`
+   2. Copy TestBot to your local machine. `xcopy /s \\chrimc3\tools\TestBot\* TestBot\`
+   3. Start the web server `dotnet Microsoft.Bot.Builder.TestBot.Json.dll --root <dialogFolder>`
+   4. Connect emulator to `http://localhost:5000/api/messages`.
