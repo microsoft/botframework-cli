@@ -3,9 +3,7 @@
  * Licensed under the MIT License.
  */
 
-const retCode = require('../utils/enums/CLI-errors')
 const helpers = require('../utils/helpers')
-const exception = require('../utils/exception')
 const luParser = require('../lufile/luParser')
 const SectionOperator = require('../lufile/sectionOperator')
 const LUSectionTypes = require('../utils/enums/lusectiontypes')
@@ -21,8 +19,8 @@ module.exports = {
    * @param {luObject[]} luObjectArray the lu object list to be parsed
    * @param {luObject[]} qnaObjectArray the qna Object list to be parsed
    * @param {any} crossTrainConfig cross train json config
-   * @returns {Map<string, LUResource>} Map of file id and luResource
-   * @throws {exception} Throws on errors. exception object includes errCode and text
+   * @returns {Map<string, LUResource>} map of file id and luResource
+   * @throws {exception} throws errors
    */
   crossTrain: function (luObjectArray, qnaObjectArray, crossTrainConfig) {
     try {
@@ -33,12 +31,12 @@ module.exports = {
       const verbose = crossTrainConfigObj.verbose
 
       // parse lu content to LUResource object
-      let luFileIdToResourceMap = parseAndValidateLuContent(luObjectArray, verbose)
+      let luFileIdToResourceMap = parseAndValidateContent(luObjectArray, verbose)
 
       // construct resource tree to build the father-children relationship among lu files
       let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
 
-      // do cross training from roots. One root one core training
+      // do lu cross training from roots. One root one core training
       for (const rootObjectId of rootObjectIds) {
         if (resources.some(r => r.id === rootObjectId)) {
           // do cross training for each root at top level
@@ -47,10 +45,11 @@ module.exports = {
             luFileIdToResourceMap.set(res.id, res.content)
           }
         } else {
-          throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, root lu file '${rootObjectId}' does not exist`))
+          throw new Error(`Sorry, root lu file '${rootObjectId}' does not exist`)
         }
       }
 
+      // do qna cross training with lu files
       const qnaFileIdToResourceMap = qnaCrossTrain(qnaObjectArray, luFileIdToResourceMap, verbose)
 
       return { luResult: luFileIdToResourceMap, qnaResult: qnaFileIdToResourceMap }
@@ -64,8 +63,8 @@ module.exports = {
  * Contruct resource tree to build the father-children relationship among lu files
  * @param {Map<string, LUResource>} fileIdToLuResourceMap Map of file id and luResource
  * @param {any} triggerRules trigger rules object that indicate the triggering rules from root to dest lu files
- * @returns {any[]} Object array of LUResource with id and children properties 
- * @throws {exception} Throws on errors. exception object includes errCode and text
+ * @returns {any[]} object array of LUResource with id and children properties 
+ * @throws {exception} throws errors
  */
 const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
   let visitedChildren = new Set()
@@ -98,12 +97,12 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
 
       if (visitedChildren.has(destLuFile)) {
         // validate loop in a tree or forest
-        throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, dialog call loop detected for lu file ${destLuFile} when doing cross training`))
+        throw new Error(`Sorry, dialog call loop detected for lu file ${destLuFile} when doing cross training`)
       }
 
       const triggerIntentName = destLuFileToIntent[destLuFile]
       if (!intents.some(i => i.Name === triggerIntentName)) {
-        throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`))
+        throw new Error(`Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`)
       }
 
       resource.children.push({
@@ -121,12 +120,11 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
 },
 
 /**
- * Cross training core function. Do cross training from a root to its children once.
+ * Lu cross training core function. Do lu cross training from a root to its children once.
  * @param {string} rootResourceId the root resource object id
- * @param {any[]} resources all resource object list
+ * @param {any[]} resources all lu resource object list
  * @param {string} intentName interuption intent name
  * @returns {any[]} updated resource objects
- * @throws {exception} Throws on errors. exception object includes errCode and text
  */
 const luCrossTrain = function (rootResourceId, resources, intentName) {
   const idToResourceMap = new Map()
@@ -248,28 +246,43 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
   return toResource
 },
 
-const qnaCrossTrain = function (qnaObjectArray, luFileIdToLuResourceMap, verbose) {
+/**
+ * do qna cross training with lu files
+ * @param {luObject[]} qnaObjectArray the qna object list to be parsed
+ * @param {Map<string, LUResource>} luFileIdToResourceMap map of lu file id and resource
+ * @param {boolean} verbose indicate to enable log messages or not
+ * @returns {Map<string, LUResource>} map of qna file id and resource
+ * @throws {exception} throws errors
+ */
+const qnaCrossTrain = function (qnaObjectArray, luFileIdToResourceMap, verbose) {
   try {
-    let qnaFileIdToLuResourceMap = parseAndValidateLuContent(qnaObjectArray, verbose)
-    for (const luObjectId of Array.from(luFileIdToLuResourceMap.keys())) {
+    let qnaFileIdToResourceMap = parseAndValidateContent(qnaObjectArray, verbose)
+    for (const luObjectId of Array.from(luFileIdToResourceMap.keys())) {
       const qnaObjectId = path.join(path.dirname(luObjectId), path.basename(luObjectId, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
       let fileName = path.basename(luObjectId, path.extname(luObjectId))
       const culture = fileHelper.getCultureFromPath(luObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
-      if (Array.from(qnaFileIdToLuResourceMap.keys()).some(q => q === qnaObjectId)) {
-        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToLuResourceMap.get(luObjectId), qnaFileIdToLuResourceMap.get(qnaObjectId), fileName)
-        luFileIdToLuResourceMap.set(luObjectId, luResource)
-        qnaFileIdToLuResourceMap.set(qnaObjectId, qnaResource)
+      if (Array.from(qnaFileIdToResourceMap.keys()).some(q => q === qnaObjectId)) {
+        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName)
+        luFileIdToResourceMap.set(luObjectId, luResource)
+        qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
       }
     }
 
-    return qnaFileIdToLuResourceMap
+    return qnaFileIdToResourceMap
   } catch (err) {
     throw (err)
   }
 },
 
+/**
+ * qna cross training core function
+ * @param {LUResource} luResource the lu resource
+ * @param {LUResource} qnaResource the qna resource
+ * @param {string} name file name
+ * @returns {luResource: LUResource, qnaResource: LUResource} cross trained lu resource and qna resource
+ */
 const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   let trainedLuResource = luResource
   let trainedQnaResource = qnaResource
@@ -315,34 +328,34 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
 },
 
 /**
- * Parse and validate luObject array to convert to LUResource object dict
- * @param {luObject[]} luObjectArray the luObject list to be parsed
+ * Parse and validate lu or qna object array to convert to LUResource object dict
+ * @param {luObject[]} objectArray the lu or qna object list to be parsed
  * @param {boolean} verbose indicate to enable log messages or not
- * @returns {Map<string, LUResource>} Map of file id and luResource
- * @throws {exception} Throws on errors. exception object includes errCode and text
+ * @returns {Map<string, LUResource>} map of file id and luResource
+ * @throws {exception} throws errors
  */
-const parseAndValidateLuContent = function (luObjectArray, verbose) {
-  let fileIdToLuResourceMap = new Map()
-  for (const luObject of luObjectArray) {
-    let luContent = luObject.content
-    luContent = helpers.sanitizeNewLines(luContent)
-    let luResource = luParser.parse(luContent)
-    if (luResource.Errors && luResource.Errors.length > 0) {
+const parseAndValidateContent = function (objectArray, verbose) {
+  let fileIdToResourceMap = new Map()
+  for (const object of objectArray) {
+    let content = object.content
+    content = helpers.sanitizeNewLines(content)
+    let resource = luParser.parse(content)
+    if (resource.Errors && resource.Errors.length > 0) {
       if (verbose) {
-        var warns = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.WARN))
+        var warns = resource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.WARN))
         if (warns.length > 0) {
           process.stdout.write(warns.map(warn => warn.toString()).join(NEWLINE).concat(NEWLINE))
         }
       }
 
-      var errors = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR))
+      var errors = resource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR))
       if (errors.length > 0) {
-        throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join(NEWLINE)))
+        throw new Error(errors.map(error => error.toString()).join(NEWLINE))
       }
     }
 
-    fileIdToLuResourceMap.set(luObject.id, luResource)
+    fileIdToResourceMap.set(object.id, resource)
   }
 
-  return fileIdToLuResourceMap
+  return fileIdToResourceMap
 }

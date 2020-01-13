@@ -14,18 +14,15 @@ module.exports = {
    * Cross train lu and qna files.
    * @param {string} input input lu and qna files folder.
    * @param {string} root root lu files to do cross training. Separated by comma if multiple root files exist.
-   * @param {string} intentname interuption intent name. Default value is _Interuption.
+   * @param {string} intentName interuption intent name. Default value is _Interuption.
    * @param {string} out output folder name. If not specified, source lu and qna files will be updated.
-   * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined.
+   * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, root, intentname = '_Interuption') {
+  train: async function (input, root, intentName = '_Interuption') {
     let trainedResult
-    //Check if file or folder
-    //if folder, only lu to luis is supported
-    const isLu = await file.detectLuContent(undefined, input)
 
-    // Parse the object depending on the input
-    if (isLu && root) {
+    // Parse lu and qna objects
+    if (root) {
       const luObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.LUFile)
       const qnaObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.QnAFile)
       const rootObjects = await file.getLuObjects(undefined, root, true, fileExtEnum.LUFile)
@@ -34,11 +31,13 @@ module.exports = {
       let crossTrainConfig = {
         rootIds: rootObjects.map(r => r.id),
         triggerRules: luConfigObject,
-        intentName: intentname,
+        intentName: intentName,
         verbose: true
       }
 
       trainedResult = crossTrainer.crossTrain(luObjects, qnaObjects, JSON.stringify(crossTrainConfig))
+    } else {
+      throw new Error('Root lu file(s) is required!')
     }
 
     return trainedResult

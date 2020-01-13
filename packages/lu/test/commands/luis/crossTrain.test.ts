@@ -124,7 +124,7 @@ describe('luis:convert interuption intent among lu files', () => {
           `${path.join(__dirname, './../../fixtures/testcases/interuption6/main/main.lu')}`,
           '_Interuption')
       } catch (err) {
-        err.text.includes('Sorry, dialog call loop detected for lu file')
+        err.message.includes('Sorry, dialog call loop detected for lu file')
       }
     })
 })
