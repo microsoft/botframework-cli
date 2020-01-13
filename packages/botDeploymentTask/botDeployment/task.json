@@ -9,7 +9,7 @@
     "version": {
         "Major": 0,
         "Minor": 8,
-        "Patch": 19
+        "Patch": 20
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -97,15 +97,7 @@
                 "editorExtension": "ms.vss-services-azure.parameters-grid"
             },
             "groupname": "template"
-        },
-        {
-            "name": "botName",
-            "type": "text",
-            "label": "Bot's Name",
-            "required": true,
-            "helpMarkDown": "Provide a name for the bot. It have to match the botId informed in the template parameters.",
-            "groupname": "bot"
-        },    
+        },   
         {
             "name": "zipFile",
             "type": "filepath",

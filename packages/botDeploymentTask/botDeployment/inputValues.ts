@@ -13,7 +13,6 @@ export class InputValues {
     public templateFile: string;
     public parameterFile: string;
     public overrideParameters: string;
-    public botName: string;
     public zipFile: string;
     public directLineChannel?: boolean;
     public slackChannel?: boolean;
@@ -33,7 +32,6 @@ export class InputValues {
         this.templateFile = this.validatePath('template');
         this.parameterFile = this.validatePath('templateParameters');
         this.overrideParameters = getInput('overrideParameters', false) as string;
-        this.botName = getInput('botName', true) as string;
         this.zipFile = this.validatePath('zipFile');
         this.directLineChannel = getBoolInput('directLineChannel', false);        
         this.slackChannel = getBoolInput('slackChannel', false);
