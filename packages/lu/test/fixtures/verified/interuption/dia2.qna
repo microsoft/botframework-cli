@@ -9,6 +9,18 @@
     Sure, I can help with that.
 ```
 
+# ?tell joke
+- tell me a joke
+- can you make me laugh?
+
+**Filters:**
+- xx=yy
+- dialogName=dia2
+
+```markdown
+    ha ha ha
+```
+
 > Source:cross training. Please do not edit these directly!
 # ?book a flight from Seattle to Beijing
 - which {flightTime} do you prefer
