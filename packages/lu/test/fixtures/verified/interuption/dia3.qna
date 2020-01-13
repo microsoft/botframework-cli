@@ -7,7 +7,7 @@
 - Which type of hotel do you prefer
 
 **Filters:**
-- dialogname=dia3
+- dialogName=dia3
 
 ```markdown
 intent=DeferToRecognizer_LUIS_dia3

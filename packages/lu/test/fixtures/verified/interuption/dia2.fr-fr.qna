@@ -3,7 +3,7 @@
 - faire quelques airs
 
 **Filters:**
-- dialogname=dia2
+- dialogName=dia2
 
 ```markdown
     Bien sûr, je peux vous aider avec ça.
@@ -18,7 +18,7 @@
 - Quel type d'hôtel préférez-vous
 
 **Filters:**
-- dialogname=dia2
+- dialogName=dia2
 
 ```markdown
 intent=DeferToRecognizer_LUIS_dia2

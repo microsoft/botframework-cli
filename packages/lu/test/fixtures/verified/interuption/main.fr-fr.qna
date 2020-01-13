@@ -2,7 +2,7 @@
 
 **Filters:**
 - aa=bb
-- dialogname=main
+- dialogName=main
 
 ```markdown
     Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
@@ -17,7 +17,7 @@
 - Quand voulez-vous partir de la gare de Seattle
 
 **Filters:**
-- dialogname=main
+- dialogName=main
 
 ```markdown
 intent=DeferToRecognizer_LUIS_main

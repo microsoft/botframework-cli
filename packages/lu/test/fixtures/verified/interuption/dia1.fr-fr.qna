@@ -3,7 +3,7 @@
 - Tu peux me faire rire?
 
 **Filters:**
-- dialogname=dia1
+- dialogName=dia1
 
 ```markdown
     ha ha ha
@@ -18,7 +18,7 @@
 - Quand voulez-vous partir de la gare de Seattle
 
 **Filters:**
-- dialogname=dia1
+- dialogName=dia1
 
 ```markdown
 intent=DeferToRecognizer_LUIS_dia1

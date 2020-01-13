@@ -3,7 +3,7 @@
 - make some tunes
 
 **Filters:**
-- dialogname=dia2
+- dialogName=dia2
 
 ```markdown
     Sure, I can help with that.
@@ -18,7 +18,7 @@
 - Which type of hotel do you prefer
 
 **Filters:**
-- dialogname=dia2
+- dialogName=dia2
 
 ```markdown
 intent=DeferToRecognizer_LUIS_dia2

@@ -302,7 +302,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   // update qna filters
   let qnaSectionContents = []
   for (const qnaSection of qnaSections) {
-    qnaSection.FilterPairs.push({ key: 'dialogname', value: name })
+    qnaSection.FilterPairs.push({ key: 'dialogName', value: name })
     const qnaSectionContent = `# ?${qnaSection.Questions.join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`markdown${qnaSection.Answer}\`\`\``
     qnaSectionContents.push(qnaSectionContent)
   }
@@ -320,7 +320,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
 
   // add utterances from lu file to corresponding qna file with question set to all utterances
   if (utterancesContent && utterancesContent !== '') {
-    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogname=${name}${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
+    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${name}${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 
