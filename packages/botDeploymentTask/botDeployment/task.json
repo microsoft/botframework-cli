@@ -9,7 +9,7 @@
     "version": {
         "Major": 0,
         "Minor": 8,
-        "Patch": 11
+        "Patch": 19
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -80,19 +80,22 @@
             "groupname": "template"
         },
         {
-            "name": "appId",
-            "type": "text",
-            "label": "App ID",
-            "required": true,
-            "helpMarkDown": "Provide an Azure App ID.",
+            "name": "templateParameters",
+            "type": "filepath",
+            "label": "Template Parameters",
+            "required": false,
+            "helpMarkDown": "Specify the path or a pattern pointing for the parameters file for the Azure Resource Manager template.",
             "groupname": "template"
         },
         {
-            "name": "appSecret",
-            "type": "text",
-            "label": "App Secret",
-            "required": true,
-            "helpMarkDown": "Provide an Azure App Secret.",
+            "name": "overrideParameters",
+            "type": "string",
+            "label": "Override Template Parameters",
+            "required": false,
+            "helpMarkDown": "To override any of the template parameters, click on “…” and provide the name of the field and its value.",
+            "properties": {
+                "editorExtension": "ms.vss-services-azure.parameters-grid"
+            },
             "groupname": "template"
         },
         {
@@ -100,23 +103,15 @@
             "type": "text",
             "label": "Bot's Name",
             "required": true,
-            "helpMarkDown": "Provide a name for the bot.",
+            "helpMarkDown": "Provide a name for the bot. It have to match the botId informed in the template parameters.",
             "groupname": "bot"
-        },
+        },    
         {
             "name": "zipFile",
             "type": "filepath",
             "label": "Zipped Bot",
             "required": true,
             "helpMarkDown": "Specify the path to the compressed zip folder containing the bot.",
-            "groupname": "bot"
-        },
-        {
-            "name": "botSku",
-            "type": "text",
-            "label": "Bot Sku",
-            "required": false,
-            "helpMarkDown": "Specify the pricing tier of the Bot Service Registration. Acceptable values are F0 and S1. Default to F0.",
             "groupname": "bot"
         },
         {

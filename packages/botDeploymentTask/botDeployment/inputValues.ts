@@ -10,12 +10,11 @@ export class InputValues {
 
     public resourceGroup: string;
     public location: string;
-    public template: string;
-    public appId: string;
-    public appSecret: string;
+    public templateFile: string;
+    public parameterFile: string;
+    public overrideParameters: string;
     public botName: string;
     public zipFile: string;
-    public botSku?: string = 'F0';
     public directLineChannel?: boolean;
     public slackChannel?: boolean;
     public teamsChannel?: boolean;
@@ -31,12 +30,11 @@ export class InputValues {
     constructor() {
         this.resourceGroup = getInput('resourceGroup', true) as string;
         this.location = getInput('location', true) as string;
-        this.template = this.validatePath('template');
-        this.appId = getInput('appId', true) as string;
-        this.appSecret = getInput('appSecret', true) as string;
+        this.templateFile = this.validatePath('template');
+        this.parameterFile = this.validatePath('templateParameters');
+        this.overrideParameters = getInput('overrideParameters', false) as string;
         this.botName = getInput('botName', true) as string;
         this.zipFile = this.validatePath('zipFile');
-        this.botSku = getInput('botSku', false) as string;
         this.directLineChannel = getBoolInput('directLineChannel', false);        
         this.slackChannel = getBoolInput('slackChannel', false);
         this.teamsChannel = getBoolInput('teamsChannel', false); 
