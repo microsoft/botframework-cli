@@ -64,6 +64,25 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "LUIS Build Tests",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/lu/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/lu",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "-g",
+                ".*luis:build.*"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "outFiles": [
+                "./packages/lu/lib/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "BotBuilder schema",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
@@ -81,6 +100,26 @@
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LUIS Build Sandwich",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/lu/bin/run",
+            "outFiles": [
+                "./packages/lu/lib/**"
+            ],
+            "args": [
+                "luis:build",
+                "--in", ".",
+                "--authoringKey", "${env:LUIS_AUTHORING_KEY}",
+                "--botName", "sandwich",
+                "--dialog",
+                "--suffix", "${env:USERNAME}"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${env:TEMP}/sandwich.out/luis"
         },
         {
             "type": "node",
@@ -180,24 +219,6 @@
                 "--verbose",
                 "--schema",
                 "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUBuild",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/lu/bin/run",
-            "outFiles": [
-                "./packages/lu/lib/**"
-            ],
-            "args": [
-                "luis:convert",
-                "--in",
-                "${env:TEMP}/sandwich.out/en-us/sandwich.en-us.lu",
-                "--out",
-                "${env:TEMP}/sandwich.en-us.lu"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         }

@@ -8,13 +8,7 @@
             "maximum": 10
         },
         "Length": {
-            "type": "number",
-            "$entities": [
-                "dimension",
-                "number"
-            ],
-            "$comment": "This is used by the mapping to convert underlying dimensions to inches.",
-            "$units": "inches"
+            "$ref": "template:dimension.schema#/dimension"
         },
         "Name": {
             "type": "string",
