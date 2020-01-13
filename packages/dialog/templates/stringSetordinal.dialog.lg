@@ -11,6 +11,10 @@
     "entity":"ordinal",
     "actions": [
         {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
             "value": "@ordinal"          
@@ -18,3 +22,6 @@
     ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @ordinal)}

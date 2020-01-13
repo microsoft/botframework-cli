@@ -1,0 +1,32 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "ChangePropertyConfirmation",
+    "entity": "Confirmation",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$ChangePropertyConfirmation",
+            "value": "@Confirmation"
+        },
+        {
+            "$kind": "Microsoft.IfCondition",
+            "condition":"$ChangePropertyConfirmation == 'yes'",
+            "actions": [
+                {
+                    "$kind": "Microsoft.Ask",
+                    "activity": "@{callAsk()}",
+                    "expectedProperties": 
+                        "createArray($PropertyToRemember)"
+                    
+                }
+            ]
+        }
+    ]
+}
+```
+
+# callAsk()
+- @\{template(concat('Ask',$PropertyToRemember))}
