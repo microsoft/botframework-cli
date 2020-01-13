@@ -44,8 +44,8 @@
     ]
   },
   "dependencies": {
-    "@azure/ms-rest-azure-js": "2.0.1",
     "@azure/cognitiveservices-luis-authoring": "3.0.1",
+    "@azure/ms-rest-azure-js": "2.0.1",
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",

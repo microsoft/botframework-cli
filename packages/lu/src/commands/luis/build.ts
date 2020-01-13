@@ -164,7 +164,7 @@ export default class LuisBuild extends Command {
 
         // compare models to update the model if a match found
         // otherwise create a new application
-        if (recognizer.getAppId() !== '') {
+        if (recognizer.getAppId() && recognizer.getAppId() !== '') {
           // To see if need update the model
           needTrainAndPublish = await this.UpdateApplication(currentApp, luBuildCore, recognizer, delayDuration)
         } else {
@@ -177,7 +177,7 @@ export default class LuisBuild extends Command {
           await this.TrainAndPublishApplication(luBuildCore, recognizer, delayDuration)
         }
 
-        // save dialog asserts
+        // save dialog assets
         // save multiLanguageRecognizer assert
         if (multiRecognizers.has(content.id)) {
           let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
@@ -195,7 +195,7 @@ export default class LuisBuild extends Command {
       }))
     }
 
-    // write dialog asserts
+    // write dialog assets
     const contents = luBuildCore.GenerateDeclarativeAssets(recognizers, Array.from(multiRecognizers.values()), settings)
     if (flags.dialog) {
       for (const content of contents) {
