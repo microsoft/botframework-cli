@@ -18,12 +18,16 @@ export class InputValues {
     public slackChannel?: boolean;
     public teamsChannel?: boolean;
     public webexChannel?: boolean;
+    public facebookChannel?: boolean;
     public slackVerificationToken?: string = '';
     public slackBotToken?: string = '';
     public slackClientSigningSecret?: string = '';
     public webexAccessToken?: string = '';
     public webexSecret?: string = '';
     public webexWebhookName?: string = '';
+    public facebookVerifyToken?: string = '';
+    public facebookAppSecret?: string = '';
+    public facebookAccessToken?: string = '';
     public validationMode?: boolean;
 
     constructor() {
@@ -36,7 +40,8 @@ export class InputValues {
         this.directLineChannel = getBoolInput('directLineChannel', false);        
         this.slackChannel = getBoolInput('slackChannel', false);
         this.teamsChannel = getBoolInput('teamsChannel', false); 
-        this.webexChannel = getBoolInput('webexChannel', false); 
+        this.webexChannel = getBoolInput('webexChannel', false);
+        this.facebookChannel = getBoolInput('facebookChannel', false); 
         
         if (this.slackChannel) {
             this.slackVerificationToken = getInput('slackVerificationToken', false);
@@ -48,6 +53,12 @@ export class InputValues {
             this.webexAccessToken = getInput('webexAccessToken', false);
             this.webexSecret = getInput('webexSecret', false);
             this.webexWebhookName = getInput('webexWebhookName', false);
+        }
+
+        if (this.facebookChannel) {
+            this.facebookVerifyToken = getInput('facebookVerifyToken', false);
+            this.facebookAppSecret = getInput('facebookAppSecret', false);
+            this.facebookAccessToken = getInput('facebookAccessToken', false);
         }
 
         this.validationMode = getBoolInput('validationMode', false);

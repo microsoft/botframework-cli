@@ -2,7 +2,7 @@
     "manifestVersion": 1,
      "id": "bot-deployment",
      "name": "Bot Deployment",
-     "version": "0.8.20",
+     "version": "0.8.23",
      "publisher": "Southworks-Pipelines-Test",
      "targets": [
          {
@@ -14,7 +14,7 @@
          "Azure Pipelines"
      ],
     "icons": {
-         "default": "images/extension-icon.png"        
+         "default": "images/icon.png"        
      },
      "content": {
          "details": {

@@ -89,13 +89,26 @@ const getOverrideParameters = (): string => {
 }
 
 const getOptionalParameters = (): string => {
-    let command = input.slackVerificationToken? ` slackVerificationToken="${ input.slackVerificationToken }"`: '';
-    command += input.slackBotToken ? ` slackBotToken="${ input.slackBotToken }"` : '';
-    command += input.slackClientSigningSecret ? ` slackClientSigningSecret="${ input.slackClientSigningSecret }"` : '';
-    command += input.webexChannel ? ` webexPublicAddress=https://"${ webAppName }".azurewebsites.net` : '';
-    command += input.webexAccessToken ? ` webexAccessToken="${ input.webexAccessToken }"` : '';
-    command += input.webexSecret ? ` webexSecret="${ input.webexSecret }"` : '';
-    command += input.webexWebhookName ? ` webexWebhookName="${ input.webexWebhookName }"` : '';
+    let command:string = '';
+    
+    if (input.slackChannel) {
+        command += input.slackVerificationToken? ` slackVerificationToken="${ input.slackVerificationToken }"`: '';
+        command += input.slackBotToken ? ` slackBotToken="${ input.slackBotToken }"` : '';
+        command += input.slackClientSigningSecret ? ` slackClientSigningSecret="${ input.slackClientSigningSecret }"` : '';
+    }
+
+    if (input.webexChannel) {
+        command += ` webexPublicAddress=https://"${ webAppName }".azurewebsites.net`;
+        command += input.webexAccessToken ? ` webexAccessToken="${ input.webexAccessToken }"` : '';
+        command += input.webexSecret ? ` webexSecret="${ input.webexSecret }"` : '';
+        command += input.webexWebhookName ? ` webexWebhookName="${ input.webexWebhookName }"` : '';
+    }
+
+    if (input.facebookChannel) {
+        command += input.facebookVerifyToken ? ` facebookVerifyToken="${ input.facebookVerifyToken }"` : '';
+        command += input.facebookAppSecret ? ` facebookAppSecret="${ input.facebookAppSecret }"` : '';
+        command += input.facebookAccessToken ? ` facebookAccessToken="${ input.facebookAccessToken }"` : '';
+    }
 
     return command;
 }

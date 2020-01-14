@@ -4,12 +4,16 @@
     "friendlyName": "Bot Deployment",
     "description": "Deploys a bot to Azure and connects it with channels",
     "helpMarkDown": "",
-    "category": "Utility",
+    "category": "Deploy",
     "author": "SOUTHWORKS",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
     "version": {
         "Major": 0,
         "Minor": 8,
-        "Patch": 20
+        "Patch": 23
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -92,12 +96,21 @@
             "type": "string",
             "label": "Override Template Parameters",
             "required": false,
-            "helpMarkDown": "To override any of the template parameters, click on “…” and provide the name of the field and its value.",
+            "helpMarkDown": "To override any of the template parameters, click on “…” and provide the name of the parameter and its value.",
             "properties": {
                 "editorExtension": "ms.vss-services-azure.parameters-grid"
             },
             "groupname": "template"
-        },   
+        },
+        {
+            "name": "validationMode",
+            "type": "boolean",
+            "label": "Validation Mode",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check for validate whether the template is syntactically correct. No resources will be deployed.",
+            "groupname": "template"
+        },
         {
             "name": "zipFile",
             "type": "filepath",
@@ -121,7 +134,7 @@
             "label": "Slack",
             "required": false,
             "defaultValue": false,
-            "helpMarkDown": "Check to connect the bot with the Slack Channel.",
+            "helpMarkDown": "Check to connect the bot with the Slack Channel. In case the access tokens aren't configured in the template parameters, provide them in the fields below.",
             "groupname": "channels"
         },
         {
@@ -139,7 +152,16 @@
             "label": "Webex",
             "required": false,
             "defaultValue": false,
-            "helpMarkDown": "Check to connect the bot with the Webex Channel. A Webhook must be previously created with the following targetUrl: 'https://{your-bots-name}.azurewebsites.net/api/messages'",
+            "helpMarkDown": "Check to connect the bot with the Webex Channel. In case the access tokens aren't configured in the template parameters, provide them in the fields below. A Webhook must be previously created with the following targetUrl: 'https://{your-webapp-name}.azurewebsites.net/api/messages'",
+            "groupname": "channels"
+        },
+        {
+            "name": "facebookChannel",
+            "type": "boolean",
+            "label": "Facebook",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check to connect the bot with Facebook. In case the access tokens aren't configured in the template parameters, provide them in the fields below.",
             "groupname": "channels"
         },
         {
@@ -197,12 +219,31 @@
             "visibleRule": "webexChannel = TRUE"
         },
         {
-            "name": "validationMode",
-            "type": "boolean",
-            "label": "Validation Mode",
+            "name": "facebookVerifyToken",
+            "type": "text",
+            "label": "Facebook Verify Token",
             "required": false,
-            "defaultValue": false,
-            "helpMarkDown": "Check for validate whether the template is syntactically correct."
+            "helpMarkDown": "Provide a token. The bot will use it to validate received messages.",
+            "groupname": "channels",
+            "visibleRule": "facebookChannel = TRUE"
+        },
+        {
+            "name": "facebookAppSecret",
+            "type": "text",
+            "label": "Facebook App Secret",
+            "required": false,
+            "helpMarkDown": "Provide the app secret from the facebook application.",
+            "groupname": "channels",
+            "visibleRule": "facebookChannel = TRUE"
+        },
+        {
+            "name": "facebookAccessToken",
+            "type": "text",
+            "label": "Facebook Access Token",
+            "required": false,
+            "helpMarkDown": "Provide the Facebook Page access token.",
+            "groupname": "channels",
+            "visibleRule": "facebookChannel = TRUE"
         }
     ],
     "dataSourceBindings": [
