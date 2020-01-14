@@ -38,12 +38,13 @@
     "version": "npm run doc:readme && git add README.md"
   },
   "dependencies": {
-    "@microsoft/bf-cli-command": "~1.0.0",
+    "@microsoft/bf-cli-command": "~4.7.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "@types/lru-cache": "^5.1.0",
     "@types/semver": "^6.0.1",
+    "@types/swagger-parser": "^7.0.1",
     "@types/xml2js": "^0.4.4",
     "ajv": "^6.9.1",
     "botbuilder-lg": "~4.7.0-preview",
@@ -57,6 +58,7 @@
     "json-schema-ref-parser": "^7.1.0",
     "path": "^0.12.7",
     "semver": "^5.7.0",
+    "swagger-parser": "^8.0.4",
     "tslib": "^1.10.0",
     "xml2js": "^0.4.19"
   },

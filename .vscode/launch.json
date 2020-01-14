@@ -143,6 +143,31 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Generate Swagger",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:swagger",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/testSwagger.json",
+                "-o",
+                "${env:TEMP}/test.out",
+                "--force",
+                "--verbose",
+                "-r",
+                "/pet/{petId}",
+                "-m",
+                "post",
+                "-p",
+                "dialog.response"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Generate Unit Test",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",

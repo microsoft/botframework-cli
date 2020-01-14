@@ -37,7 +37,7 @@ Enter a value for @{name(property)}
 - IF: @{$retries > 0 && $lastIntent != 'Help'}
 - @{join(foreach($expectedProperties, expected, help1(expected)), '\n')}
 - ELSE:
--
+- 
 
 # help(property)
 - IF: @{property}
@@ -61,7 +61,7 @@ Enter a value for @{name(property)}
 - IF: @{count(dialogClass.schema.required) > 0}
 - Required properties include: @{join(foreach(dialogClass.schema.required, property, name(property)), ',')}\n
 - ELSE:
--
+- 
 
 > TODO: We should enable this when where/foreach works over objects.
 # optionalProperties
@@ -69,7 +69,7 @@ Enter a value for @{name(property)}
 > - IF: @{add(count(dialogClass.schema.required),count(dialogClass.schema.$expectedOnly)) < count(dialogClass.schema.properties)}
 > - Optional properties include: @{join(foreach(where(dialogClass.schema.properties, property, !contains(dialogClass.schema.required, property) && !contains(dialogClass.schema.$expectedOnly, property)), property, name(property)), ', ')}\n
 > - ELSE:
-> -
+> - 
 
 # possibleValues(property)
 - @{foreach(dialogClass.schema.properties[property].enum, enum, value(property, enum))}
@@ -85,15 +85,15 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 
 # setObjectPropertyMessage(property, val)
 - IF: @{contains($expectedProperties, property)}
--
-- ELSEIF: @{dialog[property]}
+- 
+- ELSEIF: @{dialog[property]} 
 - @{name(property)} is changed from @{join(foreach(dialogClass.schema.properties[property].required, subproperty, subFact(property, subproperty)), ' ')} to @{val}.
-- ELSE:
+- ELSE: 
 - @{name(property)} is set as @{val}.
 
 # setPropertyMessage(property, val)
 - IF: @{contains($expectedProperties, property)}
--
+- 
 - ELSE:
 - @{setUnexpectedPropertyMessage(property, val)}
 
@@ -135,7 +135,7 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 # confirmChangeProperty(property)
 - IF: @{dialog[property]}
 - Do you want to change the value of @{toLower(property)}? (yes or no)
-- ELSE:
+- ELSE: 
 - Do you want to add a value for @{toLower(property)}? (yes or no)
 
 # formCard
@@ -158,7 +158,7 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 }
 ```
 
-> TODO: It would be nice to able to include bound optional properties as well.
+> TODO: It would be nice to able to include bound optional properties as well.  
 > Once we have support in foreach for objects we can expand this.
 # requiredFacts
 - @{join(foreach(dialog.requiredProperties, property, fact(property)), ', ')}
@@ -166,7 +166,7 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 # fact(property)
 - IF:  @{dialogClass.schema.properties[property].required}
 - {"title": "@{name(property)}", "value": "@{join(foreach(dialogClass.schema.properties[property].required, subproperty, subFact(property, subproperty)), ' ')}"}
-- ELSE:
+- ELSE: 
 - {"title": "@{name(property)}", "value": "@{value(property, dialog[property])}"}
 
 # subFact(property, subproperty)
@@ -194,5 +194,5 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 - @{PROPERTYName(value)}
 
 > TODO: Would be good to split out all the component pieces, i.e. help, cancel, confirmation into their own files
-[PROPERTYName.lg]
-[Confirmation.lg]
+[sandwich-PROPERTYName.lg](sandwich-PROPERTYName.lg)
+[sandwich-Confirmation.lg](sandwich-Confirmation.lg)

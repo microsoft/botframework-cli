@@ -16,7 +16,12 @@
             "condition":"$CompleteConfirmation == 'no'",
             "actions": [
                 {
-                    "$kind": "Microsoft.EndDialog"
+                  "$type": "Microsoft.HttpRequest",
+                  "method": "@{swaggerMethod}",
+                  "url": "@{swaggerApi}",
+                  "responseType": "Json",
+                  "resultProperty": "@{swaggerResponse}",
+                  "body": @{swaggerBody}
                 }
             ],
             "elseActions":[

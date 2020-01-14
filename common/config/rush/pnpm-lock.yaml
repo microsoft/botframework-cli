@@ -1,6 +1,7 @@
 dependencies:
   '@azure/cognitiveservices-luis-authoring': 3.0.1
   '@azure/ms-rest-azure-js': 2.0.1
+  '@microsoft/bf-cli-command': 4.7.0
   '@oclif/command': 1.5.19
   '@oclif/config': 1.13.3
   '@oclif/errors': 1.2.2
@@ -105,86 +106,86 @@ packages:
     dev: false
     resolution:
       integrity: sha512-zj9/JOSsbaJleZz9k9RXKJMBPA2NBUgsus5iZxGlhK+pDeb8M2ps+lkKhJSwLnlTUj5CvrcN3PZDF2b2nSYCQQ==
-  /@babel/code-frame/7.5.5:
+  /@babel/code-frame/7.8.0:
     dependencies:
-      '@babel/highlight': 7.5.0
+      '@babel/highlight': 7.8.0
     dev: false
     resolution:
-      integrity: sha512-27d4lZoomVyo51VegxI20xZPuSHusqbQag/ztrBC7wegWoQ1nLREPVSKSW8byhTlzTKyNE4ifaTA6lCp7JjpFw==
-  /@babel/generator/7.7.7:
+      integrity: sha512-AN2IR/wCUYsM+PdErq6Bp3RFTXl8W0p9Nmymm7zkpsCmh+r/YYcckaCGpU8Q/mEKmST19kkGRaG42A/jxOWwBA==
+  /@babel/generator/7.8.0:
     dependencies:
-      '@babel/types': 7.7.4
+      '@babel/types': 7.8.0
       jsesc: 2.5.2
       lodash: 4.17.15
       source-map: 0.5.7
     dev: false
     resolution:
-      integrity: sha512-/AOIBpHh/JU1l0ZFS4kiRCBnLi6OTHzh0RPk3h9isBxkkqELtQNFi1Vr/tiG9p1yfoUdKVwISuXWQR+hwwM4VQ==
-  /@babel/helper-function-name/7.7.4:
+      integrity: sha512-2Lp2e02CV2C7j/H4n4D9YvsvdhPVVg9GDIamr6Tu4tU35mL3mzOrzl1lZ8ZJtysfZXh+y+AGORc2rPS7yHxBUg==
+  /@babel/helper-function-name/7.8.0:
     dependencies:
-      '@babel/helper-get-function-arity': 7.7.4
-      '@babel/template': 7.7.4
-      '@babel/types': 7.7.4
+      '@babel/helper-get-function-arity': 7.8.0
+      '@babel/template': 7.8.0
+      '@babel/types': 7.8.0
     dev: false
     resolution:
-      integrity: sha512-AnkGIdiBhEuiwdoMnKm7jfPfqItZhgRaZfMg1XX3bS25INOnLPjPG1Ppnajh8eqgt5kPJnfqrRHqFqmjKDZLzQ==
-  /@babel/helper-get-function-arity/7.7.4:
+      integrity: sha512-x9psucuU0Xalw+0Vpr2FYJMLB7/KnPSLZhlkUyOGbYAWRDfmtZBrguYpJYiaNCRV7vGkYjO/gF6/J6yMvdWTDw==
+  /@babel/helper-get-function-arity/7.8.0:
     dependencies:
-      '@babel/types': 7.7.4
+      '@babel/types': 7.8.0
     dev: false
     resolution:
-      integrity: sha512-QTGKEdCkjgzgfJ3bAyRwF4yyT3pg+vDgan8DSivq1eS0gwi+KGKE5x8kRcbeFTb/673mkO5SN1IZfmCfA5o+EA==
-  /@babel/helper-split-export-declaration/7.7.4:
+      integrity: sha512-eUP5grliToMapQiTaYS2AAO/WwaCG7cuJztR1v/a1aPzUzUeGt+AaI9OvLATc/AfFkF8SLJ10d5ugGt/AQ9d6w==
+  /@babel/helper-split-export-declaration/7.8.0:
     dependencies:
-      '@babel/types': 7.7.4
+      '@babel/types': 7.8.0
     dev: false
     resolution:
-      integrity: sha512-guAg1SXFcVr04Guk9eq0S4/rWS++sbmyqosJzVs8+1fH5NI+ZcmkaSkc7dmtAFbHFva6yRJnjW3yAcGxjueDug==
-  /@babel/highlight/7.5.0:
+      integrity: sha512-YhYFhH4T6DlbT6CPtVgLfC1Jp2gbCawU/ml7WJvUpBg01bCrXSzTYMZZXbbIGjq/kHmK8YUATxTppcRGzj31pA==
+  /@babel/highlight/7.8.0:
     dependencies:
       chalk: 2.4.2
       esutils: 2.0.3
       js-tokens: 4.0.0
     dev: false
     resolution:
-      integrity: sha512-7dV4eu9gBxoM0dAnj/BCFDW9LFU0zvTrkq0ugM7pnHEgguOEeOz1so2ZghEdzviYzQEED0r4EAgpsBChKy1TRQ==
-  /@babel/parser/7.7.7:
+      integrity: sha512-OsdTJbHlPtIk2mmtwXItYrdmalJ8T0zpVzNAbKSkHshuywj7zb29Y09McV/jQsQunc/nEyHiPV2oy9llYMLqxw==
+  /@babel/parser/7.8.0:
     dev: false
     engines:
       node: '>=6.0.0'
     hasBin: true
     resolution:
-      integrity: sha512-WtTZMZAZLbeymhkd/sEaPD8IQyGAhmuTuvTzLiCFM7iXiVdY0gc0IaI+cW0fh1BnSMbJSzXX6/fHllgHKwHhXw==
-  /@babel/template/7.7.4:
+      integrity: sha512-VVtsnUYbd1+2A2vOVhm4P2qNXQE8L/W859GpUHfUcdhX8d3pEKThZuIr6fztocWx9HbK+00/CR0tXnhAggJ4CA==
+  /@babel/template/7.8.0:
     dependencies:
-      '@babel/code-frame': 7.5.5
-      '@babel/parser': 7.7.7
-      '@babel/types': 7.7.4
+      '@babel/code-frame': 7.8.0
+      '@babel/parser': 7.8.0
+      '@babel/types': 7.8.0
     dev: false
     resolution:
-      integrity: sha512-qUzihgVPguAzXCK7WXw8pqs6cEwi54s3E+HrejlkuWO6ivMKx9hZl3Y2fSXp9i5HgyWmj7RKP+ulaYnKM4yYxw==
-  /@babel/traverse/7.7.4:
+      integrity: sha512-0NNMDsY2t3ltAVVK1WHNiaePo3tXPUeJpCX4I3xSKFoEl852wJHG8mrgHVADf8Lz1y+8al9cF7cSSfzSnFSYiw==
+  /@babel/traverse/7.8.0:
     dependencies:
-      '@babel/code-frame': 7.5.5
-      '@babel/generator': 7.7.7
-      '@babel/helper-function-name': 7.7.4
-      '@babel/helper-split-export-declaration': 7.7.4
-      '@babel/parser': 7.7.7
-      '@babel/types': 7.7.4
+      '@babel/code-frame': 7.8.0
+      '@babel/generator': 7.8.0
+      '@babel/helper-function-name': 7.8.0
+      '@babel/helper-split-export-declaration': 7.8.0
+      '@babel/parser': 7.8.0
+      '@babel/types': 7.8.0
       debug: 4.1.1
       globals: 11.12.0
       lodash: 4.17.15
     dev: false
     resolution:
-      integrity: sha512-P1L58hQyupn8+ezVA2z5KBm4/Zr4lCC8dwKCMYzsa5jFMDMQAzaBNy9W5VjB+KAmBjb40U7a/H6ao+Xo+9saIw==
-  /@babel/types/7.7.4:
+      integrity: sha512-d/6sPXFLGlJHZO/zWDtgFaKyalCOHLedzxpVJn6el1cw+f2TZa7xZEszeXdOw6EUemqRFBAn106BWBvtSck9Qw==
+  /@babel/types/7.8.0:
     dependencies:
       esutils: 2.0.3
       lodash: 4.17.15
       to-fast-properties: 2.0.0
     dev: false
     resolution:
-      integrity: sha512-cz5Ji23KCi4T+YIE/BolWosrJuSmoZeN1EFnRtBwF+KKLi8GG/Z2c2hOJJeCXPk4mwk4QFvTmwIodJowXgttRA==
+      integrity: sha512-1RF84ehyx9HH09dMMwGWl3UTWlVoCPtqqJPjGuC4JzMe1ZIVDJ2DT8mv3cPv/A7veLD6sgR7vi95lJqm+ZayIg==
   /@christopheranderson/botbuilder-lg/4.7.0-a0-b6513caa:
     dependencies:
       '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
@@ -236,6 +237,22 @@ packages:
       typescript: '>= 3.3.0 || >= 3.6.0-dev || >= 3.7.0-dev'
     resolution:
       integrity: sha512-T/y7WqPsm4n3zhT08EpB5sfdm2Kvw3gurAxr2Lr5dQeLi8ZsMlNT/Jby+ZmuuAAd1PnXYzKp+2SXgIkQIIMCUg==
+  /@microsoft/bf-cli-command/4.7.0:
+    dependencies:
+      '@oclif/command': 1.5.19
+      '@oclif/config': 1.12.12
+      '@oclif/errors': 1.2.2
+      applicationinsights: 1.6.0
+      chalk: 2.4.1
+      cli-ux: 4.9.3
+      debug: 4.1.1
+      fs-extra: 7.0.1
+      tslib: 1.10.0
+    dev: false
+    engines:
+      node: '>=6.0.0'
+    resolution:
+      integrity: sha512-3wDT52Hgr3rtbcy46p65kWaTs9dAuJcUidsHKpSTBjyVtnRAQyBt6Usn4IA4lSTED6TinIQ7ZGNq4OH3ZXLrHw==
   /@microsoft/recognizers-text-data-types-timex-expression/1.1.4:
     dev: false
     engines:
@@ -304,6 +321,15 @@ packages:
       node: '>=8.0.0'
     resolution:
       integrity: sha512-6+iaCMh/JXJaB2QWikqvGE9//wLEVYYwZd5sud8aLoLKog1Q75naZh2vlGVtg5Mq/NqpqGQvdIjJb3Bm+64AUQ==
+  /@oclif/config/1.12.12:
+    dependencies:
+      debug: 4.1.1
+      tslib: 1.10.0
+    dev: false
+    engines:
+      node: '>=8.0.0'
+    resolution:
+      integrity: sha512-0vlX5VYvOfF9QbkCqMyPSzH9GMp6at4Mbqn8CxCskxhKvNZoPD5ocda2ku0zEnoqxGAQ4VfQP7NCqJthuiStfg==
   /@oclif/config/1.13.3:
     dependencies:
       '@oclif/parser': 3.8.4
@@ -378,7 +404,7 @@ packages:
   /@oclif/plugin-help/2.2.3:
     dependencies:
       '@oclif/command': 1.5.19
-      chalk: 2.4.1
+      chalk: 2.4.2
       indent-string: 4.0.0
       lodash.template: 4.5.0
       string-width: 3.1.0
@@ -1680,12 +1706,12 @@ packages:
       node: '>=0.3.1'
     resolution:
       integrity: sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
-  /diff/4.0.1:
+  /diff/4.0.2:
     dev: false
     engines:
       node: '>=0.3.1'
     resolution:
-      integrity: sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
+      integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
   /dir-glob/2.0.0:
     dependencies:
       arrify: 1.0.1
@@ -1968,7 +1994,7 @@ packages:
       integrity: sha512-8y9YjtM1JBJU/A9Kc+SbaOV4y29sSWckBwMHa+FGtVj5gN/sbnKDf6xJUl+8g7FAij9LVaP8C24DUiH/f/2Z9A==
   /eslint/5.16.0:
     dependencies:
-      '@babel/code-frame': 7.5.5
+      '@babel/code-frame': 7.8.0
       ajv: 6.10.2
       chalk: 2.4.2
       cross-spawn: 6.0.5
@@ -2624,19 +2650,6 @@ packages:
       node: '>=4.x'
     resolution:
       integrity: sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==
-  /handlebars/4.6.0:
-    dependencies:
-      neo-async: 2.6.1
-      optimist: 0.6.1
-      source-map: 0.6.1
-    dev: false
-    engines:
-      node: '>=0.4.7'
-    hasBin: true
-    optionalDependencies:
-      uglify-js: 3.7.4
-    resolution:
-      integrity: sha512-i1ZUP7Qp2JdkMaFon2a+b0m5geE8Z4ZTLaGkgrObkEd+OkUKyRbRWw4KxuFCoHfdETSY1yf9/574eVoNSiK7pw==
   /har-schema/2.0.0:
     dev: false
     engines:
@@ -2745,6 +2758,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-kssjab8CvdXfcXMXVcvsXum4Hwdq9XGtRD3TteMEvEbq0LXyiNQr6AprqKqfeaDXze7SxWvRxdpwE6ku7ikLkg==
+  /html-escaper/2.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-a4u9BeERWGu/S8JiWEAQcdrg9v4QArtP9keViQjGMdff20fBdd8waotXaNmODqBe6uZ3Nafi7K/ho4gCQHV3Ig==
   /http-cache-semantics/3.8.1:
     dev: false
     resolution:
@@ -3187,11 +3204,11 @@ packages:
       integrity: sha512-vrRztU9VRRFDyC+aklfLoeXyNdTfga2EI3udDGn4cZ6fpSXpHLV9X6CHvfoMCPtggg8zvDDmC4b9xfu0z6/llA==
   /istanbul-lib-instrument/3.3.0:
     dependencies:
-      '@babel/generator': 7.7.7
-      '@babel/parser': 7.7.7
-      '@babel/template': 7.7.4
-      '@babel/traverse': 7.7.4
-      '@babel/types': 7.7.4
+      '@babel/generator': 7.8.0
+      '@babel/parser': 7.8.0
+      '@babel/template': 7.8.0
+      '@babel/traverse': 7.8.0
+      '@babel/types': 7.8.0
       istanbul-lib-coverage: 2.0.5
       semver: 6.3.0
     dev: false
@@ -3221,14 +3238,14 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-R47KzMtDJH6X4/YW9XTx+jrLnZnscW4VpNN+1PViSYTejLVPWv7oov+Duf8YQSPyVRUvueQqz1TcsC6mooZTXw==
-  /istanbul-reports/2.2.6:
+  /istanbul-reports/2.2.7:
     dependencies:
-      handlebars: 4.6.0
+      html-escaper: 2.0.0
     dev: false
     engines:
       node: '>=6'
     resolution:
-      integrity: sha512-SKi4rnMyLBKe0Jy2uUdx28h8oG7ph2PPuQPvIAh31d+Ci+lSiEu4C+h3oBPuJ9+mPKhOyW0M8gY4U5NM1WLeXA==
+      integrity: sha512-uu1F/L1o5Y6LzPVSVZXNOoD/KXpJue9aeLRd0sM9uMXfZvzomB0WxVamWb5ue8kA2vVWEmW7EG+A5n3f1kqHKg==
   /isurl/1.0.0:
     dependencies:
       has-to-string-tag-x: 1.4.1
@@ -3710,10 +3727,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
-  /minimist/0.0.10:
-    dev: false
-    resolution:
-      integrity: sha1-3j+YVD2/lggr5IrRoMfNqDYwHc8=
   /minimist/0.0.8:
     dev: false
     resolution:
@@ -3861,10 +3874,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-p7KTHxU0CUrcOXe62Zfrb5Z13nLvPhSWR/so3kFulUQU0sgUll2Z0LwpsLN351eOOD+hRGu/F1g+6xDfPeD++Q==
-  /neo-async/2.6.1:
-    dev: false
-    resolution:
-      integrity: sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
   /nested-error-stacks/2.1.0:
     dev: false
     resolution:
@@ -3964,7 +3973,7 @@ packages:
       istanbul-lib-instrument: 3.3.0
       istanbul-lib-report: 2.0.8
       istanbul-lib-source-maps: 3.0.6
-      istanbul-reports: 2.2.6
+      istanbul-reports: 2.2.7
       js-yaml: 3.13.1
       make-dir: 2.1.0
       merge-source-map: 1.1.0
@@ -4072,13 +4081,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-5rdYW/106kHqLeG22GE2MHKq+FlsxMERZev9DCzQX1zwkxnFwBivSn5i17a5O/rDmOJOdf4Wyt80UZljzx9+DA==
-  /optimist/0.6.1:
-    dependencies:
-      minimist: 0.0.10
-      wordwrap: 0.0.3
-    dev: false
-    resolution:
-      integrity: sha1-2j6nRob6IaGaERwybpDrFaAZZoY=
   /optionator/0.8.3:
     dependencies:
       deep-is: 0.1.3
@@ -4201,7 +4203,7 @@ packages:
       integrity: sha1-vjX1Qlvh9/bHRxhPmKeIy5lHfuA=
   /parse-json/5.0.0:
     dependencies:
-      '@babel/code-frame': 7.5.5
+      '@babel/code-frame': 7.8.0
       error-ex: 1.3.2
       json-parse-better-errors: 1.0.2
       lines-and-columns: 1.1.6
@@ -5366,10 +5368,10 @@ packages:
       node: '>=0.6'
     resolution:
       integrity: sha512-1m4RA7xVAJrSGrrXGs0L3YTwyvBs2S8PbRHaLZAkFw7JR8oIFwYtysxlBZhYIa7xSyiYJKZ3iGrrk55cGA3i9A==
-  /ts-node/8.6.0_typescript@3.7.4:
+  /ts-node/8.6.1_typescript@3.7.4:
     dependencies:
       arg: 4.1.2
-      diff: 4.0.1
+      diff: 4.0.2
       make-error: 1.3.5
       source-map-support: 0.5.16
       typescript: 3.7.4
@@ -5381,7 +5383,7 @@ packages:
     peerDependencies:
       typescript: '>=2.7'
     resolution:
-      integrity: sha512-NVJ/5ZjrxCS445zMIxGWiieTZoWcHbqtVKa+1V7opSmOFCYi7fvkugEXZBC9IvUnEzNewZWy8dw0u6iSTridpA==
+      integrity: sha512-KqPbO7/UuOPE4ANAOV9geZjk6tet6rK2K+DFeEJq6kIXUi0nLkrOMksozGkIlFopOorkStlwar3DdWYrdl7zCw==
   /tslib/1.10.0:
     dev: false
     resolution:
@@ -5443,11 +5445,11 @@ packages:
       integrity: sha512-Zk5jBdQVUaHEmR9TUoh1TJOjjCr7/nRplA+jDZBvucyBMx65pt0unTr6H/0HvrtSlucFvOMYsyBZE1W8b4AOig==
   /tslint/5.20.1_typescript@3.7.4:
     dependencies:
-      '@babel/code-frame': 7.5.5
+      '@babel/code-frame': 7.8.0
       builtin-modules: 1.1.1
       chalk: 2.4.1
       commander: 2.20.3
-      diff: 4.0.1
+      diff: 4.0.2
       glob: 7.1.6
       js-yaml: 3.13.1
       minimatch: 3.0.4
@@ -5555,17 +5557,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-A25xv5XCtarLwXpcDNZzCGvW2D1S3/bACratYBx2sax8PefsFhlYmkQicKHvpYflFS8if4zne5zT5kpJ7pzuvw==
-  /uglify-js/3.7.4:
-    dependencies:
-      commander: 2.20.3
-      source-map: 0.6.1
-    dev: false
-    engines:
-      node: '>=0.8.0'
-    hasBin: true
-    optional: true
-    resolution:
-      integrity: sha512-tinYWE8X1QfCHxS1lBS8yiDekyhSXOO6R66yNOCdUJeojxxw+PX2BHAz/BWyW7PQ7pkiWVxJfIEbiDxyLWvUGg==
   /union-value/1.0.1:
     dependencies:
       arr-union: 3.1.0
@@ -5748,12 +5739,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
-  /wordwrap/0.0.3:
-    dev: false
-    engines:
-      node: '>=0.4.0'
-    resolution:
-      integrity: sha1-o9XabNXAvAAI03I0u68b7WMFkQc=
   /wrap-ansi/4.0.0:
     dependencies:
       ansi-styles: 3.2.1
@@ -5918,7 +5903,7 @@ packages:
       request-promise-native: 1.0.8_request@2.88.0
       rimraf: 2.7.1
       semver: 5.7.1
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -5959,7 +5944,7 @@ packages:
       rimraf: 2.7.1
       source-map-support: 0.5.16
       testdouble: 3.12.5
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -5988,7 +5973,7 @@ packages:
       mocha: 6.2.2
       nyc: 14.1.1
       rimraf: 2.7.1
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -6018,7 +6003,7 @@ packages:
       mocha: 5.2.0
       nyc: 14.1.1
       rimraf: 2.7.1
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       typescript: 3.7.4
     dev: false
@@ -6031,6 +6016,7 @@ packages:
     dependencies:
       '@christopheranderson/botbuilder-lg': 4.7.0-a0-b6513caa
       '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
+      '@microsoft/bf-cli-command': 4.7.0
       '@oclif/command': 1.5.19
       '@oclif/config': 1.13.3
       '@oclif/dev-cli': 1.22.2
@@ -6061,7 +6047,7 @@ packages:
       path: 0.12.7
       rimraf: 2.7.1
       semver: 5.7.1
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -6069,7 +6055,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-wLqkv6TapzOAmIExo+h14rfw7e2BinNmi30yDcV+01KndJSTH41dyhmdpD0jnvru7YMYRNaQoh8zpea6Y2/6dg==
+      integrity: sha512-/dFTEiQehM3rWAKDw6tDbVI5FAzNgnOVc8KCu6QQeYgYK5HuPAYiJEMeJ19BjMmoXg0OfFXzaK/T1fl+E7r6wA==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6104,7 +6090,7 @@ packages:
       nyc: 14.1.1
       rimraf: 2.7.1
       semver: 5.7.1
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -6140,7 +6126,7 @@ packages:
       nyc: 14.1.1
       rimraf: 3.0.0
       sinon: 7.5.0
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -6188,7 +6174,7 @@ packages:
       request-promise-native: 1.0.8_request@2.88.0
       rimraf: 2.7.1
       semver: 5.7.1
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -6222,7 +6208,7 @@ packages:
       nyc: 14.1.1
       rimraf: 2.7.1
       semver: 5.7.1
-      ts-node: 8.6.0_typescript@3.7.4
+      ts-node: 8.6.1_typescript@3.7.4
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
@@ -6236,6 +6222,7 @@ registry: ''
 specifiers:
   '@azure/cognitiveservices-luis-authoring': 3.0.1
   '@azure/ms-rest-azure-js': 2.0.1
+  '@microsoft/bf-cli-command': ~4.7.0
   '@oclif/command': ~1.5.19
   '@oclif/config': ~1.13.3
   '@oclif/errors': ~1.2.2

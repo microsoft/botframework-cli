@@ -1,0 +1,25 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.AdaptiveDialog",
+    "actions": [
+      {
+        "$type": "Microsoft.HttpRequest",
+        "method": "@{swaggerMethod()}",
+        "url": "@{swaggerUrl()}",
+        "responseType": "Json",
+        "resultProperty": "@{swaggerResponse()}"
+      }
+    ]
+}
+```
+
+# swaggerMethod
+- @\{swaggerMethod()}
+
+# swaggerUrl
+- @\{swaggerUrl()}
+
+# swaggerResponse
+- @\{swaggerUrl()}

@@ -353,7 +353,11 @@ export async function generate(
             properties: schema.schema.$public,
             entities: schema.entityTypes(),
             triggerIntent: schema.triggerIntent(),
-            appSchema: metaSchema
+            appSchema: metaSchema,
+            swaggerApi: schema.schema.swaggerApi,
+            swaggerMethod: schema.schema.swaggerMethod,
+            swaggerResponse: schema.schema.swaggerResponse,
+            swaggerBody: schema.schema.swaggerBody
         }
         for (let currentLoc of allLocales) {
             await fs.ensureDir(ppath.join(outDir, currentLoc))

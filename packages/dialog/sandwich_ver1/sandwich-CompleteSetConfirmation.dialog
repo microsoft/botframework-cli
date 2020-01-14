@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/sdk.schema",
+  "$kind": "Microsoft.OnAssignEntity",
+  "property": "CompleteConfirmation",
+  "entity": "Confirmation",
+  "actions": [
+    {
+      "$kind": "Microsoft.SetProperty",
+      "property": "$CompleteConfirmation",
+      "value": "@Confirmation"
+    },
+    {
+      "$kind": "Microsoft.IfCondition",
+      "condition": "$CompleteConfirmation == 'no'",
+      "actions": [
+        {
+          "$kind": "Microsoft.HttpRequest",
+          "url": "petstore.com",
+          "method": "PUT"
+        }
+      ],
+      "elseActions": [
+        {
+          "$kind": "Microsoft.Ask",
+          "activity": "@{chooseProperty()}",
+          "expectedProperties": [
+            "PropertyToChange"
+          ]
+        }
+      ]
+    }
+  ]
+}
