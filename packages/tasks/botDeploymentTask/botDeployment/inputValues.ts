@@ -13,12 +13,14 @@ export class InputValues {
     public templateFile: string;
     public parameterFile: string;
     public overrideParameters: string;
+    public validationMode?: boolean;
     public zipFile: string;
     public directLineChannel?: boolean;
     public slackChannel?: boolean;
     public teamsChannel?: boolean;
     public webexChannel?: boolean;
     public facebookChannel?: boolean;
+    public twilioChannel?: boolean;
     public slackVerificationToken?: string = '';
     public slackBotToken?: string = '';
     public slackClientSigningSecret?: string = '';
@@ -28,7 +30,9 @@ export class InputValues {
     public facebookVerifyToken?: string = '';
     public facebookAppSecret?: string = '';
     public facebookAccessToken?: string = '';
-    public validationMode?: boolean;
+    public twilioNumber?: string = '';
+    public twilioAccountSid?: string = '';
+    public twilioAuthToken?: string = '';
 
     constructor() {
         this.resourceGroup = getInput('resourceGroup', true) as string;
@@ -42,6 +46,7 @@ export class InputValues {
         this.teamsChannel = getBoolInput('teamsChannel', false); 
         this.webexChannel = getBoolInput('webexChannel', false);
         this.facebookChannel = getBoolInput('facebookChannel', false); 
+        this.twilioChannel = getBoolInput('twilioChannel', false);
         
         if (this.slackChannel) {
             this.slackVerificationToken = getInput('slackVerificationToken', false);
@@ -59,6 +64,12 @@ export class InputValues {
             this.facebookVerifyToken = getInput('facebookVerifyToken', false);
             this.facebookAppSecret = getInput('facebookAppSecret', false);
             this.facebookAccessToken = getInput('facebookAccessToken', false);
+        }
+
+        if (this.twilioChannel) {
+            this.twilioNumber = getInput('twilioNumber', false);
+            this.twilioAccountSid = getInput('twilioAccountSid', false);
+            this.twilioAuthToken = getInput('twilioAuthToken', false);
         }
 
         this.validationMode = getBoolInput('validationMode', false);

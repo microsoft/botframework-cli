@@ -13,7 +13,7 @@
     "version": {
         "Major": 0,
         "Minor": 8,
-        "Patch": 23
+        "Patch": 28
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -165,6 +165,15 @@
             "groupname": "channels"
         },
         {
+            "name": "twilioChannel",
+            "type": "boolean",
+            "label": "Twilio",
+            "required": false,
+            "defaultValue": false,
+            "helpMarkDown": "Check to connect the bot with Twilio. In case the access tokens aren't configured in the template parameters, provide them in the fields below.",
+            "groupname": "channels"
+        },
+        {
             "name": "slackVerificationToken",
             "type": "text",
             "label": "Slack Verification Token",
@@ -244,6 +253,33 @@
             "helpMarkDown": "Provide the Facebook Page access token.",
             "groupname": "channels",
             "visibleRule": "facebookChannel = TRUE"
+        },
+        {
+            "name": "twilioNumber",
+            "type": "text",
+            "label": "Twilio Number",
+            "required": false,
+            "helpMarkDown": "Provide the Twilio phone number. This is the number that will receive the messages. Get one in 'https://www.twilio.com/console",
+            "groupname": "channels",
+            "visibleRule": "twilioChannel = TRUE"
+        },
+        {
+            "name": "twilioAccountSid",
+            "type": "text",
+            "label": "Twilio Account Sid",
+            "required": false,
+            "helpMarkDown": "Provide the Twilio account sid.",
+            "groupname": "channels",
+            "visibleRule": "twilioChannel = TRUE"
+        },
+        {
+            "name": "twilioAuthToken",
+            "type": "text",
+            "label": "Twilio Auth Token",
+            "required": false,
+            "helpMarkDown": "Provide the Twilio authorization token for the account.",
+            "groupname": "channels",
+            "visibleRule": "twilioChannel = TRUE"
         }
     ],
     "dataSourceBindings": [

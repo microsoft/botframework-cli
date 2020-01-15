@@ -2,7 +2,7 @@
     "manifestVersion": 1,
      "id": "bot-deployment",
      "name": "Bot Deployment",
-     "version": "0.8.23",
+     "version": "0.8.28",
      "publisher": "Southworks-Pipelines-Test",
      "targets": [
          {

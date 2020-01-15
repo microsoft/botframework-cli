@@ -43,3 +43,5 @@ The parameters of the task are described in details, to show how to input the pa
     - **Webex**: Chech this box to connect the bot with Webex. The necessary credentials for the connection will we required once the box is checked. You'll need to have a [Webex app](https://developer.webex.com) and a [webhoook](https://developer.webex.com/docs/api/v1/webhooks) created.
     - **Facebook**: Chech this box to connect the bot with Webex. The necessary credentials for the connection will we required once the box is checked.
     Follow [this guide](https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start/) to know how to create a Facebook App and obtain the Facebook Access Token and the Facebook App Secret.
+    - **Twilio**: Chech this box to connect the bot with Twilio. The necessary credentials for the connection will we required once the box is checked. 
+    Configure the Twilio Account and get the Twilio Phone Number [here](https://www.twilio.com/console).

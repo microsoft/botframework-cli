@@ -110,6 +110,13 @@ const getOptionalParameters = (): string => {
         command += input.facebookAccessToken ? ` facebookAccessToken="${ input.facebookAccessToken }"` : '';
     }
 
+    if (input.twilioChannel) {
+        command += input.twilioNumber ? ` twilioNumber="${ input.twilioNumber }"` : '';
+        command += input.twilioAccountSid ? ` twilioAccountSid="${ input.twilioAccountSid }"` : '';
+        command += input.twilioAuthToken ? ` twilioAuthToken="${ input.twilioAuthToken }"` : '';
+        command += ` twilioValidationUrl=https://"${ webAppName }".azurewebsites.net/api/messages`;
+    }
+
     return command;
 }
 
