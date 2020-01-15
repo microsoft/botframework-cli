@@ -9,7 +9,7 @@ The new BF Command Line Interface (CLI) tool replaces the collection of standalo
 
 The old tools will be deprecated in subsequent releases. All new investments, bug fixes, and new features will be implemented in the new consolidated BF CLI alone.
 
-## Installation
+## Installation   
 
 BF is based on the Node.js platform and the [OClif](https://github.com/oclif/oclif) framework where it inherits its command line parsing style, and plugin architecture platform. 
 
