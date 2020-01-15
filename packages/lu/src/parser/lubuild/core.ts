@@ -71,7 +71,7 @@ export class LuBuildCore {
     (currentApp.entities || []).forEach((e: any) => {
       if (e.children === undefined && existingApp.entities) {
         let matchedEntities = existingApp.entities.filter((x: any) => x.name === e.name)
-        if (matchedEntities && matchedEntities[0].children !== undefined) {
+        if (matchedEntities && matchedEntities.length > 0 && matchedEntities[0].children !== undefined) {
           e.children = []
         }
       }

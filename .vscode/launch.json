@@ -112,14 +112,40 @@
             ],
             "args": [
                 "luis:build",
-                "--in", ".",
-                "--authoringKey", "${env:LUIS_AUTHORING_KEY}",
-                "--botName", "sandwich",
+                "--in",
+                ".",
+                "--authoringKey",
+                "${env:LUIS_AUTHORING_KEY}",
+                "--botName",
+                "sandwich",
                 "--dialog",
-                "--suffix", "${env:USERNAME}"
+                "--suffix",
+                "${env:USERNAME}"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${env:TEMP}/sandwich.out/luis"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LUIS Build DynamicLists",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/lu/bin/run",
+            "outFiles": [
+                "./packages/lu/lib/**"
+            ],
+            "args": [
+                "luis:build",
+                "--in",
+                ".",
+                "--authoringKey",
+                "${env:LUIS_AUTHORING_KEY}",
+                "--botName",
+                "dynamicLists",
+                "--dialog"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet/tests/Microsoft.Bot.Builder.Dialogs.Adaptive.Tests/tests/LUISRecognizerTests"
         },
         {
             "type": "node",
@@ -156,69 +182,6 @@
                 "${env:TEMP}/unittests.out",
                 "--force",
                 "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Generate Activity Form",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/activity.schema",
-                "-o",
-                "${env:TEMP}/activity.out",
-                "--force",
-                "--verbose",
-                "--schema",
-                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Generate Contact Form",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/contact.schema",
-                "-o",
-                "${env:TEMP}/contact.out",
-                "--force",
-                "--verbose",
-                "--schema",
-                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Generate Opportunity Form",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/opportunity.schema",
-                "-o",
-                "${env:TEMP}/opportunity.out",
-                "--force",
-                "--verbose",
-                "--schema",
-                "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         }
