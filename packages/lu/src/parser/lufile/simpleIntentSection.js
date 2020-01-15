@@ -39,6 +39,13 @@ class SimpleIntentSection {
         let utteranceAndEntitiesMap = [];
         let errors = [];
         if (parseTree.intentDefinition().intentBody() && parseTree.intentDefinition().intentBody().normalIntentBody()) {
+            for (const errorIntentStr of parseTree.intentDefinition().intentBody().normalIntentBody().errorIntentString()) {
+                errors.push(BuildDiagnostic({
+                    message: "Invalid intent body line, did you miss '-' at line begin",
+                    context: errorIntentStr
+                }))
+            }
+
             for (const normalIntentStr of parseTree.intentDefinition().intentBody().normalIntentBody().normalIntentString()) {
                 let utteranceAndEntities = visitor.visitNormalIntentStringContext(normalIntentStr);
                 utteranceAndEntities.context = normalIntentStr;

@@ -7,25 +7,18 @@ file
 	;
 
 paragraph
-    : newline
-    | nestedIntentSection
+    : nestedIntentSection
     | simpleIntentSection
     | entitySection
     | newEntitySection
     | importSection
     | qnaSection
     | modelInfoSection
-    ;
-
-// Treat EOF as newline to hanle file end gracefully
-// It's possible that parser doesn't even have to handle NEWLINE, 
-// but before the syntax is finalized, we still keep the NEWLINE in grammer 
-newline
-    : WS* (NEWLINE | EOF)
+    | EOF
     ;
 
 nestedIntentSection
-    : nestedIntentNameLine newline+ nestedIntentBodyDefinition
+    : nestedIntentNameLine nestedIntentBodyDefinition
     ;
 
 nestedIntentNameLine
@@ -53,7 +46,7 @@ simpleIntentSection
     ;
 
 intentDefinition
-	: intentNameLine newline intentBody?
+	: intentNameLine intentBody?
 	;
 
 intentNameLine
@@ -69,23 +62,27 @@ intentBody
 	;
 
 normalIntentBody
-    : WS* (normalIntentString newline)+
+    : WS* (normalIntentString|errorIntentString)+
     ;
 
 normalIntentString
 	: WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
 
+errorIntentString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
 newEntitySection
     : newEntityDefinition
     ;
 
 newEntityDefinition
-    : newEntityLine newline newEntityListbody?
+    : newEntityLine newEntityListbody?
     ;
 
 newEntityListbody
-    : (normalItemString newline)+
+    : normalItemString+
     ;
 
 newEntityLine
@@ -133,7 +130,7 @@ entitySection
     ;
 
 entityDefinition
-    : entityLine newline entityListBody?
+    : entityLine entityListBody?
     ;
     
 entityLine
@@ -157,7 +154,7 @@ regexEntityIdentifier
     ;
 
 entityListBody
-    : (normalItemString newline)+
+    : normalItemString+
     ;
 
 normalItemString
@@ -181,7 +178,7 @@ qnaDefinition
     ;
 
 qnaQuestion
-    : WS* QNA questionText newline
+    : WS* QNA questionText
     ;
 
 questionText
@@ -189,7 +186,7 @@ questionText
     ;
 
 moreQuestionsBody
-    : WS* (moreQuestion newline)*
+    : WS* (moreQuestion)*
     ;
 
 moreQuestion
@@ -205,7 +202,7 @@ filterSection
     ;
 
 filterLine
-    : WS* DASH (WS|TEXT)* newline
+    : WS* DASH (WS|TEXT)*
     ;
 
 multiLineAnswer

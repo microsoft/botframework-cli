@@ -204,6 +204,14 @@ describe('luis:convert', () => {
     })
 
     test
+    .stderr()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/utterance-without-hyphen.lu')}`])
+    .it('luis:convert writes out an error when utterance without hyphen is found', async (ctx: any) => {
+      expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:16: Invalid intent body line, did you miss '-' at line begin")
+      expect(ctx.stderr).to.contain("[ERROR] line 6:0 - line 6:16: Invalid intent body line, did you miss '-' at line begin")
+    })
+
+    test
     .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/root19.json', '--name', 'collated-luis'])
     .it('luis:convert Collate can correctly merge LUIS content split across LU files', async () => {

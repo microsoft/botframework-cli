@@ -24,12 +24,6 @@ LUFileParserVisitor.prototype.visitParagraph = function(ctx) {
 };
 
 
-// Visit a parse tree produced by LUFileParser#newline.
-LUFileParserVisitor.prototype.visitNewline = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
 // Visit a parse tree produced by LUFileParser#nestedIntentSection.
 LUFileParserVisitor.prototype.visitNestedIntentSection = function(ctx) {
   return this.visitChildren(ctx);
@@ -104,6 +98,12 @@ LUFileParserVisitor.prototype.visitNormalIntentBody = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#normalIntentString.
 LUFileParserVisitor.prototype.visitNormalIntentString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserVisitor.prototype.visitErrorIntentString = function(ctx) {
   return this.visitChildren(ctx);
 };
 

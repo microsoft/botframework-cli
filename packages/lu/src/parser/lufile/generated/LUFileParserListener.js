@@ -29,15 +29,6 @@ LUFileParserListener.prototype.exitParagraph = function(ctx) {
 };
 
 
-// Enter a parse tree produced by LUFileParser#newline.
-LUFileParserListener.prototype.enterNewline = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#newline.
-LUFileParserListener.prototype.exitNewline = function(ctx) {
-};
-
-
 // Enter a parse tree produced by LUFileParser#nestedIntentSection.
 LUFileParserListener.prototype.enterNestedIntentSection = function(ctx) {
 };
@@ -152,6 +143,15 @@ LUFileParserListener.prototype.enterNormalIntentString = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#normalIntentString.
 LUFileParserListener.prototype.exitNormalIntentString = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserListener.prototype.enterErrorIntentString = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserListener.prototype.exitErrorIntentString = function(ctx) {
 };
 
 
