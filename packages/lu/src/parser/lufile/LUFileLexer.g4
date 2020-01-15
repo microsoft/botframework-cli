@@ -189,7 +189,7 @@ WS_IN_LIST_BODY
   ;
 
 NEWLINE_IN_LIST_BODY
-  : '\r'? '\n' {this.ignoreWS = true;} -> skip, popMode
+  : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
   ;
 
 ESCAPE_CHARACTER

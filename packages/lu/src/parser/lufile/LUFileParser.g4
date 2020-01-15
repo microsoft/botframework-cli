@@ -14,6 +14,11 @@ paragraph
     | importSection
     | qnaSection
     | modelInfoSection
+    | newline
+    ;
+
+newline
+    : WS* (NEWLINE | EOF)
     | EOF
     ;
 
@@ -62,7 +67,7 @@ intentBody
 	;
 
 normalIntentBody
-    : WS* (normalIntentString|errorIntentString)+
+    : WS* ((normalIntentString newline)|errorIntentString)+
     ;
 
 normalIntentString
@@ -82,7 +87,7 @@ newEntityDefinition
     ;
 
 newEntityListbody
-    : normalItemString+
+    : (normalItemString newline)+
     ;
 
 newEntityLine
@@ -154,7 +159,7 @@ regexEntityIdentifier
     ;
 
 entityListBody
-    : normalItemString+
+    : (normalItemString newline)+
     ;
 
 normalItemString
@@ -186,7 +191,7 @@ questionText
     ;
 
 moreQuestionsBody
-    : WS* (moreQuestion)*
+    : WS* (moreQuestion newline)*
     ;
 
 moreQuestion
@@ -202,7 +207,7 @@ filterSection
     ;
 
 filterLine
-    : WS* DASH (WS|TEXT)*
+    : WS* DASH (WS|TEXT)* newline
     ;
 
 multiLineAnswer

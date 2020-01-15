@@ -1143,7 +1143,6 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             entityIdxByLevel.push({level : 0, entity : rootEntity});
         } 
         
-        console.log(entityLines)
         currentParentEntity = entityIdxByLevel.reverse().find(item => item.level == tabLevel - baseTabLevel);
         entityIdxByLevel.reverse();
         if (!currentParentEntity) {

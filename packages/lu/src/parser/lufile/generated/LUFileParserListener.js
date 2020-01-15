@@ -29,6 +29,15 @@ LUFileParserListener.prototype.exitParagraph = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#newline.
+LUFileParserListener.prototype.enterNewline = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#newline.
+LUFileParserListener.prototype.exitNewline = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#nestedIntentSection.
 LUFileParserListener.prototype.enterNestedIntentSection = function(ctx) {
 };
