@@ -7,19 +7,21 @@ file
 	;
 
 paragraph
-    : nestedIntentSection
+    : newline
+    | nestedIntentSection
     | simpleIntentSection
     | entitySection
     | newEntitySection
     | importSection
     | qnaSection
     | modelInfoSection
-    | newline
     ;
 
+// Treat EOF as newline to hanle file end gracefully
+// It's possible that parser doesn't even have to handle NEWLINE, 
+// but before the syntax is finalized, we still keep the NEWLINE in grammer 
 newline
     : WS* (NEWLINE | EOF)
-    | EOF
     ;
 
 nestedIntentSection
@@ -67,7 +69,7 @@ intentBody
 	;
 
 normalIntentBody
-    : WS* ((normalIntentString newline)|errorIntentString)+
+    : WS* ((normalIntentString newline) | errorIntentString)+
     ;
 
 normalIntentString
