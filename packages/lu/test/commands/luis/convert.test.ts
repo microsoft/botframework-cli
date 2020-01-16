@@ -500,7 +500,7 @@ describe('luis:convert negative tests', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3.lu')}`])
   .it('luis:convert should show ERR message when no utterances are found for an intent', async (ctx: any) => {
-    expect(ctx.stderr).to.contain("[ERROR] line 4:0 - line 4:1: syntax error: invalid input 'i' detected.")
+    expect(ctx.stderr).to.contain("[ERROR] line 4:0 - line 4:16: Invalid intent body line, did you miss \'-\' at line begin")
   })
 
   test
