@@ -155,6 +155,15 @@ LUFileParserListener.prototype.exitNormalIntentString = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserListener.prototype.enterErrorIntentString = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserListener.prototype.exitErrorIntentString = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#newEntitySection.
 LUFileParserListener.prototype.enterNewEntitySection = function(ctx) {
 };

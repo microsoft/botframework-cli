@@ -25,7 +25,7 @@ newline
     ;
 
 nestedIntentSection
-    : nestedIntentNameLine newline+ nestedIntentBodyDefinition
+    : nestedIntentNameLine nestedIntentBodyDefinition
     ;
 
 nestedIntentNameLine
@@ -53,7 +53,7 @@ simpleIntentSection
     ;
 
 intentDefinition
-	: intentNameLine newline intentBody?
+	: intentNameLine intentBody?
 	;
 
 intentNameLine
@@ -69,19 +69,23 @@ intentBody
 	;
 
 normalIntentBody
-    : WS* (normalIntentString newline)+
+    : WS* ((normalIntentString newline) | errorIntentString)+
     ;
 
 normalIntentString
 	: WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
 
+errorIntentString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
 newEntitySection
     : newEntityDefinition
     ;
 
 newEntityDefinition
-    : newEntityLine newline newEntityListbody?
+    : newEntityLine newEntityListbody?
     ;
 
 newEntityListbody
@@ -133,7 +137,7 @@ entitySection
     ;
 
 entityDefinition
-    : entityLine newline entityListBody?
+    : entityLine entityListBody?
     ;
     
 entityLine
@@ -181,7 +185,7 @@ qnaDefinition
     ;
 
 qnaQuestion
-    : WS* QNA questionText newline
+    : WS* QNA questionText
     ;
 
 questionText
