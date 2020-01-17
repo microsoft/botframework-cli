@@ -108,6 +108,12 @@ LUFileParserVisitor.prototype.visitNormalIntentString = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserVisitor.prototype.visitErrorIntentString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#newEntitySection.
 LUFileParserVisitor.prototype.visitNewEntitySection = function(ctx) {
   return this.visitChildren(ctx);

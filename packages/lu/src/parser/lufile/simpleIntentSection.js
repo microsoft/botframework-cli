@@ -4,19 +4,21 @@ const NewEntitySection = require('./newEntitySection');
 const visitor = require('./visitor');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
+const LUSectionTypes = require('./../utils/enums/lusectiontypes');
+const NEWLINE = require('os').EOL;
 
 class SimpleIntentSection {
     /**
      * 
      * @param {SimpleIntentSectionContext} parseTree 
      */
-    constructor(parseTree) {
+    constructor(parseTree, content) {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.SIMPLEINTENTSECTION;
         this.UtteranceAndEntitiesMap = [];
         this.Entities = [];
         this.Errors = [];
+        this.Body = '';
         
         if (parseTree) {
             this.Name = this.ExtractName(parseTree);
@@ -25,6 +27,7 @@ class SimpleIntentSection {
             this.Entities = this.ExtractEntities(parseTree);
             this.Errors = result.errors;
             this.Id = `${this.SectionType}_${this.Name}`;
+            this.Body = this.ExtractBody(parseTree, content)
         }
     }
 
@@ -36,6 +39,14 @@ class SimpleIntentSection {
         let utteranceAndEntitiesMap = [];
         let errors = [];
         if (parseTree.intentDefinition().intentBody() && parseTree.intentDefinition().intentBody().normalIntentBody()) {
+            for (const errorIntentStr of parseTree.intentDefinition().intentBody().normalIntentBody().errorIntentString()) {
+                if (errorIntentStr.getText().trim() !== '') {
+                    errors.push(BuildDiagnostic({
+                    message: "Invalid intent body line, did you miss '-' at line begin",
+                    context: errorIntentStr
+                }))}
+            }
+
             for (const normalIntentStr of parseTree.intentDefinition().intentBody().normalIntentBody().normalIntentString()) {
                 let utteranceAndEntities = visitor.visitNormalIntentStringContext(normalIntentStr);
                 utteranceAndEntities.context = normalIntentStr;
@@ -76,6 +87,23 @@ class SimpleIntentSection {
         }
 
         return entitySections;
+    }
+
+    ExtractBody(parseTree, content) {
+        const startLine = parseTree.start.line - 1
+        const stopLine = parseTree.stop.line - 1
+        const originList = content.split(/\r?\n/)
+        if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.Length <= stopLine) {
+            throw new Error("index out of range.")
+        }
+
+        if (startLine < stopLine) {
+            const destList = originList.slice(startLine + 1, stopLine + 1)
+
+            return destList.join(NEWLINE)
+        } else {
+            return ''
+        }
     }
 }
 

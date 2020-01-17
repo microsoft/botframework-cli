@@ -38,7 +38,7 @@ class LUParser {
 
         let isSectionEnabled = this.isSectionEnabled(sections);
 
-        let nestedIntentSections = this.extractNestedIntentSections(fileContent);
+        let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
         nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
         if (isSectionEnabled) {
             sections = sections.concat(nestedIntentSections);
@@ -64,7 +64,7 @@ class LUParser {
             });
         }
 
-        let simpleIntentSections = this.extractSimpleIntentSections(fileContent);
+        let simpleIntentSections = this.extractSimpleIntentSections(fileContent, content);
         simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(simpleIntentSections);
 
@@ -113,9 +113,10 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
+     * @param {string} content 
      */
-    static extractNestedIntentSections(fileContext) {
+    static extractNestedIntentSections(fileContext, content) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
@@ -125,15 +126,16 @@ class LUParser {
             .map(x => x.nestedIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x));
+        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x, content));
 
         return nestedIntentSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
+     * @param {string} content 
      */
-    static extractSimpleIntentSections(fileContext) {
+    static extractSimpleIntentSections(fileContext, content) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
@@ -143,7 +145,7 @@ class LUParser {
             .map(x => x.simpleIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x));
+        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x, content));
 
         return simpleIntentSectionList;
     }
