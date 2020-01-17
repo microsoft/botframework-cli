@@ -13,7 +13,7 @@
     "version": {
         "Major": 0,
         "Minor": 8,
-        "Patch": 31
+        "Patch": 32
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [

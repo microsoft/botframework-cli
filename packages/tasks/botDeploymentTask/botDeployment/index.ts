@@ -11,7 +11,8 @@ import { lstatSync, readFileSync } from 'fs';
 
 const input = new InputValues();
 const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
-const outputFile = `"${ rootPath }/DirectLineCreate.json`;
+const outputFileDirectLine = `"${ rootPath }/DirectLineCreate.json`;
+const outputFileTeams = `"${ rootPath }/TeamsCreate.json`;
 let formattedParams = new Map<string, string>();  
 let botName:string = '';
 let webAppName:string = '';
@@ -168,24 +169,24 @@ const botDeployment = (): void => {
 const directLineConnection = (): void => {
     try {
         console.log('Connecting to Channel: Direct Line...');         
-        const command = `az bot directline create -n "${ botName }" -g "${ input.resourceGroup }"`;
+        const command = `az bot directline create -n "${ botName }" -g "${ input.resourceGroup }" > "${ outputFileDirectLine }"`;
     
         execSync(command);
-        console.log('Connection with Teams succeeded'); 
+        console.log('Connection with Direct Line succeeded'); 
     } catch (error) {
-        throw new Error('Error in Teams connection: ' + error);    
+        throw new Error('Error in Direct Line connection: ' + error);    
     }
 }
 
 const teamsConnection = (): void => {
     try {
         console.log('Connecting to Channel: Teams...');         
-        const command = `az bot msteams create -n "${ botName }" -g "${ input.resourceGroup }" > "${ outputFile }"`;
+        const command = `az bot msteams create -n "${ botName }" -g "${ input.resourceGroup }" > "${ outputFileTeams }"`;
     
         execSync(command);
-        console.log('Connection with Direct Line succeeded'); 
+        console.log('Connection with Teams succeeded'); 
     } catch (error) {
-        throw new Error('Error in Direct Line connection: ' + error);    
+        throw new Error('Error in Teams connection: ' + error);    
     }
 }
 
