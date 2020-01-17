@@ -35,6 +35,9 @@ const azureLogin = (helper: SubscriptionHelper): void => {
 const getTemplateParameters = (): string => {
     let parameters = '';  
 
+    console.log('input.parameterFile: ' + input.parameterFile);
+    console.log('isFile(): ' + lstatSync(input.parameterFile).isFile());
+
     if (input.parameterFile && lstatSync(input.parameterFile).isFile()) {        
         getResourcesNames();
         parameters += ` --parameters "${ input.parameterFile }"`;
