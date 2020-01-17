@@ -117,7 +117,7 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
   }
 
   return resources
-},
+}
 
 /**
  * Lu cross training core function. Do lu cross training from a root to its children once.
@@ -138,7 +138,7 @@ const luCrossTrain = function (rootResourceId, resources, intentName) {
   mergeRootInteruptionToLeaves(rootResource, idToResourceMap, intentName)
 
   return Array.from(idToResourceMap.values())
-},
+}
 
 const mergeRootInteruptionToLeaves = function (rootResource, result, intentName) {
   if (rootResource.children === undefined || rootResource.length <= 0) return
@@ -153,7 +153,7 @@ const mergeRootInteruptionToLeaves = function (rootResource, result, intentName)
       mergeRootInteruptionToLeaves(newChildResource, result, intentName)
     }
   }
-},
+}
 
 const mergeBrothersInteruption = function (resource, result, intentName) {
   let children = resource.children
@@ -180,7 +180,7 @@ const mergeBrothersInteruption = function (resource, result, intentName) {
     targetResource = mergeInteruptionIntent(brotherUtterances, targetResource, intentName)
     result.set(targetResource.id, targetResource)
   }
-},
+}
 
 const mergeFatherInteruptionToChild = function (fatherResource, childResource, intentName) {
   const fatherInteruptions = fatherResource.content.Sections.filter(s => s.Name === intentName)
@@ -191,7 +191,7 @@ const mergeFatherInteruptionToChild = function (fatherResource, childResource, i
   }
 
   return childResource
-},
+}
 
 const mergeInteruptionIntent = function (fromUtterances, toResource, intentName) {
   const toInteruptions = toResource.content.Sections.filter(section => section.Name === intentName)
@@ -244,7 +244,7 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
   }
 
   return toResource
-},
+}
 
 /**
  * do qna cross training with lu files
@@ -274,7 +274,7 @@ const qnaCrossTrain = function (qnaObjectArray, luFileIdToResourceMap, verbose) 
   } catch (err) {
     throw (err)
   }
-},
+}
 
 /**
  * qna cross training core function
@@ -325,7 +325,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   }
 
   return { luResource: trainedLuResource, qnaResource: trainedQnaResource }
-},
+}
 
 /**
  * Parse and validate lu or qna object array to convert to LUResource object dict
