@@ -24,6 +24,14 @@ class QnaSection {
     ExtractMoreQuestions(parseTree) {
         let questions = [];
         let questionsBody = parseTree.qnaDefinition().moreQuestionsBody();
+        for (const errorQuestionStr of questionsBody.errorQuestionString()) {
+            if (errorQuestionStr.getText().trim() !== '') {
+                errors.push(BuildDiagnostic({
+                message: "Invalid QnA question line, did you miss '-' at line begin",
+                context: errorQuestionStr
+            }))}
+        }
+
         for (const question of questionsBody.moreQuestion()) {
             let questionText = question.getText().trim();
             questions.push(questionText.substr(1).trim());
@@ -35,9 +43,17 @@ class QnaSection {
     ExtractFilterPairs(parseTree) {
         let filterPairs = [];
         let filterSection = parseTree.qnaDefinition().qnaAnswerBody().filterSection();
+        
         if (filterSection) {
-            let filterLines = filterSection.filterLine();
-            for (const filterLine of filterLines) {
+            for (const errorFilterLineStr of filterSection.errorFilterLine()) {
+                if (errorFilterLineStr.getText().trim() !== '') {
+                    errors.push(BuildDiagnostic({
+                    message: "Invalid QnA filter line, did you miss '-' at line begin",
+                    context: errorFilterLineStr
+                }))}
+            }
+    
+            for (const filterLine of filterSection.filterLine()) {
                 let filterLineText = filterLine.getText().trim();
                 filterLineText = filterLineText.substr(1).trim()
                 let filterPair = filterLineText.split('=');
