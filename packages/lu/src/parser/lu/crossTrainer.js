@@ -207,11 +207,8 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
     })
 
     if (newFileContent === '') return toResource
-    let existingContent = toInteruption.ParseTree.intentDefinition().getText().trim()
-    if (existingContent.endsWith('<EOF>')) {
-      existingContent = existingContent.slice(0, existingContent.length - 5)
-    }
 
+    const existingContent = `# ${toInteruption.Name}${NEWLINE}${toInteruption.Body}`
     newFileContent = existingContent + NEWLINE + newFileContent
     let lines = newFileContent.split(/\r?\n/)
     let newLines = []

@@ -1,8 +1,9 @@
-const luParser = require('./luParser')
-const helpers = require('./../utils/helpers')
-const NEWLINE = require('os').EOL
+const luParser = require('./luParser');
+const helpers = require('./../utils/helpers');
+const NEWLINE = require('os').EOL;
   
 class SectionOperator {
+  
   /**
    * @param {LUResource} luresource 
    */
