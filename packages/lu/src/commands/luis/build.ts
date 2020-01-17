@@ -4,7 +4,7 @@
  */
 
 import {Command, flags} from '@microsoft/bf-cli-command'
-import {Builder} from './../../parser/lubuild/build'
+import {Builder} from '../../parser/lubuild/builder'
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'

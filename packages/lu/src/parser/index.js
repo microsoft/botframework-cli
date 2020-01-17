@@ -30,6 +30,9 @@ const modules = {
         luParser: require('./lufile/luParser'),
         sectionOperator: require('./lufile/sectionOperator'),
         luSectionTypes: require('./utils/enums/lusectiontypes')
+    },
+    luBuild: {
+        builder: require('./lubuild/builder').Builder
     }
 };
 module.exports = modules;
