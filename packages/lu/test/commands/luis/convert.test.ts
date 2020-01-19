@@ -212,6 +212,14 @@ describe('luis:convert', () => {
     })
 
     test
+    .stderr()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/list-entity-body-without-hyphen.lu')}`])
+    .it('luis:convert writes out an error when list entity body without hyphen is found', async (ctx: any) => {
+      expect(ctx.stderr).to.contain("[ERROR] line 5:0 - line 5:2: Invalid list entity line, did you miss '-' at line begin")
+      expect(ctx.stderr).to.contain("[ERROR] line 8:0 - line 8:2: Invalid list entity line, did you miss '-' at line begin")
+    })
+
+    test
     .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/root19.json', '--name', 'collated-luis'])
     .it('luis:convert Collate can correctly merge LUIS content split across LU files', async () => {
