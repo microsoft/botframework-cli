@@ -1,5 +1,6 @@
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
-const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
+const LUSectionTypes = require('./../utils/enums/lusectiontypes');
+const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 
 class QnaSection {
     /**
@@ -10,10 +11,13 @@ class QnaSection {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.QNASECTION;
         this.Questions = [this.ExtractQuestion(parseTree)];
-        this.Questions = this.Questions.concat(this.ExtractMoreQuestions(parseTree));
-        this.FilterPairs = this.ExtractFilterPairs(parseTree);
+        let result = this.ExtractMoreQuestions(parseTree);
+        this.Questions = this.Questions.concat(result.questions);
+        this.Errors = result.errors;
+        result = this.ExtractFilterPairs(parseTree);
+        this.FilterPairs = result.filterPairs;
+        this.Errors = this.Errors.concat(result.errors);
         this.Answer = this.ExtractAnswer(parseTree);
-        this.Errors = [];
         this.Id = `${this.SectionType}_${this.Questions.join('_')}`;
     }
 
@@ -23,6 +27,7 @@ class QnaSection {
 
     ExtractMoreQuestions(parseTree) {
         let questions = [];
+        let errors = [];
         let questionsBody = parseTree.qnaDefinition().moreQuestionsBody();
         for (const errorQuestionStr of questionsBody.errorQuestionString()) {
             if (errorQuestionStr.getText().trim() !== '') {
@@ -37,13 +42,13 @@ class QnaSection {
             questions.push(questionText.substr(1).trim());
         }
 
-        return questions;
+        return { questions, errors };
     }
 
     ExtractFilterPairs(parseTree) {
         let filterPairs = [];
+        let errors = [];
         let filterSection = parseTree.qnaDefinition().qnaAnswerBody().filterSection();
-        
         if (filterSection) {
             for (const errorFilterLineStr of filterSection.errorFilterLine()) {
                 if (errorFilterLineStr.getText().trim() !== '') {
@@ -63,7 +68,7 @@ class QnaSection {
             }
         } 
 
-        return filterPairs;
+        return { filterPairs, errors };
     }
 
     ExtractAnswer(parseTree) {
