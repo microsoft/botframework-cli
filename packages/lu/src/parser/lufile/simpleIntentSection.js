@@ -22,10 +22,12 @@ class SimpleIntentSection {
         
         if (parseTree) {
             this.Name = this.ExtractName(parseTree);
-            const result = this.ExtractUtteranceAndEntitiesMap(parseTree);
+            let result = this.ExtractUtteranceAndEntitiesMap(parseTree);
             this.UtteranceAndEntitiesMap = result.utteranceAndEntitiesMap;
-            this.Entities = this.ExtractEntities(parseTree);
             this.Errors = result.errors;
+            result =  this.ExtractEntities(parseTree);
+            this.Entities = result.entitySections;
+            this.Errors = this.Errors.concat(result.errors);
             this.Id = `${this.SectionType}_${this.Name}`;
             this.Body = this.ExtractBody(parseTree, content)
         }
@@ -74,19 +76,24 @@ class SimpleIntentSection {
 
     ExtractEntities(parseTree) {
         let entitySections = [];
+        let errors = [];
         if (parseTree.entitySection) {
             for (const entitySection of parseTree.entitySection()) {
-                entitySections.push(new EntitySection(entitySection));
+                const entitySectionObj = new EntitySection(entitySection);
+                entitySections.push(entitySectionObj);
+                errors = errors.concat(entitySectionObj.Errors);
             }
         }
 
         if (parseTree.newEntitySection) {
-            for (const entitySection of parseTree.newEntitySection()) {
-                entitySections.push(new NewEntitySection(entitySection));
+            for (const newEntitySection of parseTree.newEntitySection()) {
+                const newEntitiySectionObj = new NewEntitySection(newEntitySection);
+                entitySections.push(newEntitiySectionObj);
+                errors = errors.concat(newEntitiySectionObj.Errors);
             }
         }
 
-        return entitySections;
+        return { entitySections, errors };
     }
 
     ExtractBody(parseTree, content) {

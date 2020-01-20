@@ -32,6 +32,14 @@ class EntitySection {
         let errors = [];
 
         if (parseTree.entityDefinition().entityListBody()) {
+            for (const errorItemStr of parseTree.entityDefinition().entityListBody().errorItemString()) {
+                if (errorItemStr.getText().trim() !== '') {
+                    errors.push(BuildDiagnostic({
+                    message: "Invalid list entity line, did you miss '-' at line begin",
+                    context: errorItemStr
+                }))}
+            }
+
             for (const normalItemStr of parseTree.entityDefinition().entityListBody().normalItemString()) {
                 var itemStr = normalItemStr.getText().trim();
                 synonymsOrPhraseList.push(itemStr.substr(1).trim());
