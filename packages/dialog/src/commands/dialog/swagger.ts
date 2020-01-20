@@ -2,13 +2,10 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-import { OpenAPI, OpenAPIV2 } from 'openapi-types';
 import { Command, flags } from '@microsoft/bf-cli-command';
 import * as gen from '../../library/dialogGenerator';
 import * as swaggerGen from '../../library/swaggerDialogGenerator';
 import * as ppath from 'path'
-import * as fs from 'fs-extra'
-import * as sw from 'swagger-parser';
 
 export default class Swagger extends Command {
   static description = '[PREVIEW] Generate localized .lu, .lg, .qna and .dialog assets to define a bot based on a schema using templates.'

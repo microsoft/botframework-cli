@@ -6,7 +6,6 @@ import { OpenAPIV2 } from 'openapi-types';
 import * as ppath from 'path'
 import * as fs from 'fs-extra'
 import * as sw from 'swagger-parser';
-import { Schema } from './schema';
 
 export enum FeedbackType {
   message,
