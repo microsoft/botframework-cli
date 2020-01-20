@@ -161,7 +161,7 @@ class LUParser {
 
         let entitySections = fileContext.paragraph()
             .map(x => x.entitySection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let entitySectionList = entitySections.map(x => new EntitySection(x));
 
@@ -177,13 +177,13 @@ class LUParser {
                 return [];
         }
 
-        let entitySections = fileContext.paragraph()
+        let newEntitySections = fileContext.paragraph()
             .map(x => x.newEntitySection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
+        
+        let newEntitySectionList = newEntitySections.map(x => new NewEntitySection(x));
 
-        let entitySectionList = entitySections.map(x => new NewEntitySection(x));
-
-        return entitySectionList;
+        return newEntitySectionList;
     }
 
     /**
@@ -197,7 +197,7 @@ class LUParser {
 
         let importSections = fileContext.paragraph()
             .map(x => x.importSection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let importSectionList = importSections.map(x => new ImportSection(x));
 
@@ -215,7 +215,7 @@ class LUParser {
 
         let qnaSections = fileContext.paragraph()
             .map(x => x.qnaSection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let qnaSectionList = qnaSections.map(x => new QnaSection(x));
 
@@ -233,7 +233,7 @@ class LUParser {
 
         let modelInfoSections = fileContext.paragraph()
             .map(x => x.modelInfoSection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
 

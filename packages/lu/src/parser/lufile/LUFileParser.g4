@@ -89,7 +89,7 @@ newEntityDefinition
     ;
 
 newEntityListbody
-    : (normalItemString newline)+
+    : ((normalItemString newline) | errorItemString)+
     ;
 
 newEntityLine
@@ -161,11 +161,15 @@ regexEntityIdentifier
     ;
 
 entityListBody
-    : (normalItemString newline)+
+    : ((normalItemString newline) | errorItemString)+
     ;
 
 normalItemString
     : WS* DASH (WS|TEXT|EXPRESSION)*
+    ;
+
+errorItemString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
     ;
 
 importSection
@@ -193,11 +197,15 @@ questionText
     ;
 
 moreQuestionsBody
-    : WS* (moreQuestion newline)*
+    : WS* ((moreQuestion newline) | errorQuestionString)*
     ;
 
 moreQuestion
     : DASH (WS|TEXT)*
+    ;
+
+errorQuestionString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
     ;
 
 qnaAnswerBody
@@ -205,11 +213,15 @@ qnaAnswerBody
     ;
 
 filterSection
-    : WS* FILTER_MARK filterLine+
+    : WS* FILTER_MARK (filterLine | errorFilterLine)+
     ;
 
 filterLine
     : WS* DASH (WS|TEXT)* newline
+    ;
+
+errorFilterLine
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
     ;
 
 multiLineAnswer
