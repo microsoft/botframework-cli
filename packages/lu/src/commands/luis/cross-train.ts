@@ -13,7 +13,7 @@ export default class LuisCrossTrian extends Command {
     help: flags.help({char: 'h', description: 'luis:cross-train help'}),
     in: flags.string({char: 'i', description: 'source lu and qna files folder'}),
     out: flags.string({char: 'o', description: 'output folder name. If not specified, source files will be updated'}),
-    root: flags.string({description: 'root lu file to do cross training. Separated by comma if multiple root files exist'}),
+    root: flags.string({description: 'root lu file(s) to do cross training. Separated by comma if multiple root files exist'}),
     intentName: flags.string({description: 'Interuption intent name', default: '_Interuption'})
   }
 
