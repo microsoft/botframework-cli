@@ -529,7 +529,7 @@ describe('luis:convert negative tests', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3a.lu')}`])
   .it('luis:convert should show ERR message when no labelled value is found for an entity', async (ctx: any) => {
-    expect(ctx.stderr).to.contain('[ERROR] line 4:0 - line 4:19: No labelled value found for entity: "tomato" in utterance: "-i wangt {tomato=}"')
+    expect(ctx.stderr).to.contain('[ERROR] line 4:0 - line 4:19: No labelled value found for entity: "tomato" in utterance: "- i wangt {tomato=}"')
   })
 
   test

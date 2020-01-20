@@ -29,7 +29,7 @@ nestedIntentSection
     ;
 
 nestedIntentNameLine
-    : WS* HASH nestedIntentName
+    : WS* HASH WS* nestedIntentName
     ;
 
 nestedIntentName
@@ -57,7 +57,7 @@ intentDefinition
 	;
 
 intentNameLine
-	: WS* HASH HASH? intentName
+	: WS* HASH HASH? WS* intentName
 	;
 
 intentName
@@ -165,7 +165,7 @@ entityListBody
     ;
 
 normalItemString
-    : WS* DASH (WS|TEXT|EXPRESSION)*
+    : WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
     ;
 
 errorItemString
@@ -193,7 +193,7 @@ qnaQuestion
     ;
 
 questionText
-    : (WS|QNA_TEXT)*
+    : QNA_TEXT*
     ;
 
 moreQuestionsBody
