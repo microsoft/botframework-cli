@@ -1,0 +1,73 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {
+        "CancelConfirmation": {
+            "type": "string",
+            "$entities": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "CancelConfirmation.dialog",
+                "CancelConfirmationSet.dialog"
+            ]
+        },
+        "ChangePropertyConfirmation": {
+            "type": "string",
+            "$entities": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "ChangePropertyConfirmationSet.dialog"
+            ]
+        },
+        "CompleteConfirmation": {
+            "type": "string",
+            "$entities": [
+                "Confirmation", "PROPERTYName"
+            ],
+            "$templates": [
+                "CompleteConfirmation.dialog",
+                "CompleteSetConfirmationAndMakeHttpRequest.dialog",
+                "CompleteSetPropertyname.dialog"
+            ]
+        },
+        "PropertyToChange": {
+            "$ref": "#/definitions/PROPERTYName",
+            "$templates": [
+                "PropertyToChangeSet.dialog"
+            ]
+        },
+        "PropertyToRemember": {
+            "$ref": "#/definitions/PROPERTYName",
+            "$templates": [
+                "PropertyToRememberSet.dialog"
+            ]
+        }
+    },
+    "definitions": {
+        "PROPERTYName": {
+            "type": "string",
+            "enum": "@{properties}",
+            "$entities": ["PROPERTYName"]
+        }
+    },
+    "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
+    "$templates": [
+        "helpIntent.lu",
+        "cancelIntent.lu",
+        "noneIntent.lu",
+        "triggerIntent.lu",
+        "readPropertyIntent.lu",
+        "locale.lu",
+        "locale.lg",
+        "luis.lu",
+        "BeginDialog.dialog",
+        "ChooseProperty.dialog",
+        "HelpIntent.dialog",
+        "NotUnderstood.dialog",
+        "TriggerIntent.dialog",
+        "ReadPropertyIntent.dialog",
+        "Main.dialog"
+    ]
+}

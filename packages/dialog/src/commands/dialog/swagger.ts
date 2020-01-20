@@ -4,12 +4,11 @@
  */
 import { OpenAPI, OpenAPIV2 } from 'openapi-types';
 import { Command, flags } from '@microsoft/bf-cli-command';
-import * as gen from '../../library/dialogGenerator'
+import * as gen from '../../library/dialogGenerator';
+import * as swaggerGen from '../../library/swaggerDialogGenerator';
 import * as ppath from 'path'
 import * as fs from 'fs-extra'
 import * as sw from 'swagger-parser';
-import { setFlagsFromString } from 'v8';
-import GenerateDialog from './generate';
 
 export default class Swagger extends Command {
   static description = '[PREVIEW] Generate localized .lu, .lg, .qna and .dialog assets to define a bot based on a schema using templates.'
@@ -38,69 +37,28 @@ export default class Swagger extends Command {
   async run() {
     const { args, flags } = this.parse(Swagger)
     try {
-      let swfile = await sw.dereference(args.path) as OpenAPIV2.Document
-      let uniqueName = swfile.info.title.toLowerCase().replace(' ', '_')
-      let projectName = swfile.info.title.replace(' ', '_') + '.schema'
-      let url = 'https://' + swfile.host as string + swfile.basePath as string + flags.route;
-      let result = {
-        $schema: 'http://json-schema.org/draft-07/schema',
-        type: 'object',
-        properties: {
-        },
-        required: new Array(),
-        $requires: [
-          'standard.schema'
-        ],
-        swaggerApi: url,
-        swaggerMethod: flags.method,
-        swaggerResponse: flags.property,
-        swaggerBody: {}
-      }
-      let body = {}
-      for (let param of swfile.paths[flags.route][flags.method].parameters) {
-        if (param.type === 'integer') {
-          result.properties[uniqueName + param.name] = {
-            type: 'number',
-            description: param.description,
-            minimum: 1,
-            maximum: 100
+      let projectName = 'Swagger.schema'
+      await swaggerGen.generate(args.path, flags.output, flags.method, flags.route, flags.property, projectName,
+        (type, msg) => {
+          if (type === gen.FeedbackType.message
+            || type === gen.FeedbackType.error
+            || (type === gen.FeedbackType.info && flags.verbose)) {
+            this.progress(msg)
           }
-        } else if (param.type === 'string') {
-          result.properties[uniqueName + param.name] = {
-            type: 'string',
-            $entities: [
-              'utterance'
-            ],
-            description: param.description
-          }
-        } else {
-          result.properties[uniqueName + param.name] = {
-            type: param.type,
-            description: param.description
-          }
-        }
-        body[param.name] = '$' + uniqueName + param.name;
-        result.required.push(uniqueName + param.name)
-      }
-      result.swaggerBody = body;
-
-      console.log(ppath.join(flags.output, projectName))
-      await fs.ensureDir(flags.output)
-      await fs.writeFile(ppath.join(flags.output, projectName), JSON.stringify(result, null, 4))
-
+        });
       let schemaName = ppath.join(flags.output, projectName)
       let outDir = flags.output
       if (!outDir) {
-          outDir = ppath.join(schemaName + '-resources')
+        outDir = ppath.join(schemaName + '-resources')
       }
       await gen.generate(schemaName, outDir, flags.schema, flags.locale, flags.templates, flags.force,
-          (type, msg) => {
-              if (type === gen.FeedbackType.message
-                  || type === gen.FeedbackType.error
-                  || (type === gen.FeedbackType.info && flags.verbose)) {
-                  this.progress(msg)
-              }
-          })
+        (type, msg) => {
+          if (type === gen.FeedbackType.message
+            || type === gen.FeedbackType.error
+            || (type === gen.FeedbackType.info && flags.verbose)) {
+            this.progress(msg)
+          }
+        })
       return true;
     } catch (e) {
       this.thrownError(e)

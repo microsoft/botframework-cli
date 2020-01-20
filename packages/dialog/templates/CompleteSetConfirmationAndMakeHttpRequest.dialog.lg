@@ -1,0 +1,52 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "CompleteConfirmation",
+    "entity": "Confirmation",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$CompleteConfirmation",
+            "value": "@Confirmation"
+        },
+        {
+            "$kind": "Microsoft.IfCondition",
+            "condition":"$CompleteConfirmation == 'no'",
+            "actions": [
+                {
+                  "$kind": "Microsoft.HttpRequest",
+                  "method": "@{swaggerMethod}",
+                  "url": "@{swaggerApi}",
+                  "responseType": "Json",
+                  "resultProperty": "@{swaggerResponse}",
+                  "body": @{swaggerBody}
+                },
+                {
+                  "$kind": "Microsoft.SendActivity",
+                  "activity": "@{sendSuccess()}"
+                },
+                {
+                  "$kind": "Microsoft.EndDialog"
+                }
+            ],
+            "elseActions":[
+                {
+                    "$kind": "Microsoft.Ask",
+                    "activity": "@{callChooseProperty()}",
+                    "expectedProperties": [
+                        "PropertyToChange"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+# callChooseProperty
+- @\{chooseProperty()}
+
+# sendSuccess
+- Send Http Request successfully! Reseponse : \@{@{swaggerResponse}}
