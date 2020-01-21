@@ -70,7 +70,7 @@ DASH
   ;
 
 DOLLAR
-  : '$' {this.ignoreWS = true;} -> pushMode(ENTITY_MODE)
+  : '$' -> pushMode(ENTITY_MODE)
   ;
 
 AT
@@ -102,21 +102,21 @@ mode NEW_ENTITY_MODE;
 WS_IN_NEW_ENTITY_IGNORED
   : WS {this.ignoreWS}? -> skip
   ;
-
+  
 WS_IN_NEW_ENTITY
   : WS -> type(WS)
   ;
 
 NEWLINE_IN_NEW_ENTITY
-  : '\r'? '\n' {this.ignoreWS = true;} -> skip, popMode
+  : '\r'? '\n' -> skip, popMode
+  ;
+
+EQUAL
+  : '='
   ;
 
 COMMA
   : ','
-  ;
-
-NEW_EQUAL
-  : '='
   ;
 
 HAS_ROLES_LABEL
@@ -131,24 +131,20 @@ NEW_ENTITY_TYPE_IDENTIFIER
   : S I M P L E | L I S T | R E G E X | P R E B U I L T | C O M P O S I T E | M L | P A T T E R N A N Y | P H R A S E L I S T | I N T E N T
   ;
 
-NEW_ENTITY_IDENTIFIER
-  : (LETTER | NUMBER | '_' | '-' | '|' | '.' | '(' | ')')+
-  ;
-
-NEW_ENTITY_IDENTIFIER_WITH_WS
-  : ('\'' | '"') (LETTER | NUMBER | '_' | '-' | '|' | '.' | WS)+ ('\'' | '"')
-  ;
-
 NEW_COMPOSITE_ENTITY
-  : '[' (~[\r\n{}[()])* ']'
+  : '[' (~[\r\n{}[\]()])* ']'
   ;
 
 NEW_REGEX_ENTITY
   : '/' (~[\r\n])* '/'
   ;
 
-NEW_TEXT
-  : ~[ \t\r\n.,;]+ 
+NEW_ENTITY_IDENTIFIER
+  : (~[ \t\r\n,;'"])+
+  ;
+
+NEW_ENTITY_IDENTIFIER_WITH_WS
+  : ('\'' | '"') (~[\t\r\n,;'"])+ ('\'' | '"')
   ;
 
 mode INTENT_NAME_MODE;
@@ -197,28 +193,24 @@ TEXT
 
 mode ENTITY_MODE;
 
-WS_IN_ENTITY_IGNORED
-  : WS {this.ignoreWS}? -> skip
-  ;
-
 WS_IN_ENTITY
   : WS -> type(WS)
   ;
 
 NEWLINE_IN_ENTITY
-  : '\r'? '\n' {this.ignoreWS = true;} -> skip, popMode
+  : '\r'? '\n' -> skip, popMode
   ;
 
 COMPOSITE_ENTITY
-  : '[' (~[\r\n{}[()])*
+  : '[' (~[\r\n{}[\]()])* ']'
   ;
 
 REGEX_ENTITY
-  : '/' (~[\r\n])*
+  : '/' (~[\r\n])* '/'
   ;
 
 ENTITY_TEXT
-  : ~[ \t\r\n:]+ { this.ignoreWS = false;}
+  : ~[ \t\r\n:]+
   ;
 
 COLON_MARK

@@ -174,12 +174,6 @@ LUFileParserVisitor.prototype.visitNewEntityRoleOrFeatures = function(ctx) {
 };
 
 
-// Visit a parse tree produced by LUFileParser#text.
-LUFileParserVisitor.prototype.visitText = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
 // Visit a parse tree produced by LUFileParser#newEntityName.
 LUFileParserVisitor.prototype.visitNewEntityName = function(ctx) {
   return this.visitChildren(ctx);

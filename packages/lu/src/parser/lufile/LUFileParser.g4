@@ -93,7 +93,7 @@ newEntityListbody
     ;
 
 newEntityLine
-    : WS* AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
+    : WS* AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? EQUAL? (newCompositeDefinition|newRegexDefinition)?
     ;
 
 newCompositeDefinition
@@ -117,15 +117,11 @@ newEntityUsesFeatures
     ;
 
 newEntityRoleOrFeatures
-    : text (COMMA text)*
-    ;
-
-text
-    : NEW_TEXT | NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER (COMMA NEW_ENTITY_IDENTIFIER)*
     ;
 
 newEntityName
-    : NEW_ENTITY_TYPE_IDENTIFIER | NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER
     ;
 
 newEntityNameWithWS

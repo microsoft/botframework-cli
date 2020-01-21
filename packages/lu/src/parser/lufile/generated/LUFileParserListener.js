@@ -254,15 +254,6 @@ LUFileParserListener.prototype.exitNewEntityRoleOrFeatures = function(ctx) {
 };
 
 
-// Enter a parse tree produced by LUFileParser#text.
-LUFileParserListener.prototype.enterText = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#text.
-LUFileParserListener.prototype.exitText = function(ctx) {
-};
-
-
 // Enter a parse tree produced by LUFileParser#newEntityName.
 LUFileParserListener.prototype.enterNewEntityName = function(ctx) {
 };
