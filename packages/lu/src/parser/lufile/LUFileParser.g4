@@ -93,7 +93,7 @@ newEntityListbody
     ;
 
 newEntityLine
-    : WS* AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? EQUAL? (newCompositeDefinition|newRegexDefinition)?
+    : WS* AT WS* newEntityType? WS* (newEntityName|newEntityNameWithWS) WS* newEntityRoles? WS* newEntityUsesFeatures? WS* EQUAL? WS* (newCompositeDefinition|newRegexDefinition)? newline
     ;
 
 newCompositeDefinition
@@ -109,15 +109,15 @@ newEntityType
     ;
 
 newEntityRoles
-    : HAS_ROLES_LABEL? newEntityRoleOrFeatures
+    : HAS_ROLES_LABEL? WS* newEntityRoleOrFeatures
     ;
 
 newEntityUsesFeatures
-    : HAS_FEATURES_LABEL newEntityRoleOrFeatures
+    : HAS_FEATURES_LABEL WS* newEntityRoleOrFeatures
     ;
 
 newEntityRoleOrFeatures
-    : NEW_ENTITY_IDENTIFIER (COMMA NEW_ENTITY_IDENTIFIER)*
+    : NEW_ENTITY_IDENTIFIER (WS* COMMA WS* NEW_ENTITY_IDENTIFIER)*
     ;
 
 newEntityName

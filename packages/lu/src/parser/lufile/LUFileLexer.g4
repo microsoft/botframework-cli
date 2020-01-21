@@ -1,9 +1,5 @@
 lexer grammar LUFileLexer;
 
-@lexer::members {
-  var ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
-}
-
 // fragments
 fragment A: 'a' | 'A';
 fragment B: 'b' | 'B';
@@ -74,7 +70,7 @@ DOLLAR
   ;
 
 AT
-  : '@' {this.ignoreWS = true;} -> pushMode(NEW_ENTITY_MODE)
+  : '@' -> pushMode(NEW_ENTITY_MODE)
   ;
 
 IMPORT_DESC
@@ -99,16 +95,12 @@ INVALID_TOKEN_DEFAULT_MODE
   
 mode NEW_ENTITY_MODE;
 
-WS_IN_NEW_ENTITY_IGNORED
-  : WS {this.ignoreWS}? -> skip
-  ;
-  
 WS_IN_NEW_ENTITY
   : WS -> type(WS)
   ;
 
 NEWLINE_IN_NEW_ENTITY
-  : '\r'? '\n' -> skip, popMode
+  : '\r'? '\n' -> type(NEWLINE), popMode
   ;
 
 EQUAL
