@@ -128,7 +128,7 @@ NEW_COMPOSITE_ENTITY
   ;
 
 NEW_REGEX_ENTITY
-  : '/' (~[\r\n])* '/'
+  : '/' (~[\r\n])*
   ;
 
 NEW_ENTITY_IDENTIFIER
@@ -172,7 +172,7 @@ NEWLINE_IN_LIST_BODY
   ;
 
 ESCAPE_CHARACTER
-  : '\\{' | '\\\\' | '\\'[rtn\]}]
+  : '\\' ~[\r\n]?
   ;
 
 EXPRESSION
@@ -180,7 +180,7 @@ EXPRESSION
   ;
 
 TEXT
-  : ~[ \t\r\n{}]+
+  : ~[ \t\r\n{\\}]+
   ;
 
 mode ENTITY_MODE;
@@ -198,7 +198,7 @@ COMPOSITE_ENTITY
   ;
 
 REGEX_ENTITY
-  : '/' (~[\r\n])* '/'
+  : '/' (~[\r\n])*
   ;
 
 ENTITY_TEXT
