@@ -18,16 +18,7 @@ class QnaSection {
         this.FilterPairs = result.filterPairs;
         this.Errors = this.Errors.concat(result.errors);
         this.Answer = this.ExtractAnswer(parseTree);
-        this.source = this.ExtractSource(parseTree);
         this.Id = `${this.SectionType}_${this.Questions.join('_')}`;
-    }
-
-    ExtractSource(parseTree) {
-        var source = parseTree.qnaDefinition().qnaSourceInfo();
-        if (source !== undefined) {
-            return source;
-        }
-        return 'custom editorial';
     }
 
     ExtractQuestion(parseTree) {
