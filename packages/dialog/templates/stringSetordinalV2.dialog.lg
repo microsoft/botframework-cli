@@ -17,7 +17,7 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "@ordinalV2"          
+            "value": "=@ordinalV2"          
         }
     ]               
 }
