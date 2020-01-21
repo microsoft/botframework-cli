@@ -90,7 +90,7 @@ FILTER_MARK
   ;
 
 MULTI_LINE_TEXT
-  : '```' M A R K D O W N .*? '```'
+  : '```' .*? '```'
   ;
 
 INVALID_TOKEN_DEFAULT_MODE

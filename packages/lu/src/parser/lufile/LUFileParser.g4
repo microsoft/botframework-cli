@@ -209,7 +209,7 @@ errorQuestionString
     ;
 
 qnaAnswerBody
-    : filterSection? multiLineAnswer
+    : ((filterSection? multiLineAnswer)|(multiLineAnswer filterSection?))
     ;
 
 filterSection

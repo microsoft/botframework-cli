@@ -18,7 +18,16 @@ class QnaSection {
         this.FilterPairs = result.filterPairs;
         this.Errors = this.Errors.concat(result.errors);
         this.Answer = this.ExtractAnswer(parseTree);
+        this.source = this.ExtractSource(parseTree);
         this.Id = `${this.SectionType}_${this.Questions.join('_')}`;
+    }
+
+    ExtractSource(parseTree) {
+        var source = parseTree.qnaDefinition().qnaSourceInfo();
+        if (source !== undefined) {
+            return source;
+        }
+        return 'custom editorial';
     }
 
     ExtractQuestion(parseTree) {
@@ -50,14 +59,16 @@ class QnaSection {
         let errors = [];
         let filterSection = parseTree.qnaDefinition().qnaAnswerBody().filterSection();
         if (filterSection) {
-            for (const errorFilterLineStr of filterSection.errorFilterLine()) {
-                if (errorFilterLineStr.getText().trim() !== '') {
-                    errors.push(BuildDiagnostic({
-                    message: "Invalid QnA filter line, did you miss '-' at line begin",
-                    context: errorFilterLineStr
-                }))}
+            if (filterSection.errorFilterLine() !== undefined) {
+                for (const errorFilterLineStr of filterSection.errorFilterLine()) {
+                    if (errorFilterLineStr.getText().trim() !== '') {
+                        errors.push(BuildDiagnostic({
+                        message: "Invalid QnA filter line, did you miss '-' at line begin",
+                        context: errorFilterLineStr
+                    }))}
+                }
             }
-    
+            
             for (const filterLine of filterSection.filterLine()) {
                 let filterLineText = filterLine.getText().trim();
                 filterLineText = filterLineText.substr(1).trim()
@@ -73,9 +84,10 @@ class QnaSection {
 
     ExtractAnswer(parseTree) {
         let multiLineAnswer = parseTree.qnaDefinition().qnaAnswerBody().multiLineAnswer().getText().trim();
-        let answer = multiLineAnswer.slice(11, multiLineAnswer.length - 3);
-        
-        return answer;
+        // trim first and last line
+        var answerRegexp = /^```(markdown)?\n?(?<answer>(.|\n)*)```$/gim;
+        let answer = answerRegexp.exec(multiLineAnswer);
+        return answer.groups.answer !== undefined ? answer.groups.answer : '';
     }
 }
 
