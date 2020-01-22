@@ -24,8 +24,7 @@ xcopy /s * %outdir%
 
 if "%dobuild%" NEQ "yes" goto pop
 if "%LUIS_AUTHORING_KEY%" EQU "" goto help
-cd %outdir%
-cd luis
+cd %outdir%luis
 FOR %%i IN (%outdir:~0,-1%) DO set botname=%%~nxi
 bf luis:build --in . --authoringKey %LUIS_AUTHORING_KEY% --botName=%botname% --dialog --suffix %USERNAME%
 
