@@ -9,7 +9,7 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$PropertyToRemember",
-            "value": "@PROPERTYName"        
+            "value": "=@PROPERTYName"        
         }
     ]
 }
