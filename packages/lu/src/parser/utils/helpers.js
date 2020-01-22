@@ -74,44 +74,41 @@ const helpers = {
     /**
      * Helper function to parse link URIs in utterances
      * @param {String} utterance
+     * @param {String} srcPath
      * @returns {Object} Object that contains luFile and ref. ref can be Intent-Name or ? or * or **
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    parseLinkURI: function (utterance) {
-        let reference = '';
-        let luFileInRef = '';
+    parseLinkURI: function (utterance, srcPath = null) {
         let linkValueList = utterance.trim().match(new RegExp(/\(.*?\)/g));
         let linkValue = linkValueList[0].replace('(', '').replace(')', '');
         if (linkValue === '') throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}"`));
         let parseUrl = url.parse(linkValue);
         if (parseUrl.host || parseUrl.hostname) throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}". \n Reference cannot be a URI`));
-        // reference can either be #<Intent-Name> or #? or /*#? or /**#?
-        let splitReference = linkValue.split(new RegExp(/(.*?)(#|\*+)/g));
-        if (splitReference.length === 1) throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #?`));
-        luFileInRef = splitReference[1];
-        switch (splitReference[2]) {
-            case '#': {
-                reference = splitReference[3];
-                break;
-            }
-            case '**':
-            case '*': {
-                if (splitReference[6] !== '?') throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n '*' and '**' can only be used with QnA qualitifier. e.g. *#? and **#?`));
-                reference = splitReference[6];
-                luFileInRef = luFileInRef + '*';
-                break;
-            }
-            default:
-                throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Unsupported syntax. Not expecting ${splitReference[2]}`));
-        }
-        if (reference === "" && splitReference.length >= 7 && splitReference[7].toLowerCase() === 'utterances') reference = splitReference[7].toLowerCase();
-        if (reference === "" && splitReference.length >= 7 && splitReference[7].toLowerCase() === 'patterns') reference = splitReference[7].toLowerCase();
-        if (reference === "" && splitReference.length >= 7 && splitReference[7].toLowerCase() === 'utterancesandpatterns') reference = splitReference[7].toLowerCase();
+        // reference can either be #<Intent-Name> or #? or /*#? or /**#? or #*utterance* or #<Intent-Name>*patterns*
+        let splitRegExp = new RegExp(/^(?<fileName>.*?)(?<segment>#|\*+)(?<path>.*?)$/gim);
+        let splitReference = splitRegExp.exec(linkValue);
+        if (!splitReference) throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        if (srcPath && splitReference.groups.segment.startsWith('#')) {
+            if (!path.isAbsolute(splitReference.groups.fileName)) splitReference.groups.fileName = path.resolve(path.dirname(srcPath), splitReference.groups.fileName);
 
-        return {
-            luFile: luFileInRef,
-            ref: reference
+            if (!fs.existsSync(splitReference.groups.fileName)) {
+                // file or path does not exist
+                throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Cannot find file or folder '${splitReference.groups.fileName}'`));
+            }  
+            if (fs.lstatSync(splitReference.groups.fileName).isDirectory()) {
+                // intent section reference must 
+                throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Expecting a file and not a folder for intent section reference  '${splitReference.groups.fileName}'`));
+            }
         }
+        luFileInRef = splitReference.groups.fileName;
+
+        if (splitReference.groups.segment.includes('*')) {
+            if (splitReference.groups.path === '') {
+                throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n '*' and '**' can only be used with QnA qualitifier. e.g. *#? and **#?`));
+            }
+            splitReference.groups.fileName += '*';
+        }
+        return splitReference.groups;
     },
     /**
      * Helper function to do a filter operation based search over an Array

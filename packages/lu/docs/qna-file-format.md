@@ -148,6 +148,8 @@ Few different references are supported in the .qna file. These follow Markdown l
 	- `\[link name](\<.qna file path\>/**)` - will recursively look for .qna files under the specified absolute or relative path including sub-folders.
 - Reference to URL for QnAMaker to ingest during KB creation via `\[link name](\<URL\>)`
 - You can also add references to utterances defined in a specific file under an Intent section or as QnA pairs.
+	- `[link name](<.lu file path>#<INTENT-NAME>) will find all utterances found under <INTENT-NAME> in the .lu file and add them to the list of questions where this reference is specified
+	- `[link name](\<.lu file path>#*utterances*) will find all utterances in the .lu file and add them to the list of questions where this reference is specified
 	- `\[link name](\<.qna file path\>#?) will find questions from all QnA pairs defined in the .qna file and add them to the list of utterances where this reference is specified.
 	- `\[link name](\<.qna folder\>/*#?) will find all questions from all .qna files in the specified folder and add them to the list of utterances where this reference is specified. 
 

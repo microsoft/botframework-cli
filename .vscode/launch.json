@@ -12,7 +12,7 @@
             "args":[
                 "qnamaker:convert",
                 "--in",
-                "/users/vishwacsenakannan/Desktop/test.qna"
+                "/Users/vishwacsenakannan/repos/botframework-cli/packages/lu/test/fixtures/testcases/ref14.qna"
             ],
             "preLaunchTask": "tsc: build - packages/lu/tsconfig.json"
         },
@@ -24,7 +24,7 @@
             "args":[
                 "luis:convert",
                 "--in",
-                "/users/vishwacsenakannan/Desktop/test.lu"
+                "/Users/vishwacsenakannan/repos/botframework-cli/packages/lu/test/fixtures/testcases/ref4.lu"
             ],
             "preLaunchTask": "tsc: build - packages/lu/tsconfig.json"
         },

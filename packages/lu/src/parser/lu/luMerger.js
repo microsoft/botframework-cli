@@ -267,11 +267,11 @@ const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, ne
 
 const findReferenceFileContent = function(utteranceText, srcFile, allParsedContent) {
     // we have stuff to parse and resolve
-    let parsedUtterance = helpers.parseLinkURI(utteranceText);
+    let parsedUtterance = helpers.parseLinkURI(utteranceText, srcFile);
 
-    if (!path.isAbsolute(parsedUtterance.luFile)) parsedUtterance.luFile = path.resolve(path.dirname(srcFile), parsedUtterance.luFile);
+    if (!path.isAbsolute(parsedUtterance.fileName)) parsedUtterance.fileName = path.resolve(path.dirname(srcFile), parsedUtterance.fileName);
     // see if we are in need to pull LUIS or QnA utterances
-    let filter = parsedUtterance.ref.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
+    let filter = parsedUtterance.path.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
 
     // find the parsed file
     return filter(allParsedContent, parsedUtterance, srcFile, utteranceText)
@@ -284,17 +284,17 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFil
         patterns: []
     }
 
-    if (!parsedUtterance.ref.endsWith('?')) {
+    if (!parsedUtterance.path.endsWith('?')) {
         return result
     }
 
     let parsedQnABlobs
-    if( parsedUtterance.luFile.endsWith('*')) {
-        parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.luFile.replace(/\*/g, '')));
+    if( parsedUtterance.fileName.endsWith('*')) {
+        parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.fileName.replace(/\*/g, '')));
     } else {
         // look for QnA
         parsedQnABlobs = []
-        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.luFile));
+        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.fileName));
     }
 
     if(!parsedQnABlobs || !parsedQnABlobs[0]) {
@@ -310,7 +310,7 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFil
 }
 
 const filterLuisContent = function(allParsedContent, parsedUtterance, srcFile, utteranceText){
-    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.luFile);
+    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.fileName);
     if(!parsedLUISBlob ) {
         let error = BuildDiagnostic({
             message: `Unable to parse ${utteranceText} in file: ${srcFile}`
@@ -324,23 +324,44 @@ const filterLuisContent = function(allParsedContent, parsedUtterance, srcFile, u
         utterances: [],
         patterns: []
     }
-    if (parsedUtterance.ref.toLowerCase().includes('utterancesandpatterns')) {
-        // get all utterances and add them
-        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
-        // Find all patterns and add them
-        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => {
-            let newUtterance = new hClasses.uttereances(item.pattern, item.intent);
-            if (utterances.find(match => deepEqual(newUtterance, match)) !== undefined) utterances.push(new hClasses.uttereances(item.pattern, item.intent)) 
-        });
-    } else if (parsedUtterance.ref.toLowerCase().includes('utterances')) {
-        // get all utterances and add them
-        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
-    } else if (parsedUtterance.ref.toLowerCase().includes('patterns')) {
-        // Find all patterns and add them
-        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => utterances.push(new hClasses.uttereances(item.pattern, item.intent)));
+    if (parsedUtterance.path.toLowerCase().endsWith('*utterancesandpatterns*')) {
+        // get utterance list from reference intent and update list
+        let referenceIntent = parsedUtterance.path.toLowerCase().replace(/-/g, ' ').replace('*utterancesandpatterns*', '').trim();
+        if (referenceIntent === '') {
+            // get all utterances and add them
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances;
+            // Find all patterns and add them
+            (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => {
+                let newUtterance = new hClasses.uttereances(item.pattern, item.intent);
+                if (utterances.find(match => deepEqual(newUtterance, match)) !== undefined) utterances.push(new hClasses.uttereances(item.pattern, item.intent)) 
+            });
+        } else {
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);
+            // find and add any patterns for this intent
+            patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);
+        }
+    } else if (parsedUtterance.path.toLowerCase().endsWith('*utterances*')) {
+        // get utterance list from reference intent and update list
+        let referenceIntent = parsedUtterance.path.toLowerCase().replace(/-/g, ' ').replace('*utterances*', '').trim();
+        if (referenceIntent === '') { 
+            // get all utterances and add them
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances;
+        } else {
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);    
+        }
+    } else if (parsedUtterance.path.toLowerCase().endsWith('*patterns*')) {
+        // get utterance list from reference intent and update list
+        let referenceIntent = parsedUtterance.path.toLowerCase().replace(/-/g, ' ').replace('*patterns*', '').trim();
+        if (referenceIntent === '') { 
+            // Find all patterns and add them
+            (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => utterances.push(new hClasses.uttereances(item.pattern, item.intent)));
+        } else {
+            // find and add any patterns for this intent
+            patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);
+        }
     } else {
         // get utterance list from reference intent and update list
-        let referenceIntent = parsedUtterance.ref.replace(/-/g, ' ').trim();
+        let referenceIntent = parsedUtterance.path.replace(/-/g, ' ').trim();
         utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);
         // find and add any patterns for this intent
         patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);

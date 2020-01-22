@@ -736,7 +736,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
                     let parsedLinkUriInUtterance = helpers.parseLinkURI(utterance);
                     // examine and add these to filestoparse list.
-                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
 
                 if (utteranceAndEntities.entities.length > 0) {
@@ -1742,7 +1742,7 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
                 if (helpers.isUtteranceLinkRef(question || '')) {
                     let parsedLinkUriInUtterance = helpers.parseLinkURI(question);
                     // examine and add these to filestoparse list.
-                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
             })
             let filterPairs = qna.FilterPairs;
