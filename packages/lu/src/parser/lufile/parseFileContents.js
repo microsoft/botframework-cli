@@ -1736,6 +1736,15 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
             let questions = qna.Questions;
+            // detect if any question is a reference
+            (questions || []).forEach(question => {
+                // Ensure only links are detected and passed on to be parsed.
+                if (helpers.isUtteranceLinkRef(question || '')) {
+                    let parsedLinkUriInUtterance = helpers.parseLinkURI(question);
+                    // examine and add these to filestoparse list.
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
+                }
+            })
             let filterPairs = qna.FilterPairs;
             let metadata = [];
             if (filterPairs && filterPairs.length > 0) {

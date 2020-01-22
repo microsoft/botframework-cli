@@ -25,6 +25,7 @@ module.exports = {
     Build: async function(luObjArray, verbose, luis_culture, luSearchFn){
         let allParsedContent = await buildLuJsonObject(luObjArray, verbose, luis_culture, luSearchFn)
         await resolveReferencesInUtterances(allParsedContent)
+        await resolveReferencesInQuestions(allParsedContent)
         return allParsedContent
     }
 }
@@ -141,6 +142,48 @@ const haveLUISContent = function(blob) {
     (blob.composites.length > 0));
 }
 
+const resolveReferencesInQuestions = async function(allParsedContent) {
+    (allParsedContent.QnAContent || []).forEach(qnaModel => {
+        (qnaModel.qnaJsonStructure.qnaList || []).forEach(qaPair => {
+            let refQIdx = [];
+            (qaPair.questions || []).forEach((question, idx) => {
+                // Is this question a reference? 
+                if (helpers.isUtteranceLinkRef(question || '')) {
+                    let result = findReferenceFileContent(question, qnaModel.srcFile, allParsedContent);
+                    if (result !== undefined) {
+                        if (result.patterns && result.patterns.length !== 0) {
+                            // throw
+                            let error = BuildDiagnostic({
+                                message: `Unable to parse ${question} in file: ${qnaModel.srcFile}. References cannot pull in patterns. Consider '*utterances*' suffix if you are looking to pull in only utteranes`
+                            });
+                    
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                        } else {
+                            refQIdx.push({
+                                id : idx,
+                                questions : result.utterances
+                            })
+                        }
+                    } else {
+                        // throw
+                        let error = BuildDiagnostic({
+                            message: `Unable to parse ${question} in file: ${qnaModel.srcFile}. Unable to resolve the reference.`
+                        });
+                
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    }
+                }
+            })
+
+            refQIdx.forEach(refItem => {
+                // id to replace with refItem.id
+                qaPair.questions.splice(refItem.id, 1);
+                refItem.questions.forEach(item => qaPair.questions.push(item));
+            })
+        });
+    })
+}
+
 const resolveReferencesInUtterances = async function(allParsedContent) {
     // find LUIS utterances that have references
     (allParsedContent.LUISContent || []).forEach(luisModel => {
@@ -214,15 +257,7 @@ const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, ne
             return
         }
 
-        // we have stuff to parse and resolve
-        let parsedUtterance = helpers.parseLinkURI(utterance.text);
-
-        if (!path.isAbsolute(parsedUtterance.luFile)) parsedUtterance.luFile = path.resolve(path.dirname(luisModel.srcFile), parsedUtterance.luFile);
-        // see if we are in need to pull LUIS or QnA utterances
-        let filter = parsedUtterance.ref.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
-
-        // find the parsed file
-        let result = filter(allParsedContent, parsedUtterance, luisModel, utterance)
+        let result = findReferenceFileContent(utterance.text, luisModel.srcFile, allParsedContent)
         
         result.utterances.forEach((utr) => newUtterancesToAdd.push(new hClasses.uttereances(utr, utterance.intent)))
         result.patterns.forEach((it) => newPatternsToAdd.push(new hClasses.pattern(it, utterance.intent)))
@@ -230,7 +265,20 @@ const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, ne
     });
 }
 
-const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisModel, utterance){
+const findReferenceFileContent = function(utteranceText, srcFile, allParsedContent) {
+    // we have stuff to parse and resolve
+    let parsedUtterance = helpers.parseLinkURI(utteranceText);
+
+    if (!path.isAbsolute(parsedUtterance.luFile)) parsedUtterance.luFile = path.resolve(path.dirname(srcFile), parsedUtterance.luFile);
+    // see if we are in need to pull LUIS or QnA utterances
+    let filter = parsedUtterance.ref.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
+
+    // find the parsed file
+    return filter(allParsedContent, parsedUtterance, srcFile, utteranceText)
+    
+}
+
+const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFile, utteranceText){
     let result = {
         utterances: [],
         patterns: []
@@ -251,7 +299,7 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisMo
 
     if(!parsedQnABlobs || !parsedQnABlobs[0]) {
         let error = BuildDiagnostic({
-            message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
+            message: `Unable to parse ${utteranceText} in file: ${srcFile}`
         });
 
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
@@ -261,11 +309,11 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisMo
     return result
 }
 
-const filterLuisContent = function(allParsedContent, parsedUtterance, luisModel, utterance){
+const filterLuisContent = function(allParsedContent, parsedUtterance, srcFile, utteranceText){
     let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.luFile);
     if(!parsedLUISBlob ) {
         let error = BuildDiagnostic({
-            message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
+            message: `Unable to parse ${utteranceText} in file: ${srcFile}`
         });
 
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));

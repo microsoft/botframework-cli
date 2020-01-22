@@ -83,6 +83,14 @@ describe('qnamaker:convert', () => {
     let parsedObjects = await parseJsonFiles('./../../../results/alterations_qna4.json', './../../fixtures/verified/collate_Alterations.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
   })
+
+  test
+  .stderr()
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnaref.qna')}`, '--out', './results/qna5.json'])
+  .it('qnamaker:convert Deep file references are pulled in correctly', async () => {
+    let parsedObjects = await parseJsonFiles('./../../../results/qna5.json', './../../fixtures/verified/qna5.json')
+    expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+  })
 })
 
 describe('qnamaker:convert with --sort option', () => {
