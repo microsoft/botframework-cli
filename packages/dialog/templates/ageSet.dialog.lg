@@ -17,12 +17,12 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.number",
-            "value": "@age.number"          
+            "value": "=@age.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.units",
-            "value": "@age.units"          
+            "value": "=@age.units"          
         }
     ]               
 }
