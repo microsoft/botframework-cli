@@ -100,8 +100,6 @@ const helpers = {
                 throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Expecting a file and not a folder for intent section reference  '${splitReference.groups.fileName}'`));
             }
         }
-        luFileInRef = splitReference.groups.fileName;
-
         if (splitReference.groups.segment.includes('*')) {
             if (splitReference.groups.path === '') {
                 throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n '*' and '**' can only be used with QnA qualitifier. e.g. *#? and **#?`));
