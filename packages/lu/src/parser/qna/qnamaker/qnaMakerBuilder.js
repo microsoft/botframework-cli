@@ -23,6 +23,8 @@ class QnABuilder{
         })
         result.collate(qnaList)
         result.resolveMultiTurnReferences()
+        result.resolveQnAIds()
+        result.removeEmptyContextNodes()
         return result
     }
 }

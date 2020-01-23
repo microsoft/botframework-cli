@@ -80,7 +80,7 @@ describe('qnamaker:convert', () => {
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/qna4.json', '--name', 'collate-qna'])
   .it('qnamaker:convert Collate can correctly merge QnA word alteration content split across LU files', async () => {
-    let parsedObjects = await parseJsonFiles('./../../../results/alterations_qna4.json', './../../fixtures/verified/alterations_collate-qna.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/alterations_qna4.json', './../../fixtures/verified/alterations_qna4.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
   })
 

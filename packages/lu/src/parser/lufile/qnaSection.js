@@ -19,10 +19,20 @@ class QnaSection {
         this.FilterPairs = result.filterPairs;
         this.Errors = this.Errors.concat(result.errors);
         this.Answer = this.ExtractAnswer(parseTree);
-        this.Id = `${this.SectionType}_${this.Questions.join('_')}`;
         result = this.ExtractPrompts(parseTree);
         this.prompts = result.promptDefinitions;
         this.Errors = this.Errors.concat(result.errors);
+        this.Id = this.ExtractAssignedId(parseTree);
+    }
+
+    ExtractAssignedId(parseTree) {
+        let idAssignment = parseTree.qnaDefinition().qnaIdMark()
+        if (idAssignment) {
+            let idTextRegExp = new RegExp(/^\<a[ ]*id[ ]*=[ ]*[\"\'](?<idCaptured>.*?)[\"\'][ ]*>[ ]*\<\/a\>$/gmi);
+            let idTextParsed = idTextRegExp.exec(idAssignment.getText().trim());
+            return idTextParsed.groups.idCaptured || undefined;
+        }
+        return undefined;
     }
 
     ExtractPrompts(parseTree) {

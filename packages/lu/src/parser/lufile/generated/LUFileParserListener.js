@@ -407,6 +407,15 @@ LUFileParserListener.prototype.exitQnaDefinition = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserListener.prototype.enterQnaIdMark = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserListener.prototype.exitQnaIdMark = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#qnaQuestion.
 LUFileParserListener.prototype.enterQnaQuestion = function(ctx) {
 };

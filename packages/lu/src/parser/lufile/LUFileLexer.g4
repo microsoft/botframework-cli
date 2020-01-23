@@ -89,6 +89,10 @@ FILTER_MARK
   : '**' F I L T E R S ':**'
   ;
 
+QNA_ID_MARK
+  : '<a' .*? '</a>'
+  ;
+
 MULTI_LINE_TEXT
   : '```' .*? '```'
   ;

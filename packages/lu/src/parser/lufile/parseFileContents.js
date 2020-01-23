@@ -1737,6 +1737,10 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
+            if (qna.assignedId) {
+                qna.Id = qna.assignedId;
+                delete qna.assignedId;
+            }
             let questions = qna.Questions;
             // detect if any question is a reference
             (questions || []).forEach(question => {
@@ -1761,7 +1765,7 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
                     context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
                 })
             }
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(0, answer.trim(), 'custom editorial', questions, metadata, context));
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.Id || 0, answer.trim(), 'custom editorial', questions, metadata, context));
         }
     }
 }
