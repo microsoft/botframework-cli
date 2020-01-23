@@ -43,20 +43,20 @@ class QnaSection {
             for (const promptLine of promptSection.filterLine()) {
                 let filterLineText = promptLine.getText().trim();
                 filterLineText = filterLineText.substr(1).trim();
-                if (helpers.isUtteranceLinkRef(filterLineText)) {
+                if (helpers.isUtteranceLinkRef(filterLineText.replace('`context-only`', '').trim())) {
                     let promptConfigurationRegExp = new RegExp(/^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?$/gmi);
                     let splitLine = promptConfigurationRegExp.exec(filterLineText);
                     if (!splitLine) {
                         errors.push(BuildDiagnostic({
                             message: "Invalid QnA prompt definition. Unable to parse prompt. Please verify syntax as well as question link`.",
-                            context: errorFilterLineStr
+                            context: filterLineText
                         }))
                     }
                     promptDefinitions.push(splitLine.groups);
                 } else {
                     errors.push(BuildDiagnostic({
                         message: "Invalid QnA prompt definition. Prompts must be specified using a valid format [display text](# ? <question> | <id>) `context-only`.",
-                        context: errorFilterLineStr
+                        context: filterLineText
                     }))
                 }
             }
