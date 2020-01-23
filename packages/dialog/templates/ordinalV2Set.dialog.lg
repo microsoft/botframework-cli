@@ -16,12 +16,17 @@
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
-            "value": "=@ordinalV2"          
+            "property": "$@{property}.offset",
+            "value": "=@ordinalV2.offset"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.relativeTo",
+            "value": "=@ordinalV2.relativeTo"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @ordinalV2)}
+- @\{setObjectPropertyMessage('@{property}', concat(string(@ordinalV2.offset), ' ', @ordinalV2.relativeTo))}
