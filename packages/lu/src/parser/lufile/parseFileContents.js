@@ -173,9 +173,6 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // parse qna section
     parseAndHandleQnaSection(parsedContent, luResource);
 
-    // support multi turn qna resolution
-    resolveQnAPrompts(parsedContent);
-
     if (featuresToProcess && featuresToProcess.length > 0) {
         parseFeatureSections(parsedContent, featuresToProcess);
     }
@@ -188,29 +185,6 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
 
-}
-
-/**
- * Helper function to resolve QnA Id as well as QnA structure for multi-turn QnA content
- * @param {Object} parsedContent 
- */
-const resolveQnAPrompts = function(parsedContent) {
-    var qnaPairsWithMultiTurn = parsedContent.qnaJsonStructure.qnaList.filter(item => item.context.prompts.length !== 0);
-    (qnaPairsWithMultiTurn || []).forEach(item => {
-        // find matching QnA id for each follow up prompt
-        (item.context.prompts || []).forEach(prompt => {
-            var qnaId = parsedContent.qnaJsonStructure.qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace('-', ' ')));
-            if (qnaId === undefined) {
-                // throw
-                throw (new exception(retCode.errorCode.INVALID_INPUT, `[ERROR]: Cannot find follow up prompt definition for '- [${prompt.displayText}](#?${prompt.qnaId}).`));
-            } else {
-                prompt.qnaId = qnaId.id;
-                prompt.qna = qnaId;
-                prompt.qna.context.isContextOnly = prompt.isContextOnly ? prompt.isContextOnly : prompt.qna.context.isContextOnly;
-                qnaId.context.isContextOnly = qnaId.context.isContextOnly ? qnaId.context.contextOnly : prompt.qna.context.isContextOnly;
-            }
-        })
-    })
 }
 
 /**
@@ -1761,7 +1735,6 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
 const parseAndHandleQnaSection = function (parsedContent, luResource) {
     // handle QNA
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
-    let qnaId = 100;
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
             let questions = qna.Questions;
@@ -1788,8 +1761,7 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
                     context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
                 })
             }
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qnaId, answer.trim(), 'custom editorial', questions, metadata, context));
-            qnaId++;
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(0, answer.trim(), 'custom editorial', questions, metadata, context));
         }
     }
 }

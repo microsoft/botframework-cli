@@ -46,6 +46,25 @@ class QnAMaker {
 
         };    
     }
+
+    resolveMultiTurnReferences() {
+        var qnaPairsWithMultiTurn = this.qnaList.filter(item => item.context.prompts.length !== 0);
+        (qnaPairsWithMultiTurn || []).forEach(item => {
+            // find matching QnA id for each follow up prompt
+            (item.context.prompts || []).forEach(prompt => {
+                var qnaId = this.qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace('-', ' ')));
+                if (qnaId === undefined) {
+                    // throw
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, `[ERROR]: Cannot find follow up prompt definition for '- [${prompt.displayText}](#?${prompt.qnaId}).`));
+                } else {
+                    prompt.qnaId = qnaId.id;
+                    prompt.qna = qnaId;
+                    prompt.qna.context.isContextOnly = prompt.isContextOnly ? prompt.isContextOnly : prompt.qna.context.isContextOnly;
+                    qnaId.context.isContextOnly = qnaId.context.isContextOnly ? qnaId.context.contextOnly : prompt.qna.context.isContextOnly;
+                }
+            })
+        })
+    }
 }
 
 module.exports = QnAMaker

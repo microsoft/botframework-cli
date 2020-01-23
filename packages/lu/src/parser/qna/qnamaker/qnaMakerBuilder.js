@@ -22,6 +22,7 @@ class QnABuilder{
             qnaList.push(index.qnaJsonStructure)
         })
         result.collate(qnaList)
+        result.resolveMultiTurnReferences()
         return result
     }
 }
