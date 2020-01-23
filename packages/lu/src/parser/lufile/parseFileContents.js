@@ -1765,7 +1765,7 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
                     context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
                 })
             }
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.Id || 0, answer.trim(), 'custom editorial', questions, metadata, context));
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.Id || 0, answer.trim(), qna.source, questions, metadata, context));
         }
     }
 }

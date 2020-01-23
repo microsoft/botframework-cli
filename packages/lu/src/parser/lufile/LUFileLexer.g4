@@ -41,6 +41,10 @@ fragment WHITESPACE
 
 fragment UTTERANCE_MARK: '-' | '*' | '+';
 
+QNA_SOURCE_INFO
+  : WS* '>' WHITESPACE* '!# @qna.pair.source' WHITESPACE* '=' ~('\r'|'\n')+
+  ;
+
 MODEL_INFO
   : WS* '>' WHITESPACE* '!#' ~('\r'|'\n')+
   ;

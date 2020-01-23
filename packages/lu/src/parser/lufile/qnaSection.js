@@ -2,6 +2,7 @@ const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSe
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const helpers = require('../utils/helpers');
+const QNA_GENERIC_SOURCE = "custom editorial";
 
 class QnaSection {
     /**
@@ -23,8 +24,19 @@ class QnaSection {
         this.prompts = result.promptDefinitions;
         this.Errors = this.Errors.concat(result.errors);
         this.Id = this.ExtractAssignedId(parseTree);
+        this.source = this.ExtractSourceInfo(parseTree);
     }
 
+    ExtractSourceInfo(parseTree) {
+        let srcAssignment = parseTree.qnaDefinition().qnaSourceInfo()
+        if (srcAssignment) {
+            let srcRegExp = new RegExp(/^[ ]*\>[ ]*!#[ ]*@qna.pair.source[ ]*=[ ]*(?<sourceInfo>.*?)$/gmi);
+            let srcParsed = srcRegExp.exec(srcAssignment.getText().trim());
+            return srcParsed.groups.sourceInfo || QNA_GENERIC_SOURCE;
+        }
+        return QNA_GENERIC_SOURCE
+    }
+    
     ExtractAssignedId(parseTree) {
         let idAssignment = parseTree.qnaDefinition().qnaIdMark()
         if (idAssignment) {

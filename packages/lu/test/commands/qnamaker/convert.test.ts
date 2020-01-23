@@ -38,7 +38,7 @@ describe('qnamaker:convert', () => {
   .stdout()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnaDocuments.json')}`])
   .it('qnamaker:convert refresh command successfully reconstructs a markdown file from a QnA input file with qnaDocuments section', async (ctx) => {
-    expect(ctx.stdout).to.contain('> Source: custom editorial')
+    expect(ctx.stdout).to.contain('> !# @qna.pair.source = custom editorial')
   })
 
   test

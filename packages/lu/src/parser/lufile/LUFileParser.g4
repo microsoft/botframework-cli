@@ -185,7 +185,11 @@ qnaSection
     ;
 
 qnaDefinition
-    : qnaIdMark? qnaQuestion moreQuestionsBody qnaAnswerBody promptSection?
+    : qnaSourceInfo? qnaIdMark? qnaQuestion moreQuestionsBody qnaAnswerBody promptSection?
+    ;
+
+qnaSourceInfo
+    : WS* QNA_SOURCE_INFO
     ;
 
 qnaIdMark

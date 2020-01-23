@@ -26,7 +26,7 @@ const qnaToLuContent = function(qnaJSON){
     }
     
     root.forEach(function(qnaItem) {
-        fileContent += '> Source: ' + qnaItem.source + NEWLINE;
+        fileContent += '> !# @qna.pair.source = ' + qnaItem.source + NEWLINE;
         fileContent += '## ? ' + qnaItem.questions[0] + NEWLINE;
         qnaItem.questions.splice(0,1);
         qnaItem.questions.forEach(function(question) {

@@ -276,6 +276,12 @@ LUFileParserVisitor.prototype.visitQnaDefinition = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#qnaSourceInfo.
+LUFileParserVisitor.prototype.visitQnaSourceInfo = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#qnaIdMark.
 LUFileParserVisitor.prototype.visitQnaIdMark = function(ctx) {
   return this.visitChildren(ctx);
