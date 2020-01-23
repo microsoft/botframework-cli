@@ -318,6 +318,12 @@ LUFileParserVisitor.prototype.visitFilterSection = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#promptSection.
+LUFileParserVisitor.prototype.visitPromptSection = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#filterLine.
 LUFileParserVisitor.prototype.visitFilterLine = function(ctx) {
   return this.visitChildren(ctx);

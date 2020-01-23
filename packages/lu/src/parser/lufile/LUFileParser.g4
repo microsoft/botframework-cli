@@ -185,7 +185,7 @@ qnaSection
     ;
 
 qnaDefinition
-    : qnaQuestion moreQuestionsBody qnaAnswerBody
+    : qnaQuestion moreQuestionsBody qnaAnswerBody promptSection?
     ;
 
 qnaQuestion
@@ -214,6 +214,10 @@ qnaAnswerBody
 
 filterSection
     : WS* FILTER_MARK (filterLine | errorFilterLine)+
+    ;
+
+promptSection
+    : WS* PROMPT_MARK (filterLine | errorFilterLine)+
     ;
 
 filterLine

@@ -1,6 +1,7 @@
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const helpers = require('../utils/helpers');
 
 class QnaSection {
     /**
@@ -19,6 +20,49 @@ class QnaSection {
         this.Errors = this.Errors.concat(result.errors);
         this.Answer = this.ExtractAnswer(parseTree);
         this.Id = `${this.SectionType}_${this.Questions.join('_')}`;
+        result = this.ExtractPrompts(parseTree);
+        this.prompts = result.promptDefinitions;
+        this.Errors = this.Errors.concat(result.errors);
+    }
+
+    ExtractPrompts(parseTree) {
+        let promptDefinitions = [];
+        let errors = [];
+        let promptSection = parseTree.qnaDefinition().promptSection();
+        if (promptSection) {
+            if (promptSection.errorFilterLine() !== undefined) {
+                for (const errorFilterLineStr of promptSection.errorFilterLine()) {
+                    if (errorFilterLineStr.getText().trim() !== '') {
+                        errors.push(BuildDiagnostic({
+                        message: "Invalid QnA prompt line, expecting '-' prefix for each line.",
+                        context: errorFilterLineStr
+                    }))}
+                }
+            }
+            
+            for (const promptLine of promptSection.filterLine()) {
+                let filterLineText = promptLine.getText().trim();
+                filterLineText = filterLineText.substr(1).trim();
+                if (helpers.isUtteranceLinkRef(filterLineText)) {
+                    let promptConfigurationRegExp = new RegExp(/^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?$/gmi);
+                    let splitLine = promptConfigurationRegExp.exec(filterLineText);
+                    if (!splitLine) {
+                        errors.push(BuildDiagnostic({
+                            message: "Invalid QnA prompt definition. Unable to parse prompt. Please verify syntax as well as question link`.",
+                            context: errorFilterLineStr
+                        }))
+                    }
+                    promptDefinitions.push(splitLine.groups);
+                } else {
+                    errors.push(BuildDiagnostic({
+                        message: "Invalid QnA prompt definition. Prompts must be specified using a valid format [display text](# ? <question> | <id>) `context-only`.",
+                        context: errorFilterLineStr
+                    }))
+                }
+            }
+        } 
+    
+        return { promptDefinitions, errors};
     }
 
     ExtractQuestion(parseTree) {

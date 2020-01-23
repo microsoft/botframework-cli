@@ -12,7 +12,7 @@
             "args":[
                 "qnamaker:convert",
                 "--in",
-                "/Users/vishwacsenakannan/repos/botframework-cli/packages/lu/test/fixtures/testcases/ref14.qna"
+                "/Users/vishwacsenakannan/Desktop/test.qna"
             ],
             "preLaunchTask": "tsc: build - packages/lu/tsconfig.json"
         },

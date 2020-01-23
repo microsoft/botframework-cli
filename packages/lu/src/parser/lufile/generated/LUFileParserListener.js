@@ -470,6 +470,15 @@ LUFileParserListener.prototype.exitFilterSection = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#promptSection.
+LUFileParserListener.prototype.enterPromptSection = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#promptSection.
+LUFileParserListener.prototype.exitPromptSection = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#filterLine.
 LUFileParserListener.prototype.enterFilterLine = function(ctx) {
 };

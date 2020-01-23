@@ -25,6 +25,8 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
+const qnaContext = require('../qna/qnamaker/qnaContext');
+const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -171,6 +173,9 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // parse qna section
     parseAndHandleQnaSection(parsedContent, luResource);
 
+    // support multi turn qna resolution
+    resolveQnAPrompts(parsedContent);
+
     if (featuresToProcess && featuresToProcess.length > 0) {
         parseFeatureSections(parsedContent, featuresToProcess);
     }
@@ -183,6 +188,27 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
 
+}
+
+/**
+ * Helper function to resolve QnA Id as well as QnA structure for multi-turn QnA content
+ * @param {Object} parsedContent 
+ */
+const resolveQnAPrompts = function(parsedContent) {
+    var qnaPairsWithMultiTurn = parsedContent.qnaJsonStructure.qnaList.filter(item => item.context.prompts.length !== 0);
+    (qnaPairsWithMultiTurn || []).forEach(item => {
+        // find matching QnA id for each follow up prompt
+        (item.context.prompts || []).forEach(prompt => {
+            var qnaId = parsedContent.qnaJsonStructure.qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace('-', ' ')));
+            if (qnaId === undefined) {
+                // throw
+                throw (new exception(retCode.errorCode.INVALID_INPUT, `[ERROR]: Cannot find follow up prompt definition for '- [${prompt.displayText}](#?${prompt.qnaId}).`));
+            } else {
+                prompt.qnaId = qnaId.id;
+                prompt.qna = qnaId;
+            }
+        })
+    })
 }
 
 /**
@@ -1733,6 +1759,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
 const parseAndHandleQnaSection = function (parsedContent, luResource) {
     // handle QNA
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
+    let qnaId = 100;
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
             let questions = qna.Questions;
@@ -1752,7 +1779,15 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
             }
 
             let answer = qna.Answer;
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(0, answer.trim(), 'custom editorial', questions, metadata));
+            let context = new qnaContext();
+            if (qna.prompts) {
+                (qna.prompts || []).forEach((prompt, idx) => {
+                    let contextOnly = prompt.contextOnly ? true : false;
+                    context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
+                })
+            }
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qnaId, answer.trim(), 'custom editorial', questions, metadata, context));
+            qnaId++;
         }
     }
 }

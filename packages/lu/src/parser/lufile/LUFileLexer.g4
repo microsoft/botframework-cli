@@ -92,7 +92,10 @@ FILTER_MARK
 MULTI_LINE_TEXT
   : '```' .*? '```'
   ;
-
+PROMPT_MARK
+  : '**' P R O M P T S ':**'
+  ;
+  
 INVALID_TOKEN_DEFAULT_MODE
   : .
   ;
