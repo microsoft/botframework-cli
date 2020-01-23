@@ -207,6 +207,7 @@ const resolveQnAPrompts = function(parsedContent) {
                 prompt.qnaId = qnaId.id;
                 prompt.qna = qnaId;
                 prompt.qna.context.isContextOnly = prompt.isContextOnly ? prompt.isContextOnly : prompt.qna.context.isContextOnly;
+                qnaId.context.isContextOnly = qnaId.context.isContextOnly ? qnaId.context.contextOnly : prompt.qna.context.isContextOnly;
             }
         })
     })
