@@ -8,6 +8,7 @@ import { existsSync } from "fs";
 
 export class InputValues {
 
+    public scope: string;
     public resourceGroup: string;
     public location: string;
     public templateFile: string;
@@ -35,6 +36,7 @@ export class InputValues {
     public twilioAuthToken?: string = '';
 
     constructor() {
+        this.scope = getInput('scope', true) as string;
         this.resourceGroup = getInput('resourceGroup', true) as string;
         this.location = getInput('location', true) as string;
         this.templateFile = this.validatePath('template');

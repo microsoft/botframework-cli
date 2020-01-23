@@ -11,9 +11,10 @@
         "Release"
     ],
     "version": {
-        "Major": 0,
+        "Major": 4,
         "Minor": 8,
-        "Patch": 32
+        "Patch": 0,
+        "Release":68
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -54,6 +55,19 @@
             "groupname": "azure"
         },
         {
+            "name": "scope",
+            "type": "pickList",
+            "label": "Deployment Scope",
+            "required": true,
+            "defaultValue": "Resource Group",
+            "groupname": "azure",
+            "helpMarkDown": "Deployment scope of the deployment. To know more abour deployment scopes, refer this [link](https://docs.microsoft.com/bs-latn-ba/Azure/azure-resource-manager/resource-group-template-deploy-rest#deployment-scope)",
+            "options": {
+                "Subscription" : "Subscription",
+                "Resource Group" : "Resource Group"
+            }            
+        },
+        {
             "name": "resourceGroup",
             "type": "picklist",
             "label": "Resource Group",
@@ -69,7 +83,7 @@
             "type": "pickList",
             "label": "Location",
             "required": true,
-            "helpMarkDown": "Location for deploying the resource group.",
+            "helpMarkDown": "Location of the resource group.",
             "properties": {
                 "EditableOptions": "True"
             },
@@ -101,7 +115,7 @@
                 "editorExtension": "ms.vss-services-azure.parameters-grid"
             },
             "groupname": "template"
-        },
+        },        
         {
             "name": "validationMode",
             "type": "boolean",

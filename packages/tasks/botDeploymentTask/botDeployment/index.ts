@@ -11,8 +11,8 @@ import { lstatSync, readFileSync } from 'fs';
 
 const input = new InputValues();
 const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
-const outputFileDirectLine = `"${ rootPath }/DirectLineCreate.json`;
-const outputFileTeams = `"${ rootPath }/TeamsCreate.json`;
+const outputFileDirectLine = `${ rootPath }/DirectLineCreate.json`;
+const outputFileTeams = `${ rootPath }/TeamsCreate.json`;
 let formattedParams = new Map<string, string>();  
 let botName:string = '';
 let webAppName:string = '';
@@ -55,8 +55,8 @@ const getResourcesNames = (): void => {
     const jsonFile = JSON.parse(fileContents);    
     const parametersFile =  jsonFile["parameters"];
 
-    botName = parametersFile["botId"].value;
-    webAppName = parametersFile["newWebAppName"].value;
+    botName = parametersFile["botId"]? parametersFile["botId"].value : '';
+    webAppName = parametersFile["newWebAppName"]? parametersFile["newWebAppName"].value : parametersFile["siteName"]? parametersFile["siteName"].value : '';
 }
 
 const getOverrideParameters = (): string => {
@@ -82,7 +82,10 @@ const getOverrideParameters = (): string => {
     if (formattedParams.has("newWebAppName")) {
         webAppName = formattedParams.get("newWebAppName") as string;
     }
-
+    else if(formattedParams.has("siteName")) {
+        webAppName = formattedParams.get("siteName") as string;
+    }
+    
     let stringParams: string = '';
 
     for (let [key, value] of formattedParams) {
@@ -139,13 +142,52 @@ const validateDeployment = (): void => {
     }
 }
 
+const ResourceGroupExists = (): boolean => {
+    try {
+        const output: string = `${ rootPath }/Output.txt`;
+        const command = `az group exists --name "${ input.resourceGroup }" > "${ output }"`;
+        let exists: string = "false";
+        let buffer: Buffer;
+        
+        execSync(command);        
+        buffer = readFileSync(output);
+        exists = buffer.toString('utf-8').trim();
+        console.log('Resource Group exists: ' + exists);
+
+        return exists === "true";
+    }
+    catch (error) {
+        throw new Error('Error checking Resource Group existence: ' + error);    
+    }    
+}
+
+const createResourceGroup = (): void => {
+    try {
+        console.log('Creating Resource Group...');
+
+        let command = `az group create --location "${ input.location }" --name "${ input.resourceGroup }"`;
+        
+        execSync(command);
+        console.log('Resource Group successfully created');      
+    } catch (error) {
+        throw new Error('Error in Resource Group creation: ' + error);    
+    }
+}
+
 const resourcesDeployment = (): void => {
     try {
-        console.log('Deploying resources to Azure...');
+        let command: string = '';
+        
+        console.log('Deploying resources to Azure...');        
+        if (input.scope === 'Resource Group') {
+            command = `az group deployment create --name "${ input.resourceGroup }" -g "${ input.resourceGroup }" --template-file "${ input.templateFile }"`;            
+        } 
+        else {
+            command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.templateFile }"`;
+        }
 
-        let command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.templateFile }" `;
-            command += getTemplateParameters();
-            command += getOptionalParameters();
+        command += getTemplateParameters();
+        command += getOptionalParameters();
 
         execSync(command);
         console.log('Successful deployment');      
@@ -198,18 +240,22 @@ const run = (): void => {
 
     if (input.validationMode) {
         validateDeployment();
+        return;
     }
-    else {
-        resourcesDeployment();   
-        botDeployment();
-        
-        if (input.directLineChannel) {
-            directLineConnection();
-        }
 
-        if (input.teamsChannel) {
-            teamsConnection();
-        }
+    if(!ResourceGroupExists()) {
+        createResourceGroup();
+    }
+
+    resourcesDeployment();   
+    botDeployment();
+    
+    if (input.directLineChannel) {
+        directLineConnection();
+    }
+
+    if (input.teamsChannel) {
+        teamsConnection();
     }
 }
 
