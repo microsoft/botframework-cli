@@ -13,15 +13,20 @@
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.type",
+            "value": "=@datetime.type"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
-            "value": "@datetime"                              
+            "property": "$@{property}.timex",
+            "value": "=join(@datetime.timex, ' ')"          
         }
-    ]
+    ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @datetime)}
+- @\{setObjectPropertyMessage('@{property}', concat(@datetime.type, ' ', string(@datetime.timex)))}

@@ -11,11 +11,8 @@
         "Age": {
             "$ref": "template:age.schema#/age"
         },
-        "Ordinal": {
-            "type": "string",
-            "$entities": [
-                "ordinal"
-            ]
+        "Ordinalv2": {
+            "$ref": "template:ordinal.schema#/ordinalV2"
         },
         "Geographyv2": {
             "$ref": "template:geography.schema#/geographyV2"
@@ -92,10 +89,17 @@
         "Email": {
             "type": "string",
             "$entities": ["email"]
+        },
+        "Phonenumber": {
+            "type": "string",
+            "$entities": ["phonenumber"]
+        },
+        "Datetimev2": {
+            "$ref": "template:datetime.schema#/datetime"
         }
     },
     "required": 
-         ["Personname", "Age", "Ordinal", "Geographyv2", "Keyphraseproperty", "Money", "Percentage", "Temperature", "Url", "Quantity", "Utteranceproperty", "Dimension", "Enum1", "Enum2", "Zipcodepattern","Email"],
+         ["Personname", "Age", "Ordinalv2", "Geographyv2", "Keyphraseproperty", "Money", "Percentage", "Temperature", "Url", "Quantity", "Utteranceproperty", "Dimension", "Enum1", "Enum2", "Zipcodepattern","Email", "Phonenumber", "Datetimev2"],
     "$requires": [
         "standard.schema"
     ]
