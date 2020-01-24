@@ -17,7 +17,7 @@ The principles guiding the tool include:
 
 Commands invoked by BF [New Command] as follows:
 
-| New Command                                    | Old Tool(s) | Release    | Status |
+| New Command                                    | Old Tool(s) | Release Date   | Status |
 | ---------------------------------------------- | ----------- | ---------- | ------ |
 | chatdown                                       | Chatdown    | 10/30/19   | GA     |
 | qnamaker                                       | QnAMaker    | 10/30/19   | GA     |
