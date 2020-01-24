@@ -88,18 +88,6 @@ const helpers = {
         let splitRegExp = new RegExp(/^(?<fileName>.*?)(?<segment>#|\*+)(?<path>.*?)$/gim);
         let splitReference = splitRegExp.exec(linkValue);
         if (!splitReference) throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
-        if (srcPath && splitReference.groups.segment.startsWith('#')) {
-            if (!path.isAbsolute(splitReference.groups.fileName)) splitReference.groups.fileName = path.resolve(path.dirname(srcPath), splitReference.groups.fileName);
-
-            if (!fs.existsSync(splitReference.groups.fileName)) {
-                // file or path does not exist
-                throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Cannot find file or folder '${splitReference.groups.fileName}'`));
-            }  
-            if (fs.lstatSync(splitReference.groups.fileName).isDirectory()) {
-                // intent section reference must 
-                throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Expecting a file and not a folder for intent section reference  '${splitReference.groups.fileName}'`));
-            }
-        }
         if (splitReference.groups.segment.includes('*')) {
             if (splitReference.groups.path === '') {
                 throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n '*' and '**' can only be used with QnA qualitifier. e.g. *#? and **#?`));
