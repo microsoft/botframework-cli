@@ -4,11 +4,11 @@
  */
 
 import {CLIError, utils} from '@microsoft/bf-cli-command'
+import { CognitiveServicesCredentials } from "@azure/ms-rest-azure-js"
+import { LUISAuthoringClient } from "@azure/cognitiveservices-luis-authoring"
+const {LUISRuntimeClient} = require('@azure/cognitiveservices-luis-runtime')
 const path = require('path')
 const fs = require('fs-extra')
-const msRest = require('ms-rest')
-const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
-const {LUISRuntimeClient} = require('azure-cognitiveservices-luis-runtime')
 
 const configPrefix = 'luis__'
 
@@ -50,12 +50,9 @@ const writeUserConfig = async (userconfig: any, configPath: string) => {
 }
 
 const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
-  const token = {
-    inHeader: {
-      'Ocp-Apim-Subscription-Key': subscriptionKey
-    }
-  }
-  const creds = new msRest.ApiKeyCredentials(token)
+  const authoringKey = subscriptionKey
+  const creds = new CognitiveServicesCredentials(authoringKey)
+  
   const luisClient = runtime ?
     new LUISRuntimeClient(creds, endpoint) :
     new LUISAuthoringClient(creds, endpoint)
