@@ -29,6 +29,8 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
     try {
         if (force || !await fs.pathExists(path)) {
             feedback(FeedbackType.info, `Generating ${path}`)
+            let dir = ppath.dirname(path)
+            await fs.ensureDir(dir)
             await fs.writeFile(path, val)
         } else {
             feedback(FeedbackType.info, `Skipping already existing ${path}`)
@@ -180,6 +182,8 @@ async function processTemplate(
                                 }
                             }
                             result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, scope, force, feedback)
+                            let dir = ppath.dirname(outPath)
+                            await fs.ensureDir(dir)
                             await fs.writeFile(outPath, result)
                             scope.templates[ppath.extname(outPath).substring(1)].push(ref)
                         } else {
@@ -215,7 +219,7 @@ async function processTemplates(
     }
 
     // Entities first--ok to ignore templates because they might be property specific
-    for (let entity of Object.keys(schema.entities())) {
+    for (let entity of Object.keys(schema.allEntities())) {
         let [entityName, role] = entity.split(':')
         scope.entity = entityName
         scope.role = role

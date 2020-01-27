@@ -2,7 +2,6 @@ const NewEntitySectionContext = require('./generated/LUFileParser').LUFileParser
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
-const uuidv4 = require('uuid/v4');
 
 class NewEntitySection {
     /**
@@ -21,7 +20,7 @@ class NewEntitySection {
         const result = this.ExtractSynonymsOrPhraseList(parseTree);
         this.ListBody = result.synonymsOrPhraseList;
         this.Errors = result.errors;
-        this.Id = uuidv4();
+        this.Id = `${this.SectionType}_${this.Name}`;
     }
 
     ExtractName(parseTree) {
@@ -67,6 +66,14 @@ class NewEntitySection {
         let errors = [];
 
         if (parseTree.newEntityDefinition().newEntityListbody()) {
+            for (const errorItemStr of parseTree.newEntityDefinition().newEntityListbody().errorItemString()) {
+                if (errorItemStr.getText().trim() !== '') {
+                    errors.push(BuildDiagnostic({
+                    message: "Invalid list entity line, did you miss '-' at line begin",
+                    context: errorItemStr
+                }))}
+            }
+
             for (const normalItemStr of parseTree.newEntityDefinition().newEntityListbody().normalItemString()) {
                 synonymsOrPhraseList.push(normalItemStr.getText());
             }

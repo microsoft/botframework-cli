@@ -34,7 +34,8 @@ class Visitor {
                         }
                     } else {
                         // pattern.any entity
-                        utterance = utterance.concat(innerNode.getText());
+                        const patternStr = entityObjects[0].role ? `{${entityObjects[0].entityName}:${entityObjects[0].role}}` : `{${entityObjects[0].entityName}}`
+                        utterance = utterance.concat(patternStr);
                         entities.push({
                             type: LUISObjNameEnum.PATTERNANYENTITY,
                             entity: entityObjects[0].entityName,

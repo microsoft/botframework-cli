@@ -11,10 +11,17 @@
     "entity": "personName", 
     "actions": [
         {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "@personName"          
+            "value": "=@personName"          
         }
     ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @personName)}
