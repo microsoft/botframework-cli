@@ -3,10 +3,10 @@
  * Licensed under the MIT License.
  */
 
+import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
+import {LUISRuntimeClient} from '@azure/cognitiveservices-luis-runtime'
+import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {CLIError, utils} from '@microsoft/bf-cli-command'
-import { CognitiveServicesCredentials } from "@azure/ms-rest-azure-js"
-import { LUISAuthoringClient } from "@azure/cognitiveservices-luis-authoring"
-const {LUISRuntimeClient} = require('@azure/cognitiveservices-luis-runtime')
 const path = require('path')
 const fs = require('fs-extra')
 
@@ -52,7 +52,7 @@ const writeUserConfig = async (userconfig: any, configPath: string) => {
 const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
   const authoringKey = subscriptionKey
   const creds = new CognitiveServicesCredentials(authoringKey)
-  
+
   const luisClient = runtime ?
     new LUISRuntimeClient(creds, endpoint) :
     new LUISAuthoringClient(creds, endpoint)
