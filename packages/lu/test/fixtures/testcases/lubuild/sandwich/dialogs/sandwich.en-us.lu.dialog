@@ -1,6 +1,6 @@
 {
     "$type": "Microsoft.LuisRecognizer",
-    "applicationId": "=settings.luid.sandwich_en-us_lu}",
-    "endpoint": "=settings.luid.endpoint}",
-    "endpointKey": "=settings.luid.endpointKey}"
+    "applicationId": "=settings.luis.sandwich_en-us_lu",
+    "endpoint": "=settings.luis.endpoint",
+    "endpointKey": "=settings.luis.endpointKey"
 }
