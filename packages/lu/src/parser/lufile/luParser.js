@@ -20,6 +20,10 @@ class LUParser {
      * @param {string} text
      */
     static parse(text) {
+        if (text === undefined || text === '') {
+            return new LUResource([], '', []);
+        }
+
         let sections = [];
         let content = text;
 
@@ -34,7 +38,7 @@ class LUParser {
 
         let isSectionEnabled = this.isSectionEnabled(sections);
 
-        let nestedIntentSections = this.extractNestedIntentSections(fileContent);
+        let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
         nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
         if (isSectionEnabled) {
             sections = sections.concat(nestedIntentSections);
@@ -60,7 +64,7 @@ class LUParser {
             });
         }
 
-        let simpleIntentSections = this.extractSimpleIntentSections(fileContent);
+        let simpleIntentSections = this.extractSimpleIntentSections(fileContent, content);
         simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(simpleIntentSections);
 
@@ -109,9 +113,10 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
+     * @param {string} content 
      */
-    static extractNestedIntentSections(fileContext) {
+    static extractNestedIntentSections(fileContext, content) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
@@ -121,15 +126,16 @@ class LUParser {
             .map(x => x.nestedIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x));
+        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x, content));
 
         return nestedIntentSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
+     * @param {string} content 
      */
-    static extractSimpleIntentSections(fileContext) {
+    static extractSimpleIntentSections(fileContext, content) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
@@ -139,7 +145,7 @@ class LUParser {
             .map(x => x.simpleIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x));
+        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x, content));
 
         return simpleIntentSectionList;
     }
@@ -155,7 +161,7 @@ class LUParser {
 
         let entitySections = fileContext.paragraph()
             .map(x => x.entitySection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let entitySectionList = entitySections.map(x => new EntitySection(x));
 
@@ -171,13 +177,13 @@ class LUParser {
                 return [];
         }
 
-        let entitySections = fileContext.paragraph()
+        let newEntitySections = fileContext.paragraph()
             .map(x => x.newEntitySection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
+        
+        let newEntitySectionList = newEntitySections.map(x => new NewEntitySection(x));
 
-        let entitySectionList = entitySections.map(x => new NewEntitySection(x));
-
-        return entitySectionList;
+        return newEntitySectionList;
     }
 
     /**
@@ -191,7 +197,7 @@ class LUParser {
 
         let importSections = fileContext.paragraph()
             .map(x => x.importSection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let importSectionList = importSections.map(x => new ImportSection(x));
 
@@ -209,7 +215,7 @@ class LUParser {
 
         let qnaSections = fileContext.paragraph()
             .map(x => x.qnaSection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let qnaSectionList = qnaSections.map(x => new QnaSection(x));
 
@@ -227,7 +233,7 @@ class LUParser {
 
         let modelInfoSections = fileContext.paragraph()
             .map(x => x.modelInfoSection())
-            .filter(x => x !== undefined && x != null);
+            .filter(x => x !== undefined && x !== null);
 
         let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
 

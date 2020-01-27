@@ -4,7 +4,7 @@
     "properties": {
         "CancelConfirmation": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "Confirmation"
             ],
             "$templates": [
@@ -12,9 +12,18 @@
                 "CancelConfirmationSet.dialog"
             ]
         },
+        "ChangePropertyConfirmation": {
+            "type": "string",
+            "$entities": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "ChangePropertyConfirmationSet.dialog"
+            ]
+        },
         "CompleteConfirmation": {
             "type": "string",
-            "$mappings": [
+            "$entities": [
                 "Confirmation", "PROPERTYName"
             ],
             "$templates": [
@@ -28,21 +37,28 @@
             "$templates": [
                 "PropertyToChangeSet.dialog"
             ]
+        },
+        "PropertyToRemember": {
+            "$ref": "#/definitions/PROPERTYName",
+            "$templates": [
+                "PropertyToRememberSet.dialog"
+            ]
         }
     },
     "definitions": {
         "PROPERTYName": {
             "type": "string",
             "enum": "@{properties}",
-            "$mappings": ["PROPERTYName"]
+            "$entities": ["PROPERTYName"]
         }
     },
-    "$expectedOnly": ["CancelConfirmation", "CompleteConfirmation", "PropertyToChange"],
+    "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
     "$templates": [
         "helpIntent.lu",
         "cancelIntent.lu",
         "noneIntent.lu",
         "triggerIntent.lu",
+        "readPropertyIntent.lu",
         "locale.lu",
         "locale.lg",
         "luis.lu",
@@ -51,8 +67,7 @@
         "HelpIntent.dialog",
         "NotUnderstood.dialog",
         "TriggerIntent.dialog",
-        "luconfig.json",
-        "lu.dialog",
+        "ReadPropertyIntent.dialog",
         "Main.dialog"     
     ]
 }

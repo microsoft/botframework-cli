@@ -2,14 +2,14 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnAssignEntity",
     "property": "CompleteConfirmation",
     "entity": "Confirmation",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$CompleteConfirmation",
-            "value": "@Confirmation"
+            "value": "=@Confirmation"
         },
         {
             "$kind": "Microsoft.IfCondition",
