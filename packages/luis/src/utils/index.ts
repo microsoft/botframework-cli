@@ -56,9 +56,7 @@ const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boole
   const luisClient = runtime ?
     new LUISRuntimeClient(creds, endpoint) :
     new LUISAuthoringClient(creds, endpoint)
-  luisClient.baseUri = runtime ?
-  'https://westus.api.cognitive.microsoft.com/luis/prediction/v3.0/' :
-  'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
+
   return luisClient
 }
 

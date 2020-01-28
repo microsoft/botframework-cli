@@ -37,7 +37,7 @@
     "version": "npm run doc:readme && git add README.md"
   },
   "dependencies": {
-    "@azure/cognitiveservices-luis-authoring": "3.0.0",
+    "@azure/cognitiveservices-luis-authoring": "4.0.0-preview.1",
     "@azure/cognitiveservices-luis-runtime": "5.0.0",
     "@azure/ms-rest-azure-js": "2.0.1",
     "@microsoft/bf-cli-command": "1.0.0",
