@@ -2,10 +2,10 @@
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/component.schema",
     "properties": {
         "prompt": {
-            "$role": "lg"
+            "$role": "expression"
         },
         "alternatePrompt": {
-            "$role": "lg"
+            "$role": "expression"
         }
     },
     "required": [
