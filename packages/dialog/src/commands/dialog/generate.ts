@@ -24,7 +24,7 @@ export default class GenerateDialog extends Command {
         locale: flags.string({ char: 'l', description: 'Locales to generate. [default: en-us]', multiple: true }),
         output: flags.string({ char: 'o', description: 'Output path for where to put generated .lu, .lg, .qna and .dialog files. [default: .]', default: '.', required: false }),
         schema: flags.string({ char: 's', description: 'Path to your app.schema file.', required: false }),
-        templates: flags.string({ char: 't', description: 'Directory with templates to use for generating assets.', multiple: true }),
+        templates: flags.string({ char: 't', description: 'Directory with templates to use for generating assets.  With multiple directories, the first definition found wins.  To include the standard templates, just use "standard" as a template directory name.', multiple: true }),
         verbose: flags.boolean({ description: 'Output verbose logging of files as they are processed', default: false }),
     }
 

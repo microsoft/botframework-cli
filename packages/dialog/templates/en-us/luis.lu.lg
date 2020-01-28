@@ -16,10 +16,10 @@
 ```
 
 # lu
-- \{settings.luis.@{schemaName}_@{locale}_lu\}
+- =settings.luis.@{schemaName}_@{locale}_lu
 
 # endpoint
-- \{settings.luis.endpoint\}
+- =settings.luis.endpoint
 
 # endpointKey
-- \{settings.luis.endpointKey\}
+- =settings.luis.endpointKey
