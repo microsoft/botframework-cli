@@ -90,7 +90,7 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
     .filter(flag => flag !== 'help')
     .map((flag: string) => {
       if (flag === 'in') {
-        // rename property since 'in' is a reserved keyword in Javascript
+        // rename property since 'in' is a reserved keyword
         input[`${flag}Val`] = flags[flag]
       }
       input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
