@@ -40,7 +40,12 @@ export default class DialogMerge extends Command {
         verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
 
-    private verbose? = false
+    static examples = [
+        '$ bf dialog:merge *.csporj',
+        '$ bf dialog:merge libraries/*.schema -o app.schema'
+    ]   
+     
+    private verbose?= false
     private failed = false
     private missingKinds = new Set()
     private currentFile = ''
@@ -148,7 +153,7 @@ export default class DialogMerge extends Command {
                     }
                 }
                 this.fixDefinitionReferences(definitions)
-                this.processRoles(definitions, metaSchema)
+                this.processRoles(definitions)
                 this.addKindTitles(definitions)
                 this.expandKinds(definitions)
                 this.addStandardProperties(definitions, metaSchema)
@@ -190,7 +195,7 @@ export default class DialogMerge extends Command {
     }
 
     // Expand package.json, package.config or *.csproj to look for .schema below referenced packages.
-    async * expandPackages(paths: string[],): AsyncIterable<string> {
+    async * expandPackages(paths: string[]): AsyncIterable<string> {
         for (let path of paths) {
             if (path.endsWith('.schema')) {
                 yield this.prettyPath(path)
@@ -332,15 +337,15 @@ export default class DialogMerge extends Command {
         }
     }
 
-    processRoles(definitions: any, metaSchema: any): void {
+    processRoles(definitions: any): void {
         for (let kind in definitions) {
             this.walkJSON(definitions[kind], (val: any, _obj, key) => {
                 if (val.$role) {
                     if (typeof val.$role === 'string') {
-                        this.processRole(val.$role, val, kind, definitions, metaSchema, key)
+                        this.processRole(val.$role, val, kind, definitions, key)
                     } else {
                         for (let role of val.$role) {
-                            this.processRole(role, val, kind, definitions, metaSchema, key)
+                            this.processRole(role, val, kind, definitions, key)
                         }
                     }
                 }
@@ -349,15 +354,44 @@ export default class DialogMerge extends Command {
         }
     }
 
-    processRole(role: string, elt: any, kind: string, definitions: any, metaSchema: any, key?: string): void {
+    processRole(role: string, elt: any, kind: string, definitions: any, key?: string): void {
         const prefix = 'union('
-        if (role === 'expression' || role === 'lg' || role === 'memoryPath') {
+        if (role === 'expression') {
+            const reserved = ['title', 'description', 'examples', '$role']
             if (elt.kind) {
                 this.error(`${this.currentFile}:error: $role ${role} must not have a kind.`)
             }
-            for (let prop in metaSchema.definitions[role]) {
-                if (!elt[prop]) {
-                    elt[prop] = metaSchema.definitions[role][prop]
+            if (elt.type) {
+                if (Array.isArray(elt.type)) {
+                    if (!elt.type.includes('string')) {
+                        elt.type.push('string');
+                    }
+                } else if (elt.type !== 'string') {
+                    let props = {}
+                    for (let key of Object.keys(elt)) {
+                        if (!reserved.includes(key)) {
+                            let value = elt[key]
+                            delete elt[key]
+                            props[key] = value
+                        }
+                    }
+                    elt.oneOf = [props, {
+                        type: 'string',
+                        title: 'Expression',
+                        description: `Expression evaluating to ${elt.type}.`
+                    }]
+                }
+            } else if (elt.oneOf || elt.anyOf || elt.allOf) {
+                let choices = elt.oneOf || elt.anyOf || elt.allOf
+                let found = false
+                for (let choice of choices) {
+                    if (choice.type === 'string') {
+                        found = true
+                        break
+                    }
+                }
+                if (!found) {
+                    choices.push({ type: 'string', title: 'Expression' })
                 }
             }
         } else if (role === 'union') {
@@ -383,7 +417,7 @@ export default class DialogMerge extends Command {
                 })
             }
         } else {
-            this.error(`${this.currentFile}:error: Unknown $role`)
+            this.error(`${this.currentFile}:error: Unknown $role ${role}`)
         }
     }
 
