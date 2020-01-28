@@ -195,7 +195,7 @@ export default class DialogMerge extends Command {
     }
 
     // Expand package.json, package.config or *.csproj to look for .schema below referenced packages.
-    async * expandPackages(paths: string[], ): AsyncIterable<string> {
+    async * expandPackages(paths: string[]): AsyncIterable<string> {
         for (let path of paths) {
             if (path.endsWith('.schema')) {
                 yield this.prettyPath(path)
