@@ -11,6 +11,88 @@ import { Utility } from "../utility/Utility";
 
 export class ColumnarData extends Data {
 
+    public static createColumnarDataFromSamplingExistingColumnarDataUtterances(
+        existingColumnarData: ColumnarData,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        samplingIndexArray: number[],
+        toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
+        // -------------------------------------------------------------------
+        const columnarData: ColumnarData =
+            ColumnarData.createColumnarData(
+                existingColumnarData.getContent(),
+                existingColumnarData.getFeaturizer(),
+                labelColumnIndex,
+                textColumnIndex,
+                linesToSkip,
+                toResetFeaturizerLabelFeatureMaps);
+        // -------------------------------------------------------------------
+        const luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> = columnarData.luUtterances;
+        const lengthUtterancesArray: number =
+            luUtterances.length;
+        columnarData.luUtterances = [];
+        for (const index of samplingIndexArray) {
+            if ((index < 0) || (index > lengthUtterancesArray)) {
+                Utility.debuggingThrow(`(index|${index}|<0)||(index|${index}|>lengthUtterancesArray|${lengthUtterancesArray}|)`);
+            }
+            columnarData.luUtterances.push(luUtterances[index]);
+        }
+        // -------------------------------------------------------------------
+        columnarData.intentInstanceIndexMapArray =
+            columnarData.collectIntents(columnarData.luUtterances);
+        columnarData.entityTypeInstanceIndexMapArray =
+            columnarData.collectEntityTypes(columnarData.luUtterances);
+        columnarData.intentsUtterances.intents = columnarData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.intent as string);
+        columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.text as string);
+        // -------------------------------------------------------------------
+        if (toResetFeaturizerLabelFeatureMaps) {
+            columnarData.resetFeaturizerLabelFeatureMaps();
+        }
+        // -------------------------------------------------------------------
+        columnarData.featurizeIntentsUtterances();
+        // -------------------------------------------------------------------
+        return columnarData;
+    }
+
     public static createColumnarDataFromFilteringExistingColumnarDataUtterances(
         existingColumnarData: ColumnarData,
         labelColumnIndex: number,
@@ -28,24 +110,83 @@ export class ColumnarData extends Data {
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
-        const utterancesArray: any[] =
-            columnarData.retrieveColumnarUtterances(columnarData.content);
-        columnarData.luUtterances = utterancesArray.filter(
-            (value: any, index: number, array: any[]) => {
+        const luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> =
+            columnarData.luUtterances;
+        columnarData.luUtterances = luUtterances.filter(
+            (value: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string },
+             index: number,
+             array: Array<{
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }>) => {
                 return (filteringIndexSet.has(index));
             });
-        // -------------------------------------------------------------------
-        // columnarData.luUtterances =
-        //     columnarData.retrieveColumnarUtterances(columnarData.content);
         // -------------------------------------------------------------------
         columnarData.intentInstanceIndexMapArray =
             columnarData.collectIntents(columnarData.luUtterances);
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
         columnarData.intentsUtterances.intents = columnarData.luUtterances.map(
-            (entry: any) => entry.intent as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.intent as string);
         columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
-            (entry: any) => entry.text as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.text as string);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarData.resetFeaturizerLabelFeatureMaps();
@@ -73,16 +214,41 @@ export class ColumnarData extends Data {
         columnarData.content =
             content;
         // -------------------------------------------------------------------
-        columnarData.luUtterances = columnarData.retrieveColumnarUtterances(content);
+        columnarData.luUtterances =
+            columnarData.retrieveColumnarUtterances(content);
         // -------------------------------------------------------------------
         columnarData.intentInstanceIndexMapArray =
             columnarData.collectIntents(columnarData.luUtterances);
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
         columnarData.intentsUtterances.intents = columnarData.luUtterances.map(
-            (entry: any) => entry.intent as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.intent as string);
         columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
-            (entry: any) => entry.text as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.text as string);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarData.resetFeaturizerLabelFeatureMaps();
@@ -92,9 +258,6 @@ export class ColumnarData extends Data {
         // -------------------------------------------------------------------
         return columnarData;
     }
-
-    // protected luObject: any = null;
-    // protected luJsonStructure: any = null;
 
     protected labelColumnIndex: number = 0;
     protected textColumnIndex: number = 1;
@@ -111,7 +274,51 @@ export class ColumnarData extends Data {
         this.linesToSkip = linesToSkip;
     }
 
-    public retrieveColumnarUtterances(content: any): any[] {
+    public async createDataFromSamplingExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        samplingIndexArray: number[],
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        return ColumnarData.createColumnarDataFromSamplingExistingColumnarDataUtterances(
+            existingData as ColumnarData,
+            labelColumnIndex,
+            textColumnIndex,
+            linesToSkip,
+            samplingIndexArray,
+            toResetFeaturizerLabelFeatureMaps);
+    }
+
+    public async createDataFromFilteringExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        filteringIndexSet: Set<number>,
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        return ColumnarData.createColumnarDataFromFilteringExistingColumnarDataUtterances(
+            existingData as ColumnarData,
+            labelColumnIndex,
+            textColumnIndex,
+            linesToSkip,
+            filteringIndexSet,
+            toResetFeaturizerLabelFeatureMaps);
+    }
+
+    public retrieveColumnarUtterances(content: string): Array<{ // ---- NOTE the return is newly allocated, unlike the one of LuData
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string }> {
         const intentsUtterances: { "intents": string[], "utterances": string[] } =
             Utility.loadLabelTextColumnarContent(
                 content,               // ---- filename: string,
@@ -122,17 +329,41 @@ export class ColumnarData extends Data {
                 "\n",                  // ---- rowDelimiter: string = "\n",
                 -1,                    // ---- lineIndexToEnd: number = -1
             );
-        const luUtterances: any[] = [];
+        const luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> = [];
         const intents: string[] = intentsUtterances.intents;
         const utterances: string[] = intentsUtterances.utterances;
         for (let i = 0; i < intents.length; i++) {
             const intent: string = intents[i];
             const text: string = utterances[i];
-            const luUtterance: any = {
-                entities: [],
-                partOfSpeechTags: [],
-                intent,
-                text,
+            const luUtterance: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string } = {
+                    entities: [],
+                    partOfSpeechTags: [],
+                    intent,
+                    text,
             };
             luUtterances.push(luUtterance);
         }
@@ -140,10 +371,16 @@ export class ColumnarData extends Data {
     }
 
     public getLuObject(): any {
-        return null; // return this.luObject;
+        return null; // ---- NOTE: not constructued from a ColumnarData file.
     }
-    public getLuJsonStructure(): any {
-        return null; // this.luJsonStructure;
+    public getLuLuisJsonStructure(): any {
+        return null; // ---- NOTE: not constructued from a ColumnarData file.
+    }
+    public getLuQnaJsonStructure(): any {
+        return null; // ---- NOTE: not constructued from a ColumnarData file.
+    }
+    public getLuQnaAlterationsJsonStructure(): any {
+        return null; // ---- NOTE: not constructued from a ColumnarData file.
     }
 
     public getLabelColumnIndex(): number {
@@ -160,37 +397,35 @@ export class ColumnarData extends Data {
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
-        // ==== NOTE-TODO ==== a ColumnarData source does not have a LU structure,
-        // ==== NOTE-TODO ==== need to develope a transform logic!
-        // Utility.dumpFile(
-        //     filename,
-        //     JSON.stringify(
-        //         this.getLuObject(),
-        //         replacer,
-        //         space));
+        // ==== NOTE-TODO ==== a ColumnarData source does not have a LU LUIS structure,
+        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
+        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
+        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
+        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
+        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuObject(),
+        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
+        // ---- NOTE-TODO-PLACEHOLDER ----         space));
     }
-    public dumpLuJsonStructure(
+    public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
-        // ==== NOTE-TODO ==== a ColumnarData source does not have a LU JSON structure,
-        // ==== NOTE-TODO ==== need to develope a transform logic!
-        // Utility.dumpFile(
-        //     filename,
-        //     JSON.stringify(
-        //         this.getLuJsonStructure(),
-        //         replacer,
-        //         space));
+        // ==== NOTE-TODO ==== a ColumnarData source does not have a LU LUIS structure,
+        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
+        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
+        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
+        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
+        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure(),
+        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
+        // ---- NOTE-TODO-PLACEHOLDER ----         space));
     }
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ---- public dumpLuUtterances(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     filename: string,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     replacer?: (this: any, key: string, value: any) => any,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     space?: string | number): void {
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     Utility.dumpFile(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----         filename,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----         JSON.stringify(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             this.getLuUtterances(),
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             replacer,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             space));
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ---- }
+    public dumpLuLuisJsonStructureInLuFormat(
+        filename: string): void {
+        // ==== NOTE-TODO ==== a ColumnarData source does not have a LU LUIS structure,
+        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
+        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
+        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
+        // ---- NOTE-TODO-PLACEHOLDER ----     constructMdFromLUIS(
+        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure()));
+    }
 }

@@ -12,13 +12,15 @@ import { ArgumentParser } from "argparse";
 
 import { Predictor } from "./Predictor";
 
-import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
+import { SoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
 // import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
 
-import { BinaryConfusionMatrixMetrics } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
+import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
-import { ConfusionMatrix } from "../confusion_matrix/ConfusionMatrix";
+import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
+
+import { ThresholdReporter } from "../report/ThresholdReporter";
 
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
@@ -33,13 +35,20 @@ export function mainPredictor(): void {
         description: "AppPredictor",
         version: "0.0.1",
     });
-    // ==== parser.addArgument(
-    // ====     ["-f", "--filename"],
-    // ====     {
-    // ====         help: "an input data file",
-    // ====         required: true,
-    // ====     },
-    // ==== );
+    // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
+    // ---- NOTE-TODO-PLACEHOLDER ----     ["-f", "--filename"],
+    // ---- NOTE-TODO-PLACEHOLDER ----     {
+    // ---- NOTE-TODO-PLACEHOLDER ----         help: "an input data file",
+    // ---- NOTE-TODO-PLACEHOLDER ----         required: true,
+    // ---- NOTE-TODO-PLACEHOLDER ----     },
+    // ---- NOTE-TODO-PLACEHOLDER ---- );
+    // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
+    // ---- NOTE-TODO-PLACEHOLDER ----     ["-t", "--filetype"],
+    // ---- NOTE-TODO-PLACEHOLDER ----     {
+    // ---- NOTE-TODO-PLACEHOLDER ----         help: "data file type",
+    // ---- NOTE-TODO-PLACEHOLDER ----         required: false,
+    // ---- NOTE-TODO-PLACEHOLDER ----     },
+    // ---- NOTE-TODO-PLACEHOLDER ---- );
     parser.addArgument(
         ["-m", "--modelFilename"],
         {
@@ -55,9 +64,9 @@ export function mainPredictor(): void {
         },
     );
     parser.addArgument(
-        ["-o", "--outputFilename"],
+        ["-o", "--outputReportFilenamePrefix"],
         {
-            help: "output data file",
+            help: "output report file prefix",
             required: false,
         },
     );
@@ -77,14 +86,17 @@ export function mainPredictor(): void {
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
-    // console.dir(args);
+    // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
     // -----------------------------------------------------------------------
-    // ==== const filename: string =
-    // ====     args.filename;
-    // ==== if (!Utility.exists(filename)) {
-    // ====     Utility.debuggingThrow(
-    // ====         `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
-    // ==== }
+    // ---- NOTE-TODO-PLACEHOLDER ---- const filename: string =
+    // ---- NOTE-TODO-PLACEHOLDER ----     args.filename;
+    // ---- NOTE-TODO-PLACEHOLDER ---- if (!Utility.exists(filename)) {
+    // ---- NOTE-TODO-PLACEHOLDER ----     Utility.debuggingThrow(
+    // ---- NOTE-TODO-PLACEHOLDER ----         `The input dataset file ${filename} does not exist!` +
+    // ---- NOTE-TODO-PLACEHOLDER ----         ` process.cwd()=${process.cwd()}`);
+    // ---- NOTE-TODO-PLACEHOLDER ---- }
+    // ---- NOTE-TODO-PLACEHOLDER ---- const filetype: string =
+    // ---- NOTE-TODO-PLACEHOLDER ----     args.filetype;
     const modelFilename: string =
         args.modelFilename;
     if (!Utility.exists(modelFilename)) {
@@ -97,37 +109,51 @@ export function mainPredictor(): void {
         Utility.debuggingThrow(
             `The input featurizer file ${featurizerFilename} does not exist! process.cwd()=${process.cwd()}`);
     }
-    const outputFilename: string = args.outputFilename;
-    // if (outputFilename == null) {
-    //     // ==== outputFilename = filename + ".metrics.json";
-    //     Utility.debuggingThrow(
-    //         `The output file ${outputFilename} is empty! process.cwd()=${process.cwd()}`);
-    // }
-    // ==== Utility.debuggingLog(
-    // ====     `filename=${filename}`);
+    let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
+    if (Utility.isEmptyString(outputReportFilenamePrefix)) {
+        outputReportFilenamePrefix = Utility.getFileBasename(modelFilename);
+        // Utility.debuggingThrow(
+        //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
+    }
+    // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
+    // ---- NOTE-TODO-PLACEHOLDER ----     `filename=${filename}`);
     Utility.debuggingLog(
-        `outputFilename=${outputFilename}`);
+        `outputReportFilenamePrefix=${outputReportFilenamePrefix}`);
     Utility.debuggingLog(
         `modelFilename=${modelFilename}`);
     Utility.debuggingLog(
         `featurizerFilename=${featurizerFilename}`);
-    // const outputModelFilename: string =
-    //     args.outputModelFilename;
     // -----------------------------------------------------------------------
     const predictor: Predictor =
         new Predictor(
             modelFilename,
             featurizerFilename);
     // -----------------------------------------------------------------------
-    const featurizer: NgramSubwordFeaturizer =
+    const modelNullable: SoftmaxRegressionSparse|null =
+        predictor.getModel();
+    if (modelNullable === null) {
+        Utility.debuggingThrow("model is null");
+    }
+    const featurizerNullable: NgramSubwordFeaturizer|null =
         predictor.getFeaturizer();
+    if (featurizerNullable === null) {
+        Utility.debuggingThrow("featurizer is null");
+    }
+    const model: SoftmaxRegressionSparse =
+        modelNullable as SoftmaxRegressionSparse;
+    const featurizer: NgramSubwordFeaturizer =
+        featurizerNullable as NgramSubwordFeaturizer;
+    // -------------------------------------------------------------------
     const labels: string[] = featurizer.getLabels();
     const labelMap: { [id: string]: number; } = featurizer.getLabelMap();
     // const numberLabels: number = featurizer.getNumberLabels();
     // const numberFeatures: number = featurizer.getNumberFeatures();
     // -----------------------------------------------------------------------
-    const confusionMatrixTest: ConfusionMatrix =
+    const confusionMatrixPrediction: ConfusionMatrix =
         new ConfusionMatrix(labels, labelMap);
+    const thresholdReporterPredict: ThresholdReporter =
+        new ThresholdReporter("", "", null, null, labels, labelMap);
+    // -----------------------------------------------------------------------
     while (true) {
         const utterance: string =
             readlineSync.question("Please enter an utterance? [empty to end the loop] ");
@@ -141,49 +167,24 @@ export function mainPredictor(): void {
         Utility.debuggingLog(
             `intent=${intent}`);
         const predictionResult: {
-            "confusionMatrixPredict": ConfusionMatrix
-            "predictionLabel": string,
-            "predictionLabelIndex": number,
-            "label": string,
-            "labelIndex": number,
-            "prediction": number[] } = predictor.predict(
+            "confusionMatrixPrediction": ConfusionMatrix
+            "thresholdReporterPrediction": ThresholdReporter,
+            "predictionLabels": string[],
+            "predictionLabelIndexes": number[],
+            "groundTruthLabels": string[],
+            "groundTruthLabelIndexes": number[],
+            "predictions": number[][] } = predictor.predict(
                 utterance,
-                intent,
-                confusionMatrixTest);
+                intent);
         Utility.debuggingLog(
-           `label=${predictionResult.label}` +
-           `, predictionLabel=${predictionResult.predictionLabel}` +
-           `, labelIndex=${predictionResult.labelIndex}, ` +
-           `, predictionLabelIndex=${predictionResult.predictionLabelIndex}`);
+           `groundTruthLabel=${predictionResult.groundTruthLabels[predictionResult.groundTruthLabels.length - 1]}` +
+           `, predictionLabel=${predictionResult.predictionLabels[predictionResult.predictionLabels.length - 1]}` +
+           `, groundTruthLabelIndex=${predictionResult.groundTruthLabelIndexes[predictionResult.groundTruthLabelIndexes.length - 1]}, ` +
+           `, predictionLabelIndex=${predictionResult.predictionLabelIndexes[predictionResult.predictionLabelIndexes.length - 1]}`);
     }
-    const confusionMatrixMetricStructure: { "confusionMatrix": ConfusionMatrix,
-        "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
-        "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
-        "macroAverageMetrics": { "averagePrecision": number,
-                                 "averageRecall": number,
-                                 "averageF1Score": number,
-                                 "totalMacroAverage": number },
-        "microAverageMetrics": { "accuracy": number,
-                                 "truePositives": number,
-                                 "totalMicroAverage": number },
-        "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                 "weightedAverageRecall": number,
-                                 "weightedAverageF1Score": number,
-                                 "weightedTotalMacroAverage": number } } =
-        ConfusionMatrix.generateConfusionMatrixMetricStructure(
-            confusionMatrixTest);
-    if (!Utility.isEmptyString(outputFilename)) {
-        Utility.dumpFile(
-            outputFilename,
-            JSON.stringify(confusionMatrixMetricStructure, undefined, 4));
-    }
-    Utility.debuggingLog(
-        `confusionMatrixTest.getMicroAverageMetrics()=` +
-        `${confusionMatrixTest.getMicroAverageMetrics()}` +
-        `,confusionMatrixTest.getMacroAverageMetrics()=` +
-        `${confusionMatrixTest.getMacroAverageMetrics()}` +
-        `,confusionMatrixTest.getWeightedMacroAverageMetrics()=` +
-        `${confusionMatrixTest.getWeightedMacroAverageMetrics()}`);
+    // -----------------------------------------------------------------------
+    predictor.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+    predictor.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------

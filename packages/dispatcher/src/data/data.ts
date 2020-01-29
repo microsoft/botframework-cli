@@ -10,10 +10,22 @@ import { NgramSubwordFeaturizer } from "../model/language_understanding/featuriz
 
 import { Utility } from "../utility/Utility";
 
-export class Data {
+export abstract class Data {
 
     protected content: string = "";
-    protected luUtterances: any[] = [];
+    protected luUtterances: Array<{
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string }> = [];
     protected intentInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
     protected entityTypeInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
 
@@ -36,11 +48,61 @@ export class Data {
         this.featurizer = featurizer;
     }
 
-    public collectEntityTypes(luUtterances: any[]): Map<string, number[]> {
+    public abstract async createDataFromSamplingExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        samplingIndexArray: number[],
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data>;
+
+    public abstract async createDataFromFilteringExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        filteringIndexSet: Set<number>,
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data>;
+
+    public collectEntityTypes(luUtterances: Array<{
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string }>): Map<string, number[]> {
         const entityTypeInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
-        luUtterances.forEach((element: any, index: number) => {
-            const entities: any[] = element.entities;
-            entities.forEach((entityElement: any) => {
+        luUtterances.forEach(
+            (element: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string },
+             index: number) => {
+            const entities: Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }> = element.entities;
+            entities.forEach((entityElement: {
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }) => {
                 const entityType: string = entityElement.entity as string;
                 if (entityType) {
                     Utility.addKeyValueToNumberMapArray(
@@ -52,9 +114,33 @@ export class Data {
         });
         return entityTypeInstanceIndexMapArray;
     }
-    public collectIntents(luUtterances: any[]): Map<string, number[]> {
+    public collectIntents(luUtterances: Array<{
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string }>): Map<string, number[]> {
         const intentInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
-        luUtterances.forEach((element: any, index: number) => {
+        luUtterances.forEach((element: {
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }, index: number) => {
             const intent: string = element.intent as string;
             if (intent) {
                 Utility.addKeyValueToNumberMapArray(
@@ -69,13 +155,33 @@ export class Data {
     public getContent(): string {
         return this.content;
     }
+
     public getLuObject(): any {
         return null;
     }
-    public getLuJsonStructure(): any {
+    public getLuLuisJsonStructure(): any {
         return null;
     }
-    public getLuUtterances(): any[] {
+    public getLuQnaJsonStructure(): any {
+        return null;
+    }
+    public getLuQnaAlterationsJsonStructure(): any {
+        return null;
+    }
+
+    public getLuUtterances(): Array<{
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string }> {
         return this.luUtterances;
     }
     public getIntentInstanceIndexMapArray(): Map<string, number[]> {
@@ -89,14 +195,22 @@ export class Data {
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
-            return;
+        // ---- NOTE: a child class can override this function.
+        return;
     }
-    public dumpLuJsonStructure(
+    public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
-            return;
+        // ---- NOTE: a child class can override this function.
+        return;
     }
+    public dumpLuLuisJsonStructureInLuFormat(
+        filename: string): void {
+        // ---- NOTE: a child class can override this function.
+        return;
+    }
+
     public dumpLuUtterances(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
@@ -181,7 +295,19 @@ export class Data {
         } {
         const candidateUtteranceIndexSetSampled: Set<number> = new Set<number>();
         for (const luUtteranceIndex of candidateUtteranceIndexSet) {
-            const luUtterance: any =
+            const luUtterance: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string } =
                 this.luUtterances[luUtteranceIndex];
             const intent: string =
                 luUtterance.intent as string;
@@ -238,7 +364,19 @@ export class Data {
             for (const luUtteranceIndex of luUtteranceIndexes) {
             // for (let i: number = 0; i < luUtteranceIndexes.length; i++) {
                 // const luUtteranceIndex: number = luUtteranceIndexes[i];
-                const luUtterance: any = this.luUtterances[luUtteranceIndex];
+                const luUtterance: {
+                    "entities": Array<{
+                        "entity": string,
+                        "startPos": number,
+                        "endPos": number,
+                        }>,
+                    "partOfSpeechTags": Array<{
+                        "partOfSpeechTag": string,
+                        "startPos": number,
+                        "endPos": number,
+                        }>,
+                    "intent": string,
+                    "text": string } = this.luUtterances[luUtteranceIndex];
                 let hasNewUtteranceFoundForCoveringAllIntentEntityLabels: boolean = false;
                 if (toEnsureEachIntentHasOneUtteranceLabel) {
                     if (intentSet.size < numberIntents) {
@@ -258,8 +396,16 @@ export class Data {
                 }
                 if (toEnsureEachEntityTypeHasOneUtteranceLabel) {
                     if (entityTypeSet.size < numberEntityTypes) {
-                        const entities: any[] = luUtterance.entities;
-                        entities.forEach((entityElement: any) => {
+                        const entities: Array<{
+                            "entity": string,
+                            "startPos": number,
+                            "endPos": number,
+                            }> = luUtterance.entities;
+                        entities.forEach((entityElement: {
+                            "entity": string,
+                            "startPos": number,
+                            "endPos": number,
+                            }) => {
                             const entityType: string = entityElement.entity as string;
                             if (entityType) {
                                 if (!(entityTypeSet.has(entityType))) {
@@ -289,8 +435,16 @@ export class Data {
                             luUtteranceIndex);
                     }
                     {
-                        const entities: any[] = luUtterance.entities;
-                        entities.forEach((entityElement: any) => {
+                        const entities: Array<{
+                            "entity": string,
+                            "startPos": number,
+                            "endPos": number,
+                            }> = luUtterance.entities;
+                        entities.forEach((entityElement: {
+                            "entity": string,
+                            "startPos": number,
+                            "endPos": number,
+                            }) => {
                             const entityType: string = entityElement.entity as string;
                             if (entityType) {
                                 Utility.addKeyValueToNumberMapSet(

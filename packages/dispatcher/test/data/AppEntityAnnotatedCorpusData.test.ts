@@ -15,7 +15,7 @@ describe("Test Suite - data/AppEntityAnnotatedCorpusData", () => {
     it("Test.0000 exampleFunctionData", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.csv";
+        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.eac";
         process.argv.push("--filename");
         process.argv.push(filename);
         process.argv.push("--linesToSkip");

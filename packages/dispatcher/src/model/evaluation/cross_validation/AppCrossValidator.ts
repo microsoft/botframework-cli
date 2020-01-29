@@ -13,18 +13,103 @@ import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_n
 
 // import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
 
-import { BinaryConfusionMatrixMetrics } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
+import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
-import { ConfusionMatrix } from "../confusion_matrix/ConfusionMatrix";
+import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
 
 import { ColumnarData } from "../../../data/ColumnarData";
-
 import { LuData } from "../../../data/LuData";
+import { Data } from "../../../data/Data";
+import { DataUtility } from "../../../data/DataUtility";
 
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
 import { Utility } from "../../../utility/Utility";
 
+/**
+ * This function consumes a Data object as input and run cross validation (CV) to evaluate models trained from
+ * the input label/text (intent/utterance) instance set.
+ *
+ * @param data - input Data object as input.
+ * @param numberOfCrossValidationFolds - number of cross validation (CV) folds.
+ * @param learnerParameterEpochs - CV Softmax Regression Learner parameter - number of epochs
+ * @param learnerParameterMiniBatchSize - CV Softmax Regression learner parameter - mini-batch size.
+ * @param learnerParameterL1Regularization - CV Softmax Regression learner parameter - L1 regularization.
+ * @param learnerParameterL2Regularization - CV Softmax Regression learner parameter - L2 regularization.
+ * @param learnerParameterLossEarlyStopRatio - CV Softmax Regression learner parameter - early stop ratio.
+ * @param learnerParameterLearningRate - CV Softmax Regression learner parameter - learning rate.
+ * @param learnerParameterToCalculateOverallLossAfterEpoch - CV Softmax Regression learner parameter - flag
+ */
+export function mainCrossValidatorWithData(
+    data: Data,
+    numberOfCrossValidationFolds: number =
+        CrossValidator.defaultNumberOfCrossValidationFolds,
+    learnerParameterEpochs: number =
+        AppSoftmaxRegressionSparse.defaultEpochs,
+    learnerParameterMiniBatchSize: number =
+        AppSoftmaxRegressionSparse.defaultMiniBatchSize,
+    learnerParameterL1Regularization: number =
+        AppSoftmaxRegressionSparse.defaultL1Regularization,
+    learnerParameterL2Regularization: number =
+        AppSoftmaxRegressionSparse.defaultL2Regularization,
+    learnerParameterLossEarlyStopRatio: number =
+        AppSoftmaxRegressionSparse.defaultLossEarlyStopRatio,
+    learnerParameterLearningRate: number =
+        AppSoftmaxRegressionSparse.defaultLearningRate,
+    learnerParameterToCalculateOverallLossAfterEpoch: boolean =
+        true): CrossValidator {
+    // -----------------------------------------------------------------------
+    if (!numberOfCrossValidationFolds) {
+        numberOfCrossValidationFolds = CrossValidator.defaultNumberOfCrossValidationFolds;
+    }
+    // -------------------------------------------------------------------
+    const intents: string[] =
+        data.getIntents();
+    const utterances: string[] =
+        data.getUtterances();
+    const intentLabelIndexArray: number[] =
+        data.getIntentLabelIndexArray();
+    const utteranceFeatureIndexArrays: number[][] =
+        data.getUtteranceFeatureIndexArrays();
+    assert(intentLabelIndexArray, "intentLabelIndexArray is undefined.");
+    assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
+    const crossValidator: CrossValidator =
+        new CrossValidator(
+            data.getFeaturizerLabels(),
+            data.getFeaturizerLabelMap(),
+            data.getFeaturizer().getNumberLabels(),
+            data.getFeaturizer().getNumberFeatures(),
+            intents,
+            utterances,
+            intentLabelIndexArray,
+            utteranceFeatureIndexArrays,
+            data.getIntentInstanceIndexMapArray(),
+            numberOfCrossValidationFolds,
+            learnerParameterEpochs,
+            learnerParameterMiniBatchSize,
+            learnerParameterL1Regularization,
+            learnerParameterL2Regularization,
+            learnerParameterLossEarlyStopRatio,
+            learnerParameterLearningRate,
+            learnerParameterToCalculateOverallLossAfterEpoch);
+    return crossValidator;
+    // -----------------------------------------------------------------------
+}
+
+/**
+ * This function consumes a LU file content as input and run cross validation (CV) to evaluate models trained from
+ * the input label/text (intent/utterance) instance set.
+ *
+ * @param luContent - input LU file content as input.
+ * @param numberOfCrossValidationFolds - number of cross validation (CV) folds.
+ * @param learnerParameterEpochs - CV Softmax Regression Learner parameter - number of epochs
+ * @param learnerParameterMiniBatchSize - CV Softmax Regression learner parameter - mini-batch size.
+ * @param learnerParameterL1Regularization - CV Softmax Regression learner parameter - L1 regularization.
+ * @param learnerParameterL2Regularization - CV Softmax Regression learner parameter - L2 regularization.
+ * @param learnerParameterLossEarlyStopRatio - CV Softmax Regression learner parameter - early stop ratio.
+ * @param learnerParameterLearningRate - CV Softmax Regression learner parameter - learning rate.
+ * @param learnerParameterToCalculateOverallLossAfterEpoch - CV Softmax Regression learner parameter - flag
+ */
 export async function mainCrossValidatorWithLuContent(
     luContent: string,
     numberOfCrossValidationFolds: number =
@@ -42,7 +127,7 @@ export async function mainCrossValidatorWithLuContent(
     learnerParameterLearningRate: number =
         AppSoftmaxRegressionSparse.defaultLearningRate,
     learnerParameterToCalculateOverallLossAfterEpoch: boolean =
-        true): Promise<ConfusionMatrix> {
+        true): Promise<CrossValidator> {
     // -----------------------------------------------------------------------
     const luData: LuData =
         await LuData.createLuData(
@@ -50,65 +135,14 @@ export async function mainCrossValidatorWithLuContent(
             new NgramSubwordFeaturizer(),
             true);
     // -----------------------------------------------------------------------
-    // const results =
-    //     luData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
-    // const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
-    //     results.smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
-    // const smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
-    //     results.smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels;
-    // const smallUtteranceIndexSetCoveringAllIntentEntityLabels: Set<number> =
-    //     results.smallUtteranceIndexSetCoveringAllIntentEntityLabels;
-    // const remainingUtteranceIndexSet: Set<number> =
-    //     results.remainingUtteranceIndexSet;
-    // Utility.debuggingLog(`smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels=` +
-    //     `${Utility.stringMapSetToJson(smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels=` +
-    //     `${Utility.stringMapSetToJson(smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`smallUtteranceIndexSetCoveringAllIntentEntityLabels=` +
-    //     `${Utility.setToJson(smallUtteranceIndexSetCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`remainingUtteranceIndexSet=` +
-    //     `${Utility.setToJson(remainingUtteranceIndexSet)}`);
-    // Utility.debuggingLog(`smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
-    //     `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
-    // Utility.debuggingLog(`remainingUtteranceIndexSet.size=` +
-    //     `${remainingUtteranceIndexSet.size}`);
-    // -------------------------------------------------------------------
     if (!numberOfCrossValidationFolds) {
         numberOfCrossValidationFolds = CrossValidator.defaultNumberOfCrossValidationFolds;
     }
-    // const resultsInitialSampling =
-    //     luData.collectUtteranceIndexSetSeedingIntentTrainingSet(
-    //         smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels,
-    //         remainingUtteranceIndexSet,
-    //         numberOfCrossValidationFolds);
-    // const seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
-    //     resultsInitialSampling.seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
-    // const candidateUtteranceIndexSetSampled: Set<number> =
-    //     resultsInitialSampling.candidateUtteranceIndexSetSampled;
-    // const candidateUtteranceIndexSetRemaining: Set<number> =
-    //     resultsInitialSampling.candidateUtteranceIndexSetRemaining;
-    // Utility.debuggingLog(`seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels=` +
-    //     `${Utility.stringMapSetToJson(seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetSampled=` +
-    //     `${Utility.setToJson(candidateUtteranceIndexSetSampled)}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetRemaining=` +
-    //     `${Utility.setToJson(candidateUtteranceIndexSetRemaining)}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetSampled.size=` +
-    //     `${candidateUtteranceIndexSetSampled.size}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetRemaining.size=` +
-    //     `${candidateUtteranceIndexSetRemaining.size}`);
-    // const countSeedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels: number =
-    //     [...seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels].reduce(
-    //         (accumulation: number, entry: [string, Set<number>]) => accumulation + entry[1].size, 0);
-    // Utility.debuggingLog(`countSeedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels=` +
-    //     `${countSeedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels}`);
     // -------------------------------------------------------------------
-    // const seedingUtteranceIndexArray: number[] =
-    //     [...seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels].reduce(
-    //         (accumulation: number[], entry: [string, Set<number>]) => accumulation.concat(Array.from(entry[1])), []);
-    // Utility.debuggingLog(`seedingUtteranceIndexArray.length=` +
-    //     `${seedingUtteranceIndexArray.length}`);
-    // -------------------------------------------------------------------
+    const intents: string[] =
+        luData.getIntents();
+    const utterances: string[] =
+        luData.getUtterances();
     const intentLabelIndexArray: number[] =
         luData.getIntentLabelIndexArray();
     const utteranceFeatureIndexArrays: number[][] =
@@ -117,6 +151,15 @@ export async function mainCrossValidatorWithLuContent(
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
         new CrossValidator(
+            luData.getFeaturizerLabels(),
+            luData.getFeaturizerLabelMap(),
+            luData.getFeaturizer().getNumberLabels(),
+            luData.getFeaturizer().getNumberFeatures(),
+            intents,
+            utterances,
+            intentLabelIndexArray,
+            utteranceFeatureIndexArrays,
+            luData.getIntentInstanceIndexMapArray(),
             numberOfCrossValidationFolds,
             learnerParameterEpochs,
             learnerParameterMiniBatchSize,
@@ -125,26 +168,27 @@ export async function mainCrossValidatorWithLuContent(
             learnerParameterLossEarlyStopRatio,
             learnerParameterLearningRate,
             learnerParameterToCalculateOverallLossAfterEpoch);
-    const confusionMatrixCrossValidation: ConfusionMatrix =
-        crossValidator.crossValidate(
-            luData.getFeaturizerLabels(),
-            luData.getFeaturizerLabelMap(),
-            luData.getFeaturizer().getNumberLabels(),
-            luData.getFeaturizer().getNumberFeatures(),
-            intentLabelIndexArray,
-            utteranceFeatureIndexArrays,
-            luData.getIntentInstanceIndexMapArray());
-    Utility.debuggingLog(
-        `confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
-        `${confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
-        `,confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
-        `${confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
-        `,confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
-        `${confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
-    return confusionMatrixCrossValidation;
+    return crossValidator;
     // -----------------------------------------------------------------------
 }
 
+/**
+ * This function consumes a columnar TSV file content as input and run cross validation (CV) to
+ * evaluate models trained from the input label/text (intent/utterance) instance set.
+ *
+ * @param columnarContent - content of a TSV columnar file in string form as input.
+ * @param labelColumnIndex - label/intent column index.
+ * @param textColumnIndex - text/utterace column index.
+ * @param linesToSkip - number of header lines skipped before processing each line as an instance record.
+ * @param numberOfCrossValidationFolds - number of cross validation (CV) folds.
+ * @param learnerParameterEpochs - CV Softmax Regression Learner parameter - number of epochs
+ * @param learnerParameterMiniBatchSize - CV Softmax Regression learner parameter - mini-batch size.
+ * @param learnerParameterL1Regularization - CV Softmax Regression learner parameter - L1 regularization.
+ * @param learnerParameterL2Regularization - CV Softmax Regression learner parameter - L2 regularization.
+ * @param learnerParameterLossEarlyStopRatio - CV Softmax Regression learner parameter - early stop ratio.
+ * @param learnerParameterLearningRate - CV Softmax Regression learner parameter - learning rate.
+ * @param learnerParameterToCalculateOverallLossAfterEpoch - CV Softmax Regression learner parameter - flag
+ */
 export function mainCrossValidatorWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
@@ -165,7 +209,7 @@ export function mainCrossValidatorWithColumnarContent(
     learnerParameterLearningRate: number =
         AppSoftmaxRegressionSparse.defaultLearningRate,
     learnerParameterToCalculateOverallLossAfterEpoch: boolean =
-        true): ConfusionMatrix {
+        true): CrossValidator {
     // -----------------------------------------------------------------------
     const columnarData: ColumnarData =
         ColumnarData.createColumnarData(
@@ -176,65 +220,14 @@ export function mainCrossValidatorWithColumnarContent(
             linesToSkip,
             true);
     // -----------------------------------------------------------------------
-    // const results =
-    //     columnarData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
-    // const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
-    //     results.smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
-    // const smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
-    //     results.smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels;
-    // const smallUtteranceIndexSetCoveringAllIntentEntityLabels: Set<number> =
-    //     results.smallUtteranceIndexSetCoveringAllIntentEntityLabels;
-    // const remainingUtteranceIndexSet: Set<number> =
-    //     results.remainingUtteranceIndexSet;
-    // Utility.debuggingLog(`smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels=` +
-    //     `${Utility.stringMapSetToJson(smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels=` +
-    //     `${Utility.stringMapSetToJson(smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`smallUtteranceIndexSetCoveringAllIntentEntityLabels=` +
-    //     `${Utility.setToJson(smallUtteranceIndexSetCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`remainingUtteranceIndexSet=` +
-    //     `${Utility.setToJson(remainingUtteranceIndexSet)}`);
-    // Utility.debuggingLog(`smallUtteranceIndexSetCoveringAllIntentEntityLabels.size=` +
-    //     `${smallUtteranceIndexSetCoveringAllIntentEntityLabels.size}`);
-    // Utility.debuggingLog(`remainingUtteranceIndexSet.size=` +
-    //     `${remainingUtteranceIndexSet.size}`);
-    // -------------------------------------------------------------------
     if (!numberOfCrossValidationFolds) {
         numberOfCrossValidationFolds = CrossValidator.defaultNumberOfCrossValidationFolds;
     }
-    // const resultsInitialSampling =
-    //     columnarData.collectUtteranceIndexSetSeedingIntentTrainingSet(
-    //         smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels,
-    //         remainingUtteranceIndexSet,
-    //         numberOfCrossValidationFolds);
-    // const seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
-    //     resultsInitialSampling.seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
-    // const candidateUtteranceIndexSetSampled: Set<number> =
-    //     resultsInitialSampling.candidateUtteranceIndexSetSampled;
-    // const candidateUtteranceIndexSetRemaining: Set<number> =
-    //     resultsInitialSampling.candidateUtteranceIndexSetRemaining;
-    // Utility.debuggingLog(`seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels=` +
-    //     `${Utility.stringMapSetToJson(seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels)}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetSampled=` +
-    //     `${Utility.setToJson(candidateUtteranceIndexSetSampled)}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetRemaining=` +
-    //     `${Utility.setToJson(candidateUtteranceIndexSetRemaining)}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetSampled.size=` +
-    //     `${candidateUtteranceIndexSetSampled.size}`);
-    // Utility.debuggingLog(`candidateUtteranceIndexSetRemaining.size=` +
-    //     `${candidateUtteranceIndexSetRemaining.size}`);
-    // const countSeedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels: number =
-    //     [...seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels].reduce(
-    //         (accumulation: number, entry: [string, Set<number>]) => accumulation + entry[1].size, 0);
-    // Utility.debuggingLog(`countSeedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels=` +
-    //     `${countSeedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels}`);
     // -------------------------------------------------------------------
-    // const seedingUtteranceIndexArray: number[] =
-    //     [...seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels].reduce(
-    //         (accumulation: number[], entry: [string, Set<number>]) => accumulation.concat(Array.from(entry[1])), []);
-    // Utility.debuggingLog(`seedingUtteranceIndexArray.length=` +
-    //     `${seedingUtteranceIndexArray.length}`);
-    // -------------------------------------------------------------------
+    const intents: string[] =
+        columnarData.getIntents();
+    const utterances: string[] =
+        columnarData.getUtterances();
     const intentLabelIndexArray: number[] =
         columnarData.getIntentLabelIndexArray();
     const utteranceFeatureIndexArrays: number[][] =
@@ -243,6 +236,15 @@ export function mainCrossValidatorWithColumnarContent(
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
         new CrossValidator(
+            columnarData.getFeaturizerLabels(),
+            columnarData.getFeaturizerLabelMap(),
+            columnarData.getFeaturizer().getNumberLabels(),
+            columnarData.getFeaturizer().getNumberFeatures(),
+            intents,
+            utterances,
+            intentLabelIndexArray,
+            utteranceFeatureIndexArrays,
+            columnarData.getIntentInstanceIndexMapArray(),
             numberOfCrossValidationFolds,
             learnerParameterEpochs,
             learnerParameterMiniBatchSize,
@@ -251,23 +253,7 @@ export function mainCrossValidatorWithColumnarContent(
             learnerParameterLossEarlyStopRatio,
             learnerParameterLearningRate,
             learnerParameterToCalculateOverallLossAfterEpoch);
-    const confusionMatrixCrossValidation: ConfusionMatrix =
-        crossValidator.crossValidate(
-            columnarData.getFeaturizerLabels(),
-            columnarData.getFeaturizerLabelMap(),
-            columnarData.getFeaturizer().getNumberLabels(),
-            columnarData.getFeaturizer().getNumberFeatures(),
-            intentLabelIndexArray,
-            utteranceFeatureIndexArrays,
-            columnarData.getIntentInstanceIndexMapArray());
-    Utility.debuggingLog(
-        `confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
-        `${confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
-        `,confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
-        `${confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
-        `,confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
-        `${confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
-    return confusionMatrixCrossValidation;
+    return crossValidator;
     // -----------------------------------------------------------------------
 }
 
@@ -288,9 +274,16 @@ export async function mainCrossValidator(): Promise<void> {
         },
     );
     parser.addArgument(
-        ["-o", "--outputFilename"],
+        ["-t", "--filetype"],
         {
-            help: "output data file",
+            help: "data file type",
+            required: false,
+        },
+    );
+    parser.addArgument(
+        ["-o", "--outputReportFilenamePrefix"],
+        {
+            help: "output report file prefix",
             required: false,
         },
     );
@@ -301,20 +294,20 @@ export async function mainCrossValidator(): Promise<void> {
             required: false,
         },
     );
-    // parser.addArgument(
-    //     ["-m", "--outputModelFilename"],
-    //     {
-    //         help: "output model file",
-    //         required: false,
-    //     },
-    // );
-    // parser.addArgument(
-    //     ["-x", "--outputFeaturizerFilename"],
-    //     {
-    //         help: "output serialized featurizer file",
-    //         required: false,
-    //     },
-    // );
+    // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
+    // ---- NOTE-TODO-PLACEHOLDER ----     ["-m", "--outputModelFilename"],
+    // ---- NOTE-TODO-PLACEHOLDER ----     {
+    // ---- NOTE-TODO-PLACEHOLDER ----         help: "output model file",
+    // ---- NOTE-TODO-PLACEHOLDER ----         required: false,
+    // ---- NOTE-TODO-PLACEHOLDER ----     },
+    // ---- NOTE-TODO-PLACEHOLDER ---- );
+    // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
+    // ---- NOTE-TODO-PLACEHOLDER ----     ["-x", "--outputFeaturizerFilename"],
+    // ---- NOTE-TODO-PLACEHOLDER ----     {
+    // ---- NOTE-TODO-PLACEHOLDER ----         help: "output serialized featurizer file",
+    // ---- NOTE-TODO-PLACEHOLDER ----         required: false,
+    // ---- NOTE-TODO-PLACEHOLDER ----     },
+    // ---- NOTE-TODO-PLACEHOLDER ---- );
     parser.addArgument(
         ["-nc", "--numberOfCrossValidationFolds"],
         {
@@ -396,7 +389,7 @@ export async function mainCrossValidator(): Promise<void> {
         },
     );
     parser.addArgument(
-        ["-s", "--linesToSkip"],
+        ["-ls", "--linesToSkip"],
         {
             defaultValue: 0,
             help: "number of lines to skip from the input file",
@@ -412,7 +405,7 @@ export async function mainCrossValidator(): Promise<void> {
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
-    // console.dir(args);
+    // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
     // -----------------------------------------------------------------------
     const filename: string =
         args.filename;
@@ -420,9 +413,13 @@ export async function mainCrossValidator(): Promise<void> {
         Utility.debuggingThrow(
             `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
     }
-    let outputFilename: string = args.outputFilename;
-    if (outputFilename == null) {
-        outputFilename = filename + ".metrics.json";
+    const filetype: string =
+        args.filetype;
+    let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
+    if (Utility.isEmptyString(outputReportFilenamePrefix)) {
+        outputReportFilenamePrefix = Utility.getFileBasename(filename);
+        // Utility.debuggingThrow(
+        //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
     }
     const numberOfCrossValidationFolds: number =
         +args.numberOfCrossValidationFolds;
@@ -443,7 +440,7 @@ export async function mainCrossValidator(): Promise<void> {
     Utility.debuggingLog(
         `filename=${filename}`);
     Utility.debuggingLog(
-        `outputFilename=${outputFilename}`);
+        `outputReportFilenamePrefix=${outputReportFilenamePrefix}`);
     Utility.debuggingLog(
         `numberOfCrossValidationFolds=${numberOfCrossValidationFolds}`);
     Utility.debuggingLog(
@@ -460,74 +457,42 @@ export async function mainCrossValidator(): Promise<void> {
         `learnerParameterLearningRate=${learnerParameterLearningRate}`);
     Utility.debuggingLog(
         `learnerParameterToCalculateOverallLossAfterEpoch=${learnerParameterToCalculateOverallLossAfterEpoch}`);
-    // const outputModelFilename: string =
-    //     args.outputModelFilename;
-    const content: string =
-        Utility.loadFile(filename);
-    let confusionMatrixCrossValidation: ConfusionMatrix;
-    if (filename.endsWith(".lu")) {
-        confusionMatrixCrossValidation =
-            await mainCrossValidatorWithLuContent(
-                content,
-                numberOfCrossValidationFolds,
-                learnerParameterEpochs,
-                learnerParameterMiniBatchSize,
-                learnerParameterL1Regularization,
-                learnerParameterL2Regularization,
-                learnerParameterLossEarlyStopRatio,
-                learnerParameterLearningRate,
-                learnerParameterToCalculateOverallLossAfterEpoch);
-        if (!Utility.isEmptyString(outputFilename)) {
-            Utility.dumpFile(
-                outputFilename,
-                JSON.stringify(confusionMatrixCrossValidation, undefined, 4));
-        }
-    } else {
-        const labelColumnIndex: number = +args.labelColumnIndex;
-        const textColumnIndex: number = +args.textColumnIndex;
-        const linesToSkip: number = +args.linesToSkip;
-        Utility.debuggingLog(
-            `labelColumnIndex=${labelColumnIndex}`);
-        Utility.debuggingLog(
-            `textColumnIndex=${textColumnIndex}`);
-        Utility.debuggingLog(
-            `linesToSkip=${linesToSkip}`);
-        confusionMatrixCrossValidation =
-            mainCrossValidatorWithColumnarContent(
-                content,
-                labelColumnIndex,
-                textColumnIndex,
-                linesToSkip,
-                numberOfCrossValidationFolds,
-                learnerParameterEpochs,
-                learnerParameterMiniBatchSize,
-                learnerParameterL1Regularization,
-                learnerParameterL2Regularization,
-                learnerParameterLossEarlyStopRatio,
-                learnerParameterLearningRate,
-                learnerParameterToCalculateOverallLossAfterEpoch);
-    }
-    const confusionMatrixMetricStructure: { "confusionMatrix": ConfusionMatrix,
-        "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
-        "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
-        "macroAverageMetrics": { "averagePrecision": number,
-                                 "averageRecall": number,
-                                 "averageF1Score": number,
-                                 "totalMacroAverage": number },
-        "microAverageMetrics": { "accuracy": number,
-                                 "truePositives": number,
-                                 "totalMicroAverage": number },
-        "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                 "weightedAverageRecall": number,
-                                 "weightedAverageF1Score": number,
-                                 "weightedTotalMacroAverage": number } } =
-        ConfusionMatrix.generateConfusionMatrixMetricStructure(
-            confusionMatrixCrossValidation);
-    if (!Utility.isEmptyString(outputFilename)) {
-        Utility.dumpFile(
-            outputFilename,
-            JSON.stringify(confusionMatrixMetricStructure, undefined, 4));
-    }
+    // ---- NOTE-TODO-PLACEHOLDER ---- const outputModelFilename: string =
+    // ---- NOTE-TODO-PLACEHOLDER ----     args.outputModelFilename;
+    // ---- NOTE-TODO-PLACEHOLDER ---- const outputFeaturizerFilename: string =
+    // ---- NOTE-TODO-PLACEHOLDER ----     args.outputFeaturizerFilename;
+    // -----------------------------------------------------------------------
+    const labelColumnIndex: number = +args.labelColumnIndex;
+    const textColumnIndex: number = +args.textColumnIndex;
+    const linesToSkip: number = +args.linesToSkip;
+    Utility.debuggingLog(
+        `labelColumnIndex=${labelColumnIndex}`);
+    Utility.debuggingLog(
+        `textColumnIndex=${textColumnIndex}`);
+    Utility.debuggingLog(
+        `linesToSkip=${linesToSkip}`);
+    // -----------------------------------------------------------------------
+    const data: Data = await DataUtility.LoadData(
+        filename,
+        filetype,
+        labelColumnIndex,
+        textColumnIndex,
+        linesToSkip);
+    // -----------------------------------------------------------------------
+    const crossValidator: CrossValidator =
+        mainCrossValidatorWithData(
+            data,
+            numberOfCrossValidationFolds,
+            learnerParameterEpochs,
+            learnerParameterMiniBatchSize,
+            learnerParameterL1Regularization,
+            learnerParameterL2Regularization,
+            learnerParameterLossEarlyStopRatio,
+            learnerParameterLearningRate,
+            learnerParameterToCalculateOverallLossAfterEpoch);
+    // -----------------------------------------------------------------------
+    crossValidator.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+    crossValidator.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------

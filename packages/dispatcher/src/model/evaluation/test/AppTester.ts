@@ -3,27 +3,30 @@
  * Licensed under the MIT License.
  */
 
-import assert = require("assert");
-
 import { ArgumentParser } from "argparse";
 
 import { Tester } from "./Tester";
 
-import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
+// tslint:disable-next-line: max-line-length
+// import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
 // import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
 
-import { BinaryConfusionMatrixMetrics } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
+import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
-import { ConfusionMatrix } from "../confusion_matrix/ConfusionMatrix";
+import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
 
-import { ColumnarData } from "../../../data/ColumnarData";
-
-import { LuData } from "../../../data/LuData";
+// import { ColumnarData } from "../../../data/ColumnarData";
+// import { LuData } from "../../../data/LuData";
+import { Data } from "../../../data/Data";
+import { DataUtility } from "../../../data/DataUtility";
 
 // import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
 import { Utility } from "../../../utility/Utility";
+import { LuData } from "../../../data/LuData";
+import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
+import { ColumnarData } from "../../../data/ColumnarData";
 
 export async function mainTester(): Promise<void> {
     // -----------------------------------------------------------------------
@@ -42,6 +45,13 @@ export async function mainTester(): Promise<void> {
         },
     );
     parser.addArgument(
+        ["-t", "--filetype"],
+        {
+            help: "data file type",
+            required: false,
+        },
+    );
+    parser.addArgument(
         ["-m", "--modelFilename"],
         {
             help: "model file",
@@ -56,9 +66,9 @@ export async function mainTester(): Promise<void> {
         },
     );
     parser.addArgument(
-        ["-o", "--outputFilename"],
+        ["-o", "--outputReportFilenamePrefix"],
         {
-            help: "output data file",
+            help: "output report file prefix",
             required: false,
         },
     );
@@ -86,7 +96,7 @@ export async function mainTester(): Promise<void> {
         },
     );
     parser.addArgument(
-        ["-s", "--linesToSkip"],
+        ["-ls", "--linesToSkip"],
         {
             defaultValue: 0,
             help: "number of lines to skip from the input file",
@@ -102,7 +112,7 @@ export async function mainTester(): Promise<void> {
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
-    // console.dir(args);
+    // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
     // -----------------------------------------------------------------------
     const filename: string =
         args.filename;
@@ -110,6 +120,8 @@ export async function mainTester(): Promise<void> {
         Utility.debuggingThrow(
             `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
     }
+    const filetype: string =
+        args.filetype;
     const modelFilename: string =
         args.modelFilename;
     if (!Utility.exists(modelFilename)) {
@@ -122,14 +134,16 @@ export async function mainTester(): Promise<void> {
         Utility.debuggingThrow(
             `The input featurizer file ${featurizerFilename} does not exist! process.cwd()=${process.cwd()}`);
     }
-    let outputFilename: string = args.outputFilename;
-    if (outputFilename == null) {
-        outputFilename = filename + ".metrics.json";
+    let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
+    if (Utility.isEmptyString(outputReportFilenamePrefix)) {
+        outputReportFilenamePrefix = Utility.getFileBasename(filename);
+        // Utility.debuggingThrow(
+        //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
     }
     Utility.debuggingLog(
         `filename=${filename}`);
     Utility.debuggingLog(
-        `outputFilename=${outputFilename}`);
+        `outputReportFilenamePrefix=${outputReportFilenamePrefix}`);
     Utility.debuggingLog(
         `modelFilename=${modelFilename}`);
     Utility.debuggingLog(
@@ -137,13 +151,16 @@ export async function mainTester(): Promise<void> {
     // const outputModelFilename: string =
     //     args.outputModelFilename;
     // -----------------------------------------------------------------------
-    const tester: Tester =
-        new Tester(
-            modelFilename,
-            featurizerFilename);
+    const labelColumnIndex: number = +args.labelColumnIndex;
+    const textColumnIndex: number = +args.textColumnIndex;
+    const linesToSkip: number = +args.linesToSkip;
+    Utility.debuggingLog(
+        `labelColumnIndex=${labelColumnIndex}`);
+    Utility.debuggingLog(
+        `textColumnIndex=${textColumnIndex}`);
+    Utility.debuggingLog(
+        `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
-    const content: string =
-        Utility.loadFile(filename);
     let intentsUtterances: {
         "intents": string[],
         "utterances": string[] } = {
@@ -151,72 +168,27 @@ export async function mainTester(): Promise<void> {
             utterances: [] };
     let intentLabelIndexArray: number[] = [];
     let utteranceFeatureIndexArrays: number[][] = [];
-    if (filename.endsWith(".lu")) {
-        const luData: LuData =
-            await LuData.createLuData(
-                content,
-                tester.getFeaturizer(),
-                false);
-        intentsUtterances = luData.getIntentsUtterances();
-        intentLabelIndexArray = luData.getIntentLabelIndexArray();
-        utteranceFeatureIndexArrays = luData.getUtteranceFeatureIndexArrays();
-    } else {
-        const labelColumnIndex: number = +args.labelColumnIndex;
-        const textColumnIndex: number = +args.textColumnIndex;
-        const linesToSkip: number = +args.linesToSkip;
-        Utility.debuggingLog(
-            `labelColumnIndex=${labelColumnIndex}`);
-        Utility.debuggingLog(
-            `textColumnIndex=${textColumnIndex}`);
-        Utility.debuggingLog(
-            `linesToSkip=${linesToSkip}`);
-        const columnarData: ColumnarData =
-            ColumnarData.createColumnarData(
-                content,
-                tester.getFeaturizer(),
-                labelColumnIndex,
-                textColumnIndex,
-                linesToSkip,
-                false);
-        intentsUtterances = columnarData.getIntentsUtterances();
-        intentLabelIndexArray = columnarData.getIntentLabelIndexArray();
-        utteranceFeatureIndexArrays = columnarData.getUtteranceFeatureIndexArrays();
-    }
+    const data: Data = await DataUtility.LoadData(
+        filename,
+        filetype,
+        labelColumnIndex,
+        textColumnIndex,
+        linesToSkip);
+    intentsUtterances = data.getIntentsUtterances();
+    intentLabelIndexArray = data.getIntentLabelIndexArray();
+    utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
     // -----------------------------------------------------------------------
-    const confusionMatrixTest: ConfusionMatrix =
-        tester.test(
+    const tester: Tester =
+        new Tester(
+            modelFilename,
+            featurizerFilename,
             intentsUtterances.intents,
             intentsUtterances.utterances,
             intentLabelIndexArray,
             utteranceFeatureIndexArrays);
-    const confusionMatrixMetricStructure: { "confusionMatrix": ConfusionMatrix,
-        "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
-        "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrixMetrics; },
-        "macroAverageMetrics": { "averagePrecision": number,
-                                 "averageRecall": number,
-                                 "averageF1Score": number,
-                                 "totalMacroAverage": number },
-        "microAverageMetrics": { "accuracy": number,
-                                 "truePositives": number,
-                                 "totalMicroAverage": number },
-        "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                 "weightedAverageRecall": number,
-                                 "weightedAverageF1Score": number,
-                                 "weightedTotalMacroAverage": number } } =
-        ConfusionMatrix.generateConfusionMatrixMetricStructure(
-            confusionMatrixTest);
-    if (!Utility.isEmptyString(outputFilename)) {
-        Utility.dumpFile(
-            outputFilename,
-            JSON.stringify(confusionMatrixMetricStructure, undefined, 4));
-    }
-    Utility.debuggingLog(
-        `confusionMatrixTest.getMicroAverageMetrics()=` +
-        `${confusionMatrixTest.getMicroAverageMetrics()}` +
-        `,confusionMatrixTest.getMacroAverageMetrics()=` +
-        `${confusionMatrixTest.getMacroAverageMetrics()}` +
-        `,confusionMatrixTest.getWeightedMacroAverageMetrics()=` +
-        `${confusionMatrixTest.getWeightedMacroAverageMetrics()}`);
+    // -----------------------------------------------------------------------
+    tester.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+    tester.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
@@ -228,5 +200,5 @@ export async function mainTester(): Promise<void> {
 }
 
 if (require.main === module) {
-    mainTester().then(() => { return; });
+    mainTester();
 }

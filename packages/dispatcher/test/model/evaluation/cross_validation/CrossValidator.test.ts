@@ -13,7 +13,9 @@ import { ColumnarContentEmail } from "../../../data/ColumnarData.test";
 
 import { LuContentEmail } from "../../../data/LuData.test";
 
-import { ConfusionMatrix } from "../../../../src/model/evaluation/confusion_matrix/ConfusionMatrix";
+import { ConfusionMatrix } from "../../../../src/mathematics/confusion_matrix/ConfusionMatrix";
+
+import { ThresholdReporter } from "../../../../src/model/evaluation/report/ThresholdReporter";
 
 import { ColumnarData } from "../../../../src/data/ColumnarData";
 
@@ -59,6 +61,15 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
         assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
         const crossValidator: CrossValidator =
             new CrossValidator(
+                luData.getFeaturizerLabels(),
+                luData.getFeaturizerLabelMap(),
+                luData.getFeaturizer().getNumberLabels(),
+                luData.getFeaturizer().getNumberFeatures(),
+                luData.getIntents(),
+                luData.getUtterances(),
+                luData.getIntentLabelIndexArray(),
+                luData.getUtteranceFeatureIndexArrays(),
+                luData.getIntentInstanceIndexMapArray(),
                 numberOfCrossValidationFolds,
                 learnerParameterEpochs,
                 learnerParameterMiniBatchSize,
@@ -67,20 +78,22 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 learnerParameterLossEarlyStopRatio,
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
-        const confusionMatrixCrossValidation: ConfusionMatrix =
-            crossValidator.crossValidate(
-                luData.getFeaturizerLabels(),
-                luData.getFeaturizerLabelMap(),
-                luData.getFeaturizer().getNumberLabels(),
-                luData.getFeaturizer().getNumberFeatures(),
-                intentLabelIndexArray,
-                utteranceFeatureIndexArrays,
-                luData.getIntentInstanceIndexMapArray());
+        const crossValidationResult: {
+            "confusionMatrixCrossValidation": ConfusionMatrix
+            "thresholdReporterCrossValidation": ThresholdReporter,
+            "predictionLabels": string[],
+            "predictionLabelIndexes": number[],
+            "groundTruthLabels": string[],
+            "groundTruthLabelIndexes": number[],
+            "predictions": number[][] } =
+            crossValidator.getCrossValidationResult();
         Utility.debuggingLog(
-            `, confusionMatrixCrossValidation=` +
-            `${confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
-            `, confusionMatrixCrossValidation=` +
-            `${confusionMatrixCrossValidation.getMicroAverageMetrics()}`);
+            `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+            `,crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
+            `,crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
     });
     it("Test.0001 crossValidate()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -121,6 +134,15 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
         assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
         const crossValidator: CrossValidator =
             new CrossValidator(
+                columnarData.getFeaturizerLabels(),
+                columnarData.getFeaturizerLabelMap(),
+                columnarData.getFeaturizer().getNumberLabels(),
+                columnarData.getFeaturizer().getNumberFeatures(),
+                columnarData.getIntents(),
+                columnarData.getUtterances(),
+                columnarData.getIntentLabelIndexArray(),
+                columnarData.getUtteranceFeatureIndexArrays(),
+                columnarData.getIntentInstanceIndexMapArray(),
                 numberOfCrossValidationFolds,
                 learnerParameterEpochs,
                 learnerParameterMiniBatchSize,
@@ -129,19 +151,21 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 learnerParameterLossEarlyStopRatio,
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
-        const confusionMatrixCrossValidation: ConfusionMatrix =
-            crossValidator.crossValidate(
-                columnarData.getFeaturizerLabels(),
-                columnarData.getFeaturizerLabelMap(),
-                columnarData.getFeaturizer().getNumberLabels(),
-                columnarData.getFeaturizer().getNumberFeatures(),
-                intentLabelIndexArray,
-                utteranceFeatureIndexArrays,
-                columnarData.getIntentInstanceIndexMapArray());
+        const crossValidationResult: {
+            "confusionMatrixCrossValidation": ConfusionMatrix
+            "thresholdReporterCrossValidation": ThresholdReporter,
+            "predictionLabels": string[],
+            "predictionLabelIndexes": number[],
+            "groundTruthLabels": string[],
+            "groundTruthLabelIndexes": number[],
+            "predictions": number[][] } =
+            crossValidator.getCrossValidationResult();
         Utility.debuggingLog(
-            `, confusionMatrixCrossValidation=` +
-            `${confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
-            `, confusionMatrixCrossValidation=` +
-            `${confusionMatrixCrossValidation.getMicroAverageMetrics()}`);
+            `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+            `,crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
+            `,crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
     });
 });

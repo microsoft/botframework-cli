@@ -34,15 +34,15 @@ export function exampleFunctionData(): EntityAnnotatedCorpusData {
             required: false,
         },
     );
-    // parser.addArgument(
-    //     ["-o", "--outputFilename"],
-    //     {
-    //         help: "output file",
-    //         required: false,
-    //     },
-    // );
+    // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
+    // ---- NOTE-TODO-PLACEHOLDER ----     ["-o", "--outputFilenamePrefix"],
+    // ---- NOTE-TODO-PLACEHOLDER ----     {
+    // ---- NOTE-TODO-PLACEHOLDER ----         help: "output file name prefix",
+    // ---- NOTE-TODO-PLACEHOLDER ----         required: false,
+    // ---- NOTE-TODO-PLACEHOLDER ----     },
+    // ---- NOTE-TODO-PLACEHOLDER ---- );
     parser.addArgument(
-        ["-s", "--linesToSkip"],
+        ["-ls", "--linesToSkip"],
         {
             defaultValue: 1,
             help: "number of lines to skip from the input file",
@@ -58,25 +58,29 @@ export function exampleFunctionData(): EntityAnnotatedCorpusData {
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
-    // console.dir(args);
+    // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
+    // -----------------------------------------------------------------------
     const filename: string = args.filename;
-    // let outputFilename: string = args.outputFilename;
-    // if (outputFilename == null) {
-    //     outputFilename = filename + ".json";
-    // }
-    const linesToSkips: number = +args.linesToSkip;
+    // ---- NOTE-TODO-PLACEHOLDER ---- let outputFilenamePrefix: string = args.outputFilenamePrefix;
+    // ---- NOTE-TODO-PLACEHOLDER ---- if (outputFilenamePrefix == null) {
+    // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix = filename;
+    // ---- NOTE-TODO-PLACEHOLDER ---- }
+    const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `filename=${filename}`);
-    // Utility.debuggingLog(
-    //     `outputFilename=${outputFilename}`);
+    // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
+    // ---- NOTE-TODO-PLACEHOLDER ----     `outputFilenamePrefix=${outputFilenamePrefix}`);
     const entityAnnotatedCorpusContent: string = Utility.loadFile(filename);
     const entityAnnotatedCorpusData: EntityAnnotatedCorpusData =
         EntityAnnotatedCorpusData.createEntityAnnotatedCorpusData(
             entityAnnotatedCorpusContent,
             new NgramSubwordFeaturizer(),
-            linesToSkips,
+            linesToSkip,
             true);
-    // entityAnnotatedCorpusData.dumpLuJsonStructure(outputFilename);
+    // ---- NOTE-TODO-PLACEHOLDER ---- entityAnnotatedCorpusData.dumpLuLuisJsonStructureInLuFormat(
+    // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix + ".lu");
+    // ---- NOTE-TODO-PLACEHOLDER ---- entityAnnotatedCorpusData.dumpLuLuisJsonStructure(
+    // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix + ".luis", undefined, 4);
     return entityAnnotatedCorpusData;
     // -----------------------------------------------------------------------
 }

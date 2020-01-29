@@ -3,30 +3,30 @@
  * Licensed under the MIT License.
  */
 
-import { BinaryConfusionMatrixMetrics } from "./BinaryConfusionMatrix";
+import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 import { Utility } from "../../utility/Utility";
 
-export function exampleFunctionBinaryConfusionMatrixMetrics(): void {
+export function exampleFunctionBinaryConfusionMatrix(): void {
     const cell11: number = 1;
     const row1: number = 2;
     const column1: number = 2;
     const total: number = 4;
-    const binaryConfusionMatrixMetrics = new BinaryConfusionMatrixMetrics(
+    const binaryConfusionMatrix = new BinaryConfusionMatrix(
         total,
         cell11,
         row1,
         column1);
     Utility.debuggingLog(
-        "getTotal() = " + binaryConfusionMatrixMetrics.getTotal());
+        "getTotal() = " + binaryConfusionMatrix.getTotal());
     Utility.debuggingLog(
-        "getPrecision() = " + binaryConfusionMatrixMetrics.getPrecision());
+        "getPrecision() = " + binaryConfusionMatrix.getPrecision());
     Utility.debuggingLog(
-        "getRecall() = " + binaryConfusionMatrixMetrics.getRecall());
+        "getRecall() = " + binaryConfusionMatrix.getRecall());
     Utility.debuggingLog(
-        "getF1Score() = " + binaryConfusionMatrixMetrics.getF1Score());
+        "getF1Score() = " + binaryConfusionMatrix.getF1Score());
 }
 
 if (require.main === module) {
-    exampleFunctionBinaryConfusionMatrixMetrics();
+    exampleFunctionBinaryConfusionMatrix();
 }

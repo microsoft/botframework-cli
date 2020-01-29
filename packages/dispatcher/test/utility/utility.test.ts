@@ -5,13 +5,19 @@
 
 import assert = require("assert");
 
-// import { exampleFunctionUtilityWithFilename } from "../../src/utility/AppUtility";
+import { IDictionaryStringIdGenericArray } from "../../src/data_structure/IDictionaryStringIdGenericArray";
+import { IDictionaryStringIdGenericValue } from "../../src/data_structure/IDictionaryStringIdGenericValue";
+
+import { DictionaryMapUtility } from "../../src/data_structure/DictionaryMapUtility";
+
+import { TMapStringKeyGenericArray } from "../../src/data_structure/TMapStringKeyGenericArray";
+import { TMapStringKeyGenericValue } from "../../src/data_structure/TMapStringKeyGenericValue";
 
 import { Utility } from "../../src/utility/Utility";
 
 export class UnitTestHelper {
     public static getDefaultUnitTestTimeout(): number {
-        return 60000;
+        return 80000;
     }
     public static getDefaultUnitTestDebuggingLogFlag(): boolean {
         return false;
@@ -439,55 +445,35 @@ describe("Test Suite - utility/Utility", () => {
                 `i=${i}, r=${r}, randomArray[i]=${randomArray[i]}`);
         }
     });
-    // ==== TODO ==== it("Test.0504 rngNextFloatXorshift128plus()", function() {
-    // ==== TODO ====     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    // ==== TODO ====     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-    // ==== TODO ====     Utility.rngSeedXorshift128plus(3, 4);
-    // ==== TODO ====     const randomArray: number[] = [];
-    // ==== TODO ====     for (let i = 0; i < 16; i++) {
-    // ==== TODO ====         const r: number = Utility.rngNextFloatXorshift128plus();
-    // ==== TODO ====         randomArray.push(r);
-    // ==== TODO ====         Utility.debuggingLog(
-    // ==== TODO ====             `i=${i}, r=${r}`);
-    // ==== TODO ====     }
-    // ==== TODO ====     Utility.rngSeedXorshift128plus(3, 4);
-    // ==== TODO ====     for (let i = 0; i < 16; i++) {
-    // ==== TODO ====         const r: number = Utility.rngNextXorshift128plus();
-    // ==== TODO ====         Utility.debuggingLog(
-    // ==== TODO ====             `i=${i}, r=${r}`);
-    // ==== TODO ====         assert.ok(r === randomArray[i],
-    // ==== TODO ====             `i=${i}, r=${r}, randomArray[i]=${randomArray[i]}`);
-    // ==== TODO ====     }
-    // ==== TODO ==== });
-    it("Test.0505 getXorshift128plusState0BigInt()", function() {
+    it("Test.0504 getXorshift128plusState0BigInt()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusState0BigInt: bigint = Utility.getXorshift128plusState0BigInt();
         Utility.debuggingLog(
             `xorshift128plusState0BigInt=${xorshift128plusState0BigInt}`);
     });
-    it("Test.0506 getXorshift128plusState1BigInt()", function() {
+    it("Test.0505 getXorshift128plusState1BigInt()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusState1BigInt: bigint = Utility.getXorshift128plusState1BigInt();
         Utility.debuggingLog(
             `xorshift128plusState1BigInt=${xorshift128plusState1BigInt}`);
     });
-    it("Test.0507 getXorshift128plusCycleBigInt()", function() {
+    it("Test.0506 getXorshift128plusCycleBigInt()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusCycleBigInt: bigint = Utility.getXorshift128plusCycleBigInt();
         Utility.debuggingLog(
             `xorshift128plusCycleBigInt=${xorshift128plusCycleBigInt}`);
     });
-    it("Test.0508 getXorshift128plusCycleBigIntFloat()", function() {
+    it("Test.0507 getXorshift128plusCycleBigIntFloat()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusCycleBigIntFloat: number = Utility.getXorshift128plusCycleBigIntFloat();
         Utility.debuggingLog(
             `xorshift128plusCycleBigIntFloat=${xorshift128plusCycleBigIntFloat}`);
     });
-    it("Test.0509 rngSeedXorshift128plusBigIntWithNumber()", function() {
+    it("Test.0508 rngSeedXorshift128plusBigIntWithNumber()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.rngSeedXorshift128plusBigIntWithNumber(3, 4);
@@ -497,7 +483,7 @@ describe("Test Suite - utility/Utility", () => {
                 `i=${i}, r=${r}`);
         }
     });
-    it("Test.0510 rngSeedXorshift128plusBigInt()", function() {
+    it("Test.0509 rngSeedXorshift128plusBigInt()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const bigint3: bigint = BigInt(3);
@@ -513,7 +499,7 @@ describe("Test Suite - utility/Utility", () => {
                 `i=${i}, r=${r}`);
         }
     });
-    it("Test.0511 rngNextXorshift128plusBigInt()", function() {
+    it("Test.0510 rngNextXorshift128plusBigInt()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const bigint3: bigint = BigInt(3);
@@ -542,7 +528,7 @@ describe("Test Suite - utility/Utility", () => {
                 `i=${i}, r=${r}, randomArray[i]=${randomArray[i]}`);
         }
     });
-    it("Test.0512 rngNextXorshift128plusBigIntFloat()", function() {
+    it("Test.0511 rngNextXorshift128plusBigIntFloat()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const bigint3: bigint = BigInt(3);
@@ -575,7 +561,7 @@ describe("Test Suite - utility/Utility", () => {
                 `i=${i}, r=${r}, randomArray[i]=${randomArray[i]}`);
         }
     });
-    it("Test.0513 rngNextXorshift128plusBigIntFloatUniformTest()", function() {
+    it("Test.0512 rngNextXorshift128plusBigIntFloatUniformTest()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampleSize: number = 100000;
@@ -618,6 +604,34 @@ describe("Test Suite - utility/Utility", () => {
             `, theoreticMean=${theoreticMean}` +
             `, theoreticSecondMoment=${theoreticSecondMoment}` +
             `, theoreticVariance=${theoreticVariance}`);
+    });
+
+    it("Test.0513 getRandomInt()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const randomInt: number = Utility.getRandomInt(3);
+        Utility.debuggingLog(
+            `randomInt=${randomInt}`);
+        assert.ok(((randomInt >= 0) && (randomInt < 3)),
+            `randomInt=${randomInt}`);
+    });
+    it("Test.0514 getRandomIntFromFloatLimit()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const randomInt: number = Utility.getRandomIntFromFloatLimit(3.14);
+        Utility.debuggingLog(
+            `randomInt=${randomInt}`);
+        assert.ok(((randomInt >= 0) && (randomInt < 3.14)),
+            `randomInt=${randomInt}`);
+    });
+    it("Test.0515 getRandomIntFromIntLimit()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const randomInt: number = Utility.getRandomIntFromIntLimit(3.14);
+        Utility.debuggingLog(
+            `randomInt=${randomInt}`);
+        assert.ok(((randomInt >= 0) && (randomInt < 3)),
+            `randomInt=${randomInt}`);
     });
 
     it("Test.0600 shuffle()", function() {
@@ -671,7 +685,7 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
 
-    it("Test.0700 buildStringMapFromUniqueStringArray()", function() {
+    it("Test.0700 buildStringIdNumberValueDictionaryFromUniqueStringArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["b", "a", "c", "d"];
@@ -679,14 +693,14 @@ describe("Test Suite - utility/Utility", () => {
             JSON.stringify(stringArray);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
-        const stringMap: { [id: string]: number; } =
-            Utility.buildStringMapFromUniqueStringArray(stringArray);
+        const stringMap: IDictionaryStringIdGenericValue<number> =
+            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
     });
-    it("Test.0701 buildStringMapFromStringArray()", function() {
+    it("Test.0701 buildStringIdNumberValueDictionaryFromStringArray()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["b", "a", "b", "c", "a", "a", "b", "d"];
@@ -694,11 +708,11 @@ describe("Test Suite - utility/Utility", () => {
             JSON.stringify(stringArray);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
-        const stringArrayMap: { "stringArray": string[], "stringMap": { [id: string]: number; } } =
-            Utility.buildStringMapFromStringArray(stringArray);
+        const stringArrayMap: { "stringArray": string[], "stringMap": IDictionaryStringIdGenericValue<number> } =
+            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArray(stringArray);
         const stringMappedArray: string[] =
             stringArrayMap.stringArray;
-        const stringMappedMap: { [id: string]: number; } =
+        const stringMappedMap: IDictionaryStringIdGenericValue<number> =
             stringArrayMap.stringMap;
         const stringMappedArrayInJsonString: string =
             JSON.stringify(stringMappedArray);
@@ -709,7 +723,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMappedMapInJsonString=${stringMappedMapInJsonString}`);
     });
-    it("Test.0702 buildStringMapFromStringArrays()", function() {
+    it("Test.0702 buildStringIdNumberValueDictionaryFromStringArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArrays: string[][] =
@@ -719,11 +733,11 @@ describe("Test Suite - utility/Utility", () => {
             JSON.stringify(stringArrays);
         Utility.debuggingLog(
             `stringArraysInJsonString=${stringArraysInJsonString}`);
-        const stringArrayMap: { "stringArray": string[], "stringMap": { [id: string]: number; } } =
-            Utility.buildStringMapFromStringArrays(stringArrays);
+        const stringArrayMap: { "stringArray": string[], "stringMap": IDictionaryStringIdGenericValue<number> } =
+            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArrays(stringArrays);
         const stringMappedArray: string[] =
             stringArrayMap.stringArray;
-        const stringMappedMap: { [id: string]: number; } =
+        const stringMappedMap: IDictionaryStringIdGenericValue<number> =
             stringArrayMap.stringMap;
         const stringMappedArrayInJsonString: string =
             JSON.stringify(stringMappedArray);
@@ -749,7 +763,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringArray1InJsonString=${stringArray1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringArrays(stringArray0, stringArray1);
+            Utility.validateStringArrayPairEquality(stringArray0, stringArray1);
         assert.ok(validation,
             `stringArray0InJsonString=${stringArray0InJsonString}` +
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
@@ -768,7 +782,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringArray1InJsonString=${stringArray1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringArrays(stringArray0, stringArray1);
+            Utility.validateStringArrayPairEquality(stringArray0, stringArray1);
         assert.ok(validation,
             `stringArray0InJsonString=${stringArray0InJsonString}` +
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
@@ -787,7 +801,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringArray1InJsonString=${stringArray1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringArrays(stringArray0, stringArray1, false);
+            Utility.validateStringArrayPairEquality(stringArray0, stringArray1, false);
         assert.ok(!validation,
             `stringArray0InJsonString=${stringArray0InJsonString}` +
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
@@ -806,7 +820,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringArray1InJsonString=${stringArray1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringArrays(stringArray0, stringArray1, false);
+            Utility.validateStringArrayPairEquality(stringArray0, stringArray1, false);
         assert.ok(!validation,
             `stringArray0InJsonString=${stringArray0InJsonString}` +
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
@@ -825,7 +839,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringArray1InJsonString=${stringArray1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringArrays(stringArray0, stringArray1, true); });
+            () => { Utility.validateStringArrayPairEquality(stringArray0, stringArray1, true); });
     });
     it("Test.0805 validateStringArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -841,7 +855,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringArray1InJsonString=${stringArray1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringArrays(stringArray0, stringArray1, true); });
+            () => { Utility.validateStringArrayPairEquality(stringArray0, stringArray1, true); });
     });
     it("Test.0806 validateStringArrays()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -857,7 +871,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringArray1InJsonString=${stringArray1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringArrays(stringArray0, stringArray1, true); });
+            () => { Utility.validateStringArrayPairEquality(stringArray0, stringArray1, true); });
     });
     it("Test.0807 validateStringSets()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -873,7 +887,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringSet1InJsonString=${stringSet1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringSets(stringSet0, stringSet1);
+            Utility.validateStringSetPairEquality(stringSet0, stringSet1);
         assert.ok(validation,
             `stringSet0InJsonString=${stringSet0InJsonString}` +
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
@@ -892,7 +906,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringSet1InJsonString=${stringSet1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringSets(stringSet0, stringSet1);
+            Utility.validateStringSetPairEquality(stringSet0, stringSet1);
         assert.ok(validation,
             `stringSet0InJsonString=${stringSet0InJsonString}` +
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
@@ -911,7 +925,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringSet1InJsonString=${stringSet1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringSets(stringSet0, stringSet1, false);
+            Utility.validateStringSetPairEquality(stringSet0, stringSet1, false);
         assert.ok(!validation,
             `stringSet0InJsonString=${stringSet0InJsonString}` +
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
@@ -930,7 +944,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringSet1InJsonString=${stringSet1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringSets(stringSet0, stringSet1, false);
+            Utility.validateStringSetPairEquality(stringSet0, stringSet1, false);
         assert.ok(!validation,
             `stringSet0InJsonString=${stringSet0InJsonString}` +
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
@@ -949,7 +963,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringSet1InJsonString=${stringSet1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringSets(stringSet0, stringSet1, true); });
+            () => { Utility.validateStringSetPairEquality(stringSet0, stringSet1, true); });
     });
     it("Test.0812 validateStringSets()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -965,7 +979,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringSet1InJsonString=${stringSet1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringSets(stringSet0, stringSet1, true); });
+            () => { Utility.validateStringSetPairEquality(stringSet0, stringSet1, true); });
     });
     it("Test.0813 validateStringSets()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -981,13 +995,13 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringSet1InJsonString=${stringSet1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringSets(stringSet0, stringSet1, true); });
+            () => { Utility.validateStringSetPairEquality(stringSet0, stringSet1, true); });
     });
     it("Test.0814 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const stringMap0: { [id: string]: number; } = { a: 1, b: 2, c: 3 };
-        const stringMap1: { [id: string]: number; } = { a: 1, b: 2, c: 3 };
+        const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
+        const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap0InJsonString: string =
             JSON.stringify(stringMap0);
         const stringMap1InJsonString: string =
@@ -997,7 +1011,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMap1InJsonString=${stringMap1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringMaps(stringMap0, stringMap1);
+            DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1);
         assert.ok(validation,
             `stringMap0InJsonString=${stringMap0InJsonString}` +
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
@@ -1005,8 +1019,8 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.0815 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const stringMap0: { [id: string]: number; } = {};
-        const stringMap1: { [id: string]: number; } = {};
+        const stringMap0: IDictionaryStringIdGenericValue<number> = {};
+        const stringMap1: IDictionaryStringIdGenericValue<number> = {};
         const stringMap0InJsonString: string =
             JSON.stringify(stringMap0);
         const stringMap1InJsonString: string =
@@ -1016,7 +1030,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMap1InJsonString=${stringMap1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringMaps(stringMap0, stringMap1);
+            DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1);
         assert.ok(validation,
             `stringMap0InJsonString=${stringMap0InJsonString}` +
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
@@ -1024,8 +1038,8 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.0816 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const stringMap0: { [id: string]: number; } = {};
-        const stringMap1: { [id: string]: number; } = { a: 1, b: 2, c: 3 };
+        const stringMap0: IDictionaryStringIdGenericValue<number> = {};
+        const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap0InJsonString: string =
             JSON.stringify(stringMap0);
         const stringMap1InJsonString: string =
@@ -1035,7 +1049,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMap1InJsonString=${stringMap1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringMaps(stringMap0, stringMap1, false);
+            DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1, false);
         assert.ok(!validation,
             `stringMap0InJsonString=${stringMap0InJsonString}` +
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
@@ -1043,8 +1057,8 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.0817 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const stringMap0: { [id: string]: number; } = { a: 1, b: 2, c: 3 };
-        const stringMap1: { [id: string]: number; } = {};
+        const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
+        const stringMap1: IDictionaryStringIdGenericValue<number> = {};
         const stringMap0InJsonString: string =
             JSON.stringify(stringMap0);
         const stringMap1InJsonString: string =
@@ -1054,7 +1068,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMap1InJsonString=${stringMap1InJsonString}`);
         const validation: boolean =
-            Utility.validateStringMaps(stringMap0, stringMap1, false);
+            DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1, false);
         assert.ok(!validation,
             `stringMap0InJsonString=${stringMap0InJsonString}` +
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
@@ -1062,8 +1076,8 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.0818 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const stringMap0: { [id: string]: number; } = {};
-        const stringMap1: { [id: string]: number; } = { a: 1, b: 2, c: 3 };
+        const stringMap0: IDictionaryStringIdGenericValue<number> = {};
+        const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap0InJsonString: string =
             JSON.stringify(stringMap0);
         const stringMap1InJsonString: string =
@@ -1073,13 +1087,13 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMap1InJsonString=${stringMap1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMaps(stringMap0, stringMap1, true); });
+            () => { DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1, true); });
     });
     it("Test.0819 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const stringMap0: { [id: string]: number; } = { a: 1, b: 2, c: 3 };
-        const stringMap1: { [id: string]: number; } = {};
+        const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
+        const stringMap1: IDictionaryStringIdGenericValue<number> = {};
         const stringMap0InJsonString: string =
             JSON.stringify(stringMap0);
         const stringMap1InJsonString: string =
@@ -1089,13 +1103,13 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMap1InJsonString=${stringMap1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMaps(stringMap0, stringMap1, true); });
+            () => { DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1, true); });
     });
     it("Test.0820 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const stringMap0: { [id: string]: number; } = { a: 1, b: 2, c: 3 };
-        const stringMap1: { [id: string]: number; } = { a: 2, b: 2, c: 3 };
+        const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
+        const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 2, b: 2, c: 3 };
         const stringMap0InJsonString: string =
             JSON.stringify(stringMap0);
         const stringMap1InJsonString: string =
@@ -1105,14 +1119,14 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMap1InJsonString=${stringMap1InJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMaps(stringMap0, stringMap1, true); });
+            () => { DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1, true); });
     });
 
     it("Test.0900 validateStringMaps()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
-        const stringMap: { [id: string]: number; } = {a: 0, b: 1, c: 2};
+        const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1122,7 +1136,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateStringMap(stringArray, stringMap);
+            DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(stringArray, stringMap);
         assert.ok(validation,
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1131,7 +1145,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = [];
-        const stringMap: { [id: string]: number; } = {a: 0, b: 1, c: 2};
+        const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1141,7 +1155,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateStringMap(stringArray, stringMap, false);
+            DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(stringArray, stringMap, false);
         assert.ok(!validation,
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1150,7 +1164,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
-        const stringMap: { [id: string]: number; } = {};
+        const stringMap: IDictionaryStringIdGenericValue<number> = {};
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1160,7 +1174,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateStringMap(stringArray, stringMap, false);
+            DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(stringArray, stringMap, false);
         assert.ok(!validation,
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1169,7 +1183,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b"];
-        const stringMap: { [id: string]: number; } = {a: 0, b: 1, c: 2};
+        const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1179,7 +1193,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateStringMap(stringArray, stringMap, false);
+            DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(stringArray, stringMap, false);
         assert.ok(!validation,
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1188,7 +1202,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "d"];
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1198,7 +1212,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateStringMap(stringArray, stringMap, false);
+            DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(stringArray, stringMap, false);
         assert.ok(!validation,
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1207,7 +1221,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
-        const stringMap: { [id: string]: number; } = { a: 0, b: -1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: -1, c: 2 };
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1217,7 +1231,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateStringMap(stringArray, stringMap, false);
+            DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(stringArray, stringMap, false);
         assert.ok(!validation,
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1226,7 +1240,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = [];
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1236,7 +1250,8 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMap(stringArray, stringMap, true); },
+            () => { DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(
+                stringArray, stringMap, true); },
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1244,7 +1259,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
-        const stringMap: { [id: string]: number; } = {};
+        const stringMap: IDictionaryStringIdGenericValue<number> = {};
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1254,7 +1269,8 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMap(stringArray, stringMap, true); },
+            () => { DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(
+                stringArray, stringMap, true); },
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1262,7 +1278,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b"];
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1272,7 +1288,8 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMap(stringArray, stringMap, true); },
+            () => { DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(
+                stringArray, stringMap, true); },
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1280,7 +1297,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "d"];
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1290,7 +1307,8 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMap(stringArray, stringMap, true); },
+            () => { DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(
+                stringArray, stringMap, true); },
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1298,7 +1316,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
-        const stringMap: { [id: string]: number; } = { a: 0, b: -1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: -1, c: 2 };
         const stringArrayInJsonString: string =
             JSON.stringify(stringArray);
         const stringMapInJsonString: string =
@@ -1308,7 +1326,8 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateStringMap(stringArray, stringMap, true); },
+            () => { DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(
+                stringArray, stringMap, true); },
             `stringArrayInJsonString=${stringArrayInJsonString}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1316,7 +1335,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = 1;
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1324,7 +1343,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateKeyId(keyId, stringMap);
+            DictionaryMapUtility.validateNumberKeyIdInStringIdNumberValueDictionary(keyId, stringMap);
         assert.ok(validation,
             `keyId=${keyId}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1333,7 +1352,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = -1;
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1341,7 +1360,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateKeyId(keyId, stringMap, false);
+            DictionaryMapUtility.validateNumberKeyIdInStringIdNumberValueDictionary(keyId, stringMap, false);
         assert.ok(!validation,
             `keyId=${keyId}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1350,7 +1369,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = 3;
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1358,7 +1377,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateKeyId(keyId, stringMap, false);
+            DictionaryMapUtility.validateNumberKeyIdInStringIdNumberValueDictionary(keyId, stringMap, false);
         assert.ok(!validation,
             `keyId=${keyId}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1367,7 +1386,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = -1;
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1375,7 +1394,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateKeyId(keyId, stringMap, true); },
+            () => { DictionaryMapUtility.validateNumberKeyIdInStringIdNumberValueDictionary(keyId, stringMap, true); },
             `keyId=${keyId}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1383,7 +1402,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = 3;
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1391,7 +1410,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateKeyId(keyId, stringMap, true); },
+            () => { DictionaryMapUtility.validateNumberKeyIdInStringIdNumberValueDictionary(keyId, stringMap, true); },
             `keyId=${keyId}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1399,7 +1418,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const key: string = "b";
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1407,7 +1426,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateKey(key, stringMap);
+            DictionaryMapUtility.validateStringKeyInStringIdNumberValueDictionary(key, stringMap);
         assert.ok(validation,
             `key=${key}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1416,7 +1435,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const key: string = "d";
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1424,7 +1443,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         const validation: boolean =
-            Utility.validateKey(key, stringMap, false);
+            DictionaryMapUtility.validateStringKeyInStringIdNumberValueDictionary(key, stringMap, false);
         assert.ok(!validation,
             `key=${key}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
@@ -1433,7 +1452,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const key: string = "d";
-        const stringMap: { [id: string]: number; } = { a: 0, b: 1, c: 2 };
+        const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
             JSON.stringify(stringMap);
         Utility.debuggingLog(
@@ -1441,7 +1460,7 @@ describe("Test Suite - utility/Utility", () => {
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
         assert.throws(
-            () => { Utility.validateKey(key, stringMap, true); },
+            () => { DictionaryMapUtility.validateStringKeyInStringIdNumberValueDictionary(key, stringMap, true); },
             `key=${key}` +
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -1516,7 +1535,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
-        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.csv";
+        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.eac";
         const lineIndexToStart: number = 1;
         const columnDelimiter: string = ",";
         const rowDelimiter: string = "\n";
@@ -1558,7 +1577,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
-        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.csv";
+        const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.eac";
         const fileContent: string =
             Utility.loadFile(filename);
         const lineIndexToStart: number = 1;
@@ -1609,19 +1628,21 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(fileContent.length === 25892,
             `fileContent.length=${fileContent.length}`);
     });
-    // ---- TODO ---- it("Test.1201 dumpFile()", function() {
-    // ---- TODO ----     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    // ---- TODO ----     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-    // ---- TODO ----     Utility.debuggingLog(
-    // ---- TODO ----         `process.cwd()=${process.cwd()}`);
-    // ---- TODO ----     const filename: string = "resources/data/Columnar/Email.tsv";
-    // ---- TODO ----     const fileContent: string =
-    // ---- TODO ----         Utility.loadFile(filename);
-    // ---- TODO ----     Utility.debuggingLog(
-    // ---- TODO ----         `fileContent.length=${fileContent.length}`);
-    // ---- TODO ----     assert.ok(fileContent.length === 25892,
-    // ---- TODO ----         `fileContent.length=${fileContent.length}`);
-    // ---- TODO ---- });
+    it("Test.1201 dumpFile()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        Utility.debuggingLog(
+            `process.cwd()=${process.cwd()}`);
+        const filename: string = "resources/data/Columnar/Email.tsv";
+        const fileContent: string =
+            Utility.loadFile(filename);
+        Utility.debuggingLog(
+            `fileContent.length=${fileContent.length}`);
+        assert.ok(fileContent.length === 25892,
+            `fileContent.length=${fileContent.length}`);
+        const filenameOuput: string = "resources/data/Columnar/Email_UtilityUnitTest_1201.tsv";
+        Utility.dumpFile(filenameOuput, fileContent);
+    });
     it("Test.1202 exists()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
@@ -1879,21 +1900,64 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.1600 getSetLength()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const input: Set<string> = new Set<string>(["0"]);
+        const input: Set<string> =
+            new Set<string>(["0"]);
         const length: number =
             Utility.getSetLength(input);
         assert.ok(length === 1,
-            `input=${input}`);
-    });
+            `input=${input}, length=${length}`);
+        input.add("1");
+        const length2: number =
+            Utility.getSetLength(input);
+        assert.ok(length2 === 2,
+            `input=${input}, length2=${length2}`);
+        input.add("0");
+        const length20: number =
+            Utility.getSetLength(input);
+        assert.ok(length20 === 2,
+            `input=${input}, length20=${length20}`);
+        });
     it("Test.1601 getMapLength()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const input: { [id: string]: number } = {a: 0};
+        const input: IDictionaryStringIdGenericValue<number> = {
+            a: 0 };
         const length: number =
-            Utility.getMapLength(input);
+            DictionaryMapUtility.getStringIdGenericValueDictionaryLength(input);
+        input.b = 1;
         assert.ok(length === 1,
-            `input=${input}`);
-    });
+            `input=${input}, length=${length}`);
+        const length2: number =
+            DictionaryMapUtility.getStringIdGenericValueDictionaryLength(input);
+        assert.ok(length2 === 2,
+            `input=${input}, length2=${length2}`);
+        input.a = 0;
+        const length20: number =
+            DictionaryMapUtility.getStringIdGenericValueDictionaryLength(input);
+        assert.ok(length20 === 2,
+           `input=${input}, length20=${length20}`);
+        });
+    it("Test.1602 getKeyMapLength()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const input: TMapStringKeyGenericValue<number> =
+            DictionaryMapUtility.newTMapStringKeyGenericValue<number>();
+        input.set("a", 0);
+        const length: number =
+            DictionaryMapUtility.getStringKeyGenericValueMapLength(input);
+        assert.ok(length === 1,
+            `input=${Utility.mapToJsonSerialization(input)}, length=${length}`);
+        input.set("b", 1);
+        const length2: number =
+            DictionaryMapUtility.getStringKeyGenericValueMapLength(input);
+        assert.ok(length2 === 2,
+            `input=${Utility.mapToJsonSerialization(input)}, length2=${length2}`);
+        input.set("a", 0);
+        const length20: number =
+            DictionaryMapUtility.getStringKeyGenericValueMapLength(input);
+        assert.ok(length20 === 2,
+            `input=${Utility.mapToJsonSerialization(input)}, length20=${length20}`);
+        });
 
     it("Test.1700 getJsonStringified()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();

@@ -5,6 +5,11 @@
 
 import assert = require("assert");
 
+import { DictionaryMapUtility } from "../../../../../src/data_structure/DictionaryMapUtility";
+
+import { TMapStringKeyGenericArray } from "../../../../../src/data_structure/TMapStringKeyGenericArray";
+import { TMapStringKeyGenericValue } from "../../../../../src/data_structure/TMapStringKeyGenericValue";
+
 import { AutoActiveLearner } from "../../../../../src/model/supervised/classifier/auto_active_learning/AutoActiveLearner";
 
 import { AppSoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
@@ -14,9 +19,7 @@ import { ColumnarContentEmail } from "../../../../data/ColumnarData.test";
 
 import { LuContentEmail } from "../../../../data/LuData.test";
 
-import { mainAutoActiveLearnerWithColumnarContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
-import { mainAutoActiveLearnerWithLuContent } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
-import { mainAutoActiveLearner } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
+import { AppAutoActiveLearner } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
 
 import { ColumnarData } from "../../../../../src/data/ColumnarData";
 
@@ -26,15 +29,17 @@ import { Utility } from "../../../../../src/utility/Utility";
 
 import { UnitTestHelper } from "../../../../utility/Utility.test";
 
-describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto_active_learner", () => {
+describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoActiveLearner", () => {
     it("Test.0000 mainAutoActiveLearnerWithLuContent()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newLuData": LuData,
             "learner": SoftmaxRegressionSparse,
-        } = await mainAutoActiveLearnerWithLuContent(
+        } = await AppAutoActiveLearner.mainAutoActiveLearnerWithLuContent(
             LuContentEmail,
+            AppAutoActiveLearner.defaultDoBootstrapResampling,
+            DictionaryMapUtility.newTMapStringKeyGenericValue(),
             AutoActiveLearner.defaultDoAutoActiveLearning,
             AutoActiveLearner.defaultAalLimitInitialNumberOfInstancesPerCategory,
             AutoActiveLearner.defaultAalNumberOfInstancesPerIteration,
@@ -45,17 +50,19 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         // const learner: SoftmaxRegressionSparse = aalResult.learner;
     });
 
-    it("Test.0100 mainAutoActiveLearnerWithColumnarContent()", function() {
+    it("Test.0100 mainAutoActiveLearnerWithColumnarContent()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newColumnarData": ColumnarData,
             "learner": SoftmaxRegressionSparse,
-        } = mainAutoActiveLearnerWithColumnarContent(
+        } = await AppAutoActiveLearner.mainAutoActiveLearnerWithColumnarContent(
             ColumnarContentEmail,
             0,
             2,
             1,
+            AppAutoActiveLearner.defaultDoBootstrapResampling,
+            DictionaryMapUtility.newTMapStringKeyGenericValue(),
             AutoActiveLearner.defaultDoAutoActiveLearning,
             AutoActiveLearner.defaultAalLimitInitialNumberOfInstancesPerCategory,
             AutoActiveLearner.defaultAalNumberOfInstancesPerIteration,
@@ -69,13 +76,18 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
     it("Test.0200 mainAutoActiveLearner()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "resources/data/LU/skills/emailskill/en/Email.lu";
+        const filename: string =
+            "resources/data/LU/skills/emailskill/en/Email.lu";
+        const outputReportFilenamePrefix: string =
+            "resources/data/LU/skills/emailskill/en/Email_AppAutoActiveLearnerUnitTest_0200";
         process.argv.push("--filename");
         process.argv.push(filename);
+        process.argv.push("--outputFilename");
+        process.argv.push(outputReportFilenamePrefix);
         process.argv.push("--outputModelFilename");
-        process.argv.push(filename + ".model.json");
+        process.argv.push(outputReportFilenamePrefix + ".model.json");
         process.argv.push("--outputFeaturizerFilename");
-        process.argv.push(filename + ".featurizer.json");
+        process.argv.push(outputReportFilenamePrefix + ".featurizer.json");
         process.argv.push("--doAutoActiveLearning");
         process.argv.push(`${AutoActiveLearner.defaultDoAutoActiveLearning}`);
         process.argv.push("--aalLimitInitialNumberOfInstancesPerCategory");
@@ -88,18 +100,23 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         process.argv.push(`${AppSoftmaxRegressionSparse.defaultEpochs}`);
         process.argv.push("--learnerParameterMiniBatchSize");
         process.argv.push(`${32}`);
-        await mainAutoActiveLearner();
+        await AppAutoActiveLearner.mainAutoActiveLearner();
     });
     it("Test.0201 mainAutoActiveLearner()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "resources/data/Columnar/Email.tsv";
+        const filename: string =
+            "resources/data/Columnar/Email.tsv";
+        const outputReportFilenamePrefix: string =
+            "resources/data/LU/skills/emailskill/en/Email_AppAutoActiveLearnerUnitTest_0201";
         process.argv.push("--filename");
         process.argv.push(filename);
+        process.argv.push("--outputFilename");
+        process.argv.push(outputReportFilenamePrefix);
         process.argv.push("--outputModelFilename");
-        process.argv.push(filename + ".model.json");
+        process.argv.push(outputReportFilenamePrefix + ".model.json");
         process.argv.push("--outputFeaturizerFilename");
-        process.argv.push(filename + ".featurizer.json");
+        process.argv.push(outputReportFilenamePrefix + ".featurizer.json");
         process.argv.push("--doAutoActiveLearning");
         process.argv.push(`${AutoActiveLearner.defaultDoAutoActiveLearning}`);
         process.argv.push("--aalLimitInitialNumberOfInstancesPerCategory");
@@ -118,6 +135,6 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/app_auto
         process.argv.push("2");
         process.argv.push("--linesToSkip");
         process.argv.push("1");
-        await mainAutoActiveLearner();
+        await AppAutoActiveLearner.mainAutoActiveLearner();
     });
 });

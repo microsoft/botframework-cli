@@ -3,6 +3,8 @@
  * Licensed under the MIT License.
  */
 
+import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtility";
+
 import { Utility } from "../../../utility/Utility";
 
 export class NgramSubwordFeaturizer {
@@ -556,7 +558,7 @@ export class NgramSubwordFeaturizer {
         const intents: string[] =
             intentsUtterances.intents;
         const intentLabels: { "stringArray": string[], "stringMap": { [id: string]: number; } } =
-            Utility.buildStringMapFromStringArray(intents);
+            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArray(intents);
         this.labels =
             intentLabels.stringArray;
         this.labelMap =
@@ -579,11 +581,12 @@ export class NgramSubwordFeaturizer {
         // ---- NOTE-FOR-REFERENCE ---- const utteranceTexts: {
         // ---- NOTE-FOR-REFERENCE ----     "stringArray": string[],
         // ---- NOTE-FOR-REFERENCE ----     "stringMap": { [id: string]: number; } } =
-        // ---- NOTE-FOR-REFERENCE ----     Utility.buildStringMapFromStringArray(featureArrayFlattened);
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-FOR-REFERENCE ----     DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArray(featureArrayFlattened);
         const utteranceTexts: {
             "stringArray": string[],
             "stringMap": { [id: string]: number; } } =
-            Utility.buildStringMapFromStringArrays(featureArray);
+            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArrays(featureArray);
         this.features =
             utteranceTexts.stringArray;
         this.featureMap =

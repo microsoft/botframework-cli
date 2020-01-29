@@ -3,12 +3,11 @@
  * Licensed under the MIT License.
  */
 
+import * as path from "path";
+
 import * as fs from "fs";
 
 import * as md5 from "ts-md5";
-
-// ==== NOTE-utility-CANNOT-HAVE-IMPORT-CYCLE ====
-// ==== import { MathematicsHelper } from "../mathematics/mathematics_helper/mathematics_helper";
 
 export class Utility {
 
@@ -311,33 +310,10 @@ export class Utility {
 
     public static mapToJsonSerialization<K, V>(map: Map<K, V>): string {
         return JSON.stringify([...map]);
-        // ==== TODO ==== let jsonString: string = "{";
-        // ==== TODO ==== let isFirst: boolean = true;
-        // ==== TODO ==== map.forEach((value: V, key: K) => {
-        // ==== TODO ====     if (isFirst) {
-        // ==== TODO ====         isFirst = false;
-        // ==== TODO ====     } else {
-        // ==== TODO ====         jsonString += ",";
-        // ==== TODO ====     }
-        // ==== TODO ====     jsonString += JSON.stringify(key);
-        // ==== TODO ====     jsonString += ":";
-        // ==== TODO ====     jsonString += JSON.stringify(value);
-        // ==== TODO ==== });
-        // ==== TODO ==== jsonString += "}";
-        // ==== TODO ==== return jsonString;
     }
     public static jsonSerializationToMap<K, V>(jsonString: string): Map<K, V> {
         const jsonParsedObject: any = JSON.parse(jsonString);
         return new Map<K, V>(jsonParsedObject);
-        // ==== TODO ==== console.log("jsonParsedObject=", jsonParsedObject);
-        // ==== TODO ==== console.log("Object.keys(jsonParsedObject)=", Object.keys(jsonParsedObject));
-        // ==== TODO ==== console.log("Object.values(jsonParsedObject)=", Object.values(jsonParsedObject));
-        // ==== TODO ==== const keys: string[] = Object.keys(jsonParsedObject);
-        // ==== TODO ==== const values: V[] = Object.values(jsonParsedObject);
-        // ==== TODO ==== const keyValuePairs = keys.map(function(key, index) {
-        // ==== TODO ====     return [key, values[index]];
-        // ==== TODO ==== });
-        // ==== TODO ==== return new Map<K, V>(keyValuePairs);
     }
     public static setToJsonSerialization<T>(set: Set<T>): string {
         return JSON.stringify([...set]);
@@ -433,10 +409,16 @@ export class Utility {
     public static getXorshift128plusState1(): number {
         return Utility.xorshift128plusState1;
     }
-    public static rngSeedXorshift128plus(newState0: number, newState1: number): void {
+    public static rngSeedXorshift128plus(
+        newState0: number,
+        newState1: number,
+        inputRngBurninIterations: number = -1): void {
+        if (inputRngBurninIterations < 0) {
+            inputRngBurninIterations = Utility.rngBurninIterations;
+        }
         Utility.xorshift128plusState0 = newState0;
         Utility.xorshift128plusState1 = newState1;
-        for (let i: number = 0; i < Utility.rngBurninIterations; i++) {
+        for (let i: number = 0; i < inputRngBurninIterations; i++) {
             Utility.rngNextXorshift128plusDirect();
         }
         Utility.rngBurninDone = true;
@@ -456,27 +438,19 @@ export class Utility {
         Utility.xorshift128plusState1 = s1;
         return Utility.xorshift128plusState0 + Utility.xorshift128plusState1;
     }
-    public static rngNextXorshift128plus(): number {
+    public static rngNextXorshift128plus(
+        inputRngBurninIterations: number = -1): number {
+        if (inputRngBurninIterations < 0) {
+            inputRngBurninIterations = Utility.rngBurninIterations;
+        }
         if (!Utility.rngBurninDone) {
-            for (let i: number = 0; i < Utility.rngBurninIterations; i++) {
+            for (let i: number = 0; i < inputRngBurninIterations; i++) {
                 Utility.rngNextXorshift128plusDirect();
             }
             Utility.rngBurninDone = true;
         }
         return Utility.rngNextXorshift128plusDirect();
     }
-    // ==== TODO ==== public static rngNextFloatXorshift128plus(): number {
-    // ==== TODO ====     let s1: number = Utility.xorshift128plusState0;
-    // ==== TODO ====     let s0: number = Utility.xorshift128plusState1;
-    // ==== TODO ====     Utility.xorshift128plusState0 = s0;
-    // ==== TODO ====     s1 ^= s1 << 23;
-    // ==== TODO ====     s1 ^= s1 >> 17;
-    // ==== TODO ====     s1 ^= s0;
-    // ==== TODO ====     s1 ^= s0 >> 26;
-    // ==== TODO ====     Utility.xorshift128plusState1 = s1;
-    // ==== TODO ====     const randomInt: number = Utility.xorshift128plusState0 + Utility.xorshift128plusState1;
-    // ==== TODO ====     return randomInt / Number.MAX_VALUE;
-    // ==== TODO ==== }
 
     public static getXorshift128plusState0BigInt(): bigint {
         return Utility.xorshift128plusState0BigInt;
@@ -492,25 +466,33 @@ export class Utility {
     }
     public static rngSeedXorshift128plusBigIntWithNumber(
         newState0: number,
-        newState1: number): void {
+        newState1: number,
+        inputRngBurninIterationsForBigInt: number = -1): void {
+        if (inputRngBurninIterationsForBigInt < 0) {
+            inputRngBurninIterationsForBigInt = Utility.rngBurninIterationsForBigInt;
+        }
         Utility.xorshift128plusState0BigInt = BigInt(newState0);
         Utility.xorshift128plusState1BigInt = BigInt(newState1);
-        for (let i: number = 0; i < Utility.rngBurninIterationsBigInt; i++) {
+        for (let i: number = 0; i < inputRngBurninIterationsForBigInt; i++) {
             Utility.rngNextXorshift128plusBigIntDirect();
         }
-        Utility.rngBurninDoneBigInt = true;
+        Utility.rngBurninDoneForBigInt = true;
     }
     public static rngSeedXorshift128plusBigInt(
         newState0BigInt: bigint,
         newState1BigInt: bigint,
-        newCycleBigInt: bigint): void {
+        newCycleBigInt: bigint,
+        inputRngBurninIterationsForBigInt: number = -1): void {
+        if (inputRngBurninIterationsForBigInt < 0) {
+            inputRngBurninIterationsForBigInt = Utility.rngBurninIterationsForBigInt;
+        }
         Utility.xorshift128plusState0BigInt = newState0BigInt;
         Utility.xorshift128plusState1BigInt = newState1BigInt;
         Utility.xorshift128plusCycleBigInt = newCycleBigInt;
-        for (let i: number = 0; i < Utility.rngBurninIterationsBigInt; i++) {
+        for (let i: number = 0; i < inputRngBurninIterationsForBigInt; i++) {
             Utility.rngNextXorshift128plusBigIntDirect();
         }
-        Utility.rngBurninDoneBigInt = true;
+        Utility.rngBurninDoneForBigInt = true;
     }
     public static rngNextXorshift128plusBigIntDirect(): bigint {
         let s1: bigint =
@@ -542,11 +524,11 @@ export class Utility {
         return result;
     }
     public static rngNextXorshift128plusBigInt(): bigint {
-        if (!Utility.rngBurninDoneBigInt) {
-            for (let i: number = 0; i < Utility.rngBurninIterationsBigInt; i++) {
+        if (!Utility.rngBurninDoneForBigInt) {
+            for (let i: number = 0; i < Utility.rngBurninIterationsForBigInt; i++) {
                 Utility.rngNextXorshift128plusBigIntDirect();
             }
-            Utility.rngBurninDoneBigInt = true;
+            Utility.rngBurninDoneForBigInt = true;
         }
         return Utility.rngNextXorshift128plusBigIntDirect();
     }
@@ -554,6 +536,38 @@ export class Utility {
         const resultBigInt: bigint = Utility.rngNextXorshift128plusBigInt();
         const resultNumber: number = Number(resultBigInt);
         return (resultNumber / Utility.xorshift128plusCycleBigIntFloat);
+    }
+    public static seedRandomNumberGenerator(
+        newState0: number,
+        newState1: number,
+        inputRngBurninIterationsForBigInt: number = -1): void {
+        Utility.rngSeedXorshift128plusBigIntWithNumber(
+            newState0,
+            newState1,
+            inputRngBurninIterationsForBigInt);
+    }
+    public static getRandomNumber(): number {
+        return Utility.rngNextXorshift128plusBigIntFloat();
+    }
+
+    public static getRandomInt(limit: number): number {
+        return Utility.getRandomIntFromIntLimit(limit);
+    }
+    public static getRandomIntFromFloatLimit(limit: number): number {
+        let randomInt: number = Math.floor(
+            Utility.rngNextXorshift128plusBigIntFloat() * limit);
+        if (randomInt >= limit) {
+            randomInt = limit - Utility.epsilon;
+        }
+        return randomInt;
+    }
+    public static getRandomIntFromIntLimit(limit: number): number {
+        let randomInt: number = Math.floor(
+            Utility.rngNextXorshift128plusBigIntFloat() * Math.floor(limit));
+        if (randomInt >= limit) {
+            randomInt = limit - 1;
+        }
+        return randomInt;
     }
 
     public static shuffle<T>(array: T[]): T[] {
@@ -563,7 +577,7 @@ export class Utility {
         while (currentIndex > 0) {
             // ---- Pick a remaining element.
             randomIndex =
-                Math.floor(Utility.rngNextXorshift128plusBigIntFloat() * currentIndex);
+                Utility.getRandomInt(currentIndex);
             currentIndex--;
             // ---- And swap it with the current element.
             const temporaryValue: T = array[currentIndex];
@@ -573,36 +587,107 @@ export class Utility {
         return array;
     }
 
-    public static buildStringMapFromUniqueStringArray(
-        stringArray: string[]): { [id: string]: number; } {
-        const stringMap: { [id: string]: number; } = { };
-        for (let index: number = 0; index < stringArray.length; index++) {
-            stringMap[stringArray[index]] = index;
+    public static validateGenericArrayPairEquality<T>(
+        genericArrayFirst: T[],
+        genericArraySecond: T[],
+        throwIfNotLegal: boolean = true): boolean {
+        if ((genericArrayFirst == null) && (genericArraySecond == null)) {
+            return true;
         }
-        return stringMap;
-    }
-    public static buildStringMapFromStringArray(
-        strings: string[]):
-        { "stringArray": string[], "stringMap": { [id: string]: number; } } {
-        const stringSet: Set<string> = new Set(strings);
-        const stringArray: string[] = Array.from(stringSet.values());
-        const stringMap: { [id: string]: number; } = Utility.buildStringMapFromUniqueStringArray(stringArray);
-        return { stringArray, stringMap };
-    }
-    public static buildStringMapFromStringArrays(
-        stringArrays: string[][]): { "stringArray": string[], "stringMap": { [id: string]: number; } } {
-        const stringSet: Set<string> = new Set();
-        for (const elementStringArray of stringArrays) {
-            for (const elementString of elementStringArray) {
-                stringSet.add(elementString);
+        if (genericArrayFirst == null) {
+            if (throwIfNotLegal) {
+                Utility.debuggingThrow("genericArrayFirst==null");
+            }
+            return false;
+        }
+        if (genericArraySecond == null) {
+            if (throwIfNotLegal) {
+                Utility.debuggingThrow("genericArraySecond==null");
+            }
+            return false;
+        }
+        if (genericArrayFirst.length !== genericArraySecond.length) {
+            if (throwIfNotLegal) {
+                Utility.debuggingThrow(
+                    `genericArrayFirst.length|${genericArrayFirst.length}|` +
+                    `!=genericArraySecond.length|${ genericArraySecond.length}|`);
+            }
+            return false;
+        }
+        for (let index = 0; index < genericArrayFirst.length; index++) {
+            const first: T = genericArrayFirst[index];
+            const second: T = genericArraySecond[index];
+            if (first !== second) {
+                if (throwIfNotLegal) {
+                    Utility.debuggingThrow(
+                        `index=${index}` +
+                        `first|${first}|` +
+                        `!=second|${second}|`);
+                }
+                return false;
             }
         }
-        const stringArray: string[] = Array.from(stringSet.values());
-        const stringMap: { [id: string]: number; } = Utility.buildStringMapFromUniqueStringArray(stringArray);
-        return { stringArray, stringMap };
+        return true;
+    }
+    public static validateGenericSetPairEquality<T>(
+        genericSetFirst: Set<T>,
+        genericSetSecond: Set<T>,
+        throwIfNotLegal: boolean = true): boolean {
+        if ((genericSetFirst == null) && (genericSetSecond == null)) {
+            return true;
+        }
+        if (genericSetFirst == null) {
+            if (throwIfNotLegal) {
+                Utility.debuggingThrow("genericSetFirst==null");
+            }
+            return false;
+        }
+        if (genericSetSecond == null) {
+            if (throwIfNotLegal) {
+                Utility.debuggingThrow("genericSetSecond==null");
+            }
+            return false;
+        }
+        const genericSetFirstLength: number = Utility.getSetLength(genericSetFirst);
+        const genericSetSecondLength: number = Utility.getSetLength(genericSetSecond);
+        if (genericSetFirstLength !== genericSetSecondLength) {
+            if (throwIfNotLegal) {
+                Utility.debuggingThrow(
+                    `genericSetFirstLength|${genericSetFirstLength}|` +
+                    `!=genericSetSecondLength|${genericSetSecondLength}|`);
+            }
+            return false;
+        }
+        for (const key of genericSetFirst) {
+            if (key) {
+                if (genericSetSecond.has(key)) {
+                    continue;
+                } else {
+                    if (throwIfNotLegal) {
+                        Utility.debuggingThrow(
+                            `key|${key}| is in genericSetFirst, but not in genericSetSecond`);
+                    }
+                    return false;
+                }
+            }
+        }
+        for (const key of genericSetSecond) {
+            if (key) {
+                if (genericSetFirst.has(key)) {
+                    continue;
+                } else {
+                    if (throwIfNotLegal) {
+                        Utility.debuggingThrow(
+                            `key|${key}| is in genericSetSecond, but not in genericSetFirst`);
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
-    public static validateStringArrays(
+    public static validateStringArrayPairEquality(
         stringArrayFirst: string[],
         stringArraySecond: string[],
         throwIfNotLegal: boolean = true): boolean {
@@ -644,7 +729,7 @@ export class Utility {
         }
         return true;
     }
-    public static validateStringSets(
+    public static validateStringSetPairEquality(
         stringSetFirst: Set<string>,
         stringSetSecond: Set<string>,
         throwIfNotLegal: boolean = true): boolean {
@@ -701,157 +786,137 @@ export class Utility {
         }
         return true;
     }
-    public static validateStringMaps(
-        stringMapFirst: { [id: string]: number; },
-        stringMapSecond: { [id: string]: number; },
-        throwIfNotLegal: boolean = true): boolean {
-        if ((stringMapFirst == null) && (stringMapSecond == null)) {
-            return true;
-        }
-        if (stringMapFirst == null) {
-            if (throwIfNotLegal) {
-                Utility.debuggingThrow("stringMapFirst==null");
-            }
-            return false;
-        }
-        if (stringMapSecond == null) {
-            if (throwIfNotLegal) {
-                Utility.debuggingThrow("stringMapSecond==null");
-            }
-            return false;
-        }
-        const stringMapFirstLength: number = Utility.getMapLength(stringMapFirst);
-        const stringMapSecondLength: number = Utility.getMapLength(stringMapSecond);
-        if (stringMapFirstLength !== stringMapSecondLength) {
-            if (throwIfNotLegal) {
-                Utility.debuggingThrow(
-                    `stringMapFirstLength|${stringMapFirstLength}|` +
-                    `!=stringMapSecondLength|${stringMapSecondLength}|`);
-            }
-            return false;
-        }
-        for (const key in stringMapFirst) {
-            if (key) {
-                if (key in stringMapSecond) {
-                    if (stringMapFirst[key] !== stringMapSecond[key]) {
-                        if (throwIfNotLegal) {
-                            Utility.debuggingThrow(
-                                `stringMapFirst[key]=${key}, stringMapSecond[key]=${key}`);
-                        }
-                        return false;
-                    }
-                    continue;
-                } else {
-                    if (throwIfNotLegal) {
-                        Utility.debuggingThrow(
-                            `key|${key}| is in stringMapFirst, but not in stringMapSecond`);
-                    }
-                    return false;
-                }
-            }
-        }
-        for (const key in stringMapSecond) {
-            if (key) {
-                if (key in stringMapFirst) {
-                    if (stringMapFirst[key] !== stringMapSecond[key]) {
-                        if (throwIfNotLegal) {
-                            Utility.debuggingThrow(
-                                `stringMapFirst[key]=${key}, stringMapSecond[key]=${key}`);
-                        }
-                        return false;
-                    }
-                    continue;
-                } else {
-                    if (throwIfNotLegal) {
-                        Utility.debuggingThrow(
-                            `key|${key}| is in stringMapSecond, but not in stringMapFirst`);
-                    }
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
-    public static validateStringMap(
-        stringArray: string[],
-        stringMap: { [id: string]: number; },
-        throwIfNotLegal: boolean = true): boolean {
-        if (stringArray == null) {
-            if (throwIfNotLegal) {
-                throw new Error("stringArray == null");
-            }
-            return false;
+    public static loadLabelTextScoreFile(
+        filename: string,
+        labelColumnIndex: number = 0,
+        textColumnIndex: number = 1,
+        scoreColumnBeginIndex: number = 2,
+        numberOfScoreColumns: number = -1,
+        weightColumnIndex: number = -1,
+        lineIndexToStart: number = 0,
+        columnDelimiter: string = "\t",
+        rowDelimiter: string = "\n",
+        encoding: string = "utf8",
+        lineIndexToEnd: number = -1): {
+            "intents": string[],
+            "utterances": string[],
+            "weights": number[],
+            "scoreArrays": number[][] } {
+        if (encoding == null) {
+            encoding = "utf8";
         }
-        if (stringMap == null) {
-            if (throwIfNotLegal) {
-                throw new Error("stringMap == null");
-            }
-            return false;
-        }
-        if (stringArray.length !== Utility.getMapLength(stringMap)) {
-            if (throwIfNotLegal) {
-                throw new Error(
-                    "stringArray.length|" + stringArray.length +
-                    "| !== stringMap.length|" + Utility.getMapLength(stringMap) + "|");
-            }
-            return false;
-        }
-        for (const key in stringMap) {
-            if (key) {
-                // ---- side effect is to remove TSLint warning for
-                // ---- "in" statements must be filtered with an if statement.
-                const keyId = stringMap[key];
-                if ((keyId < 0) || (keyId > stringArray.length)) {
-                    if (throwIfNotLegal) {
-                        throw new Error("(keyId < 0) || (keyId > stringArray.length)");
-                    }
-                    return false;
-                }
-                const keyRetrieved = stringArray[keyId];
-                if (key !== keyRetrieved) {
-                    if (throwIfNotLegal) {
-                        throw new Error("key !== keyRetrieved");
-                    }
-                    return false;
-                }
-            }
-        }
-        return true;
+        const fileContent: string = Utility.loadFile(
+            filename,
+            encoding);
+        return Utility.loadLabelTextScoreContent(
+            fileContent,
+            labelColumnIndex,
+            textColumnIndex,
+            scoreColumnBeginIndex,
+            numberOfScoreColumns,
+            weightColumnIndex,
+            lineIndexToStart,
+            columnDelimiter,
+            rowDelimiter,
+            lineIndexToEnd);
     }
-    public static validateKeyId(
-        keyId: number,
-        stringMap: { [id: string]: number; },
-        throwIfNotLegal: boolean = true): boolean {
-        if (keyId < 0) {
-            if (throwIfNotLegal) {
-                Utility.debuggingThrow(
-                    `keyId=${keyId}, small than 0`);
-            }
-            return false;
+    public static loadLabelTextScoreContent(
+        fileContent: string,
+        labelColumnIndex: number = 0,
+        textColumnIndex: number = 1,
+        scoreColumnBeginIndex: number = 2,
+        numberOfScoreColumns: number = 0,
+        weightColumnIndex: number = -1,
+        lineIndexToStart: number = 0,
+        columnDelimiter: string = "\t",
+        rowDelimiter: string = "\n",
+        lineIndexToEnd: number = -1): {
+            "intents": string[],
+            "utterances": string[],
+            "weights": number[],
+            "scoreArrays": number[][] } {
+        if (labelColumnIndex < 0) {
+            labelColumnIndex = 0;
         }
-        if (keyId >= Utility.getMapLength(stringMap)) {
-            if (throwIfNotLegal) {
-                Utility.debuggingThrow(
-                    `keyId=${keyId}, greater or equal to number of keys, ${stringMap.size}`);
-            }
-            return false;
+        if (textColumnIndex < 0) {
+            textColumnIndex = 1;
         }
-        return true;
-    }
-    public static validateKey(
-        key: string,
-        stringMap: { [id: string]: number; },
-        throwIfNotLegal: boolean = true): boolean {
-        if (key in stringMap) {
-            return true;
-        } else {
-            if (throwIfNotLegal) {
-                Utility.debuggingThrow(
-                    `key=${key}, not int the key map=${stringMap}`);
-            }
-            return false;
+        if (scoreColumnBeginIndex < 0) {
+            scoreColumnBeginIndex = 2;
         }
+        if (lineIndexToStart < 0) {
+            lineIndexToStart = 0;
+        }
+        if (columnDelimiter == null) {
+            columnDelimiter = "\t";
+        }
+        if (rowDelimiter == null) {
+            rowDelimiter = "\n";
+        }
+        const intents: string[] = [];
+        const utterances: string[] = [];
+        const weights: number[] = [];
+        const scoreArrays: number[][] = [];
+        const fileLines: string[] = fileContent.split(rowDelimiter);
+        for (let lineIndex = lineIndexToStart;
+            (lineIndex < fileLines.length) && ((lineIndexToEnd < 0) || (lineIndex < lineIndexToEnd));
+            lineIndex++) {
+            // ---------------------------------------------------------------
+            const line: string = fileLines[lineIndex].trim();
+            if (Utility.isEmptyString(line)) {
+                continue;
+            }
+            const lineColumns: string[] = line.split(columnDelimiter);
+            // ---------------------------------------------------------------
+            const intent: string = lineColumns[labelColumnIndex];
+            // ---------------------------------------------------------------
+            const utterance: string = lineColumns[textColumnIndex];
+            if (Utility.isEmptyString(intent)) {
+                Utility.debuggingThrow(
+                    `LINE - INDEX=${lineIndex}, intent is empty` +
+                    `, lineColumns.length=${lineColumns.length}` +
+                    `, intent=$${intent}$` +
+                    `, utterance=$${utterance}$` +
+                    `, line=$${line}$`);
+            }
+            // ---------------------------------------------------------------
+            let weight: number = 1;
+            if (weightColumnIndex >= 0) {
+                weight = +lineColumns[weightColumnIndex];
+            }
+            // ---------------------------------------------------------------
+            if (numberOfScoreColumns <= 0) {
+                numberOfScoreColumns = lineColumns.length - scoreColumnBeginIndex;
+            }
+            if ((numberOfScoreColumns <= 0) || (numberOfScoreColumns > (lineColumns.length - scoreColumnBeginIndex))) {
+                Utility.debuggingThrow(
+                    `(numberOfScoreColumns<=0)||(numberOfScoreColumns|${numberOfScoreColumns}|>lineColumns.length|${lineColumns.length}|))`);
+            }
+            const scoreArray: number[] = [];
+            let scoreIndex = scoreColumnBeginIndex;
+            for (let i: number = 0; i < numberOfScoreColumns; i++) {
+                const score: number = +lineColumns[scoreIndex++];
+                scoreArray.push(score);
+            }
+            // ---------------------------------------------------------------
+            // {
+            //     Utility.debuggingLog(
+            //         `LINE - INDEX=${lineIndex}` +
+            //         `, lineColumns.length=${lineColumns.length}` +
+            //         `, intent=$${intent}$` +
+            //         `, utterance=$${utterance}$` +
+            //         `, line=$${line}$`);
+            //
+            // }
+            // ---------------------------------------------------------------
+            intents.push(intent);
+            utterances.push(utterance);
+            weights.push(weight);
+            scoreArrays.push(scoreArray);
+            // ---------------------------------------------------------------
+        }
+        return { intents, utterances, weights, scoreArrays };
     }
 
     public static loadLabelTextColumnarFile(
@@ -938,8 +1003,49 @@ export class Utility {
         return { intents, utterances };
     }
 
+    public static storeDataArraysToTsvFile(
+        outputFilename: string,
+        outputEvaluationReportDataArrays: string[][],
+        outputDataArraryHeaders: string[] = [],
+        columnDelimiter: string = "\t",
+        recordDelimiter: string = "\n",
+        encoding: string = "utf8"): void {
+        if (Utility.isEmptyString(outputFilename)) {
+            Utility.debuggingThrow(
+                `outputFilename is empty`);
+        }
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+            const outputLine: string = outputDataArraryHeaders.join(columnDelimiter);
+            outputLines.push(outputLine);
+        }
+        for (const outputEvaluationReportDataArray of outputEvaluationReportDataArrays) {
+            const outputLine: string = outputEvaluationReportDataArray.join(columnDelimiter);
+            outputLines.push(outputLine);
+        }
+        const outputContent: string = outputLines.join(recordDelimiter);
+        try {
+            fs.writeFileSync(outputFilename, `${outputContent}${recordDelimiter}`, encoding);
+        } catch (e) {
+            Utility.debuggingThrow(
+                `storeTsvFile() cannout create an output file: ${outputFilename}, EXCEPTION=${e}`);
+        }
+    }
+
     public static luUtterancesToEntityAnnotatedCorpusTypes(
-        luUtterances: any[],
+        luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }>,
         utteranceReconstructionDelimiter: string = " ",
         defaultEntityTag: string = "O",
         defaultPartOfSpeechTag: string = "",
@@ -954,11 +1060,31 @@ export class Utility {
         const entityTagArrays: string[][] = [];
         const numberInstances = luUtterances.length;
         for (let index: number = 0; index < numberInstances; index++) {
-            const luUtterance: any = luUtterances[index];
+            const luUtterance: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string } = luUtterances[index];
             const text: string = luUtterance.text;
             const intent: string = luUtterance.intent;
-            const entities: any[] = luUtterance.entities;
-            const partOfSpeechTags: any[] = luUtterance.partOfSpeechTags;
+            const entities: Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }> = luUtterance.entities;
+            const partOfSpeechTags: Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }> = luUtterance.partOfSpeechTags;
             if (useIntentForId) {
                 ids.push(intent);
             } else {
@@ -970,7 +1096,7 @@ export class Utility {
             wordArrays.push(wordArray);
             const numberWords: number = wordArrays.length;
             const entityTagArray: string[] = [];
-            if (!Utility.isEmptyArrays(entities)) {
+            if (!Utility.isEmptyArray(entities)) {
                 let utteranceCurrentIndex: number = 0;
                 for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
                     const wordCurrent: string = wordArray[wordIndex];
@@ -993,7 +1119,7 @@ export class Utility {
             }
             entityTagArrays.push(entityTagArray);
             const partOfSpeechTagArray: string[] = [];
-            if (!Utility.isEmptyArrays(partOfSpeechTags)) {
+            if (!Utility.isEmptyArray(partOfSpeechTags)) {
                 let utteranceCurrentIndex: number = 0;
                 for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
                     const wordCurrent: string = wordArray[wordIndex];
@@ -1027,7 +1153,19 @@ export class Utility {
         includePartOfSpeechTagTagAsEntities: boolean = true,
         utteranceReconstructionDelimiter: string = " ",
         defaultEntityTag: string = "O",
-        useIdForIntent: boolean = true): any[] {
+        useIdForIntent: boolean = true): Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> {
         if (Utility.isEmptyString(utteranceReconstructionDelimiter)) {
             utteranceReconstructionDelimiter = " ";
         }
@@ -1064,7 +1202,19 @@ export class Utility {
             Utility.debuggingThrow(
                 `entityTagArrays.length|${entityTagArrays.length}|!==numberInstances|${numberInstances}|`);
         }
-        const luUtterances: any[] = [];
+        const luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> = [];
         for (let index: number = 0; index < numberInstances; index++) {
             let intent = "";
             const id: string = ids[index];
@@ -1087,7 +1237,11 @@ export class Utility {
                     `entityTagArray.length|${entityTagArray.length}|!==numberWords|${numberWords}|`);
             }
             const text: string = wordArray.join(utteranceReconstructionDelimiter);
-            const entities: any[] = [];
+            const entities: Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }> = [];
             {
                 let currentUtteranceBeginIndex: number = 0;
                 for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
@@ -1097,18 +1251,26 @@ export class Utility {
                     {
                         const entityTag = entityTagArray[wordIndex];
                         if (entityTag !== defaultEntityTag) {
-                            const entityStructure: any = {
-                                entity: entityTag,
-                                startPos: currentUtteranceBeginIndex,
-                                endPos: currentUtteranceEndIndex,
-                            };
+                            const entityStructure: {
+                                "entity": string,
+                                "startPos": number,
+                                "endPos": number,
+                                } = {
+                                    entity: entityTag,
+                                    startPos: currentUtteranceBeginIndex,
+                                    endPos: currentUtteranceEndIndex,
+                                    };
                             entities.push(entityStructure);
                         }
                     }
                     currentUtteranceBeginIndex = currentUtteranceEndIndex + utteranceReconstructionDelimiterLength;
                 }
             }
-            const partOfSpeechTags: any[] = [];
+            const partOfSpeechTags: Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }> = [];
             if (includePartOfSpeechTagTagAsEntities) {
                 let currentUtteranceBeginIndex: number = 0;
                 for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
@@ -1116,16 +1278,32 @@ export class Utility {
                     const wordLength: number = word.length;
                     const currentUtteranceEndIndex: number = currentUtteranceBeginIndex + wordLength;
                     const partOfSpeechTag: string = partOfSpeechTagArray[wordIndex];
-                    const partOfSpeechStructure: any = {
-                        partOfSpeechTag,
-                        startPos: currentUtteranceBeginIndex,
-                        endPos: currentUtteranceEndIndex,
-                    };
+                    const partOfSpeechStructure: {
+                        "partOfSpeechTag": string,
+                        "startPos": number,
+                        "endPos": number,
+                        } = {
+                            partOfSpeechTag,
+                            startPos: currentUtteranceBeginIndex,
+                            endPos: currentUtteranceEndIndex,
+                            };
                     partOfSpeechTags.push(partOfSpeechStructure);
                     currentUtteranceBeginIndex = currentUtteranceEndIndex + utteranceReconstructionDelimiterLength;
                 }
             }
-            const luUtterance: any = {
+            const luUtterance: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string } = {
                 entities,
                 partOfSpeechTags,
                 intent,
@@ -1210,33 +1388,66 @@ export class Utility {
             const word: string  = lineColumns[1];
             const partOfSpeechTag: string  = lineColumns[2];
             const entityTag: string  = lineColumns[3];
+            const isWordEmpty: boolean = Utility.isEmptyString(word);
+            if (isWordEmpty) { // ---- NOTE: end of a sentence if the 'word' field is empty.
+                if (!Utility.isEmptyString(currentId)) {
+                    {
+                        ids.push(currentId);
+                        wordArrays.push(currentWordArray);
+                        partOfSpeechTagArrays.push(currentPartOfSpeechTagArray);
+                        entityTagArrays.push(currentTagArray);
+                    }
+                    currentId = "";
+                }
+                continue;
+            }
             const isIdEmpty: boolean = Utility.isEmptyString(id);
             if (isIdEmpty) {
                 currentWordArray.push(word);
                 currentPartOfSpeechTagArray.push(partOfSpeechTag);
                 currentTagArray.push(entityTag);
             } else {
-                if (isFirst) {
+                if (isFirst) { // ---- NOTE: the first line is header, ignore it.
                     isFirst = false;
-                } else {
+                } else { // ---- NOTE: continue the current sentence if the 'id' field is empty.
                     ids.push(currentId);
                     wordArrays.push(currentWordArray);
                     partOfSpeechTagArrays.push(currentPartOfSpeechTagArray);
                     entityTagArrays.push(currentTagArray);
                 }
-                currentId = id;
-                currentWordArray = [word];
-                currentPartOfSpeechTagArray = [partOfSpeechTag];
-                currentTagArray = [entityTag];
+                { // ---- NOTE: start a new sentence if the 'id' field is not empty.
+                    currentId = id;
+                    currentWordArray = [word];
+                    currentPartOfSpeechTagArray = [partOfSpeechTag];
+                    currentTagArray = [entityTag];
+                }
             }
         }
-        if (!Utility.isEmptyString(currentId)) {
-            ids.push(currentId);
-            wordArrays.push(currentWordArray);
-            partOfSpeechTagArrays.push(currentPartOfSpeechTagArray);
-            entityTagArrays.push(currentTagArray);
+        if (currentWordArray.length > 0) {
+            if (!Utility.isEmptyString(currentId)) { // ---- NOTE: the very last sentence!
+                ids.push(currentId);
+                wordArrays.push(currentWordArray);
+                partOfSpeechTagArrays.push(currentPartOfSpeechTagArray);
+                entityTagArrays.push(currentTagArray);
+            }
         }
         return {ids, wordArrays, partOfSpeechTagArrays, entityTagArrays};
+    }
+
+    public static loadBinaryFile(
+        filename: string): Buffer|null {
+        Utility.debuggingLog(
+            `Utility.loadBinaryFile(): filename=${filename}`);
+        Utility.debuggingLog(
+            `Utility.loadBinaryFile(): process.cmd()=${process.cwd()}`);
+        try {
+            const fileContent: Buffer = fs.readFileSync(filename);
+            return fileContent;
+        } catch (e) {
+            Utility.debuggingThrow(
+                `Utility.loadBinaryFile(): filename=${filename}, exception=${e}`);
+        }
+        return null;
     }
 
     public static loadFile(
@@ -1263,8 +1474,8 @@ export class Utility {
         //     `Utility.dumpFile(): filename=${filename}`);
         fs.writeFileSync(filename, content, encoding);
     }
-    public static exists(path: string): boolean {
-        return fs.existsSync(path);
+    public static exists(pathToFileSystemEntry: string): boolean {
+        return fs.existsSync(pathToFileSystemEntry);
     }
 
     public static getObjectMd5Hash(objectValue: object): string|Int32Array {
@@ -1301,8 +1512,14 @@ export class Utility {
         return hash;
     }
 
+    public static isEmptyNumberF32I32U8Arrays(inputArray: Float32Array[] | Int32Array[] | Uint8Array[]): boolean {
+        return !(inputArray && inputArray.length > 0);
+    }
     public static isEmptyNumberF32I32U8Array(inputArray: Float32Array | Int32Array | Uint8Array): boolean {
         return !(inputArray && inputArray.length > 0);
+    }
+    public static isEmptyGenericArrays<T>(inputArrays: boolean[][]): boolean {
+        return !(inputArrays && inputArrays.length > 0);
     }
     public static isEmptyBooleanArrays(inputArrays: boolean[][]): boolean {
         return !(inputArrays && inputArrays.length > 0);
@@ -1310,8 +1527,14 @@ export class Utility {
     public static isEmptyNumberArrays(inputArrays: number[][]): boolean {
         return !(inputArrays && inputArrays.length > 0);
     }
+    public static isEmptyStringArrays(inputArrays: string[][]): boolean {
+        return !(inputArrays && inputArrays.length > 0);
+    }
     public static isEmptyArrays(inputArrays: object[][]): boolean {
         return !(inputArrays && inputArrays.length > 0);
+    }
+    public static isEmptyGenericArray<T>(inputArray: T[]): boolean {
+        return !(inputArray && inputArray.length > 0);
     }
     public static isEmptyBooleanArray(inputArray: boolean[]): boolean {
         return !(inputArray && inputArray.length > 0);
@@ -1329,11 +1552,8 @@ export class Utility {
         return !(input && input.length > 0);
     }
 
-    public static getSetLength(set: Set<string>): number {
+    public static getSetLength<T>(set: Set<T>): number {
         return (set.size);
-    }
-    public static getMapLength(map: { [id: string]: number; }): number {
-        return (Object.keys(map).length);
     }
 
     public static getJsonStringified(jsonObject: any, indents: number = 4): string {
@@ -1571,13 +1791,38 @@ export class Utility {
         return delimiterIndexes;
     }
 
+    public static getFloorInteger(input: number): number {
+        return Math.floor(input);
+    }
+    public static getRoundInteger(input: number): number {
+        return Math.round(input);
+    }
+
+    public static cloneArray<T>(inputArray: T[]): T[] {
+        const clonedArray  = Object.assign([], inputArray);
+        return clonedArray;
+    }
+    public static cloneGenericObject<T>(anObject: T): T {
+        const clonedObject = Object.assign({}, anObject);
+        return clonedObject;
+    }
+    public static cloneObject(anObject: object): object {
+        const clonedObject = Object.assign({}, anObject);
+        return clonedObject;
+    }
+
+    public static getFileBasename(filename: string): string {
+        return path.basename(filename);
+    }
+
     protected static rngBurninIterations: number = 16384;
     protected static rngBurninDone: boolean = false;
     protected static xorshift128plusState0: number = 1;
     protected static xorshift128plusState1: number = 2;
 
-    protected static rngBurninIterationsBigInt: number = 16384;
-    protected static rngBurninDoneBigInt: boolean = false;
+    protected static rngBurninIterationsForBigInt: number = 16384;
+    protected static rngBurninDoneForBigInt: boolean = false;
+    protected static bigIntNegativeOne: bigint = BigInt(-1);
     protected static bigint23: bigint = BigInt(23);
     protected static bigint17: bigint = BigInt(17);
     protected static bigint26: bigint = BigInt(26);

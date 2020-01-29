@@ -11,6 +11,8 @@ import { ColumnarData } from "../../../../src/data/ColumnarData";
 
 import { NgramSubwordFeaturizer } from "../../../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
+import { DictionaryMapUtility } from "../../../../src/data_structure/DictionaryMapUtility";
+
 import { Utility } from "../../../../src/utility/Utility";
 
 import { UnitTestHelper } from "../../../utility/Utility.test";
@@ -115,10 +117,10 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         const labelMap: { [id: string]: number; } =
             featurizer.getLabelMap();
         const numberLabels: number =
-            Utility.getMapLength(labelMap);
+            DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap);
         Utility.debuggingLog(
             `numberHashingFeatures)=${numberLabels}`);
-        assert.ok(Utility.getMapLength(labelMap) === 15,
+        assert.ok(DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap) === 15,
             `numberHashingFeatures=${numberLabels}`);
     });
     it("Test.0202 getFeatures()", function() {
@@ -143,10 +145,10 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         const featureMap: { [id: string]: number; } =
             featurizer.getFeatureMap();
         const numberFeatures: number =
-            Utility.getMapLength(featureMap);
+            DictionaryMapUtility.getStringIdGenericValueDictionaryLength(featureMap);
         Utility.debuggingLog(
             `numberHashingFeatures)=${numberFeatures}`);
-        assert.ok(Utility.getMapLength(featureMap) === 5641,
+        assert.ok(DictionaryMapUtility.getStringIdGenericValueDictionaryLength(featureMap) === 5641,
             `numberHashingFeatures=${numberFeatures}`);
     });
     it("Test.0204 getHashingFeatureArrays()", function() {

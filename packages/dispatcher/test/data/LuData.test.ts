@@ -748,8 +748,20 @@ export async function exampleFunctionDataWithLuContent(
         luContent,
         new NgramSubwordFeaturizer(),
         true);
-    const luUtterances: any[] = luData.getLuUtterances();
-    Utility.debuggingLog(`luJsonStructure=${Utility.getJsonStringified(luUtterances)}`);
+    const luUtterances: Array<{
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string }> = luData.getLuUtterances();
+    Utility.debuggingLog(`luUtterances=${Utility.getJsonStringified(luUtterances)}`);
     assert.ok(luUtterances, `luUtterances=${luUtterances}`);
     const intentInstanceIndexMapArray: Map<string, number[]> = luData.getIntentInstanceIndexMapArray();
     Utility.debuggingLog(`intentInstanceIndexMapSet=${Utility.stringMapArrayToJson(intentInstanceIndexMapArray)}`);

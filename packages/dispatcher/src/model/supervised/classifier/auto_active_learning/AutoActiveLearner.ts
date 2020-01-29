@@ -8,13 +8,13 @@ import { SoftmaxRegressionSparse } from "../neural_network/learner/SoftmaxRegres
 
 import { MathematicsHelper } from "../../../../mathematics/mathematics_helper/MathematicsHelper";
 
-import { ConfusionMatrix } from "../../../evaluation/confusion_matrix/ConfusionMatrix";
+import { ConfusionMatrix } from "../../../../mathematics/confusion_matrix/ConfusionMatrix";
 
 import { Utility } from "../../../../utility/Utility";
 
 export class AutoActiveLearner {
 
-    public static defaultDoAutoActiveLearning: boolean = true;
+    public static defaultDoAutoActiveLearning: boolean = false;
     public static defaultAalLimitInitialNumberOfInstancesPerCategory: number = 10;
     public static defaultAalNumberOfInstancesPerIteration: number = 100;
     public static defaultAalInstanceSelectionThreshold: number = 0.95;

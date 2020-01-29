@@ -5,6 +5,8 @@
 
 // tslint:disable-next-line: no-var-requires
 const parseFile = require("@microsoft/bf-lu").parser.parseFile;
+// tslint:disable-next-line: no-var-requires
+const constructMdFromLUIS = require("@microsoft/bf-lu").refresh.constructMdFromLUIS;
 
 import { Data } from "./Data";
 
@@ -13,6 +15,51 @@ import { NgramSubwordFeaturizer } from "../model/language_understanding/featuriz
 import { Utility } from "../utility/Utility";
 
 export class LuData extends Data {
+
+    public static async createLuDataFromSamplingExistingLuDataUtterances(
+        existingLuData: LuData,
+        samplingIndexArray: number[],
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<LuData> {
+        // -------------------------------------------------------------------
+        const luData: LuData =
+            await LuData.createLuData(
+                existingLuData.getContent(),
+                existingLuData.getFeaturizer(),
+                toResetFeaturizerLabelFeatureMaps);
+        // -------------------------------------------------------------------
+        const luLuisJsonStructure: any =
+            luData.getLuLuisJsonStructure();
+        const utterancesArray: any[] =
+            luData.retrieveLuUtterances(luLuisJsonStructure);
+        const lengthUtterancesArray: number =
+            utterancesArray.length;
+        luLuisJsonStructure.utterances = [];
+        for (const index of samplingIndexArray) {
+            if ((index < 0) || (index > lengthUtterancesArray)) {
+                Utility.debuggingThrow(`(index|${index}|<0)||(index|${index}|>lengthUtterancesArray|${lengthUtterancesArray}|)`);
+            }
+            luLuisJsonStructure.utterances.push(utterancesArray[index]);
+        }
+        // -------------------------------------------------------------------
+        luData.luUtterances = luData.retrieveLuUtterances(luLuisJsonStructure);
+        // -------------------------------------------------------------------
+        luData.intentInstanceIndexMapArray =
+            luData.collectIntents(luData.luUtterances);
+        luData.entityTypeInstanceIndexMapArray =
+            luData.collectEntityTypes(luData.luUtterances);
+        luData.intentsUtterances.intents = luData.luUtterances.map(
+            (entry: any) => entry.intent as string);
+        luData.intentsUtterances.utterances = luData.luUtterances.map(
+            (entry: any) => entry.text as string);
+        // -------------------------------------------------------------------
+        if (toResetFeaturizerLabelFeatureMaps) {
+            luData.resetFeaturizerLabelFeatureMaps();
+        }
+        // -------------------------------------------------------------------
+        luData.featurizeIntentsUtterances();
+        // -------------------------------------------------------------------
+        return luData;
+    }
 
     public static async createLuDataFromFilteringExistingLuDataUtterances(
         existingLuData: LuData,
@@ -25,16 +72,16 @@ export class LuData extends Data {
                 existingLuData.getFeaturizer(),
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
-        const luJsonStructure: any =
-            luData.getLuJsonStructure();
+        const luLuisJsonStructure: any =
+            luData.getLuLuisJsonStructure();
         const utterancesArray: any[] =
-            luData.retrieveLuUtterances(luJsonStructure);
-        luJsonStructure.utterances = utterancesArray.filter(
+            luData.retrieveLuUtterances(luLuisJsonStructure);
+        luLuisJsonStructure.utterances = utterancesArray.filter(
             (value: any, index: number, array: any[]) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
-        luData.luUtterances = luData.retrieveLuUtterances(luJsonStructure);
+        luData.luUtterances = luData.retrieveLuUtterances(luLuisJsonStructure);
         // -------------------------------------------------------------------
         luData.intentInstanceIndexMapArray =
             luData.collectIntents(luData.luUtterances);
@@ -66,10 +113,8 @@ export class LuData extends Data {
         // -------------------------------------------------------------------
         luData.luObject =
             await parseFile(content);
-        luData.luJsonStructure =
-            luData.luObject.LUISJsonStructure;
         // -------------------------------------------------------------------
-        luData.luUtterances = luData.retrieveLuUtterances(luData.getLuJsonStructure());
+        luData.luUtterances = luData.retrieveLuUtterances(luData.getLuLuisJsonStructure());
         // -------------------------------------------------------------------
         luData.intentInstanceIndexMapArray =
             luData.collectIntents(luData.luUtterances);
@@ -90,22 +135,59 @@ export class LuData extends Data {
     }
 
     protected luObject: any = null;
-    protected luJsonStructure: any = null;
 
     protected constructor(
         featurizer: NgramSubwordFeaturizer) {
         super(featurizer);
     }
 
-    public retrieveLuUtterances(luJsonStructure: any): any[] {
-        return (luJsonStructure.utterances as any[]);
+    public async createDataFromSamplingExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        samplingIndexArray: number[],
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        return await LuData.createLuDataFromSamplingExistingLuDataUtterances(
+            existingData as LuData,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
+            samplingIndexArray,
+            toResetFeaturizerLabelFeatureMaps);
+    }
+
+    public async createDataFromFilteringExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        filteringIndexSet: Set<number>,
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        return LuData.createLuDataFromFilteringExistingLuDataUtterances(
+            existingData as LuData,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
+            filteringIndexSet,
+            toResetFeaturizerLabelFeatureMaps);
+    }
+
+    public retrieveLuUtterances(luLuisJsonStructure: any): any[] { // ---- NOTE: a shallow copy
+        return (luLuisJsonStructure.utterances as any[]);
     }
 
     public getLuObject(): any {
         return this.luObject;
     }
-    public getLuJsonStructure(): any {
-        return this.luJsonStructure;
+    public getLuLuisJsonStructure(): any {
+        return this.luObject.LUISJsonStructure;
+    }
+    public getLuQnaJsonStructure(): any {
+        return this.luObject.qnaJsonStructure;
+    }
+    public getLuQnaAlterationsJsonStructure(): any {
+        return this.luObject.qnaAlterations;
     }
 
     public dumpLuObject(
@@ -119,26 +201,22 @@ export class LuData extends Data {
                 replacer,
                 space));
     }
-    public dumpLuJsonStructure(
+    public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
         Utility.dumpFile(
             filename,
             JSON.stringify(
-                this.getLuJsonStructure(),
+                this.getLuLuisJsonStructure(),
                 replacer,
                 space));
     }
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ---- public dumpLuUtterances(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     filename: string,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     replacer?: (this: any, key: string, value: any,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     space?: string | number): void {
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     Utility.dumpFile(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----         filename,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----         JSON.stringify(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             this.getLuUtterances(),
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             replacer,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             space));
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ---- }
+    public dumpLuLuisJsonStructureInLuFormat(
+        filename: string): void {
+        Utility.dumpFile(
+            filename,
+            constructMdFromLUIS(
+                this.getLuLuisJsonStructure()));
+    }
 }

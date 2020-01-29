@@ -26,9 +26,9 @@ export async function exampleFunctionData(): Promise<void> {
         },
     );
     parser.addArgument(
-        ["-o", "--outputFilename"],
+        ["-o", "--outputFilenamePrefix"],
         {
-            help: "output file",
+            help: "output file name prefix",
             required: false,
         },
     );
@@ -48,23 +48,27 @@ export async function exampleFunctionData(): Promise<void> {
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
-    // console.dir(args);
+    // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
+    // -----------------------------------------------------------------------
     const filename: string = args.filename;
-    let outputFilename: string = args.outputFilename;
-    if (outputFilename == null) {
-        outputFilename = filename + ".json";
+    let outputFilenamePrefix: string = args.outputFilenamePrefix;
+    if (outputFilenamePrefix == null) {
+        outputFilenamePrefix = filename;
     }
     Utility.debuggingLog(
         `filename=${filename}`);
     Utility.debuggingLog(
-        `outputFilename=${outputFilename}`);
+        `outputFilenamePrefix=${outputFilenamePrefix}`);
     const luContent: string = Utility.loadFile(filename);
     const luData: LuData = await LuData.createLuData(
         luContent,
         new NgramSubwordFeaturizer(),
         true);
-    luData.dumpLuJsonStructure(outputFilename, undefined, 4);
-    // -----------------------------------------------------------------------
+    luData.dumpLuLuisJsonStructureInLuFormat(
+        outputFilenamePrefix + ".lu");
+    luData.dumpLuLuisJsonStructure(
+        outputFilenamePrefix + ".luis", undefined, 4);
+// -----------------------------------------------------------------------
 }
 
 if (require.main === module) {

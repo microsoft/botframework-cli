@@ -11,6 +11,84 @@ import { Utility } from "../utility/Utility";
 
 export class EntityAnnotatedCorpusData extends Data {
 
+    public static createEntityAnnotatedCorpusDataFromSamplingExistingEntityAnnotatedCorpusDataUtterances(
+        existingEntityAnnotatedCorpusData: EntityAnnotatedCorpusData,
+        linesToSkip: number,
+        samplingIndexArray: number[],
+        toResetFeaturizerLabelFeatureMaps: boolean): EntityAnnotatedCorpusData {
+        // -------------------------------------------------------------------
+        const entityAnnotatedCorpusData: EntityAnnotatedCorpusData =
+            EntityAnnotatedCorpusData.createEntityAnnotatedCorpusData(
+                existingEntityAnnotatedCorpusData.getContent(),
+                existingEntityAnnotatedCorpusData.getFeaturizer(),
+                linesToSkip,
+                toResetFeaturizerLabelFeatureMaps);
+        // -------------------------------------------------------------------
+        const luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> = entityAnnotatedCorpusData.luUtterances;
+        const lengthUtterancesArray: number =
+            luUtterances.length;
+        entityAnnotatedCorpusData.luUtterances = [];
+        for (const index of samplingIndexArray) {
+            if ((index < 0) || (index > lengthUtterancesArray)) {
+                Utility.debuggingThrow(`(index|${index}|<0)||(index|${index}|>lengthUtterancesArray|${lengthUtterancesArray}|)`);
+            }
+            entityAnnotatedCorpusData.luUtterances.push(luUtterances[index]);
+        }
+        // -------------------------------------------------------------------
+        entityAnnotatedCorpusData.intentInstanceIndexMapArray =
+            entityAnnotatedCorpusData.collectIntents(entityAnnotatedCorpusData.luUtterances);
+        entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
+            entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
+        entityAnnotatedCorpusData.intentsUtterances.intents = entityAnnotatedCorpusData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.intent as string);
+        entityAnnotatedCorpusData.intentsUtterances.utterances = entityAnnotatedCorpusData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.text as string);
+        // -------------------------------------------------------------------
+        if (toResetFeaturizerLabelFeatureMaps) {
+            entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
+        }
+        // -------------------------------------------------------------------
+        entityAnnotatedCorpusData.featurizeIntentsUtterances();
+        // -------------------------------------------------------------------
+        return entityAnnotatedCorpusData;
+    }
+
     public static createEntityAnnotatedCorpusDataFromFilteringExistingEntityAnnotatedCorpusDataUtterances(
         existingEntityAnnotatedCorpusData: EntityAnnotatedCorpusData,
         linesToSkip: number,
@@ -24,24 +102,82 @@ export class EntityAnnotatedCorpusData extends Data {
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
-        const utterancesArray: any[] = entityAnnotatedCorpusData.retrieveEntityAnnotatedCorpusUtterances(
-            entityAnnotatedCorpusData.content);
-        entityAnnotatedCorpusData.luUtterances = utterancesArray.filter(
-            (value: any, index: number, array: any[]) => {
+        const luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> = entityAnnotatedCorpusData.luUtterances;
+        entityAnnotatedCorpusData.luUtterances = luUtterances.filter(
+            (value: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string },
+             index: number,
+             array: Array<{
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }>) => {
                 return (filteringIndexSet.has(index));
             });
-        // -------------------------------------------------------------------
-        // entityAnnotatedCorpusData.luUtterances =
-        //     entityAnnotatedCorpusData.retrieveEntityAnnotatedCorpusUtterances(entityAnnotatedCorpusData.content);
         // -------------------------------------------------------------------
         entityAnnotatedCorpusData.intentInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectIntents(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.intentsUtterances.intents = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: any) => entry.intent as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.intent as string);
         entityAnnotatedCorpusData.intentsUtterances.utterances = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: any) => entry.text as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.text as string);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
@@ -73,9 +209,33 @@ export class EntityAnnotatedCorpusData extends Data {
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.intentsUtterances.intents = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: any) => entry.intent as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.intent as string);
         entityAnnotatedCorpusData.intentsUtterances.utterances = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: any) => entry.text as string);
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string }) => entry.text as string);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
@@ -86,9 +246,6 @@ export class EntityAnnotatedCorpusData extends Data {
         return entityAnnotatedCorpusData;
     }
 
-    // protected luObject: any = null;
-    // protected luJsonStructure: any = null;
-
     protected linesToSkip: number = 0;
 
     protected constructor(
@@ -98,12 +255,58 @@ export class EntityAnnotatedCorpusData extends Data {
         this.linesToSkip = linesToSkip;
     }
 
-    public retrieveEntityAnnotatedCorpusUtterances(
+    public async createDataFromSamplingExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        samplingIndexArray: number[],
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        // tslint:disable-next-line: max-line-length
+        return EntityAnnotatedCorpusData.createEntityAnnotatedCorpusDataFromSamplingExistingEntityAnnotatedCorpusDataUtterances(
+            existingData as EntityAnnotatedCorpusData,
+            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- labelColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
+            linesToSkip,
+            samplingIndexArray,
+            toResetFeaturizerLabelFeatureMaps);
+    }
+
+    public async createDataFromFilteringExistingDataUtterances(
+        existingData: Data,
+        labelColumnIndex: number,
+        textColumnIndex: number,
+        linesToSkip: number,
+        filteringIndexSet: Set<number>,
+        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        // tslint:disable-next-line: max-line-length
+        return EntityAnnotatedCorpusData.createEntityAnnotatedCorpusDataFromFilteringExistingEntityAnnotatedCorpusDataUtterances(
+            existingData as EntityAnnotatedCorpusData,
+            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- labelColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
+            linesToSkip,
+            filteringIndexSet,
+            toResetFeaturizerLabelFeatureMaps);
+    }
+
+    public retrieveEntityAnnotatedCorpusUtterances( // ---- NOTE the return is newly allocated, unlike the one of LuData
         content: string,
         includePartOfSpeechTagTagAsEntities: boolean = true,
         utteranceReconstructionDelimiter: string = " ",
         defaultEntityTag: string = "O",
-        useIdForIntent: boolean = true): any[] {
+        useIdForIntent: boolean = true): Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> {
         const entityAnnotatedCorpusTypes: {
             "ids": string[],
             "wordArrays": string[][],
@@ -116,7 +319,19 @@ export class EntityAnnotatedCorpusData extends Data {
                 "\n",                  // ---- rowDelimiter: string = "\n",
                 -1,                    // ---- lineIndexToEnd: number = -1
             );
-        const entityAnnotatedCorpusUtterances: any[] =
+        const entityAnnotatedCorpusUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string }> =
             Utility.entityAnnotatedCorpusTypesToEntityAnnotatedCorpusUtterances(
                 entityAnnotatedCorpusTypes,
                 includePartOfSpeechTagTagAsEntities,
@@ -127,10 +342,16 @@ export class EntityAnnotatedCorpusData extends Data {
     }
 
     public getLuObject(): any {
-        return null; // return this.luObject;
+        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusData file.
     }
-    public getLuJsonStructure(): any {
-        return null; // this.luJsonStructure;
+    public getLuLuisJsonStructure(): any {
+        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusData file.
+    }
+    public getLuQnaJsonStructure(): any {
+        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusData file.
+    }
+    public getLuQnaAlterationsJsonStructure(): any {
+        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusData file.
     }
 
     public getLinesToSkip(): number {
@@ -141,33 +362,38 @@ export class EntityAnnotatedCorpusData extends Data {
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
-        // Utility.dumpFile(
-        //     filename,
-        //     JSON.stringify(
-        //         this.getLuObject(),
-        //         replacer,
-        //         space));
+        // ==== NOTE-TODO ==== a EntityAnnotatedCorpusData source does not have a LU LUIS structure,
+        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
+        // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusData content!
+        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
+        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
+        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
+        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuObject(),
+        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
+        // ---- NOTE-TODO-PLACEHOLDER ----         space));
     }
-    public dumpLuJsonStructure(
+    public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): void {
-        // Utility.dumpFile(
-        //     filename,
-        //     JSON.stringify(
-        //         this.getLuJsonStructure(),
-        //         replacer,
-        //         space));
+        // ==== NOTE-TODO ==== a EntityAnnotatedCorpusData source does not have a LU LUIS structure,
+        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
+        // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusData content!
+        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
+        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
+        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
+        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure(),
+        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
+        // ---- NOTE-TODO-PLACEHOLDER ----         space));
     }
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ---- public dumpLuUtterances(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     filename: string,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     replacer?: (this: any, key: string, value: any) => any,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     space?: string | number): void {
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----     Utility.dumpFile(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----         filename,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----         JSON.stringify(
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             this.getLuUtterances(),
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             replacer,
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ----             space));
-    // ---- NOTE-FOR-REFERENCE-DEFINED-IN-PARENT ---- }
+    public dumpLuLuisJsonStructureInLuFormat(
+        filename: string): void {
+        // ==== NOTE-TODO ==== a EntityAnnotatedCorpusData source does not have a LU LUIS structure,
+        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
+        // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusData content!
+        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
+        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
+        // ---- NOTE-TODO-PLACEHOLDER ----     constructMdFromLUIS(
+        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure()));
+    }
 }

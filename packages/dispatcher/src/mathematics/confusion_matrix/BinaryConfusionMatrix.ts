@@ -6,36 +6,38 @@
 import { MathematicsHelper } from "../mathematics_helper/MathematicsHelper";
 
 // tslint:disable: max-line-length
-export class BinaryConfusionMatrixMetrics {
+export class BinaryConfusionMatrix {
     //
-    // Initialize an BinaryConfusionMatrixMetrics object.
+    // Initialize an BinaryConfusionMatrix object.
     //
-    protected total: number;
-    protected cell11: number;
-    protected row1: number;
-    protected column1: number;
-    protected throwIfNotProper: boolean;
-    protected row2: number;
-    protected column2: number;
-    protected cell12: number;
-    protected cell21: number;
-    protected cell22: number;
-    protected expectedCell11: number;
-    protected expectedCell12: number;
-    protected expectedCell21: number;
-    protected expectedCell22: number;
-    protected isProper: boolean;
-    protected ratioCell11: number;
-    protected ratioRow1: number;
-    protected ratioColumn1: number;
-    protected ratioRow2: number;
-    protected ratioColumn2: number;
-    protected ratioCell12: number;
-    protected ratioCell21: number;
-    protected ratioCell22: number;
+    protected total: number = 0;
+    protected cell11: number = 0;
+    protected row1: number = 0;
+    protected column1: number = 0;
+
+    protected throwIfNotProper: boolean = true;
 
     protected potentialRow1: number;
     protected potentialRow2: number;
+
+    protected row2: number = 0;
+    protected column2: number = 0;
+    protected cell12: number = 0;
+    protected cell21: number = 0;
+    protected cell22: number = 0;
+    protected expectedCell11: number = 0;
+    protected expectedCell12: number = 0;
+    protected expectedCell21: number = 0;
+    protected expectedCell22: number = 0;
+    protected isProper: boolean = false;
+    protected ratioCell11: number = 0;
+    protected ratioRow1: number = 0;
+    protected ratioColumn1: number = 0;
+    protected ratioRow2: number = 0;
+    protected ratioColumn2: number = 0;
+    protected ratioCell12: number = 0;
+    protected ratioCell21: number = 0;
+    protected ratioCell22: number = 0;
 
     constructor(
         total: number,
@@ -45,45 +47,74 @@ export class BinaryConfusionMatrixMetrics {
         potentialRow1: number = 0,
         potentialRow2: number = 0,
         throwIfNotProper: boolean = true) {
-            //
-            // A binary confusion matrix can be represented as a 2X2 table with
-            // cells defined below:
-            //
-            //                            || Predicted Positive | Predicted Negative |
-            // ----------------------------------------------------------------------------------
-            // ----------------------------------------------------------------------------------
-            //     Ground - True Positive || True Positive      | False Nagative     | Ground - True Positive
-            // ----------------------------------------------------------------------------------
-            //     Ground - True Negative || False Positive     | True Nagative      | Ground - True Negative
-            // ----------------------------------------------------------------------------------
-            //                            || Predicted Positive | Predicted Negative | Total
-            //
-            this.total = total;
-            this.cell11 = cell11;
-            this.row1 = row1;
-            this.column1 = column1;
-            this.throwIfNotProper = throwIfNotProper;
-            this.row2 = this.total - this.row1;
-            this.column2 = this.total - this.column1;
-            this.cell12 = this.row1 - this.cell11;
-            this.cell21 = this.column1 - this.cell11;
-            this.cell22 = this.total - this.cell11 - this.cell12 - this.cell21;
-            this.expectedCell11 = MathematicsHelper.safeDivide(this.row1 * this.column1, this.total);
-            this.expectedCell12 = MathematicsHelper.safeDivide(this.row1 * this.column2, this.total);
-            this.expectedCell21 = MathematicsHelper.safeDivide(this.row2 * this.column1, this.total);
-            this.expectedCell22 = MathematicsHelper.safeDivide(this.row2 * this.column2, this.total);
-            this.isProper = this.validate(this.throwIfNotProper);
-            this.ratioCell11 = MathematicsHelper.safeDivide(this.cell11, this.total);
-            this.ratioRow1 = MathematicsHelper.safeDivide(this.row1, this.total);
-            this.ratioColumn1 = MathematicsHelper.safeDivide(this.column1, this.total);
-            this.ratioRow2 = MathematicsHelper.safeDivide(this.row2, this.total);
-            this.ratioColumn2 = MathematicsHelper.safeDivide(this.column2, this.total);
-            this.ratioCell12 = MathematicsHelper.safeDivide(this.cell12, this.total);
-            this.ratioCell21 = MathematicsHelper.safeDivide(this.cell21, this.total);
-            this.ratioCell22 = MathematicsHelper.safeDivide(this.cell22, this.total);
-            this.potentialRow1 = potentialRow1;
-            this.potentialRow2 = potentialRow2;
+        //
+        // A binary confusion matrix can be represented as a 2X2 table with
+        // cells defined below:
+        //
+        //                            || Predicted Positive | Predicted Negative |
+        // ----------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------
+        //     Ground - True Positive || True Positive      | False Nagative     | Ground - True Positive
+        // ----------------------------------------------------------------------------------
+        //     Ground - True Negative || False Positive     | True Nagative      | Ground - True Negative
+        // ----------------------------------------------------------------------------------
+        //                            || Predicted Positive | Predicted Negative | Total
+        //
+        this.total = total;
+        this.cell11 = cell11;
+        this.row1 = row1;
+        this.column1 = column1;
+        this.throwIfNotProper = throwIfNotProper;
+        this.potentialRow1 = potentialRow1;
+        this.potentialRow2 = potentialRow2;
+        this.calculateDerivedCells();
+    }
+
+    public clone(): BinaryConfusionMatrix {
+        return new BinaryConfusionMatrix(
+            this.getTotal(),
+            this.getCell11(),
+            this.getRow1(),
+            this.getColumn1(),
+            this.getPotentialRow1(),
+            this.getPotentialRow2(),
+            this.getThrowIfNotProper());
+    }
+
+    public moveFromPredictedNegativeToPositive(
+        groundTruthIsPositive: boolean,
+        createNewBinaryConfusionMatrix: boolean = true,
+        value: number = 1): BinaryConfusionMatrix {
+        const binaryConfusionMatrix: BinaryConfusionMatrix =
+            createNewBinaryConfusionMatrix ? this.clone() : this;
+        if (groundTruthIsPositive) {
+            binaryConfusionMatrix.cell11 += value;
         }
+        binaryConfusionMatrix.column1 += value;
+        binaryConfusionMatrix.calculateDerivedCells();
+        return binaryConfusionMatrix;
+    }
+
+    public calculateDerivedCells(): void {
+        this.row2 = this.total - this.row1;
+        this.column2 = this.total - this.column1;
+        this.cell12 = this.row1 - this.cell11;
+        this.cell21 = this.column1 - this.cell11;
+        this.cell22 = this.total - this.cell11 - this.cell12 - this.cell21;
+        this.expectedCell11 = MathematicsHelper.safeDivide(this.row1 * this.column1, this.total);
+        this.expectedCell12 = MathematicsHelper.safeDivide(this.row1 * this.column2, this.total);
+        this.expectedCell21 = MathematicsHelper.safeDivide(this.row2 * this.column1, this.total);
+        this.expectedCell22 = MathematicsHelper.safeDivide(this.row2 * this.column2, this.total);
+        this.isProper = this.validate(this.throwIfNotProper);
+        this.ratioCell11 = MathematicsHelper.safeDivide(this.cell11, this.total);
+        this.ratioRow1 = MathematicsHelper.safeDivide(this.row1, this.total);
+        this.ratioColumn1 = MathematicsHelper.safeDivide(this.column1, this.total);
+        this.ratioRow2 = MathematicsHelper.safeDivide(this.row2, this.total);
+        this.ratioColumn2 = MathematicsHelper.safeDivide(this.column2, this.total);
+        this.ratioCell12 = MathematicsHelper.safeDivide(this.cell12, this.total);
+        this.ratioCell21 = MathematicsHelper.safeDivide(this.cell21, this.total);
+        this.ratioCell22 = MathematicsHelper.safeDivide(this.cell22, this.total);
+    }
 
     public getTotal(): number {
         //
@@ -109,6 +140,24 @@ export class BinaryConfusionMatrixMetrics {
         //
         return this.column1;
     }
+
+    public getThrowIfNotProper(): boolean {
+        return this.throwIfNotProper;
+    }
+
+    public getPotentialRow1(): number {
+        //
+        // getPotentialRow1().
+        //
+        return this.potentialRow1;
+    }
+    public getPotentialRow2(): number {
+        //
+        // getPotentialRow2().
+        //
+        return this.potentialRow2;
+    }
+
     public getRow2(): number {
         //
         // getRow2().
@@ -216,19 +265,6 @@ export class BinaryConfusionMatrixMetrics {
         // getRatioCell22().
         //
         return this.ratioCell22;
-    }
-
-    public getPotentialRow1(): number {
-        //
-        // getPotentialRow1().
-        //
-        return this.potentialRow1;
-    }
-    public getPotentialRow2(): number {
-        //
-        // getPotentialRow2().
-        //
-        return this.potentialRow2;
     }
 
     public validate(throwIfNotProper: boolean = true) {
@@ -749,8 +785,8 @@ export class BinaryConfusionMatrixMetrics {
         return MathematicsHelper.safeDivide(this.getPositiveLikelihoodRatio(), this.getNegativeLikelihoodRatio());
     }
 
-    public getFMeasure(beta: number = 1): number {
-        const beta2: number = beta * beta;
+    public getFMeasure(fMeasureBeta: number = 1): number {
+        const beta2: number = fMeasureBeta * fMeasureBeta;
         const precision: number = this.getPrecision();
         const recall: number = this.getRecall();
         return MathematicsHelper.safeDivide(((1 + beta2) * (precision * recall)), ((beta2 * precision) + recall));
@@ -764,8 +800,8 @@ export class BinaryConfusionMatrixMetrics {
     public getF05Measure(): number { // ---- emphasize precision more than recall
         return this.getFMeasure(0.5);
     }
-    public getEffectivenessMeasure(alpha: number = 0.5): number {
-        const beta: number = Math.sqrt((1 / alpha) - 1);
+    public getEffectivenessMeasure(effectivenessMeasureAlpha: number = 0.5): number {
+        const beta: number = Math.sqrt((1 / effectivenessMeasureAlpha) - 1);
         return (1 - this.getFMeasure(beta));
     }
     public getEffectivenessMeasure05(): number { // ---- NOTE: equivalent to F1
@@ -1066,7 +1102,7 @@ export class BinaryConfusionMatrixMetrics {
             this.getInverseDocumentFrequencyRaw();
         return MathematicsHelper.safeLog(1 + inverseDocumentFrequencyRaw);
     }
-    public getInverseDocumentFrequencyMax(explicitMaxPositives: number): number {
+    public getInverseDocumentFrequencyMax(explicitMaxPositives: number = -1): number {
         if (explicitMaxPositives <= 0) {
             return this.getInverseDocumentFrequency();
         }
@@ -1107,5 +1143,429 @@ export class BinaryConfusionMatrixMetrics {
         }
         const numerator: number = this.getTruePositives();
         return MathematicsHelper.safeLog(MathematicsHelper.safeDivide(numerator, denominator));
+    }
+
+    public getMetrics(
+        explicitTotal: number = -1,
+        explicitTotalPositives: number = -1,
+        explicitTotalNegatives: number = -1,
+        fMeasureBeta: number = 1,
+        effectivenessMeasureAlpha: number = 0.5,
+        rejectRate: number = -1,
+        alpha: number = 1,
+        beta: number = 1,
+        A: number = 1,
+        B: number = 1,
+        explicitMaxPositives: number = -1): { [id: string]: number; } {
+        const metrics: { [id: string]: number; } = {};
+        const metricNames: string[] =
+            this.getMetricNames();
+        const metricValues: number[] =
+            this.getMetricValues(
+                explicitTotal,
+                explicitTotalPositives,
+                explicitTotalNegatives,
+                fMeasureBeta,
+                effectivenessMeasureAlpha,
+                rejectRate,
+                alpha,
+                beta,
+                A,
+                B,
+                explicitMaxPositives);
+        for (let i = 0; i < metricNames.length; i++) {
+            metrics[metricNames[i]] = metricValues[i];
+        }
+        return metrics;
+    }
+    public getMetricNames(): string[] {
+        const metricNames: string[] = [
+            "Total",
+            "Cell11",
+            "Row1",
+            "Column1",
+            "PotentialRow1",
+            "PotentialRow2",
+            "Row2",
+            "Column2",
+            "Cell12",
+            "Cell21",
+            "Cell22",
+            "ExpectedCell11",
+            "ExpectedCell12",
+            "ExpectedCell21",
+            "ExpectedCell22",
+            "RatioCell11",
+            "RatioRow1",
+            "RatioColumn1",
+            "RatioRow2",
+            "RatioColumn2",
+            "RatioCell12",
+            "RatioCell21",
+            "RatioCell22",
+            "Positives",
+            "Negatives",
+            "PositiveRatio",
+            "NegativeRatio",
+            "PredictedPositives",
+            "PredictedNegatives",
+            "PredictedPositiveRatio",
+            "PredictedNegativeRatio",
+            "TruePositives",
+            "TruePositiveRatio",
+            "TrueNegatives",
+            "TrueNegativeRatio",
+            "FalsePositives",
+            "FalsePositiveRatio",
+            "FalseNegatives",
+            "FalseNegativeRatio",
+            "PositiveNegativeRatio",
+            "NegativePositiveRatio",
+            "PotentialPositives",
+            "PotentialNegatives",
+            "Precision",
+            "Recall",
+            "F1Score",
+            "Support",
+            "Hits",
+            "CorrectRejections",
+            "FalseAlarms",
+            "Misses",
+            "TypeOneErrors",
+            "TypeTwoErrors",
+            "TruePositiveRate",
+            "TrueNegativeRate",
+            "PositivePredictiveValue",
+            "NegativePredictiveValue",
+            "FalsePositiveRate",
+            "FalseDiscoveryRate",
+            "FalseNegativeRate",
+            "TruePositiveOverTotalRate",
+            "TrueNegativeOverTotalRate",
+            "FalsePositiveOverTotalRate",
+            "FalseNegativeOverTotalRate",
+            "TruePositiveOverExplicitTotalRate",
+            "TrueNegativeOverExplicitTotalRate",
+            "FalsePositiveOverExplicitTotalRate",
+            "FalseNegativeOverExplicitTotalRate",
+            "ConditionPositiveRate",
+            "ConditionNegativeRate",
+            "PredictedPositiveRate",
+            "PredictedNegativeRate",
+            "ConditionPositiveCaughtRate",
+            "ConditionPositiveMissedRate",
+            "ConditionNegativeCaughtRate",
+            "ConditionNegativeMissedRate",
+            "ConditionPositiveDecidedRate",
+            "ConditionNegativeDecidedRate",
+            "ConditionPositiveUndecidedRate",
+            "ConditionNegativeUndecidedRate",
+            "PredictedPositiveDecidedRate",
+            "PredictedNegativeDecidedRate",
+            "TotalDecidedRate",
+            "TotalUnDecidedRate",
+            "ConditionPositivesUndecided",
+            "ConditionNegativesUndecided",
+            "TotalUnDecided",
+            "HitRate",
+            // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- "Recall",
+            "ProbabilityOfDetection",
+            "Sensitivity",
+            "Specificity",
+            // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- "Precision",
+            "FallOut",
+            "ProbabilityOfFalseAlarm",
+            "MissRate",
+            "Accuracy",
+            // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- "F1Score",
+            "GMeasure",
+            "MatthewsCorrelationCoefficient",
+            "Informedness",
+            "BookmakerInformedness",
+            "Markedness",
+            "FalseOmissionRate",
+            "Prevalence",
+            "TruePositiveRateOverFalsePositiveRate",
+            "PositiveLikelihoodRatio",
+            "FalseNegativeRateOverTrueNegativeRate",
+            "NegativeLikelihoodRatio",
+            "DiagnosticOddsRatio",
+            "FMeasure",
+            "F1Measure",
+            "F2Measure",
+            "F05Measure",
+            "EffectivenessMeasure",
+            "EffectivenessMeasure05",
+            "EffectivenessMeasure02",
+            "EffectivenessMeasure08",
+            "Risk",
+            "RiskPredictedNegative",
+            "Odds",
+            "OddsRatio",
+            "RelativeRisk",
+            "WeightOfEvidence",
+            "PositiveNegativePotentialRatio",
+            "ChargeBackRate",
+            "FraudRate",
+            "RejectRate",
+            "PE",
+            "PETruePositiveExtreme",
+            "PEFalsePositiveExtreme",
+            "PEFalseNegativeExtreme",
+            "PETrueNegativeExtreme",
+            "PEPerfect",
+            "PEWorst",
+            "PEAlwaysReject",
+            "PEAlwaysApprove",
+            "PERandomBaseline",
+            "PEGenericRandomBaseline",
+            "OPE",
+            "OPETruePositiveExtreme",
+            "OPEFalsePositiveExtreme",
+            "OPEFalseNegativeExtreme",
+            "OPETrueNegativeExtreme",
+            "OPEPerfect",
+            "OPEWorst",
+            "OPEAlwaysReject",
+            "OPEAlwaysApprove",
+            "OPERandomBaseline",
+            "OPEGenericRandomBaseline",
+            "OPEsharp",
+            "OPEsharpRandomBaseline",
+            "OPEsharpGenericRandomBaseline",
+            "NetPE",
+            "NetOPE",
+            "NetOPEsharp",
+            "GenericNetPE",
+            "GenericNetOPE",
+            "GenericNetOPEsharp",
+            "dOPE",
+            "OPEPrime",
+            "OLR",
+            "OGR",
+            "InverseDocumentFrequencyRaw",
+            "InverseDocumentFrequency",
+            "InverseDocumentFrequencyUnary",
+            "InverseDocumentFrequencySmooth",
+            "InverseDocumentFrequencyMax",
+            "InverseDocumentFrequencyProbabilistic",
+            "JaccardCoefficient",
+            "SimpleMatchingCoefficient",
+            "JaccardDenominatorMinCoefficient",
+            "JaccardDenominatorMaxCoefficient",
+            "explicitTotal",
+            "explicitTotalPositives",
+            "explicitTotalNegatives",
+            "fMeasureBeta",
+            "effectivenessMeasureAlpha",
+            "rejectRate",
+            "alpha",
+            "beta",
+            "A",
+            "B",
+            "explicitMaxPositives",
+        ];
+
+        return metricNames;
+    }
+    public getMetricValues(
+        explicitTotal: number = -1,
+        explicitTotalPositives: number = -1,
+        explicitTotalNegatives: number = -1,
+        fMeasureBeta: number = 1,
+        effectivenessMeasureAlpha: number = 0.5,
+        rejectRate: number = -1,
+        alpha: number = 1,
+        beta: number = 1,
+        A: number = 1,
+        B: number = 1,
+        explicitMaxPositives: number = -1): number[] {
+        const metrics: number[] = [
+            this.getTotal(),
+            this.getCell11(),
+            this.getRow1(),
+            this.getColumn1(),
+            this.getPotentialRow1(),
+            this.getPotentialRow2(),
+            this.getRow2(),
+            this.getColumn2(),
+            this.getCell12(),
+            this.getCell21(),
+            this.getCell22(),
+            this.getExpectedCell11(),
+            this.getExpectedCell12(),
+            this.getExpectedCell21(),
+            this.getExpectedCell22(),
+            this.getRatioCell11(),
+            this.getRatioRow1(),
+            this.getRatioColumn1(),
+            this.getRatioRow2(),
+            this.getRatioColumn2(),
+            this.getRatioCell12(),
+            this.getRatioCell21(),
+            this.getRatioCell22(),
+            this.getPositives(),
+            this.getNegatives(),
+            this.getPositiveRatio(),
+            this.getNegativeRatio(),
+            this.getPredictedPositives(),
+            this.getPredictedNegatives(),
+            this.getPredictedPositiveRatio(),
+            this.getPredictedNegativeRatio(),
+            this.getTruePositives(),
+            this.getTruePositiveRatio(),
+            this.getTrueNegatives(),
+            this.getTrueNegativeRatio(),
+            this.getFalsePositives(),
+            this.getFalsePositiveRatio(),
+            this.getFalseNegatives(),
+            this.getFalseNegativeRatio(),
+            this.getPositiveNegativeRatio(),
+            this.getNegativePositiveRatio(),
+            this.getPotentialPositives(),
+            this.getPotentialNegatives(),
+            this.getPrecision(),
+            this.getRecall(),
+            this.getF1Score(),
+            this.getSupport(),
+            this.getHits(),
+            this.getCorrectRejections(),
+            this.getFalseAlarms(),
+            this.getMisses(),
+            this.getTypeOneErrors(),
+            this.getTypeTwoErrors(),
+            this.getTruePositiveRate(),
+            this.getTrueNegativeRate(),
+            this.getPositivePredictiveValue(),
+            this.getNegativePredictiveValue(),
+            this.getFalsePositiveRate(),
+            this.getFalseDiscoveryRate(),
+            this.getFalseNegativeRate(),
+            this.getTruePositiveOverTotalRate(),
+            this.getTrueNegativeOverTotalRate(),
+            this.getFalsePositiveOverTotalRate(),
+            this.getFalseNegativeOverTotalRate(),
+            this.getTruePositiveOverExplicitTotalRate(explicitTotal),
+            this.getTrueNegativeOverExplicitTotalRate(explicitTotal),
+            this.getFalsePositiveOverExplicitTotalRate(explicitTotal),
+            this.getFalseNegativeOverExplicitTotalRate(explicitTotal),
+            this.getConditionPositiveRate(),
+            this.getConditionNegativeRate(),
+            this.getPredictedPositiveRate(),
+            this.getPredictedNegativeRate(),
+            this.getConditionPositiveCaughtRate(explicitTotalPositives),
+            this.getConditionPositiveMissedRate(explicitTotalPositives),
+            this.getConditionNegativeCaughtRate(explicitTotalNegatives),
+            this.getConditionNegativeMissedRate(explicitTotalNegatives),
+            this.getConditionPositiveDecidedRate(explicitTotalPositives),
+            this.getConditionNegativeDecidedRate(explicitTotalNegatives),
+            this.getConditionPositiveUndecidedRate(explicitTotalPositives),
+            this.getConditionNegativeUndecidedRate(explicitTotalNegatives),
+            this.getPredictedPositiveDecidedRate(explicitTotal),
+            this.getPredictedNegativeDecidedRate(explicitTotal),
+            this.getTotalDecidedRate(explicitTotal),
+            this.getTotalUnDecidedRate(explicitTotal),
+            this.getConditionPositivesUndecided(explicitTotalPositives),
+            this.getConditionNegativesUndecided(explicitTotalNegatives),
+            this.getTotalUnDecided(explicitTotal),
+            this.getHitRate(),
+            // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- this.getRecall(),
+            this.getProbabilityOfDetection(),
+            this.getSensitivity(),
+            this.getSpecificity(),
+            // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- this.getPrecision(),
+            this.getFallOut(),
+            this.getProbabilityOfFalseAlarm(),
+            this.getMissRate(),
+            this.getAccuracy(),
+            // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- this.getF1Score(),
+            this.getGMeasure(),
+            this.getMatthewsCorrelationCoefficient(),
+            this.getInformedness(),
+            this.getBookmakerInformedness(),
+            this.getMarkedness(),
+            this.getFalseOmissionRate(),
+            this.getPrevalence(),
+            this.getTruePositiveRateOverFalsePositiveRate(),
+            this.getPositiveLikelihoodRatio(),
+            this.getFalseNegativeRateOverTrueNegativeRate(),
+            this.getNegativeLikelihoodRatio(),
+            this.getDiagnosticOddsRatio(),
+            this.getFMeasure(fMeasureBeta),
+            this.getF1Measure(),
+            this.getF2Measure(),
+            this.getF05Measure(),
+            this.getEffectivenessMeasure(effectivenessMeasureAlpha),
+            this.getEffectivenessMeasure05(),
+            this.getEffectivenessMeasure02(),
+            this.getEffectivenessMeasure08(),
+            this.getRisk(),
+            this.getRiskPredictedNegative(),
+            this.getOdds(),
+            this.getOddsRatio(),
+            this.getRelativeRisk(),
+            this.getWeightOfEvidence(),
+            this.getPositiveNegativePotentialRatio(),
+            this.getChargeBackRate(),
+            this.getFraudRate(),
+            this.getRejectRate(),
+            this.getPE(),
+            this.getPETruePositiveExtreme(),
+            this.getPEFalsePositiveExtreme(),
+            this.getPEFalseNegativeExtreme(),
+            this.getPETrueNegativeExtreme(),
+            this.getPEPerfect(),
+            this.getPEWorst(),
+            this.getPEAlwaysReject(),
+            this.getPEAlwaysApprove(),
+            this.getPERandomBaseline(),
+            this.getPEGenericRandomBaseline(rejectRate),
+            this.getOPE(),
+            this.getOPETruePositiveExtreme(),
+            this.getOPEFalsePositiveExtreme(),
+            this.getOPEFalseNegativeExtreme(),
+            this.getOPETrueNegativeExtreme(),
+            this.getOPEPerfect(),
+            this.getOPEWorst(),
+            this.getOPEAlwaysReject(),
+            this.getOPEAlwaysApprove(),
+            this.getOPERandomBaseline(),
+            this.getOPEGenericRandomBaseline(rejectRate),
+            this.getOPEsharp(alpha, beta, A, B),
+            this.getOPEsharpRandomBaseline(alpha, beta, A, B),
+            this.getOPEsharpGenericRandomBaseline(rejectRate, alpha, beta, A, B),
+            this.getNetPE(),
+            this.getNetOPE(),
+            this.getNetOPEsharp(alpha, beta, A, B),
+            this.getGenericNetPE(rejectRate),
+            this.getGenericNetOPE(rejectRate),
+            this.getGenericNetOPEsharp(rejectRate, alpha, beta, A, B),
+            this.getdOPE(),
+            this.getOPEPrime(),
+            this.getOLR(),
+            this.getOGR(),
+            this.getInverseDocumentFrequencyRaw(),
+            this.getInverseDocumentFrequency(),
+            this.getInverseDocumentFrequencyUnary(),
+            this.getInverseDocumentFrequencySmooth(),
+            this.getInverseDocumentFrequencyMax(explicitMaxPositives),
+            this.getInverseDocumentFrequencyProbabilistic(),
+            this.getJaccardCoefficient(),
+            this.getSimpleMatchingCoefficient(),
+            this.getJaccardDenominatorMinCoefficient(),
+            this.getJaccardDenominatorMaxCoefficient(),
+            explicitTotal,
+            explicitTotalPositives,
+            explicitTotalNegatives,
+            fMeasureBeta,
+            effectivenessMeasureAlpha,
+            rejectRate,
+            alpha,
+            beta,
+            A,
+            B,
+            explicitMaxPositives,
+        ];
+        return metrics;
     }
 }

@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import assert = require("assert");
-
 import { ArgumentParser } from "argparse";
+
+import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
 
 import { Utility } from "./Utility";
 
@@ -13,26 +13,26 @@ export function exampleFunctionUtilityWithFilename(
     filename: string,
     labelColumnIndex: number,
     textColumnIndex: number,
-    linesToSkips: number): void {
+    linesToSkip: number): void {
     // -----------------------------------------------------------------------
     Utility.debuggingLog(`filename=${filename}`);
     Utility.debuggingLog(`labelColumnIndex=${labelColumnIndex}`);
     Utility.debuggingLog(`textColumnIndex=${textColumnIndex}`);
-    Utility.debuggingLog(`linesToSkips=${linesToSkips}`);
+    Utility.debuggingLog(`linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
     const labels: string[] = [ "label0", "label1", "label2" ];
     const labelMap: { [id: string]: number; } = {};
     labelMap.label0 = 0;
     labelMap.label1 = 1;
     labelMap.label2 = 2;
-    Utility.validateStringMap(labels, labelMap);
+    DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(labels, labelMap);
     // -----------------------------------------------------------------------
     const intentsUtterances: { "intents": string[], "utterances": string[] } =
         Utility.loadLabelTextColumnarFile(
             filename,         // ---- filename: string,
             labelColumnIndex, // ---- labelColumnIndex: number = 0,
             textColumnIndex,  // ---- textColumnIndex: number = 1,
-            linesToSkips,     // ---- lineIndexToStart: number = 0,
+            linesToSkip,     // ---- lineIndexToStart: number = 0,
             "\t",             // ---- columnDelimiter: string = "\t",
             "\n",             // ---- rowDelimiter: string = "\n",
             "utf8",           // ---- encoding: string = "utf8",
@@ -53,14 +53,14 @@ export function exampleFunctionUtility(): void {
     // -----------------------------------------------------------------------
     const parser = new ArgumentParser({
         addHelp: true,
-        description: "app_utility",
+        description: "AppUtility",
         version: "0.0.1",
     });
     parser.addArgument(
         ["-f", "--filename"],
         {
             help: "a file",
-            // required: true,
+            required: true,
         },
     );
     parser.addArgument(
@@ -87,7 +87,7 @@ export function exampleFunctionUtility(): void {
         },
     );
     parser.addArgument(
-        ["-s", "--linesToSkip"],
+        ["-ls", "--linesToSkip"],
         {
             defaultValue: 0,
             help: "number of lines to skip from the input file",
@@ -103,16 +103,17 @@ export function exampleFunctionUtility(): void {
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
-    // console.dir(args);
+    // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
+    // -----------------------------------------------------------------------
     const filename: string = args.filename;
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
-    const linesToSkips: number = +args.linesToSkip;
+    const linesToSkip: number = +args.linesToSkip;
     exampleFunctionUtilityWithFilename(
         filename,
         labelColumnIndex,
         textColumnIndex,
-        linesToSkips);
+        linesToSkip);
     // -----------------------------------------------------------------------
 }
 

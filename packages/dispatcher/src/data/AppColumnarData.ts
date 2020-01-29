@@ -34,13 +34,13 @@ export function exampleFunctionData(): ColumnarData {
             required: false,
         },
     );
-    // parser.addArgument(
-    //     ["-o", "--outputFilename"],
-    //     {
-    //         help: "output file",
-    //         required: false,
-    //     },
-    // );
+    // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
+    // ---- NOTE-TODO-PLACEHOLDER ----     ["-o", "--outputFilenamePrefix"],
+    // ---- NOTE-TODO-PLACEHOLDER ----     {
+    // ---- NOTE-TODO-PLACEHOLDER ----         help: "output file name prefix",
+    // ---- NOTE-TODO-PLACEHOLDER ----         required: false,
+    // ---- NOTE-TODO-PLACEHOLDER ----     },
+    // ---- NOTE-TODO-PLACEHOLDER ---- );
     parser.addArgument(
         ["-li", "--labelColumnIndex"],
         {
@@ -58,7 +58,7 @@ export function exampleFunctionData(): ColumnarData {
         },
     );
     parser.addArgument(
-        ["-s", "--linesToSkip"],
+        ["-ls", "--linesToSkip"],
         {
             defaultValue: 0,
             help: "number of lines to skip from the input file",
@@ -74,28 +74,32 @@ export function exampleFunctionData(): ColumnarData {
         `unknownArgs=${JSON.stringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
-    // console.dir(args);
+    // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
+    // -----------------------------------------------------------------------
     const filename: string = args.filename;
-    // let outputFilename: string = args.outputFilename;
-    // if (outputFilename == null) {
-    //     outputFilename = filename + ".json";
-    // }
+    // ---- NOTE-TODO-PLACEHOLDER ---- let outputFilenamePrefix: string = args.outputFilenamePrefix;
+    // ---- NOTE-TODO-PLACEHOLDER ---- if (outputFilenamePrefix == null) {
+    // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix = filename;
+    // ---- NOTE-TODO-PLACEHOLDER ---- }
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
-    const linesToSkips: number = +args.linesToSkip;
+    const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `filename=${filename}`);
-    // Utility.debuggingLog(
-    //     `outputFilename=${outputFilename}`);
+    // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
+    // ---- NOTE-TODO-PLACEHOLDER ----     `outputFilenamePrefix=${outputFilenamePrefix}`);
     const columnarContent: string = Utility.loadFile(filename);
     const columnarData: ColumnarData = ColumnarData.createColumnarData(
         columnarContent,
         new NgramSubwordFeaturizer(),
         labelColumnIndex,
         textColumnIndex,
-        linesToSkips,
+        linesToSkip,
         true);
-    // columnarData.dumpLuJsonStructure(outputFilename);
+    // ---- NOTE-TODO-PLACEHOLDER ---- columnarData.dumpLuLuisJsonStructureInLuFormat(
+    // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix + ".lu");
+    // ---- NOTE-TODO-PLACEHOLDER ---- columnarData.dumpLuLuisJsonStructure(
+    // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix + ".luis", undefined, 4);
     return columnarData;
     // -----------------------------------------------------------------------
 }

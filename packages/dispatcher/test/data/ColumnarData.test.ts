@@ -635,8 +635,20 @@ export function exampleFunctionDataWithColumnarContent(
         textColumnIndex,
         linesToSkip,
         true);
-    const luUtterances: any[] = columnarData.getLuUtterances();
-    // Utility.debuggingLog(`luJsonStructure=` +
+    const luUtterances: Array<{
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string }> = columnarData.getLuUtterances();
+    // Utility.debuggingLog(`luUtterances=` +
     //     `${Utility.getJsonStringified(luUtterances)}`);
     assert.ok(luUtterances, `luUtterances=${luUtterances}`);
     const intentInstanceIndexMapArray: Map<string, number[]> = columnarData.getIntentInstanceIndexMapArray();
