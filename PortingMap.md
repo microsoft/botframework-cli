@@ -24,9 +24,10 @@ Commands invoked by BF [New Command] as follows:
 | luis/qnamaker:convert, luis/qnamaker:translate | LuDown      | 10/30/19   | GA     |
 | luis:generate                                  | LuisGen     | 10/30/19   | GA     |
 | luis:application, endpoints, train, version    | LUIS (api)  | 12/18/19   | GA     |
-| lg                                             | MSLG        | ETA 5/1/20 | TBD    |
-| dialog                                         | N/A         | ETA 5/1/20 | TBD    |
-| \<In Design>                                   | Dispatch    | ETA 5/1/20 | TBD    |
+| luis:build                                     | N/A         | ETA 3/16/20 | TBD    |
+| lg                                             | MSLG        | ETA 5/19/20 | TBD    |
+| dialog                                         | N/A         | ETA 5/19/20 | TBD    |
+| \<In Design>                                   | Dispatch    | ETA 5/19/20 | TBD    |
 
 ## Deprecation Schedule
 
