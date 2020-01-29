@@ -57,8 +57,8 @@ describe('luis:application:rename', () => {
   .stdout()
   .stderr()
   .command(['luis:application:rename', '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--name', 'sample-app', '--description', 'test description'])
-  .it('fails to create an app and displays an error message if the endpoint is null', ctx => {
-    expect(ctx.stderr).to.contain('Access denied due to invalid subscription key or wrong API endpoint.')
+  .it('fails to create an app and displays an error message if the endpoint is undefined', ctx => {
+    expect(ctx.stderr).to.contain('Failed to rename app: TypeError: Only absolute URLs are supported\n')
   })
 
 })
