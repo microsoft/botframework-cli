@@ -22,9 +22,6 @@ class QnABuilder{
             qnaList.push(index.qnaJsonStructure)
         })
         result.collate(qnaList)
-        result.resolveMultiTurnReferences()
-        result.resolveQnAIds()
-        result.removeEmptyContextNodes()
         return result
     }
 }

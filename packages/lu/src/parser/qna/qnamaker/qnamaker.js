@@ -46,88 +46,90 @@ class QnAMaker {
            this.name = blob.name ? blob.name : this.name
 
         };    
-    }
-
-    resolveMultiTurnReferences() {
-        let qnaPairsWithMultiTurn = this.qnaList.filter(item => item.context.prompts.length !== 0);
-        // find the largetst auto-id
-        let largestAutoIdxList = this.qnaList.filter(item => item.id !== 0 && item.id.startsWith('*auto*'));
-        let largestAutoIdx = 0;
-        if (largestAutoIdxList.length !== 0) {
-            let idx = largestAutoIdxList.reduce(function(max, obj) {
-                return parseInt(obj.id.replace('*auto*', '')) > parseInt(max.id.replace('*auto*', '')) ? obj : max;
-            });
-            largestAutoIdx = parseInt(idx.id.replace('*auto*', '')) + 1;
-        }
-
-        (qnaPairsWithMultiTurn || []).forEach(item => {
-            // find matching QnA id for each follow up prompt
-            (item.context.prompts || []).forEach(prompt => {
-                // find by ID first
-                let qnaId = this.qnaList.find(x => x.id === prompt.qnaId);
-                if (!qnaId) {
-                    // find by question match
-                    qnaId = this.qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace('-', ' ')))
-                }
-                if (qnaId === undefined) {
-                    throw (new exception(retCode.INVALID_INPUT, `[ERROR]: Cannot find follow up prompt definition for '- [${prompt.displayText}](#?${prompt.qnaId}).`));
-                } else {
-                    if (qnaId.id === 0) {
-                        qnaId.id = `*auto*${largestAutoIdx++}`;
-                    }
-                    prompt.qnaId = qnaId.id;
-                    prompt.qna = qnaId;
-                    prompt.qna.context.isContextOnly = prompt.isContextOnly ? prompt.isContextOnly : prompt.qna.context.isContextOnly;
-                    qnaId.context.isContextOnly = qnaId.context.isContextOnly ? qnaId.context.contextOnly : prompt.qna.context.isContextOnly;
-                }
-            })
-        })
-    }
-
-    resolveQnAIds() {
-        let qnaIdsAssigned = [];
-        let baseQnaId = 1;
-        // find all explicitly assigned IDs
-        let qnasWithId = this.qnaList.filter(pair => (pair.id !== 0) && (!pair.id.includes('*auto*')));
-        qnasWithId.forEach(qna => {
-            let qnaId = 0;
-            // this is the only enforcement for IDs being numbers.
-            if (isNaN(qna.id)) throw (new exception(retCode.INVALID_INPUT, `[Error]: Explicitly assigned QnA Ids must be numbers. '${qna.id}' is not a number.`));
-            qnaId = parseInt(qna.id);
-            if(!qnaIdsAssigned.includes(qnaId)) qnaIdsAssigned.push(qnaId)
-        });
-        
-        // finalize IDs for everything that was auto id'd
-        let qnasWithAutoId = this.qnaList.filter(pair => (pair.id !== 0) && (pair.id.includes('*auto*')));
-        qnasWithAutoId.forEach(qna => {
-            // get a new ID
-            let newIdToAssign = getNewId(qnaIdsAssigned, baseQnaId);
-            baseQnaId++;
-            qnaIdsAssigned.push(newIdToAssign);
-            // find all child references to this id and update.
-            this.qnaList.forEach(pair => {
-                if (pair.context.prompts.length === 0) return;
-                pair.context.prompts.forEach(prompt => {
-                    if (prompt.qnaId === qna.id) {
-                        prompt.qnaId = newIdToAssign;
-                    }
-                })
-            });
-            qna.id = newIdToAssign;
-        })
-    }
-
-    removeEmptyContextNodes() {
-        this.qnaList.forEach(item => {
-            if (item.context.prompts.length === 0) delete item.context;
-        })
+        resolveMultiTurnReferences(this.qnaList);
+        resolveQnAIds(this.qnaList);
     }
 }
 
 module.exports = QnAMaker
 
+
+const resolveMultiTurnReferences = function(qnaList) {
+    let qnaPairsWithMultiTurn = qnaList.filter(item => item.context.prompts.length !== 0);
+    // find the largetst auto-id
+    let largestAutoIdxList = qnaList.filter(item => item.id !== 0 && item.id.toString().startsWith('*auto*'));
+    let largestAutoIdx = 0;
+    if (largestAutoIdxList.length !== 0) {
+        let idx = largestAutoIdxList.reduce(function(max, obj) {
+            return parseInt(obj.id.replace('*auto*', '')) > parseInt(max.id.replace('*auto*', '')) ? obj : max;
+        });
+        largestAutoIdx = parseInt(idx.id.replace('*auto*', '')) + 1;
+    }
+
+    (qnaPairsWithMultiTurn || []).forEach(item => {
+        // find matching QnA id for each follow up prompt
+        (item.context.prompts || []).forEach(prompt => {
+            // find by ID first
+            let qnaId = qnaList.find(x => x.id === prompt.qnaId || x.id === parseInt(prompt.qnaId));
+            if (!qnaId) {
+                // find by question match
+                qnaId = qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace('-', ' ')))
+            }
+            if (qnaId === undefined) {
+                throw (new exception(retCode.INVALID_INPUT, `[ERROR]: Cannot find follow up prompt definition for '- [${prompt.displayText}](#?${prompt.qnaId}).`));
+            } else {
+                if (qnaId.id === 0) {
+                    qnaId.id = `*auto*${largestAutoIdx++}`;
+                }
+                prompt.qnaId = qnaId.id;
+                prompt.qna = null;
+                qnaId.context.isContextOnly = !qnaId.context.isContextOnly ? prompt.contextOnly : true;
+                delete prompt.contextOnly;
+            }
+        })
+    })
+}
+
+const resolveQnAIds = function(qnaList) {
+    let qnaIdsAssigned = [];
+    let baseQnaId = 1;
+    // find all explicitly assigned IDs
+    let qnasWithId = qnaList.filter(pair => (pair.id !== 0) && (!pair.id.toString().startsWith('*auto*')));
+    qnasWithId.forEach(qna => {
+        let qnaId = 0;
+        // this is the only enforcement for IDs being numbers.
+        if (isNaN(qna.id)) throw (new exception(retCode.INVALID_INPUT, `[Error]: Explicitly assigned QnA Ids must be numbers. '${qna.id}' is not a number.`));
+        qnaId = parseInt(qna.id);
+        if(!qnaIdsAssigned.includes(qnaId)) qnaIdsAssigned.push(qnaId)
+    });
+    
+    // finalize IDs for everything that was auto id'd
+    let qnasWithAutoId = qnaList.filter(pair => (pair.id !== 0) && isNaN(pair.id) && (pair.id.toString().startsWith('*auto*')));
+    qnasWithAutoId.forEach(qna => {
+        // get a new ID
+        let newIdToAssign = getNewId(qnaIdsAssigned, baseQnaId++);
+        // find all child references to this id and update.
+        qnaList.forEach(pair => {
+            if (pair.context.prompts.length === 0) return;
+            pair.context.prompts.forEach(prompt => {
+                if (prompt.qnaId === qna.id) {
+                    prompt.qnaId = newIdToAssign;
+                }
+            })
+        });
+        qna.id = newIdToAssign;
+    })
+
+    // finalize IDs for everyone else.
+    let qnasWithoutId = qnaList.filter(pair => pair.id === 0);
+    qnasWithoutId.forEach(qna => {
+        qna.id = getNewId(qnaIdsAssigned, baseQnaId++);
+    })
+}
+
 const getNewId = function(currentList, curId) {
     while (currentList.includes(curId)) curId++;
+    currentList.push(curId)
     return curId;
 }
 

@@ -1737,10 +1737,9 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
-            if (qna.assignedId) {
-                qna.Id = qna.assignedId;
-                delete qna.assignedId;
-            }
+            if (qna.Id) {
+                qna.Id = parseInt(qna.Id);
+            } 
             let questions = qna.Questions;
             // detect if any question is a reference
             (questions || []).forEach(question => {
