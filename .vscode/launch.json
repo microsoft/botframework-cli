@@ -7,12 +7,24 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "QnAmaker:convert",
+            "name": "LU to QnA",
             "program": "${workspaceFolder}/packages/lu/bin/run",
             "args":[
                 "qnamaker:convert",
                 "--in",
                 "/Users/vishwacsenakannan/Desktop/test.qna"
+            ],
+            "preLaunchTask": "tsc: build - packages/lu/tsconfig.json"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "QnA to LU",
+            "program": "${workspaceFolder}/packages/lu/bin/run",
+            "args":[
+                "qnamaker:convert",
+                "--in",
+                "/Users/vishwacsenakannan/Desktop/test.qna.json"
             ],
             "preLaunchTask": "tsc: build - packages/lu/tsconfig.json"
         },

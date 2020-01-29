@@ -1,6 +1,7 @@
 const NEWLINE = require('os').EOL;
 const exception = require('./../../utils/exception')
 const retCode = require('./../../utils/enums/CLI-errors')
+const QNA_GENERIC_SOURCE = "custom editorial";
 
 /**
  * Parses a QnAMaker object into Qna Content
@@ -26,15 +27,16 @@ const qnaToLuContent = function(qnaJSON){
     }
     
     root.forEach(function(qnaItem) {
-        fileContent += '> !# @qna.pair.source = ' + qnaItem.source + NEWLINE;
-        fileContent += '## ? ' + qnaItem.questions[0] + NEWLINE;
+        fileContent += `<a id = "${qnaItem.id}"></a>` + NEWLINE + NEWLINE;
+        fileContent += qnaItem.source !== QNA_GENERIC_SOURCE ? '> !# @qna.pair.source = ' + qnaItem.source + NEWLINE + NEWLINE : '';
+        fileContent += '## ?' + qnaItem.questions[0] + NEWLINE;
         qnaItem.questions.splice(0,1);
         qnaItem.questions.forEach(function(question) {
             fileContent += '- ' + question + NEWLINE;
         })
         fileContent += NEWLINE;
         if(qnaItem.metadata.length > 0) {
-            fileContent += NEWLINE + '**Filters:**' + NEWLINE;
+            fileContent += '**Filters:**' + NEWLINE;
             qnaItem.metadata.forEach(function(filter) {
                 fileContent += '- ' + filter.name + ' = ' + filter.value + NEWLINE;    
             });
@@ -42,7 +44,20 @@ const qnaToLuContent = function(qnaJSON){
         }
         fileContent += '```markdown' + NEWLINE;
         fileContent += qnaItem.answer + NEWLINE;
-        fileContent += '```' + NEWLINE + NEWLINE;
+        fileContent += '```' + NEWLINE;
+        if (qnaItem.context.prompts.length !== 0) {
+            fileContent += NEWLINE + '**Prompts:**' + NEWLINE;
+            qnaItem.context.prompts.forEach(function(prompt) {
+                fileContent += `- [${prompt.displayText}](#${prompt.qnaId})`;
+                // See if the linked prompt is context only and if so, add the decoration.
+                let promptQnA = root.find(item => item.id == prompt.qnaId);
+                if (promptQnA) {
+                    fileContent += promptQnA.isContextOnly === true ? ` \`context-only\`` : '';
+                }
+                fileContent += NEWLINE;
+            })
+        }
+        fileContent += NEWLINE;
     });
 
     return fileContent
