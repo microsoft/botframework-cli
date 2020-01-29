@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "phoneNumber",
+    "entity": "phonenumber",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -17,11 +17,11 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "@phonenumber"          
+            "value": "=@phonenumber"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @phoneNumber)}
+- @\{setPropertyMessage('@{property}', @phonenumber)}
