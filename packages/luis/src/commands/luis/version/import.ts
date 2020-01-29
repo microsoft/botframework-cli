@@ -46,8 +46,8 @@ export default class LuisVersionImport extends Command {
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
-      const newVersionId = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
-      this.log(`App version successfully imported as version ${newVersionId}.`)
+      const response = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
+      this.log(`App version successfully imported as version ${response.body}.`)
     } catch (err) {
       throw new CLIError(`Failed to import app version: ${err}`)
     }

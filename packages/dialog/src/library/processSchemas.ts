@@ -21,6 +21,7 @@ async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): P
             let schema = await getSchema(file, feedback)
             let id: string = schema.$id || ppath.basename(file)
             if (!map[id]) {
+                // First definition found wins
                 map[id] = schema
             }
         }
