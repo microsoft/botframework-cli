@@ -65,7 +65,7 @@ describe('qnamaker:convert', () => {
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-alterations.lu')}`])
   .it('qnamaker:convert Throws when an invalid QnA Maker alteration is specified in the input .lu file', async (ctx) => {
-    expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:1: syntax error: invalid input 'b' detected.")
+    expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:13: Invalid list entity line, did you miss '-' at line begin")
   })
 
   test

@@ -29,6 +29,8 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
     try {
         if (force || !await fs.pathExists(path)) {
             feedback(FeedbackType.info, `Generating ${path}`)
+            let dir = ppath.dirname(path)
+            await fs.ensureDir(dir)
             await fs.writeFile(path, val)
         } else {
             feedback(FeedbackType.info, `Skipping already existing ${path}`)
@@ -122,6 +124,8 @@ async function processLibraryTemplates(template: string, outPath: string, templa
     }
 }
 
+// Add entry to the .lg generation context and return it.  
+// This also ensures the file does not exist already.
 type FileRef = { name: string, fallbackName: string, fullName: string, relative: string }
 function addEntry(fullPath: string, outDir: string, tracker: any): FileRef | undefined {
     let ref: FileRef | undefined
@@ -179,7 +183,16 @@ async function processTemplate(
                                     filename = template.evaluateTemplate('filename', scope)
                                 }
                             }
+
+                            // See if generated file has been overridden in templates
+                            let existing = await findTemplate(filename, templateDirs, scope.locale)
+                            if (existing) {
+                                result = existing
+                            }
+
                             result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, scope, force, feedback)
+                            let dir = ppath.dirname(outPath)
+                            await fs.ensureDir(dir)
                             await fs.writeFile(outPath, result)
                             scope.templates[ppath.extname(outPath).substring(1)].push(ref)
                         } else {
@@ -215,7 +228,7 @@ async function processTemplates(
     }
 
     // Entities first--ok to ignore templates because they might be property specific
-    for (let entity of Object.keys(schema.entities())) {
+    for (let entity of Object.keys(schema.allEntities())) {
         let [entityName, role] = entity.split(':')
         scope.entity = entityName
         scope.role = role
@@ -267,7 +280,7 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
             if (inProperties) {
                 newPath += newPath === '' ? key : '.' + key;
             }
-            let newVal = expandSchema(val, { ...scope, property: newPath}, newPath, key === 'properties', missingIsError, feedback)
+            let newVal = expandSchema(val, { ...scope, property: newPath }, newPath, key === 'properties', missingIsError, feedback)
             newSchema[key] = newVal
         }
     } else if (typeof schema === 'string' && schema.startsWith('@{')) {
@@ -290,9 +303,21 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
     return newSchema
 }
 
+function expandStandard(dirs: string[]): string[] {
+    let expanded: string[] = []
+    for (let dir of dirs) {
+        if (dir === 'standard') {
+            dir = ppath.join(__dirname, '../../templates')
+        }
+        expanded.push(dir)
+    }
+    return expanded;
+}
+
 /**
  * Iterate through the locale templates and generate per property/locale files.
  * Each template file will map to <filename>_<property>.<ext>.
+ * @param schemaPath Path to JSON Schema to use for generation.
  * @param outDir Where to put generated files.
  * @param metaSchema Schema to use when generating .dialog files
  * @param allLocales Locales to generate.
@@ -315,8 +340,7 @@ export async function generate(
     }
 
     if (!metaSchema) {
-        // TODO: This should change to master once checked in
-        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/form/schemas/sdk.schema'
+        metaSchema = 'https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/sdk.schema'
     } else if (!metaSchema.startsWith('http')) {
         // Adjust relative to outDir
         metaSchema = ppath.relative(outDir, metaSchema)
@@ -327,7 +351,7 @@ export async function generate(
     }
 
     if (!templateDirs) {
-        templateDirs = [ppath.join(__dirname, '../../templates')]
+        templateDirs = ['standard']
     }
 
     let op = 'Regenerating'
@@ -340,6 +364,7 @@ export async function generate(
     feedback(FeedbackType.message, `Templates: ${JSON.stringify(templateDirs)} `)
     feedback(FeedbackType.message, `App.schema: ${metaSchema} `)
     try {
+        templateDirs = expandStandard(templateDirs)
         await fs.ensureDir(outDir)
         let schema = await processSchemas(schemaPath, templateDirs, feedback)
         schema.schema = expandSchema(schema.schema, {}, '', false, false, feedback)

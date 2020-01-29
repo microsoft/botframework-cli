@@ -108,6 +108,12 @@ LUFileParserVisitor.prototype.visitNormalIntentString = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserVisitor.prototype.visitErrorIntentString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#newEntitySection.
 LUFileParserVisitor.prototype.visitNewEntitySection = function(ctx) {
   return this.visitChildren(ctx);
@@ -240,6 +246,12 @@ LUFileParserVisitor.prototype.visitNormalItemString = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#errorItemString.
+LUFileParserVisitor.prototype.visitErrorItemString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#importSection.
 LUFileParserVisitor.prototype.visitImportSection = function(ctx) {
   return this.visitChildren(ctx);
@@ -288,6 +300,12 @@ LUFileParserVisitor.prototype.visitMoreQuestion = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#errorQuestionString.
+LUFileParserVisitor.prototype.visitErrorQuestionString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#qnaAnswerBody.
 LUFileParserVisitor.prototype.visitQnaAnswerBody = function(ctx) {
   return this.visitChildren(ctx);
@@ -302,6 +320,12 @@ LUFileParserVisitor.prototype.visitFilterSection = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#filterLine.
 LUFileParserVisitor.prototype.visitFilterLine = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#errorFilterLine.
+LUFileParserVisitor.prototype.visitErrorFilterLine = function(ctx) {
   return this.visitChildren(ctx);
 };
 

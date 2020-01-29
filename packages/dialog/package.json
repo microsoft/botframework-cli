@@ -9,7 +9,8 @@
   "files": [
     "/lib",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
+    "/oclif.manifest.json",
+    "/templates"
   ],
   "homepage": "https://github.com/microsoft/botframework-cli",
   "keywords": [

@@ -45,7 +45,7 @@
         },
         "role": {
             "title": "$role",
-            "description": "Defines the role played in the dialog schema [lg|expression|memoryPath|union()].",
+            "description": "Defines the role played in the dialog schema [lg|expression|union()].",
             "type": "string",
             "pattern": "^((lg)|(expression)|(memoryPath)|(union)|(union\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
         },
@@ -61,7 +61,7 @@
             "type": "string",
             "pattern": "^(([a-zA-Z][a-zA-Z0-9.]*)?(#[a-zA-Z][a-zA-Z0-9.]*)?)$"
         },
-        "type": {
+        "kind": {
             "title": "$kind",
             "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
             "type": "string",
@@ -292,7 +292,7 @@
             ]
         },
         "$kind": {
-            "$ref": "#/definitions/type"
+            "$ref": "#/definitions/kind"
         }
     },
     "default": true,

@@ -155,6 +155,15 @@ LUFileParserListener.prototype.exitNormalIntentString = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserListener.prototype.enterErrorIntentString = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserListener.prototype.exitErrorIntentString = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#newEntitySection.
 LUFileParserListener.prototype.enterNewEntitySection = function(ctx) {
 };
@@ -353,6 +362,15 @@ LUFileParserListener.prototype.exitNormalItemString = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#errorItemString.
+LUFileParserListener.prototype.enterErrorItemString = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#errorItemString.
+LUFileParserListener.prototype.exitErrorItemString = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#importSection.
 LUFileParserListener.prototype.enterImportSection = function(ctx) {
 };
@@ -425,6 +443,15 @@ LUFileParserListener.prototype.exitMoreQuestion = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#errorQuestionString.
+LUFileParserListener.prototype.enterErrorQuestionString = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#errorQuestionString.
+LUFileParserListener.prototype.exitErrorQuestionString = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#qnaAnswerBody.
 LUFileParserListener.prototype.enterQnaAnswerBody = function(ctx) {
 };
@@ -449,6 +476,15 @@ LUFileParserListener.prototype.enterFilterLine = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#filterLine.
 LUFileParserListener.prototype.exitFilterLine = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#errorFilterLine.
+LUFileParserListener.prototype.enterErrorFilterLine = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#errorFilterLine.
+LUFileParserListener.prototype.exitErrorFilterLine = function(ctx) {
 };
 
 

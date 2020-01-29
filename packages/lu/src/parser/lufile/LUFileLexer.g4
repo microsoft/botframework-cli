@@ -4,6 +4,34 @@ lexer grammar LUFileLexer;
   var ignoreWS = true;             // usually we ignore whitespace, but inside utterance, whitespace is significant
 }
 
+// fragments
+fragment A: 'a' | 'A';
+fragment B: 'b' | 'B';
+fragment C: 'c' | 'C';
+fragment D: 'd' | 'D';
+fragment E: 'e' | 'E';
+fragment F: 'f' | 'F';
+fragment G: 'g' | 'G';
+fragment H: 'h' | 'H';
+fragment I: 'i' | 'I';
+fragment J: 'j' | 'J';
+fragment K: 'k' | 'K';
+fragment L: 'l' | 'L';
+fragment M: 'm' | 'M';
+fragment N: 'n' | 'N';
+fragment O: 'o' | 'O';
+fragment P: 'p' | 'P';
+fragment Q: 'q' | 'Q';
+fragment R: 'r' | 'R';
+fragment S: 's' | 'S';
+fragment T: 't' | 'T';
+fragment U: 'u' | 'U';
+fragment V: 'v' | 'V';
+fragment W: 'w' | 'W';
+fragment X: 'x' | 'X';
+fragment Y: 'y' | 'Y';
+fragment Z: 'z' | 'Z';
+
 fragment LETTER: 'a'..'z' | 'A'..'Z';
 fragment NUMBER: '0'..'9';
 
@@ -58,11 +86,11 @@ IMPORT_PATH
   ;
 
 FILTER_MARK
-  : '**Filters:**'
+  : '**' F I L T E R S ':**'
   ;
 
 MULTI_LINE_TEXT
-  : '```markdown' .*? '```'
+  : '```' M A R K D O W N .*? '```'
   ;
 
 INVALID_TOKEN_DEFAULT_MODE
@@ -80,7 +108,7 @@ WS_IN_NEW_ENTITY
   ;
 
 NEWLINE_IN_NEW_ENTITY
-  : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
+  : '\r'? '\n' {this.ignoreWS = true;} -> skip, popMode
   ;
 
 COMMA
@@ -92,15 +120,15 @@ NEW_EQUAL
   ;
 
 HAS_ROLES_LABEL
-  : 'hasRole' 's'?
+  : H A S R O L E S?
   ;
 
 HAS_FEATURES_LABEL
-  : 'usesFeature' 's'?
+  : U S E S F E A T U R E S?
   ;
 
 NEW_ENTITY_TYPE_IDENTIFIER
-  : 'simple'|'list'|'regex'|'prebuilt'|'composite'|'ml'|'patternany'|'phraselist'|'intent'
+  : S I M P L E | L I S T | R E G E X | P R E B U I L T | C O M P O S I T E | M L | P A T T E R N A N Y | P H R A S E L I S T | I N T E N T
   ;
 
 NEW_ENTITY_IDENTIFIER
@@ -138,7 +166,7 @@ HASH_IN_NAME
   ;
   
 NEWLINE_IN_NAME
-  : '\r'? '\n' -> type(NEWLINE), popMode
+  : '\r'? '\n' -> skip, popMode
   ;
 
 IDENTIFIER
@@ -187,7 +215,7 @@ WS_IN_ENTITY
   ;
 
 NEWLINE_IN_ENTITY
-  : '\r'? '\n' {this.ignoreWS = true;} -> type(NEWLINE), popMode
+  : '\r'? '\n' {this.ignoreWS = true;} -> skip, popMode
   ;
 
 COMPOSITE_ENTITY
@@ -217,7 +245,7 @@ WS_IN_QNA
   ;
 
 NEWLINE_IN_QNA
-  : '\r'? '\n' {this.ignoreWS = true;} ->  type(NEWLINE), popMode
+  : '\r'? '\n' {this.ignoreWS = true;} ->  skip, popMode
   ;
 
 QNA_TEXT
