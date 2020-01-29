@@ -46,16 +46,16 @@ export default class LuisApplicationImport extends Command {
     if (name) options.appName = name
 
     try {
-      const newAppId = await client.apps.importMethod(JSON.parse(appJSON), options)
-      this.log(`App successfully imported with id ${newAppId}.`)
+      const response = await client.apps.importMethod(JSON.parse(appJSON), options)
+      this.log(`App successfully imported with id ${response.body}.`)
       if (save) {
         const config = {
-          appId: newAppId,
+          appId: response.body,
           endpoint,
           subscriptionKey
         }
-        const response = await this.saveImportedConfig(config, configDir)
-        if (response) this.log('Config settings saved')
+        const saveConfigResponse = await this.saveImportedConfig(config, configDir)
+        if (saveConfigResponse) this.log('Config settings saved')
       }
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)
