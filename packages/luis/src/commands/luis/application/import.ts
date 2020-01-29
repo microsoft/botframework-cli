@@ -20,7 +20,8 @@ export default class LuisApplicationImport extends Command {
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
     name: flags.string({description: 'LUIS application name (optional)'}),
-    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDOUT if not specified'})
+    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDOUT if not specified'}),
+    save: flags.boolean({description: 'Save configuration settings from imported app (appId, subscriptionKey & endpoint)'}),
   }
 
   async run() {
@@ -29,7 +30,7 @@ export default class LuisApplicationImport extends Command {
     const configDir = this.config.configDir
     const stdin = await this.readStdin()
 
-    let {endpoint, subscriptionKey, name, inVal} = await utils.processInputs(flags, flagLabels, configDir)
+    let {endpoint, subscriptionKey, name, inVal, save} = await utils.processInputs(flags, flagLabels, configDir)
 
     const requiredProps = {endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
@@ -47,9 +48,35 @@ export default class LuisApplicationImport extends Command {
     try {
       const newAppId = await client.apps.importMethod(JSON.parse(appJSON), options)
       this.log(`App successfully imported with id ${newAppId}.`)
+      if (save) {
+        const config = {
+          appId: newAppId,
+          endpoint,
+          subscriptionKey
+        }
+        const response = await this.saveImportedConfig(config, configDir)
+        if (response) this.log('Config settings saved')
+      }
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)
     }
+
+  }
+
+  async saveImportedConfig(configSettings: any, configDir: string) {
+    const configPrefix = 'luis__'
+    let userConfig = await utils.getUserConfig(configDir)
+    if (userConfig === null) {
+      await utils.createConfigFile(configDir)
+      userConfig = {}
+    }
+    // save config
+    const configLabels = Object.keys(configSettings)
+    configLabels.map(config => {
+      userConfig[`${configPrefix}${config}`] = configSettings[config]
+    })
+    await utils.writeUserConfig(userConfig, configDir)
+    return true
   }
 
 }
