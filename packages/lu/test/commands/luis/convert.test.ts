@@ -658,6 +658,30 @@ describe('luis:convert new entity format', () => {
   })
 })
 
+describe('luis:convert with pattern.any inherits information', () => {
+  before(async function(){
+    await fs.mkdirp(path.join(__dirname, './../../../results/'))
+  })
+
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/LUISAppWithPAInherits.lu')}`, '--out', './results/LUISAppWithPAInherits.lu.json'])
+  .it('luis:convert with pattern.any inherits information correctly produces a LUIS app', async () => {
+    expect(await compareLuFiles('./../../../results/LUISAppWithPAInherits.lu.json', './../../fixtures/verified/LUISAppWithPAInherits.lu.json')).to.be.true
+  })
+
+  test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/LUISAppWithPAInherits.json')}`, '--out', './results/root2_a.lu'])
+    .it('luis:convert successfully reconstructs a markdown file from a LUIS input file with pattern.any inherits information', async () => {
+      expect(await compareLuFiles('./../../../results/root2_a.lu', './../../fixtures/verified/LUISAppWithPAInherits.lu')).to.be.true
+    })
+})
+
 describe('luis:convert file creation', () => {
   test
   .stderr()

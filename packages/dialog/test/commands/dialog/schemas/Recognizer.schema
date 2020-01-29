@@ -3,7 +3,7 @@
     "$role": "union(IRecognizer)",
     "properties": {
         "req": {
-            "$role": "lg"
+            "$role": "expression"
         },
         "opt": {
             "type": "string"
@@ -11,7 +11,7 @@
         "complex": {
             "properties": {
                 "inside": {
-                    "$role":"lg"
+                    "$role":"expression"
                 }
             }
         }

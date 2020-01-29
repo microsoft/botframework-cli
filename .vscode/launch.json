@@ -115,15 +115,14 @@
             ],
             "args": [
                 "dialog:merge",
-                "libraries/**/*.schema",
+                "../libraries/**/*.schema",
                 "-o",
-                "${env:TEMP}/sdk.schema",
+                "sdk.schema",
                 "--verbose",
-                "-u",
-                "master"
+                "-u"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet/schemas"
         },
         {
             "type": "node",
