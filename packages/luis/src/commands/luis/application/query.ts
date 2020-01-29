@@ -70,7 +70,7 @@ export default class LuisApplicationQuery extends Command {
     }
 
     try {
-      const predictionData = await client.predictionOperations.getSlotPrediction(appId, slotName, predictionRequest, options)
+      const predictionData = await client.prediction.getSlotPrediction(appId, slotName, predictionRequest, options)
       this.log(`${JSON.stringify(predictionData, null, 2)}`)
     } catch (err) {
       throw new CLIError(`Failed to fetch prediction data: ${err}`)

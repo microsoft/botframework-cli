@@ -56,16 +56,16 @@ export default class LuisApplicationCreate extends Command {
     const applicationCreateObject = {name, culture, description, versionId, usageScenario, tokenizerVersion}
 
     try {
-      const newAppId = await client.apps.add(applicationCreateObject, options)
-      this.log(`App successfully created with id ${newAppId}.`)
+      const response = await client.apps.add(applicationCreateObject, options)
+      this.log(`App successfully created with id ${response.body}.`)
       if (save) {
         const config = {
-          appId: newAppId,
+          appId: response.body,
           endpoint,
           subscriptionKey
         }
-        const response = await this.saveImportedConfig(config, configDir)
-        if (response) this.log('Config settings saved')
+        const saveConfigResponse = await this.saveImportedConfig(config, configDir)
+        if (saveConfigResponse) this.log('Config settings saved')
       }
     } catch (err) {
       throw new CLIError(`Failed to create app: ${err}`)
