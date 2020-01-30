@@ -70,7 +70,6 @@ describe('QnA document', function() {
             luMerger.Build([new luObj(qnaContent, 'stdin')], false, undefined, findLuFiles)
                 .then(res => done(res))
                 .catch(err => {
-                    //console.log(JSON.stringify(err, null, 2));
                     assert(err.text.includes("line 7:18 - line 7:19"))
                     done()
                 })
@@ -88,7 +87,6 @@ describe('QnA document', function() {
             luMerger.Build([new luObj(qnaContent, 'stdin')], false, undefined, findLuFiles)
                 .then(res => done(res))
                 .catch(err => {
-                    //console.log(JSON.stringify(err, null, 2));
                     assert(err.text.includes("line 7:0 - line 8:12: Invalid QnA filter line"))
                     done()
                 })
