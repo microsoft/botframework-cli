@@ -25,6 +25,8 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
+const qnaContext = require('../qna/qnamaker/qnaContext');
+const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -736,7 +738,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
                     let parsedLinkUriInUtterance = helpers.parseLinkURI(utterance);
                     // examine and add these to filestoparse list.
-                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
 
                 if (utteranceAndEntities.entities.length > 0) {
@@ -1735,7 +1737,19 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
+            if (qna.Id) {
+                qna.Id = parseInt(qna.Id);
+            } 
             let questions = qna.Questions;
+            // detect if any question is a reference
+            (questions || []).forEach(question => {
+                // Ensure only links are detected and passed on to be parsed.
+                if (helpers.isUtteranceLinkRef(question || '')) {
+                    let parsedLinkUriInUtterance = helpers.parseLinkURI(question);
+                    // examine and add these to filestoparse list.
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
+                }
+            })
             let filterPairs = qna.FilterPairs;
             let metadata = [];
             if (filterPairs && filterPairs.length > 0) {
@@ -1743,7 +1757,14 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
             }
 
             let answer = qna.Answer;
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(0, answer.trim(), 'custom editorial', questions, metadata));
+            let context = new qnaContext();
+            if (qna.prompts) {
+                (qna.prompts || []).forEach((prompt, idx) => {
+                    let contextOnly = prompt.contextOnly ? true : false;
+                    context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
+                })
+            }
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.Id || 0, answer.trim(), qna.source, questions, metadata, context));
         }
     }
 }
