@@ -73,7 +73,7 @@ const resolveMultiTurnReferences = function(qnaList) {
             let qnaId = qnaList.find(x => x.id === prompt.qnaId || x.id === parseInt(prompt.qnaId));
             if (!qnaId) {
                 // find by question match
-                qnaId = qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace('-', ' ')))
+                qnaId = qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace(/-/g, ' ').trim()))
             }
             if (qnaId === undefined) {
                 throw (new exception(retCode.INVALID_INPUT, `[ERROR]: Cannot find follow up prompt definition for '- [${prompt.displayText}](#?${prompt.qnaId}).`));
@@ -123,7 +123,12 @@ const resolveQnAIds = function(qnaList) {
     // finalize IDs for everyone else.
     let qnasWithoutId = qnaList.filter(pair => pair.id === 0);
     qnasWithoutId.forEach(qna => {
-        qna.id = getNewId(qnaIdsAssigned, baseQnaId++);
+        if (qnasWithId.length !== 0 || qnasWithAutoId.length !== 0) {
+            qna.id = getNewId(qnaIdsAssigned, baseQnaId++);
+        } else {
+            // remove context for back compat.
+            delete qna.context;
+        }
     })
 }
 

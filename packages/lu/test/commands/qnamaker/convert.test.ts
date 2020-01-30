@@ -38,12 +38,12 @@ describe('qnamaker:convert', () => {
   .stdout()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnaDocuments.json')}`])
   .it('qnamaker:convert refresh command successfully reconstructs a markdown file from a QnA input file with qnaDocuments section', async (ctx) => {
-    expect(ctx.stdout).to.contain('> !# @qna.pair.source = custom editorial')
+    expect(ctx.stdout).to.contain('> # QnA pairs')
   })
 
   test
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', './results/qna.lu'])
-  .it('qnamaker:convert refresh command successfully reconstructs a markdown file from QnA input file', async () => {
+  .it('qnamaker:convert refresh command successfully reconstructs a markdown file from QnA input file1', async () => {
     expect(await compareLuFiles('./../../../results/qna.lu', './../../fixtures/verified/allGenQnA.lu')).to.be.true
   })
 

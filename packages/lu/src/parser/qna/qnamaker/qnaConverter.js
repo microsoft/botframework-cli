@@ -27,9 +27,9 @@ const qnaToLuContent = function(qnaJSON){
     }
     
     root.forEach(function(qnaItem) {
-        fileContent += `<a id = "${qnaItem.id}"></a>` + NEWLINE + NEWLINE;
-        fileContent += qnaItem.source !== QNA_GENERIC_SOURCE ? '> !# @qna.pair.source = ' + qnaItem.source + NEWLINE + NEWLINE : '';
-        fileContent += '## ?' + qnaItem.questions[0] + NEWLINE;
+        fileContent += qnaItem.id.toString() !== "0" ? `<a id = "${qnaItem.id}"></a>` + NEWLINE + NEWLINE : '';
+        fileContent += '> !# @qna.pair.source = ' + qnaItem.source + NEWLINE + NEWLINE;
+        fileContent += '## ? ' + qnaItem.questions[0] + NEWLINE;
         qnaItem.questions.splice(0,1);
         qnaItem.questions.forEach(function(question) {
             fileContent += '- ' + question + NEWLINE;
@@ -45,7 +45,7 @@ const qnaToLuContent = function(qnaJSON){
         fileContent += '```markdown' + NEWLINE;
         fileContent += qnaItem.answer + NEWLINE;
         fileContent += '```' + NEWLINE;
-        if (qnaItem.context.prompts.length !== 0) {
+        if (qnaItem.context && qnaItem.context.prompts && qnaItem.context.prompts.length !== 0) {
             fileContent += NEWLINE + '**Prompts:**' + NEWLINE;
             qnaItem.context.prompts.forEach(function(prompt) {
                 fileContent += `- [${prompt.displayText}](#${prompt.qnaId})`;
