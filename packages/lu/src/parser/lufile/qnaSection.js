@@ -51,32 +51,32 @@ class QnaSection {
         let promptDefinitions = [];
         let errors = [];
         let promptSection = parseTree.qnaDefinition().promptSection();
-        if (promptSection) {
-            if (promptSection.errorFilterLine() !== undefined) {
-                for (const errorFilterLineStr of promptSection.errorFilterLine()) {
-                    if (errorFilterLineStr.getText().trim() !== '') {
-                        errors.push(BuildDiagnostic({
-                        message: "Invalid QnA prompt line, expecting '-' prefix for each line.",
-                        context: errorFilterLineStr
-                    }))}
-                }
-            }
-            
-            for (const promptLine of promptSection.filterLine()) {
-                let filterLineText = promptLine.getText().trim();
-                filterLineText = filterLineText.substr(1).trim();
-                let promptConfigurationRegExp = new RegExp(/^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?.*?$/gmi);
-                let splitLine = promptConfigurationRegExp.exec(filterLineText);
-                if (!splitLine) {
+        if (!promptSection) {
+            return { promptDefinitions, errors };
+        }
+        if (promptSection.errorFilterLine() !== undefined) {
+            for (const errorFilterLineStr of promptSection.errorFilterLine()) {
+                if (errorFilterLineStr.getText().trim() !== '') {
                     errors.push(BuildDiagnostic({
-                        message: "Invalid QnA prompt definition. Unable to parse prompt. Please verify syntax as well as question link`.",
-                        context: filterLineText
-                    }))
-                }
-                promptDefinitions.push(splitLine.groups);
+                    message: "Invalid QnA prompt line, expecting '-' prefix for each line.",
+                    context: errorFilterLineStr
+                }))}
             }
-        } 
-    
+        }
+        
+        for (const promptLine of promptSection.filterLine()) {
+            let filterLineText = promptLine.getText().trim();
+            filterLineText = filterLineText.substr(1).trim();
+            let promptConfigurationRegExp = new RegExp(/^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?.*?$/gmi);
+            let splitLine = promptConfigurationRegExp.exec(filterLineText);
+            if (!splitLine) {
+                errors.push(BuildDiagnostic({
+                    message: "Invalid QnA prompt definition. Unable to parse prompt. Please verify syntax as well as question link`.",
+                    context: filterLineText
+                }))
+            }
+            promptDefinitions.push(splitLine.groups);
+        }
         return { promptDefinitions, errors};
     }
 
@@ -135,7 +135,7 @@ class QnaSection {
     ExtractAnswer(parseTree) {
         let multiLineAnswer = parseTree.qnaDefinition().qnaAnswerBody().multiLineAnswer().getText().trim();
         // trim first and last line
-        var answerRegexp = /^```(markdown)?\n?(?<answer>(.|\n)*)```$/gim;
+        let answerRegexp = /^```(markdown)?\n?(?<answer>(.|\n)*)```$/gim;
         let answer = answerRegexp.exec(multiLineAnswer);
         return answer.groups.answer !== undefined ? answer.groups.answer : '';
     }
