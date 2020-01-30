@@ -10,8 +10,6 @@ import { Tester } from "./Tester";
 // tslint:disable-next-line: max-line-length
 // import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
-// import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
-
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
 import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";

@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// import { MathematicsHelper } from "../mathematics_helper/MathematicsHelper";
-
 import { AbstractBaseSampler } from "./AbstractBaseSampler";
 
 import { Utility } from "../../utility/Utility";

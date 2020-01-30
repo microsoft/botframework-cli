@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// import { MathematicsHelper } from "../mathematics_helper/MathematicsHelper";
-
 import { TMapStringKeyGenericArray } from "../../data_structure/TMapStringKeyGenericArray";
 import { TMapStringKeyGenericValue } from "../../data_structure/TMapStringKeyGenericValue";
 

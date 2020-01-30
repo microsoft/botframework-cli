@@ -1047,6 +1047,16 @@ export class MathematicsHelper {
         return denseValueArray;
     }
 
+    public static tensor4dDenseAssignRandomTo(
+        denseValueArray0: number[][][][]): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            MathematicsHelper.tensor3dDenseAssignRandomTo(
+                denseValueArray0[row]);
+        }
+        return denseValueArray0;
+    }
+
     public static tensor4dDenseAssignConstantTo(
         denseValueArray0: number[][][][],
         constant: number): number[][][][] {
@@ -1221,6 +1231,17 @@ export class MathematicsHelper {
                 denseValueArray0[row],
                 denseValueArray1[row],
                 constant);
+        }
+        return denseValueArray0;
+    }
+
+    public static tensor3dDenseAssignRandomTo(
+        denseValueArray0: number[][][]): number[][][] {
+        const rows: number = denseValueArray0.length;
+        const columns: number = denseValueArray0[0].length;
+        for (let row: number = 0; row < rows; row++) {
+            MathematicsHelper.matrixDenseAssignRandomTo(
+                denseValueArray0[row]);
         }
         return denseValueArray0;
     }
@@ -1404,6 +1425,16 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
+    public static matrixDenseAssignRandomTo(
+        denseValueArray0: number[][]): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            MathematicsHelper.vectorDenseAssignRandomTo(
+                denseValueArray0[row]);
+        }
+        return denseValueArray0;
+    }
+
     public static matrixDenseAssignConstantTo(
         denseValueArray0: number[][],
         constant: number): number[][] {
@@ -1582,6 +1613,14 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
+    public static vectorDenseAssignRandomTo(
+        denseValueArray0: number[]): number[] {
+        for (let i: number = 0; i < denseValueArray0.length; i++) {
+            denseValueArray0[i] =  Utility.getRandomNumber();
+        }
+        return denseValueArray0;
+    }
+
     public static vectorDenseAssignConstantTo(
         denseValueArray0: number[],
         constant: number): number[] {
@@ -1708,6 +1747,15 @@ export class MathematicsHelper {
             denseValueArray0[i] /= (constant * denseValueArray1[i]);
         }
         return denseValueArray0;
+    }
+
+    public static vectorSparseAssignRandomTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[]): [number[], number[]] {
+        for (let i: number = 0; i < sparseValueArray0.length; i++) {
+            sparseValueArray0[i] = Utility.getRandomNumber();
+        }
+        return [sparseIndexArray0, sparseValueArray0];
     }
 
     public static vectorSparseAssignConstantTo(
@@ -1861,6 +1909,15 @@ export class MathematicsHelper {
             sparseValueArray0[i] /= (constant * sparseValueArray1[i]);
         }
         return [sparseIndexArray0, sparseValueArray0];
+    }
+
+    public static vectorSparseIndexDenseArrayAssignRandomTo(
+        sparseIndexArray0: number[],
+        denseValueArray0: number[]): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] = Utility.getRandomNumber();
+        }
+        return [sparseIndexArray0, denseValueArray0];
     }
 
     public static vectorSparseIndexDenseArrayAssignConstantTo(
@@ -2594,7 +2651,7 @@ export class MathematicsHelper {
         length: number): number[] {
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
-            vector[i] = Utility.rngNextXorshift128plusBigIntFloat();
+            vector[i] = Utility.getRandomNumber();
         }
         return vector;
     }
@@ -2603,7 +2660,7 @@ export class MathematicsHelper {
         scale: number = 1): number[] {
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
-            vector[i] = Utility.rngNextXorshift128plusBigIntFloat() *  scale;
+            vector[i] = Utility.getRandomNumber() *  scale;
         }
         return vector;
     }

@@ -8,8 +8,6 @@ import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictio
 
 import { Utility } from "../../../utility/Utility";
 
-// import { Utility } from "../../../utility/Utility";
-
 export abstract class AbstractBaseEvaluator {
 
     public generateEvaluationDataArraysReport(): IDictionaryStringIdGenericArrays<string> {

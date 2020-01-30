@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// import { MathematicsHelper } from "../mathematics_helper/MathematicsHelper";
-
 import { Utility } from "../../utility/Utility";
 
 export abstract class AbstractBaseSampler<T, TLabelMap, TInstances> {

@@ -555,7 +555,7 @@ export class Utility {
     }
     public static getRandomIntFromFloatLimit(limit: number): number {
         let randomInt: number = Math.floor(
-            Utility.rngNextXorshift128plusBigIntFloat() * limit);
+            Utility.getRandomNumber() * limit);
         if (randomInt >= limit) {
             randomInt = limit - Utility.epsilon;
         }
@@ -563,7 +563,7 @@ export class Utility {
     }
     public static getRandomIntFromIntLimit(limit: number): number {
         let randomInt: number = Math.floor(
-            Utility.rngNextXorshift128plusBigIntFloat() * Math.floor(limit));
+            Utility.getRandomNumber() * Math.floor(limit));
         if (randomInt >= limit) {
             randomInt = limit - 1;
         }

@@ -14,8 +14,6 @@ import { Predictor } from "./Predictor";
 
 import { SoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
-// import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
-
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
 import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";

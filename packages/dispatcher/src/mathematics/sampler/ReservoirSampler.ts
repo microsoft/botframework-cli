@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// import { MathematicsHelper } from "../mathematics_helper/MathematicsHelper";
-
 import { IDictionaryStringIdGenericArray } from "../../data_structure/IDictionaryStringIdGenericArray";
 import { IDictionaryStringIdGenericValue } from "../../data_structure/IDictionaryStringIdGenericValue";
 
