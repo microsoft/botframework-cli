@@ -135,7 +135,7 @@ class QnaSection {
     ExtractAnswer(parseTree) {
         let multiLineAnswer = parseTree.qnaDefinition().qnaAnswerBody().multiLineAnswer().getText().trim();
         // trim first and last line
-        let answerRegexp = /^```(markdown)?\n?(?<answer>(.|\n)*)```$/gim;
+        let answerRegexp = /^```(markdown)?\r*\n(?<answer>(.|\n|\r\n|\t| )*)\r?\n.*?```$/gim;
         let answer = answerRegexp.exec(multiLineAnswer);
         return answer.groups.answer !== undefined ? answer.groups.answer : '';
     }

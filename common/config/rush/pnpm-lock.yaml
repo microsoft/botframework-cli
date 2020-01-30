@@ -1,4 +1,8 @@
 dependencies:
+  '@azure/cognitiveservices-luis-runtime': 5.0.0
+  '@azure/ms-rest-azure-js': 2.0.1
+  '@oclif/command': 1.5.19
+  '@oclif/config': 1.13.3
   '@oclif/errors': 1.2.2
   '@oclif/parser': 3.8.4
   '@rush-temp/bf-chatdown': 'file:projects/bf-chatdown.tgz'
@@ -23,8 +27,6 @@ dependencies:
   antlr4: 4.7.2
   applicationinsights: 1.6.0
   await-delay: 1.0.0
-  azure-cognitiveservices-luis-authoring: 2.1.1
-  azure-cognitiveservices-luis-runtime: 3.0.0
   botbuilder-lg: 4.7.0-preview
   botframework-expressions: 4.7.0-preview
   botframework-schema: 4.7.0
@@ -35,6 +37,7 @@ dependencies:
   console-stream: 0.1.1
   debug: 4.1.1
   deep-equal: 1.1.1
+  delay: 4.3.0
   eslint: 5.16.0
   eslint-config-oclif: 3.1.0_eslint@5.16.0
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0
@@ -52,7 +55,6 @@ dependencies:
   md5: 2.2.1
   mime-types: 2.1.25
   minimist: 1.2.0
-  ms-rest: 2.5.3
   nock: 11.7.1
   node-fetch: 2.6.0
   nyc: 14.1.1
@@ -67,10 +69,54 @@ dependencies:
   source-map-support: 0.5.16
   testdouble: 3.12.5
   ts-md5: 1.2.7
+  uuid: 3.3.3
   window-size: 1.1.1
   xml2js: 0.4.23
 lockfileVersion: 5.1
 packages:
+  /@azure/cognitiveservices-luis-authoring/3.0.1:
+    dependencies:
+      '@azure/ms-rest-js': 2.0.5
+      tslib: 1.10.0
+    dev: false
+    resolution:
+      integrity: sha512-GfRZbJPREWtSOQUy6iZzNw/7k/apnijgONgUN5XnGMmbNSdrLrxZFBSKGwr9jNGYmcaqF+opR28QJZw4KMnzgg==
+  /@azure/cognitiveservices-luis-authoring/4.0.0-preview.1:
+    dependencies:
+      '@azure/ms-rest-js': 2.0.5
+      tslib: 1.10.0
+    dev: false
+    resolution:
+      integrity: sha512-HAhnf+57iHn1s7U5H7Rr51JZQINeJeT0uxtXr/Ksa6wbmZDOm+VApWnFwp/+QH1ZnW8S6Qf0roKtuTeEBjmBZA==
+  /@azure/cognitiveservices-luis-runtime/5.0.0:
+    dependencies:
+      '@azure/ms-rest-js': 2.0.5
+      tslib: 1.10.0
+    dev: false
+    resolution:
+      integrity: sha512-HzrRVohaqHdbvxEmON2JThnjfPFpF4PW05RDg8sRS7KsfetjozgQhP57vjJH2ERkJlAWUkoQCtLboAswCWcZQA==
+  /@azure/ms-rest-azure-js/2.0.1:
+    dependencies:
+      '@azure/ms-rest-js': 2.0.5
+      tslib: 1.10.0
+    dev: false
+    resolution:
+      integrity: sha512-5e+A710O7gRFISoV4KI/ZyLQbKmjXxQZ1L8Z/sx7jSUQqmswjTnN4yyIZxs5JzfLVkobU0rXxbi5/LVzaI8QXQ==
+  /@azure/ms-rest-js/2.0.5:
+    dependencies:
+      '@types/node-fetch': 2.5.4
+      '@types/tunnel': 0.0.1
+      abort-controller: 3.0.0
+      form-data: 2.5.1
+      node-fetch: 2.6.0
+      tough-cookie: 3.0.1
+      tslib: 1.10.0
+      tunnel: 0.0.6
+      uuid: 3.3.3
+      xml2js: 0.4.23
+    dev: false
+    resolution:
+      integrity: sha512-zj9/JOSsbaJleZz9k9RXKJMBPA2NBUgsus5iZxGlhK+pDeb8M2ps+lkKhJSwLnlTUj5CvrcN3PZDF2b2nSYCQQ==
   /@babel/code-frame/7.5.5:
     dependencies:
       '@babel/highlight': 7.5.0
@@ -517,6 +563,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-eOVHXS5RnWOjTVhu3deCM/ruy9E6JCgeix2g7wpFiekQh3AaEAK1cz43tZDukKmtSmQnwvSySq7ubijCA32I7Q==
+  /@types/node-fetch/2.5.4:
+    dependencies:
+      '@types/node': 13.1.2
+    dev: false
+    resolution:
+      integrity: sha512-Oz6id++2qAOFuOlE1j0ouk1dzl3mmI1+qINPNBhi9nt/gVOz0G+13Ao6qjhdF0Ys+eOkhu6JnFmt38bR3H0POQ==
   /@types/node/10.17.13:
     dev: false
     resolution:
@@ -552,6 +604,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-WxwTXnHTIsk7srax1icjLgX+6w1MUAJbhyCpRP/45paEElsPDQUJZDgr1UpKuL2S3Tb+ZyX9MjWwmcSD4bUoOQ==
+  /@types/tunnel/0.0.1:
+    dependencies:
+      '@types/node': 13.1.2
+    dev: false
+    resolution:
+      integrity: sha512-AOqu6bQu5MSWwYvehMXLukFHnupHrpZ8nvgae5Ggie9UwzDR1CCwoXgSSWNZJuyOlCdfdsWMA5F2LlmvyoTv8A==
   /@types/xml2js/0.4.5:
     dependencies:
       '@types/node': 13.1.2
@@ -709,6 +767,14 @@ packages:
         optional: true
     resolution:
       integrity: sha512-pnLpUcMNG7GfFFfNQbEX6f1aPa5fMnH2G9By+A1yovYI4VIOK2DzkaRuUlIkbagpAcrxQHLqovI1YWqEcXyRnA==
+  /abort-controller/3.0.0:
+    dependencies:
+      event-target-shim: 5.0.1
+    dev: false
+    engines:
+      node: '>=6.5'
+    resolution:
+      integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==
   /acorn-jsx/5.1.0_acorn@6.4.0:
     dependencies:
       acorn: 6.4.0
@@ -1664,6 +1730,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-jwK2UV4cnPpbcG7+VRARKTZPUWowwXA8bzH5NP6ud0oeAxyYPuGZUAC7hMugpCdz4BeSZl2Dl9k66CHJ/46ZYQ==
+  /delay/4.3.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-Lwaf3zVFDMBop1yDuFZ19F9WyGcZcGacsbdlZtWjQmM50tOcMntm1njF/Nb/Vjij3KaSvCF+sEYGKrrjObu2NA==
   /delayed-stream/1.0.0:
     dev: false
     engines:
@@ -2094,6 +2166,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==
+  /event-target-shim/5.0.1:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
   /execa/0.10.0:
     dependencies:
       cross-spawn: 6.0.5
@@ -2378,6 +2456,16 @@ packages:
       node: '>= 0.12'
     resolution:
       integrity: sha512-1lLKB2Mu3aGP1Q/2eCOx0fNbRMe7XdwktwOruhfqqd0rIJWwN4Dh+E3hrPSlDCXnSR7UtZ1N38rVXm+6+MEhJQ==
+  /form-data/2.5.1:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.25
+    dev: false
+    engines:
+      node: '>= 0.12'
+    resolution:
+      integrity: sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==
   /fragment-cache/0.2.1:
     dependencies:
       map-cache: 0.2.2
@@ -2924,6 +3012,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Ieh06s48WnEYGcqHepdsJUIJUXpwH5o5vodAX+DK2JA/gjy4EbEcQZxw+uFfzysmKjiLXGYwNG3qDZsKVMcINQ==
+  /ip-regex/2.1.0:
+    dev: false
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha1-+ni/XS5pE8kRzp+BnuUUa7bYROk=
   /is-accessor-descriptor/0.1.6:
     dependencies:
       kind-of: 3.2.2
@@ -5355,6 +5449,16 @@ packages:
       node: '>=0.8'
     resolution:
       integrity: sha512-nlLsUzgm1kfLXSXfRZMc1KLAugd4hqJHDTvc2hDIwS3mZAfMEuMbc03SujMF+GEcpaX/qboeycw6iO8JwVv2+g==
+  /tough-cookie/3.0.1:
+    dependencies:
+      ip-regex: 2.1.0
+      psl: 1.7.0
+      punycode: 2.1.1
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-yQyJ0u4pZsv9D4clxO69OEjLWYw+jbgspjTue4lTQZLfV0c5l1VmK2y1JK8E9ahdpltPOaAThPcp5nKPUgSnsg==
   /tr46/1.0.1:
     dependencies:
       punycode: 2.1.1
@@ -5521,6 +5625,12 @@ packages:
       node: '>=0.6.11 <=0.7.0 || >=0.7.3'
     resolution:
       integrity: sha512-gj5sdqherx4VZKMcBA4vewER7zdK25Td+z1npBqpbDys4eJrLx+SlYjJvq1bDXs2irkuJM5pf8ktaEQVipkrbA==
+  /tunnel/0.0.6:
+    dev: false
+    engines:
+      node: '>=0.6.11 <=0.7.0 || >=0.7.3'
+    resolution:
+      integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==
   /tweetnacl/0.14.5:
     dev: false
     resolution:
@@ -5935,7 +6045,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-2SkeiU2PrgJBLAuZRW5XBIfEQ7MU6a2kfgltTfKxplsfI2yO87oX+mmhDVft2w8MdlA364r2N+nCr1kdybYB2g==
+      integrity: sha512-u9dwkEjLX2IEAsUCwN40KLqZzDTiQolaPKb+dXzAibc303zGEP8h0MNZpHvT9e9/wDhzTQzSuvC8ZbWkWoBtyQ==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -5975,7 +6085,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-command'
     resolution:
-      integrity: sha512-+jKtWM3p1S/dwdbKk4FZeg25ClMu1vQ+4oSckhCU/EtJyU/f4UcAH22qE4Vm0HK6XGuxPUnszDPHYflhbM8J3g==
+      integrity: sha512-Cx2jECsJgRe4K74pqmjEoddPmrayTDmMg/rD90kRYiQ6agSNWbC7o638KTUDYZ5VJlhu+PEV/MuVG0oV+wu19Q==
       tarball: 'file:projects/bf-cli-command.tgz'
     version: 0.0.0
   'file:projects/bf-cli-config.tgz':
@@ -6004,7 +6114,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-config'
     resolution:
-      integrity: sha512-vwZf1fXZ7BWQsJjKHFMEQ95zRfQ48Na7ae9cMH36cw/fk/a6MYUkzwSgSabel0S2D8uT/BodVucYXJXPfl9NTw==
+      integrity: sha512-ZvUZsW96vljeLO69GRz/kfBazChVv9O6BkikOIQCHUbUP32PzIh8a0jjEmppA+/RtqajtmKQWGq0q5DEQY4x5A==
       tarball: 'file:projects/bf-cli-config.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6033,7 +6143,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-plugins'
     resolution:
-      integrity: sha512-OOsk/ji7vE1gMtEbEZW47/evnvPiX4ODnZzhu1MCWM3fb285wWuD/qOz0xxkC6VEoNZyF/CDmFQEBFrZjCT3DA==
+      integrity: sha512-2n8WG0y6vxBpyUrSJLVWwLcwUN+FqR8wI5htyMvDmPJOBp/PnH4WrupuQXDhl0UacI6LBhI4RWiZtunIkJ1zBw==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6078,7 +6188,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-s/80P9QduIAYy3HGOycjq+smgFPZD8bANxSojRNm1k+IjEXD8DYhZb5b03EGajcNTvIxgWIDqyefgwcvn1hZPA==
+      integrity: sha512-wLqkv6TapzOAmIExo+h14rfw7e2BinNmi30yDcV+01KndJSTH41dyhmdpD0jnvru7YMYRNaQoh8zpea6Y2/6dg==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6107,11 +6217,13 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-fH2utaTvBWNE7i+c7Q/nRvtp/l1Rl1PTR83a2KoJptuX7jPW0xddobBREn+sbKCTdh2eYOAyq27+0iuEhjsu+A==
+      integrity: sha512-s4Ar6m12VKpS8u3yyNtXMaShnRZTOCUIFYwXTyXXmN4oX8mkbG0O4zLB47xP68mDHgAvtQ8BNVg42vzq/or0wg==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
     dependencies:
+      '@azure/cognitiveservices-luis-authoring': 3.0.1
+      '@azure/ms-rest-azure-js': 2.0.1
       '@oclif/command': 1.5.19
       '@oclif/config': 1.13.3
       '@oclif/dev-cli': 1.22.2
@@ -6128,6 +6240,7 @@ packages:
       chalk: 2.4.1
       console-stream: 0.1.1
       deep-equal: 1.1.1
+      delay: 4.3.0
       fs-extra: 8.1.0
       get-stdin: 6.0.0
       globby: 10.0.1
@@ -6147,11 +6260,14 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-TSsW+8aehoioswoSrOkYUTzvRt6ed4+eEFJqQGRu6q6GgbreKFkP8Mo57wE59QIJjLTMp8qtt4fqY0/Z4iG2yw==
+      integrity: sha512-Hs49Cqyc/xZQ3Buw+cg53NLAAEw42pSuaq2hFGIWjtwiZcmmLOAyIxSkBXFsq/zKinDSx4k50xovkZTYH1TtTQ==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
     dependencies:
+      '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
+      '@azure/cognitiveservices-luis-runtime': 5.0.0
+      '@azure/ms-rest-azure-js': 2.0.1
       '@oclif/command': 1.5.19
       '@oclif/config': 1.13.3
       '@oclif/dev-cli': 1.22.2
@@ -6183,7 +6299,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-9KJLxB94+czA8wCqdah4CTqO9mOQjagBrgUJiOEYWJbDjLmOS543t5yXlJI94Id73iqW9xQBU39HiCdzCom90g==
+      integrity: sha512-JH3A+XDHWIh3PXmu/g7kh1Fe5m/3IsBfTaL6Ofq63DbQfjaMJxX6f63Ut4mDR/2uvb/zF2X/m8kHQtsZuwyg2g==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6231,7 +6347,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-cJIWg9bmcbIMyhQCJ++eEXTd6B8YDmtp6LktJyuqrzpHLd+NSdnblE673/bSxCvRECLx0Okzx6TNRYojMmRxBA==
+      integrity: sha512-XipAjyrWFoenzFZyJlddBKLWL5RwCtS2/SuOi3DBun68j+LPXQ4MlOjlTPpu+dZLNjQXDXiq/UAV97vhhLTu9Q==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6264,11 +6380,15 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-JoD3lM5sTnbhqJ/MxBvimlwBbhFgzs9ecW2vSkybWm32W9SR8fQGNuvK4lw2CQ2YRfMEY+r50dyaZdcXbuTLcg==
+      integrity: sha512-7fTuB7y3q0jzPX309m4bsspkMmhYh3quYuUA+9KdadGlxrwiHBy09tV9SKr2pwCy2j0TIGZJTm932W9+MDgzCg==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
 specifiers:
+  '@azure/cognitiveservices-luis-runtime': 5.0.0
+  '@azure/ms-rest-azure-js': 2.0.1
+  '@oclif/command': ~1.5.19
+  '@oclif/config': ~1.13.3
   '@oclif/errors': ~1.2.2
   '@oclif/parser': ~3.8.4
   '@rush-temp/bf-chatdown': 'file:./projects/bf-chatdown.tgz'
@@ -6293,8 +6413,6 @@ specifiers:
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
-  azure-cognitiveservices-luis-authoring: 2.1.1
-  azure-cognitiveservices-luis-runtime: 3.0.0
   botbuilder-lg: ~4.7.0-preview
   botframework-expressions: ~4.7.0-preview
   botframework-schema: ^4.5.1
@@ -6305,6 +6423,7 @@ specifiers:
   console-stream: ^0.1.1
   debug: ^4.1.1
   deep-equal: ^1.0.1
+  delay: ^4.3.0
   eslint: ^5.16.0
   eslint-config-oclif: ^3.1.0
   eslint-config-oclif-typescript: ^0.1.0
@@ -6322,7 +6441,6 @@ specifiers:
   md5: ^2.2.1
   mime-types: ^2.1.18
   minimist: ^1.2.0
-  ms-rest: 2.5.3
   nock: ^11.7.0
   node-fetch: ^2.1.2
   nyc: ^14.1.1
@@ -6337,5 +6455,6 @@ specifiers:
   source-map-support: ~0.5.16
   testdouble: ^3.11.0
   ts-md5: ^1.2.6
+  uuid: ^3.3.3
   window-size: ^1.1.0
   xml2js: ^0.4.19
