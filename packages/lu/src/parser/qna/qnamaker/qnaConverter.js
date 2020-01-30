@@ -35,7 +35,7 @@ const qnaToLuContent = function(qnaJSON){
             fileContent += '- ' + question + NEWLINE;
         })
         fileContent += NEWLINE;
-        if(qnaItem.metadata.length > 0) {
+        if(qnaItem.metadata && qnaItem.metadata.length > 0) {
             fileContent += '**Filters:**' + NEWLINE;
             qnaItem.metadata.forEach(function(filter) {
                 fileContent += '- ' + filter.name + ' = ' + filter.value + NEWLINE;    
@@ -52,7 +52,7 @@ const qnaToLuContent = function(qnaJSON){
                 // See if the linked prompt is context only and if so, add the decoration.
                 let promptQnA = root.find(item => item.id == prompt.qnaId);
                 if (promptQnA) {
-                    fileContent += promptQnA.isContextOnly === true ? ` \`context-only\`` : '';
+                    fileContent += promptQnA.context.isContextOnly === true ? ` \`context-only\`` : '';
                 }
                 fileContent += NEWLINE;
             })

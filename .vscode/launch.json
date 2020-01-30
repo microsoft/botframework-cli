@@ -24,7 +24,7 @@
             "args":[
                 "qnamaker:convert",
                 "--in",
-                "/Users/vishwacsenakannan/Desktop/test.qna.json"
+                "/Users/vishwacsenakannan/repos/botframework-cli/packages/lu/test/fixtures/testcases/MultiturnReplaceKbWithFlattenedTree.json"
             ],
             "preLaunchTask": "tsc: build - packages/lu/tsconfig.json"
         },
