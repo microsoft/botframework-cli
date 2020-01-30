@@ -73,7 +73,7 @@ export default class LuisTrainRun extends Command {
             completionMssg += `Training failed for model id ${model.modelId}. Failure reason: ${model.details.failureReason}\n`
           }
         })
-        this.log(completionMssg += 'Training is complete')
+        this.log(`${completionMssg} Training is complete`)
       }
     } catch (err) {
       throw new CLIError(err)
