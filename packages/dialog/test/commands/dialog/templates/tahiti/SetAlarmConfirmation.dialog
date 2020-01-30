@@ -1,0 +1,33 @@
+
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/sdk.schema",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "SetAlarmConfirmation",
+    "entity": "Confirmation",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$SetAlarmConfirmation",
+            "value": "=@Confirmation"
+        },
+        {
+            "$kind": "Microsoft.IfCondition",
+            "condition":"$SetAlarmConfirmation == 'yes'",
+            "actions": [                
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "@{setObjectPropertyMessage('Alarm', $Alarm.timex)}"
+                }
+            ],
+            "elseActions":[
+                {
+                    "$kind": "Microsoft.Ask",
+                    "activity": "@{askTahitiAlarm()}",
+                    "expectedProperties": [
+                        "Alarm"
+                    ]
+                }
+            ]
+        }
+    ]
+}

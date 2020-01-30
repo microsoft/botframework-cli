@@ -1,0 +1,26 @@
+
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/sdk.schema",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "Alarm",
+    "entity": "datetime",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$Alarm.type",
+            "value": "=@datetime.type"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$Alarm.timex",
+            "value": "=join(@datetime.timex, ' ')"          
+        },
+        {
+            "$kind": "Microsoft.Ask",
+            "activity": "@{confirmObjectPropertyMessage('Alarm', $Alarm.timex)}",
+            "expectedProperties": [
+                "SetAlarmConfirmation"
+            ]               
+        }
+    ]               
+}

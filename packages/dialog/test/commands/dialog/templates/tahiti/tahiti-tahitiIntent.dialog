@@ -1,0 +1,15 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/sdk.schema",
+    "$kind": "Microsoft.OnIntent",
+    "intent": "SetAlarm", 
+    "condition": "!@datetime", 
+    "actions": [
+        {
+            "$kind": "Microsoft.Ask",
+            "activity": "@{askTahitiAlarm()}",
+            "expectedProperties": [
+                "Alarm"
+            ]
+        }        
+    ]
+}

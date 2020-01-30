@@ -6,8 +6,14 @@
     "condition": "empty(where(dialog.requiredProperties, property, !dialog[property]))",
     "actions": [
         {
-            "$kind": "Microsoft.SendActivity",
-            "activity": "@{callReadForm()}"
+            "$kind": "Microsoft.IfCondition",
+            "condition": "count(dialog.requiredProperties)>0",
+            "actions":[
+                {
+                    "$kind": "Microsoft.SendActivity",
+                    "activity": "@{callReadForm()}"
+                }
+            ]
         },
         {
             "$kind": "Microsoft.Ask",

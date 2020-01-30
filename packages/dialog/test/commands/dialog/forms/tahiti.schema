@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "properties": {        
+        "Alarm": {
+            "$ref": "template:datetime.schema#/datetime"
+        },
+        "SetAlarmConfirmation": {
+            "type": "string",
+            "$entities": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "SetAlarmConfirmation.dialog"
+            ]
+        },
+        "StartConversation": {
+            "type": "string",
+            "$entities": [
+                "Confirmation"
+            ],
+            "$templates": [
+                "StartConversationSet.dialog"
+            ]
+        },         
+    },
+    "required": [
+        ""
+    ],
+    "$requires": [
+        "standard.schema"
+    ],
+    "$templates":[
+
+    ]
+}

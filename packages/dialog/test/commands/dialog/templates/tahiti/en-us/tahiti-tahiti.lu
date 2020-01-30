@@ -1,0 +1,29 @@
+# SetAlarm
+- set alarm for tomorrow
+- set alarm for 5pm
+- set alarm for next wednesday 4pm
+- set alarm for 10am
+- set alarm for january 5th
+- set alarm for {datetimeV2}
+- set alarm tomorrow
+- set alarm 5pm
+- set alarm next wednesday 4pm
+- set alarm 10am
+- set alarm january 5th
+- set alarm {datetimeV2}
+- alarm for tomorrow
+- alarm for 5pm
+- alarm for next wednesday 4pm
+- alarm for 10am
+- alarm for january 5th
+- alarm for {datetimeV2}
+
+# NoIntent
+- {NoValues}
+- no
+- false
+- nope
+- nop
+- not
+- disagree
+- {NoValues} {datetimeV2}

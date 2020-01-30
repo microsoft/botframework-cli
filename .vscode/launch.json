@@ -183,6 +183,28 @@
                 "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate tahiti",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:generate",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/tahiti.schema",
+                "-o",
+                "${env:TEMP}/tahiti.out",
+                "--force",
+                "--verbose",
+                "-t",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/templates/tahiti",
+                "standard"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }
