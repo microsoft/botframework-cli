@@ -269,7 +269,6 @@ const findReferenceFileContent = function(utteranceText, srcFile, allParsedConte
     // we have stuff to parse and resolve
     let parsedUtterance = helpers.parseLinkURI(utteranceText, srcFile);
 
-    if (!path.isAbsolute(parsedUtterance.fileName)) parsedUtterance.fileName = path.resolve(path.dirname(srcFile), parsedUtterance.fileName);
     // see if we are in need to pull LUIS or QnA utterances
     let filter = parsedUtterance.path.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
 
@@ -290,16 +289,18 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFil
 
     let parsedQnABlobs
     if( parsedUtterance.fileName.endsWith('*')) {
-        parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.fileName.replace(/\*/g, '')));
+        // this notation is only valid with file path. So try as file path.
+        let tPath = parsedUtterance.fileName.replace(/\*/g, '');
+        parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(path.resolve(path.dirname(srcFile), tPath)));
     } else {
         // look for QnA
         parsedQnABlobs = []
-        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.fileName));
+        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName)));
     }
 
     if(!parsedQnABlobs || !parsedQnABlobs[0]) {
         let error = BuildDiagnostic({
-            message: `Unable to parse ${utteranceText} in file: ${srcFile}`
+            message: `Unable to parse ${utteranceText} in file: ${srcFile}. Cannot find reference.`
         });
 
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
@@ -310,10 +311,10 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFil
 }
 
 const filterLuisContent = function(allParsedContent, parsedUtterance, srcFile, utteranceText){
-    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.fileName);
+    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName));
     if(!parsedLUISBlob ) {
         let error = BuildDiagnostic({
-            message: `Unable to parse ${utteranceText} in file: ${srcFile}`
+            message: `Unable to parse ${utteranceText} in file: ${srcFile}. Cannot find reference.`
         });
 
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
