@@ -12,6 +12,14 @@
             "windows": {
                 "command": "rush.cmd build"
             }
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "packages/lu/tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": "build"
         }
     ]
 }
