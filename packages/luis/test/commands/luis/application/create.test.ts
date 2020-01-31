@@ -54,8 +54,8 @@ describe('luis:application:create', () => {
   .stdout()
   .stderr()
   .command(['luis:application:create', '--endpoint', 'undefined', '--name', 'orange_app', '--subscriptionKey', uuidv1(), '--culture', 'en-us', '--description', 'test description', '--versionId', '0.04'])
-  .it('fails to create an app and displays an error message if the endpoint is null', ctx => {
-    expect(ctx.stderr).to.contain('Access denied due to invalid subscription key or wrong API endpoint.')
+  .it('fails to create an app and displays an error message if the endpoint is undefined', ctx => {
+    expect(ctx.stderr).to.contain('Failed to create app: TypeError: Only absolute URLs are supported\n')
   })
 
 })
