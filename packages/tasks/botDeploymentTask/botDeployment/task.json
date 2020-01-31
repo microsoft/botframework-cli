@@ -5,7 +5,7 @@
     "description": "Deploys a bot to Azure and connects it with channels",
     "helpMarkDown": "",
     "category": "Deploy",
-    "author": "SOUTHWORKS",
+    "author": "Microsoft Corporation",
     "visibility": [
         "Build",
         "Release"

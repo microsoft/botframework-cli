@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/southworks/SOUTHWORKS-azure-pipelines-tasks.git"
+    "url": "git+https://github.com/microsoft/botframework-cli.git"
   },
-  "author": "SOUTHWORKS",
-  "license": "ISC",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/southworks/SOUTHWORKS-azure-pipelines-tasks/issues"
+    "url": "https://github.com/microsoft/botframework-cli/issues"
   },
-  "homepage": "https://github.com/southworks/SOUTHWORKS-azure-pipelines-tasks#readme",
+  "homepage": "https://github.com/microsoft/botframework-cli#readme",
   "dependencies": {
     "azure-pipelines-task-lib": "^2.9.3"
   },
