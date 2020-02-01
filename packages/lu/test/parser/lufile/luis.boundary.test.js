@@ -89,16 +89,6 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
             })
     })
 
-    it (`At most ${retCode.boundaryLimits.MAX_LIST_ENTITY_CANONICAL_FORM} parents (canonical form/ normalized value) a list entity`, function(done) {
-        luMerger.Build(new Array(new luObj(getListEntity(), 'stdin', true)))
-            .then(res => done(res))
-            .catch(err => {
-                assert.equal(err.errCode, retCode.errorCode.BOUNDARY_LIST_PARENT_LIMIT);
-                assert(err.text.includes(`At most ${retCode.boundaryLimits.MAX_LIST_ENTITY_CANONICAL_FORM} is allowed.`));
-                done();
-            })
-    })
-
     it (`At most ${retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS} synonyms under any parent for a list entity`, function(done) {
         luMerger.Build(new Array(new luObj(getListEntity(1, retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS), 'stdin', true)))
             .then(res => done(res))

@@ -80,11 +80,8 @@ const validateBoundaries = function(luisJSON) {
         }
     })
 
-    // list entities: Parent: 50; max 20000 synonyms.
+    // list entities: max 20000 synonyms.
     luisJSON.closedLists.forEach(listEntity => {
-        if (listEntity.subLists.length > retCode.boundaryLimits.MAX_LIST_ENTITY_CANONICAL_FORM) {
-            validationError(retCode.errorCode.BOUNDARY_LIST_PARENT_LIMIT, `${listEntity.name} list entity has ${listEntity.subLists.length} parents (normalized value). At most ${retCode.boundaryLimits.MAX_LIST_ENTITY_CANONICAL_FORM} is allowed.`)
-        }
         listEntity.subLists.forEach(subList => {
             if (subList.list.length > retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS) {
                 validationError(retCode.errorCode.BOUNDARY_SYNONYMS_LENGTH, `'${listEntity.name}' list entity for parent (normalized value) '${subList.canonicalForm}' has ${subList.list.length} synonyms. At most ${retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS} is allowed.`)
