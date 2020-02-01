@@ -9,8 +9,6 @@
 <!-- toc -->
 * [Commands](#commands)
 <!-- tocstop -->
-* [Commands](#commands)
-<!-- tocstop -->
 
 # Commands
 <!-- commands -->

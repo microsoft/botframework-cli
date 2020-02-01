@@ -55,7 +55,7 @@ export default class LuisApplicationImport extends Command {
           subscriptionKey
         }
         const saveConfigResponse = await this.saveImportedConfig(config, configDir)
-        if (saveConfigResponse) this.log('Config settings saved')
+        this.log('Config settings saved')
       }
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)
