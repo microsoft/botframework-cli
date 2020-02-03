@@ -1,0 +1,213 @@
+
+> LUIS application information
+> !# @app.name = testPrebuiltImport
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 4.0.0
+
+
+> # Intent definitions
+
+## None
+- can you delete {@ToDo.TaskContent=abc} item
+- can you delete {@ToDo.TaskContent=todo1}
+- cancel {@ToDo.TaskContent=apples} from shopping list
+- check off {@ToDo.TaskContent=apples} from list
+- check off {@ToDo.TaskContent=bananas} from my grocery list
+- check off {@ToDo.TaskContent=garbage} from grocery list
+- check off {@ToDo.TaskContent=meet john at 8 am} from to do list
+- check off {@ToDo.TaskContent=shampoo} from shopping list as done
+- check the box {@ToDo.TaskContent=shampoo} in my shopping list
+- complete {@ToDo.TaskContent=pick up black shoes} in my to-do list
+- complete task {@ToDo.TaskContent=go shopping}
+- delete {@ToDo.TaskContent=eggs} from list
+- delete off {@ToDo.TaskContent=pancake mix} on the shopping list
+- delete {@ToDo.TaskContent=shampoo} from shopping list
+- delete {@ToDo.TaskContent=shirts} from list
+- delete task {@ToDo.TaskContent=go fishing}
+- delete task {@ToDo.TaskContent=go to cinema tonight}
+- delete the item {@ToDo.TaskContent=buy socks} from my to-do list
+- delete the task {@ToDo.TaskContent=house cleanup this weekend}
+- delete the task to {@ToDo.TaskContent=hit the gym every morning}
+- delete the to do {@ToDo.TaskContent=meet my friends tomorrow}
+- delete the to do to {@ToDo.TaskContent=meet john when he come here the next friday}
+- delete the to do to {@ToDo.TaskContent=practice piano daily}
+- delete to do {@ToDo.TaskContent=buy milk}
+- delete to do {@ToDo.TaskContent=go shopping}
+- delete to do that {@ToDo.TaskContent=go hiking tomorrow}
+- done with the task {@ToDo.TaskContent=abc} in our shopping list
+- done with the task {@ToDo.TaskContent=shopping}
+- done with the task {@ToDo.TaskContent=tapioca starch} in our shopping list
+- erase {@ToDo.TaskContent=bananas} from shopping list
+- erase {@ToDo.TaskContent=peanuts} on the shopping list
+- finish {@ToDo.TaskContent=hikes} on my to do list
+- finish {@ToDo.TaskContent=peanuts} on the shopping list
+- mark {@ToDo.TaskContent=buy fish} as completed
+- mark {@ToDo.TaskContent=fish} as complete
+- mark {@ToDo.TaskContent=happy} on to dos list
+- mark {@ToDo.TaskContent=lemons and onions} in grocery list
+- mark {@ToDo.TaskContent=pancake mix} on my grocery shopping list
+- mark {@ToDo.TaskContent=peanuts} on my grocery list as done
+- mark {@ToDo.TaskContent=peanuts} on my grocery shopping list
+- mark {@ToDo.TaskContent=pick mary up} as finished
+- mark {@ToDo.TaskContent=pick up milk} on my to-do list
+- mark {@ToDo.TaskContent=play badminton with tom} as finished
+- mark {@ToDo.TaskContent=salad} on my grocery shopping list
+- mark {@ToDo.TaskContent=salad} on the groceries list
+- mark task {@ToDo.TaskContent=buy a bottle of vinegar} as finished
+- mark task {@ToDo.TaskContent=go running} as finished
+- mark task {@ToDo.TaskContent=read a book} as done
+- mark the item {@ToDo.TaskContent=garbage} from grocery list
+- mark the task {@ToDo.TaskContent=buy milk} as done
+- mark the task {@ToDo.TaskContent=get some food} as complete
+- mark the task {@ToDo.TaskContent=reserve a restaurant for tomorrow's dinner} as finished
+- mark the task {@ToDo.TaskContent=visit my grandma} as completed
+- no need to {@ToDo.TaskContent=buy milk} in grocery list
+- omit the {@ToDo.TaskContent=milk} in the grocery list
+- remove {@ToDo.TaskContent=asprin} from shopping list
+- remove {@ToDo.TaskContent=black shoes} from shopping list
+- remove {@ToDo.TaskContent=class} from todo list
+- remove {@ToDo.TaskContent=salad vegetables} from grocery list
+- remove task {@ToDo.TaskContent=buy dog food}
+- remove task {@ToDo.TaskContent=go shopping}
+- remove task {@ToDo.TaskContent=go shopping with john this saturday}
+- remove task that {@ToDo.TaskContent=go hiking this weekend}
+- remove task that {@ToDo.TaskContent=lawn mowing}
+- remove the item {@ToDo.TaskContent=paris} from my list
+- remove the task that {@ToDo.TaskContent=go to library after work}
+- remove the to do {@ToDo.TaskContent=physical examination}
+- remove the to do that {@ToDo.TaskContent=pick tom up at six p.m.}
+- remove to do {@ToDo.TaskContent=go to the gym}
+- remove to do that {@ToDo.TaskContent=go to the dentist tomorrow morning}
+- shopping list delete {@ToDo.TaskContent=a}
+- shopping list delete {@ToDo.TaskContent=dog food}
+- shopping list delete {@ToDo.TaskContent=eggs}
+- shopping list delete {@ToDo.TaskContent=milk}
+- take {@ToDo.TaskContent=coffee} off my groceries list
+- take {@ToDo.TaskContent=lemons and onions} off my shopping list
+- take {@ToDo.TaskContent=milk} off grocery list
+- take {@ToDo.TaskContent=socks and shoes} off my shopping list
+- task completed {@ToDo.TaskContent=buy gum}
+- task {@ToDo.TaskContent=train} has been done
+- todo list delete {@ToDo.TaskContent=paris vacation}
+
+
+> !# @intent.inherits = name : ToDo.AddToDo; domain_name : ToDo; model_name : AddToDo
+
+## ToDo.AddToDo
+- add a few items to the grocery list
+- add a grocery item to {@ToDo.TaskContent=buy fish}
+- add a grocery item to {@ToDo.TaskContent=buy fruit and vegetables}
+- add a grocery item to {@ToDo.TaskContent=buy vegetables}
+- add a new shopping list
+- add a shopping item to {@ToDo.TaskContent=buy dancing dresses}
+- add a shopping item to {@ToDo.TaskContent=buy orange juice}
+- add a task for {@ToDo.TaskContent=anna west to bring my swimsuit for my vacation}
+- add a task for {@ToDo.TaskContent=jimmy to play xbox games with me after work}
+- add a task for {@ToDo.TaskContent=li lei to bring my coat from home}
+- add a task for {@ToDo.TaskContent=raghu to bring my chocolates from germany}
+- add a task of {@ToDo.TaskContent=chores to do around the house}
+- add a task to {@ToDo.TaskContent=finish driving test this week}
+- add a task to {@ToDo.TaskContent=pick mary up after work}
+- add a task to {@ToDo.TaskContent=purchase fruit and vegetables}
+- add a task to {@ToDo.TaskContent=shop at gnc after work}
+- add a to do to {@ToDo.TaskContent=buy shoes}
+- add a to do to {@ToDo.TaskContent=purchase a nice sweater}
+- add a todo item {@ToDo.TaskContent=to vacuum by october 3rd}
+- add action item for {@ToDo.TaskContent=khalifa to pack my school supplies} in my list
+- add an item to {@ToDo.TaskContent=buy some snacks}
+- add {@ToDo.TaskContent=bronwnies} to the grocery list
+- add {@ToDo.TaskContent=buy gum}
+- add {@ToDo.TaskContent=buy milk} to my shopping list
+- add {@ToDo.TaskContent=call my mother} to my todo list
+- add {@ToDo.TaskContent=go running} to my to dos
+- add {@ToDo.TaskContent=go to whole foods} in my to do list
+- add grocery add {@ToDo.TaskContent=spinach} my groceries list
+- add grocery items {@ToDo.TaskContent=cream cheese and raisin} to the list
+- add grocery items {@ToDo.TaskContent=dinners and storage bag} to the shopping list
+- add {@ToDo.TaskContent=have a haircut} to my tasks
+- add items as i speak
+- add {@ToDo.TaskContent=juicer} groceries list
+- add {@ToDo.TaskContent=melon and sugars and brown sugar} to shopping list
+- add more to grocery list
+- add {@ToDo.TaskContent=peanuts} the grocery list
+- add {@ToDo.TaskContent=purchase a cinema ticket} to my list
+- add {@ToDo.TaskContent=purchasing food and drinks} to my shopping list
+- add {@ToDo.TaskContent=reading} to my to do list
+- add {@ToDo.TaskContent=shoes} to the shopping lists
+- add some items to that shopping notes
+- add some items to the grocery list
+- add some {@ToDo.TaskContent=jeans} on our shopping lists
+- add something in this grocery list
+- add something to my list
+- add {@ToDo.TaskContent=tapioca starch} on my shopping list
+- add {@ToDo.TaskContent=tapioca starch} on our shopping list
+- add task to {@ToDo.TaskContent=buy a coat}
+- add task to {@ToDo.TaskContent=set up dining room table}
+- add this on our shopping list
+- add this stuff on my shopping list
+- add this thing in to do list
+- add to my grocery list
+- add to my to do list {@ToDo.TaskContent=pick up clothes}
+- add to my to do list {@ToDo.TaskContent=print papers for 10 copies this afternoon}
+- add to my todos list {@ToDo.TaskContent=mail the insurance forms out by saturday}
+- add to note shopping list
+- add to shopping list
+- add to the grocery note {@ToDo.TaskContent=buy milk}
+- append a {@ToDo.TaskContent=summer reading} in my list
+- append an task of {@ToDo.TaskContent=guest to invite at the party}
+- append this item onto my notes
+- ask a task for {@ToDo.TaskContent=kim to bring my coat from home}
+- can i add {@ToDo.TaskContent=shirts} on the todos list
+- can i put on {@ToDo.TaskContent=caramel cheese popcorn} on my grocery list
+- could i add {@ToDo.TaskContent=medicine} to the todos list
+- create a task to {@ToDo.TaskContent=meet my friends}
+- create task to {@ToDo.TaskContent=cyber shop on nov. 11}
+- create task to {@ToDo.TaskContent=go to the mall}
+- create task to {@ToDo.TaskContent=meet john after 5:00 p.m.}
+- create to do to {@ToDo.TaskContent=go running in the park}
+- create to do to re{@ToDo.TaskContent=ad a book tonight}
+- {@ToDo.TaskContent=need go to library this week}, add this todo item
+- put {@ToDo.TaskContent=cheese} on list
+- put {@ToDo.TaskContent=ham} on my shopping list
+- put {@ToDo.TaskContent=hikes} on my to do list
+- put {@ToDo.TaskContent=ice cream} on the groceries list
+- put {@ToDo.TaskContent=milk} on my grocery list
+- put {@ToDo.TaskContent=on caramel cheese popcorn} on my grocery shopping list
+- remind me to {@ToDo.TaskContent=attend the meeting tomorrow}
+- remind me to {@ToDo.TaskContent=buy first aid creams and berries}
+- remind me to {@ToDo.TaskContent=buy milk}
+- remind me to {@ToDo.TaskContent=meet my teacher}
+- remind me to shop for {@ToDo.TaskContent=a new carpet}
+- to grocery list add {@ToDo.TaskContent=milk}
+- to my shopping list add {@ToDo.TaskContent=paper towels}
+- to my vacation to do list add {@ToDo.TaskContent=buy sunblock}
+- would you add {@ToDo.TaskContent=heavy cream} to the todos list
+- would you please add todo item of {@ToDo.TaskContent=all hands meeting next monday}
+- ^(add|create|append) an item [(called|about|of)] "{@ToDo.TaskContent.Any}" [as (next|first|last) task][(in|on|to) my (to do|to-do|todos) list]
+- ^[(can you|could you|would you)] [please] (put|add|append) {@ToDo.TaskContent} [and] [{ToDo.TaskContent}] (on|to)[my][(to do|todos|todo)]list
+
+
+> # Entity definitions
+
+> !# @entity.inherits = name : ToDo.TaskContent; domain_name : ToDo; model_name : TaskContent
+
+@ ml ToDo.TaskContent
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+
+> # Pattern.Any entities
+
+> !# @patternAnyEntity.inherits = name : ToDo.TaskContent.Any; domain_name : ToDo; model_name : TaskContent.Any
+
+@ patternany ToDo.TaskContent.Any

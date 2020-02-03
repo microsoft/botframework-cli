@@ -47,12 +47,13 @@ export default class LuisGenerateCs extends Command {
     }
 
     flags.className = flags.className || app.name
-    flags.className = upperFirst(camelCase(flags.className))
 
-    const dot_index = flags.className ? flags.className.indexOf('.') : -1
+    const dot_index = flags.className ? flags.className.lastIndexOf('.') : -1
     if (dot_index !== -1) {
-      space = flags.className.substr(dot_index + 1)
-      flags.className = flags.className.substr(0, dot_index)
+      space = flags.className.substr(0, dot_index)
+      flags.className = flags.className.substr(dot_index + 1)
+    } else {
+      flags.className = upperFirst(camelCase(flags.className))
     }
 
     this.reorderEntities(app, 'entities')
