@@ -9,6 +9,7 @@ const QnA = require('./../../../../src/parser/qna/qnamaker/qnamaker');
 const QnAList = require('./../../../../src/parser/qna/qnamaker/qnaList');
 const QnAMetadata = require('./../../../../src/parser/qna/qnamaker/qnaMetaData');
 const hClasses = require('./../../../../src/parser/lufile/classes/hclasses');
+const qnaContext = require('./../../../../src/parser/qna/qnamaker/qnaContext');
 
 describe('Testing all classes', function() {
     describe('Exception class', function() {
@@ -57,7 +58,7 @@ describe('Testing all classes', function() {
 
     describe('QnA List class', function() {
         it('can create a new instance with explicit values as args', function() {
-            assert.deepEqual(new QnAList(0, 'test', '1', ['2'], {}), {id: 0, answer: 'test', source: '1', questions: ['2'], metadata: {}});
+            assert.deepEqual(new QnAList(0, 'test', '1', ['2'], {}), {id: 0, answer: 'test', source: '1', questions: ['2'], metadata: {}, context : new qnaContext()});
         });
 
         it('can create a new instance with no values passed in', function() {

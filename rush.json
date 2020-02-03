@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
-  "rushVersion": "5.19.0",
+  "rushVersion": "5.19.1",
   "pnpmVersion": "4.8.0",
   "pnpmOptions": {
   },
@@ -26,6 +26,10 @@
     {
       "packageName": "@microsoft/bf-lu",
       "projectFolder": "packages/lu"
+    },
+    {
+      "packageName": "@microsoft/bf-dispatcher",
+      "projectFolder": "packages/dispatcher"
     },
     {
       "packageName": "@microsoft/bf-luis-cli",

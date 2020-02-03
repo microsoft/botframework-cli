@@ -38,13 +38,31 @@ describe('qnamaker:convert', () => {
   .stdout()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnaDocuments.json')}`])
   .it('qnamaker:convert refresh command successfully reconstructs a markdown file from a QnA input file with qnaDocuments section', async (ctx) => {
-    expect(ctx.stdout).to.contain('> Source: custom editorial')
+    expect(ctx.stdout).to.contain('> # QnA pairs')
   })
 
   test
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', './results/qna.lu'])
   .it('qnamaker:convert refresh command successfully reconstructs a markdown file from QnA input file', async () => {
     expect(await compareLuFiles('./../../../results/qna.lu', './../../fixtures/verified/allGenQnA.lu')).to.be.true
+  })
+
+  test
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/multiturn.qna')}`, '--out', './results/multiturn.json'])
+  .it('qnamaker:convert multi-turn QnA content is parsed correctly', async () => {
+    expect(await compareLuFiles('./../../../results/multiturn.json', './../../fixtures/verified/multiturn.qna.json')).to.be.true
+  })
+
+  test
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/multiturn.qna.json')}`, '--out', './results/multiturn.qna'])
+  .it('qnamaker:convert refresh command successfully constructs qna file from multi-turn QnA KB', async () => {
+    expect(await compareLuFiles('./../../../results/multiturn.qna', './../../fixtures/verified/multiturn.json.qna')).to.be.true
+  })
+
+  test 
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/MultiturnReplaceKbWithFlattenedTree.json')}`, '--out', './results/MultiturnReplaceKbWithFlattenedTree.qna'])
+  .it('qnamaker:convert refresh command successfully constructs qna file from multi-turn QnA KB [test 2]', async () => {
+    expect(await compareLuFiles('./../../../results/MultiturnReplaceKbWithFlattenedTree.qna', './../../fixtures/verified/MultiturnReplaceKbWithFlattenedTree.qna')).to.be.true
   })
 
   test
@@ -78,9 +96,17 @@ describe('qnamaker:convert', () => {
 
   test
   .stderr()
-  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/qna4.json'])
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/qna4.json', '--name', 'collate-qna'])
   .it('qnamaker:convert Collate can correctly merge QnA word alteration content split across LU files', async () => {
-    let parsedObjects = await parseJsonFiles('./../../../results/alterations_qna4.json', './../../fixtures/verified/collate_Alterations.json')
+    let parsedObjects = await parseJsonFiles('./../../../results/alterations_qna4.json', './../../fixtures/verified/alterations_qna4.json')
+    expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+  })
+
+  test
+  .stderr()
+  .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnaref.qna')}`, '--out', './results/qna5.json'])
+  .it('qnamaker:convert Deep file references are pulled in correctly', async () => {
+    let parsedObjects = await parseJsonFiles('./../../../results/qna5.json', './../../fixtures/verified/qna5.json')
     expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
   })
 })

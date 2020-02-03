@@ -5,7 +5,7 @@ const sinon = require('sinon')
 describe('config:set:luis', () => {
     
     beforeEach(() => {
-        sinon.stub(ConfigSetLuis.prototype, 'promptSaveConfig').returns(true)
+        sinon.stub(ConfigSetLuis.prototype, 'saveConfig').returns(true)
     })
     
     afterEach(() => {
@@ -32,6 +32,14 @@ describe('config:set:luis', () => {
     .stderr()
     .command(['config:set:luis', '--appId', '9999'])
     .it('displays an message indication values saved successfully', ctx => {
+        expect(ctx.stdout).to.contain('Config settings saved')
+    })
+
+    test
+    .stdout()
+    .stderr()
+    .command(['config:set:luis', '--appId', '8888', '--force'])
+    .it('displays an message indication values saved successfully when force flag present', ctx => {
         expect(ctx.stdout).to.contain('Config settings saved')
     })
     
