@@ -1,0 +1,32 @@
+
+# filename
+- @{schemaName}-@{property}Setage.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "age",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.number",
+            "value": "=@age.number"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.units",
+            "value": "=@age.units"          
+        }
+    ]               
+}
+```
+
+# callSetMessage()
+- @\{setObjectPropertyMessage('@{property}', concat(string(@age.number), ' ', @age.units))}

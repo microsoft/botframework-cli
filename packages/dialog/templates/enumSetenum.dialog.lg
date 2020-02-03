@@ -5,7 +5,7 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
     "entity": "@{property}Entity",
     "actions": [
@@ -15,8 +15,8 @@
         },    
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "${property}",
-            "value": "@@{property}Entity"
+            "property": "$@{property}",
+            "value": "=@@{property}Entity"
         }
     ]
 }

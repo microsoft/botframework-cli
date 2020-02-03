@@ -1,4 +1,4 @@
-// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
+// Generated from LUFileParser.g4 by ANTLR 4.7.1
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -104,6 +104,12 @@ LUFileParserVisitor.prototype.visitNormalIntentBody = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#normalIntentString.
 LUFileParserVisitor.prototype.visitNormalIntentString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#errorIntentString.
+LUFileParserVisitor.prototype.visitErrorIntentString = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -240,6 +246,12 @@ LUFileParserVisitor.prototype.visitNormalItemString = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#errorItemString.
+LUFileParserVisitor.prototype.visitErrorItemString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#importSection.
 LUFileParserVisitor.prototype.visitImportSection = function(ctx) {
   return this.visitChildren(ctx);
@@ -260,6 +272,18 @@ LUFileParserVisitor.prototype.visitQnaSection = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#qnaDefinition.
 LUFileParserVisitor.prototype.visitQnaDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#qnaSourceInfo.
+LUFileParserVisitor.prototype.visitQnaSourceInfo = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserVisitor.prototype.visitQnaIdMark = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -288,6 +312,12 @@ LUFileParserVisitor.prototype.visitMoreQuestion = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#errorQuestionString.
+LUFileParserVisitor.prototype.visitErrorQuestionString = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#qnaAnswerBody.
 LUFileParserVisitor.prototype.visitQnaAnswerBody = function(ctx) {
   return this.visitChildren(ctx);
@@ -300,8 +330,20 @@ LUFileParserVisitor.prototype.visitFilterSection = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#promptSection.
+LUFileParserVisitor.prototype.visitPromptSection = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#filterLine.
 LUFileParserVisitor.prototype.visitFilterLine = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#errorFilterLine.
+LUFileParserVisitor.prototype.visitErrorFilterLine = function(ctx) {
   return this.visitChildren(ctx);
 };
 

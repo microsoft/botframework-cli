@@ -7,6 +7,7 @@ const assert = chai.assert;
 const luparser = require('./../../../src/parser/lufile/luParser');
 const SectionOperator = require('./../../../src/parser/lufile/sectionOperator');
 const LUSectionTypes = require('./../../../src/parser/utils/enums/lusectiontypes');
+const NEWLINE = require('os').EOL;
 
 describe('Section CRUD test', () => {
     let luresource = undefined;
@@ -55,6 +56,8 @@ describe('Section CRUD test', () => {
         - check my email
         - show my emails
         - check my mail box please`;
+
+        let sectionId = luresource.Sections[1].Id;
         luresource = new SectionOperator(luresource).updateSection(luresource.Sections[1].Id, newFileConent);
 
         assert.equal(luresource.Errors.length, 0);
@@ -62,6 +65,7 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[1].Errors.length, 0);
         assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
         assert.equal(luresource.Sections[1].Name, 'CheckEmail');
+        assert.equal(luresource.Sections[1].Id, sectionId);
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap.length, 3);
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[0].utterance, 'check my email');
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[1].utterance, 'show my emails');
@@ -126,27 +130,12 @@ describe('Section CRUD test', () => {
     });
 
     it('add nestedIntentSection test with enableSections flag set', () => {
-        let newFileConent = 
-        `> !# @enableSections = true
-
-         # CheckTodo
-         ## CheckUnreadTodo
-         - check my unread todo
-         - show my unread todos
-         
-         @ simple todoTitle
-
-         ## CheckDeletedTodo
-         - check my deleted todo
-         - show my deleted todos
-         
-         @ simple todoSubject`;
+        let newFileConent = `> !# @enableSections = true${NEWLINE}${NEWLINE}# CheckTodo${NEWLINE}## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`;
 
         luresource = new SectionOperator(luresource).addSection(newFileConent);
 
         assert.equal(luresource.Errors.length, 0);
         assert.equal(luresource.Sections.length, 4);
-
         assert.equal(luresource.Sections[1].Errors.length, 0);
         assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
         assert.equal(luresource.Sections[1].Name, 'CheckEmail');
@@ -166,8 +155,10 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[2].Errors.length, 0);
         assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
         assert.equal(luresource.Sections[2].Name, 'CheckTodo');
+        assert.equal(luresource.Sections[2].Body, `## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`);
         assert.equal(luresource.Sections[2].SimpleIntentSections.length, 2);
         assert.equal(luresource.Sections[2].SimpleIntentSections[0].Name, 'CheckUnreadTodo');
+        assert.equal(luresource.Sections[2].SimpleIntentSections[0].Body, `- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle`);
         assert.equal(luresource.Sections[2].SimpleIntentSections[0].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
         assert.equal(luresource.Sections[2].SimpleIntentSections[0].Entities[0].Name, 'todoTitle');
         assert.equal(luresource.Sections[2].SimpleIntentSections[0].Entities[0].Type, 'simple');

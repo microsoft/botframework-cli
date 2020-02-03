@@ -18,7 +18,7 @@ export default class LuisApplicationList extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (mandatory, default: config:LUIS:subscriptionKey)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
     out: flags.string({char: 'o', description: 'Output results to specified file in JSON format, otherwise prints to STDOUT (optional)'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     skip: flags.string({description: 'Number of entries to skip. Default: 0 (no skips)'}),

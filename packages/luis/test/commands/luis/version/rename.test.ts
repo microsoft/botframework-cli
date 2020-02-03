@@ -51,8 +51,8 @@ describe('luis:version:rename', () => {
   .stdout()
   .stderr()
   .command(['luis:version:rename', '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--versionId', '0.1', '--newVersionId', '0.2'])
-  .it('fails to rename application version and displays an error message if the endpoint is null', ctx => {
-    expect(ctx.stderr).to.contain('Access denied due to invalid subscription key or wrong API endpoint.')
+  .it('fails to rename application version and displays an error message if the endpoint is undefined', ctx => {
+    expect(ctx.stderr).to.contain('Failed to rename app version: TypeError: Only absolute URLs are supported\n')
   })
 
 })

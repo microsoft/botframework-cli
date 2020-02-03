@@ -11,7 +11,7 @@ export default class ConfigSetLuis extends Command {
   static description = 'Stores default LUIS application values in global config.'
 
   static examples = [`
-    $ bf luis:init --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --region {REGION}
+    $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --endpoint {ENDPOINT}
   `]
 
   static flags: any = {
@@ -20,6 +20,7 @@ export default class ConfigSetLuis extends Command {
     appId: flags.string({description: 'LUIS application Id'}),
     versionId: flags.string({description: 'LUIS version Id'}),
     endpoint: flags.string({description: 'LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com'}),
+    force: flags.boolean({description: 'Force save config without prompt'}),
   }
 
   async run() {
@@ -31,7 +32,7 @@ export default class ConfigSetLuis extends Command {
     }
 
     try {
-      const response = await this.promptSaveConfig(flags, configDir)
+      const response = await this.saveConfig(flags, configDir)
       if (response) return this.log('Config settings saved')
       return this.log('Unable to save config settings')
     } catch (err) {
@@ -40,14 +41,17 @@ export default class ConfigSetLuis extends Command {
     }
   }
 
-  async promptSaveConfig(flags: any, configPath: string) {
+  async saveConfig(flags: any, configPath: string) {
     const configPrefix = 'luis__'
+    let saveConfigOptIn = false
     let userConfig: Config = await getConfigFile(configPath)
-    const saveConfigOptIn = await cli.confirm('Would you like to save the provided values to your global config file? (Y/N)')
-    if (saveConfigOptIn) {
+    if (!flags.force) {
+      saveConfigOptIn = await cli.confirm('Would you like to save the provided values to your global config file? (Y/N)')
+    }
+    if (saveConfigOptIn || flags.force) {
       const flagLabels = Object.keys(flags)
       flagLabels.map(label => {
-        userConfig[`${configPrefix}${label}`] = flags[label]
+        if (label !== 'force') userConfig[`${configPrefix}${label}`] = flags[label]
       })
       await writeConfigFile(configPath, userConfig)
       return true

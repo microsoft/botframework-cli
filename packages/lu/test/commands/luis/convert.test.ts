@@ -204,6 +204,36 @@ describe('luis:convert', () => {
     })
 
     test
+    .stderr()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/utterance-without-hyphen.lu')}`])
+    .it('luis:convert writes out an error when utterance without hyphen is found', async (ctx: any) => {
+      expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:16: Invalid intent body line, did you miss '-' at line begin")
+      expect(ctx.stderr).to.contain("[ERROR] line 6:0 - line 6:16: Invalid intent body line, did you miss '-' at line begin")
+    })
+
+    test
+    .stderr()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/list-entity-body-without-hyphen.lu')}`])
+    .it('luis:convert writes out an error when list entity body without hyphen is found', async (ctx: any) => {
+      expect(ctx.stderr).to.contain("[ERROR] line 5:0 - line 5:2: Invalid list entity line, did you miss '-' at line begin")
+      expect(ctx.stderr).to.contain("[ERROR] line 8:0 - line 8:2: Invalid list entity line, did you miss '-' at line begin")
+    })
+
+    test
+    .stderr()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-question-line-without-hyphen.lu')}`])
+    .it('luis:convert writes out an error when list qna question line without hyphen is found', async (ctx: any) => {
+      expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:10: Invalid QnA question line, did you miss '-' at line begin")
+    })
+
+    test
+    .stderr()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-filter-line-without-hyphen.lu')}`])
+    .it('luis:convert writes out an error when list qna filter line without hyphen is found', async (ctx: any) => {
+      expect(ctx.stderr).to.contain("[ERROR] line 6:0 - line 6:16: Invalid QnA filter line, did you miss '-' at line begin")
+    })
+
+    test
     .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/collate')}`, '--out', './results/root19.json', '--name', 'collated-luis'])
     .it('luis:convert Collate can correctly merge LUIS content split across LU files', async () => {
@@ -224,6 +254,22 @@ describe('luis:convert', () => {
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/ref4.lu')}`, '--out', './results/root21.json', '--name', 'ref4'])
     .it('luis:convert Deep references in lu files - QnA question references are handled correctly', async () => {
       let parsedObjects = await parseJsonFiles('./../../../results/root21.json', './../../fixtures/verified/ref4.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
+
+    test
+    .stdout()
+    .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/ref14.qna')}`, '--out', './results/root21_a.json'])
+    .it('luis:convert Deep references in qna files - *utterances* is handled correrctly', async () => {
+      let parsedObjects = await parseJsonFiles('./../../../results/root21_a.json', './../../fixtures/verified/ref14_a.json')
+      expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
+
+    test
+    .stdout()
+    .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/ref15.qna')}`, '--out', './results/root21_b.json'])
+    .it('luis:convert Deep references in qna files - intent and *utterances* is handled correrctly', async () => {
+      let parsedObjects = await parseJsonFiles('./../../../results/root21_b.json', './../../fixtures/verified/ref15_a.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
 
@@ -276,6 +322,33 @@ describe('luis:convert', () => {
       let result = await fs.readJson(path.join(__dirname, './../../../results/root27.json'))
       expect(result.patterns.length === 2).to.be.true
       expect(result.patternAnyEntities.length === 0).to.be.true
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/ref11.lu')}`, '--out', './results/root27_a.json'])
+    .it('luis:convert deep file reference with *utterances* only pulls in utterances and not patterns from that intent.', async () => {
+      let result = await fs.readJson(path.join(__dirname, './../../../results/root27_a.json'))
+      expect(result.patterns.length === 0).to.be.true
+      expect(result.utterances.length === 1).to.be.true
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/ref12.lu')}`, '--out', './results/root27_b.json'])
+    .it('luis:convert deep file reference with *pattterns* only pulls in pattterns and not utterances from that intent.', async () => {
+      let result = await fs.readJson(path.join(__dirname, './../../../results/root27_b.json'))
+      expect(result.patterns.length === 1).to.be.true
+      expect(result.utterances.length === 0).to.be.true
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/ref13.lu')}`, '--out', './results/root27_c.json'])
+    .it('luis:convert deep file reference with #*utterances* pulls in all utterances from the src file.', async () => {
+      let result = await fs.readJson(path.join(__dirname, './../../../results/root27_c.json'))
+      expect(result.patterns.length === 0).to.be.true
+      expect(result.utterances.length === 2).to.be.true
     })
 
     test
@@ -492,7 +565,7 @@ describe('luis:convert negative tests', () => {
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3.lu')}`])
   .it('luis:convert should show ERR message when no utterances are found for an intent', async (ctx: any) => {
-    expect(ctx.stderr).to.contain("[ERROR] line 4:0 - line 4:1: syntax error: invalid input 'i' detected.")
+    expect(ctx.stderr).to.contain("[ERROR] line 4:0 - line 4:16: Invalid intent body line, did you miss \'-\' at line begin")
   })
 
   test
@@ -583,6 +656,30 @@ describe('luis:convert new entity format', () => {
   .it('luis:convert with new entity format and single roles correctly produces a LU file', async () => {
     expect(await compareLuFiles('./../../../results/newEntity2.lu', './../../fixtures/verified/newEntity2.lu')).to.be.true
   })
+})
+
+describe('luis:convert with pattern.any inherits information', () => {
+  before(async function(){
+    await fs.mkdirp(path.join(__dirname, './../../../results/'))
+  })
+
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/LUISAppWithPAInherits.lu')}`, '--out', './results/LUISAppWithPAInherits.lu.json'])
+  .it('luis:convert with pattern.any inherits information correctly produces a LUIS app', async () => {
+    expect(await compareLuFiles('./../../../results/LUISAppWithPAInherits.lu.json', './../../fixtures/verified/LUISAppWithPAInherits.lu.json')).to.be.true
+  })
+
+  test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/LUISAppWithPAInherits.json')}`, '--out', './results/root2_a.lu'])
+    .it('luis:convert successfully reconstructs a markdown file from a LUIS input file with pattern.any inherits information', async () => {
+      expect(await compareLuFiles('./../../../results/root2_a.lu', './../../fixtures/verified/LUISAppWithPAInherits.lu')).to.be.true
+    })
 })
 
 describe('luis:convert file creation', () => {

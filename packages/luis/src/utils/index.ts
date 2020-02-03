@@ -3,12 +3,12 @@
  * Licensed under the MIT License.
  */
 
+import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
+import {LUISRuntimeClient} from '@azure/cognitiveservices-luis-runtime'
+import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
-const msRest = require('ms-rest')
-const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
-const {LUISRuntimeClient} = require('azure-cognitiveservices-luis-runtime')
 
 const configPrefix = 'luis__'
 
@@ -50,18 +50,13 @@ const writeUserConfig = async (userconfig: any, configPath: string) => {
 }
 
 const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
-  const token = {
-    inHeader: {
-      'Ocp-Apim-Subscription-Key': subscriptionKey
-    }
-  }
-  const creds = new msRest.ApiKeyCredentials(token)
+  const authoringKey = subscriptionKey
+  const creds = new CognitiveServicesCredentials(authoringKey)
+
   const luisClient = runtime ?
     new LUISRuntimeClient(creds, endpoint) :
     new LUISAuthoringClient(creds, endpoint)
-  luisClient.baseUri = runtime ?
-  'https://westus.api.cognitive.microsoft.com/luis/prediction/v3.0/' :
-  'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
+
   return luisClient
 }
 
@@ -93,7 +88,7 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
     .filter(flag => flag !== 'help')
     .map((flag: string) => {
       if (flag === 'in') {
-        // rename property since 'in' is a reserved keyword in Javascript
+        // rename property since 'in' is a reserved keyword
         input[`${flag}Val`] = flags[flag]
       }
       input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)

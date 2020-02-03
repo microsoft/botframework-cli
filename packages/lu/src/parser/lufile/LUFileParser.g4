@@ -25,7 +25,7 @@ newline
     ;
 
 nestedIntentSection
-    : nestedIntentNameLine newline+ nestedIntentBodyDefinition
+    : nestedIntentNameLine nestedIntentBodyDefinition
     ;
 
 nestedIntentNameLine
@@ -53,7 +53,7 @@ simpleIntentSection
     ;
 
 intentDefinition
-	: intentNameLine newline intentBody?
+	: intentNameLine intentBody?
 	;
 
 intentNameLine
@@ -69,23 +69,27 @@ intentBody
 	;
 
 normalIntentBody
-    : WS* (normalIntentString newline)+
+    : WS* ((normalIntentString newline) | errorIntentString)+
     ;
 
 normalIntentString
 	: WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
 
+errorIntentString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
 newEntitySection
     : newEntityDefinition
     ;
 
 newEntityDefinition
-    : newEntityLine newline newEntityListbody?
+    : newEntityLine newEntityListbody?
     ;
 
 newEntityListbody
-    : (normalItemString newline)+
+    : ((normalItemString newline) | errorItemString)+
     ;
 
 newEntityLine
@@ -133,7 +137,7 @@ entitySection
     ;
 
 entityDefinition
-    : entityLine newline entityListBody?
+    : entityLine entityListBody?
     ;
     
 entityLine
@@ -157,11 +161,15 @@ regexEntityIdentifier
     ;
 
 entityListBody
-    : (normalItemString newline)+
+    : ((normalItemString newline) | errorItemString)+
     ;
 
 normalItemString
     : WS* DASH (WS|TEXT|EXPRESSION)*
+    ;
+
+errorItemString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
     ;
 
 importSection
@@ -177,11 +185,19 @@ qnaSection
     ;
 
 qnaDefinition
-    : qnaQuestion moreQuestionsBody qnaAnswerBody
+    : qnaSourceInfo? qnaIdMark? qnaQuestion moreQuestionsBody qnaAnswerBody promptSection?
     ;
 
+qnaSourceInfo
+    : WS* QNA_SOURCE_INFO
+    ;
+
+qnaIdMark
+    : WS* QNA_ID_MARK
+    ;
+    
 qnaQuestion
-    : WS* QNA questionText newline
+    : WS* QNA questionText
     ;
 
 questionText
@@ -189,23 +205,35 @@ questionText
     ;
 
 moreQuestionsBody
-    : WS* (moreQuestion newline)*
+    : WS* ((moreQuestion newline) | errorQuestionString)*
     ;
 
 moreQuestion
     : DASH (WS|TEXT)*
     ;
 
+errorQuestionString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
 qnaAnswerBody
-    : filterSection? multiLineAnswer
+    : ((filterSection? multiLineAnswer)|(multiLineAnswer filterSection?))
     ;
 
 filterSection
-    : WS* FILTER_MARK filterLine+
+    : WS* FILTER_MARK (filterLine | errorFilterLine)+
+    ;
+
+promptSection
+    : WS* PROMPT_MARK (filterLine | errorFilterLine)+
     ;
 
 filterLine
     : WS* DASH (WS|TEXT)* newline
+    ;
+
+errorFilterLine
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
     ;
 
 multiLineAnswer

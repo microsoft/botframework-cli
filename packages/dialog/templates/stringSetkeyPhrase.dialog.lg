@@ -6,15 +6,22 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$kind": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
     "entity": "keyPhrase",
     "actions": [
         {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "@keyPhrase"          
+            "value": "=@keyPhrase"          
         }
     ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @keyPhrase)}

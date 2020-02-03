@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "money": {
         "type": "object",
-        "$mappings": ["money"],
+        "$entities": ["@{concat('money:', property)}", "money"],
         "properties": {
             "number": {
                 "type": "number"
@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["money.lu","money.lg", "moneyAsk.dialog","moneySet.dialog"]
+        "$templates": ["money.lu","objectProperty.lg", "stringAsk.dialog","moneySet.dialog"]
     }
 }

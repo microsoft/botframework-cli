@@ -9,7 +9,8 @@
   "files": [
     "/lib",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
+    "/oclif.manifest.json",
+    "/templates"
   ],
   "homepage": "https://github.com/microsoft/botframework-cli",
   "keywords": [
@@ -37,15 +38,16 @@
     "version": "npm run doc:readme && git add README.md"
   },
   "dependencies": {
-    "@christopheranderson/botbuilder-lg": "4.7.0-a0-b6513caa",
-    "@christopheranderson/botframework-expressions": "4.7.0-a0-b6513caa",
     "@microsoft/bf-cli-command": "~1.0.0",
-    "@oclif/command": "~1.5.13",
+    "@oclif/command": "~1.5.19",
+    "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "@types/lru-cache": "^5.1.0",
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
     "ajv": "^6.9.1",
+    "botbuilder-lg": "~4.7.0-preview",
+    "botframework-expressions": "~4.7.0-preview",
     "chalk": "^2.4.2",
     "clone": "^2.1.2",
     "fs-extra": "^8.1.0",
@@ -59,7 +61,6 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "@oclif/config": "~1.13.3",
     "@oclif/dev-cli": "^1.22.0",
     "@oclif/plugin-help": "^2.2.0",
     "@oclif/test": "^1.2.5",

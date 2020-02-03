@@ -4,35 +4,35 @@
     "properties": {
         "Account":{ 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "Topic": { 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "Territory": { 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "Description": { 
             "type": "string",
-            "$mappings": ["utterance"]
+            "$entities": ["utterance"]
         },
         "ContactPhone": { 
             "type": "string", 
-            "$mappings": [ "utterance" ]
+            "$entities": [ "utterance" ]
         },
         "ContactEmail": { 
             "type": "string", 
-            "$mappings": [ "email" ]
+            "$entities": [ "email" ]
         },
         "EstimatedCloseDate": { 
             "type": "string",
-            "$mappings": [ "datetime" ]
+            "$entities": [ "datetime" ]
         },
         "PurchaseTimeframe": { 
             "type": "string",
-            "$mappings": [ "datetime" ]
+            "$entities": [ "datetime" ]
         },
         "Confirmation": {
             "type": "string",

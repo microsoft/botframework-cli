@@ -1,5 +1,5 @@
 # filename
-- @{entityFilename()}
+- @{schemaName}-datetime.@{locale}.lu
 
 # template
 - $PREBUILT:datetimeV2 @{roles()}

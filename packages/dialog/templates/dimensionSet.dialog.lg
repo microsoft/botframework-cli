@@ -1,0 +1,32 @@
+
+# filename
+- @{schemaName}-@{property}Setdimension.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "dimension",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.number",
+            "value": "=@dimension.number"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.units",
+            "value": "=@dimension.units"          
+        }
+    ]               
+}
+```
+
+# callSetMessage
+- @\{setObjectPropertyMessage('@{property}',concat(string(@dimension.number), ' ', @dimension.units))}

@@ -38,4 +38,86 @@ describe('With parse file function', function() {
         assert.equal(qna.files[0].fileUri, 'https://download.microsoft.com/download/2/9/B/29B20383-302C-4517-A006-B0186F04BE28/surface-pro-4-user-guide-EN.pdf');
     })
 
+    it('filters can appear before answer', function(done){
+        let fileContent = `
+# ?hello
+
+**Filters:**
+- a=b
+
+\`\`\`markdown
+hi there
+\`\`\`
+`;
+        parseFile(fileContent)
+            .then(res => {
+                assert.equal(res.qnaJsonStructure.qnaList[0].metadata.length, 1);
+                assert.equal(res.qnaJsonStructure.qnaList[0].metadata[0].name, "a");
+                assert.equal(res.qnaJsonStructure.qnaList[0].metadata[0].value, "b");
+                done();
+            })
+            .catch(err => done(err))
+    })
+
+    it('filters can appear after answer', function(done){
+        let fileContent = `
+# ?hello
+
+\`\`\`markdown
+hi there
+\`\`\`
+
+**Filters:**
+- a=b
+`;
+        parseFile(fileContent)
+            .then(res => {
+                assert.equal(res.qnaJsonStructure.qnaList[0].metadata.length, 1);
+                assert.equal(res.qnaJsonStructure.qnaList[0].metadata[0].name, "a");
+                assert.equal(res.qnaJsonStructure.qnaList[0].metadata[0].value, "b");
+                done();
+            })
+            .catch(err => done(err))
+    })
+
+    it('answer can be specified with markdown prefix', function(done){
+        let fileContent = `
+# ?hello
+
+\`\`\`markdown
+hi there
+\`\`\`
+
+**Filters:**
+- a=b
+`;
+        parseFile(fileContent)
+            .then(res => {
+                assert.equal(res.qnaJsonStructure.qnaList[0].answer, "hi there");
+                done();
+            })
+            .catch(err => done(err))
+    })
+
+    it('answer can be specified WITHOUT markdown prefix', function(done){
+        let fileContent = `
+# ?hello
+
+\`\`\`
+hi there
+\`\`\`
+
+**Filters:**
+- a=b
+`;
+        parseFile(fileContent)
+            .then(res => {
+                assert.equal(res.qnaJsonStructure.qnaList[0].answer, "hi there");
+                console.log(JSON.stringify(res.qnaJsonStructure, null, 2));
+                done();
+            })
+            .catch(err => done(err))
+    })
+    
+
 });

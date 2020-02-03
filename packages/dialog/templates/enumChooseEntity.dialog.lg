@@ -1,0 +1,21 @@
+# filename
+- @{schemaName}-@{property}EntityChoose.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnChooseEntity",
+    "entity": "@{property}Entity",
+    "actions": [
+        {
+            "$kind": "Microsoft.Ask",
+            "activity": "@{callChoose()}",
+            "expectedProperties": ["@{property}"]
+        }
+    ]
+}
+```
+
+# callChoose
+- @\{choose@{property}Entity()}
