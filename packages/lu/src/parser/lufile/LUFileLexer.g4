@@ -41,6 +41,10 @@ fragment WHITESPACE
 
 fragment UTTERANCE_MARK: '-' | '*' | '+';
 
+QNA_SOURCE_INFO
+  : WS* '>' WHITESPACE* '!# @qna.pair.source' WHITESPACE* '=' ~('\r'|'\n')+
+  ;
+
 MODEL_INFO
   : WS* '>' WHITESPACE* '!#' ~('\r'|'\n')+
   ;
@@ -89,10 +93,17 @@ FILTER_MARK
   : '**' F I L T E R S ':**'
   ;
 
-MULTI_LINE_TEXT
-  : '```' M A R K D O W N .*? '```'
+QNA_ID_MARK
+  : '<a' .*? '</a>'
   ;
 
+MULTI_LINE_TEXT
+  : '```' .*? '```'
+  ;
+PROMPT_MARK
+  : '**' P R O M P T S ':**'
+  ;
+  
 INVALID_TOKEN_DEFAULT_MODE
   : .
   ;

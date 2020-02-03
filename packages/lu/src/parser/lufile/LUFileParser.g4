@@ -185,9 +185,17 @@ qnaSection
     ;
 
 qnaDefinition
-    : qnaQuestion moreQuestionsBody qnaAnswerBody
+    : qnaSourceInfo? qnaIdMark? qnaQuestion moreQuestionsBody qnaAnswerBody promptSection?
     ;
 
+qnaSourceInfo
+    : WS* QNA_SOURCE_INFO
+    ;
+
+qnaIdMark
+    : WS* QNA_ID_MARK
+    ;
+    
 qnaQuestion
     : WS* QNA questionText
     ;
@@ -209,11 +217,15 @@ errorQuestionString
     ;
 
 qnaAnswerBody
-    : filterSection? multiLineAnswer
+    : ((filterSection? multiLineAnswer)|(multiLineAnswer filterSection?))
     ;
 
 filterSection
     : WS* FILTER_MARK (filterLine | errorFilterLine)+
+    ;
+
+promptSection
+    : WS* PROMPT_MARK (filterLine | errorFilterLine)+
     ;
 
 filterLine

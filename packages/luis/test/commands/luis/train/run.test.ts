@@ -23,24 +23,34 @@ describe('luis:train:run', () => {
   })
 
   test
-  .stdout()
-  .stderr()
-  .command(['luis:train:run', '--appId', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com',  '--versionId', '0.1'])
-  .it('displays an error if any required input parameters are missing', ctx => {
-    expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
-  })
-
-  test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .post(uri => uri.includes('train'))
   .reply(202, {"statusId": 2,"status": "UpToDate"})
   )
   .stdout()
   .command(['luis:train:run', '--appId', uuidv1(), '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
-  .it('issues an asynchronous training request', ctx => {
+  .it('issues an asynchronous training request and reports when complete', ctx => {
     expect(ctx.stdout).to.contain('Training request successfully issued')
-    expect(ctx.stdout).to.contain('statusId')
-    expect(ctx.stdout).to.contain('status')
+  })
+
+  test
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .get(uri => uri.includes('train'))
+  .reply(202, [{
+    "modelId": "99999",
+    "details": {
+      "statusId": 0,
+      "status": "Success"
+    }
+  }])
+  .post(uri => uri.includes('train'))
+  .reply(202, {"statusId": 2,"status": "UpToDate"})
+  )
+  .stdout()
+  .command(['luis:train:run', '--appId', uuidv1(), '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--wait'])
+  .it('issues an asynchronous training request and reports when complete', ctx => {
+    expect(ctx.stdout).to.contain('Training request successfully issued')
+    expect(ctx.stdout).to.contain('checking training status...')
   })
 
 })
