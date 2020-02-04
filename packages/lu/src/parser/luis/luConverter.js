@@ -279,6 +279,11 @@ const addAppMetaData = function(LUISJSON) {
     if (LUISJSON.versionId) fileContent += `> !# @app.versionId = ${LUISJSON.versionId}` + NEWLINE;
     if (LUISJSON.culture) fileContent += `> !# @app.culture = ${LUISJSON.culture}` + NEWLINE;
     if (LUISJSON.luis_schema_version) fileContent += `> !# @app.luis_schema_version = ${LUISJSON.luis_schema_version}` + NEWLINE;
+    if (LUISJSON.settings) {
+        LUISJSON.settings.forEach(setting => {
+            fileContent += `> !# @app.settings.${setting.name} = ${setting.value}` + NEWLINE;
+        })
+    }
     return fileContent === '' ? fileContent : `> LUIS application information` + NEWLINE + fileContent + NEWLINE + NEWLINE;
 }
 /**

@@ -573,6 +573,11 @@ Few different references are supported in the .lu file. These follow Markdown li
 	- `[link name](\<.lu file path>#*utterances*) will find all utterances in the .lu file and add them to the list of utterances where this reference is specified
     - `[link name](\<.lu file path>#*patterns*) will find all patterns in the .lu file and add them to the list of utterances where this reference is specified
 	- `[link name](\<.lu file path>#*utterancesAndPatterns*) will find all utterances and patterns in the .lu file and add them to the list of utterances where this reference is specified
+    - `[link name](\<.qna file path>#$name?) will find all alterations from the specific alteration definition in the .qna content and add them to the list of utterances where this reference is specified
+    - `[link name](\<.qna file path>#*alterations*?) will find all alterations from the .qna content and add them to the list of utterances where this reference is specified
+    - `[link name](\<.qna file path>#?question-to-find?) will find all variation questions from the specific question and add them to the list of utterances where this reference is specified. Note: any spaces in your question will need to be replaced with '-'. E.g. '#?-book-flight'
+    - `[link name](\<.qna file path>#*answers*?) will find all answers and add them to the list of utterances where this reference is specified. 
+
 
 
 Here's an example of those references: 
