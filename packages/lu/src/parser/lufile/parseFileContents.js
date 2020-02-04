@@ -1806,7 +1806,25 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
                 }
 
                 if (kvPair[1].toLowerCase() === 'app') {
-                    parsedContent.LUISJsonStructure[kvPair[2]] = kvPair[3];
+                    if (kvPair[2].toLowerCase().startsWith('settings')) {
+                        let settingsRegExp = /^settings.(?<property>.*?$)/gmi;
+                        let settingsPair = settingsRegExp.exec(kvPair[2]);
+                        if (settingsPair && settingsPair.groups && settingsPair.groups.property) {
+                            if (!parsedContent.LUISJsonStructure.settings) {
+                                parsedContent.LUISJsonStructure.settings = [{name : settingsPair.groups.property, value : kvPair[3] === "true"}];
+                            } else {
+                                // find the setting
+                                let sFound = parsedContent.LUISJsonStructure.settings.find(setting => setting.name == settingsPair.groups.property);
+                                if (sFound) {
+                                    sFound.value = kvPair[3] === "true";
+                                } else {
+                                    parsedContent.LUISJsonStructure.settings.push({name : settingsPair.groups.property, value : kvPair[3] === "true"})
+                                }
+                            }
+                        }
+                    } else {
+                        parsedContent.LUISJsonStructure[kvPair[2]] = kvPair[3];
+                    }
                 } else if (kvPair[1].toLowerCase() === 'kb') {
                     parsedContent.qnaJsonStructure[kvPair[2]] = kvPair[3];
                 } else if (kvPair[1].toLowerCase() === 'intent') {
