@@ -1450,6 +1450,13 @@ export class Utility {
         return null;
     }
 
+    public static stringToLineArray(
+    stringContent: string): string[] {
+        const lineArray: string[] = stringContent.split("\n");
+        const lineTrimedArray: string[] = lineArray.map((x) => x.trim());
+        return lineTrimedArray;
+    }
+
     public static loadFile(
         filename: string,
         encoding: string = "utf8"): string {

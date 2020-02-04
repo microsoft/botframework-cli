@@ -5,7 +5,21 @@ trigger:
     - master
 
 pr:
-- master
+  branches:
+    include:
+     - master
+  paths:
+    include:
+      - '*'
+    exclude:
+      - README.md
+      - specs/*
+      - PortingMap.md
+      - ToolLifetimeSchedule.md
+      - AzureCli.md
+      - CONTRIBUTING.md
+      - LICENSE
+      - PRIVACY.md
 
 schedules:
 - cron: "0 8 * * *"
