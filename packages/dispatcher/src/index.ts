@@ -9,9 +9,19 @@ import { mainCrossValidatorWithColumnarContent } from "./model/evaluation/cross_
 import { mainCrossValidatorWithLuContent } from "./model/evaluation/cross_validation/AppCrossValidator";
 import { mainCrossValidator } from "./model/evaluation/cross_validation/AppCrossValidator";
 
+import { mainPredictor } from "./model/evaluation/predict/AppPredictor";
+
+import { mainDataProfileReporter } from "./model/evaluation/report/AppDataProfileReporter";
+import { mainModelMetaDataProfileReporter } from "./model/evaluation/report/AppModelMetaDataProfileReporter";
+import { mainThresholdReporter } from "./model/evaluation/report/AppThresholdReporter";
+
 export default {
     AppAutoActiveLearner,
     mainCrossValidator,
     mainCrossValidatorWithLuContent,
     mainCrossValidatorWithColumnarContent,
+    mainPredictor,
+    mainDataProfileReporter,
+    mainModelMetaDataProfileReporter,
+    mainThresholdReporter,
 };
