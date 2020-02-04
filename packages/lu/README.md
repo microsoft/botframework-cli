@@ -19,7 +19,7 @@
 
 # Commands
 <!-- commands -->
-* [`bf luis`](#bf-luis)
+* [`bf luis:build`](#bf-luisbuild)
 * [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
@@ -27,19 +27,38 @@
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:translate`](#bf-qnamakertranslate)
 
-## `bf luis`
+## `bf luis:build`
 
-Converts, translates luis/lu files or generates source code.
+Build lu files to train and publish luis applications
 
 ```
 USAGE
-  $ bf luis
+  $ bf luis:build
 
 OPTIONS
-  -h, --help  Display Luis available commands
+  -f, --force                      Force write dialog and settings files
+  -h, --help                       show CLI help
+  -i, --in=in                      Lu file or folder
+  --authoringKey=authoringKey      (required) LUIS authoring key
+  --botName=botName                (required) Bot name
+  --culture=culture                Culture code for the content. Infer from .lu if available. Defaults to en-us
+  --dialog                         Write out .dialog files
+
+  --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
+                                   valid if --dialog is set
+
+  --out=out                        Output location
+
+  --region=region                  LUIS authoring region
+
+  --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name
+
+EXAMPLE
+
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
 ```
 
-_See code: [src/commands/luis/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/index.ts)_
+_See code: [src/commands/luis/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lu/src/commands/luis/build.ts)_
 
 ## `bf luis:convert`
 
@@ -127,7 +146,7 @@ _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botfram
 
 ## `bf qnamaker:convert`
 
-Converts .lu file(s) to QnA application JSON models or vice versa.
+Converts .qna file(s) to QnA application JSON models or vice versa.
 
 ```
 USAGE
