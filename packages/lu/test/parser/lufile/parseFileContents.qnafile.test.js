@@ -113,7 +113,6 @@ hi there
         parseFile(fileContent)
             .then(res => {
                 assert.equal(res.qnaJsonStructure.qnaList[0].answer, "hi there");
-                console.log(JSON.stringify(res.qnaJsonStructure, null, 2));
                 done();
             })
             .catch(err => done(err))

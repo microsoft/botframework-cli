@@ -92,8 +92,36 @@
       "entities": []
     }
   ],
-  "patterns": [],
-  "patternAnyEntities": [],
+  "patterns": [
+    {
+      "pattern": "delete the {alarmTime} alarm",
+      "intent": "All"
+    },
+    {
+      "pattern": "remove the {alarmTime} alarm",
+      "intent": "All"
+    },
+    {
+      "pattern": "set {commPreference} as my communication preference",
+      "intent": "All"
+    },
+    {
+      "pattern": "I prefer to receive {commPreference}",
+      "intent": "All"
+    }
+  ],
+  "patternAnyEntities": [
+    {
+      "name": "alarmTime",
+      "explicitList": [],
+      "roles": []
+    },
+    {
+      "name": "commPreference",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
   "prebuiltEntities": [],
   "luis_schema_version": "3.2.0",
   "versionId": "0.1",
