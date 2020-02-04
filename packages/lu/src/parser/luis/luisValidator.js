@@ -160,6 +160,11 @@ const validateBoundaries = function(luisJSON) {
     if (totalNumberOfEntitiesAndRoles > retCode.boundaryLimits.MAX_TOTAL_ENTITES_AND_ROLES) {
         validationError(retCode.errorCode.BOUNDARY_TOTAL_ENTITIES_AND_ROLES, `${totalNumberOfEntitiesAndRoles} combined roles and entity definitions found. At most ${retCode.boundaryLimits.MAX_TOTAL_ENTITES_AND_ROLES} is allowed.`)
     }
+
+    // up to 50 list entities
+    if (luisJSON.closedLists.length > retCode.boundaryLimits.MAX_NUM_CLOSED_LISTS) {
+        validationError(retCode.errorCode.BOUNDARY_TOTAL_CLOSED_LISTS, `${luisJSON.closedLists.length} list entity definitions found. At most ${retCode.boundaryLimits.MAX_NUM_CLOSED_LISTS} is allowed.`)
+    }
 }
 const validationError = function (code, errorMsg) {
     let error = BuildDiagnostic({ message: errorMsg });

@@ -47,7 +47,8 @@ module.exports = {
         BOUNDARY_TOTAL_ROLES:       516,
         BOUNDARY_FEATURE_PER_MODEL: 517,
         BOUNDARY_PARENT_ENTITY_LIMIT:518,
-        BOUNDARY_TOTAL_ENTITIES_AND_ROLES:519
+        BOUNDARY_TOTAL_ENTITIES_AND_ROLES:519,
+        BOUNDARY_TOTAL_CLOSED_LISTS:520
     },
     boundaryLimits: {
         MAX_NUM_INTENTS:                    500,
@@ -68,6 +69,7 @@ module.exports = {
         MAX_NUM_ROLES:                      300,
         MAX_NUM_DESCRIPTORS_PER_MODEL:      10,
         MAX_NUM_PARENT_ENTITIES:            100,
-        MAX_TOTAL_ENTITES_AND_ROLES:        330
+        MAX_TOTAL_ENTITES_AND_ROLES:        330,
+        MAX_NUM_CLOSED_LISTS:               50
     }
 };

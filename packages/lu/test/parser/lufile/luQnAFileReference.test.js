@@ -19,7 +19,6 @@ describe('Deep reference tests', function() {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 2);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "answer1");
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[1].text, "answer2");
-                //console.log(JSON.stringify(res, null, 2));
                 done()
             })
             .catch(err => done(err))
@@ -37,7 +36,6 @@ describe('Deep reference tests', function() {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 4);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "book flight");
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[3].text, "I'm looking to fly");
-                //console.log(JSON.stringify(res, null, 2));
                 done()
             })
             .catch(err => done(err))

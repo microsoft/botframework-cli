@@ -179,6 +179,16 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
             })
     })
 
+    it (`At most ${retCode.boundaryLimits.MAX_NUM_CLOSED_LISTS} list entities`, function(done) {
+        luMerger.Build(new Array(new luObj(getMaxListEntity())))
+            .then(res => done(res))
+            .catch(err => {
+                assert.equal(err.errCode, retCode.errorCode.BOUNDARY_TOTAL_CLOSED_LISTS);
+                assert(err.text.includes(`At most ${retCode.boundaryLimits.MAX_NUM_CLOSED_LISTS} is allowed.`));
+                done();
+            })
+    })
+
     // This test is commented out because it takes > 60s to complete.
     // it (`At most ${retCode.boundaryLimits.MAX_NUM_PHRASES_IN_ALL_PHRASE_LIST} phrases across all phrase lists`, function(done) {
     //     luMerger.Build(new Array(new luObj(getMaxPhraseLists(0, retCode.boundaryLimits.MAX_NUM_PHRASES_IN_ALL_PHRASE_LIST), 'stdin', true)))
@@ -192,6 +202,14 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
 
 })
 
+const getMaxListEntity = function() {
+    let fc = '';
+    for (var i = 0; i <= retCode.boundaryLimits.MAX_NUM_CLOSED_LISTS; i++) {
+        fc += `
+@ list entity${i}`;
+    }
+    return fc;
+}
 const getMaxEntityAndRoles = function() {
     let fc = '';
     for (var i = 0; i < retCode.boundaryLimits.MAX_NUM_ROLES; i++) {
