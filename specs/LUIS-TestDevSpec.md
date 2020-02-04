@@ -34,9 +34,10 @@ Based on the requirement, user needs to provide the testdata file and the LUIS c
 - Support lu file format and json file format as the input file.
 - Support both intent and entity test.  
 - Support intent only test.
-- Entity types include the simple entity, composite entity, and the entity with role.  
+- Entity types include the simple entity, ml entity, composite entity, and the entity with role.  
 - Support batch testing.
 - Result includes the summary at the beginning and the detail attached right after that.
+  - Precision, Recall, and F1 for each intent and entity at the top of the report.
   - Both entity and intent matched with the expected ones can be counted as pass.
   - Detail result will include the actual predicted intent with the score and the predicted entities.
   - If "allowIntentsCount" is set, user can get prediction score for \<number\> intents and default is the top-scoring intent.
@@ -51,7 +52,7 @@ USAGE
 OPTIONS
   -a, --appid=appid                       A luis app id where to test the model
   -h, --help                              luis:convert help
-  -i, --in=in                             Source .lu file(s) or LUIS application JSON model
+  -i, --in=in                             Source .lu file(s) or JSON file for luis testing
   -o, --out=out                           Output file or folder name. If not specified stdout will be used as output
   -s, --subscriptionKey=subscriptionKey   An azure subscription
   --allowIntentsCount=allowIntentsCount   [default: 1] top-scoring intent or top n Intent with score to show in the result
@@ -85,6 +86,8 @@ Input: testdata.lu
 Output: result.lu  
 
 > Total passed utterance: 8/10
+> IntentA : Precision: 0.86, Recall: 0.54, F1: 0.77
+> EntityA : Precision: 0.86, Recall: 0.54, F1: 0.77
 
 > <list out all the failed results>
 ```
