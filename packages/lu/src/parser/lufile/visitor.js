@@ -20,7 +20,7 @@ class Visitor {
                     errorMsgs = errorMsgs.concat(result.errorMsgs);
                     if (entityObjects[entityObjects.length - 1].entityValue !== undefined) {
                         // simple entitiy
-                        utterance = utterance.concat(entityObjects[entityObjects.length - 1].entityValue);
+                        utterance = utterance.concat(entityObjects[entityObjects.length - 1].entityValue).trimLeft();
                         for (const entityObject of entityObjects) {
                             let startPos = utterance.lastIndexOf(entityObject.entityValue);
                             let endPos = startPos + entityObject.entityValue.length - 1;
