@@ -1029,5 +1029,20 @@ describe('parseFile correctly parses utterances', function () {
 
         })
 
+        it ('excape characters are handled correctly', function(done){
+                let testLU = `# intent1
+                - this is a \\{test\\}
+                - this ia a test \\n`;
 
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 0);
+                                assert.equal(res.LUISJsonStructure.entities.length, 0);
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, 'this is a \\{test\\}');
+                                assert.equal(res.LUISJsonStructure.utterances[1].text, 'this ia a test \\n');
+                                done();
+                        })
+                        .catch(err => done('Fail!'))
+
+        })
 })

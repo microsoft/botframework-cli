@@ -1,4 +1,4 @@
-// Generated from LUFileParser.g4 by ANTLR 4.7.1
+// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -170,12 +170,6 @@ LUFileParserVisitor.prototype.visitNewEntityUsesFeatures = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#newEntityRoleOrFeatures.
 LUFileParserVisitor.prototype.visitNewEntityRoleOrFeatures = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#text.
-LUFileParserVisitor.prototype.visitText = function(ctx) {
   return this.visitChildren(ctx);
 };
 
