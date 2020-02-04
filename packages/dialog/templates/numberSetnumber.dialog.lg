@@ -12,7 +12,7 @@
     "actions": [
         {
             "$kind": "Microsoft.IfCondition",
-            "condition":"or(and(dialogClass.schema.properties['@{property}'].minimum, less(@number, dialogClass.schema.properties['@{property}'].minimum)), and(dialogClass.schema.properties['@{property}'].maximum, greater(@number, dialogClass.schema.properties['@{property}'].maximum)))",
+            "condition":"or(less(@number, dialogClass.schema.properties['@{property}'].minimum), greater(@number, dialogClass.schema.properties['@{property}'].maximum))",
             "actions":[
                 {
                     "$kind": "Microsoft.SendActivity",
