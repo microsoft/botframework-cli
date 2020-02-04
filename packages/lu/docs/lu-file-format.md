@@ -568,9 +568,12 @@ Few different references are supported in the .lu file. These follow Markdown li
 	- `[link name](<.lu file path>/**)` - will recursively look for .lu files under the specified absolute or relative path including sub-folders.
 - You can also add references to utterances defined in a specific file under an Intent section or as QnA pairs.
 	- `[link name](<.lu file path>#<INTENT-NAME>) will find all utterances found under <INTENT-NAME> in the .lu file and add them to the list of utterances where this reference is specified
+    - `[link name](<.lu file path>#<INTENT-NAME>*utterances*) will find all utterances (and not patterns) found under <INTENT-NAME> in the .lu file and add them to the list of utterances where this reference is specified
+    - `[link name](<.lu file path>#<INTENT-NAME>*patterns*) will find all patterns (and not utterances) found under <INTENT-NAME> in the .lu file and add them to the list of patterns where this reference is specified
 	- `[link name](\<.lu file path>#*utterances*) will find all utterances in the .lu file and add them to the list of utterances where this reference is specified
     - `[link name](\<.lu file path>#*patterns*) will find all patterns in the .lu file and add them to the list of utterances where this reference is specified
 	- `[link name](\<.lu file path>#*utterancesAndPatterns*) will find all utterances and patterns in the .lu file and add them to the list of utterances where this reference is specified
+
 
 Here's an example of those references: 
 

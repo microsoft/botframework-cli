@@ -45,8 +45,8 @@ export default class QnamakerConvert extends Command {
       if (isQnA) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
         result = {}
-        result.finalQnAJSON = await QnAMakerBuilder.build(luFiles, false, flags.luis_culture)
-        result.finalQnAAlterations = await alterationsBuilder.build(luFiles, false, flags.luis_culture)
+        result.finalQnAJSON = await QnAMakerBuilder.build([...luFiles], false, flags.luis_culture)
+        result.finalQnAAlterations = await alterationsBuilder.build([...luFiles], false, flags.luis_culture)
       } else {
         const qnaContent = stdin ? stdin : await file.getContentFromFile(flags.in)
         const QnA = flags.alterations ? new Alterations(file.parseJSON(qnaContent, 'QnA Alterations')) : new QnAMaker(file.parseJSON(qnaContent, 'QnA'))

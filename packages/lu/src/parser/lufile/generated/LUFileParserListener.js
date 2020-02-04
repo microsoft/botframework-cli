@@ -398,6 +398,24 @@ LUFileParserListener.prototype.exitQnaDefinition = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#qnaSourceInfo.
+LUFileParserListener.prototype.enterQnaSourceInfo = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#qnaSourceInfo.
+LUFileParserListener.prototype.exitQnaSourceInfo = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserListener.prototype.enterQnaIdMark = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserListener.prototype.exitQnaIdMark = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#qnaQuestion.
 LUFileParserListener.prototype.enterQnaQuestion = function(ctx) {
 };
@@ -458,6 +476,15 @@ LUFileParserListener.prototype.enterFilterSection = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#filterSection.
 LUFileParserListener.prototype.exitFilterSection = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#promptSection.
+LUFileParserListener.prototype.enterPromptSection = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#promptSection.
+LUFileParserListener.prototype.exitPromptSection = function(ctx) {
 };
 
 

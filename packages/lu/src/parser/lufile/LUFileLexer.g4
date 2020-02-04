@@ -45,6 +45,10 @@ NEWLINE
   : '\r'? '\n' -> skip
   ;
 
+QNA_SOURCE_INFO
+  : WS* '>' WS* '!# @qna.pair.source' WS* '=' ~('\r'|'\n')+
+  ;
+
 MODEL_INFO
   : WS* '>' WS* '!#' ~('\r'|'\n')+
   ;
@@ -85,10 +89,17 @@ FILTER_MARK
   : '**' F I L T E R S ':**'
   ;
 
-MULTI_LINE_TEXT
-  : '```' M A R K D O W N .*? '```'
+QNA_ID_MARK
+  : '<a' .*? '</a>'
   ;
 
+MULTI_LINE_TEXT
+  : '```' .*? '```'
+  ;
+PROMPT_MARK
+  : '**' P R O M P T S ':**'
+  ;
+  
 INVALID_TOKEN_DEFAULT_MODE
   : .
   ;
