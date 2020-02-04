@@ -1625,8 +1625,14 @@ describe("Test Suite - utility/Utility", () => {
             Utility.loadFile(filename);
         Utility.debuggingLog(
             `fileContent.length=${fileContent.length}`);
-        assert.ok(fileContent.length === 25892,
-            `fileContent.length=${fileContent.length}`);
+        const lineArray: string[] =
+            Utility.stringToLineArray(fileContent);
+        const fileContentReCombined: string =
+            lineArray.reduce((accumulant, entry) => accumulant += (entry + "\n"), "");
+        assert.ok(lineArray.length === 603,
+            `lineArray.length=${lineArray.length}`);
+        assert.ok(fileContentReCombined.length === 25291, // ---- NOTE ---- Windows file length: 25892,
+            `fileContentReCombined.length=${fileContentReCombined.length}`);
     });
     it("Test.1201 dumpFile()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -1638,8 +1644,14 @@ describe("Test Suite - utility/Utility", () => {
             Utility.loadFile(filename);
         Utility.debuggingLog(
             `fileContent.length=${fileContent.length}`);
-        assert.ok(fileContent.length === 25892,
-            `fileContent.length=${fileContent.length}`);
+        const lineArray: string[] =
+            Utility.stringToLineArray(fileContent);
+        const fileContentReCombined: string =
+            lineArray.reduce((accumulant, entry) => accumulant += (entry + "\n"), "");
+        assert.ok(lineArray.length === 603,
+            `lineArray.length=${lineArray.length}`);
+        assert.ok(fileContentReCombined.length === 25291, // ---- NOTE ---- Windows file length: 25892,
+            `fileContentReCombined.length=${fileContentReCombined.length}`);
         const filenameOuput: string = "resources/data/Columnar/Email_UtilityUnitTest_1201.tsv";
         Utility.dumpFile(filenameOuput, fileContent);
     });
