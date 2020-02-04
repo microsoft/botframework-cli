@@ -1,4 +1,4 @@
-// Generated from LUFileParser.g4 by ANTLR 4.7.1
+// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -251,15 +251,6 @@ LUFileParserListener.prototype.enterNewEntityRoleOrFeatures = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#newEntityRoleOrFeatures.
 LUFileParserListener.prototype.exitNewEntityRoleOrFeatures = function(ctx) {
-};
-
-
-// Enter a parse tree produced by LUFileParser#text.
-LUFileParserListener.prototype.enterText = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#text.
-LUFileParserListener.prototype.exitText = function(ctx) {
 };
 
 

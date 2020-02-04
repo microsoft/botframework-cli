@@ -127,7 +127,6 @@ $test:/hrf-[0-9]{6}/`;
                             let luisObj = new luis()
                             let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
                             luisObj.collate(luisList)
-                            console.log(JSON.stringify(res, null, 2));
                             done(`Test failed - did not throw when expected`);
                         } catch(err) {
                             done()
