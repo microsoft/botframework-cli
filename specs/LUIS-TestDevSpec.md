@@ -32,9 +32,10 @@ Based on the requirement, user needs to provide the testdata file and the LUIS c
 ### Summary
 
 - Support lu file format and json file format as the input file.
-- Support both intent and entity test.  
-- Support intent only test.
-- Entity types include the simple entity, ml entity, composite entity, and the entity with role.  
+- Support both intent and entity test. Entity types include the simple entity, ml entity and composite entity.
+- Support intent only test. 
+- Support role test for prebuilt entity and custom entity type. 
+    - eg. simiple entity, ml entity, composite entity, regex entity, list entity, prebuit entity, pattern.any entity  
 - Support batch testing.
 - Result includes the summary at the beginning and the detail attached right after that.
   - Precision, Recall, and F1 for each intent and entity at the top of the report.
