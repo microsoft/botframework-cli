@@ -2,20 +2,21 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnAssignEntity",
     "property": "CancelConfirmation",
+    "entity": "Confirmation",
     "actions": [
         {
-            "$type": "Microsoft.SetProperty",
+            "$kind": "Microsoft.SetProperty",
             "property": "$CancelConfirmation",
-            "value": "@Confirmation"
+            "value": "=@Confirmation"
         },
         {
-            "$type": "Microsoft.IfCondition",
+            "$kind": "Microsoft.IfCondition",
             "condition":"$CancelConfirmation == 'yes'",
             "actions": [
                 {
-                    "$type": "Microsoft.EndDialog"
+                    "$kind": "Microsoft.EndDialog"
                 }
             ]
         }

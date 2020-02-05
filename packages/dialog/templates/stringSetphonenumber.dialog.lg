@@ -1,14 +1,27 @@
 
 # filename
-- @{formName}-@{property}Setphonenumber.dialog
+- @{schemaName}-@{property}Setphonenumber.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@phonenumber"
-               
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "phonenumber",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@phonenumber"          
+        }
+    ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @phonenumber)}

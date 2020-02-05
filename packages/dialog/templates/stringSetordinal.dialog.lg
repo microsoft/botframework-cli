@@ -1,14 +1,27 @@
 
 # filename
-- @{formName}-@{property}Setordinal.dialog
+- @{schemaName}-@{property}Setordinal.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@ordinal"
-               
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity":"ordinal",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@ordinal"          
+        }
+    ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @ordinal)}

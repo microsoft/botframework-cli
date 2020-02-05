@@ -8,20 +8,20 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionImport extends Command {
-  static description = 'Imports a new version into a LUIS application'
+  static description = 'Imports a new version into a LUIS application from JSON or LU content.'
 
   static examples = [`
     $ bf luis:version:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --in {PATH_TO_JSON} --versionId {VERSION_ID}
     $ echo {SERIALIZED_JSON} | bf luis:version:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id'}),
-    versionId: flags.string({description: 'LUIS application version to import'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: 'Version to export (defaults to config:LUIS:versionId)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    in: flags.string({char: 'i', description: 'File path containing LUIS application contents'})
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'})
   }
 
   async run() {
@@ -46,8 +46,8 @@ export default class LuisVersionImport extends Command {
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
-      const newVersionId = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
-      this.log(`App version successfully imported as version ${newVersionId}.`)
+      const response = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
+      this.log(`App version successfully imported as version ${response.body}.`)
     } catch (err) {
       throw new CLIError(`Failed to import app version: ${err}`)
     }

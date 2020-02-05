@@ -10,30 +10,37 @@
   "regex_entities": [],
   "model_features": [],
   "regex_features": [],
-  "utterances": [
+  "utterances": [],
+  "patterns": [
     {
-      "text": "delete the {alarmTime} alarm",
-      "intent": "All",
-      "entities": []
+      "pattern": "delete the {alarmTime} alarm",
+      "intent": "All"
     },
     {
-      "text": "remove the {alarmTime} alarm",
-      "intent": "All",
-      "entities": []
+      "pattern": "remove the {alarmTime} alarm",
+      "intent": "All"
     },
     {
-      "text": "set {commPreference} as my communication preference",
-      "intent": "All",
-      "entities": []
+      "pattern": "set {commPreference} as my communication preference",
+      "intent": "All"
     },
     {
-      "text": "I prefer to receive {commPreference}",
-      "intent": "All",
-      "entities": []
+      "pattern": "I prefer to receive {commPreference}",
+      "intent": "All"
     }
   ],
-  "patterns": [],
-  "patternAnyEntities": [],
+  "patternAnyEntities": [
+    {
+      "name": "alarmTime",
+      "explicitList": [],
+      "roles": []
+    },
+    {
+      "name": "commPreference",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
   "prebuiltEntities": [],
   "luis_schema_version": "3.2.0",
   "versionId": "0.1",

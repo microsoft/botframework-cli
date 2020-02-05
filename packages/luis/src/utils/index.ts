@@ -3,11 +3,14 @@
  * Licensed under the MIT License.
  */
 
+import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
+import {LUISRuntimeClient} from '@azure/cognitiveservices-luis-runtime'
+import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
-const msRest = require('ms-rest')
-const {LUISAuthoringClient} = require('azure-cognitiveservices-luis-authoring')
+
+const configPrefix = 'luis__'
 
 const filterConfig = (config: any, prefix: string) => {
   return Object.keys(config)
@@ -33,22 +36,41 @@ const getUserConfig = async (configPath: string) => {
   if (fs.existsSync(path.join(configPath, 'config.json'))) {
     return fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
   }
+  return null
 }
 
-const getLUISClient = (subscriptionKey: string, endpoint: string) => {
-  const token = {
-    inHeader: {
-      'Ocp-Apim-Subscription-Key': subscriptionKey
-    }
-  }
-  const creds = new msRest.ApiKeyCredentials(token)
-  const luisClient = new LUISAuthoringClient(creds, endpoint)
-  luisClient.baseUri = 'https://westus.api.cognitive.microsoft.com/luis/authoring/v3.0-preview/'
+const createConfigFile = async (configPath: string) => {
+  await fs.mkdirp(configPath)
+  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify({}, null, 2))
+}
+
+const writeUserConfig = async (userconfig: any, configPath: string) => {
+  await fs.mkdirp(configPath)
+  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify(userconfig, null, 2))
+}
+
+const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
+  const authoringKey = subscriptionKey
+  const creds = new CognitiveServicesCredentials(authoringKey)
+
+  const luisClient = runtime ?
+    new LUISRuntimeClient(creds, endpoint) :
+    new LUISAuthoringClient(creds, endpoint)
+
   return luisClient
 }
 
+const isDirectory = (path: string): boolean => {
+  try {
+    const stats = fs.statSync(path)
+    return stats.isDirectory()
+  } catch {
+    return false
+  }
+}
+
 const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
-  const allowedConfigValues = [`${prefix}appId`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`]
+  const allowedConfigValues = [`${prefix}appId`, `${prefix}endpoint`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`]
   const filtered = Object.keys(configObj)
   .filter(key => allowedConfigValues.includes(key))
   .reduce((filteredConfigObj: any, key) => {
@@ -59,7 +81,6 @@ const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
 }
 
 const processInputs = async (flags: any, flagLabels: string[], configDir: string) => {
-  const configPrefix = 'luis__'
   let config = filterByAllowedConfigValues(await getUserConfig(configDir), configPrefix)
   config = config ? filterConfig(config, configPrefix) : config
   const input: any = {}
@@ -67,7 +88,7 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
     .filter(flag => flag !== 'help')
     .map((flag: string) => {
       if (flag === 'in') {
-        // rename property since 'in' is a reserved keyword in Javascript
+        // rename property since 'in' is a reserved keyword
         input[`${flag}Val`] = flags[flag]
       }
       input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
@@ -89,9 +110,11 @@ const writeToConsole = (outputContents: string) => {
 }
 
 const writeToFile = async (outputLocation: string, content: any, force: boolean) => {
-  const validatedPath = utils.validatePath(outputLocation, '', force)
+  const isDir = isDirectory(outputLocation)
+  let writeFile = isDir ? path.join(outputLocation, 'export.json') : outputLocation
+  const validatedPath = utils.validatePath(writeFile, '', force)
   try {
-    await fs.ensureFile(outputLocation)
+    await fs.ensureFile(writeFile)
     await fs.writeJson(validatedPath, content, {spaces: 2})
   } catch (error) {
     throw new CLIError(error)
@@ -99,6 +122,7 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
   return validatedPath
 }
 
+module.exports.createConfigFile = createConfigFile
 module.exports.getInputFromFile = getInputFromFile
 module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
@@ -106,3 +130,4 @@ module.exports.processInputs = processInputs
 module.exports.validateRequiredProps = validateRequiredProps
 module.exports.writeToConsole = writeToConsole
 module.exports.writeToFile = writeToFile
+module.exports.writeUserConfig = writeUserConfig

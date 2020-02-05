@@ -2,15 +2,16 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnIntent",
+    "$kind": "Microsoft.OnIntent",
     "intent": "Cancel",
+    "condition": "turn.recognized.score > 0.5",
     "actions": [
         {
-            "$type": "Microsoft.Ask",
+            "$kind": "Microsoft.Ask",
             "activity": "@{callCancel()}",
             "expectedProperties": [
-                "CancelConfirmation"
-            ]
+                "CancelConfirmation"                    
+            ]           
         }
     ]
 }

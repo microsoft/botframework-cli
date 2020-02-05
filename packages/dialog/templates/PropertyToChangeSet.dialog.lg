@@ -2,11 +2,12 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnAssignEntity",
     "property": "PropertyToChange",
+    "entity": "PROPERTYName",
     "actions": [
         {
-            "$type": "Microsoft.DeleteProperty",
+            "$kind": "Microsoft.DeleteProperty",
             "property": "dialog[@PROPERTYName]"            
         }
     ]

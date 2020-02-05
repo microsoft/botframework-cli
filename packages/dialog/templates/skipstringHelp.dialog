@@ -1,10 +1,10 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/chrimc/map/schemas/sdk.schema",
-    "$type": "Microsoft.OnIntent",
+    "$kind": "Microsoft.OnIntent",
     "intent": "Help**PROPERTY**",
     "actions": [
         {
-            "$type": "Microsoft.SendActivity",
+            "$kind": "Microsoft.SendActivity",
             "activity": "[Help**PROPERTY**]"           
         }
     ]

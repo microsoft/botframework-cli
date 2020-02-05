@@ -8,19 +8,19 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationImport extends Command {
-  static description = 'Imports an application to LUIS'
+  static description = 'Imports LUIS application from JSON or LU content.'
 
   static examples = [`
     $ bf luis:application:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --in {PATH_TO_JSON}
     $ echo {SERIALIZED_JSON} | bf luis:application:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    name: flags.string({description: 'LUIS application name'}),
-    in: flags.string({char: 'i', description: 'File path containing LUIS application contents'})
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    name: flags.string({description: 'LUIS application name (optional)'}),
+    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDOUT if not specified'})
   }
 
   async run() {
@@ -31,7 +31,7 @@ export default class LuisApplicationImport extends Command {
 
     let {endpoint, subscriptionKey, name, inVal} = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {endpoint, subscriptionKey, name}
+    const requiredProps = {endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
 
     inVal = inVal ? inVal.trim() : flags.in
@@ -41,9 +41,12 @@ export default class LuisApplicationImport extends Command {
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
+    const options: any = {}
+    if (name) options.appName = name
+
     try {
-      const newAppId = await client.apps.importMethod(JSON.parse(appJSON), undefined)
-      this.log(`App successfully imported with id ${newAppId}.`)
+      const response = await client.apps.importMethod(JSON.parse(appJSON), options)
+      this.log(`App successfully imported with id ${response.body}.`)
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)
     }

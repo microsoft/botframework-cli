@@ -1,12 +1,12 @@
 # filename
-- @{formName}-@{property}Entity.{locale}.lg
+- @{schemaName}-@{property}Entity.@{locale}.lg
 
 >>> This is because of issues around ' and } in strings--see enumEntityDesired.lg for a test case
 # template
-- @{propertyEntity()}\n@{clarifyEntity()}\n\[common.lg]\n
+- @{propertyEntity()}\n@{chooseEntity()}\n\[common.lg]\n
 
-# clarifyEntity
-- # clarify{property}Entity\n- @\{clarifyEnumEntity(@{concat("'", property, "'")})\}\n
+# chooseEntity
+- # choose@{property}Entity\n- @\{chooseEnumEntity(@{concat("'", property, "'")})\}\n
 
 # propertyEntity
 - @{join(createArray(namePlusSwitch(), cases(), default()), '\n')}\n

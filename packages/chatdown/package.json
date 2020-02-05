@@ -5,8 +5,8 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli",
   "dependencies": {
-    "@oclif/command": "~1.5.13",
-    "@oclif/config": "~1.13.0",
+    "@oclif/command": "~1.5.19",
+    "@oclif/config": "~1.13.3",
     "botframework-schema": "^4.5.1",
     "chalk": "2.4.1",
     "@microsoft/bf-cli-command": "1.0.0",
@@ -35,12 +35,12 @@
     "@types/rimraf": "^2.0.2",
     "chai": "^4.2.0",
     "globby": "^8.0.2",
-    "mocha": "^5.2.0",
-    "nyc": "^13.3.0",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1",
     "rimraf": "^2.6.3",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
+    "typescript": "^3.5.3"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -66,11 +66,16 @@
   },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown",
   "scripts": {
+    "prepack": "npm run clean && npm run build && npm run doc:readme",
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
-    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.{ts,js}\"",
-    "version": "oclif-dev readme && git add README.md",
-    "documentation": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme && rimraf oclif.manifest.json"
+    "build":"tsc -b",
+    "clean":"rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
+    "test": "mocha",
+    "coverage": "nyc npm run test",
+    "report:coverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
+    "doc:readme":"oclif-dev manifest && oclif-dev readme",
+    "version": "npm run doc:readme && git add README.md"
   }
 }

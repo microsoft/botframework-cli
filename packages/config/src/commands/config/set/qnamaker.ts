@@ -9,7 +9,7 @@ import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfileh
 export default class ConfigSetQnamaker extends Command {
   static description = 'Set the QnAMaker config data'
 
-  static flags = {
+  static flags: any = {
     kbId: flags.string({description: 'QnAMaker kbId to be set'}),
     subscriptionKey: flags.string({description: 'QnAMaker subscriptionkey to be set'}),
     hostname: flags.string({description: 'QnAMaker hostname to be set'}),
@@ -29,7 +29,6 @@ export default class ConfigSetQnamaker extends Command {
   async run() {
     const {flags} = this.parse(ConfigSetQnamaker)
     let userConfig: Config = await getConfigFile(this.config.configDir)
-
     if (flags.subscriptionKey) {
       this.setValue('subscriptionKey', flags.subscriptionKey, userConfig)
     }

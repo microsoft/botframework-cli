@@ -8,12 +8,13 @@ file
 
 paragraph
     : newline
-    | intentDefinition
-    | newEntityDefinition
-    | entityDefinition
-    | importDefinition
-    | qnaDefinition
-    | modelInfoDefinition
+    | nestedIntentSection
+    | simpleIntentSection
+    | entitySection
+    | newEntitySection
+    | importSection
+    | qnaSection
+    | modelInfoSection
     ;
 
 // Treat EOF as newline to hanle file end gracefully
@@ -23,20 +24,44 @@ newline
     : WS* (NEWLINE | EOF)
     ;
 
+nestedIntentSection
+    : nestedIntentNameLine nestedIntentBodyDefinition
+    ;
+
+nestedIntentNameLine
+    : WS* HASH WS* nestedIntentName
+    ;
+
+nestedIntentName
+    : nameIdentifier (WS|nameIdentifier)*
+    ;
+
+nameIdentifier
+    : IDENTIFIER (DOT IDENTIFIER)*
+    ;
+
+nestedIntentBodyDefinition
+    : subIntentDefinition+
+    ;
+
+subIntentDefinition
+    : WS* HASH simpleIntentSection
+    ;
+
+simpleIntentSection
+    : intentDefinition (entitySection | newEntitySection)*
+    ;
+
 intentDefinition
-	: intentNameLine newline intentBody?
+	: intentNameLine intentBody?
 	;
 
 intentNameLine
-	: WS* HASH intentName
+	: WS* HASH HASH? WS* intentName
 	;
 
 intentName
-    : intentNameIdentifier (WS|intentNameIdentifier)*
-    ;
-
-intentNameIdentifier
-    : IDENTIFIER (DOT IDENTIFIER)*
+    : nameIdentifier (WS|nameIdentifier)*
     ;
 
 intentBody
@@ -44,23 +69,31 @@ intentBody
 	;
 
 normalIntentBody
-    : WS* (normalIntentString newline)+
+    : WS* ((normalIntentString newline) | errorIntentString)+
     ;
 
 normalIntentString
 	: WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
 
+errorIntentString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
+newEntitySection
+    : newEntityDefinition
+    ;
+
 newEntityDefinition
-    : newEntityLine newline newEntityListbody?
+    : newEntityLine newEntityListbody?
     ;
 
 newEntityListbody
-    : (normalItemString newline)+
+    : ((normalItemString newline) | errorItemString)+
     ;
 
 newEntityLine
-    : WS* AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
+    : WS* AT WS* newEntityType? WS* (newEntityName|newEntityNameWithWS) WS* newEntityRoles? WS* newEntityUsesFeatures? WS* EQUAL? WS* (newCompositeDefinition|newRegexDefinition)? newline
     ;
 
 newCompositeDefinition
@@ -76,31 +109,31 @@ newEntityType
     ;
 
 newEntityRoles
-    : HAS_ROLES_LABEL? newEntityRoleOrFeatures
+    : HAS_ROLES_LABEL? WS* newEntityRoleOrFeatures
     ;
 
 newEntityUsesFeatures
-    : HAS_FEATURES_LABEL newEntityRoleOrFeatures
+    : HAS_FEATURES_LABEL WS* newEntityRoleOrFeatures
     ;
 
 newEntityRoleOrFeatures
-    : text (COMMA text)*
-    ;
-
-text
-    : NEW_TEXT | NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER (WS* COMMA WS* NEW_ENTITY_IDENTIFIER)*
     ;
 
 newEntityName
-    : NEW_ENTITY_TYPE_IDENTIFIER | NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER
     ;
 
 newEntityNameWithWS
     : NEW_ENTITY_IDENTIFIER_WITH_WS
     ;
 
+entitySection
+    : entityDefinition
+    ;
+
 entityDefinition
-    : entityLine newline entityListBody?
+    : entityLine entityListBody?
     ;
     
 entityLine
@@ -124,51 +157,87 @@ regexEntityIdentifier
     ;
 
 entityListBody
-    : (normalItemString newline)+
+    : ((normalItemString newline) | errorItemString)+
     ;
 
 normalItemString
-    : WS* DASH (WS|TEXT|EXPRESSION)*
+    : WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
+    ;
+
+errorItemString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
+importSection
+    : importDefinition
     ;
 
 importDefinition
     : IMPORT_DESC IMPORT_PATH
     ;
 
-qnaDefinition
-    : qnaQuestion moreQuestionsBody qnaAnswerBody
+qnaSection
+    : qnaDefinition
     ;
 
+qnaDefinition
+    : qnaSourceInfo? qnaIdMark? qnaQuestion moreQuestionsBody qnaAnswerBody promptSection?
+    ;
+
+qnaSourceInfo
+    : WS* QNA_SOURCE_INFO
+    ;
+
+qnaIdMark
+    : WS* QNA_ID_MARK
+    ;
+    
 qnaQuestion
-    : WS* QNA questionText newline
+    : WS* QNA questionText
     ;
 
 questionText
-    : (WS|QNA_TEXT)*
+    : QNA_TEXT*
     ;
 
 moreQuestionsBody
-    : WS* (moreQuestion newline)*
+    : WS* ((moreQuestion newline) | errorQuestionString)*
     ;
 
 moreQuestion
     : DASH (WS|TEXT)*
     ;
 
+errorQuestionString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
 qnaAnswerBody
-    : filterSection? multiLineAnswer
+    : ((filterSection? multiLineAnswer)|(multiLineAnswer filterSection?))
     ;
 
 filterSection
-    : WS* FILTER_MARK filterLine+
+    : WS* FILTER_MARK (filterLine | errorFilterLine)+
+    ;
+
+promptSection
+    : WS* PROMPT_MARK (filterLine | errorFilterLine)+
     ;
 
 filterLine
     : WS* DASH (WS|TEXT)* newline
     ;
 
+errorFilterLine
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
 multiLineAnswer
     : WS* MULTI_LINE_TEXT
+    ;
+
+modelInfoSection
+    : modelInfoDefinition
     ;
 
 modelInfoDefinition

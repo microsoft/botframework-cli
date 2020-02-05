@@ -1,14 +1,27 @@
 
 # filename
-- @{formName}-@{property}SetpersonName.dialog
+- @{schemaName}-@{property}SetpersonName.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@personName"
-               
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "personName", 
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@personName"          
+        }
+    ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @personName)}

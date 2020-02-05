@@ -14,6 +14,7 @@ import * as ppath from 'path';
 import DialogMerge from '../../../src/commands/dialog/merge';
 import * as dt from '../../../src/library/dialogTracker';
 
+// TODO(chrande): these aren't working because they bring in a bunch of dotnet dependency stuff
 describe('Test schema merge', async () => {
     let schemas = new dt.SchemaTracker();
     let tracker = new dt.DialogTracker(schemas);
@@ -26,7 +27,7 @@ describe('Test schema merge', async () => {
         await fs.remove(tempDir);
         await fs.mkdirp(tempDir);
         
-        for (let file of await glob(["test/commands/dialog/**/*.schema", "test/commands/dialog/**/*.lg", "test/commands/dialog/**/*.dialog", "test/commands/dialog/**/*.cmd", "test/commands/dialog/projects/*", "test/commands/dialog/packages/**"])) {
+        for (let file of await glob(["test/commands/dialog/schemas/*.schema", "test/commands/dialog/schemas/*.lg", "test/commands/dialog/examples/*.dialog", "test/commands/dialog/**/*.cmd", "test/commands/dialog/projects/*", "test/commands/dialog/packages/**"])) {
             let target = ppath.join(tempDir, file.substring(file.indexOf("/") + 1).replace("commands/dialog", ""));
             await fs.copy(file, target);
         }
@@ -42,14 +43,15 @@ describe('Test schema merge', async () => {
 
         await fs.remove("examples/app.schema");
 
-        await DialogMerge.run(["-b", "4.Future", "-o", "examples/app.schema", "schemas/*.schema"]);
-        await DialogMerge.run(["-b", "4.Future", "-o", "examples/promptOnly.schema", "schemas/prompt.schema"]);
-        await DialogMerge.run(["-b", "4.Future", "-o", "examples/packages.schema", "package.json", "projects/*"]);
+        await DialogMerge.run(["-b", "master", "-o", "examples/app.schema", "schemas/*.schema"]);
+        await DialogMerge.run(["-b", "master", "-o", "examples/promptOnly.schema", "schemas/prompt.schema"]);
+        await DialogMerge.run(["-b", "master", "-o", "examples/packages.schema", "package.json", "projects/*"]);
 
         tracker.root = process.cwd();
         await tracker.addDialogFiles(["examples/*.dialog"]);
     });
 
+    // TODO: We should enable this test, but deal with dotnet being present or not
     xit('packages', async () => {
         let json = await fs.readJSON("examples/packages.schema");
         expect(json.definitions.packages, "Failed reading packages.config");

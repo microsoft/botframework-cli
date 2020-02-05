@@ -8,7 +8,7 @@ const path = require('path')
 export default class ConfigIndex extends Command {
   static description = 'Configure various settings within the cli.'
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h', description: 'config help'})
   }
 

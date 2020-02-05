@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
@@ -7,6 +6,7 @@ const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 const PARSERCONSTS = require('./../utils/enums/parserconsts');
 const builtInTypes = require('./../utils/enums/luisbuiltintypes');
 const helpers = require('./../utils/helpers');
+const SectionType = require('./../utils/enums/lusectiontypes');
 const chalk = require('chalk');
 const url = require('url');
 const retCode = require('./../utils/enums/CLI-errors');
@@ -25,6 +25,8 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
+const qnaContext = require('../qna/qnamaker/qnaContext');
+const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -54,7 +56,13 @@ const parseFileContentsModule = {
      */
     parseFile: async function (fileContent, log, locale) {
         fileContent = helpers.sanitizeNewLines(fileContent);
+
         let parsedContent = new parserObj();
+        
+        if (fileContent === '') {
+            return parsedContent;
+        }
+
         await parseLuAndQnaWithAntlr(parsedContent, fileContent.toString(), log, locale);
 
         return parsedContent;
@@ -138,27 +146,32 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
         var errors = luResource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR));
         if (errors.length > 0) {
-            throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n')));
+            throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n'), errors));
         }
     }
 
+    // parse model info section
+    let enableMergeIntents = parseAndHandleModelInfoSection(parsedContent, luResource, log);
+
     // parse reference section
-    await parseAndHandleReference(parsedContent, luResource);
+    await parseAndHandleImportSection(parsedContent, luResource);
+
+    // parse nested intent section
+    parseAndHandleNestedIntentSection(luResource, enableMergeIntents);
+
+    GetEntitySectionsFromSimpleIntentSections(luResource);
 
     // parse entity definition v2 section
     let featuresToProcess = parseAndHandleEntityV2(parsedContent, luResource, log, locale);
-
-    // parse intent section
-    parseAndHandleIntent(parsedContent, luResource);
-
+    
     // parse entity section
-    parseAndHandleEntity(parsedContent, luResource, log, locale);
+    parseAndHandleEntitySection(parsedContent, luResource, log, locale);
+
+    // parse simple intent section
+    parseAndHandleSimpleIntentSection(parsedContent, luResource);
 
     // parse qna section
-    parseAndHandleQna(parsedContent, luResource);
-
-    // parse model info section
-    parseAndHandleModelInfo(parsedContent, luResource, log);
+    parseAndHandleQnaSection(parsedContent, luResource);
 
     if (featuresToProcess && featuresToProcess.length > 0) {
         parseFeatureSections(parsedContent, featuresToProcess);
@@ -205,8 +218,11 @@ const updateModelBasedOnNDepthEntities = function(utterances, entities) {
                         // Ensure each parent is also labelled in this utterance
                         let parentLabelled = utterance.entities.find(entityUtt => entityUtt.entity == parent);
                         if (!parentLabelled) {
-                            let errorMsg = `[ERROR]: Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                            const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
+                            const error = BuildDiagnostic({
+                                message: errorMsg
+                            });
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
                     })
                 }
@@ -243,13 +259,21 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
         if(child.instanceOf) {
             let baseEntityFound = entitiesAndRoles.find(i => i.name == child.instanceOf);
             if (!baseEntityFound) {
-                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
-                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                let errorMsg = `Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
+                const error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: child.context.line
+                });
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
             // base type can only be a list or regex or prebuilt.
             if (![EntityTypeEnum.LIST, EntityTypeEnum.REGEX, EntityTypeEnum.PREBUILT].includes(baseEntityFound.type)) {
-                let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
-                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                let errorMsg = `Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
+                const error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: child.context.line
+                });
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
 
         }
@@ -266,8 +290,12 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                         child.features[idx] = new helperClass.featureToModel(feature, featureProperties.phraseListFeature);
                         featureHandled = true;
                     } else if (featureExists.type == EntityTypeEnum.PATTERNANY) {
-                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                        let errorMsg = `Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
+                        const error = BuildDiagnostic({
+                            message: errorMsg,
+                            line: child.context.line
+                        });
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     } else {
                         child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.entityFeatureToModel[featureExists.type]);
                         featureHandled = true;
@@ -280,8 +308,12 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                         child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.intentFeatureToModel);
                         featureHandled = true;
                     } else {
-                        let errorMsg = `[Error] line ${child.context.line}: Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                        let errorMsg = `Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
+                        const error = BuildDiagnostic({
+                            message: errorMsg,
+                            line: child.context.line
+                        });
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     }
                 }
             })
@@ -321,7 +353,7 @@ const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureT
                     message: errorMsg,
                     context: line
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
             break;
         default:
@@ -331,7 +363,7 @@ const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureT
                 message: errorMsg,
                 context: line
             })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             break;
     }
 }
@@ -351,7 +383,7 @@ const addFeatures = function(tgtItem, feature, featureType, line, featurePropert
             message: errorMsg,
             context: line
         })
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
     let featureAlreadyDefined = (tgtItem.features || []).find(item => item.modelName == feature || item.featureName == feature);
     switch (featureType) {
@@ -390,9 +422,9 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 let errorMsg = `Intents can only have usesFeature and nothing else. Invalid definition for "${section.Name}".`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
-                    context: section.ParseTree.newEntityLine()
+                    context: section.ParseTree.newEntityDefinition().newEntityLine()
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
             
             let intentExists = parsedContent.LUISJsonStructure.intents.find(item => item.name === section.Name);
@@ -405,37 +437,37 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
-                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel[entityExists.type]);
+                            validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.entityFeatureToModel[entityExists.type]);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
-                        validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.intentFeatureToModel);
+                        validateFeatureAssignment(section.Type, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                        addFeatures(intentExists, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.intentFeatureToModel);
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an intent. No definition found for feature "${feature}" in usesFeature definition for intent "${section.Name}"`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: section.ParseTree.newEntityLine()
+                            context: section.ParseTree.newEntityDefinition().newEntityLine()
                         })
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     }
                 })
             } else {
                 let errorMsg = `Features can only be added to intents that have a definition. Invalid feature definition found for intent "${section.Name}".`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
-                    context: section.ParseTree.newEntityLine()
+                    context: section.ParseTree.newEntityDefinition().newEntityLine()
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         } else {
             // handle as entity
@@ -452,28 +484,28 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                     if (featureExists) {
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
-                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityLine(), featureProperties.phraseListFeature);
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.phraseListFeature);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
                         } else {
                             // de-dupe and add model to intent.
-                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityLine());
-                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.entityFeatureToModel[featureExists.type]);
+                            validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                            addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.entityFeatureToModel[featureExists.type]);
                         }
                     } else if (featureIntentExists) {
                         // Add intent as a feature to another intent
-                        validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityLine());
-                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityLine(), featureProperties.intentFeatureToModel);
+                        validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.ParseTree.newEntityDefinition().newEntityLine());
+                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.ParseTree.newEntityDefinition().newEntityLine(), featureProperties.intentFeatureToModel);
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an entity. No definition found for feature "${feature}" in usesFeature definition for entity "${section.Name}"`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: section.ParseTree.newEntityLine()
+                            context: section.ParseTree.newEntityDefinition().newEntityLine()
                         })
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     }
                 });
             }
@@ -526,7 +558,11 @@ const updateDependencyList = function(type, parsedContent, dependencyList) {
                 }
                 let circularItemFound = dependencyList.find(item => item.value && item.value.slice(0)[0] == item.value.slice(-1)[0]);
                 if (circularItemFound) {
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, `Circular dependency found for usesFeature. ${circularItemFound.value.join(' -> ')}`));
+                    const errorMsg = `Circular dependency found for usesFeature. ${circularItemFound.value.join(' -> ')}`;
+                    const error = BuildDiagnostic({
+                        message: errorMsg
+                    });
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 }
                 
             })
@@ -554,9 +590,9 @@ const verifyNoCircularDependencyForFeatures = function(parsedContent) {
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleReference = async function (parsedContent, luResource) {
+const parseAndHandleImportSection = async function (parsedContent, luResource) {
     // handle reference
-    let luImports = luResource.Imports;
+    let luImports = luResource.Sections.filter(s => s.SectionType === SectionType.IMPORTSECTION);
     if (luImports && luImports.length > 0) {
         for (const luImport of luImports) {
             let linkValueText = luImport.Description.replace('[', '').replace(']', '');
@@ -575,7 +611,7 @@ const parseAndHandleReference = async function (parsedContent, luResource) {
                         context: luImport.ParseTree
                     })
 
-                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
                 }
 
                 if (!response.ok) {
@@ -585,7 +621,7 @@ const parseAndHandleReference = async function (parsedContent, luResource) {
                         context: luImport.ParseTree
                     })
 
-                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
                 }
 
                 let contentType = response.headers.get('content-type');
@@ -651,13 +687,44 @@ const handleAtPrefix = function(entity, flatEntityAndRoles) {
 }
 /**
  * Intent parser code to parse intent section.
+ * @param {LUResouce} luResource resources extracted from lu file content
+ * @param {boolean} enableMergeIntents enable functionality to merge intents in nested intent section or not
+ * @throws {exception} Throws on errors. exception object includes errCode and text.
+ */
+const parseAndHandleNestedIntentSection = function (luResource, enableMergeIntents) {
+    // handle nested intent section
+    let sections = luResource.Sections.filter(s => s.SectionType === SectionType.NESTEDINTENTSECTION);
+    if (sections && sections.length > 0) {
+        sections.forEach(section => {
+            if (enableMergeIntents) {
+                let mergedIntentSection = section.SimpleIntentSections[0];
+                mergedIntentSection.ParseTree = section.ParseTree;
+                mergedIntentSection.Name = section.Name;
+                for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
+                    mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
+                    mergedIntentSection.Entities = mergedIntentSection.Entities.concat(section.SimpleIntentSections[idx].Entities);
+                }
+
+                luResource.Sections.push(mergedIntentSection);
+            } else {
+                section.SimpleIntentSections.forEach(subSection => {
+                    subSection.Name = section.Name + '.' + subSection.Name;
+                    luResource.Sections.push(subSection);
+                })
+            }
+        })
+    }
+}
+
+/**
+ * Intent parser code to parse intent section.
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleIntent = function (parsedContent, luResource) {
+const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
     // handle intent
-    let intents = luResource.Intents;
+    let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
     if (intents && intents.length > 0) {
         for (const intent of intents) {
             let intentName = intent.Name;
@@ -671,7 +738,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
                     let parsedLinkUriInUtterance = helpers.parseLinkURI(utterance);
                     // examine and add these to filestoparse list.
-                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
 
                 if (utteranceAndEntities.entities.length > 0) {
@@ -687,7 +754,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                 context: utteranceAndEntities.context
                             })
 
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
 
                         let newPattern = new helperClass.pattern(utterance, intentName);
@@ -752,7 +819,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                         context: utteranceAndEntities.context
                                     });
 
-                                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                 }
                             }
 
@@ -783,7 +850,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                             context: utteranceAndEntities.context
                                         });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                     }
                                 } else if (prebuiltExists !== undefined) {
                                     if (entity.role) {
@@ -795,7 +862,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                             context: utteranceAndEntities.context
                                         });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                     }
                                 } else if (regexExists !== undefined) {
                                     if (entity.role) {
@@ -807,7 +874,7 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                             context: utteranceAndEntities.context
                                         });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                     }
                                 } else if (patternAnyExists !== undefined) {
                                     if (entity.value != '') {
@@ -844,14 +911,14 @@ const parseAndHandleIntent = function (parsedContent, luResource) {
                                     context: utteranceAndEntities.context
                                 })
 
-                                throw (new exception(retCode.errorCode.MISSING_LABELLED_VALUE, error.toString()));
+                                throw (new exception(retCode.errorCode.MISSING_LABELLED_VALUE, error.toString(), [error]));
                             }
 
                             let utteranceEntity = new helperClass.utteranceEntity(item.entity, item.startPos, item.endPos);
                             if (item.role && item.role !== '') {
                                 utteranceEntity.role = item.role.trim();
                             }
-                            utteranceObject.entities.push(utteranceEntity)
+                            if (!utteranceObject.entities.find(item => deepEqual(item, utteranceEntity))) utteranceObject.entities.push(utteranceEntity)
                         });
                         if (utteranceExists === undefined) parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                     }
@@ -908,7 +975,7 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
                     message: errorMsg,
                     context: line
                 })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             } 
         });
 
@@ -928,17 +995,28 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
 
 /**
  * 
+ * @param {LUResouce} luResource resources extracted from lu file content
+ */
+const GetEntitySectionsFromSimpleIntentSections = function(luResource) {
+    let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
+    if (intents && intents.length > 0) {
+        intents.forEach(intent => luResource.Sections = luResource.Sections.concat(intent.Entities));
+    }
+}
+
+/**
+ * 
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
  * @param {LUResouce} luResource resources extracted from lu file content
  * @param {boolean} log indicates where verbose flag is set 
  * @param {String} locale current target locale
  * @throws {exception} Throws on errors. exception object includes errCode and text.
- * @returns {LUNewEntity[]} collection of LUNewEntity to process after all other sections are processed.
+ * @returns {NewEntitySection[]} collection of NewEntitySection to process after all other sections are processed.
  */
 const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale) {
     let featuresToProcess = [];
     // handle new entity definitions.
-    let entities = luResource.NewEntities;
+    let entities = luResource.Sections.filter(s => s.SectionType === SectionType.NEWENTITYSECTION);
     if (entities && entities.length > 0) {
         for (const entity of entities) {
             if (entity.Type !== INTENTTYPE) {
@@ -948,21 +1026,21 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                     let errorMsg = `No type definition found for entity "${entityName}". Supported types are ${Object.values(EntityTypeEnum).join(', ')}. Note: Type names are case sensitive.`;
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: entity.ParseTree.newEntityLine()
+                        context: entity.ParseTree.newEntityDefinition().newEntityLine()
                     })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 };
 
                 if (entityType === entityName) {
                     let errorMsg = `Entity name "${entityName}" cannot be the same as entity type "${entityType}"`;
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: entity.ParseTree.newEntityLine()
+                        context: entity.ParseTree.newEntityDefinition().newEntityLine()
                     })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 }
-                let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.ParseTree.newEntityLine(), entityName, entityType);
-                let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, entityName, entityType, entity.ParseTree.newEntityLine());
+                let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.ParseTree.newEntityDefinition().newEntityLine(), entityName, entityType);
+                let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, entityName, entityType, entity.ParseTree.newEntityDefinition().newEntityLine());
                 if (PAEntityRoles.length > 0) {
                     PAEntityRoles.forEach(role => {
                         if (!entityRoles.includes(role)) entityRoles.push(role);
@@ -970,7 +1048,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                 }
                 switch(entityType) {
                     case EntityTypeEnum.ML:
-                        handleNDepthEntity(parsedContent, entityName, entityRoles, entity.ListBody, entity.ParseTree.newEntityLine());
+                        handleNDepthEntity(parsedContent, entityName, entityRoles, entity.ListBody, entity.ParseTree.newEntityDefinition().newEntityLine());
                         break;
                     case EntityTypeEnum.SIMPLE: 
                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
@@ -985,28 +1063,28 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                                 line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
                             })
                         }
-                        handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.ParseTree.newEntityLine(), false, entity.Type !== undefined);
+                        handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine(), false, entity.Type !== undefined);
                         break;
                     case EntityTypeEnum.LIST:
-                        handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.ParseTree.newEntityLine());
+                        handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
                         break;
                     case EntityTypeEnum.PATTERNANY:
-                        handlePatternAny(parsedContent, entityName, entityRoles, entity.ParseTree.newEntityLine());
+                        handlePatternAny(parsedContent, entityName, entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
                         break;
                     case EntityTypeEnum.PREBUILT:
-                        handlePrebuiltEntity(parsedContent, 'prebuilt', entityName, entityRoles, locale, log, entity.ParseTree.newEntityLine());
+                        handlePrebuiltEntity(parsedContent, 'prebuilt', entityName, entityRoles, locale, log, entity.ParseTree.newEntityDefinition().newEntityLine());
                         break;
                     case EntityTypeEnum.REGEX:
                         if (entity.ListBody[0]) {
-                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].trim().substr(1).trim(), entityRoles, entity.ParseTree.newEntityLine());
+                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].trim().substr(1).trim(), entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
                         } else {
-                            handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityLine());
+                            handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.ParseTree.newEntityDefinition().newEntityLine());
                         } 
                         break;
                     case EntityTypeEnum.ML:
                         break;
                     case EntityTypeEnum.PHRASELIST:
-                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.trim().substr(1).trim()), entity.ParseTree.newEntityLine());
+                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.trim().substr(1).trim()), entity.ParseTree.newEntityDefinition().newEntityLine());
                     default:
                         //Unknown entity type
                         break;
@@ -1045,8 +1123,12 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>[^\s]+) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
         let groupsFound = captureGroups.exec(child);
         if (!groupsFound) {
-            let errorMsg = `[ERROR] line ${defLine}: Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
-            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            let errorMsg = `Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
+            const error = BuildDiagnostic({
+                message: errorMsg,
+                line: defLine
+            });
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childEntityType = groupsFound.groups.instanceOf.trim();
@@ -1067,7 +1149,11 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         entityIdxByLevel.reverse();
         if (!currentParentEntity) {
             let errorMsg = `[ERROR] line ${defLine}: Invalid definition found for child "${child.trim()}". Parent of each child entity must be of type "${EntityTypeEnum.ML}".`;
-            throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+            const error = BuildDiagnostic({
+                message: errorMsg,
+                line: defLine
+            });
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let context = {line : defLine, definition: child.trim()};
         if (groupsFound.groups.instanceOf.toLowerCase().trim() === EntityTypeEnum.SIMPLE) {
@@ -1134,7 +1220,7 @@ const verifyUniqueEntityName = function(parsedContent, entityName, entityType, l
             message: errorMsg,
             context: line
         })
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
 }
 /**
@@ -1183,14 +1269,14 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
             return false;
         }
     });
-    if (PAEntityFound !== undefined && PAIdx !== -1) {
+    if (PAEntityFound !== undefined && PAIdx !== -1 && entityType != EntityTypeEnum.PATTERNANY) {
         if (entityType.toLowerCase().trim().includes('phraselist')) {
             let errorMsg = `Phrase lists cannot be used as an entity in a pattern "${pEntityName}"`;
             let error = BuildDiagnostic({
                 message: errorMsg,
                 context: entityLine
             })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         } 
         entityRoles = (PAEntityFound.roles.length !== 0) ? PAEntityFound.roles : [];
         parsedContent.LUISJsonStructure.patternAnyEntities.splice(PAIdx, 1);
@@ -1223,7 +1309,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                     context: currentLine
                 })
         
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         })
     }
@@ -1258,7 +1344,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                     context: currentLine
                 })
 
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         }
         let wordsSplit = pLEntityExists.words.split(',');
@@ -1302,7 +1388,7 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
             context: currentLine
         })
 
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
     let prebuiltCheck = builtInTypes.perLocaleAvailability[locale][entityType];
     if (prebuiltCheck === null) {
@@ -1316,7 +1402,7 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
                 context: currentLine
             })
 
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
     } else if (prebuiltCheck && prebuiltCheck.includes('datetime')) {
         if (log) {
@@ -1364,7 +1450,7 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
             context: currentLine
         })
 
-        throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+        throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString(), [error]));
     }
     // split the children based on ',' or ';' delimiter. Trim each child to remove white spaces.
     let compositeChildren = childDefinition !== "" ? childDefinition.split(new RegExp(/[,;]/g)).map(item => item.trim()) : [];
@@ -1385,7 +1471,7 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
                     context: currentLine
                 })
     
-                throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString(), [error]));
             }
         }
 
@@ -1450,7 +1536,7 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
                         context: currentLine
                     })
 
-                    throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString()));
+                    throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString(), [error]));
                 }
                 if (!nvExists.list.includes(item)) nvExists.list.push(item);
             })
@@ -1478,9 +1564,9 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
  * @param {string} locale LUIS locale code
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
+const parseAndHandleEntitySection = function (parsedContent, luResource, log, locale) {
     // handle entity
-    let entities = luResource.Entities;
+    let entities = luResource.Sections.filter(s => s.SectionType === SectionType.ENTITYSECTION);
     if (entities && entities.length > 0) {
         for (const entity of entities) {
             let entityName = entity.Name;
@@ -1490,9 +1576,7 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
             entityType = parsedRoleAndType.entityType;
             let pEntityName = (entityName.toLowerCase() === 'prebuilt') ? entityType : entityName;
             
-            // see if we already have this as Pattern.Any entity
-            // see if we already have this in patternAny entity collection; if so, remove it but remember the roles (if any)
-            let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, pEntityName, entityType, entity.ParseTree.entityLine());
+            let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, pEntityName, entityType, entity.ParseTree.entityDefinition().entityLine());
             if (PAEntityRoles.length > 0) {
                 PAEntityRoles.forEach(role => {
                     if (!entityRoles.includes(role)) entityRoles.push(role);
@@ -1502,7 +1586,7 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
             // add this entity to appropriate place
             // is this a builtin type?
             if (builtInTypes.consolidatedList.includes(entityType)) {
-                handlePrebuiltEntity(parsedContent, entityName, entityType, entityRoles, locale, log, entity.ParseTree.entityLine());
+                handlePrebuiltEntity(parsedContent, entityName, entityType, entityRoles, locale, log, entity.ParseTree.entityDefinition().entityLine());
             } else if (entityType.toLowerCase() === 'simple') {
                 // add this to entities if it doesnt exist
                 addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
@@ -1517,10 +1601,10 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
                         let errorMsg = `QnA alteration section: "${alterationlist}" does not have list decoration. Prefix line with "-" or "+" or "*"`;
                         let error = BuildDiagnostic({
                             message: errorMsg,
-                            context: entity.ParseTree.entityLine()
+                            context: entity.ParseTree.entityDefinition().entityLine()
                         })
 
-                        throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString()));
+                        throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString(), [error]));
                     }
                 } else {
                     // treat this as a LUIS list entity type
@@ -1565,20 +1649,20 @@ const parseAndHandleEntity = function (parsedContent, luResource, log, locale) {
                 if (entityType.toLowerCase().includes('interchangeable')) {
                     entityName += '(interchangeable)';
                 }
-                handlePhraseList(parsedContent, entityName, entityType, entityRoles, entity.SynonymsOrPhraseList, entity.ParseTree.entityLine());
+                handlePhraseList(parsedContent, entityName, entityType, entityRoles, entity.SynonymsOrPhraseList, entity.ParseTree.entityDefinition().entityLine());
             } else if (entityType.startsWith('[')) {
-                handleComposite(parsedContent, entityName, entityType, entityRoles, entity.ParseTree.entityLine(), true, true);
+                handleComposite(parsedContent, entityName, entityType, entityRoles, entity.ParseTree.entityDefinition().entityLine(), true, true);
             } else if (entityType.startsWith('/')) {
                 if (entityType.endsWith('/')) {
-                    handleRegExEntity(parsedContent, entityName, entityType, entityRoles, entity.ParseTree.entityLine());
+                    handleRegExEntity(parsedContent, entityName, entityType, entityRoles, entity.ParseTree.entityDefinition().entityLine());
                 } else {
                     let errorMsg = `RegEx entity: ${regExEntity.name} is missing trailing '/'. Regex patterns need to be enclosed in forward slashes. e.g. /[0-9]/`;
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: entity.ParseTree.entityLine()
+                        context: entity.ParseTree.entityDefinition().entityLine()
                     })
 
-                    throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+                    throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
                 }
             } else {
                 // TODO: handle other entity types
@@ -1615,7 +1699,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
                 context: entityLine
             })
 
-            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
         }
     }
     
@@ -1632,7 +1716,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
                 context: entityLine
             })
 
-            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString()));
+            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
         } else {
             // update roles
             addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.REGEX, regExEntity.name, entityRoles);
@@ -1648,12 +1732,24 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleQna = function (parsedContent, luResource) {
+const parseAndHandleQnaSection = function (parsedContent, luResource) {
     // handle QNA
-    let qnas = luResource.Qnas;
+    let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
+            if (qna.Id) {
+                qna.Id = parseInt(qna.Id);
+            } 
             let questions = qna.Questions;
+            // detect if any question is a reference
+            (questions || []).forEach(question => {
+                // Ensure only links are detected and passed on to be parsed.
+                if (helpers.isUtteranceLinkRef(question || '')) {
+                    let parsedLinkUriInUtterance = helpers.parseLinkURI(question);
+                    // examine and add these to filestoparse list.
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
+                }
+            })
             let filterPairs = qna.FilterPairs;
             let metadata = [];
             if (filterPairs && filterPairs.length > 0) {
@@ -1661,7 +1757,14 @@ const parseAndHandleQna = function (parsedContent, luResource) {
             }
 
             let answer = qna.Answer;
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(0, answer.trim(), 'custom editorial', questions, metadata));
+            let context = new qnaContext();
+            if (qna.prompts) {
+                (qna.prompts || []).forEach((prompt, idx) => {
+                    let contextOnly = prompt.contextOnly ? true : false;
+                    context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
+                })
+            }
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.Id || 0, answer.trim(), qna.source, questions, metadata, context));
         }
     }
 }
@@ -1673,14 +1776,20 @@ const parseAndHandleQna = function (parsedContent, luResource) {
  * @param {boolean} log indicates if we need verbose logging.
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleModelInfo = function (parsedContent, luResource, log) {
+const parseAndHandleModelInfoSection = function (parsedContent, luResource, log) {
     // handle model info
-    let modelInfos = luResource.ModelInfos;
+    let enableMergeIntents = true;
+    let modelInfos = luResource.Sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
             if (kvPair.length === 4) {
+                if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
+                    enableMergeIntents = false;
+                    continue;
+                }
+
                 let hasError = false;
                 kvPair.forEach(item => {
                     if (item.trim() === '') {
@@ -1697,7 +1806,25 @@ const parseAndHandleModelInfo = function (parsedContent, luResource, log) {
                 }
 
                 if (kvPair[1].toLowerCase() === 'app') {
-                    parsedContent.LUISJsonStructure[kvPair[2]] = kvPair[3];
+                    if (kvPair[2].toLowerCase().startsWith('settings')) {
+                        let settingsRegExp = /^settings.(?<property>.*?$)/gmi;
+                        let settingsPair = settingsRegExp.exec(kvPair[2]);
+                        if (settingsPair && settingsPair.groups && settingsPair.groups.property) {
+                            if (!parsedContent.LUISJsonStructure.settings) {
+                                parsedContent.LUISJsonStructure.settings = [{name : settingsPair.groups.property, value : kvPair[3] === "true"}];
+                            } else {
+                                // find the setting
+                                let sFound = parsedContent.LUISJsonStructure.settings.find(setting => setting.name == settingsPair.groups.property);
+                                if (sFound) {
+                                    sFound.value = kvPair[3] === "true";
+                                } else {
+                                    parsedContent.LUISJsonStructure.settings.push({name : settingsPair.groups.property, value : kvPair[3] === "true"})
+                                }
+                            }
+                        }
+                    } else {
+                        parsedContent.LUISJsonStructure[kvPair[2]] = kvPair[3];
+                    }
                 } else if (kvPair[1].toLowerCase() === 'kb') {
                     parsedContent.qnaJsonStructure[kvPair[2]] = kvPair[3];
                 } else if (kvPair[1].toLowerCase() === 'intent') {
@@ -1754,6 +1881,31 @@ const parseAndHandleModelInfo = function (parsedContent, luResource, log) {
                             process.stdout.write(chalk.default.yellowBright('[WARN]: Invalid entity inherits information found. Skipping "' + line + '"\n'));
                         }
                     }
+                } else if (kvPair[1].toLowerCase() === 'patternanyentity') {
+                    if (kvPair[2].toLowerCase() === 'inherits') {
+                        let inheritsProperties = kvPair[3].split(/[:;]/g).map(item => item.trim());
+                        if (inheritsProperties.length !== 6) {
+                            process.stdout.write(chalk.default.yellowBright('[WARN]: Invalid Pattern.Any inherits information found. Skipping "' + line + '"\n'));
+                        } else {
+                            // find the intent
+                            let entity = parsedContent.LUISJsonStructure.patternAnyEntities.find(item => item.name == inheritsProperties[1]);
+                            if (entity === undefined) {
+                                let newEntity = new helperClass.patternAnyEntity(inheritsProperties[1]);
+                                newEntity.inherits = {};
+                                newEntity['inherits'][inheritsProperties[2]] = inheritsProperties[3];
+                                newEntity['inherits'][inheritsProperties[4]] = inheritsProperties[5];
+                                parsedContent.LUISJsonStructure.patternAnyEntities.push(newEntity);
+                            } else {
+                                if (entity['inherits'] === undefined) entity['inherits'] = {};
+                                entity['inherits'][inheritsProperties[2]] = inheritsProperties[3];
+                                entity['inherits'][inheritsProperties[4]] = inheritsProperties[5];
+                            }
+                        }
+                    } else {
+                        if (log) {
+                            process.stdout.write(chalk.default.yellowBright('[WARN]: Invalid entity inherits information found. Skipping "' + line + '"\n'));
+                        }
+                    }
                 }
             } else {
                 if (log) {
@@ -1762,6 +1914,8 @@ const parseAndHandleModelInfo = function (parsedContent, luResource, log) {
             }
         }
     }
+
+    return enableMergeIntents;
 }
 
 
@@ -1811,7 +1965,7 @@ const VerifyAndUpdateSimpleEntityCollection = function (parsedContent, entityNam
                     message: errorMsg
                 });
 
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         });
     }
@@ -1906,6 +2060,10 @@ const addItemOrRoleIfNotPresent = function (collection, type, value, roles) {
     let existingItem = collection[type].filter(item => item.name == value);
     if (existingItem.length !== 0) {
         // see if the role exists and if so, merge
+        if (existingItem[0].roles === undefined) {
+            existingItem[0].roles = [];
+        }
+
         mergeRoles(existingItem[0].roles, roles);
     } else {
         let itemObj = {};

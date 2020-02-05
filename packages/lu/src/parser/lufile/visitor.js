@@ -20,7 +20,7 @@ class Visitor {
                     errorMsgs = errorMsgs.concat(result.errorMsgs);
                     if (entityObjects[entityObjects.length - 1].entityValue !== undefined) {
                         // simple entitiy
-                        utterance = utterance.concat(entityObjects[entityObjects.length - 1].entityValue);
+                        utterance = utterance.concat(entityObjects[entityObjects.length - 1].entityValue).trimLeft();
                         for (const entityObject of entityObjects) {
                             let startPos = utterance.lastIndexOf(entityObject.entityValue);
                             let endPos = startPos + entityObject.entityValue.length - 1;
@@ -34,7 +34,8 @@ class Visitor {
                         }
                     } else {
                         // pattern.any entity
-                        utterance = utterance.concat(innerNode.getText());
+                        const patternStr = entityObjects[0].role ? `{${entityObjects[0].entityName}:${entityObjects[0].role}}` : `{${entityObjects[0].entityName}}`
+                        utterance = utterance.concat(patternStr);
                         entities.push({
                             type: LUISObjNameEnum.PATTERNANYENTITY,
                             entity: entityObjects[0].entityName,
@@ -50,7 +51,7 @@ class Visitor {
             }
         }
 
-        return { utterance, entities, errorMsgs };
+        return { utterance: utterance.trim(), entities, errorMsgs };
     }
 
     /**

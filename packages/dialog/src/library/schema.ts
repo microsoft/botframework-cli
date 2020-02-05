@@ -4,11 +4,12 @@
  * Licensed under the MIT License.
  */
 
- /* tslint:disable:no-unused */
+/* tslint:disable:no-unused */
 export * from './schema'
 import * as Validator from 'ajv'
 import * as os from 'os'
 import * as ppath from 'path'
+import * as ps from './processSchemas'
 let allof: any = require('json-schema-merge-allof')
 let parser: any = require('json-schema-ref-parser')
 
@@ -36,10 +37,8 @@ type EntitySet = Record<string, Entity>
 
 /**
  * Extra properties:
- * $mappings: [entity] defaults based on type, string -> [property], numbers -> [property, number]
+ * $entities: [entity] defaults based on type, string -> [property], numbers -> [property, number]
  * $templates: Template basenames to specialize for this property.
- * 
- * TODO: Add more like $units.
  */
 export class Schema {
     /**
@@ -58,7 +57,7 @@ export class Schema {
             throw new Error(message)
         }
         if (schema.type !== 'object') {
-            throw new Error('Form schema must be of type object.')
+            throw new Error('Root schema must be of type object.')
         }
         return new Schema(schemaPath, schema)
     }
@@ -67,7 +66,7 @@ export class Schema {
         let name = ppath.basename(loc)
         return name.substring(0, name.indexOf('.'))
     }
-    
+
     /** 
      * Path to this schema definition. 
      */
@@ -101,21 +100,7 @@ export class Schema {
     }
 
     typeName(): string {
-        let isArray = false
-        let schema = this.schema
-        let type = schema.type
-        if (type === 'array') {
-            schema = this.schema.items
-            type = schema.type
-            isArray = true
-        }
-        if (schema.enum) {
-            type = 'enum'
-        }
-        if (isArray) {
-            type = type + '[]'
-        }
-        return type
+        return ps.typeName(this.schema)
     }
 
     templates(): string[] {
@@ -123,12 +108,12 @@ export class Schema {
         if (!templates) {
             let type = this.typeName()
             templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + 'Ask.dialog']
-            for (let mapping of this.mappings()) {
-                let [entityName, _] = mapping.split(':')
+            for (let entity of this.schema.$entities) {
+                let [entityName, _] = entity.split(':')
                 if (entityName === this.path + 'Entity') {
                     templates.push(`${type}Set${type}.dialog`)
                     if (type === 'enum') {
-                        templates.push(`${type}ClarifyEntity.dialog`)
+                        templates.push(`${type}ChooseEntity.dialog`)
                     }
                 } else {
                     templates.push(`${type}Set${entityName}.dialog`)
@@ -138,21 +123,6 @@ export class Schema {
         return templates
     }
 
-    mappings(): string[] {
-        let mappings: string[] = this.schema.$mappings
-        if (!mappings && this.path) {
-            if (this.schema.type === 'number') {
-                mappings = [`number:${this.path}`, 'number']
-            } else {
-                mappings = [this.path + 'Entity']
-            }
-        }
-        if (!mappings) {
-            mappings = []
-        }
-        return mappings
-    }
-
     triggerIntent(): string {
         return this.schema.$triggerIntent || this.name()
     }
@@ -160,7 +130,7 @@ export class Schema {
     /**
      * Return all entities found in schema.
      */
-    entities(): EntitySet {
+    allEntities(): EntitySet {
         let entities: EntitySet = {}
         this.addEntities(entities)
         return entities
@@ -171,7 +141,7 @@ export class Schema {
      */
     entityTypes(): string[] {
         let found: string[] = []
-        for(let entity of Object.keys(this.entities())) {
+        for (let entity of Object.keys(this.allEntities())) {
             let [entityName, _] = entity.split(':')
             if (!found.includes(entityName)) {
                 found.push(entityName)
@@ -184,22 +154,26 @@ export class Schema {
      * Return the roles or entity types found in schema.
      */
     * roles(): Iterable<string> {
-        for(let entity of Object.keys(this.entities())) {
+        for (let entity of Object.keys(this.allEntities())) {
             let [entityName, role] = entity.split(':')
             yield role || entityName
         }
     }
 
     private addEntities(entities: EntitySet) {
-        for (let mapping of this.mappings()) {
-            // Do not include entities generated from property
-            if (!entities.hasOwnProperty(mapping)) {
-                let entity = new Entity(mapping)
-                entities[mapping] = entity
+        if (this.schema.$entities) {
+            for (let entity of this.schema.$entities) {
+                // Do not include entities generated from property
+                if (!entities.hasOwnProperty(entity)) {
+                    let entityWrapper = new Entity(entity)
+                    entities[entity] = entityWrapper
+                }
             }
-        }
-        for (let prop of this.schemaProperties()) {
-            prop.addEntities(entities)
+        } else {
+            // Don't explore properties below an explicit mapping
+            for (let prop of this.schemaProperties()) {
+                prop.addEntities(entities)
+            }
         }
     }
 }
