@@ -350,7 +350,7 @@ _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cl
 
 ## `bf luis:application:import`
 
-Imports LUIS application from JSON or LU content.
+Imports LUIS application from JSON.
 
 ```
 USAGE
