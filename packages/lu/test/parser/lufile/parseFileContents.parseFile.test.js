@@ -975,4 +975,26 @@ describe('parseFile correctly parses utterances', function () {
                         .catch(err => done('Fail!'))
 
         })
+
+        it ('duplicate utterances with entity labels are handled correctly', function(done){
+                let testLU = `
+# test
+- no, i already have meeting {FromTime=3pm} {FromDate=tomorrow} afternoon
+- no, i already have meeting {FromTime=3pm} {FromDate=tomorrow} afternoon
+`;
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.utterances.length, 1);
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "no, i already have meeting 3pm tomorrow afternoon");
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities[0].entity, "FromTime");
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities[0].startPos, 27);
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities[0].endPos, 29);
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities[1].entity, "FromTime");
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities[1].startPos, 31);
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities[1].endPos, 38);
+                                done();
+                        })
+                        .catch(err => done(err))
+        })
 })
