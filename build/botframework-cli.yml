@@ -30,6 +30,7 @@ jobs:
     variables:
       buildVersion: '4.8.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
+
     steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
@@ -37,9 +38,9 @@ jobs:
         tags: 'Version=$(_version)'
 
     - task: NodeTool@0
-      displayName: 'Use Node $(nodeVersion)'
+      displayName: 'Use Node 12.x'
       inputs:
-        versionSpec: $(nodeVersion)
+        versionSpec: 12.x
 
     - task: Npm@1
       displayName: 'Install rush'
