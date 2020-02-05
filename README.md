@@ -47,7 +47,7 @@ As your bot grows in sophistication, use [Dispatch](https://github.com/Microsoft
 
 To test and refine your bot, you can use the new [V4 Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator/releases). The Bot Framework Emulator is a cross-platform [Electron](https://electronjs.org/) application that enables you to test and debug your bots on local machine or in the cloud.
 
-Also, during early designs stages you may want to create mockup of conversations between the user and the bot for the specific scenarios your bot will support. Use [bf chatdown](./packages/Chatdown) command to author conversation mockup .chat files and convert them into rich transcripts and view the conversations in the the Emulator. 
+Also, during early designs stages you may want to create mockup of conversations between the user and the bot for the specific scenarios your bot will support. Use [bf chatdown](./packages/cli#bf-chatdown) command to author conversation mockup .chat files and convert them into rich transcripts and view the conversations in the the Emulator. 
 
 Lastly, with the [Azure CLI Bot extension](./AzureCli.md) (_az bot_ command), you can create, download, publish, configure channels with the [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/). It is a plugin that extends the functionality of Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to manage your Azure Bot Service assets.
 
