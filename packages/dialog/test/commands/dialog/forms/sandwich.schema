@@ -2,28 +2,68 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "type": "object",
     "properties": {
-        "petId": {
+        "Quantity": {
             "type": "number",
-            "description": "ID of pet that needs to be updated"
+            "minimum": 1,
+            "maximum": 10
         },
-        "name": {
-            "type": "string",
-            "description": "Updated name of the pet"
+        "Length": {
+            "$ref": "template:dimension.schema#/dimension"
         },
-        "status": {
+        "Name": {
             "type": "string",
-            "description": "Updated status of the pet"
+            "$entities": [
+                "personName",
+                "utterance"
+            ]
+        },
+        "Bread": {
+            "type": "string",
+            "enum": [
+                "multiGrainWheat",
+                "rye",
+                "white",
+                "wholeWheat"
+            ]
+        },
+        "Meat": {
+            "type": "string",
+            "enum": [
+                "bacon",
+                "chicken",
+                "ham",
+                "pulled pork",
+                "roast beef",
+                "salami",
+                "turkey",
+                "none"
+            ]
+        },
+        "Cheese": {
+            "type": "string",
+            "enum": [
+                "american",
+                "cheddar",
+                "feta",
+                "gouda",
+                "pepper jack",
+                "provolone",
+                "swiss",
+                "none"
+            ]
+        },
+        "Price": {
+            "$ref": "template:money.schema#/money"
         }
     },
     "required": [
-        "petId",
-        "name",
-        "status"
+        "Name",
+        "Bread",
+        "Cheese",
+        "Meat",
+        "Price"
     ],
     "$requires": [
         "standard.schema"
-    ],
-    "swaggerApi": "petstore.swagger.io/v2//pet/{petId}",
-    "swaggerMethod": "post",
-    "swaggerResponse": "dialog.response"
+    ]
 }

@@ -9,19 +9,14 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$CompleteConfirmation",
-            "value": "@Confirmation"
+            "value": "=@Confirmation"
         },
         {
             "$kind": "Microsoft.IfCondition",
             "condition":"$CompleteConfirmation == 'no'",
             "actions": [
                 {
-                  "$type": "Microsoft.HttpRequest",
-                  "method": "@{swaggerMethod}",
-                  "url": "@{swaggerApi}",
-                  "responseType": "Json",
-                  "resultProperty": "@{swaggerResponse}",
-                  "body": @{swaggerBody}
+                    "$kind": "Microsoft.EndDialog"
                 }
             ],
             "elseActions":[
