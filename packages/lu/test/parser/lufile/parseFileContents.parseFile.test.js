@@ -990,7 +990,7 @@ describe('parseFile correctly parses utterances', function () {
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].entity, "FromTime");
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].startPos, 27);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].endPos, 29);
-                                assert.equal(res.LUISJsonStructure.utterances[0].entities[1].entity, "FromTime");
+                                assert.equal(res.LUISJsonStructure.utterances[0].entities[1].entity, "FromDate");
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[1].startPos, 31);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[1].endPos, 38);
                                 done();
