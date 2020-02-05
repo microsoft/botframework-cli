@@ -36,9 +36,7 @@ function generateParam(obj: any) {
       return undefined
     case 'boolean':
       return {
-        type: 'number',
-        minimum: 0,
-        maximum: 1
+        type: 'boolean'
       }
   }
 }
@@ -102,13 +100,18 @@ export async function generate(
         body[param.name] = subBody
       }
     } else {
+      if(param.in == "query"){
+        url = url +"&" + param.name+"=@{$"+param.name+"}"
+      }else{
+        body[param.name] = '{$' + param.name + '}'
+      }
       result.properties[param.name] = generateParam(param)
-      body[param.name] = '{$' + param.name + '}'
       result.required.push(param.name)
     }
   }
 
   result.swaggerBody = body;
+  result.swaggerApi = url;
 
   feedback(FeedbackType.info, `Output Dirctory: ${ppath.join(output, projectName)}`);
   await fs.ensureDir(output)
