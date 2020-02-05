@@ -60,7 +60,6 @@ OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      LUIS application Id
   --endpoint=endpoint                LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com
-  --force                            Force save config without prompt
   --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
   --versionId=versionId              LUIS version Id
 
@@ -124,7 +123,8 @@ USAGE
   $ bf config:show
 
 OPTIONS
-  -h, --help  config:show help
+  -h, --help     config:show help
+  -k, --key=key  Shows specific key value
 ```
 
 _See code: [src/commands/config/show.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show.ts)_
