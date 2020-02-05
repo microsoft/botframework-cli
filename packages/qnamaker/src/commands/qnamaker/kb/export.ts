@@ -13,7 +13,7 @@ export default class QnamakerKbExport extends Command {
 
   static flags: flags.Input<any> = {
     kbId: flags.string({description: 'Knowledgebase id to be exported. Overrides the knowledge base id present in the config'}),
-    environment: flags.string({description: 'Specifies whether environment is Test or Prod.', required: true}),
+    environment: flags.string({description: 'Specifies whether environment is Test or Prod.', default: 'Prod'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
     endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
     help: flags.help({char: 'h', description: 'qnamaker:kb:export command help'}),

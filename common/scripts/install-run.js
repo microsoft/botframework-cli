@@ -373,7 +373,7 @@ function installAndRun(packageName, packageVersion, packageBinName, packageBinAr
         cwd: process.cwd(),
         env: process.env
     });
-    if (result.status) {
+    if (result.status !== null) {
         return result.status;
     }
     else {

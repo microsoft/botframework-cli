@@ -918,7 +918,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                             if (item.role && item.role !== '') {
                                 utteranceEntity.role = item.role.trim();
                             }
-                            utteranceObject.entities.push(utteranceEntity)
+                            if (!utteranceObject.entities.find(item => deepEqual(item, utteranceEntity))) utteranceObject.entities.push(utteranceEntity)
                         });
                         if (utteranceExists === undefined) parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                     }
