@@ -192,7 +192,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         {
             let outputFilename: string =
                 `${outputReportFilenamePrefix}_TestConfusionMatrixReport.json`;
-            outputFilename= this.dumpEvaluationJsonReportToFile(
+            outputFilename = this.dumpEvaluationJsonReportToFile(
                 outputFilename,
                 outputEvaluationReportJson.confusionMatrixMetricStructure,
                 encoding);
