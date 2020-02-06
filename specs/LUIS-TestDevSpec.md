@@ -87,8 +87,6 @@ Input: testdata.lu
 Output: result.lu  
 
 > Total passed utterance: 8/10
-> IntentA : Precision: 0.86, Recall: 0.54, F1: 0.77
-> EntityA : Precision: 0.86, Recall: 0.54, F1: 0.77
 
 > <list out all the failed results>
 ```
