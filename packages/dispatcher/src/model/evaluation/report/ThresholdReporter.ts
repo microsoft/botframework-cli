@@ -92,24 +92,28 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
         columnDelimiter: string = "\t",
         recordDelimiter: string = "\n",
         encoding: string = "utf8",
-        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {}):
-        IDictionaryStringIdGenericArrays<string> {
+        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {}): {
+            "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+            "outputFilenames": string[],
+            } {
         if (DictionaryMapUtility.isEmptyStringIdGenericArraysDictionary(outputEvaluationReportDataArrays)) {
             outputEvaluationReportDataArrays =
                 this.generateEvaluationDataArraysReport();
         }
         {
-            const outputFilename: string =
+            let outputFilename: string =
                 `${outputReportFilenamePrefix}_ConfusionMatrixThresholdMetrics.txt`;
-            Utility.storeDataArraysToTsvFile(
+            outputFilename = Utility.storeDataArraysToTsvFile(
                 outputFilename,
                 outputEvaluationReportDataArrays.ConfusionMatrixThresholdMetrics,
                 outputDataArraryHeaders,
                 columnDelimiter,
                 recordDelimiter,
                 encoding);
+            const outputFilenames: string[] =
+                [outputFilename];
+            return { outputEvaluationReportDataArrays, outputFilenames };
         }
-        return outputEvaluationReportDataArrays;
     }
 
     public generateEvaluationJsonReport(): IDictionaryStringIdGenericValue<any> {
@@ -118,10 +122,16 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
     public generateEvaluationJsonReportToFiles(
         outputReportFilenamePrefix: string,
         encoding: string = "utf8",
-        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any> = {}):
-        IDictionaryStringIdGenericValue<any> {
+        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any> = {}): {
+            "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+            "outputFilenames": string[],
+            } {
+        const outputFilenames: string[] = [];
         // ---- NOTE: nothing to report here.
-        return outputEvaluationReportJson;
+        return {
+            outputEvaluationReportJson,
+            outputFilenames,
+            };
     }
 
     public generateEvaluationDirectReport(): IDictionaryStringIdGenericValue<string> {

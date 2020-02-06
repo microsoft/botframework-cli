@@ -396,7 +396,7 @@ export class ColumnarData extends Data {
     public dumpLuObject(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
+        space?: string | number): string {
         // ==== NOTE-TODO ==== a ColumnarData source does not have a LU LUIS structure,
         // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
         // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
@@ -405,11 +405,12 @@ export class ColumnarData extends Data {
         // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuObject(),
         // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
         // ---- NOTE-TODO-PLACEHOLDER ----         space));
+        return "";
     }
     public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
+        space?: string | number): string {
         // ==== NOTE-TODO ==== a ColumnarData source does not have a LU LUIS structure,
         // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
         // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
@@ -418,14 +419,16 @@ export class ColumnarData extends Data {
         // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure(),
         // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
         // ---- NOTE-TODO-PLACEHOLDER ----         space));
+        return "";
     }
     public dumpLuLuisJsonStructureInLuFormat(
-        filename: string): void {
+        filename: string): string {
         // ==== NOTE-TODO ==== a ColumnarData source does not have a LU LUIS structure,
         // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
         // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
         // ---- NOTE-TODO-PLACEHOLDER ----     filename,
         // ---- NOTE-TODO-PLACEHOLDER ----     constructMdFromLUIS(
         // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure()));
+        return "";
     }
 }
