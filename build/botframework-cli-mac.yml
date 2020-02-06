@@ -1,8 +1,12 @@
-trigger:
-  batch: true
-  branches:
-    include:
-    - master
+#
+# Build Botframework-CLI on Mac (Linux) agent
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+
+pool:
+    vmImage: 'macOS-10.14'
 
 pr:
   branches:
@@ -21,37 +25,22 @@ pr:
       - LICENSE
       - PRIVACY.md
 
-schedules:
-- cron: "0 8 * * *"
-  displayName: Daily midnight build
-  branches:
-    include:
-    - master
-
 jobs:
   - job: CLI
-    strategy:
-      matrix:
-        windows:
-          imageName: "windows-2019"
-          nodeVersion: "12.x"
-      maxParallel: 3
-    pool:
-      vmImage: $(imageName)
     variables:
       buildVersion: '4.8.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
+
     steps:
-    #Your build pipeline references the ‘version’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
         tags: 'Version=$(_version)'
 
     - task: NodeTool@0
-      displayName: 'Use Node $(nodeVersion)'
+      displayName: 'Use Node 12.x'
       inputs:
-        versionSpec: $(nodeVersion)
+        versionSpec: 12.x
 
     - task: Npm@1
       displayName: 'Install rush'

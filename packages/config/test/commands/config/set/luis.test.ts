@@ -1,17 +1,16 @@
 import {expect, test} from '@oclif/test'
-import ConfigSetLuis from '../../../../src/commands/config/set/luis'
-const sinon = require('sinon')
+import {initTestConfigFile, deleteTestConfigFile, getConfigFile} from './../../../configfilehelper'
+const fs = require('fs-extra')
     
-describe('config:set:luis', () => {
+describe('config:set:luis', () => {  
+    before(async function() {
+        await initTestConfigFile()
+      });
     
-    beforeEach(() => {
-        sinon.stub(ConfigSetLuis.prototype, 'saveConfig').returns(true)
-    })
-    
-    afterEach(() => {
-        sinon.restore();
-    });
-    
+      after(async function() {
+        await deleteTestConfigFile()
+      });
+
     test
     .stdout()
     .command(['config:set:luis', '--help'])
@@ -31,16 +30,10 @@ describe('config:set:luis', () => {
     .stdout()
     .stderr()
     .command(['config:set:luis', '--appId', '9999'])
-    .it('displays an message indication values saved successfully', ctx => {
-        expect(ctx.stdout).to.contain('Config settings saved')
-    })
-
-    test
-    .stdout()
-    .stderr()
-    .command(['config:set:luis', '--appId', '8888', '--force'])
-    .it('displays an message indication values saved successfully when force flag present', ctx => {
-        expect(ctx.stdout).to.contain('Config settings saved')
+    .it('displays an message indication values saved successfully', async ctx => {
+        let config = await fs.readJSON(getConfigFile())
+        expect(config.luis__appId).to.contain('9999')
+        expect(ctx.stdout).to.contain('appId set to 9999')
     })
     
 })
