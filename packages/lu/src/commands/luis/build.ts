@@ -32,7 +32,30 @@ export default class LuisBuild extends Command {
 
     flags.stdin = await this.readStdin()
 
-    const builder = new Builder(this)
-    await builder.build(flags)
+    if (!flags.stdin && !flags.in) {
+      throw new Error('Missing input. Please use stdin or pass a file or folder location with --in flag')
+    }
+
+    flags.culture = flags.culture && flags.culture !== '' ? flags.culture : 'en-us'
+    flags.region = flags.region && flags.region !== '' ? flags.region : 'westus'
+    flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
+    flags.fallbackLocale = flags.fallbackLocale && flags.fallbackLocale !== '' ? flags.fallbackLocale : 'en-us'
+
+    // create builder class
+    const builder = new Builder((input: string) => {
+      this.log(input)
+    })
+
+    // load lu contents from lu files
+    // load existing recognizers, multiRecogniers and settings or create new ones
+    let {luContents, recognizers, multiRecognizers, settings} = await builder.LoadContents(flags.in, flags.culture, flags.suffix, flags.region, flags.stdin)
+
+    // update or create and train and publish luis applications based on loaded resources
+    const dialogContents = await builder.build(luContents, recognizers, flags.authoringKey, flags.region, flags.botName, flags.suffix, flags.fallbackLocale, multiRecognizers, settings)
+
+    // write dialog assets based on config
+    await builder.writeDialogAssets(dialogContents, flags.dialog, flags.force, flags.out)
+
+    this.log('All tasks done\n')
   }
 }

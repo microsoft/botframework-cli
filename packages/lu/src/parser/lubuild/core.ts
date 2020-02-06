@@ -117,7 +117,7 @@ export class LuBuildCore {
       })
   }
 
-  public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings)
+  public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings?: Settings)
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
@@ -130,8 +130,10 @@ export class LuBuildCore {
       contents.push(multiLangContent)
     }
 
-    const settingsContent = new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
-    contents.push(settingsContent)
+    if (settings) {
+      const settingsContent = new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
+      contents.push(settingsContent)
+    }
 
     return contents
   }
