@@ -11,6 +11,9 @@ import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/Confusion
 
 import { ModelMetaDataProfileReporter } from "./ModelMetaDataProfileReporter";
 
+import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
+import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
+
 import { DataUtility } from "../../../data/DataUtility";
 
 import { Data } from "../../../data/Data";
@@ -159,7 +162,11 @@ export function mainModelMetaDataProfileReporter(): void {
             [],
             {});
     // -----------------------------------------------------------------------
-    modelMetaDataProfileReporter.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
+    const evaluationDataArraysReportResult: {
+        "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+        "outputFilenames": string[],
+        } = modelMetaDataProfileReporter.generateEvaluationDataArraysReportToFiles(
+            outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
