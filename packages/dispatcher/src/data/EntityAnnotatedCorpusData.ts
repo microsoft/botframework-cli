@@ -361,7 +361,7 @@ export class EntityAnnotatedCorpusData extends Data {
     public dumpLuObject(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
+        space?: string | number): string {
         // ==== NOTE-TODO ==== a EntityAnnotatedCorpusData source does not have a LU LUIS structure,
         // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
         // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusData content!
@@ -371,11 +371,12 @@ export class EntityAnnotatedCorpusData extends Data {
         // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuObject(),
         // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
         // ---- NOTE-TODO-PLACEHOLDER ----         space));
+        return "";
     }
     public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
+        space?: string | number): string {
         // ==== NOTE-TODO ==== a EntityAnnotatedCorpusData source does not have a LU LUIS structure,
         // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
         // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusData content!
@@ -385,9 +386,10 @@ export class EntityAnnotatedCorpusData extends Data {
         // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure(),
         // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
         // ---- NOTE-TODO-PLACEHOLDER ----         space));
+        return "";
     }
     public dumpLuLuisJsonStructureInLuFormat(
-        filename: string): void {
+        filename: string): string {
         // ==== NOTE-TODO ==== a EntityAnnotatedCorpusData source does not have a LU LUIS structure,
         // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
         // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusData content!
@@ -395,5 +397,6 @@ export class EntityAnnotatedCorpusData extends Data {
         // ---- NOTE-TODO-PLACEHOLDER ----     filename,
         // ---- NOTE-TODO-PLACEHOLDER ----     constructMdFromLUIS(
         // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure()));
+        return "";
     }
 }

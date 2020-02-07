@@ -13,6 +13,9 @@ import { mainCrossValidatorWithColumnarContent } from "../../../../src/model/eva
 import { mainCrossValidatorWithLuContent } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";
 import { mainCrossValidator } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";
 
+import { IDictionaryStringIdGenericArrays } from "../../../../src/data_structure/IDictionaryStringIdGenericArrays";
+import { IDictionaryStringIdGenericValue } from "../../../../src/data_structure/IDictionaryStringIdGenericValue";
+
 import { ConfusionMatrix } from "../../../../src/mathematics/confusion_matrix/ConfusionMatrix";
 
 import { CrossValidator } from "../../../../src/model/evaluation/cross_validation/CrossValidator";
@@ -68,7 +71,25 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
         process.argv.push("2");
         process.argv.push("--linesToSkip");
         process.argv.push("1");
-        await mainCrossValidator();
+        const mainCrossValidatorResult: {
+            "evaluationJsonReportResult": {
+                "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+                "outputFilenames": string[],
+                },
+            "evaluationDataArraysReportResult": {
+                "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+                "outputFilenames": string[],
+                },
+                } = await mainCrossValidator();
+        const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
+        if (toCleanUpAfterUnitTest) {
+            for (const outputFilename of mainCrossValidatorResult.evaluationJsonReportResult.outputFilenames) {
+                Utility.deleteFile(outputFilename);
+            }
+            for (const outputFilename of mainCrossValidatorResult.evaluationDataArraysReportResult.outputFilenames) {
+                Utility.deleteFile(outputFilename);
+            }
+        }
     });
     it("Test.0201 mainCrossValidator()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -81,6 +102,24 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
         process.argv.push(filename);
         process.argv.push("--outputReportFilenamePrefix");
         process.argv.push(outputReportFilenamePrefix);
-        await mainCrossValidator();
+        const mainCrossValidatorResult: {
+            "evaluationJsonReportResult": {
+                "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+                "outputFilenames": string[],
+                },
+            "evaluationDataArraysReportResult": {
+                "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+                "outputFilenames": string[],
+                },
+                } = await mainCrossValidator();
+        const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
+        if (toCleanUpAfterUnitTest) {
+            for (const outputFilename of mainCrossValidatorResult.evaluationJsonReportResult.outputFilenames) {
+                Utility.deleteFile(outputFilename);
+            }
+            for (const outputFilename of mainCrossValidatorResult.evaluationDataArraysReportResult.outputFilenames) {
+                Utility.deleteFile(outputFilename);
+            }
+        }
     });
 });
