@@ -75,7 +75,7 @@ const hook: Hook<'init'> = async function (opts) {
       userConfig.telemetry = process.env.BF_CLI_TELEMETRY.toLowerCase() === 'true' ? true : false
     } else if (isCI) {
       userConfig.telemetry = false
-    } else if(userConfig.telemetry === null) {
+    } else if (userConfig.telemetry === null) {
       const disableTelemetry = await cli.prompt(chalk.red('Help us improve products by allowing Microsoft to collect anonymous command and flags usage: (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
         userConfig.telemetry = true
