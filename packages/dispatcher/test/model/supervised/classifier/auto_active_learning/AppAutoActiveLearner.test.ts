@@ -100,7 +100,14 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
         process.argv.push(`${AppSoftmaxRegressionSparse.defaultEpochs}`);
         process.argv.push("--learnerParameterMiniBatchSize");
         process.argv.push(`${32}`);
-        await AppAutoActiveLearner.mainAutoActiveLearner();
+        const outputFilenames: string[] =
+            await AppAutoActiveLearner.mainAutoActiveLearner();
+        const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
+        if (toCleanUpAfterUnitTest) {
+            for (const outputFilename of outputFilenames) {
+                Utility.deleteFile(outputFilename);
+            }
+        }
     });
     it("Test.0201 mainAutoActiveLearner()", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -135,6 +142,13 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
         process.argv.push("2");
         process.argv.push("--linesToSkip");
         process.argv.push("1");
-        await AppAutoActiveLearner.mainAutoActiveLearner();
+        const outputFilenames: string[] =
+            await AppAutoActiveLearner.mainAutoActiveLearner();
+        const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
+        if (toCleanUpAfterUnitTest) {
+            for (const outputFilename of outputFilenames) {
+                Utility.deleteFile(outputFilename);
+            }
+        }
     });
 });

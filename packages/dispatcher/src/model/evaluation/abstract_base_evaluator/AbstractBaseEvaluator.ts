@@ -19,8 +19,10 @@ export abstract class AbstractBaseEvaluator {
         columnDelimiter: string,
         recordDelimiter: string,
         encoding: string,
-        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string>):
-        IDictionaryStringIdGenericArrays<string>;
+        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string>): {
+            "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+            "outputFilenames": string[],
+            };
 
     public generateEvaluationJsonReport(): IDictionaryStringIdGenericValue<any> {
         return {};
@@ -28,8 +30,10 @@ export abstract class AbstractBaseEvaluator {
     public abstract generateEvaluationJsonReportToFiles(
         outputReportFilenamePrefix: string,
         encoding: string,
-        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any>):
-        IDictionaryStringIdGenericValue<any>;
+        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any>): {
+            "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+            "outputFilenames": string[],
+            };
 
     public generateEvaluationDirectReport(): IDictionaryStringIdGenericValue<string> {
         return {};
@@ -43,11 +47,11 @@ export abstract class AbstractBaseEvaluator {
     public dumpEvaluationJsonReportToFile(
         outputReportFilename: string,
         outputReportContent: any,
-        encoding: string): void {
+        encoding: string): string {
         if (Utility.isEmptyString(outputReportFilename)) {
             Utility.debuggingThrow("outputReportFilename is empty");
         }
-        Utility.dumpFile(
+        return Utility.dumpFile(
             outputReportFilename,
             JSON.stringify(outputReportContent, undefined, 4),
             encoding);
@@ -55,11 +59,11 @@ export abstract class AbstractBaseEvaluator {
     public dumpEvaluationDirectReportToFile(
         outputReportFilename: string,
         outputReportContent: any,
-        encoding: string): void {
+        encoding: string): string {
         if (Utility.isEmptyString(outputReportFilename)) {
             Utility.debuggingThrow("outputReportFilename is empty");
         }
-        Utility.dumpFile(
+        return Utility.dumpFile(
             outputReportFilename,
             outputReportContent,
             encoding);
