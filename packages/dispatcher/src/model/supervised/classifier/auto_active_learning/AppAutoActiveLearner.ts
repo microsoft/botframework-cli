@@ -99,7 +99,7 @@ export class AppAutoActiveLearner {
             "seedingInstanceIndexArray": number[],
             "seedingInstanceIndexArrayInitial": number[],
             }> {
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         if (doBootstrapResampling) {
             const bootstrapSamplerKeyMap: BootstrapSamplerKeyMapDistribution<number> =
                 new BootstrapSamplerKeyMapDistribution<number>(
@@ -131,7 +131,7 @@ export class AppAutoActiveLearner {
                     false);
             data = dataBootstrapSampled;
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const results =
             data.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
         const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
@@ -231,7 +231,7 @@ export class AppAutoActiveLearner {
             learned.seedingInstanceIndexArray;
         const learner: SoftmaxRegressionSparse =
             learned.learner;
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const numberInstancesPreSelected: number =
             seedingUtteranceIndexArray.length;
         if (limitingSampleSize > numberInstancesPreSelected) {
@@ -242,7 +242,7 @@ export class AppAutoActiveLearner {
             aalSampledInstanceIndexArray =
                 [...reservoirArraySampler.sampleInstances(limitingSampleSize)];
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const newData: Data = await data.createDataFromFilteringExistingDataUtterances(
             data,
             labelColumnIndex,
@@ -255,7 +255,7 @@ export class AppAutoActiveLearner {
             learner,
             seedingInstanceIndexArray: aalSampledInstanceIndexArray,
             seedingInstanceIndexArrayInitial: seedingUtteranceIndexArray };
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
     }
 
     /**
@@ -316,13 +316,13 @@ export class AppAutoActiveLearner {
             "seedingInstanceIndexArray": number[],
             "seedingInstanceIndexArrayInitial": number[],
             }> {
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         let luData: LuData =
             await LuData.createLuData(
                 luContent,
                 new NgramSubwordFeaturizer(),
                 true);
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         if (doBootstrapResampling) {
             const bootstrapSamplerKeyMap: BootstrapSamplerKeyMapDistribution<number> =
                 new BootstrapSamplerKeyMapDistribution<number>(
@@ -354,7 +354,7 @@ export class AppAutoActiveLearner {
                     false);
             luData = luDataBootstrapSampled as LuData;
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const results =
             luData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
         const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
@@ -454,7 +454,7 @@ export class AppAutoActiveLearner {
             learned.seedingInstanceIndexArray;
         const learner: SoftmaxRegressionSparse =
             learned.learner;
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const numberInstancesPreSelected: number =
             seedingUtteranceIndexArray.length;
         if (limitingSampleSize > numberInstancesPreSelected) {
@@ -465,7 +465,7 @@ export class AppAutoActiveLearner {
             aalSampledInstanceIndexArray =
                 [...reservoirArraySampler.sampleInstances(limitingSampleSize)];
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const newLuData: LuData = await LuData.createLuDataFromFilteringExistingLuDataUtterances(
             luData,
             new Set<number>(aalSampledInstanceIndexArray),
@@ -475,7 +475,7 @@ export class AppAutoActiveLearner {
             learner,
             seedingInstanceIndexArray: aalSampledInstanceIndexArray,
             seedingInstanceIndexArrayInitial: seedingUtteranceIndexArray };
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
     }
 
     /**
@@ -542,7 +542,7 @@ export class AppAutoActiveLearner {
             "seedingInstanceIndexArray": number[],
             "seedingInstanceIndexArrayInitial": number[],
             }> {
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         let columnarData: ColumnarData =
             ColumnarData.createColumnarData(
                 columnarContent,
@@ -551,7 +551,7 @@ export class AppAutoActiveLearner {
                 textColumnIndex,
                 linesToSkip,
                 true);
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         if (doBootstrapResampling) {
             const bootstrapSamplerKeyMap: BootstrapSamplerKeyMapDistribution<number> =
                 new BootstrapSamplerKeyMapDistribution<number>(
@@ -583,7 +583,7 @@ export class AppAutoActiveLearner {
                     false);
             columnarData = columnarDataBootstrapSampled as ColumnarData;
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const results =
             columnarData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
         const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
@@ -683,7 +683,7 @@ export class AppAutoActiveLearner {
             learned.seedingInstanceIndexArray;
         const learner: SoftmaxRegressionSparse =
             learned.learner;
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const numberInstancesPreSelected: number =
             seedingUtteranceIndexArray.length;
         if (limitingSampleSize > numberInstancesPreSelected) {
@@ -694,7 +694,7 @@ export class AppAutoActiveLearner {
             aalSampledInstanceIndexArray =
                 [...reservoirArraySampler.sampleInstances(limitingSampleSize)];
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const newColumnarData: ColumnarData =
             ColumnarData.createColumnarDataFromFilteringExistingColumnarDataUtterances(
                 columnarData,
@@ -708,13 +708,13 @@ export class AppAutoActiveLearner {
             learner,
             seedingInstanceIndexArray: aalSampledInstanceIndexArray,
             seedingInstanceIndexArrayInitial: seedingUtteranceIndexArray };
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
     }
 
-    public static async mainAutoActiveLearner(): Promise<void> {
-        // -----------------------------------------------------------------------
+    public static async mainAutoActiveLearner(): Promise<string[]> {
+        // -------------------------------------------------------------------
         const dateTimeBeginInString: string = (new Date()).toISOString();
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const parser = new ArgumentParser({
             addHelp: true,
             description: "app_auto_active_learning",
@@ -941,7 +941,7 @@ export class AppAutoActiveLearner {
         const debugFlag: boolean = Utility.toBoolean(args.debug);
         Utility.toPrintDebuggingLogToConsole = debugFlag;
         // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const filename: string =
             args.filename;
         if (!Utility.exists(filename)) {
@@ -1022,7 +1022,7 @@ export class AppAutoActiveLearner {
             args.outputModelFilename;
         const outputFeaturizerFilename: string =
             args.outputFeaturizerFilename;
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const labelColumnIndex: number = +args.labelColumnIndex;
         const textColumnIndex: number = +args.textColumnIndex;
         const linesToSkip: number = +args.linesToSkip;
@@ -1032,7 +1032,7 @@ export class AppAutoActiveLearner {
             `textColumnIndex=${textColumnIndex}`);
         Utility.debuggingLog(
             `linesToSkip=${linesToSkip}`);
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const bootstrapResamplingDistributionFileLabelColumnIndex: number =
             +args.bootstrapResamplingDistributionFileLabelColumnIndex;
         const bootstrapResamplingDistributionFileTextColumnIndex: number =
@@ -1048,7 +1048,7 @@ export class AppAutoActiveLearner {
         Utility.debuggingLog(
             `bootstrapResamplingDistributionFileLinesToSkip=` +
             `${bootstrapResamplingDistributionFileLinesToSkip}`);
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         let intentsUtterances: {
             "intents": string[],
             "utterances": string[] } = {
@@ -1065,7 +1065,7 @@ export class AppAutoActiveLearner {
         intentsUtterances = data.getIntentsUtterances();
         intentLabelIndexArray = data.getIntentLabelIndexArray();
         utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const bootstrapResamplingDistribution: Map<string, number> = new Map<string, number>();
         if (doBootstrapResampling) {
             if (Utility.exists(bootstrapResamplingDistributionFilename)) {
@@ -1082,7 +1082,7 @@ export class AppAutoActiveLearner {
                 }
             }
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const aalResult: {
             "newData": Data,
             "learner": SoftmaxRegressionSparse,
@@ -1111,28 +1111,37 @@ export class AppAutoActiveLearner {
             aalResult.newData;
         const learner: SoftmaxRegressionSparse =
             aalResult.learner;
-        newData.dumpLuLuisJsonStructureInLuFormat(
+        // -------------------------------------------------------------------
+        const outputFilenames: string[] = [];
+        const outputFilenameDump: string = newData.dumpLuLuisJsonStructureInLuFormat(
             outputFilename);
-        newData.dumpLuLuisJsonStructure(
-            outputFilename + ".luis", undefined, 4);
+        outputFilenames.push(outputFilenameDump);
+        const outputFilenameLuis: string =
+            outputFilename + ".luis";
+        const outputFilenameLuisAfterDumpfile = newData.dumpLuLuisJsonStructure(
+            outputFilenameLuis, undefined, 4);
+        outputFilenames.push(outputFilenameLuisAfterDumpfile);
         if (!Utility.isEmptyString(outputModelFilename)) {
-            Utility.dumpFile(
+            const outputModelFilenameAfterDumpfile: string = Utility.dumpFile(
                 outputModelFilename,
                 learner.serializeToJsonString(undefined, 4));
+            outputFilenames.push(outputModelFilenameAfterDumpfile);
         }
         if (!Utility.isEmptyString(outputFeaturizerFilename)) {
-            Utility.dumpFile(
+            const outputFeaturizerFilenameAfterDumpfile: string = Utility.dumpFile(
                 outputFeaturizerFilename,
                 newData.getFeaturizer().serializeToJsonString(undefined, 4));
+            outputFilenames.push(outputFeaturizerFilenameAfterDumpfile);
         }
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         const dateTimeEndInString: string = (new Date()).toISOString();
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
         Utility.debuggingLog(
             `dateTimeBeginInString=${dateTimeBeginInString}`);
         Utility.debuggingLog(
             `dateTimeEndInString=${dateTimeEndInString}`);
-        // -----------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        return outputFilenames;
     }
 }
 

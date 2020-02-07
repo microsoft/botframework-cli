@@ -62,35 +62,40 @@ export class DataProfileReporter extends AbstractBaseDataProfileEvaluator {
         columnDelimiter: string = "\t",
         recordDelimiter: string = "\n",
         encoding: string = "utf8",
-        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {}):
-        IDictionaryStringIdGenericArrays<string> {
+        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {}): {
+            "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+            "outputFilenames": string[],
+            } {
         if (DictionaryMapUtility.isEmptyStringIdGenericArraysDictionary(outputEvaluationReportDataArrays)) {
             outputEvaluationReportDataArrays =
                 this.generateEvaluationDataArraysReport();
         }
+        const outputFilenames: string[] = [];
         {
-            const outputFilename: string =
+            let outputFilenameIntentLabelDistribution: string =
                 `${outputReportFilenamePrefix}_DataProfileIntentLabelDistribution.txt`;
-            Utility.storeDataArraysToTsvFile(
-                outputFilename,
+            outputFilenameIntentLabelDistribution = Utility.storeDataArraysToTsvFile(
+                outputFilenameIntentLabelDistribution,
                 outputEvaluationReportDataArrays.DataProfileIntentLabelDistribution,
                 outputDataArraryHeaders,
                 columnDelimiter,
                 recordDelimiter,
                 encoding);
+            outputFilenames.push(outputFilenameIntentLabelDistribution);
         }
         {
-            const outputFilename: string =
+            let outputFilenameEntityTypeLabelDistribution: string =
                 `${outputReportFilenamePrefix}_DataProfileEntityTypeLabelDistribution.txt`;
-            Utility.storeDataArraysToTsvFile(
-                outputFilename,
+            outputFilenameEntityTypeLabelDistribution = Utility.storeDataArraysToTsvFile(
+                outputFilenameEntityTypeLabelDistribution,
                 outputEvaluationReportDataArrays.DataProfileEntityTypeLabelDistribution,
                 outputDataArraryHeaders,
                 columnDelimiter,
                 recordDelimiter,
                 encoding);
+            outputFilenames.push(outputFilenameEntityTypeLabelDistribution);
         }
-        return outputEvaluationReportDataArrays;
+        return { outputEvaluationReportDataArrays, outputFilenames };
     }
 
     public generateEvaluationJsonReport(): IDictionaryStringIdGenericValue<any> {
@@ -99,10 +104,16 @@ export class DataProfileReporter extends AbstractBaseDataProfileEvaluator {
     public generateEvaluationJsonReportToFiles(
         outputReportFilenamePrefix: string,
         encoding: string = "utf8",
-        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any>= {}):
-        IDictionaryStringIdGenericValue<any> {
+        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any>= {}): {
+            "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+            "outputFilenames": string[],
+            } {
+        const outputFilenames: string[] = [];
         // ---- NOTE: nothing to report here.
-        return outputEvaluationReportJson;
+        return {
+            outputEvaluationReportJson,
+            outputFilenames,
+            };
     }
 
     public generateEvaluationDirectReport(): IDictionaryStringIdGenericValue<string> {

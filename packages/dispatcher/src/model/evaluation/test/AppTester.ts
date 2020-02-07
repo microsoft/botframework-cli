@@ -7,6 +7,9 @@ import { ArgumentParser } from "argparse";
 
 import { Tester } from "./Tester";
 
+import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
+import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
+
 // tslint:disable-next-line: max-line-length
 // import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
@@ -185,8 +188,15 @@ export async function mainTester(): Promise<void> {
             intentLabelIndexArray,
             utteranceFeatureIndexArrays);
     // -----------------------------------------------------------------------
-    tester.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
-    tester.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
+    const evaluationJsonReportResult: {
+        "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+        "outputFilenames": string[],
+        } = tester.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+    const evaluationDataArraysReportResult: {
+        "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+        "outputFilenames": string[],
+        } = tester.generateEvaluationDataArraysReportToFiles(
+            outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
