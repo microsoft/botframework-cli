@@ -193,7 +193,7 @@ export class Builder {
   }
 
   async writeDialogAssets(contents: any[], force: boolean, out: string) {
-    let writeDone: boolean = false
+    let writeDone = false
     for (const content of contents) {
       if (out) {
         const outFilePath = path.join(path.resolve(out), path.basename(content.path))
