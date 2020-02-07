@@ -193,8 +193,8 @@ export class LuData extends Data {
     public dumpLuObject(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
-        Utility.dumpFile(
+        space?: string | number): string {
+        return Utility.dumpFile(
             filename,
             JSON.stringify(
                 this.getLuObject(),
@@ -204,8 +204,8 @@ export class LuData extends Data {
     public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
-        Utility.dumpFile(
+        space?: string | number): string {
+        return Utility.dumpFile(
             filename,
             JSON.stringify(
                 this.getLuLuisJsonStructure(),
@@ -213,8 +213,8 @@ export class LuData extends Data {
                 space));
     }
     public dumpLuLuisJsonStructureInLuFormat(
-        filename: string): void {
-        Utility.dumpFile(
+        filename: string): string {
+        return Utility.dumpFile(
             filename,
             constructMdFromLUIS(
                 this.getLuLuisJsonStructure()));

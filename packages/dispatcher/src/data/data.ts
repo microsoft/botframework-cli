@@ -194,28 +194,28 @@ export abstract class Data {
     public dumpLuObject(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
+        space?: string | number): string {
         // ---- NOTE: a child class can override this function.
-        return;
+        return "";
     }
     public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
+        space?: string | number): string {
         // ---- NOTE: a child class can override this function.
-        return;
+        return "";
     }
     public dumpLuLuisJsonStructureInLuFormat(
-        filename: string): void {
+        filename: string): string {
         // ---- NOTE: a child class can override this function.
-        return;
+        return "";
     }
 
     public dumpLuUtterances(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): void {
-        Utility.dumpFile(
+        space?: string | number): string {
+        return Utility.dumpFile(
             filename,
             JSON.stringify(
                 this.getLuUtterances(),

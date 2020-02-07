@@ -12,6 +12,9 @@ import { ArgumentParser } from "argparse";
 
 import { Predictor } from "./Predictor";
 
+import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
+import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
+
 import { SoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
@@ -181,8 +184,14 @@ export function mainPredictor(): void {
            `, predictionLabelIndex=${predictionResult.predictionLabelIndexes[predictionResult.predictionLabelIndexes.length - 1]}`);
     }
     // -----------------------------------------------------------------------
-    predictor.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
-    predictor.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
+    const evaluationJsonReportResult: {
+        "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+        "outputFilenames": string[],
+        } = predictor.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+    const evaluationDataArraysReportResult: {
+        "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+        "outputFilenames": string[],
+        } = predictor.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
