@@ -143,18 +143,17 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Generate Swagger",
+            "name": "Generate Swagger Schema",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outFiles": [
                 "./packages/dialog/lib/**"
             ],
             "args": [
-                "dialog:swagger",
+                "dialog:generate:swagger",
                 "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/testSwagger.json",
                 "-o",
                 "${env:TEMP}/test.out",
-                "--force",
                 "--verbose",
                 "-r",
                 "/pet/{petId}",
@@ -162,6 +161,27 @@
                 "post",
                 "-p",
                 "dialog.response"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Bot From Swagger Schema",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:generate",
+                "${env:TEMP}/test.out/Swagger.schema",
+                "-o",
+                "${env:TEMP}/test.out",
+                "--force",
+                "--verbose",
+                "-j",
+                "${env:TEMP}/test.out/properties.json"
             ],
             "internalConsoleOptions": "openOnSessionStart"
         },

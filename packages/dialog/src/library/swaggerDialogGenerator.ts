@@ -41,7 +41,7 @@ function generateParam(obj: any) {
   }
 }
 
-function generateJsonSchema(url: string, method: string, property: string) {
+function generateJsonSchema() {
   return {
     $schema: 'http://json-schema.org/draft-07/schema',
     type: 'object',
@@ -50,7 +50,12 @@ function generateJsonSchema(url: string, method: string, property: string) {
     required: new Array(),
     $requires: [
       'http.schema'
-    ],
+    ]
+  }
+}
+
+function generateJsonProperties(url: string, method: string, property: string) {
+  return {
     swaggerApi: url,
     swaggerMethod: method,
     swaggerResponse: property,
@@ -81,7 +86,8 @@ export async function generate(
   url.replace('{', '@{$')
 
   // the output schema file structure, pass the swagger related param in
-  let result = generateJsonSchema(url, method, property);
+  let result = generateJsonSchema()
+  let jsonProperties = generateJsonProperties(url, method, property)
 
   let body = {}
   for (let param of swfile.paths[route][method].parameters) {
@@ -109,11 +115,17 @@ export async function generate(
       result.required.push(param.name)
     }
   }
-
-  result.swaggerBody = body;
-  result.swaggerApi = url;
+  
+  jsonProperties.swaggerApi = url;
+  jsonProperties.swaggerBody = body;
+  let propertiesFile = ppath.join(output, `properties.json`)
 
   feedback(FeedbackType.info, `Output Dirctory: ${ppath.join(output, projectName)}`);
+  feedback(FeedbackType.info, `Output Schema ${ppath.join(output, projectName)}`);
+  feedback(FeedbackType.info, `Output Json Properties ${propertiesFile}`);
+
   await fs.ensureDir(output)
   await fs.writeFile(ppath.join(output, projectName), JSON.stringify(result, null, 4))
+  await fs.writeFile(propertiesFile, JSON.stringify(jsonProperties, null, 4))
 }
+

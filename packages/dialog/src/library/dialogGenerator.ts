@@ -311,6 +311,7 @@ export async function generate(
     allLocales?: string[],
     templateDirs?: string[],
     force?: boolean,
+    jsonProperties?: string,
     feedback?: Feedback)
     : Promise<void> {
 
@@ -342,6 +343,11 @@ export async function generate(
     feedback(FeedbackType.message, `Locales: ${JSON.stringify(allLocales)} `)
     feedback(FeedbackType.message, `Templates: ${JSON.stringify(templateDirs)} `)
     feedback(FeedbackType.message, `App.schema: ${metaSchema} `)
+
+    if (jsonProperties) {
+        feedback(FeedbackType.message, `Additional Json Properties to include: ${jsonProperties}`)
+    }
+
     try {
         await fs.ensureDir(outDir)
         let schema = await processSchemas(schemaPath, templateDirs, feedback)
@@ -354,11 +360,20 @@ export async function generate(
             entities: schema.entityTypes(),
             triggerIntent: schema.triggerIntent(),
             appSchema: metaSchema,
-            swaggerApi: schema.schema.swaggerApi,
-            swaggerMethod: schema.schema.swaggerMethod,
-            swaggerResponse: schema.schema.swaggerResponse,
-            swaggerBody: schema.schema.swaggerBody
         }
+
+        // copy the additional properties to the scope
+        if (jsonProperties) {
+            let fileContent = await fs.readFile(jsonProperties, 'utf8')
+            let jsonContent = JSON.parse(fileContent)
+            for (let key in jsonContent) {
+                let value = jsonContent[key]
+                if (!scope[key]) {
+                    scope[key] = value
+                }
+            }
+        }
+        
         for (let currentLoc of allLocales) {
             await fs.ensureDir(ppath.join(outDir, currentLoc))
             scope.locale = currentLoc

@@ -26,6 +26,7 @@ export default class GenerateDialog extends Command {
         schema: flags.string({ char: 's', description: 'Path to your app.schema file.', required: false }),
         templates: flags.string({ char: 't', description: 'Directory with templates to use for generating assets.', multiple: true }),
         verbose: flags.boolean({ description: 'Output verbose logging of files as they are processed', default: false }),
+        jsonProperties: flags.string({ char: 'j', description: 'The additional json properties to be added into the scope', required: false}),
     }
 
     async run() {
@@ -36,7 +37,7 @@ export default class GenerateDialog extends Command {
             if (!outDir) {
                 outDir = ppath.join(schemaName + '-resources')
             }
-            await gen.generate(args.schema, outDir, flags.schema, flags.locale, flags.templates, flags.force,
+            await gen.generate(args.schema, outDir, flags.schema, flags.locale, flags.templates, flags.force, flags.jsonProperties,
                 (type, msg) => {
                     if (type === gen.FeedbackType.message
                         || type === gen.FeedbackType.error
