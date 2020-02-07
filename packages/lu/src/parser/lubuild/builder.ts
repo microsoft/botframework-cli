@@ -26,73 +26,64 @@ export class Builder {
     input: string,
     culture: string,
     suffix: string,
-    region: string,
-    stdin?: string) {
+    region: string) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings: Settings
     let recognizers = new Map<string, Recognizer>()
     let dialogFilePath = process.cwd()
     let luContents: Array<any> = []
 
-    if (stdin && stdin !== '') {
-      this.handler('Load lu content from stdin')
-      luContents.push(new Content(stdin, 'stdin', true, culture, path.join(process.cwd(), 'stdin')))
-      multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
-      settings = new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {})
-    } else {
-      this.handler('Start to load lu files\n')
-      dialogFilePath = input.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(input)) : path.resolve(input)
-      let settingsPath = path.join(dialogFilePath, `luis.settings.${suffix}.${region}.json`)
-      let settingsContent: any = {}
-      if (fs.existsSync(settingsPath)) {
-        settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).luis
-        this.handler(`${settingsPath} loaded\n`)
+    dialogFilePath = input.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(input)) : path.resolve(input)
+    let settingsPath = path.join(dialogFilePath, `luis.settings.${suffix}.${region}.json`)
+    let settingsContent: any = {}
+    if (fs.existsSync(settingsPath)) {
+      settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).luis
+      this.handler(`${settingsPath} loaded\n`)
+    }
+
+    settings = new Settings(settingsPath, settingsContent)
+
+    let files = await fileHelper.getLuFiles(input, true, fileExtEnum.LUFile)
+    for (const file of files) {
+      let fileCulture: string
+      let fileName: string
+      const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
+      const result = await LuisBuilder.build(luFiles, true, culture)
+      const fileContent = result.parseToLuContent()
+      this.handler(`${file} loaded\n`)
+      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath
+        let fileNameWithCulture = path.basename(file, path.extname(file))
+        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
+      } else {
+        fileCulture = culture
+        fileName = path.basename(file, path.extname(file))
       }
 
-      settings = new Settings(settingsPath, settingsContent)
-
-      let files = await fileHelper.getLuFiles(input, true, fileExtEnum.LUFile)
-      for (const file of files) {
-        let fileCulture: string
-        let fileName: string
-        const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
-        const result = await LuisBuilder.build(luFiles, true, culture)
-        const fileContent = result.parseToLuContent()
-        this.handler(`${file} loaded\n`)
-        let cultureFromPath = fileHelper.getCultureFromPath(file)
-        if (cultureFromPath) {
-          fileCulture = cultureFromPath
-          let fileNameWithCulture = path.basename(file, path.extname(file))
-          fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
-        } else {
-          fileCulture = culture
-          fileName = path.basename(file, path.extname(file))
+      const multiRecognizerPath = path.join(path.dirname(file), `${fileName}.lu.dialog`)
+      if (!multiRecognizers.has(fileName)) {
+        let multiRecognizerContent = {}
+        if (fs.existsSync(multiRecognizerPath)) {
+          multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath)).recognizers
+          this.handler(`${multiRecognizerPath} loaded\n`)
         }
 
-        const multiRecognizerPath = path.join(dialogFilePath, `${fileName}.lu.dialog`)
-        if (!multiRecognizers.has(fileName)) {
-          let multiRecognizerContent = {}
-          if (fs.existsSync(multiRecognizerPath)) {
-            multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath)).recognizers
-            this.handler(`${multiRecognizerPath} loaded\n`)
-          }
-
-          multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent))
-        }
-
-        const content = new Content(fileContent, fileName, true, fileCulture, file)
-        luContents.push(content)
-
-        const dialogFile = path.join(dialogFilePath, `${content.name}.dialog`)
-        let existingDialogObj: any
-        if (fs.existsSync(dialogFile)) {
-          existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
-          this.handler(`${dialogFile} loaded\n`)
-        }
-
-        let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj)
-        recognizers.set(content.name, recognizer)
+        multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent))
       }
+
+      const content = new Content(fileContent, fileName, true, fileCulture, file)
+      luContents.push(content)
+
+      const dialogFile = path.join(path.dirname(file), `${content.name}.dialog`)
+      let existingDialogObj: any
+      if (fs.existsSync(dialogFile)) {
+        existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
+        this.handler(`${dialogFile} loaded\n`)
+      }
+
+      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj)
+      recognizers.set(content.name, recognizer)
     }
 
     // validate if there are duplicated files with same name and locale
@@ -125,7 +116,6 @@ export class Builder {
     // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
     let delayDuration = 1100
 
-    this.handler('Start to handle applications\n')
     const defaultLuisSchemeVersion = '4.0.0'
     const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
     const apps = await luBuildCore.GetApplicationList()
@@ -202,29 +192,26 @@ export class Builder {
     return dialogContents
   }
 
-  async writeDialogAssets(contents: any[], dialog: boolean, force: boolean, out: string) {
-    if (dialog) {
-      for (const content of contents) {
-        if (out) {
-          const outFilePath = path.join(path.resolve(out), path.basename(content.path))
-          if (force || !fs.existsSync(outFilePath)) {
-            this.handler(`Writing to ${outFilePath}\n`)
-            await fs.writeFile(outFilePath, content.content, 'utf-8')
-          }
-        } else {
-          if (force || !fs.existsSync(content.path)) {
-            this.handler(`Writing to ${content.path}\n`)
-            await fs.writeFile(content.path, content.content, 'utf-8')
-          }
+  async writeDialogAssets(contents: any[], force: boolean, out: string) {
+    let writeDone: boolean = false
+    for (const content of contents) {
+      if (out) {
+        const outFilePath = path.join(path.resolve(out), path.basename(content.path))
+        if (force || !fs.existsSync(outFilePath)) {
+          this.handler(`Writing to ${outFilePath}\n`)
+          await fs.writeFile(outFilePath, content.content, 'utf-8')
+          writeDone = true
+        }
+      } else {
+        if (force || !fs.existsSync(content.path)) {
+          this.handler(`Writing to ${content.path}\n`)
+          await fs.writeFile(content.path, content.content, 'utf-8')
+          writeDone = true
         }
       }
-    } else {
-      if (contents.length > 0) {
-        this.handler('The published application ids:')
-        this.handler(JSON.parse(contents[contents.length - 1].content).luis)
-        this.handler('\n')
-      }
     }
+
+    return writeDone
   }
 
   async InitApplicationFromLuContent(content: any, botName: string, suffix: string, defaultLuisSchemeVersion: string) {
