@@ -98,23 +98,82 @@ const extractEntities = function(entities, builtIn = false) {
 }
 
 const extractEntitiesV6 = function(entities) {
-    const simple_entities_result = [];
-    const composite_entities_result = [];
+    // This method provides a simplified topological sort to
+    // solve potential instanceOf dependecies in the v6 entities
 
-    entities.forEach(entity => {
+    const simpleEntitiesResult = [];
+    const compositeEntitiesResult = [];
+    const simpleEntitiesWithType = {};
+    const resolveEntityType = function(entityName) {
+        entityStack = [];
+        entityType = simpleEntitiesWithType[entityName];
+
+        while (simpleEntitiesWithType[entityType]){
+            entityStack.push(entityName);
+            entityName = entityType;
+            entityType = simpleEntitiesWithType[entityName];
+        }
+
+        while (entityName) {
+            simpleEntitiesWithType[entityName] = entityType;
+            entityName = entityStack.pop();
+        }
+    }
+
+    firstPassStack = entities.slice();
+
+    while(firstPassStack.length) {
+        entity = firstPassStack.pop();
+
         if (Array.isArray(entity.children) && entity.children.length) {
-            // is composite
-            
-        } else {
+            firstPassStack.push(...entity.children);
+        } else if (!entity.children || (Array.isArray(entity.children) && entity.children.length == 0)) {
             // is simple entity
             if (entity.instanceOf) {
-                simple_entities_result.push(
-                    { entityName: entity.name, instanceOf: entity.instanceOf }
-                )
-            } else {
-                simple_entities_result.push(entity.name)
+                // If the entity order in the schema was not modified by hand,
+                // this algorithm will solve instanceOf dependencies.
+                last_type = simpleEntitiesWithType[entity.instanceOf] || entity.instanceOf;
+                simpleEntitiesWithType[entity.name] = last_type;
             }
+        } else {
+            throw CLIError("Malformed JSON: entity.children should be an array");
         }
+    }
+
+    // This is a second pass for simple entities.
+    // If the JSON was modified by hand and there's a dependency
+    // in the instanceOf field to an entity that appears later,
+    // the type won't be resolved correctly with one pass.
+    for (const entityName in simpleEntitiesWithType) {
+        resolveEntityType(entityName);
+    }
+
+    const processSimpleEntity = function(entity, listToAppend) {
+        listToAppend.push(
+            entity.instanceOf ? {name: entity.name, instanceOf: simpleEntitiesWithType[entity.instanceOf]} : entity.name
+        )
+    }
+
+    const baseParseEntity = function(entityList, childList, topLevel=false) {
+        entityList.forEach(entity => {
+            if (Array.isArray(entity.children) && entity.children.length) {
+                compositeEntity = { compositeName: propertyHelper.normalizeName(entity.name), attributes: [] };
+                baseParseEntity(entity.children, compositeEntity.attributes);
+                compositeEntitiesResult.push(compositeEntity);
+                if (!topLevel) {
+                    childList.push({name: entity.name, compositeInstanceOf: entity.name})
+                }
+            } else {
+                processSimpleEntity(
+                    entity, 
+                    topLevel ? simpleEntitiesResult : childList
+                )
+            }
+        });
+    }
+
+    entities.forEach(entity => {
+        baseParseEntity(entity, null, true);
     });
-    return result;
+    return [simpleEntitiesResult, compositeEntitiesResult];
 }
