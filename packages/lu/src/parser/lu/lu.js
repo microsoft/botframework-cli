@@ -17,7 +17,7 @@ class Lu {
     }
 
     async parseToLuis(verbose, luis_culture){
-        let parsedContent = await parseFileContents(this.content, verbose, luis_culture)
+        let parsedContent = await parseFileContents(this.content, verbose, luis_culture) 
         return new Luis(parsedContent.LUISJsonStructure)
     }
 }

@@ -146,7 +146,7 @@ describe('luis:convert', () => {
     test
     .stdout()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/examples/11.lu')}`, '--out', './results/root15.json', '--name', '11'])
-    .it('luis:convert with multiple file references are parsed correctly', async () => {
+    .it('luis:convert with multiple file references are parsed correctly1', async () => {
       let parsedObjects = await parseJsonFiles('./../../../results/root15.json', './../../fixtures/verified/11.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })

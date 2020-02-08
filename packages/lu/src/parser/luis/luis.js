@@ -8,6 +8,7 @@ class Luis {
     constructor(LuisJSON = null){
         if (LuisJSON) {
             initialize(this, LuisJSON)
+            helpers.checkAndUpdateVersion(this)
         } else {
             this.intents = [];
             this.entities = [];
@@ -62,9 +63,9 @@ class Luis {
             mergeResults(blob, this, LUISObjNameEnum.INTENT);
             mergeResults(blob, this, LUISObjNameEnum.ENTITIES);
             mergeResults_closedlists(blob, this, LUISObjNameEnum.CLOSEDLISTS);
-            mergeResults(blob, this, LUISObjNameEnum.UTTERANCE);
-            mergeResults(blob, this, LUISObjNameEnum.PATTERNS);
             mergeResults(blob, this, LUISObjNameEnum.PATTERNANYENTITY);
+            mergeResultsWithHash(blob, this, LUISObjNameEnum.UTTERANCE);
+            mergeResultsWithHash(blob, this, LUISObjNameEnum.PATTERNS);
             buildRegex(blob, this)
             buildPrebuiltEntities(blob, this)
             buildModelFeatures(blob, this)
@@ -72,15 +73,19 @@ class Luis {
             buildPatternAny(blob, this)
 
         }
-        checkAndUpdateVersion(this)
+        helpers.checkAndUpdateVersion(this)
     }
 }
 
 module.exports = Luis
 
 const initialize = function(instance, LuisJSON) {
+    instance.utteranceHash = {};
     for (let prop in LuisJSON) {
         instance[prop] = LuisJSON[prop];
+        if (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS) {
+            (LuisJSON[prop] || []).forEach(item => instance.utteranceHash[helpers.hashCode(JSON.stringify(item))] = item)
+        }
     }   
 }
 const sortComparers = { 
@@ -102,6 +107,36 @@ const compareString = function(a, b) {
     }
 
     return 0;
+}
+
+const mergeResultsWithHash = function (blob, finalCollection, type, hashProperty) {
+    if (blob[type].length === 0) { 
+        return
+    }
+    if (!finalCollection.utteranceHash) finalCollection.utteranceHash = {};
+    blob[type].forEach(function (blobItem) {
+        // add if this item if it does not already exist by hash look up.
+        let hashCode = helpers.hashCode(JSON.stringify(blobItem));
+        if (!finalCollection.utteranceHash[hashCode]) {
+            finalCollection[type].push(blobItem);
+            finalCollection.utteranceHash[hashCode] = blobItem;
+        } else {
+            let item = finalCollection.utteranceHash[hashCode];
+
+            if (type !== LUISObjNameEnum.INTENT &&
+                type !== LUISObjNameEnum.PATTERNS &&
+                type !== LUISObjNameEnum.UTTERANCE &&
+                item.name === blobItem.name) {
+                    // merge roles
+                    (blobItem.roles || []).forEach(blobRole => {
+                        if (item.roles && 
+                            !item.roles.includes(blobRole)) {
+                                item.roles.push(blobRole);
+                            }
+                    });
+            }            
+        }
+    });
 }
 
 /**
@@ -322,32 +357,4 @@ const buildPatternAny = function(blob, FinalLUISJSON){
             }
         }
     })
-}
-
-const checkAndUpdateVersion = function(finalLUISJSON) {
-    if (!finalLUISJSON) return;
-    // clean up house keeping
-    if (finalLUISJSON.flatListOfEntityAndRoles)  delete finalLUISJSON.flatListOfEntityAndRoles
-    // Detect if there is content specific to 5.0.0 schema
-    // any entity with children
-    if (!finalLUISJSON) {
-        return
-    }
-    let v5DefFound = false;
-    v5DefFound = (finalLUISJSON.entities || []).find(i => i.children || i.features) ||
-                (finalLUISJSON.intents || []).find(i => i.features) || 
-                (finalLUISJSON.composites || []).find(i => i.features);
-    if (v5DefFound) {
-        finalLUISJSON.luis_schema_version = "6.0.0";
-        if (finalLUISJSON.model_features && finalLUISJSON.model_features.length !== 0) {
-            finalLUISJSON.phraselists = [];
-            finalLUISJSON.model_features.forEach(item => finalLUISJSON.phraselists.push(Object.assign({}, item)));
-        }
-        (finalLUISJSON.composites || []).forEach(composite => {
-            let children = composite.children;
-            composite.children = [];
-            children.forEach(c => composite.children.push({name : c}));
-        })
-        delete finalLUISJSON.model_features;
-    }
 }

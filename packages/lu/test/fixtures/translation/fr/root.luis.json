@@ -138,11 +138,6 @@
       "entities": []
     },
     {
-      "text": "email cloney john",
-      "intent": "None",
-      "entities": []
-    },
-    {
       "text": "extend lunch meeting 30 minutes extra",
       "intent": "None",
       "entities": []
