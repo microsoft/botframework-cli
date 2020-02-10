@@ -24,12 +24,13 @@ export default class Swagger extends Command {
     route: flags.string({ char: 'r', description: 'Route to the specific api', required: true }),
     method: flags.string({ char: 'm', description: 'Method of the specific api.', required: true, default: 'GET' }),
     property: flags.string({ char: 'p', description: 'The property of the response to set in', required: true }),
+    name: flags.string({ char: 'n', description: 'define schema name', required: true }),
   }
 
   async run() {
     const { args, flags } = this.parse(Swagger)
     try {
-      let projectName = 'Swagger.schema'
+      let projectName = flags.name
       await swaggerGen.generate(args.path, flags.output, flags.method, flags.route, flags.property, projectName,
         (type, msg) => {
           if (type === gen.FeedbackType.message

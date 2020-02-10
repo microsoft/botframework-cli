@@ -83,7 +83,7 @@ export async function generate(
   let url = protocol + swfile.host as string + swfile.basePath as string + route;
 
   // make url valid to the http request action
-  url.replace('{', '@{$')
+  url = url.replace('{', '@{$')
 
   // the output schema file structure, pass the swagger related param in
   let result = generateJsonSchema()
