@@ -9,6 +9,9 @@ import { ArgumentParser } from "argparse";
 
 import { CrossValidator } from "./CrossValidator";
 
+import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
+import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
+
 import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
@@ -255,7 +258,16 @@ export function mainCrossValidatorWithColumnarContent(
     // -----------------------------------------------------------------------
 }
 
-export async function mainCrossValidator(): Promise<void> {
+export async function mainCrossValidator(): Promise<{
+    "evaluationJsonReportResult": {
+        "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+        "outputFilenames": string[],
+        },
+    "evaluationDataArraysReportResult": {
+        "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+        "outputFilenames": string[],
+        },
+        }> {
     // -----------------------------------------------------------------------
     const dateTimeBeginInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
@@ -489,8 +501,14 @@ export async function mainCrossValidator(): Promise<void> {
             learnerParameterLearningRate,
             learnerParameterToCalculateOverallLossAfterEpoch);
     // -----------------------------------------------------------------------
-    crossValidator.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
-    crossValidator.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
+    const evaluationJsonReportResult: {
+        "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+        "outputFilenames": string[],
+        } = crossValidator.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+    const evaluationDataArraysReportResult: {
+        "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+        "outputFilenames": string[],
+        } = crossValidator.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------
@@ -499,6 +517,7 @@ export async function mainCrossValidator(): Promise<void> {
     Utility.debuggingLog(
         `dateTimeEndInString=${dateTimeEndInString}`);
     // -----------------------------------------------------------------------
+    return { evaluationJsonReportResult, evaluationDataArraysReportResult };
 }
 
 if (require.main === module) {

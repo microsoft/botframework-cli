@@ -1009,7 +1009,7 @@ export class Utility {
         outputDataArraryHeaders: string[] = [],
         columnDelimiter: string = "\t",
         recordDelimiter: string = "\n",
-        encoding: string = "utf8"): void {
+        encoding: string = "utf8"): string {
         if (Utility.isEmptyString(outputFilename)) {
             Utility.debuggingThrow(
                 `outputFilename is empty`);
@@ -1029,7 +1029,9 @@ export class Utility {
         } catch (e) {
             Utility.debuggingThrow(
                 `storeTsvFile() cannout create an output file: ${outputFilename}, EXCEPTION=${e}`);
+            return "";
         }
+        return outputFilename;
     }
 
     public static luUtterancesToEntityAnnotatedCorpusTypes(
@@ -1450,6 +1452,13 @@ export class Utility {
         return null;
     }
 
+    public static stringToLineArray(
+        stringContent: string): string[] {
+        const lineArray: string[] = stringContent.split("\n");
+        const lineTrimedArray: string[] = lineArray.map((x) => x.trim());
+        return lineTrimedArray;
+    }
+
     public static loadFile(
         filename: string,
         encoding: string = "utf8"): string {
@@ -1469,13 +1478,39 @@ export class Utility {
     public static dumpFile(
         filename: string,
         content: any,
-        encoding: string = "utf8"): void {
+        encoding: string = "utf8"): string {
         // Utility.debuggingLog(
         //     `Utility.dumpFile(): filename=${filename}`);
-        fs.writeFileSync(filename, content, encoding);
+        try {
+            fs.writeFileSync(filename, content, encoding);
+        } catch (err) {
+          // ---- NOTE ---- An error occurred
+          Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}`);
+          return "";
+        }
+        return filename;
     }
     public static exists(pathToFileSystemEntry: string): boolean {
         return fs.existsSync(pathToFileSystemEntry);
+    }
+    public static deleteFile(
+        filename: string,
+        ignoreEmptyFilename: boolean = true): string {
+        // Utility.debuggingLog(
+        //     `Utility.deleteFile(): filename=${filename}`);
+        try {
+            if (Utility.isEmptyString(filename)) {
+                if (ignoreEmptyFilename) {
+                    return "";
+                }
+            }
+            fs.unlinkSync(filename);
+        } catch (err) {
+            // ---- NOTE ---- An error occurred
+            Utility.debuggingThrow(`FAILED to delete a file: filename=${filename}`);
+            return "";
+        }
+        return filename;
     }
 
     public static getObjectMd5Hash(objectValue: object): string|Int32Array {

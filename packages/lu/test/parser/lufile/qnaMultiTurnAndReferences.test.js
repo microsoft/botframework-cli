@@ -32,7 +32,7 @@ describe('QnA document', function() {
             luMerger.Build([new luObj(qnaContent, 'stdin')], false, undefined, findLuFiles)
                 .then(res => done(res))
                 .catch(err => {
-                    assert(err.text.includes("Cannot find reference."))
+                    assert(err.text.includes("Cannot find reference.") || err.text.includes("Sorry unable to open"))
                     done()
                 })
         })
