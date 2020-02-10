@@ -99,6 +99,14 @@ export class LuBuildCore {
     await this.client.versions.importMethod(appId, app, options)
   }
 
+  public async ListApplicationVersions(appId: string) {
+    return this.client.versions.list(appId)
+  }
+
+  public async DeleteVersion(appId: string, versionId: string) {
+    await this.client.versions.deleteMethod(appId, versionId)
+  }
+
   public async TrainApplication(appId: string, versionId: string) {
     await this.client.train.trainVersion(appId, versionId)
   }
@@ -117,7 +125,7 @@ export class LuBuildCore {
       })
   }
 
-  public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings?: Settings)
+  public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
@@ -130,8 +138,8 @@ export class LuBuildCore {
       contents.push(multiLangContent)
     }
 
-    if (settings) {
-      const settingsContent = new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
+    for (const setting of settings) {
+      const settingsContent = new Content(setting.save(), path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath())
       contents.push(settingsContent)
     }
 

@@ -26,7 +26,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botName', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`Missing required flag:\n --authoringKey AUTHORINGKEY`)
+      expect(ctx.stderr).to.contain('Missing required flag:\n --authoringKey AUTHORINGKEY')
     })
 
   test
@@ -34,7 +34,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--botName', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`Missing input. Please use stdin or pass a file or folder location with --in flag`)
+      expect(ctx.stderr).to.contain('Missing input. Please use stdin or pass a file or folder location with --in flag')
     })
 
   test
@@ -42,7 +42,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`Missing required flag:\n --botName BOTNAME  Bot name`)
+      expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag')
     })
   
   test
@@ -50,7 +50,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild/file-name-duplicated')}`, '--botName', 'Contoso'])
     .it('displays an error if files with same name and locale are found', ctx => {
-      expect(ctx.stderr).to.contain(`Files with same name and locale are found`)
+      expect(ctx.stderr).to.contain('Files with same name and locale are found')
     })
 })
 
