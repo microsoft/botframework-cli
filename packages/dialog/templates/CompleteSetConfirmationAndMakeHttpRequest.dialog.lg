@@ -25,7 +25,7 @@
                 },
                 {
                   "$kind": "Microsoft.SendActivity",
-                  "activity": "@{sendSuccess()}"
+                  "activity": "@{callCardResponse()}"
                 },
                 {
                   "$kind": "Microsoft.EndDialog"
@@ -48,5 +48,6 @@
 # callChooseProperty
 - @\{chooseProperty()}
 
-# sendSuccess
-- Send Http Request successfully! Reseponse : \@{@{swaggerResponse}}
+# callCardResponse
+- @\{cardResponse()}
+
