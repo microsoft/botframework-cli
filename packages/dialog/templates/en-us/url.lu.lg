@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-url.@{locale}.lu
+- @{schemaName}-@{property}-url.@{locale}.lu
 
 # template
 - $PREBUILT:url @{roles()}

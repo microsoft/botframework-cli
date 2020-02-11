@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-personName.@{locale}.lu
+- @{schemaName}-@{property}-personName.@{locale}.lu
 
 # template
 - $PREBUILT:personName @{roles()}

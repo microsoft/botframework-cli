@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setordinal.dialog
+- @{schemaName}-@{property}-assign-percentage.dialog
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity":"ordinal",
+    "entity": "percentage",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -17,11 +17,11 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@ordinal"          
+            "value": "=@percentage"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @ordinal)}
+- @\{setPropertyMessage('@{property}', @percentage)}

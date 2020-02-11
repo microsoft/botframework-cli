@@ -1,6 +1,5 @@
-
 # filename
-- @{schemaName}-@{property}Setemail.dialog
+- @{schemaName}-@{property}-assign-@{property}Entity.dialog
 
 # template
 - ```
@@ -8,20 +7,20 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "email",
+    "entity": "@{property}Entity",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        },
+        },    
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@email"          
+            "value": "=@@{property}Entity"
         }
-    ]               
+    ]
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @email)}
+- @\{setPropertyMessage('@{property}', @@{property}Entity)}

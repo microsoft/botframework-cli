@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}SetkeyPhrase.dialog
+- @{schemaName}-@{property}-assign-email.dialog
 
 # template
 - ```
@@ -8,20 +8,20 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "keyPhrase",
+    "entity": "email",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        }, 
+        },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@keyPhrase"          
+            "value": "=@email"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @keyPhrase)}
+- @\{setPropertyMessage('@{property}', @email)}

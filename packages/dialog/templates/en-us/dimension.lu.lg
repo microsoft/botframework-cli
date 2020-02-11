@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-dimension.@{locale}.lu
+- @{schemaName}-@{property}-dimension.@{locale}.lu
 
 # template
 - $PREBUILT:dimension @{roles()}

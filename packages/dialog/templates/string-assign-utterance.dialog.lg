@@ -1,5 +1,6 @@
+
 # filename
-- @{schemaName}-@{property}Set@{property}Entity.dialog
+- @{schemaName}-@{property}-assign-utterance.dialog
 
 # template
 - ```
@@ -7,20 +8,20 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "@{property}Entity",
+    "entity": "utterance",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        },    
+        },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@@{property}Entity"
+            "value": "=@utterance"          
         }
-    ]
+    ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @@{property}Entity)}
+- @\{setPropertyMessage('@{property}', @utterance)}
