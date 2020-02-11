@@ -140,15 +140,4 @@ describe('luis:generate:cs', () => {
     .it('Generates class with namespace correctly', async () => {
       await compareSourceFiles('../../../fixtures/generate/NameSpaceClass.cs', '../../../fixtures/generate/results/NameOfTheClass.cs')
     })
-
-  test
-    .stdout()
-    .command(['luis:generate:cs',
-      '--in',
-      `${path.join(__dirname, '../../../fixtures/generate/SchemaV6.json')}`,
-      '--out',
-      `${path.join(__dirname, '../../../fixtures/generate/results/SchemaV6.cs')}`])
-    .it('Generates class based on luis schema v6 correctly', async () => {
-      await compareSourceFiles('../../../fixtures/generate/SchemaV6.cs', '../../../fixtures/generate/results/SchemaV6.cs')
-    })
 })
