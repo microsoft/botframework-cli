@@ -26,7 +26,6 @@ class Luis {
             this.name = "";
             this.desc = "";
             this.culture = "en-us";
-            this.tokenizerVersion = "1.0.0"
         }
     }
 
