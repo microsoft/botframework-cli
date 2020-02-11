@@ -7,6 +7,34 @@ const validateLUISBlob = require('./../../../src/parser/luis/luisValidator')
 var chai = require('chai');
 var assert = chai.assert;
 describe('With helper functions', function () {
+        it('parseFile includes defaults for LUIS app', function(done) {
+                let luFile = `@ simple entity1`;
+                parseFile.parseFile(luFile)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.luis_schema_version, "3.2.0")
+                                assert.equal(res.LUISJsonStructure.versionId, "0.1")
+                                assert.equal(res.LUISJsonStructure.name, "")
+                                assert.equal(res.LUISJsonStructure.desc, "")
+                                assert.equal(res.LUISJsonStructure.culture, "en-us")
+                                done()
+                        })
+                        .catch(err => done(err))
+        })
+
+        it('tokenizerVersion can be specified in LU file', function(done) {
+                let luFile = `> !# @app.tokenizerVersion = 1.0.2
+
+# testIntent
+- one
+- two`;
+                parseFile.parseFile(luFile)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.tokenizerVersion, "1.0.2")
+                                done()
+                        })
+                        .catch(err => done(err))
+        })
+
         it('validateLUISBlob throw when duplicate entity definitions are found', function (done) {
                 let luFile = `# Greeting
 - hi {commPreference=test call}

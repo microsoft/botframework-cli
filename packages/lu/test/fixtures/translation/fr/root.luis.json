@@ -171,8 +171,9 @@
   "patterns": [],
   "patternAnyEntities": [],
   "prebuiltEntities": [],
-  "name": "file",
+  "luis_schema_version": "3.2.0",
   "versionId": "0.1",
-  "culture": "en-us",
-  "luis_schema_version": "3.2.0"
+  "name": "file",
+  "desc": "",
+  "culture": "en-us"
 }
