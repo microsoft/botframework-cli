@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-keyPhrase.@{locale}.lu
+- @{schemaName}-@{property}-keyPhrase.@{locale}.lu
 
 # template
 - $PREBUILT:keyPhrase @{roles()}

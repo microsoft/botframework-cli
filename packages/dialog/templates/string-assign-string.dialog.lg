@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}Set@{property}Entity.dialog
+- @{schemaName}-@{property}-assign-@{property}Entity.dialog
 
 # template
 - ```

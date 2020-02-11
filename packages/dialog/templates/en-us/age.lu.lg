@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-age.@{locale}.lu
+- @{schemaName}-@{property}-age.@{locale}.lu
 
 # template
 - $PREBUILT:age @{roles()}

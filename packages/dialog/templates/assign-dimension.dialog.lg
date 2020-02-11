@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setage.dialog
+- @{schemaName}-@{property}-assign-dimension.dialog
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "age",
+    "entity": "dimension",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -17,16 +17,16 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.number",
-            "value": "=@age.number"          
+            "value": "=@dimension.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.units",
-            "value": "=@age.units"          
+            "value": "=@dimension.units"          
         }
     ]               
 }
 ```
 
-# callSetMessage()
-- @\{setObjectPropertyMessage('@{property}', concat(string(@age.number), ' ', @age.units))}
+# callSetMessage
+- @\{setObjectPropertyMessage('@{property}',concat(string(@dimension.number), ' ', @dimension.units))}

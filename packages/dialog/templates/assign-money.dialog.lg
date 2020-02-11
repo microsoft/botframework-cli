@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setdimension.dialog
+- @{schemaName}-@{property}-assign-money.dialog
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "dimension",
+    "entity": "money",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -17,16 +17,16 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.number",
-            "value": "=@dimension.number"          
+            "value": "=@money.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.units",
-            "value": "=@dimension.units"          
+            "value": "=@money.units"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}',concat(string(@dimension.number), ' ', @dimension.units))}
+- @\{setObjectPropertyMessage('@{property}', concat(string(@money.number), ' ', @money.units))}

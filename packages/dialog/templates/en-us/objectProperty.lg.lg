@@ -2,7 +2,7 @@
 - @{schemaName}-@{property}.@{locale}.lg
 
 # template
-- @{AskTemplate()}\n@{NameTemplate()}\n\[common.lg]
+- @{AskTemplate()}\n@{NameTemplate()}\n\[library.lg]
 
 # AskTemplate
 - # Ask@{property}\n- @\{askString('@{property}')\}\n

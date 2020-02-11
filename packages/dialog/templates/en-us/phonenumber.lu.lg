@@ -1,5 +1,5 @@
 # filename
-- @{entityFilename()}
+- @{schemaName}-@{property}-phonenumber.@{locale}.lu
 
 # template
 - $PREBUILT:phonenumber @{roles()}
