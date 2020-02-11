@@ -1,7 +1,6 @@
-import { CLIError } from '@microsoft/bf-cli-command';
-
 const parse_multi_platform_luis_1 = require("./../luis/propertyHelper");
 const LuisGenBuilder = require('./../luis/luisGenBuilder')
+const exception = require('./../utils/exception');
 const Writer = require("./helpers/writer");
 const lodash = require("lodash")
 
@@ -179,7 +178,7 @@ module.exports = {
                 let name = parse_multi_platform_luis_1.jsonPropertyName(entityNameOrObject.name)
                 return `public ${lodash.upperFirst(name)}Class[] ${name};`
             } else {
-                throw CLIError("Invalid LuisGen object: cannot parse entity")
+                throw (new exception("Invalid LuisGen object: cannot parse entity"))
             }
         }
         let result = '';

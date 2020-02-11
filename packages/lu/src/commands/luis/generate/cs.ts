@@ -10,6 +10,7 @@ import * as path from 'path'
 const LuisToCsConverter = require('./../../../parser/converters/luistocsconverter')
 const file = require('./../../../utils/filehelper')
 const fs = require('fs-extra')
+const exception = require('./../../../parser/utils/exception')
 
 export default class LuisGenerateCs extends Command {
   static description = 'Generate:cs generates a strongly typed C# source code from an exported (json) LUIS model.'
@@ -68,7 +69,13 @@ export default class LuisGenerateCs extends Command {
     this.log(
       `Generating file at ${outputPath || 'stdout'} that contains class ${space}.${flags.className}.`
     )
-
-    await LuisToCsConverter.writeFromLuisJson(app, flags.className, space, outputPath)
+    try {
+      await LuisToCsConverter.writeFromLuisJson(app, flags.className, space, outputPath)
+    } catch (err) {
+      if (err instanceof exception) {
+        throw new CLIError(err.text)
+      }
+      throw err
+    }
   }
 }
