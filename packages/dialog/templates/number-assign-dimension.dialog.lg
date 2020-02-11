@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}Setdimension.dialog
+- @{schemaName}-@{property}-assign-dimension.dialog
 
 # template
 - ```
