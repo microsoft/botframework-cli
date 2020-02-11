@@ -725,7 +725,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
 const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
     // handle intent
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
-    if (!parsedContent.LUISJsonStructure.utteranceHash) parsedContent.LUISJsonStructure.utteranceHash = {}
+    let hashTable = {}
     if (intents && intents.length > 0) {
         for (const intent of intents) {
             let intentName = intent.Name;
@@ -760,9 +760,9 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                         }
 
                         let newPattern = new helperClass.pattern(utterance, intentName);
-                        if (!parsedContent.LUISJsonStructure.utteranceHash[uttHash]) {
+                        if (!hashTable[uttHash]) {
                             parsedContent.LUISJsonStructure.patterns.push(newPattern);
-                            parsedContent.LUISJsonStructure.utteranceHash[uttHash] = newPattern;
+                            hashTable[uttHash] = newPattern;
                         }
 
                         // add all entities to pattern.Any only if they do not have another type.
@@ -905,12 +905,12 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
 
                         // add utterance
                         let utteranceObject;
-                        if (parsedContent.LUISJsonStructure.utteranceHash[uttHash]) {
-                            utteranceObject = parsedContent.LUISJsonStructure.utteranceHash[uttHash];
+                        if (hashTable[uttHash]) {
+                            utteranceObject = hashTable[uttHash];
                         } else {
                             utteranceObject = new helperClass.uttereances(utterance, intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
-                            parsedContent.LUISJsonStructure.utteranceHash[uttHash] = utteranceObject;
+                            hashTable[uttHash] = utteranceObject;
                         }
                         entitiesFound.forEach(item => {
                             if (item.startPos > item.endPos) {
@@ -935,15 +935,15 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                     // detect if utterance is a pattern and if so add it as a pattern
                     if (helpers.isUtterancePattern(utterance)) {
                         let patternObject = new helperClass.pattern(utterance, intentName);
-                        if (!parsedContent.LUISJsonStructure.utteranceHash[uttHash]) {
+                        if (!hashTable[uttHash]) {
                             parsedContent.LUISJsonStructure.patterns.push(patternObject);
-                            parsedContent.LUISJsonStructure.utteranceHash[uttHash] = patternObject;
+                            hashTable[uttHash] = patternObject;
                         }
                     } else {
-                        if(!parsedContent.LUISJsonStructure.utteranceHash[uttHash]) {
+                        if(!hashTable[uttHash]) {
                             let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject); 
-                            parsedContent.LUISJsonStructure.utteranceHash[uttHash] = utteranceObject;
+                            hashTable[uttHash] = utteranceObject;
                         } 
                     }
                 }
