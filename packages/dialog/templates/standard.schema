@@ -48,7 +48,6 @@
     "definitions": {
         "PROPERTYName": {
             "type": "string",
-            "enum": "@{properties}",
             "$entities": ["PROPERTYName"]
         }
     },
