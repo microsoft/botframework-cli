@@ -39,6 +39,10 @@
     }
   ],
   "luis_schema_version": "6.0.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us",
   "phraselists": [
     {
       "name": "abc",
@@ -47,9 +51,5 @@
       "activated": true,
       "enabledForAllModels": true
     }
-  ],
-  "versionId": "0.1",
-  "name": "",
-  "desc": "",
-  "culture": "en-us"
+  ]
 }

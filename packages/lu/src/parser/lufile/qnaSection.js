@@ -1,6 +1,8 @@
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const helpers = require('../utils/helpers');
+const QNA_GENERIC_SOURCE = "custom editorial";
 
 class QnaSection {
     /**
@@ -18,7 +20,64 @@ class QnaSection {
         this.FilterPairs = result.filterPairs;
         this.Errors = this.Errors.concat(result.errors);
         this.Answer = this.ExtractAnswer(parseTree);
-        this.Id = `${this.SectionType}_${this.Questions.join('_')}`;
+        result = this.ExtractPrompts(parseTree);
+        this.prompts = result.promptDefinitions;
+        this.Errors = this.Errors.concat(result.errors);
+        this.Id = this.ExtractAssignedId(parseTree);
+        this.source = this.ExtractSourceInfo(parseTree);
+    }
+
+    ExtractSourceInfo(parseTree) {
+        let srcAssignment = parseTree.qnaDefinition().qnaSourceInfo()
+        if (srcAssignment) {
+            let srcRegExp = new RegExp(/^[ ]*\>[ ]*!#[ ]*@qna.pair.source[ ]*=[ ]*(?<sourceInfo>.*?)$/gmi);
+            let srcParsed = srcRegExp.exec(srcAssignment.getText().trim());
+            return srcParsed.groups.sourceInfo || QNA_GENERIC_SOURCE;
+        }
+        return QNA_GENERIC_SOURCE
+    }
+    
+    ExtractAssignedId(parseTree) {
+        let idAssignment = parseTree.qnaDefinition().qnaIdMark()
+        if (idAssignment) {
+            let idTextRegExp = new RegExp(/^\<a[ ]*id[ ]*=[ ]*[\"\'](?<idCaptured>.*?)[\"\'][ ]*>[ ]*\<\/a\>$/gmi);
+            let idTextParsed = idTextRegExp.exec(idAssignment.getText().trim());
+            return idTextParsed.groups.idCaptured || undefined;
+        }
+        return undefined;
+    }
+
+    ExtractPrompts(parseTree) {
+        let promptDefinitions = [];
+        let errors = [];
+        let promptSection = parseTree.qnaDefinition().promptSection();
+        if (!promptSection) {
+            return { promptDefinitions, errors };
+        }
+        if (promptSection.errorFilterLine() !== undefined) {
+            for (const errorFilterLineStr of promptSection.errorFilterLine()) {
+                if (errorFilterLineStr.getText().trim() !== '') {
+                    errors.push(BuildDiagnostic({
+                    message: "Invalid QnA prompt line, expecting '-' prefix for each line.",
+                    context: errorFilterLineStr
+                }))}
+            }
+        }
+        
+        for (const promptLine of promptSection.filterLine()) {
+            let filterLineText = promptLine.getText().trim();
+            filterLineText = filterLineText.substr(1).trim();
+            let promptConfigurationRegExp = new RegExp(/^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?.*?$/gmi);
+            let splitLine = promptConfigurationRegExp.exec(filterLineText);
+            if (!splitLine) {
+                errors.push(BuildDiagnostic({
+                    message: "Invalid QnA prompt definition. Unable to parse prompt. Please verify syntax as well as question link`.",
+                    context: filterLineText
+                }))
+            }
+            promptDefinitions.push(splitLine.groups);
+        }
+        return { promptDefinitions, errors};
     }
 
     ExtractQuestion(parseTree) {
@@ -50,14 +109,16 @@ class QnaSection {
         let errors = [];
         let filterSection = parseTree.qnaDefinition().qnaAnswerBody().filterSection();
         if (filterSection) {
-            for (const errorFilterLineStr of filterSection.errorFilterLine()) {
-                if (errorFilterLineStr.getText().trim() !== '') {
-                    errors.push(BuildDiagnostic({
-                    message: "Invalid QnA filter line, did you miss '-' at line begin",
-                    context: errorFilterLineStr
-                }))}
+            if (filterSection.errorFilterLine() !== undefined) {
+                for (const errorFilterLineStr of filterSection.errorFilterLine()) {
+                    if (errorFilterLineStr.getText().trim() !== '') {
+                        errors.push(BuildDiagnostic({
+                        message: "Invalid QnA filter line, did you miss '-' at line begin",
+                        context: errorFilterLineStr
+                    }))}
+                }
             }
-    
+            
             for (const filterLine of filterSection.filterLine()) {
                 let filterLineText = filterLine.getText().trim();
                 filterLineText = filterLineText.substr(1).trim()
@@ -73,9 +134,10 @@ class QnaSection {
 
     ExtractAnswer(parseTree) {
         let multiLineAnswer = parseTree.qnaDefinition().qnaAnswerBody().multiLineAnswer().getText().trim();
-        let answer = multiLineAnswer.slice(11, multiLineAnswer.length - 3);
-        
-        return answer;
+        // trim first and last line
+        let answerRegexp = /^```(markdown)?\r*\n(?<answer>(.|\n|\r\n|\t| )*)\r?\n.*?```$/gim;
+        let answer = answerRegexp.exec(multiLineAnswer);
+        return answer.groups.answer !== undefined ? answer.groups.answer : '';
     }
 }
 

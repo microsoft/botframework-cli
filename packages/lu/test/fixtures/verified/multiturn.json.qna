@@ -1,0 +1,74 @@
+> # QnA pairs
+
+<a id = "1"></a>
+
+> !# @qna.pair.source = xyz
+
+## ? hello
+
+**Filters:**
+- a = b
+
+```markdown
+hi there
+```
+
+**Prompts:**
+- [joke](#3)
+- [flight booking](#32) `context-only`
+- [weather](#2) `context-only`
+
+<a id = "2"></a>
+
+> !# @qna.pair.source = custom editorial
+
+## ? weather
+
+```markdown
+sure will get weather
+```
+
+<a id = "3"></a>
+
+> !# @qna.pair.source = custom editorial
+
+## ? q2
+- tell me a joke
+
+```markdown
+ha ha ha
+```
+
+<a id = "32"></a>
+
+> !# @qna.pair.source = custom editorial
+
+## ? book flight
+
+```markdown
+sure. happy to help with that.
+```
+
+<a id = "4"></a>
+
+> !# @qna.pair.source = custom editorial
+
+## ? batata
+
+```markdown
+tomato
+```
+
+<a id = "5"></a>
+
+> !# @qna.pair.source = custom editorial
+
+## ? testquestion
+
+```markdown
+test answer
+```
+
+**Prompts:**
+- [flight booking](#32) `context-only`
+

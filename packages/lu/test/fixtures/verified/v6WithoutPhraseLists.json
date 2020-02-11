@@ -66,10 +66,10 @@
       "roles": []
     }
   ],
+  "luis_schema_version": "6.0.0",
+  "versionId": "0.1",
   "name": "test app",
   "desc": "test",
-  "versionId": "0.1",
   "culture": "en-us",
-  "luis_schema_version": "6.0.0",
   "phraselists": []
 }

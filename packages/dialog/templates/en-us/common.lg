@@ -24,8 +24,24 @@ Which value do you want for @{name(property)}?
 # askNumber(property)
 - IF: @{dialogClass.schema.properties[property].minimum && dialogClass.schema.properties[property].maximum}
 - Enter a number for @{name(property)} between @{dialogClass.schema.properties[property].minimum} and @{dialogClass.schema.properties[property].maximum}
+- ELSEIF:  @{dialogClass.schema.properties[property].minimum}
+- Enter a number for @{name(property)} that is greater than @{dialogClass.schema.properties[property].minimum}
+- ELSEIF: @{dialogClass.schema.properties[property].maximum}
+- Enter a number for @{name(property)} that is less than @{dialogClass.schema.properties[property].maximum}
 - ELSE:
 - Enter a number for @{name(property)}
+
+# numberValidation(property, number)
+- IF: @{less(number, dialogClass.schema.properties[property].minimum)}
+- @{number} is less than the minimum value @{dialogClass.schema.properties[property].minimum}.
+- ELSEIF: @{greater(number, dialogClass.schema.properties[property].maximum)}
+- @{number} is greater than the maximum value @{dialogClass.schema.properties[property].maximum}.
+
+# unitsAlert(property)
+- IF: @{dialogClass.schema.properties[property].$units}
+- Required response for @{property} should be in @{dialogClass.schema.properties[property].$units}.
+- ELSE:
+- Unit for @{property} is not defined in the schema.
 
 # askString(property)
 - ```

@@ -29,7 +29,7 @@ nestedIntentSection
     ;
 
 nestedIntentNameLine
-    : WS* HASH nestedIntentName
+    : WS* HASH WS* nestedIntentName
     ;
 
 nestedIntentName
@@ -57,7 +57,7 @@ intentDefinition
 	;
 
 intentNameLine
-	: WS* HASH HASH? intentName
+	: WS* HASH HASH? WS* intentName
 	;
 
 intentName
@@ -93,7 +93,7 @@ newEntityListbody
     ;
 
 newEntityLine
-    : WS* AT newEntityType? (newEntityName|newEntityNameWithWS) newEntityRoles? newEntityUsesFeatures? NEW_EQUAL? (newCompositeDefinition|newRegexDefinition)?
+    : WS* AT WS* newEntityType? WS* (newEntityName|newEntityNameWithWS) WS* newEntityRoles? WS* newEntityUsesFeatures? WS* EQUAL? WS* (newCompositeDefinition|newRegexDefinition)? newline
     ;
 
 newCompositeDefinition
@@ -109,23 +109,19 @@ newEntityType
     ;
 
 newEntityRoles
-    : HAS_ROLES_LABEL? newEntityRoleOrFeatures
+    : HAS_ROLES_LABEL? WS* newEntityRoleOrFeatures
     ;
 
 newEntityUsesFeatures
-    : HAS_FEATURES_LABEL newEntityRoleOrFeatures
+    : HAS_FEATURES_LABEL WS* newEntityRoleOrFeatures
     ;
 
 newEntityRoleOrFeatures
-    : text (COMMA text)*
-    ;
-
-text
-    : NEW_TEXT | NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER (WS* COMMA WS* NEW_ENTITY_IDENTIFIER)*
     ;
 
 newEntityName
-    : NEW_ENTITY_TYPE_IDENTIFIER | NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER
     ;
 
 newEntityNameWithWS
@@ -165,7 +161,7 @@ entityListBody
     ;
 
 normalItemString
-    : WS* DASH (WS|TEXT|EXPRESSION)*
+    : WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
     ;
 
 errorItemString
@@ -185,15 +181,23 @@ qnaSection
     ;
 
 qnaDefinition
-    : qnaQuestion moreQuestionsBody qnaAnswerBody
+    : qnaSourceInfo? qnaIdMark? qnaQuestion moreQuestionsBody qnaAnswerBody promptSection?
     ;
 
+qnaSourceInfo
+    : WS* QNA_SOURCE_INFO
+    ;
+
+qnaIdMark
+    : WS* QNA_ID_MARK
+    ;
+    
 qnaQuestion
     : WS* QNA questionText
     ;
 
 questionText
-    : (WS|QNA_TEXT)*
+    : QNA_TEXT*
     ;
 
 moreQuestionsBody
@@ -209,11 +213,15 @@ errorQuestionString
     ;
 
 qnaAnswerBody
-    : filterSection? multiLineAnswer
+    : ((filterSection? multiLineAnswer)|(multiLineAnswer filterSection?))
     ;
 
 filterSection
     : WS* FILTER_MARK (filterLine | errorFilterLine)+
+    ;
+
+promptSection
+    : WS* PROMPT_MARK (filterLine | errorFilterLine)+
     ;
 
 filterLine
