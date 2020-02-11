@@ -1,9 +1,9 @@
-import {upperFirst} from 'lodash'
 import { CLIError } from '@microsoft/bf-cli-command';
 
 const parse_multi_platform_luis_1 = require("./../luis/propertyHelper");
 const LuisGenBuilder = require('./../luis/luisGenBuilder')
 const Writer = require("./helpers/writer");
+const lodash = require("lodash")
 
 module.exports = {
     writeFromLuisJson: async function(luisJson, className, space, outPath) {
@@ -115,7 +115,7 @@ module.exports = {
                     writer.writeLine();
                 }
                 writer.writeLineIndented([
-                    `public class _Instance${upperFirst(composite.compositeName)}`,
+                    `public class _Instance${lodash.upperFirst(composite.compositeName)}`,
                     '{'
                 ]);
                 writer.increaseIndentation();
@@ -127,7 +127,7 @@ module.exports = {
                 writer.decreaseIndentation();
                 writer.writeLineIndented([
                     '}',
-                    `public class ${upperFirst(composite.compositeName)}Class`,
+                    `public class ${lodash.upperFirst(composite.compositeName)}Class`,
                     '{'
                 ]);
                 writer.increaseIndentation();
@@ -137,12 +137,12 @@ module.exports = {
                 });
                 writer.writeLineIndented([
                     '[JsonProperty("$instance")]',
-                    `public _Instance${upperFirst(composite.compositeName)} _instance;`
+                    `public _Instance${lodash.upperFirst(composite.compositeName)} _instance;`
                 ]);
                 writer.decreaseIndentation();
                 writer.writeLineIndented([
                     '}',
-                    `public ${upperFirst(composite.compositeName)}Class[] ${composite.compositeName};`
+                    `public ${lodash.upperFirst(composite.compositeName)}Class[] ${composite.compositeName};`
                 ]);
             });
         }
@@ -177,7 +177,7 @@ module.exports = {
                 entityNameOrObject = entityNameOrObject.name
             } else if (entityNameOrObject.compositeInstanceOf) {
                 let name = parse_multi_platform_luis_1.jsonPropertyName(entityNameOrObject.name)
-                return `public ${upperFirst(name)}Class[] ${name};`
+                return `public ${lodash.upperFirst(name)}Class[] ${name};`
             } else {
                 throw CLIError("Invalid LuisGen object: cannot parse entity")
             }
