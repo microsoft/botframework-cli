@@ -26,6 +26,10 @@
   "patternAnyEntities": [],
   "prebuiltEntities": [],
   "luis_schema_version": "6.0.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us",
   "phraselists": [
     {
       "name": "city",
@@ -34,9 +38,5 @@
       "activated": false,
       "enabledForAllModels": true
     }
-  ],
-  "versionId": "0.1",
-  "name": "",
-  "desc": "",
-  "culture": "en-us"
+  ]
 }
