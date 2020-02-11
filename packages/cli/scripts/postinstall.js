@@ -68,9 +68,7 @@ const getUserConfig = async () => {
 }
 
 const init = async () => {
-  if (!isCI) {
-    await promptTelemetry()
-  }
+  await promptTelemetry()
   process.exit(0)
 }
 
