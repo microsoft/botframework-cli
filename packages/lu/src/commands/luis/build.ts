@@ -125,7 +125,6 @@ export default class LuisBuild extends Command {
     }
 
     this.log('Start to handle applications\n')
-    const defaultLuisSchemeVersion = '4.0.0'
     const luBuildCore = new LuBuildCore(flags.authoringKey, `https://${flags.region}.api.cognitive.microsoft.com`)
     const apps = await luBuildCore.GetApplicationList()
 
@@ -137,7 +136,7 @@ export default class LuisBuild extends Command {
       // concurrently handle applications
       await Promise.all(subLuContents.map(async content => {
         // init current application object from lu content
-        let currentApp = await this.InitApplicationFromLuContent(content, flags, defaultLuisSchemeVersion)
+        let currentApp = await this.InitApplicationFromLuContent(content, flags)
 
         // init recogizer of current app
         let dialogFile = path.join(dialogFilePath, `${content.name}.dialog`)
@@ -223,10 +222,9 @@ export default class LuisBuild extends Command {
     this.log('All tasks done\n')
   }
 
-  async InitApplicationFromLuContent(content: any, flags: any, defaultLuisSchemeVersion: string) {
+  async InitApplicationFromLuContent(content: any, flags: any) {
     let currentApp = await content.parseToLuis(true, content.language)
-    currentApp.culture = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : content.language as string
-    currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
+    currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
     currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${flags.botName} app, targetting ${flags.suffix}`
 
     if (currentApp.name === undefined || currentApp.name === '') {

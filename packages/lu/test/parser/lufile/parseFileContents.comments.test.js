@@ -50,6 +50,11 @@ var outputBlob =
     "patterns": [],
     "patternAnyEntities": [],
     "prebuiltEntities": [],
+    "luis_schema_version": "3.2.0",
+    "versionId": "0.1",
+    "name": "",
+    "desc": "",
+    "culture": "en-us"
 };
 
 describe('Comment blocks in .lu files', function() {
