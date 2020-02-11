@@ -20,6 +20,13 @@ class Luis {
             this.patterns = [];
             this.patternAnyEntities = [];
             this.prebuiltEntities = [];
+            // fix for #255
+            this.luis_schema_version = "3.2.0";
+            this.versionId = "0.1";
+            this.name = "";
+            this.desc = "";
+            this.culture = "en-us";
+            this.tokenizerVersion = "1.0.0"
         }
     }
 
@@ -41,7 +48,7 @@ class Luis {
 
     hasContent(){
         for (let prop in this) {
-            if (this[prop].length > 0 ) return true
+            if (Array.isArray(this[prop]) && this[prop].length > 0 ) return true
         }   
         return false
     }
