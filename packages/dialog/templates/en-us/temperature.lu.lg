@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-temperature.@{locale}.lu
+- @{schemaName}-@{property}-temperature.@{locale}.lu
 
 # template
 - $PREBUILT:temperature @{roles()}

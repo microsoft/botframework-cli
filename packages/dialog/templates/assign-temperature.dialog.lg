@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Settemperature.dialog
+- @{schemaName}-@{property}-assign-temperature.dialog
 
 # template
 - ```

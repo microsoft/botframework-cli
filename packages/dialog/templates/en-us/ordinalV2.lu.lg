@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-ordinalV2.@{locale}.lu
+- @{schemaName}-@{property}-ordinalV2.@{locale}.lu
 
 # template
 - $PREBUILT:ordinalV2 @{roles()}

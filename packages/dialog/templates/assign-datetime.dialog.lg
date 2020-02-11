@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setdatetime.dialog
+- @{schemaName}-@{property}-assign-datetime.dialog
 
 # template
 - ```

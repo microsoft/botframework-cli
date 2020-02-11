@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setphonenumber.dialog
+- @{schemaName}-@{property}-assign-url.dialog
 
 # template
 - ```
@@ -8,20 +8,20 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "phonenumber",
+    "entity": "url",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        }, 
+        },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@phonenumber"          
+            "value": "=@url"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @phonenumber)}
+- @\{setPropertyMessage('@{property}', @url)}

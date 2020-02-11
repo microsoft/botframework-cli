@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-money.@{locale}.lu
+- @{schemaName}-@{property}-money.@{locale}.lu
 
 # template
 - $PREBUILT:money @{roles()}
