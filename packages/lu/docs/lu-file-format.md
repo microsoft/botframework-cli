@@ -75,19 +75,19 @@ An entity represents detailed information that is relevant in the utterance. For
 ### Definition
 Entites are declarated via
 ```markdown
-@ \<entity-type> \<entity-name> [[hasRoles] \<comma-separated-list-of-roles>]
+@ <entity-type> <entity-name> [[hasRoles] <comma-separated-list-of-roles>]
 ```
 
 Entities that require a definition (e.g. list, regex, composite etc) are represented using this notation - 
 
 ```markdown
-@ \<entity-name> = \<definition>
+@ <entity-name> = <definition>
 ```
 
 Declaration and definition can also be combined into a single line like this -
 
 ```markdown
-@ \<entity-type> \<entity-name> [[hasRoles] \<comma-separated-list-of-roles>] = \<definition>
+@ <entity-type> <entity-name> [[hasRoles] <comma-separated-list-of-roles>] = <definition>
 ```
 
 Entity type, entity name and definition are required. Roles are optional.
@@ -151,18 +151,18 @@ The following LUIS prebuilt entity types are supported -
 ```markdown
 @ list color favColor, screenColor
 @ color =
-    - \<normalized-value>
-        - \<synonym1>
-        - \<synonym2>
+    - <normalized-value>
+        - <synonym1>
+        - <synonym2>
         - ...
-    - \<normalized-value>
-        - \<synonym1>, \<synonym2>, ...
+    - <normalized-value>
+        - <synonym1>, <synonym2>, ...
  
 > Alternate definition
 
 @ list color favColor, screenColor =
-    - \<normalized-value>
-        - \<synonym1>; \<synonym2>; ...
+    - <normalized-value>
+        - <synonym1>; <synonym2>; ...
 ```
 
 **Note::** When using list entity, you should include a value from the list directly in the utterance, not an entity label or any other value. 
@@ -233,7 +233,7 @@ Roles give a name to those differences:
 
 Roles in .lu file format can be explicitly or implicity defined. 
 
-Explicit definition follow the following notation - @ \<entityType> \<entityName> [hasRole[s]] role1, role2, ...
+Explicit definition follow the following notation - @ <entityType> <entityName> [hasRole[s]] role1, role2, ...
 ```markdown
 > # ml entity definition with roles
 
@@ -255,7 +255,7 @@ Explicit definition follow the following notation - @ \<entityType> \<entityName
 @ name hasRole role2
 ```
 
-Implicit definition: You can refer to roles directly in patterns as well as in labelled utterances via {@\<entityName>:\<roleName>} format. 
+Implicit definition: You can refer to roles directly in patterns as well as in labelled utterances via {@\<entityName\>:\<roleName\>} format. 
 ```markdown
 # AskForUserName
 - {userName:firstName=vishwac} {userName:lastName=kannan}
@@ -382,7 +382,7 @@ Phrase lists by default are enabled for all models. However when you explicitly 
 Here's how you add a feature to a ml entity or an intent - with `usesFeature`.
 
 ```markdown
-> entity definition - <> \<entityType> \<entityName> [<roles>]
+> entity definition - @ <entityType> <entityName> [<roles>]
   
 @ prebuilt personName
 @ prebuilt age
@@ -540,9 +540,9 @@ To help easily label child entities for both machine learned as well as composit
 You can include configuration information for your LUIS application or QnA Maker KB in the .lu file using this notation. This will help direct the parser to handle the LU content correctly -
 
 ```markdown
-> !# @\<property> = \<value>
-> !# @\<scope>-\<property> = \<value>
-> !# @\<scope>-\<property> = \<semicolon-delimited-key-value-pairs>
+> !# @<property> = <value>
+> !# @<scope>-<property> = <value>
+> !# @<scope>-<property> = <semicolon-delimited-key-value-pairs>
 ```
 
 **Note** Any information explicitly passed in via CLI arguments will override information in the .lu file.
@@ -562,15 +562,23 @@ You can include configuration information for your LUIS application or QnA Maker
 ## External references
 
 Few different references are supported in the .lu file. These follow Markdown link syntax.
-- Reference to another .lu file via `\[link name](\<.lu file name\>)`. Reference can be an absolute path or a relative path from the containing .lu file.
+- Reference to another .lu file via `[link name](<.lu file name>)`. Reference can be an absolute path or a relative path from the containing .lu file.
 - Reference to a folder with other .lu files is supported through 
-	- `\[link name](\<.lu file path\>/*)` - will look for .lu files under the specified absolute or relative path
-	- `\[link name](\<.lu file path\>/**)` - will recursively look for .lu files under the specified absolute or relative path including sub-folders.
+	- `[link name](<.lu file path>/*)` - will look for .lu files under the specified absolute or relative path
+	- `[link name](<.lu file path>/**)` - will recursively look for .lu files under the specified absolute or relative path including sub-folders.
 - You can also add references to utterances defined in a specific file under an Intent section or as QnA pairs.
-	- `\[link name](\<.lu file path\>#\<INTENT-NAME\>) will find all utterances found under \<INTENT-NAME\> in the .lu file and add them to the list of utterances where this reference is specified
-	- `\[link name](\<.lu file path\>#*utterances*) will find all utterances in the .lu file and add them to the list of utterances where this reference is specified
-    - `\[link name](\<.lu file path\>#*patterns*) will find all patterns in the .lu file and add them to the list of utterances where this reference is specified
-	- `\[link name](\<.lu file path\>#*utterancesAndPatterns*) will find all utterances and patterns in the .lu file and add them to the list of utterances where this reference is specified
+	- `[link name](<.lu file path>#<INTENT-NAME>) will find all utterances found under <INTENT-NAME> in the .lu file and add them to the list of utterances where this reference is specified
+    - `[link name](<.lu file path>#<INTENT-NAME>*utterances*) will find all utterances (and not patterns) found under <INTENT-NAME> in the .lu file and add them to the list of utterances where this reference is specified
+    - `[link name](<.lu file path>#<INTENT-NAME>*patterns*) will find all patterns (and not utterances) found under <INTENT-NAME> in the .lu file and add them to the list of patterns where this reference is specified
+	- `[link name](\<.lu file path>#*utterances*) will find all utterances in the .lu file and add them to the list of utterances where this reference is specified
+    - `[link name](\<.lu file path>#*patterns*) will find all patterns in the .lu file and add them to the list of utterances where this reference is specified
+	- `[link name](\<.lu file path>#*utterancesAndPatterns*) will find all utterances and patterns in the .lu file and add them to the list of utterances where this reference is specified
+    - `[link name](\<.qna file path>#$name?) will find all alterations from the specific alteration definition in the .qna content and add them to the list of utterances where this reference is specified
+    - `[link name](\<.qna file path>#*alterations*?) will find all alterations from the .qna content and add them to the list of utterances where this reference is specified
+    - `[link name](\<.qna file path>#?question-to-find?) will find all variation questions from the specific question and add them to the list of utterances where this reference is specified. Note: any spaces in your question will need to be replaced with '-'. E.g. '#?-book-flight'
+    - `[link name](\<.qna file path>#*answers*?) will find all answers and add them to the list of utterances where this reference is specified. 
+
+
 
 Here's an example of those references: 
 

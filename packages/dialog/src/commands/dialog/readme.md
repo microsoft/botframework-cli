@@ -30,7 +30,7 @@ The generate command generates .lu, .lg, .qna and .dialog assets from a schema d
 - **--locale, -l** Locales to generate. By default en-us.
 - **--output, -o** Output directory.
 - **--schema, -s** Path to your app.schema file. By default is the standard SDK app.schema.
-- **--templates, -t** Directories with templates to use for generating assets.
+- **--templates, -t** Directories with templates to use for generating assets.  First definition wins.  A directory of "standard" includes the standard templates included with the tool.
 - **--verbose, -v** Verbose logging of generated files.
 
 ### Schema

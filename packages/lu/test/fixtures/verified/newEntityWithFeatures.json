@@ -247,10 +247,11 @@
       "roles": []
     }
   ],
+  "luis_schema_version": "6.0.0",
+  "versionId": "0.1",
   "name": "test nDepth entity with features",
   "desc": "this is a test application",
   "culture": "en-us",
-  "luis_schema_version": "6.0.0",
   "phraselists": [
     {
       "name": "profileDefinition",
@@ -259,6 +260,5 @@
       "activated": true,
       "enabledForAllModels": false
     }
-  ],
-  "versionId": "0.1"
+  ]
 }

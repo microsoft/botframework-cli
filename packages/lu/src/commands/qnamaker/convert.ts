@@ -15,7 +15,7 @@ const QnAMakerBuilder = require('./../../parser/qna/qnamaker/qnaMakerBuilder')
 const alterationsBuilder = require('./../../parser/qna/alterations/alterationsBuilder')
 
 export default class QnamakerConvert extends Command {
-  static description = 'Converts .lu file(s) to QnA application JSON models or vice versa.'
+  static description = 'Converts .qna file(s) to QnA application JSON models or vice versa.'
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Source .qna file(s) or QnA KB JSON file'}),
@@ -45,8 +45,8 @@ export default class QnamakerConvert extends Command {
       if (isQnA) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
         result = {}
-        result.finalQnAJSON = await QnAMakerBuilder.build(luFiles, false, flags.luis_culture)
-        result.finalQnAAlterations = await alterationsBuilder.build(luFiles, false, flags.luis_culture)
+        result.finalQnAJSON = await QnAMakerBuilder.build([...luFiles], false, flags.luis_culture)
+        result.finalQnAAlterations = await alterationsBuilder.build([...luFiles], false, flags.luis_culture)
       } else {
         const qnaContent = stdin ? stdin : await file.getContentFromFile(flags.in)
         const QnA = flags.alterations ? new Alterations(file.parseJSON(qnaContent, 'QnA Alterations')) : new QnAMaker(file.parseJSON(qnaContent, 'QnA'))

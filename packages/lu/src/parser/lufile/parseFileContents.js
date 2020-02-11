@@ -25,6 +25,8 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
+const qnaContext = require('../qna/qnamaker/qnaContext');
+const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -736,7 +738,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
                     let parsedLinkUriInUtterance = helpers.parseLinkURI(utterance);
                     // examine and add these to filestoparse list.
-                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.luFile, false));
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
 
                 if (utteranceAndEntities.entities.length > 0) {
@@ -916,7 +918,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                             if (item.role && item.role !== '') {
                                 utteranceEntity.role = item.role.trim();
                             }
-                            utteranceObject.entities.push(utteranceEntity)
+                            if (!utteranceObject.entities.find(item => deepEqual(item, utteranceEntity))) utteranceObject.entities.push(utteranceEntity)
                         });
                         if (utteranceExists === undefined) parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                     }
@@ -1267,7 +1269,7 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
             return false;
         }
     });
-    if (PAEntityFound !== undefined && PAIdx !== -1) {
+    if (PAEntityFound !== undefined && PAIdx !== -1 && entityType != EntityTypeEnum.PATTERNANY) {
         if (entityType.toLowerCase().trim().includes('phraselist')) {
             let errorMsg = `Phrase lists cannot be used as an entity in a pattern "${pEntityName}"`;
             let error = BuildDiagnostic({
@@ -1735,7 +1737,19 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
+            if (qna.Id) {
+                qna.Id = parseInt(qna.Id);
+            } 
             let questions = qna.Questions;
+            // detect if any question is a reference
+            (questions || []).forEach(question => {
+                // Ensure only links are detected and passed on to be parsed.
+                if (helpers.isUtteranceLinkRef(question || '')) {
+                    let parsedLinkUriInUtterance = helpers.parseLinkURI(question);
+                    // examine and add these to filestoparse list.
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
+                }
+            })
             let filterPairs = qna.FilterPairs;
             let metadata = [];
             if (filterPairs && filterPairs.length > 0) {
@@ -1743,7 +1757,14 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
             }
 
             let answer = qna.Answer;
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(0, answer.trim(), 'custom editorial', questions, metadata));
+            let context = new qnaContext();
+            if (qna.prompts) {
+                (qna.prompts || []).forEach((prompt, idx) => {
+                    let contextOnly = prompt.contextOnly ? true : false;
+                    context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
+                })
+            }
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.Id || 0, answer.trim(), qna.source, questions, metadata, context));
         }
     }
 }
@@ -1762,7 +1783,7 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity|enableMergeIntents).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
             if (kvPair.length === 4) {
                 if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
                     enableMergeIntents = false;
@@ -1785,7 +1806,25 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
                 }
 
                 if (kvPair[1].toLowerCase() === 'app') {
-                    parsedContent.LUISJsonStructure[kvPair[2]] = kvPair[3];
+                    if (kvPair[2].toLowerCase().startsWith('settings')) {
+                        let settingsRegExp = /^settings.(?<property>.*?$)/gmi;
+                        let settingsPair = settingsRegExp.exec(kvPair[2]);
+                        if (settingsPair && settingsPair.groups && settingsPair.groups.property) {
+                            if (!parsedContent.LUISJsonStructure.settings) {
+                                parsedContent.LUISJsonStructure.settings = [{name : settingsPair.groups.property, value : kvPair[3] === "true"}];
+                            } else {
+                                // find the setting
+                                let sFound = parsedContent.LUISJsonStructure.settings.find(setting => setting.name == settingsPair.groups.property);
+                                if (sFound) {
+                                    sFound.value = kvPair[3] === "true";
+                                } else {
+                                    parsedContent.LUISJsonStructure.settings.push({name : settingsPair.groups.property, value : kvPair[3] === "true"})
+                                }
+                            }
+                        }
+                    } else {
+                        parsedContent.LUISJsonStructure[kvPair[2]] = kvPair[3];
+                    }
                 } else if (kvPair[1].toLowerCase() === 'kb') {
                     parsedContent.qnaJsonStructure[kvPair[2]] = kvPair[3];
                 } else if (kvPair[1].toLowerCase() === 'intent') {
@@ -1831,6 +1870,31 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
                                 newEntity['inherits'][inheritsProperties[2]] = inheritsProperties[3];
                                 newEntity['inherits'][inheritsProperties[4]] = inheritsProperties[5];
                                 parsedContent.LUISJsonStructure.entities.push(newEntity);
+                            } else {
+                                if (entity['inherits'] === undefined) entity['inherits'] = {};
+                                entity['inherits'][inheritsProperties[2]] = inheritsProperties[3];
+                                entity['inherits'][inheritsProperties[4]] = inheritsProperties[5];
+                            }
+                        }
+                    } else {
+                        if (log) {
+                            process.stdout.write(chalk.default.yellowBright('[WARN]: Invalid entity inherits information found. Skipping "' + line + '"\n'));
+                        }
+                    }
+                } else if (kvPair[1].toLowerCase() === 'patternanyentity') {
+                    if (kvPair[2].toLowerCase() === 'inherits') {
+                        let inheritsProperties = kvPair[3].split(/[:;]/g).map(item => item.trim());
+                        if (inheritsProperties.length !== 6) {
+                            process.stdout.write(chalk.default.yellowBright('[WARN]: Invalid Pattern.Any inherits information found. Skipping "' + line + '"\n'));
+                        } else {
+                            // find the intent
+                            let entity = parsedContent.LUISJsonStructure.patternAnyEntities.find(item => item.name == inheritsProperties[1]);
+                            if (entity === undefined) {
+                                let newEntity = new helperClass.patternAnyEntity(inheritsProperties[1]);
+                                newEntity.inherits = {};
+                                newEntity['inherits'][inheritsProperties[2]] = inheritsProperties[3];
+                                newEntity['inherits'][inheritsProperties[4]] = inheritsProperties[5];
+                                parsedContent.LUISJsonStructure.patternAnyEntities.push(newEntity);
                             } else {
                                 if (entity['inherits'] === undefined) entity['inherits'] = {};
                                 entity['inherits'][inheritsProperties[2]] = inheritsProperties[3];

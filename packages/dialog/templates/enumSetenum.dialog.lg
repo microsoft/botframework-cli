@@ -16,7 +16,7 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "@@{property}Entity"
+            "value": "=@@{property}Entity"
         }
     ]
 }
