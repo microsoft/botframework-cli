@@ -59,9 +59,10 @@ class Luis {
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
     collate(luisList) {
+        let hashTable = {};
         if (luisList.length === 0) return
         if(!this.hasContent()) {
-            initialize(this, luisList[0])
+            initialize(this, luisList[0], hashTable)
         }
         luisList.splice(0, 1)
         for(let i = 0; i < luisList.length; i++) {
@@ -70,14 +71,13 @@ class Luis {
             mergeResults(blob, this, LUISObjNameEnum.ENTITIES);
             mergeResults_closedlists(blob, this, LUISObjNameEnum.CLOSEDLISTS);
             mergeResults(blob, this, LUISObjNameEnum.PATTERNANYENTITY);
-            mergeResultsWithHash(blob, this, LUISObjNameEnum.UTTERANCE);
-            mergeResultsWithHash(blob, this, LUISObjNameEnum.PATTERNS);
+            mergeResultsWithHash(blob, this, LUISObjNameEnum.UTTERANCE, hashTable);
+            mergeResultsWithHash(blob, this, LUISObjNameEnum.PATTERNS, hashTable);
             buildRegex(blob, this)
             buildPrebuiltEntities(blob, this)
             buildModelFeatures(blob, this)
             buildComposites(blob, this)
             buildPatternAny(blob, this)
-
         }
         helpers.checkAndUpdateVersion(this)
     }
@@ -85,12 +85,11 @@ class Luis {
 
 module.exports = Luis
 
-const initialize = function(instance, LuisJSON) {
-    instance.utteranceHash = {};
+const initialize = function(instance, LuisJSON, hashTable = undefined) {
     for (let prop in LuisJSON) {
         instance[prop] = LuisJSON[prop];
-        if (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS) {
-            (LuisJSON[prop] || []).forEach(item => instance.utteranceHash[helpers.hashCode(JSON.stringify(item))] = item)
+        if (hashTable !== undefined && (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS)) {
+            (LuisJSON[prop] || []).forEach(item => hashTable[helpers.hashCode(JSON.stringify(item))] = item)
         }
     }   
 }
@@ -115,19 +114,18 @@ const compareString = function(a, b) {
     return 0;
 }
 
-const mergeResultsWithHash = function (blob, finalCollection, type, hashProperty) {
+const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
     if (blob[type].length === 0) { 
         return
     }
-    if (!finalCollection.utteranceHash) finalCollection.utteranceHash = {};
     blob[type].forEach(function (blobItem) {
         // add if this item if it does not already exist by hash look up.
         let hashCode = helpers.hashCode(JSON.stringify(blobItem));
-        if (!finalCollection.utteranceHash[hashCode]) {
+        if (!hashTable[hashCode]) {
             finalCollection[type].push(blobItem);
-            finalCollection.utteranceHash[hashCode] = blobItem;
+            hashTable[hashCode] = blobItem;
         } else {
-            let item = finalCollection.utteranceHash[hashCode];
+            let item = hashTable[hashCode];
 
             if (type !== LUISObjNameEnum.INTENT &&
                 type !== LUISObjNameEnum.PATTERNS &&
