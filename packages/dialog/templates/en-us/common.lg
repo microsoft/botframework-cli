@@ -38,8 +38,8 @@ Which value do you want for @{name(property)}?
 - @{number} is greater than the maximum value @{dialogClass.schema.properties[property].maximum}.
 
 # unitsAlert(property)
-- IF: @{dialogClass.schema.properties[property].units}
-- Required response for @{property} should be in @{dialogClass.schema.properties[property].units}.
+- IF: @{dialogClass.schema.properties[property].$units}
+- Required response for @{property} should be in @{dialogClass.schema.properties[property].$units}.
 - ELSE:
 - Unit for @{property} is not defined in the schema.
 

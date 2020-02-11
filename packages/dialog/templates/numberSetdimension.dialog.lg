@@ -11,7 +11,7 @@
     "actions": [
         {
             "$kind": "Microsoft.IfCondition",
-            "condition": "equals(@dimension.units, dialogClass.schema.properties['@{property}'].units)",
+            "condition": "equals(@dimension.units, dialogClass.schema.properties['@{property}'].$units)",
             "actions":[
                 {
                     "$kind": "Microsoft.SendActivity",
