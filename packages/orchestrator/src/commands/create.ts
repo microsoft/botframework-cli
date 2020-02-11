@@ -1,6 +1,6 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
 
-export default class Generate extends Command {
+export default class Create extends Command {
   static description = 'describe the command here'
 
   static flags = {
@@ -14,10 +14,10 @@ export default class Generate extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(Generate)
+    const {args, flags} = this.parse(Create)
 
     const name = flags.name || 'world'
-    this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\generate.ts`)
+    this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\create.ts`)
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }
