@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}SetgeographyV2.dialog
+- @{schemaName}-@{property}-assign-age.dialog
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "geographyV2",
+    "entity": "age",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -16,17 +16,17 @@
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.type",
-            "value": "=@geographyV2.type"          
+            "property": "$@{property}.number",
+            "value": "=@age.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.location",
-            "value": "=@geographyV2.location"          
+            "property": "$@{property}.units",
+            "value": "=@age.units"          
         }
     ]               
 }
 ```
 
-# callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
+# callSetMessage()
+- @\{setObjectPropertyMessage('@{property}', concat(string(@age.number), ' ', @age.units))}

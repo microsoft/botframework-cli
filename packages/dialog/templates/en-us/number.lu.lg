@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-number.@{locale}.lu
+- @{schemaName}-@{property}-number.@{locale}.lu
 
 # template
 - $PREBUILT:number @{roles()}

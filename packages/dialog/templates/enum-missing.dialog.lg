@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}Ask.dialog
+- @{schemaName}-@{property}-missing.dialog
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$kind": "Microsoft.OnEndOfActions",
     "condition":"!$@{property}",
     "priority": "indexOf(dialog.requiredProperties, '@{property}')",
-    "actions": [
+    "actions": [       
         {
             "$kind": "Microsoft.Ask",
             "activity": "@{callAsk()}",
@@ -22,6 +22,3 @@
 
 # callAsk
 - @\{Ask@{property}()}
-
-# callHelp
-- @\{help(@PropertyName)}

@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-geographyV2.@{locale}.lu
+- @{schemaName}-@{property}-geographyV2.@{locale}.lu
 
 # template
 - $PREBUILT:geographyV2 @{roles()}

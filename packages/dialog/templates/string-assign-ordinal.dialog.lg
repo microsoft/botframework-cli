@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Seturl.dialog
+- @{schemaName}-@{property}-assign-ordinal.dialog
 
 # template
 - ```
@@ -8,20 +8,20 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "url",
+    "entity":"ordinal",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        },
+        }, 
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@url"          
+            "value": "=@ordinal"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @url)}
+- @\{setPropertyMessage('@{property}', @ordinal)}

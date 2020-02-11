@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}SetpersonName.dialog
+- @{schemaName}-@{property}-assign-personName.dialog
 
 # template
 - ```

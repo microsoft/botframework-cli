@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}SetordinalV2.dialog
+- @{schemaName}-@{property}-assign-geographyV2.dialog
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "ordinalV2",
+    "entity": "geographyV2",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -16,17 +16,17 @@
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.offset",
-            "value": "=@ordinalV2.offset"          
+            "property": "$@{property}.type",
+            "value": "=@geographyV2.type"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.relativeTo",
-            "value": "=@ordinalV2.relativeTo"          
+            "property": "$@{property}.location",
+            "value": "=@geographyV2.location"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(string(@ordinalV2.offset), ' ', @ordinalV2.relativeTo))}
+- @\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
