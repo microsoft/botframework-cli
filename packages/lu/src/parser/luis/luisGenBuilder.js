@@ -32,21 +32,22 @@ const buildUpToVersion4 = function(luisApp) {
     } catch (err) {
         throw new CLIError("Invalid LUIS JSON file content.")
     }
+    return result
 }
 
 const buildVersion6 = function(luisApp) {
     let result = new LuisGen()
     try {
         result.intents = processIntents(luisApp.intents);
-        result.entities = extractEntities(luisApp.entities);
+        [result.entities, result.composites] = extractEntitiesV6(luisApp.entities);
         result.prebuiltEntities = extractEntities(luisApp.prebuiltEntities, true);
         result.closedLists = extractEntities(luisApp.closedLists);
         result.regex_entities = extractEntities(luisApp.regex_entities);
         result.patternAnyEntities = extractEntities(luisApp.patternAnyEntities);
-        result.composites = [];
     } catch (err) {
         throw new CLIError("Invalid LUIS JSON file content.")
     }
+    return result
 }
 
 const processIntents = function(intents) {
@@ -105,8 +106,8 @@ const extractEntitiesV6 = function(entities) {
     const compositeEntitiesResult = [];
     const simpleEntitiesWithType = {};
     const resolveEntityType = function(entityName) {
-        entityStack = [];
-        entityType = simpleEntitiesWithType[entityName];
+        const entityStack = [];
+        let entityType = simpleEntitiesWithType[entityName];
 
         while (simpleEntitiesWithType[entityType]){
             entityStack.push(entityName);
@@ -120,10 +121,10 @@ const extractEntitiesV6 = function(entities) {
         }
     }
 
-    firstPassStack = entities.slice();
+    const firstPassStack = entities.slice();
 
     while(firstPassStack.length) {
-        entity = firstPassStack.pop();
+        const entity = firstPassStack.pop();
 
         if (Array.isArray(entity.children) && entity.children.length) {
             firstPassStack.push(...entity.children);
@@ -132,7 +133,7 @@ const extractEntitiesV6 = function(entities) {
             if (entity.instanceOf) {
                 // If the entity order in the schema was not modified by hand,
                 // this algorithm will solve instanceOf dependencies.
-                last_type = simpleEntitiesWithType[entity.instanceOf] || entity.instanceOf;
+                const last_type = simpleEntitiesWithType[entity.instanceOf] || entity.instanceOf;
                 simpleEntitiesWithType[entity.name] = last_type;
             }
         } else {
@@ -150,18 +151,18 @@ const extractEntitiesV6 = function(entities) {
 
     const processSimpleEntity = function(entity, listToAppend) {
         listToAppend.push(
-            entity.instanceOf ? {name: entity.name, instanceOf: simpleEntitiesWithType[entity.instanceOf]} : entity.name
+            entity.instanceOf ? {name: entity.name, instanceOf: simpleEntitiesWithType[entity.instanceOf] || entity.instanceOf} : entity.name
         )
     }
 
     const baseParseEntity = function(entityList, childList, topLevel=false) {
         entityList.forEach(entity => {
             if (Array.isArray(entity.children) && entity.children.length) {
-                compositeEntity = { compositeName: propertyHelper.normalizeName(entity.name), attributes: [] };
+                const compositeEntity = { compositeName: propertyHelper.normalizeName(entity.name), attributes: [] };
                 baseParseEntity(entity.children, compositeEntity.attributes);
                 compositeEntitiesResult.push(compositeEntity);
                 if (!topLevel) {
-                    childList.push({name: entity.name, compositeInstanceOf: entity.name})
+                    childList.push({name: entity.name, compositeInstanceOf: true})
                 }
             } else {
                 processSimpleEntity(
@@ -172,8 +173,6 @@ const extractEntitiesV6 = function(entities) {
         });
     }
 
-    entities.forEach(entity => {
-        baseParseEntity(entity, null, true);
-    });
+    baseParseEntity(entities, null, true);
     return [simpleEntitiesResult, compositeEntitiesResult];
 }
