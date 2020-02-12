@@ -107,16 +107,16 @@ export class Schema {
         let templates = this.schema.$templates
         if (!templates) {
             let type = this.typeName()
-            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + 'Ask.dialog']
+            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + '-missing.dialog']
             for (let entity of this.schema.$entities) {
                 let [entityName, _] = entity.split(':')
                 if (entityName === this.path + 'Entity') {
-                    templates.push(`${type}Set${type}.dialog`)
+                    templates.push(`${type}-assign-${type}Entity.dialog`)
                     if (type === 'enum') {
-                        templates.push(`${type}ChooseEntity.dialog`)
+                        templates.push(`${type}Entity-choose.dialog`)
                     }
                 } else {
-                    templates.push(`${type}Set${entityName}.dialog`)
+                    templates.push(`${type}-assign-${entityName}.dialog`)
                 }
             }
         }
