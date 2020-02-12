@@ -62,9 +62,10 @@ class Luis {
         let hashTable = {};
         if (luisList.length === 0) return
         if(!this.hasContent()) {
-            initialize(this, luisList[0], hashTable)
+            initialize(this, luisList[0])
+            luisList.splice(0, 1)
         }
-        luisList.splice(0, 1)
+        initializeHash(this, hashTable)
         for(let i = 0; i < luisList.length; i++) {
             let blob = luisList[i]
             mergeResults(blob, this, LUISObjNameEnum.INTENT);
@@ -85,9 +86,13 @@ class Luis {
 
 module.exports = Luis
 
-const initialize = function(instance, LuisJSON, hashTable = undefined) {
+const initialize = function(instance, LuisJSON) {
     for (let prop in LuisJSON) {
         instance[prop] = LuisJSON[prop];
+    }   
+}
+const initializeHash = function(LuisJSON, hashTable = undefined) {
+    for (let prop in LuisJSON) {
         if (hashTable !== undefined && (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS)) {
             (LuisJSON[prop] || []).forEach(item => hashTable[helpers.hashCode(JSON.stringify(item))] = item)
         }
