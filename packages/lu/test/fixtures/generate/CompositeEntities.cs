@@ -5,6 +5,8 @@
 // regenerated.
 // </auto-generated>
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
@@ -63,12 +65,24 @@ namespace Luis
 
         public void Convert(dynamic result)
         {
-            var app = JsonConvert.DeserializeObject<ContosoApp>(JsonConvert.SerializeObject(result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            var app = JsonConvert.DeserializeObject<ContosoApp>(
+                JsonConvert.SerializeObject(
+                    result,
+                    new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, Error = OnError }
+                )
+            );
             Text = app.Text;
             AlteredText = app.AlteredText;
             Intents = app.Intents;
             Entities = app.Entities;
             Properties = app.Properties;
+        }
+
+        private static void OnError(object sender, ErrorEventArgs args)
+        {
+            // If needed, put your custom error logic here
+            Console.WriteLine(args.ErrorContext.Error.Message);
+            args.ErrorContext.Handled = true;
         }
 
         public (Intent intent, double score) TopIntent()
