@@ -19,6 +19,7 @@ module.exports = {
             'public IDictionary<string, object> Properties {get; set; }'
         ]);
         this.converter(className, writer);
+        this.onError(writer);
         this.topScoringIntent(writer);
         writer.decreaseIndentation();
         writer.writeLineIndented('}'); // Class
@@ -35,6 +36,8 @@ module.exports = {
             '// regenerated.',
             '// </auto-generated>',
             'using Newtonsoft.Json;',
+            'using Newtonsoft.Json.Serialization;',
+            'using System;',
             'using System.Collections.Generic;',
             'using Microsoft.Bot.Builder;',
             'using Microsoft.Bot.Builder.AI.Luis;',
@@ -224,13 +227,43 @@ module.exports = {
             '{'
         ]);
         writer.increaseIndentation();
+        writer.writeLineIndented(
+            `var app = JsonConvert.DeserializeObject<${className}>(`,
+        );
+        writer.increaseIndentation();
+        writer.writeLineIndented(
+            'JsonConvert.SerializeObject('
+        );
+        writer.increaseIndentation();
         writer.writeLineIndented([
-            `var app = JsonConvert.DeserializeObject<${className}>(JsonConvert.SerializeObject(result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));`,
+            'result,',
+            'new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, Error = OnError }'
+        ]);
+        writer.decreaseIndentation();
+        writer.writeLineIndented(')');
+        writer.decreaseIndentation();
+        writer.writeLineIndented([
+            ');',
             'Text = app.Text;',
             'AlteredText = app.AlteredText;',
             'Intents = app.Intents;',
             'Entities = app.Entities;',
             'Properties = app.Properties;'
+        ]);
+        writer.decreaseIndentation();
+        writer.writeLineIndented('}');
+    },
+    onError: function(writer) {
+        writer.writeLine();
+        writer.writeLineIndented([
+            'private static void OnError(object sender, ErrorEventArgs args)',
+            '{'
+        ]);
+        writer.increaseIndentation();
+        writer.writeLineIndented([
+            '// If needed, put your custom error logic here',
+            'Console.WriteLine(args.ErrorContext.Error.Message);',
+            'args.ErrorContext.Handled = true;'
         ]);
         writer.decreaseIndentation();
         writer.writeLineIndented('}');
