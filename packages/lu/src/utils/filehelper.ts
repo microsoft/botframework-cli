@@ -186,9 +186,6 @@ async function getConfigFile(input: string): Promise<string> {
 
 export async function getConfigObject(input: string) {
   const luConfigFile = await getConfigFile(input)
-  if (luConfigFile === undefined) {
-    throw new CLIError(`Sorry, no config file found in the folder '${input}'`)
-  }
 
   let finalLuConfigObj = Object.create(null)
   const configFileDir = path.dirname(luConfigFile)
