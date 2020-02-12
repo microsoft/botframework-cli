@@ -3,6 +3,6 @@
 **Filters:**
 - aa=bb
 
-```markdown
+```
     Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
 ```

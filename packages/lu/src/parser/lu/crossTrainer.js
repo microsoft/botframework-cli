@@ -25,13 +25,16 @@ module.exports = {
   crossTrain: function (luObjectArray, qnaObjectArray, crossTrainConfig) {
     try {
       const crossTrainConfigObj = JSON.parse(crossTrainConfig)
-      const rootObjectIds = crossTrainConfigObj.rootIds
+      const rootObjectIds = crossTrainConfigObj.rootIds.map(x => path.resolve(x))
       const triggerRules = crossTrainConfigObj.triggerRules
       const intentName = crossTrainConfigObj.intentName
       const verbose = crossTrainConfigObj.verbose
 
       // parse lu content to LUResource object
       let luFileIdToResourceMap = parseAndValidateContent(luObjectArray, verbose)
+
+      // parse qna content to LUResource object
+      let qnaFileIdToResourceMap = parseAndValidateContent(qnaObjectArray, verbose)
 
       // construct resource tree to build the father-children relationship among lu files
       let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
@@ -40,7 +43,7 @@ module.exports = {
       for (const rootObjectId of rootObjectIds) {
         if (resources.some(r => r.id === rootObjectId)) {
           // do cross training for each root at top level
-          const result = luCrossTrain(rootObjectId, resources, intentName)
+          const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName)
           for (const res of result) {
             luFileIdToResourceMap.set(res.id, res.content)
           }
@@ -50,7 +53,7 @@ module.exports = {
       }
 
       // do qna cross training with lu files
-      const qnaFileIdToResourceMap = qnaCrossTrain(qnaObjectArray, luFileIdToResourceMap, verbose)
+      qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap)
 
       return { luResult: luFileIdToResourceMap, qnaResult: qnaFileIdToResourceMap }
     } catch (err) {
@@ -123,10 +126,11 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
  * Lu cross training core function. Do lu cross training from a root to its children once.
  * @param {string} rootResourceId the root resource object id
  * @param {any[]} resources all lu resource object list
+ * @param {any[]} qnaFileToResourceMap map of qna file id and resource
  * @param {string} intentName interuption intent name
  * @returns {any[]} updated resource objects
  */
-const luCrossTrain = function (rootResourceId, resources, intentName) {
+const luCrossTrain = function (rootResourceId, resources, qnaFileToResourceMap, intentName) {
   const idToResourceMap = new Map()
   for (const resource of resources) {
     idToResourceMap.set(resource.id, resource)
@@ -135,22 +139,24 @@ const luCrossTrain = function (rootResourceId, resources, intentName) {
   // Parse resources
   let rootResource = resources.filter(r => r.id === rootResourceId)[0]
   rootResource.visited = true
-  mergeRootInteruptionToLeaves(rootResource, idToResourceMap, intentName)
+  mergeRootInteruptionToLeaves(rootResource, idToResourceMap, qnaFileToResourceMap, intentName)
 
   return Array.from(idToResourceMap.values())
 }
 
-const mergeRootInteruptionToLeaves = function (rootResource, result, intentName) {
+const mergeRootInteruptionToLeaves = function (rootResource, result, qnaFileToResourceMap, intentName) {
   if (rootResource.children === undefined || rootResource.length <= 0) return
 
   mergeBrothersInteruption(rootResource, result, intentName)
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
     if (childResource.visited === undefined) {
-      const newChildResource = mergeFatherInteruptionToChild(rootResource, childResource, intentName)
+      const rootQnaFileId = path.join(path.dirname(rootResource.id), path.basename(rootResource.id, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
+      const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
+      const newChildResource = mergeFatherInteruptionToChild(rootResource, rootQnaResource, childResource, intentName)
       result.set(child.target, newChildResource)
       newChildResource.visited = true
-      mergeRootInteruptionToLeaves(newChildResource, result, intentName)
+      mergeRootInteruptionToLeaves(newChildResource, result, qnaFileToResourceMap, intentName)
     }
   }
 }
@@ -182,11 +188,25 @@ const mergeBrothersInteruption = function (resource, result, intentName) {
   }
 }
 
-const mergeFatherInteruptionToChild = function (fatherResource, childResource, intentName) {
+const mergeFatherInteruptionToChild = function (fatherResource, fatherQnaResource, childResource, intentName) {
+  let fatherUtterances = []
+
+  // extract father existing interuption utterances
   const fatherInteruptions = fatherResource.content.Sections.filter(s => s.Name === intentName)
   if (fatherInteruptions && fatherInteruptions.length > 0) {
     const fatherInteruption = fatherInteruptions[0]
-    const fatherUtterances = fatherInteruption.UtteranceAndEntitiesMap.map(u => u.utterance)
+    fatherUtterances = fatherUtterances.concat(fatherInteruption.UtteranceAndEntitiesMap.map(u => u.utterance))
+  }
+
+  // extract corresponding qna questions from father
+  let questions = []
+  if (fatherQnaResource) {
+    const qnaSections = fatherQnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.QNASECTION)
+    qnaSections.forEach(q => questions = questions.concat(q.Questions))
+  }
+
+  fatherUtterances = fatherUtterances.concat(questions)
+  if (fatherUtterances.length > 0) {
     childResource = mergeInteruptionIntent(fatherUtterances, childResource, intentName)
   }
 
@@ -245,15 +265,12 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
 
 /**
  * do qna cross training with lu files
- * @param {luObject[]} qnaObjectArray the qna object list to be parsed
+ * @param {Map<string, LUResource>} qnaFileIdToResourceMap map of qna file id and resource
  * @param {Map<string, LUResource>} luFileIdToResourceMap map of lu file id and resource
- * @param {boolean} verbose indicate to enable log messages or not
- * @returns {Map<string, LUResource>} map of qna file id and resource
  * @throws {exception} throws errors
  */
-const qnaCrossTrain = function (qnaObjectArray, luFileIdToResourceMap, verbose) {
+const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap) {
   try {
-    let qnaFileIdToResourceMap = parseAndValidateContent(qnaObjectArray, verbose)
     for (const luObjectId of Array.from(luFileIdToResourceMap.keys())) {
       const qnaObjectId = path.join(path.dirname(luObjectId), path.basename(luObjectId, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
       let fileName = path.basename(luObjectId, path.extname(luObjectId))
@@ -266,8 +283,6 @@ const qnaCrossTrain = function (qnaObjectArray, luFileIdToResourceMap, verbose) 
         qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
       }
     }
-
-    return qnaFileIdToResourceMap
   } catch (err) {
     throw (err)
   }
@@ -283,6 +298,7 @@ const qnaCrossTrain = function (qnaObjectArray, luFileIdToResourceMap, verbose) 
 const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   let trainedLuResource = luResource
   let trainedQnaResource = qnaResource
+
   // extract questions
   const qnaSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.QNASECTION)
   let questions = []
@@ -300,7 +316,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   let qnaSectionContents = []
   for (const qnaSection of qnaSections) {
     qnaSection.FilterPairs.push({ key: 'dialogName', value: name })
-    const qnaSectionContent = `# ?${qnaSection.Questions.join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`markdown${qnaSection.Answer}\`\`\``
+    const qnaSectionContent = `# ?${qnaSection.Questions.join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}${qnaSection.Answer}${NEWLINE}\`\`\``
     qnaSectionContents.push(qnaSectionContent)
   }
 
@@ -314,10 +330,9 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   let utterances = []
   intentSections.forEach(i => utterances = utterances.concat(i.UtteranceAndEntitiesMap.map(u => u.utterance)))
   let utterancesContent = utterances.join(NEWLINE + '- ')
-
   // add utterances from lu file to corresponding qna file with question set to all utterances
-  if (utterancesContent && utterancesContent !== '') {
-    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${name}${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
+  if (utterancesContent && utterancesContent !== '' && qnaSections.length > 0) {
+    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${name}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 

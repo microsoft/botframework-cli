@@ -5,7 +5,7 @@
 **Filters:**
 - dialogName=dia2
 
-```markdown
+```
     Sure, I can help with that.
 ```
 
@@ -17,7 +17,7 @@
 - xx=yy
 - dialogName=dia2
 
-```markdown
+```
     ha ha ha
 ```
 
@@ -28,10 +28,11 @@
 - When do you want to leave from Seattle train station
 - book a hotel in Seattle
 - Which type of hotel do you prefer
+- user guide
 
 **Filters:**
 - dialogName=dia2
 
-```markdown
+```
 intent=DeferToRecognizer_LUIS_dia2
 ```

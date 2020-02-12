@@ -5,7 +5,7 @@
 **Filters:**
 - dialogName=dia1
 
-```markdown
+```
     ha ha ha
 ```
 
@@ -16,10 +16,11 @@
 - quel temps de vol préférez-vous
 - Réservez un billet de train de Seattle à Portland
 - Quand voulez-vous partir de la gare de Seattle
+- guide de l'utilisateur
 
 **Filters:**
 - dialogName=dia1
 
-```markdown
+```
 intent=DeferToRecognizer_LUIS_dia1
 ```

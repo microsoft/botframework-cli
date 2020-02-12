@@ -5,7 +5,7 @@
 **Filters:**
 - dialogName=dia2
 
-```markdown
+```
     Bien sûr, je peux vous aider avec ça.
 ```
 
@@ -16,10 +16,11 @@
 - Quand voulez-vous partir de la gare de Seattle
 - réserver un hôtel à Seattle
 - Quel type d'hôtel préférez-vous
+- guide de l'utilisateur
 
 **Filters:**
 - dialogName=dia2
 
-```markdown
+```
 intent=DeferToRecognizer_LUIS_dia2
 ```

@@ -4,7 +4,7 @@
 - aa=bb
 - dialogName=main
 
-```markdown
+```
     Here is the [user guide](http://contoso.com/userguide.pdf)
 ```
 
@@ -19,6 +19,6 @@
 **Filters:**
 - dialogName=main
 
-```markdown
+```
 intent=DeferToRecognizer_LUIS_main
 ```

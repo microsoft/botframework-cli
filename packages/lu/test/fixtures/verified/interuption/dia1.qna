@@ -6,7 +6,7 @@
 - aa=bb
 - dialogName=dia1
 
-```markdown
+```
     ha ha ha
 ```
 
@@ -17,10 +17,11 @@
 - which {flightTime} do you prefer
 - book a train ticket from Seattle to Portland
 - When do you want to leave from Seattle train station
+- user guide
 
 **Filters:**
 - dialogName=dia1
 
-```markdown
+```
 intent=DeferToRecognizer_LUIS_dia1
 ```
