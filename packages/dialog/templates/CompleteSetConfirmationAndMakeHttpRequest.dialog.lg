@@ -49,4 +49,4 @@
 - @\{chooseProperty()}
 
 # callCardResponse
-- @\{cardResponse()}
+- @\{cardResponse(@{swaggerResponse}.content)}
