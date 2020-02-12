@@ -1,0 +1,46 @@
+
+> LUIS application information
+> !# @app.name = Json 6.0.0 Full Appaaaaaaaaaa
+> !# @app.desc = test
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 6.0.0
+> !# @app.tokenizerVersion = 1.0.0
+
+
+> # Intent definitions
+
+## None
+
+
+## test
+- one
+- two
+
+
+> # Entity definitions
+
+@ ml address
+    - @ number doorNumber
+    - @ ml streetName
+    - @ geographyV2 city
+    - @ zipRegex zipcode
+
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt geographyV2
+
+@ prebuilt number
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+@ regex zipRegex = /[0-9]{5}/
+

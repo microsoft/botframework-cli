@@ -1,0 +1,59 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> # Intent definitions
+
+> # Entity definitions
+
+@ ml s1 hasRoles sr1,sr2
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt datetimeV2 hasRoles dr1,dr2
+
+@ prebuilt number hasRoles nr1,nr2
+
+@ prebuilt personName hasRoles userName,firstName,lastName
+
+
+> # Phrase list definitions
+
+@ phraselist pl1 = 
+	- cheese,tomato,potato
+
+@ phraselist pl2(interchangeable) = 
+	- I want,I have
+
+
+> # List entities
+
+@ list l1 hasRoles lr1,lr2 = 
+	- 1 :
+		- one
+		- uno
+	- 2 :
+		- two
+		- duo
+
+
+@ list l2 = 
+	- one :
+		- cheese
+	- two :
+		- tomato
+
+
+> # RegEx entities
+
+@ regex r1 hasRoles rr1,rr2 = /[0-9]{6}/
+@ regex r2 = /abc/
+
+> # Composite entities
+
+@ composite c1 = [l1, l2]
+@ composite c2 hasRoles cr1,cr2 = [l1, l2]
