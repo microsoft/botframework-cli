@@ -165,61 +165,58 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-async function getConfigFiles(input: string, recurse = false): Promise<Array<any>> {
-  let filesToParse: string[] = []
+async function getConfigFile(input: string): Promise<string> {
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
-    filesToParse.push(input)
-    return filesToParse
+    return input
   }
 
   if (!fileStat.isDirectory()) {
-    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
+    throw new CLIError(`Sorry, ${input} is not a folder or does not exist`)
   }
 
-  filesToParse = helpers.findConfigFiles(input, recurse)
+  const defaultConfigFile = helpers.findConfigFile(input)
 
-  if (filesToParse.length === 0) {
-    throw new CLIError('Sorry, no .lu files found in the specified folder.')
+  if (defaultConfigFile === undefined || defaultConfigFile === '') {
+    throw new CLIError(`Sorry, no config file found in folder ${input}.`)
   }
-  return filesToParse
+
+  return defaultConfigFile
 }
 
-export async function getConfigObject(input: string, recurse = false) {
-  const luConfigFiles = await getConfigFiles(input, recurse)
-  if (luConfigFiles.length === 0) {
-    throw new CLIError(`Sorry, no .json file found in the folder '${input}' and its sub folders`)
+export async function getConfigObject(input: string) {
+  const luConfigFile = await getConfigFile(input)
+  if (luConfigFile === undefined) {
+    throw new CLIError(`Sorry, no config file found in the folder '${input}'`)
   }
 
   let finalLuConfigObj = Object.create(null)
-  for (const luConfigFile of luConfigFiles) {
-    const configFileDir = path.dirname(luConfigFile)
-    const luConfigContent = await getContentFromFile(luConfigFile)
-    if (luConfigContent && luConfigContent !== '') {
-      try {
-        const luConfigObj = JSON.parse(luConfigContent)
-        for (const rootluFilePath of Object.keys(luConfigObj)) {
-          const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
-          const destLuFileToIntent = luConfigObj[rootluFilePath]
-          for (const destLuFilePath of Object.keys(destLuFileToIntent)) {
-            const triggerIntent = destLuFileToIntent[destLuFilePath]
-            const destLuFileFullPath = path.resolve(configFileDir, destLuFilePath)
-            if (rootLuFileFullPath in finalLuConfigObj) {
-              const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
-              finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
-            } else {
-              let finalDestLuFileToIntent = Object.create(null)
-              finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
-              finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
-            }
+  const configFileDir = path.dirname(luConfigFile)
+  const luConfigContent = await getContentFromFile(luConfigFile)
+  if (luConfigContent && luConfigContent !== '') {
+    try {
+      const luConfigObj = JSON.parse(luConfigContent)
+      for (const rootluFilePath of Object.keys(luConfigObj)) {
+        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
+        const destLuFileToIntent = luConfigObj[rootluFilePath]
+        for (const destLuFilePath of Object.keys(destLuFileToIntent)) {
+          const triggerIntent = destLuFileToIntent[destLuFilePath]
+          const destLuFileFullPath = path.resolve(configFileDir, destLuFilePath)
+          if (rootLuFileFullPath in finalLuConfigObj) {
+            const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
+            finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
+          } else {
+            let finalDestLuFileToIntent = Object.create(null)
+            finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
+            finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
           }
         }
-      } catch (err) {
-        if (err instanceof CLIError) {
-          throw err
-        } else {
-          throw new CLIError(`Sorry, invalid cross training config:\r\n${luConfigContent}`)
-        }
+      }
+    } catch (err) {
+      if (err instanceof CLIError) {
+        throw err
+      } else {
+        throw new CLIError(`Sorry, invalid cross training config:\r\n${luConfigContent}`)
       }
     }
   }

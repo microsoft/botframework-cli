@@ -22,7 +22,8 @@ describe('luis:convert interuption intent among lu files', () => {
       const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption')}`,
         `${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.lu')},${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.fr-fr.lu')}`,
-        '_Interuption')
+        '_Interuption',
+        `${path.join(__dirname, './../../fixtures/testcases/interuption/mapping_rules.json')}`)
 
       await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
       await crossTrain.writeFiles(trainedResult.qnaResult, 'interuptionGen')
