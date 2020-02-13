@@ -5,11 +5,11 @@
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 import * as file from './../../utils/filehelper'
-const exception = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/exception')
+const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
 const fs = require('fs-extra')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/helpers').FileExtTypeEnum
-const Luis = require('./../../../node_modules/@microsoft/bf-lu/src/parser/luis/luis')
-const LuisBuilder = require('./../../../node_modules/@microsoft/bf-lu/src/parser/luis/luisBuilder')
+const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const Luis = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luis')
+const LuisBuilder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luisBuilder')
 
 export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
