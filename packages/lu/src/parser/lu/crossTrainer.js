@@ -214,10 +214,10 @@ const mergeFatherInteruptionToChild = function (fatherResource, fatherQnaResourc
 }
 
 const mergeInteruptionIntent = function (fromUtterances, toResource, intentName) {
+  let existingUtterances = extractIntentUtterances(toResource.content)
   const toInteruptions = toResource.content.Sections.filter(section => section.Name === intentName)
   if (toInteruptions && toInteruptions.length > 0) {
     const toInteruption = toInteruptions[0]
-    const existingUtterances = toInteruption.UtteranceAndEntitiesMap.map(u => u.utterance)
     // construct new content here
     let newFileContent = ''
     fromUtterances.forEach(utterance => {
@@ -248,9 +248,10 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
     toResource.content = new SectionOperator(toResource.content).updateSection(toInteruption.Id, newFileContent)
   } else {
     // construct new content here
-    if (fromUtterances && fromUtterances.length > 0) {
+    const dedupUtterances = fromUtterances.filter(u => !existingUtterances.includes(u))
+    if (dedupUtterances && dedupUtterances.length > 0) {
       let newFileContent = `# ${intentName}${NEWLINE}- `
-      newFileContent += fromUtterances.join(`${NEWLINE}- `)
+      newFileContent += dedupUtterances.join(`${NEWLINE}- `)
 
       // add section here
       // not add the interuption intent if original file is empty
@@ -261,6 +262,23 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
   }
 
   return toResource
+}
+
+const extractIntentUtterances = function(resource) {
+  const intentSections = resource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
+
+  let intentUtterances = []
+  intentSections.forEach(s => {
+    if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+      intentUtterances = intentUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance))
+    } else {
+      s.SimpleIntentSections.forEach(section => {
+        intentUtterances = intentUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance))
+      })
+    }
+  })
+
+  return intentUtterances
 }
 
 /**
@@ -326,9 +344,8 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   }
 
   // extract utterances
-  const intentSections = luResource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION)
-  let utterances = []
-  intentSections.forEach(i => utterances = utterances.concat(i.UtteranceAndEntitiesMap.map(u => u.utterance)))
+  let utterances = extractIntentUtterances(luResource)
+  utterances = Array.from(new Set(utterances))
   let utterancesContent = utterances.join(NEWLINE + '- ')
   // add utterances from lu file to corresponding qna file with question set to all utterances
   if (utterancesContent && utterancesContent !== '' && qnaSections.length > 0) {

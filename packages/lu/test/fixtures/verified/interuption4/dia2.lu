@@ -4,8 +4,10 @@
 # hotelType
 - Which type of hotel do you prefer
 
-# _Interuption
-- book a flight from Seattle to Beijing
+# localIntentWithDupUtteranceInInteruption
 - which flight time do you prefer
 - Hello
+
+# _Interuption
+- book a flight from Seattle to Beijing
 - Hi
