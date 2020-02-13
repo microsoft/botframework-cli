@@ -1,0 +1,7 @@
+# test
+- this is an utterance
+- this is a {pattern}
+
+# one
+- this is another test utterance
+- this is another {testPattern}

@@ -146,6 +146,9 @@ const helpers = {
         let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
         return detectPatternRegex.test(utterance);
     },
+    hashCode : function(s) {
+        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+    },
     /**
      * Helper to detect luis schema version based on content and update the final payload as needed.
      * @param {LUIS} finalLUISJSON 
@@ -154,6 +157,7 @@ const helpers = {
         if (!finalLUISJSON) return;
         // clean up house keeping
         if (finalLUISJSON.flatListOfEntityAndRoles)  delete finalLUISJSON.flatListOfEntityAndRoles
+        if (finalLUISJSON.utteranceHash) delete finalLUISJSON.utteranceHash
         // Detect if there is content specific to 5.0.0 schema
         // any entity with children
         if (!finalLUISJSON) {
@@ -167,7 +171,7 @@ const helpers = {
         if (v5DefFound) {
             finalLUISJSON.luis_schema_version = "6.0.0";
             if (finalLUISJSON.model_features) {
-                finalLUISJSON.phraselists = [];
+                finalLUISJSON.phraselists = finalLUISJSON.phraselists || [];
                 finalLUISJSON.model_features.forEach(item => {
                     if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
                     finalLUISJSON.phraselists.push(Object.assign({}, item))
