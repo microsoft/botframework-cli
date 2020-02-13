@@ -9,7 +9,7 @@
             ],
             "$templates": [
                 "library-Cancel.dialog",
-                "CancelConfirmation-assign-confirmation.dialog"
+                "CancelConfirmation-assign-Confirmation.dialog"
             ]
         },
         "ChangePropertyConfirmation": {
@@ -54,20 +54,26 @@
     },
     "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
     "$templates": [
-        "library-help.lu",
-        "library-cancel.lu",
-        "library-none.lu",
+        "library-Help.lu",
+        "library-Cancel.lu",
+        "library-None.lu",
         "library-trigger.lu",
-        "library-readProperty.lu",
+        "library-ReadProperty.lu",
+        "library-Confirmation.lu",
+        "library-Confirmation.lg",
+        "library-PROPERTYName.lu",
+        "library-PROPERTYName.lg",
+        "library.lg",
         "locale.lu",
         "locale.lg",
         "luis.lu",
         "library-BeginDialog.dialog",
         "library-ChooseProperty.dialog",
-        "library-help.dialog",
+        "library-Help.dialog",
         "library-NotUnderstood.dialog",
         "library-trigger.dialog",
         "library-ReadProperty.dialog",
+        "library-Cancel.dialog",
         "Main.dialog"     
     ]
 }
