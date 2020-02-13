@@ -4,6 +4,7 @@ import * as fs from 'fs-extra'
 const path = require('path')
 const semver = require('semver')
 const os = require('os')
+const isCI = require('is-ci')
 
 const lastversioncheck = path.join(__dirname, '../fixtures/lastversioncheck')
 const upgradeavailable = path.join(__dirname, '../fixtures/upgradeavailable')
@@ -46,7 +47,11 @@ describe('Check if telemetry is set if config is null', () => {
     .stdout()
     .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
     .do(output => {
-      expect(output.stdout).to.contain('Telemetry will remain disabled')
+      if (!isCI) {
+        expect(output.stdout).to.contain('Telemetry will remain disabled')
+      } else {
+        expect(output.stdout).to.be.empty
+      }
     })
     .it('it should disable telemetry when a user opts out')
 
@@ -56,7 +61,11 @@ describe('Check if telemetry is set if config is null', () => {
     .stdout()
     .hook('init', {argv: ['arg']}, {root: rootTelemetryNull})
     .do(output => {
-      expect(output.stdout).to.contain('Telemetry has been enabled')
+      if (!isCI) {
+        expect(output.stdout).to.contain('Telemetry has been enabled')
+      } else {
+        expect(output.stdout).to.be.empty
+      }
     })
     .it('it should enable telemetry when a user opts in')
 })
@@ -132,19 +141,24 @@ describe('Update available to stdout', () => {
 })
 
 describe('bypass version update if it\'s already been checked today', async () => {
+  let originalDate
   beforeEach(async () => {
     // runs before all tests in this block
     const today = new Date()
     let userConfig = await fs.readJSON(path.join(lastversioncheck, 'package.json'))
+    originalDate = userConfig.lastversioncheck
     userConfig.lastversioncheck = today
     fs.writeFileSync(path.join(lastversioncheck, 'package.json'), JSON.stringify(userConfig, null, 2))
     fs.mkdirSync(pathToConfigJsonUpdate)
     fs.writeFileSync(path.join(pathToConfigJsonUpdate, 'config.json'), JSON.stringify({telemetry: true}, null, 2))
   });
 
-  afterEach(function() {
+  afterEach(async function() {
     // runs after all tests in this block
     fs.removeSync(pathToConfigJsonUpdate)
+    let userConfig = await fs.readJSON(path.join(lastversioncheck, 'package.json'))
+    userConfig.lastversioncheck = originalDate
+    fs.writeFileSync(path.join(lastversioncheck, 'package.json'), JSON.stringify(userConfig, null, 2))
   });
 
   test

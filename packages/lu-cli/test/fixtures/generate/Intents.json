@@ -1,0 +1,54 @@
+{
+  "luis_schema_version": "3.2.0",
+  "versionId": "GeoPeople",
+  "name": "Contoso App",
+  "desc": "Default Intents for Azure Bot Service V2",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "Cancel"
+    },
+    {
+      "name": "Delivery"
+    },
+    {
+      "name": "EntityTests"
+    },
+    {
+      "name": "Greeting"
+    },
+    {
+      "name": "Help"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "Roles"
+    },
+    {
+      "name": "search"
+    },
+    {
+      "name": "SpecifyName"
+    },
+    {
+      "name": "Travel"
+    },
+    {
+      "name": "Weather.GetForecast"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [],
+  "settings": []
+}
