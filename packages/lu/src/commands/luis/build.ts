@@ -101,7 +101,7 @@ export default class LuisBuild extends Command {
 
       // load lu contents from lu files
       // load existing recognizers, multiRecogniers and settings or create default ones
-      const loadedResources = await builder.LoadContents(files, flags.defaultCulture, flags.suffix, flags.region)
+      const loadedResources = await builder.loadContents(files, flags.defaultCulture, flags.suffix, flags.region)
       luContents = loadedResources.luContents
       recognizers = loadedResources.recognizers
       multiRecognizers = loadedResources.multiRecognizers

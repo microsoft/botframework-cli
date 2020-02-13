@@ -4,11 +4,12 @@
  */
 
 import {Command, flags} from '@microsoft/bf-cli-command'
-import {Builder} from './../../../../lu/src/parser/lubuild/builder'
-import {Settings} from './../../../../lu/src/parser/lubuild/settings'
-import {MultiLanguageRecognizer} from './../../../../lu/src/parser/lubuild/multi-language-recognizer'
-import {Recognizer} from './../../../../lu/src/parser/lubuild/recognizer'
+import {Builder} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/builder'
+import {Settings} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/settings'
+import {MultiLanguageRecognizer} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/multi-language-recognizer'
+import {Recognizer} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/recognizer'
 import * as file from './../../utils/filehelper'
+
 const path = require('path')
 const fs = require('fs-extra')
 const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/helpers').FileExtTypeEnum
@@ -34,7 +35,7 @@ export default class LuisBuild extends Command {
     dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     config: flags.string({description: 'Path to config'}),
-    log: flags.boolean({description: 'write out log messages to console', default: false})
+    log: flags.boolean({description: 'write out log messages to console', default: false}),
   }
 
   async run() {
@@ -77,9 +78,9 @@ export default class LuisBuild extends Command {
     })
 
     let luContents: any[] = []
-    let recognizers = new Map<string, Recognizer>()
-    let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
-    let settings = new Map<string, Settings>()
+    let recognizers = new Map<string, any>()
+    let multiRecognizers = new Map<string, any>()
+    let settings = new Map<string, any>()
 
     if (flags.stdin && flags.stdin !== '') {
       // load lu content from stdin and create default recognizer, multiRecognier and settings
@@ -88,20 +89,20 @@ export default class LuisBuild extends Command {
       luContents.push(content)
       multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
       settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {}))
-      let recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin') as Settings, {})
+      const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
       recognizers.set(content.name, recognizer)
     } else {
       this.log('Start to load lu files')
 
       // get lu files from flags.in
       if (flags.in && flags.in !== '') {
-        let luFiles = await file.getLuFiles(flags.in, true, fileExtEnum.LUFile)
+        const luFiles = await file.getLuFiles(flags.in, true, fileExtEnum.LUFile)
         files.push(...luFiles)
       }
 
       // load lu contents from lu files
       // load existing recognizers, multiRecogniers and settings or create default ones
-      const loadedResources = await builder.LoadContents(files, flags.defaultCulture, flags.suffix, flags.region)
+      const loadedResources = await builder.loadContents(files, flags.defaultCulture, flags.suffix, flags.region)
       luContents = loadedResources.luContents
       recognizers = loadedResources.recognizers
       multiRecognizers = loadedResources.multiRecognizers

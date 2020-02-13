@@ -22,7 +22,7 @@ export class Builder {
     this.handler = handler
   }
 
-  async LoadContents(
+  async loadContents(
     files: string[],
     culture: string,
     suffix: string,
@@ -119,7 +119,7 @@ export class Builder {
 
     const defaultLuisSchemeVersion = '4.0.0'
     const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
-    const apps = await luBuildCore.GetApplicationList()
+    const apps = await luBuildCore.getApplicationList()
 
     // here we do a while loop to make full use of luis tps capacity
     while (luContents.length > 0) {
@@ -129,7 +129,7 @@ export class Builder {
       // concurrently handle applications
       await Promise.all(subLuContents.map(async content => {
         // init current application object from lu content
-        let currentApp = await this.InitApplicationFromLuContent(content, botName, suffix, defaultLuisSchemeVersion)
+        let currentApp = await this.initApplicationFromLuContent(content, botName, suffix, defaultLuisSchemeVersion)
 
         // get recognizer
         let recognizer = recognizers.get(content.name) as Recognizer
@@ -150,15 +150,15 @@ export class Builder {
         // otherwise create a new application
         if (recognizer.getAppId() && recognizer.getAppId() !== '') {
           // To see if need update the model
-          needTrainAndPublish = await this.UpdateApplication(currentApp, luBuildCore, recognizer, delayDuration, deleteOldVersion)
+          needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, delayDuration, deleteOldVersion)
         } else {
           // create a new application
-          needTrainAndPublish = await this.CreateApplication(currentApp, luBuildCore, recognizer, delayDuration)
+          needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, delayDuration)
         }
 
         if (needTrainAndPublish) {
           // train and publish application
-          await this.TrainAndPublishApplication(luBuildCore, recognizer, delayDuration)
+          await this.trainAndPublishApplication(luBuildCore, recognizer, delayDuration)
         }
 
         // update multiLanguageRecognizer asset
@@ -194,7 +194,7 @@ export class Builder {
       settingValues = Array.from(settings.values())
     }
 
-    const dialogContents = luBuildCore.GenerateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingValues)
+    const dialogContents = luBuildCore.generateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingValues)
 
     return dialogContents
   }
@@ -221,7 +221,7 @@ export class Builder {
     return writeDone
   }
 
-  async InitApplicationFromLuContent(content: any, botName: string, suffix: string, defaultLuisSchemeVersion: string) {
+  async initApplicationFromLuContent(content: any, botName: string, suffix: string, defaultLuisSchemeVersion: string) {
     let currentApp = await content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : content.language as string
     currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
@@ -234,18 +234,18 @@ export class Builder {
     return currentApp
   }
 
-  async UpdateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number, deleteOldVersion: boolean) {
+  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number, deleteOldVersion: boolean) {
     await delay(delayDuration)
-    const appInfo = await luBuildCore.GetApplicationInfo(recognizer.getAppId())
+    const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
     recognizer.versionId = appInfo.activeVersion
 
     await delay(delayDuration)
-    const existingApp = await luBuildCore.ExportApplication(recognizer.getAppId(), recognizer.versionId)
+    const existingApp = await luBuildCore.exportApplication(recognizer.getAppId(), recognizer.versionId)
 
     // compare models
-    const needUpdate = luBuildCore.CompareApplications(currentApp, existingApp)
+    const needUpdate = luBuildCore.compareApplications(currentApp, existingApp)
     if (needUpdate) {
-      const newVersionId = luBuildCore.UpdateVersion(currentApp, existingApp)
+      const newVersionId = luBuildCore.updateVersion(currentApp, existingApp)
       recognizer.versionId = newVersionId
       const options: any = {
         versionId: newVersionId
@@ -253,15 +253,15 @@ export class Builder {
 
       this.handler(`${recognizer.getLuPath()} creating version=${newVersionId}\n`)
       await delay(delayDuration)
-      await luBuildCore.ImportNewVersion(recognizer.getAppId(), currentApp, options)
+      await luBuildCore.importNewVersion(recognizer.getAppId(), currentApp, options)
 
       if (deleteOldVersion) {
         await delay(delayDuration)
-        const versionObjs = await luBuildCore.ListApplicationVersions(recognizer.getAppId())
+        const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
         for (const versionObj of versionObjs) {
           if (versionObj.version !== newVersionId) {
             this.handler(`deleting old version=${versionObj.version}`)
-            await luBuildCore.DeleteVersion(recognizer.getAppId(), versionObj.version)
+            await luBuildCore.deleteVersion(recognizer.getAppId(), versionObj.version)
           }
         }
       }
@@ -273,28 +273,28 @@ export class Builder {
     }
   }
 
-  async CreateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number) {
+  async createApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number) {
     currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' ? currentApp.versionId : '0.1'
     recognizer.versionId = currentApp.versionId
     this.handler(`Creating LUIS.ai application: ${currentApp.name} version:${currentApp.versionId}\n`)
     await delay(delayDuration)
-    const response = await luBuildCore.ImportApplication(currentApp)
+    const response = await luBuildCore.importApplication(currentApp)
     recognizer.setAppId(typeof response.body === 'string' ? response.body : response.body[Object.keys(response.body)[0]])
     return true
   }
 
-  async TrainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number) {
+  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number) {
     // send train application request
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
     await delay(delayDuration)
-    await luBuildCore.TrainApplication(recognizer.getAppId(), recognizer.versionId)
+    await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId)
     this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`)
     let done = true
     do {
       await delay(delayDuration)
 
       // get training status to see if training completed
-      let trainingStatus = await luBuildCore.GetTrainingStatus(recognizer.getAppId(), recognizer.versionId)
+      let trainingStatus = await luBuildCore.getTrainingStatus(recognizer.getAppId(), recognizer.versionId)
       done = true
       for (let status of trainingStatus) {
         if (status.details) {
@@ -310,7 +310,7 @@ export class Builder {
     // publish applications
     this.handler(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
     await delay(delayDuration)
-    await luBuildCore.PublishApplication(recognizer.getAppId(), recognizer.versionId)
+    await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId)
     this.handler(`${recognizer.getLuPath()} publishing finished\n`)
   }
 }
