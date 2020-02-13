@@ -4,9 +4,15 @@
 - ELSE:
     -
 
-# entityFilename
-- @{schemaName}-@{if(role, role, entity)}.@{locale}.lu
+# propertyFilename
+- @{schemaName}-@{property}.@{locale}.lg
 
-# setFilename
-- @{schemaName}-@{property}Set@{if(role, role, entity)}.dialog
+# entityLGFilename
+- @{schemaName}-@{property}Entity.@{locale}.lg
+
+# entityLUFilename
+- @{schemaName}-@{property}Entity.@{locale}.lu
+
+# missingFilename
+- @{schemaName}-@{property}-missing.dialog
 

@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}Entity.@{locale}.lu
+- @{entityLUFilename()}
 
 # template
 - @{Entity()}
@@ -12,3 +12,5 @@
 
 # synonyms(value)
 - @{join(foreach(phrases(value), phrase, concat('- ', phrase)), '\n')}
+
+[generator.lg](../generator.lg)

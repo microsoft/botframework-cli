@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}.@{locale}.lg
+- @{propertyFilename()}
 
 # template
 - @{AskTemplate()}\n@{NameTemplate()}\n\[library.lg]
@@ -9,3 +9,5 @@
 
 # NameTemplate
 - # @{property}Name\n- @{phrase(property, locale)}\n
+
+[generator.lg](../generator.lg)
