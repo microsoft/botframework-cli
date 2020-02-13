@@ -90,7 +90,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS} synonyms under any parent for a list entity`, function(done) {
-        luMerger.Build(new Array(new luObj(getListEntity(1, retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS), 'stdin', true)))
+        luMerger.Build(new Array(new luObj(getListEntity(0, retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_SYNONYMS_LENGTH);
@@ -265,11 +265,13 @@ const getMaxPhraseLists = function(numPhraseLists = retCode.boundaryLimits.MAX_N
 @ phraselist PL${i}`;
         if (intc) fc += '(interchangeable)'
         if (numPhrases) {
-            fc += ` =`;
-            for (var j = 0; j <= numPhrases; j++) {
-                fc += `
-    - phrase${j}`
+            fc += ` =
+    - `;
+            for (var j = 0; j < numPhrases; j++) {
+                fc += `phrase${j},`
             }
+            fc += `phrase-last
+`;
         }
     }
     return fc;
@@ -280,11 +282,14 @@ const getListEntity = function (numParents = retCode.boundaryLimits.MAX_LIST_ENT
 `;
     for (var i = 0; i <= numParents; i++) {
         fc += `
-    - parent${i} :`;
-        for (var j = 0; j <= numSynonyms; j++) {
-            fc += `
-        - synonym${i}.${j}.${POSSIBLE_CHARS.charAt(Math.floor(Math.random() * POSSIBLE_CHARS.length))}`
+    - parent${i} :
+        - `;
+
+        for (var j = 0; j < numSynonyms; j++) {
+            fc += `synonym${i}.${j}.${POSSIBLE_CHARS.charAt(Math.floor(Math.random() * POSSIBLE_CHARS.length))},`
         }
+        fc += `synonym.last
+`;
     }
     return fc;
 }
