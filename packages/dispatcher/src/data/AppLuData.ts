@@ -11,7 +11,7 @@ import { NgramSubwordFeaturizer } from "../model/language_understanding/featuriz
 
 import { Utility } from "../utility/Utility";
 
-export async function exampleFunctionData(): Promise<void> {
+export async function exampleFunctionData(): Promise<string[]> {
     // -----------------------------------------------------------------------
     const parser = new ArgumentParser({
         addHelp: true,
@@ -64,10 +64,15 @@ export async function exampleFunctionData(): Promise<void> {
         luContent,
         new NgramSubwordFeaturizer(),
         true);
-    luData.dumpLuLuisJsonStructureInLuFormat(
-        outputFilenamePrefix + ".lu");
-    luData.dumpLuLuisJsonStructure(
-        outputFilenamePrefix + ".luis", undefined, 4);
+    let luLuisJsonStructureInLuFormatOutputFilename: string =
+        outputFilenamePrefix + ".lu";
+    luLuisJsonStructureInLuFormatOutputFilename = luData.dumpLuLuisJsonStructureInLuFormat(
+        luLuisJsonStructureInLuFormatOutputFilename);
+    let luLuisJsonStructureOutputFilename: string =
+        outputFilenamePrefix + ".luis";
+    luLuisJsonStructureOutputFilename = luData.dumpLuLuisJsonStructure(
+        luLuisJsonStructureOutputFilename, undefined, 4);
+    return [luLuisJsonStructureInLuFormatOutputFilename, luLuisJsonStructureOutputFilename];
 // -----------------------------------------------------------------------
 }
 

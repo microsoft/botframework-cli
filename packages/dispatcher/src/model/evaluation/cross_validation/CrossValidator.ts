@@ -212,24 +212,28 @@ export class CrossValidator extends AbstractBaseEvaluator {
         columnDelimiter: string = "\t",
         recordDelimiter: string = "\n",
         encoding: string = "utf8",
-        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {}):
-        IDictionaryStringIdGenericArrays<string> {
+        outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {}): {
+            "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+            "outputFilenames": string[],
+            } {
         if (DictionaryMapUtility.isEmptyStringIdGenericArraysDictionary(outputEvaluationReportDataArrays)) {
             outputEvaluationReportDataArrays =
                 this.generateEvaluationDataArraysReport();
         }
         {
-            const outputFilename: string =
+            let outputFilename: string =
                 `${outputReportFilenamePrefix}_CrossValidationScoreRecords.json`;
-            Utility.storeDataArraysToTsvFile(
+            outputFilename = Utility.storeDataArraysToTsvFile(
                 outputFilename,
                 outputEvaluationReportDataArrays.CrossValidationScoreRecords,
                 outputDataArraryHeaders,
                 columnDelimiter,
                 recordDelimiter,
                 encoding);
+            const outputFilenames: string[] =
+                [outputFilename];
+            return { outputEvaluationReportDataArrays, outputFilenames };
         }
-        return outputEvaluationReportDataArrays;
     }
 
     public generateEvaluationJsonReport(): IDictionaryStringIdGenericValue<any> {
@@ -267,21 +271,25 @@ export class CrossValidator extends AbstractBaseEvaluator {
     public generateEvaluationJsonReportToFiles(
         outputReportFilenamePrefix: string,
         encoding: string = "utf8",
-        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any> = {}):
-        IDictionaryStringIdGenericValue<any> {
+        outputEvaluationReportJson: IDictionaryStringIdGenericValue<any> = {}): {
+            "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
+            "outputFilenames": string[],
+            } {
         if (DictionaryMapUtility.isEmptyStringIdGenericValueDictionary(outputEvaluationReportJson)) {
             outputEvaluationReportJson =
                 this.generateEvaluationJsonReport();
         }
         {
-            const outputFilename: string =
+            let outputFilename: string =
                 `${outputReportFilenamePrefix}_CrossValidationConfusionMatrixReport.json`;
-            this.dumpEvaluationJsonReportToFile(
+            outputFilename = this.dumpEvaluationJsonReportToFile(
                 outputFilename,
                 outputEvaluationReportJson.confusionMatrixMetricStructure,
                 encoding);
+            const outputFilenames: string[] =
+                [outputFilename];
+            return { outputEvaluationReportJson, outputFilenames };
         }
-        return outputEvaluationReportJson;
     }
 
     public generateEvaluationDirectReport(): IDictionaryStringIdGenericValue<string> {

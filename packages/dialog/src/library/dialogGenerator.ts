@@ -292,8 +292,6 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
             } else {
                 if (missingIsError) {
                     feedback(FeedbackType.error, `${expr}: ${error}`)
-                } else {
-                    newSchema = expr;
                 }
             }
         } catch (e) {

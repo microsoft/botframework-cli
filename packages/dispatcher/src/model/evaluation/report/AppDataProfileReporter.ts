@@ -11,6 +11,9 @@ import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/Confusion
 
 import { DataProfileReporter } from "../report/DataProfileReporter";
 
+import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
+import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
+
 import { DataUtility } from "../../../data/DataUtility";
 import { Data } from "../../../data/Data";
 
@@ -135,7 +138,11 @@ export function mainDataProfileReporter(): void {
             const thresholdReporter: DataProfileReporter =
                 new DataProfileReporter(data);
             // ---------------------------------------------------------------
-            thresholdReporter.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
+            const evaluationDataArraysReportResult: {
+                "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
+                "outputFilenames": string[],
+                } = thresholdReporter.generateEvaluationDataArraysReportToFiles(
+                    outputReportFilenamePrefix);
             // ---------------------------------------------------------------
         });
     // -----------------------------------------------------------------------

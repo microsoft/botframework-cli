@@ -284,6 +284,7 @@ const addAppMetaData = function(LUISJSON) {
             fileContent += `> !# @app.settings.${setting.name} = ${setting.value}` + NEWLINE;
         })
     }
+    if (LUISJSON.tokenizerVersion) fileContent += `> !# @app.tokenizerVersion = ${LUISJSON.tokenizerVersion}` + NEWLINE;
     return fileContent === '' ? fileContent : `> LUIS application information` + NEWLINE + fileContent + NEWLINE + NEWLINE;
 }
 /**

@@ -1,0 +1,17 @@
+[
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "Süß",
+          "to": "de",
+          "alignment": {
+            "proj": "0:4-0:2"
+          }
+        }
+      ]
+    }
+]
