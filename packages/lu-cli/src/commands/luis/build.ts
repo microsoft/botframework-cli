@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-/* eslint-disable */
+/* eslint-disable no-multiple-empty-lines, node/no-missing-require, complexity, prefer-const, new-cap, unicorn/prefer-spread, no-lonely-if, comma-dangle, no-else-return */
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {LuBuildCore} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/core'
 import {Settings} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/settings'
@@ -303,4 +303,4 @@ export default class LuisBuild extends Command {
     this.log(`${recognizer.getLuPath()} publishing finished\n`)
   }
 }
-/* eslint-enable */
+/* eslint-enable no-multiple-empty-lines, node/no-missing-require, complexity, prefer-const, new-cap, unicorn/prefer-spread, no-lonely-if, comma-dangle, no-else-return */
