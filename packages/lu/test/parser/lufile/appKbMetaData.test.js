@@ -4,9 +4,15 @@
  */
 const parseFile = require('./../../../src/parser/lufile/parseFileContents');
 const luis = require('./../../../src/parser/luis/luis');
+const tokTest = require('./../../fixtures/testcases/testTokenizerVersion.json');
 var chai = require('chai');
 var assert = chai.assert;
 describe('App/ Kb meta data information', function () {
+    it ('tokenizerVersion information is persisted in LU content', function() {
+        let luisObj = new luis(tokTest);
+        let luContent = luisObj.parseToLuContent();
+        assert.isTrue(luContent.includes("@app.tokenizerVersion = 1.0.2"));
+    })
     it ('application meta data information in lu file is parsed correctly', function(done) {
         let testLU = `> !# @app.name = all345
         > !# @app.desc = this is a test

@@ -31,7 +31,7 @@
       "@microsoft/bf-cli-config",
       "@microsoft/bf-qnamaker",
       "@microsoft/bf-luis-cli",
-      "@microsoft/bf-lu",
+      "@microsoft/bf-cli-lu",
       "@microsoft/bf-dialog",
       "@microsoft/bf-cli-plugins"
     ],
@@ -58,7 +58,7 @@
   "dependencies": {
     "@microsoft/bf-chatdown": "1.0.0",
     "@microsoft/bf-cli-config": "1.0.0",
-    "@microsoft/bf-lu": "1.0.0",
+    "@microsoft/bf-cli-lu": "1.0.0",
     "@microsoft/bf-luis-cli": "1.0.0",
     "@microsoft/bf-qnamaker": "1.0.0",
     "@microsoft/bf-dialog": "1.0.0",
@@ -70,6 +70,7 @@
     "chalk": "2.4.1",
     "cli-ux": "^5.3.0",
     "fs-extra": "^7.0.1",
+    "is-ci":"2.0.0",
     "latest-version": "^4.0.0",
     "semver": "^5.5.1",
     "tslib": "^1.9.3"
