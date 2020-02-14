@@ -8,7 +8,7 @@
                 "Confirmation"
             ],
             "$templates": [
-                "library-Cancel.dialog",
+                "library-CancelIntent.dialog",
                 "CancelConfirmation-assign-Confirmation.dialog"
             ]
         },
@@ -54,13 +54,13 @@
     },
     "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
     "$templates": [
-        "library-Help.lu",
-        "library-Cancel.lu",
-        "library-None.lu",
-        "library-trigger.lu",
-        "library-ReadProperty.lu",
-        "library-Confirmation.lu",
-        "library-Confirmation.lg",
+        "library-HelpIntent.lu",
+        "library-CancelIntent.lu",
+        "library-NoneIntent.lu",
+        "library-triggerIntent.lu",
+        "library-ReadPropertyIntent.lu",
+        "library-ConfirmationEntity.lu",
+        "library-ConfirmationEntity.lg",
         "library-PROPERTYName.lu",
         "library-PROPERTYName.lg",
         "library.lg",
@@ -69,11 +69,11 @@
         "luis.lu",
         "library-BeginDialog.dialog",
         "library-ChooseProperty.dialog",
-        "library-Help.dialog",
+        "library-HelpIntent.dialog",
         "library-NotUnderstood.dialog",
-        "library-trigger.dialog",
-        "library-ReadProperty.dialog",
-        "library-Cancel.dialog",
-        "Main.dialog"     
+        "library-triggerIntent.dialog",
+        "library-ReadPropertyIntent.dialog",
+        "library-CancelIntent.dialog",
+        "main.dialog"     
     ]
 }

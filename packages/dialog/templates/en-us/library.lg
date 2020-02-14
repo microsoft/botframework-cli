@@ -211,4 +211,4 @@ Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEve
 
 > TODO: Would be good to split out all the component pieces, i.e. help, cancel, confirmation into their own files
 [library-PROPERTYName.lg]
-[library-Confirmation.lg]
+[library-ConfirmationEntity.lg]
