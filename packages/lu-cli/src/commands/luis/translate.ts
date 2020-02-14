@@ -8,11 +8,11 @@ import * as fileHelper from './../../utils/filehelper'
 
 const fs = require('fs-extra')
 const path = require('path')
-const exception = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/exception')
-const luTranslator = require('./../../../node_modules/@microsoft/bf-lu/src/parser/translator/lutranslate')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/helpers').FileExtTypeEnum
-const Lu = require('./../../../node_modules/@microsoft/bf-lu/src/parser/lu/lu')
-const Luis = require('./../../../node_modules/@microsoft/bf-lu/src/parser/luis/luis')
+const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
+const luTranslator = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/translator/lutranslate')
+const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const Lu = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/lu')
+const Luis = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luis')
 
 export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'

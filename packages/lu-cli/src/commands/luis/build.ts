@@ -3,17 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
-import {Builder} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/builder'
-import {Settings} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/settings'
-import {MultiLanguageRecognizer} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/multi-language-recognizer'
-import {Recognizer} from './../../../node_modules/@microsoft/bf-lu/src/parser/lubuild/recognizer'
+import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {Settings} from './../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/settings'
+import {MultiLanguageRecognizer} from './../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer'
+import {Recognizer} from './../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/recognizer'
+import {Builder} from './../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/builder'
 import * as file from './../../utils/filehelper'
 
 const path = require('path')
 const fs = require('fs-extra')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/helpers').FileExtTypeEnum
-const Content = require('./../../../node_modules/@microsoft/bf-lu/src/parser/lu/lu')
+const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const Content = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/lu')
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'

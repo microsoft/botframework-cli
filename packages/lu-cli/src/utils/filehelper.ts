@@ -6,8 +6,8 @@
 import {CLIError, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
-const helpers = require('./../../node_modules/@microsoft/bf-lu/src/parser/utils/helpers')
-const LuObject = require('./../../node_modules/@microsoft/bf-lu/src/parser/lu/lu')
+const helpers = require('./../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers')
+const LuObject = require('./../../node_modules/@microsoft/bf-lu/lib/parser/lu/lu')
 
 /* tslint:disable:prefer-for-of no-unused */
 
