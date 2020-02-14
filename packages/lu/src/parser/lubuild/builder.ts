@@ -201,15 +201,24 @@ export class Builder {
 
   async writeDialogAssets(contents: any[], force: boolean, out: string) {
     let writeDone = false
-    for (const content of contents) {
-      if (out) {
+    if (out) {
+      let settingsContents = contents.filter(c => c.id.endsWith('.json'))
+      let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
+
+      if (settingsContents && settingsContents.length > 0) {
+        writeContents.push(this.mergeSettingsContent(path.join(path.resolve(out), settingsContents[0].id), settingsContents))
+      }
+
+      for (const content of writeContents) {
         const outFilePath = path.join(path.resolve(out), path.basename(content.path))
         if (force || !fs.existsSync(outFilePath)) {
           this.handler(`Writing to ${outFilePath}\n`)
           await fs.writeFile(outFilePath, content.content, 'utf-8')
           writeDone = true
         }
-      } else {
+      }
+    } else {
+      for (const content of contents) {
         if (force || !fs.existsSync(content.path)) {
           this.handler(`Writing to ${content.path}\n`)
           await fs.writeFile(content.path, content.content, 'utf-8')
@@ -312,5 +321,17 @@ export class Builder {
     await delay(delayDuration)
     await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId)
     this.handler(`${recognizer.getLuPath()} publishing finished\n`)
+  }
+
+  mergeSettingsContent(settingsPath: string, contents: any[]) {
+    let settings = new Settings(settingsPath, {})
+    for (const content of contents) {
+      const luisAppsMap = JSON.parse(content.content).luis
+      for (const appName of Object.keys(luisAppsMap)) {
+        settings.luis[appName] = luisAppsMap[appName]
+      }
+    }
+
+    return new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
   }
 }
