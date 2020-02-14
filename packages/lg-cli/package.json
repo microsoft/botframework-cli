@@ -4,13 +4,18 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/node-fetch":"2.5.4",
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
+    "botbuilder-lg":"^4.7.0-preview",
     "delay": "^4.3.0",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "read-text-file": "^1.1.0",
+    "readline-sync": "^1.4.10"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
