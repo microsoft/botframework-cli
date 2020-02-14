@@ -7,11 +7,11 @@ import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 import * as fileHelper from './../../utils/filehelper'
 const fs = require('fs-extra')
 const path = require('path')
-const exception = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/exception')
-const luTranslator = require('./../../../node_modules/@microsoft/bf-lu/src/parser/translator/lutranslate')
-const QnaMaker = require('./../../../node_modules/@microsoft/bf-lu/src/parser/qna/qnamaker/qnamaker')
-const QnA = require('./../../../node_modules/@microsoft/bf-lu/src/parser/lu/qna')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/src/parser/utils/helpers').FileExtTypeEnum
+const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
+const luTranslator = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/translator/lutranslate')
+const QnaMaker = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/qna/qnamaker/qnamaker')
+const QnA = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/qna')
+const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 export default class QnamakerTranslate extends Command {
   static description = 'Translate given QnA maker application JSON model or qna file(s)'
