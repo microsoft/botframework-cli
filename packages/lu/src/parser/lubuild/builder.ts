@@ -117,7 +117,6 @@ export class Builder {
     // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
     let delayDuration = 1100
 
-    const defaultLuisSchemeVersion = '4.0.0'
     const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
     const apps = await luBuildCore.getApplicationList()
 
@@ -129,7 +128,7 @@ export class Builder {
       // concurrently handle applications
       await Promise.all(subLuContents.map(async content => {
         // init current application object from lu content
-        let currentApp = await this.initApplicationFromLuContent(content, botName, suffix, defaultLuisSchemeVersion)
+        let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
 
         // get recognizer
         let recognizer = recognizers.get(content.name) as Recognizer
@@ -230,10 +229,9 @@ export class Builder {
     return writeDone
   }
 
-  async initApplicationFromLuContent(content: any, botName: string, suffix: string, defaultLuisSchemeVersion: string) {
+  async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
     let currentApp = await content.parseToLuis(true, content.language)
-    currentApp.culture = currentApp.culture && currentApp.culture !== '' ? currentApp.culture : content.language as string
-    currentApp.luis_schema_version = currentApp.luis_schema_version && currentApp.luis_schema_version !== '' ? currentApp.luis_schema_version : defaultLuisSchemeVersion
+    currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
     currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${botName} app, targetting ${suffix}`
 
     if (currentApp.name === undefined || currentApp.name === '') {
