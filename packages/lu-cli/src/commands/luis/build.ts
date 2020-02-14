@@ -13,7 +13,7 @@ const Content = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/
 const Settings = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/settings')
 const MultiLanguageRecognizer = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
 const Recognizer = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/recognizer')
-const Builder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/builder')
+const Builder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
