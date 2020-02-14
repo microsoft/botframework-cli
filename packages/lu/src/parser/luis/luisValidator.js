@@ -104,17 +104,19 @@ const validateBoundaries = function(luisJSON) {
 
     // phrase list - Interchangeable Phraselist has max of 50,000 phrases. 
     totalPhrasesInApp = 0;
-    phraseLists.filter(item => item.mode).forEach(item => totalPhrasesInApp += item.words.split(',').length);
-    if (totalPhrasesInApp > retCode.boundaryLimits.MAX_INTERCHANGEABLE_PHRASES) {
-        validationError(retCode.errorCode.BOUNDARY_INTC_PHRASES_LIMIT, `${totalPhrasesInApp} phrases found across all interchangeable phrase list definitions. At most ${retCode.boundaryLimits.MAX_INTERCHANGEABLE_PHRASES} is allowed.`)
-    }
+    phraseLists.filter(item => item.mode).forEach(item => {
+        if (item.words.split(',').length > retCode.boundaryLimits.MAX_INTERCHANGEABLE_PHRASES) {
+            validationError(retCode.errorCode.BOUNDARY_INTC_PHRASES_LIMIT, `${totalPhrasesInApp} phrases found across all interchangeable phrase list definitions. At most ${retCode.boundaryLimits.MAX_INTERCHANGEABLE_PHRASES} is allowed.`)
+        }
+    })
 
     // phrase list - Non-interchangeable phraselist has max of 5,000 phrases. 
     totalPhrasesInApp = 0;
-    phraseLists.filter(item => !item.mode).forEach(item => totalPhrasesInApp += item.words.split(',').length);
-    if (totalPhrasesInApp > retCode.boundaryLimits.MAX_NON_INTERCHANGEABLE_PHRASES) {
-        validationError(retCode.errorCode.BOUNDARY_NINTC_PHRASES_LIMIT, `${totalPhrasesInApp} phrases found across all non-interchangeable phrase list definitions. At most ${retCode.boundaryLimits.MAX_NON_INTERCHANGEABLE_PHRASES} is allowed.`)
-    }
+    phraseLists.filter(item => !item.mode).forEach(item => {
+        if (item.words.split(',').length > retCode.boundaryLimits.MAX_NON_INTERCHANGEABLE_PHRASES) {
+            validationError(retCode.errorCode.BOUNDARY_NINTC_PHRASES_LIMIT, `${totalPhrasesInApp} phrases found across all non-interchangeable phrase list definitions. At most ${retCode.boundaryLimits.MAX_NON_INTERCHANGEABLE_PHRASES} is allowed.`)
+        }
+    })
 
     // Roles - 10 roles per entity
     let totalRoles = 0;
