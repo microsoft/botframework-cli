@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["age.lu","objectProperty.lg", "string-missing.dialog","assign-age.dialog"]
+        "$templates": ["age.lu","objectProperty.lg", "string-missing.dialog","assign-ageEntity.dialog"]
     }
 }

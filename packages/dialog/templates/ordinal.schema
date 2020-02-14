@@ -12,6 +12,6 @@
             }
         },
         "required": ["offset", "relativeTo"],
-        "$templates": ["ordinalV2.lu","objectProperty.lg", "string-missing.dialog","assign-ordinalV2.dialog"]
+        "$templates": ["ordinalV2.lu","objectProperty.lg", "string-missing.dialog","assign-ordinalV2Entity.dialog"]
     }
 }
