@@ -214,13 +214,15 @@ const mergeFatherInteruptionToChild = function (fatherResource, fatherQnaResourc
 }
 
 const mergeInteruptionIntent = function (fromUtterances, toResource, intentName) {
+  // remove duplicated utterances in fromUtterances
+  const dedupFromUtterances = Array.from(new Set(fromUtterances))
   let existingUtterances = extractIntentUtterances(toResource.content)
   const toInteruptions = toResource.content.Sections.filter(section => section.Name === intentName)
   if (toInteruptions && toInteruptions.length > 0) {
     const toInteruption = toInteruptions[0]
     // construct new content here
     let newFileContent = ''
-    fromUtterances.forEach(utterance => {
+    dedupFromUtterances.forEach(utterance => {
       if (!existingUtterances.includes(utterance)) {
         newFileContent += '- ' + utterance + NEWLINE
       }
@@ -248,7 +250,7 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
     toResource.content = new SectionOperator(toResource.content).updateSection(toInteruption.Id, newFileContent)
   } else {
     // construct new content here
-    const dedupUtterances = fromUtterances.filter(u => !existingUtterances.includes(u))
+    const dedupUtterances = dedupFromUtterances.filter(u => !existingUtterances.includes(u))
     if (dedupUtterances && dedupUtterances.length > 0) {
       let newFileContent = `# ${intentName}${NEWLINE}- `
       newFileContent += dedupUtterances.join(`${NEWLINE}- `)
@@ -321,6 +323,9 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   const qnaSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.QNASECTION)
   let questions = []
   qnaSections.forEach(q => questions = questions.concat(q.Questions))
+  
+  // remove dup
+  questions = Array.from(new Set(questions))
   questions = questions.map(q => '- '.concat(q))
   let questionsContent = questions.join(NEWLINE)
 
