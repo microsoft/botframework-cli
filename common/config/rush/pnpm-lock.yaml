@@ -1,11 +1,11 @@
 dependencies:
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
-  '@oclif/errors': 1.2.2
   '@oclif/parser': 3.8.4
   '@rush-temp/bf-chatdown': 'file:projects/bf-chatdown.tgz'
   '@rush-temp/bf-cli-command': 'file:projects/bf-cli-command.tgz'
   '@rush-temp/bf-cli-config': 'file:projects/bf-cli-config.tgz'
+  '@rush-temp/bf-cli-lg': 'file:projects/bf-cli-lg.tgz'
   '@rush-temp/bf-cli-lu': 'file:projects/bf-cli-lu.tgz'
   '@rush-temp/bf-cli-plugins': 'file:projects/bf-cli-plugins.tgz'
   '@rush-temp/bf-dialog': 'file:projects/bf-dialog.tgz'
@@ -6217,7 +6217,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-Kpnd+g8xRbeN6t1LtDIwTjWdzLQ3WxnQQQkAHZGM+eK4BlTJrTNTnz3RW0owqM0Leao0y+IvP+iuFQyNYQKstA==
+      integrity: sha512-u9dwkEjLX2IEAsUCwN40KLqZzDTiQolaPKb+dXzAibc303zGEP8h0MNZpHvT9e9/wDhzTQzSuvC8ZbWkWoBtyQ==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -6257,7 +6257,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-command'
     resolution:
-      integrity: sha512-Ka3DtQMqMdVH/dW1MvF7sWulMlkvIXapd9Emm577bVthPp6N6fEJigkLJCRGWI0D4RXG4ldHrnhePmsW9fwesg==
+      integrity: sha512-Cx2jECsJgRe4K74pqmjEoddPmrayTDmMg/rD90kRYiQ6agSNWbC7o638KTUDYZ5VJlhu+PEV/MuVG0oV+wu19Q==
       tarball: 'file:projects/bf-cli-command.tgz'
     version: 0.0.0
   'file:projects/bf-cli-config.tgz':
@@ -6286,8 +6286,40 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-config'
     resolution:
-      integrity: sha512-vwZf1fXZ7BWQsJjKHFMEQ95zRfQ48Na7ae9cMH36cw/fk/a6MYUkzwSgSabel0S2D8uT/BodVucYXJXPfl9NTw==
+      integrity: sha512-ZvUZsW96vljeLO69GRz/kfBazChVv9O6BkikOIQCHUbUP32PzIh8a0jjEmppA+/RtqajtmKQWGq0q5DEQY4x5A==
       tarball: 'file:projects/bf-cli-config.tgz'
+    version: 0.0.0
+  'file:projects/bf-cli-lg.tgz':
+    dependencies:
+      '@oclif/command': 1.5.19
+      '@oclif/config': 1.14.0
+      '@oclif/dev-cli': 1.22.2
+      '@oclif/errors': 1.2.2
+      '@oclif/plugin-help': 2.2.3
+      '@oclif/test': 1.2.5
+      '@types/chai': 4.2.9
+      '@types/lodash': 4.14.149
+      '@types/mocha': 5.2.7
+      '@types/node': 10.17.15
+      chai: 4.2.0
+      delay: 4.3.0
+      eslint: 5.16.0
+      eslint-config-oclif: 3.1.0_eslint@5.16.0
+      eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.7.5
+      fs-extra: 8.1.0
+      globby: 10.0.2
+      lodash: 4.17.15
+      mocha: 5.2.0
+      nyc: 14.1.1
+      rimraf: 2.7.1
+      ts-node: 8.6.2_typescript@3.7.5
+      tslib: 1.10.0
+      typescript: 3.7.5
+    dev: false
+    name: '@rush-temp/bf-cli-lg'
+    resolution:
+      integrity: sha512-wC+dbsTjmueU4zWmLY1HOUyC1p+cZbs2Ln4sRIZMvEroRxr/oNj8+7cQnMWLKW0RaTcZXO+N2in77dMBYn9g3w==
+      tarball: 'file:projects/bf-cli-lg.tgz'
     version: 0.0.0
   'file:projects/bf-cli-lu.tgz':
     dependencies:
@@ -6297,22 +6329,27 @@ packages:
       '@oclif/plugin-help': 2.2.3
       '@oclif/test': 1.2.5
       '@types/chai': 4.2.9
+      '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
       '@types/node': 10.17.15
       chai: 4.2.0
+      delay: 4.3.0
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
       eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.7.5
+      fs-extra: 8.1.0
       globby: 10.0.2
+      lodash: 4.17.15
       mocha: 5.2.0
       nyc: 14.1.1
+      rimraf: 2.7.1
       ts-node: 8.6.2_typescript@3.7.5
       tslib: 1.10.0
       typescript: 3.7.5
     dev: false
     name: '@rush-temp/bf-cli-lu'
     resolution:
-      integrity: sha512-kaY/B3mdFLtKS137DHXEgzydWwgAfwtZieWhtA6yv2ckGowPtLpJoBuOPeVSjuTXdZgyedM6Qe40etf7Ea9mpQ==
+      integrity: sha512-lwkOD3V+VxCg8Wsq7V1LrtzYAuSAYANcMhV3ir1XEh369cK1ZhdvL8XqDI+xc9C1ZUJL85PaGmf6qZFMr79ZJw==
       tarball: 'file:projects/bf-cli-lu.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6341,7 +6378,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-plugins'
     resolution:
-      integrity: sha512-fegDj5NfXQCsabktk5fStFptRwmJccyH0qzjDqasi0mhTjLi72+ucovjYrzbVmrA73LdOoIsRIAT8tuCfLkkMg==
+      integrity: sha512-2n8WG0y6vxBpyUrSJLVWwLcwUN+FqR8wI5htyMvDmPJOBp/PnH4WrupuQXDhl0UacI6LBhI4RWiZtunIkJ1zBw==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6386,7 +6423,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-s/80P9QduIAYy3HGOycjq+smgFPZD8bANxSojRNm1k+IjEXD8DYhZb5b03EGajcNTvIxgWIDqyefgwcvn1hZPA==
+      integrity: sha512-wLqkv6TapzOAmIExo+h14rfw7e2BinNmi30yDcV+01KndJSTH41dyhmdpD0jnvru7YMYRNaQoh8zpea6Y2/6dg==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6415,7 +6452,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-eXMc0AkAcBYSAjDKfUoHVjF+huBN7ESR1I9do3Pi4BAhz/5DrIz2u7Uy4iHGWkZoBEu/izsfz1UgEKnhn+pUbw==
+      integrity: sha512-s4Ar6m12VKpS8u3yyNtXMaShnRZTOCUIFYwXTyXXmN4oX8mkbG0O4zLB47xP68mDHgAvtQ8BNVg42vzq/or0wg==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6458,7 +6495,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-g5LXnFL9CB6a/KTzOv3maI9SP0mYK42CE+f9z3ozycf7sQzXsg+pkS9sx3UxcbX7/TspDTly+KQbNSELmx5HGA==
+      integrity: sha512-Hs49Cqyc/xZQ3Buw+cg53NLAAEw42pSuaq2hFGIWjtwiZcmmLOAyIxSkBXFsq/zKinDSx4k50xovkZTYH1TtTQ==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6497,7 +6534,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-LIoHcGU2SGVD5OhHi4LcfIDgbN4KaqpnMoc20vLCN7uNwne+mNxPpJOrVs4zGTeAKgs9X7ynMiG5MZ7Gc5YoCw==
+      integrity: sha512-JH3A+XDHWIh3PXmu/g7kh1Fe5m/3IsBfTaL6Ofq63DbQfjaMJxX6f63Ut4mDR/2uvb/zF2X/m8kHQtsZuwyg2g==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6546,7 +6583,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-ZOEixDpV+YpN0gLsfmqjG77rrZILkowKeY0oZsxVnWcEjeuAobJ7dH+fvWaF5pb6pNE60Av7AOsabaU0IUKNFA==
+      integrity: sha512-s3Ep0rXW+CbZqcup2ceqA3Pw/4/BSv6N6wcaU+Eh6Zj1cn9RSGnhxktr2igeWbO3HYXRul0YKNOM4Lg5ki93vA==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6580,18 +6617,18 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-Geg+CNIaX/KctYUyAj5900dab9VIyvrOblmxdRQWbGqyMqtItl8rtSknvld36Fdr1DCYnBk+WlCAWU1n54ee1w==
+      integrity: sha512-zAt/gcBtP8s94t7pwuFPGbTf88z/2RftjwT9IYKOwahPM4IQO93ANQGzJAil3mvNF8CI30YtuQ9QbAzTctZCvQ==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
 specifiers:
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
-  '@oclif/errors': ~1.2.2
   '@oclif/parser': ~3.8.4
   '@rush-temp/bf-chatdown': 'file:./projects/bf-chatdown.tgz'
   '@rush-temp/bf-cli-command': 'file:./projects/bf-cli-command.tgz'
   '@rush-temp/bf-cli-config': 'file:./projects/bf-cli-config.tgz'
+  '@rush-temp/bf-cli-lg': 'file:./projects/bf-cli-lg.tgz'
   '@rush-temp/bf-cli-lu': 'file:./projects/bf-cli-lu.tgz'
   '@rush-temp/bf-cli-plugins': 'file:./projects/bf-cli-plugins.tgz'
   '@rush-temp/bf-dialog': 'file:./projects/bf-dialog.tgz'
