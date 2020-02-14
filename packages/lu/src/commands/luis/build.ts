@@ -33,7 +33,7 @@ export default class LuisBuild extends Command {
     force: flags.boolean({char: 'f', description: 'Force write dialog and settings files', default: false}),
     dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
-    config: flags.string({description: 'Path to config'}),
+    luConfig: flags.string({description: 'Path to config for lu build'}),
     log: flags.boolean({description: 'write out log messages to console', default: false})
   }
 
@@ -43,8 +43,8 @@ export default class LuisBuild extends Command {
     flags.stdin = await this.readStdin()
 
     let files: string[] = []
-    if (flags.config) {
-      const configFilePath = path.resolve(flags.config)
+    if (flags.luConfig) {
+      const configFilePath = path.resolve(flags.luConfig)
       if (fs.existsSync(configFilePath)) {
         const configObj = JSON.parse(await fileHelper.getContentFromFile(configFilePath))
         if (configObj.name && configObj.name !== '') flags.botName = configObj.name
