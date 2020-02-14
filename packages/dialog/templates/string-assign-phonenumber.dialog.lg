@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-phonenumber.dialog
+- @{assignFilename('phonenumber')}
 
 # template
 - ```
@@ -25,3 +25,5 @@
 
 # callSetMessage
 - @\{setPropertyMessage('@{property}', @phonenumber)}
+
+[generator.lg](generator.lg)

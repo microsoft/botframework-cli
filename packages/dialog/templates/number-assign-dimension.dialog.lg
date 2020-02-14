@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-assign-dimension.dialog
+- @{assignFilename('dimension')}
 
 # template
 - ```
@@ -39,3 +39,5 @@
 
 # callUnitsAlert
 - @\{unitsAlert('@{property}')}
+
+[generator.lg](generator.lg)

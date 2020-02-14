@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-phonenumber.@{locale}.lu
+- @{builtinEntityFilename('phonenumberEntity')}
 
 # template
 - $PREBUILT:phonenumber @{roles()}

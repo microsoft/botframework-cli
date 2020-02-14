@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-email.@{locale}.lu
+- @{builtinEntityFilename('emailEntity')}
 
 # template
 - $PREBUILT:email @{roles()}

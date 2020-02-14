@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-money.dialog
+- @{assignFilename('money')}
 
 # template
 - ```
@@ -30,3 +30,5 @@
 
 # callSetMessage
 - @\{setObjectPropertyMessage('@{property}', concat(string(@money.number), ' ', @money.units))}
+
+[generator.lg](generator.lg)

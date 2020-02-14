@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-age.dialog
+- @{assignFilename('age')}
 
 # template
 - ```
@@ -30,3 +30,5 @@
 
 # callSetMessage()
 - @\{setObjectPropertyMessage('@{property}', concat(string(@age.number), ' ', @age.units))}
+
+[generator.lg](generator.lg)

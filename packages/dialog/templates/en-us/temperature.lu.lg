@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-temperature.@{locale}.lu
+- @{builtinEntityFilename('temperatureEntity')}
 
 # template
 - $PREBUILT:temperature @{roles()}

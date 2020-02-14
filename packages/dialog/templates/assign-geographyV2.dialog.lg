@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-geographyV2.dialog
+- @{assignFilename('geographyV2')}
 
 # template
 - ```
@@ -30,3 +30,5 @@
 
 # callSetMessage
 - @\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
+
+[generator.lg](generator.lg)

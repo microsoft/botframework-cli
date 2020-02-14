@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-percentage.@{locale}.lu
+- @{builtinEntityFilename('percentageEntity')}
 
 # template
 - $PREBUILT:percentage @{roles()}

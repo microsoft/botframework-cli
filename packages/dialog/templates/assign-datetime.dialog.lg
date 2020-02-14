@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-datetime.dialog
+- @{assignFilename('datetime')}
 
 # template
 - ```
@@ -30,3 +30,5 @@
 
 # callSetMessage
 - @\{setObjectPropertyMessage('@{property}', concat(@datetime.type, ' ', string(@datetime.timex)))}
+
+[generator.lg](generator.lg)

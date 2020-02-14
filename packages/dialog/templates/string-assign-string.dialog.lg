@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-assign-@{property}Entity.dialog
+- @{assignFilename(property)}
 
 # template
 - ```
@@ -45,3 +45,5 @@
 
 # callUnexpectedChange
 - @\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}
+
+[generator.lg](generator.lg)

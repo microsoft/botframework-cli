@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-dimension.@{locale}.lu
+- @{builtinEntityFilename('dimensionEntity')}
 
 # template
 - $PREBUILT:dimension @{roles()}

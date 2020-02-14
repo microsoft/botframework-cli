@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-email.dialog
+- @{assignFilename('email')}
 
 # template
 - ```
@@ -25,3 +25,5 @@
 
 # callSetMessage
 - @\{setPropertyMessage('@{property}', @email)}
+
+[generator.lg](generator.lg)

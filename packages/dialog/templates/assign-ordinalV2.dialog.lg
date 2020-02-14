@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-ordinalV2.dialog
+- @{assignFilename('ordinalV2')}
 
 # template
 - ```
@@ -30,3 +30,5 @@
 
 # callSetMessage
 - @\{setObjectPropertyMessage('@{property}', concat(string(@ordinalV2.offset), ' ', @ordinalV2.relativeTo))}
+
+[generator.lg](generator.lg)

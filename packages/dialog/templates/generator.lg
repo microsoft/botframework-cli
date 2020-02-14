@@ -16,3 +16,8 @@
 # missingFilename
 - @{schemaName}-@{property}-missing.dialog
 
+# builtinEntityFilename(prebuiltEntity)
+- @{schemaName}-@{property}-@{prebuiltEntity}.@{locale}.lu
+
+# assignFilename(entity)
+- @{schemaName}-@{property}-assign-@{entity}Entity.dialog

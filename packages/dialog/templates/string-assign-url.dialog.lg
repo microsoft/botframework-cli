@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-url.dialog
+- @{assignFilename('url')}
 
 # template
 - ```
@@ -25,3 +25,5 @@
 
 # callSetMessage
 - @\{setPropertyMessage('@{property}', @url)}
+
+[generator.lg](generator.lg)

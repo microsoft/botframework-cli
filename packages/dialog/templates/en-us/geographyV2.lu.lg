@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-geographyV2.@{locale}.lu
+- @{builtinEntityFilename('geographyV2Entity')}
 
 # template
 - $PREBUILT:geographyV2 @{roles()}

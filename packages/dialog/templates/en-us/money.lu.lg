@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-money.@{locale}.lu
+- @{builtinEntityFilename('moneyEntity')}
 
 # template
 - $PREBUILT:money @{roles()}

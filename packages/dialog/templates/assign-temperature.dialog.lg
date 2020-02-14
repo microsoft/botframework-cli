@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}-assign-temperature.dialog
+- @{assignFilename('temperature')}
 
 # template
 - ```
@@ -30,3 +30,5 @@
 
 # callSetMessage
 - @\{setObjectPropertyMessage('@{property}', concat(string(@temperature.number), ' ', @temperature.units))}
+
+[generator.lg](generator.lg)

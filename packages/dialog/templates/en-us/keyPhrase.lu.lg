@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}-keyPhrase.@{locale}.lu
+- @{builtinEntityFilename('keyPhraseEntity')}
 
 # template
 - $PREBUILT:keyPhrase @{roles()}
