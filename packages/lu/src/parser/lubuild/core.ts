@@ -21,31 +21,31 @@ export class LuBuildCore {
     this.client = new LUISAuthoringClient(creds, endpoint)
   }
 
-  public async GetApplicationList() {
+  public async getApplicationList() {
     let apps = await this.client.apps.list(undefined, undefined)
 
     return apps
   }
 
-  public async GetApplicationInfo(appId: string) {
+  public async getApplicationInfo(appId: string) {
     let appInfo = await this.client.apps.get(appId)
 
     return appInfo
   }
 
-  public async ImportApplication(currentApp: any): Promise<any> {
+  public async importApplication(currentApp: any): Promise<any> {
     let response = await this.client.apps.importMethod(currentApp)
 
     return response
   }
 
-  public async ExportApplication(appId: string, versionId: string) {
+  public async exportApplication(appId: string, versionId: string) {
     const response = await this.client.versions.exportMethod(appId, versionId)
 
     return response
   }
 
-  public CompareApplications(currentApp: any, existingApp: any) {
+  public compareApplications(currentApp: any, existingApp: any) {
     currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture
     currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId !== existingApp.versionId ? currentApp.versionId : existingApp.versionId;
@@ -82,12 +82,12 @@ export class LuBuildCore {
     return !this.isApplicationEqual(currentApp, existingApp)
   }
 
-  public UpdateVersion(currentApp: any, existingApp: any) {
+  public updateVersion(currentApp: any, existingApp: any) {
     let newVersionId: string
     if (currentApp.versionId && currentApp.versionId !== existingApp.versionId) {
       newVersionId = currentApp.versionId
     } else {
-      newVersionId = this.updateVersion(existingApp.versionId)
+      newVersionId = this.updateVersionValue(existingApp.versionId)
     }
 
     currentApp.versionId = newVersionId
@@ -95,21 +95,29 @@ export class LuBuildCore {
     return newVersionId
   }
 
-  public async ImportNewVersion(appId: string, app: any, options: any) {
+  public async importNewVersion(appId: string, app: any, options: any) {
     await this.client.versions.importMethod(appId, app, options)
   }
 
-  public async TrainApplication(appId: string, versionId: string) {
+  public async listApplicationVersions(appId: string) {
+    return this.client.versions.list(appId)
+  }
+
+  public async deleteVersion(appId: string, versionId: string) {
+    await this.client.versions.deleteMethod(appId, versionId)
+  }
+
+  public async trainApplication(appId: string, versionId: string) {
     await this.client.train.trainVersion(appId, versionId)
   }
 
-  public async GetTrainingStatus(appId: string, versionId: string) {
+  public async getTrainingStatus(appId: string, versionId: string) {
     const status = this.client.train.getStatus(appId, versionId)
 
     return status
   }
 
-  public async PublishApplication(appId: string, versionId: string) {
+  public async publishApplication(appId: string, versionId: string) {
     this.client.apps.publish(appId,
       {
         versionId,
@@ -117,7 +125,7 @@ export class LuBuildCore {
       })
   }
 
-  public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings)
+  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
@@ -130,13 +138,15 @@ export class LuBuildCore {
       contents.push(multiLangContent)
     }
 
-    const settingsContent = new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
-    contents.push(settingsContent)
+    for (const setting of settings) {
+      const settingsContent = new Content(setting.save(), path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath())
+      contents.push(settingsContent)
+    }
 
     return contents
   }
 
-  private updateVersion(versionId: string) {
+  private updateVersionValue(versionId: string) {
     let numberVersionId = parseFloat(versionId)
     if (isNaN(numberVersionId)) {
       const index = versionId.lastIndexOf('-')
