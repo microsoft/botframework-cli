@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}Ask.dialog
+- @{missingFilename()}
 
 # template
 - ```
@@ -25,3 +25,5 @@
 
 # callHelp
 - @\{help(@PropertyName)}
+
+[generator.lg](generator.lg)

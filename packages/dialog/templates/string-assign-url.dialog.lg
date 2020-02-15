@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setemail.dialog
+- @{assignFilename('url')}
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "email",
+    "entity": "url",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -17,11 +17,13 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@email"          
+            "value": "=@url"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @email)}
+- @\{setPropertyMessage('@{property}', @url)}
+
+[generator.lg](generator.lg)

@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setdatetime.dialog
+- @{assignFilename('money')}
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "datetime",
+    "entity": "money",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -16,17 +16,19 @@
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.type",
-            "value": "=@datetime.type"          
+            "property": "$@{property}.number",
+            "value": "=@money.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.timex",
-            "value": "=join(@datetime.timex, ' ')"          
+            "property": "$@{property}.units",
+            "value": "=@money.units"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(@datetime.type, ' ', string(@datetime.timex)))}
+- @\{setObjectPropertyMessage('@{property}', concat(string(@money.number), ' ', @money.units))}
+
+[generator.lg](generator.lg)

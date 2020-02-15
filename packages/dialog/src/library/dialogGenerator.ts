@@ -33,7 +33,7 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
             await fs.ensureDir(dir)
             await fs.writeFile(path, val)
         } else {
-            feedback(FeedbackType.info, `Skipping already existing ${path}`)
+            feedback(FeedbackType.warning, `Skipping already existing ${path}`)
         }
     } catch (e) {
         feedback(FeedbackType.error, e.message)
@@ -196,7 +196,7 @@ async function processTemplate(
                             await fs.writeFile(outPath, result)
                             scope.templates[ppath.extname(outPath).substring(1)].push(ref)
                         } else {
-                            feedback(FeedbackType.info, `Skipping already existing ${outPath}`)
+                            feedback(FeedbackType.warning, `Skipping already existing ${outPath}`)
                         }
                     }
                 }
@@ -228,10 +228,11 @@ async function processTemplates(
     }
 
     // Entities first--ok to ignore templates because they might be property specific
-    for (let entity of Object.keys(schema.allEntities())) {
-        let [entityName, role] = entity.split(':')
+    for (let entity of schema.allEntities()) {
+        let [entityName, role] = entity.name.split(':')
         scope.entity = entityName
         scope.role = role
+        scope.property = entity.property
         for (let ext of ['.lu', '.lg', '.qna', '.dialog']) {
             if (extensions.includes(ext)) {
                 await processTemplate(entityName + ext, templateDirs, outDir, scope, force, feedback, true)
@@ -240,6 +241,7 @@ async function processTemplates(
     }
     scope.entity = undefined
     scope.role = undefined
+    scope.property = undefined
 
     // Process per property templates
     for (let prop of schema.schemaProperties()) {

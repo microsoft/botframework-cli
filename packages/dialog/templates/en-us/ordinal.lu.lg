@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-ordinal.@{locale}.lu
+- @{builtinEntityFilename('ordinalEntity')}
 
 # template
 - $PREBUILT:ordinal @{roles()}

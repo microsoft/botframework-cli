@@ -1,5 +1,6 @@
+
 # filename
-- @{schemaName}-@{property}Set@{property}Entity.dialog
+- @{assignFilename('phonenumber')}
 
 # template
 - ```
@@ -7,20 +8,22 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "@{property}Entity",
+    "entity": "phonenumber",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        },    
+        }, 
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@@{property}Entity"
+            "value": "=@phonenumber"          
         }
-    ]
+    ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @@{property}Entity)}
+- @\{setPropertyMessage('@{property}', @phonenumber)}
+
+[generator.lg](generator.lg)
