@@ -8,8 +8,8 @@
                 "Confirmation"
             ],
             "$templates": [
-                "CancelConfirmation.dialog",
-                "CancelConfirmationSet.dialog"
+                "library-CancelIntent.dialog",
+                "CancelConfirmation-assign-Confirmation.dialog"
             ]
         },
         "ChangePropertyConfirmation": {
@@ -18,7 +18,7 @@
                 "Confirmation"
             ],
             "$templates": [
-                "ChangePropertyConfirmationSet.dialog"
+                "ChangePropertyConfirmation-assign-Confirmation.dialog"
             ]
         },
         "CompleteConfirmation": {
@@ -27,21 +27,21 @@
                 "Confirmation", "PROPERTYName"
             ],
             "$templates": [
-                "CompleteConfirmation.dialog",
-                "CompleteSetConfirmation.dialog",
-                "CompleteSetPropertyname.dialog"
+                "library-CompleteConfirmation.dialog",
+                "CompleteConfirmation-assign-Confirmation.dialog",
+                "CompleteConfirmation-assign-PROPERTYName.dialog"
             ]
         },
         "PropertyToChange": {
             "$ref": "#/definitions/PROPERTYName",
             "$templates": [
-                "PropertyToChangeSet.dialog"
+                "PropertyToChange-assign-PROPERTYName.dialog"
             ]
         },
         "PropertyToRemember": {
             "$ref": "#/definitions/PROPERTYName",
             "$templates": [
-                "PropertyToRememberSet.dialog"
+                "PropertyToRemember-assign-PROPERTYName.dialog"
             ]
         }
     },
@@ -54,20 +54,26 @@
     },
     "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
     "$templates": [
-        "helpIntent.lu",
-        "cancelIntent.lu",
-        "noneIntent.lu",
-        "triggerIntent.lu",
-        "readPropertyIntent.lu",
+        "library-HelpIntent.lu",
+        "library-CancelIntent.lu",
+        "library-NoneIntent.lu",
+        "library-triggerIntent.lu",
+        "library-ReadPropertyIntent.lu",
+        "library-ConfirmationEntity.lu",
+        "library-ConfirmationEntity.lg",
+        "library-PROPERTYName.lu",
+        "library-PROPERTYName.lg",
+        "library.lg",
         "locale.lu",
         "locale.lg",
         "luis.lu",
-        "BeginDialog.dialog",
-        "ChooseProperty.dialog",
-        "HelpIntent.dialog",
-        "NotUnderstood.dialog",
-        "TriggerIntent.dialog",
-        "ReadPropertyIntent.dialog",
-        "Main.dialog"     
+        "library-BeginDialog.dialog",
+        "library-ChooseProperty.dialog",
+        "library-HelpIntent.dialog",
+        "library-NotUnderstood.dialog",
+        "library-triggerIntent.dialog",
+        "library-ReadPropertyIntent.dialog",
+        "library-CancelIntent.dialog",
+        "main.dialog"     
     ]
 }

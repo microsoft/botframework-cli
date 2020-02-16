@@ -1,5 +1,5 @@
 # filename
-- @{entityFilename()}
+- @{builtinEntityFilename('phonenumberEntity')}
 
 # template
 - $PREBUILT:phonenumber @{roles()}

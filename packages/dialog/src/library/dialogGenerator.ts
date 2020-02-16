@@ -33,7 +33,7 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
             await fs.ensureDir(dir)
             await fs.writeFile(path, val)
         } else {
-            feedback(FeedbackType.info, `Skipping already existing ${path}`)
+            feedback(FeedbackType.warning, `Skipping already existing ${path}`)
         }
     } catch (e) {
         feedback(FeedbackType.error, e.message)
@@ -196,7 +196,7 @@ async function processTemplate(
                             await fs.writeFile(outPath, result)
                             scope.templates[ppath.extname(outPath).substring(1)].push(ref)
                         } else {
-                            feedback(FeedbackType.info, `Skipping already existing ${outPath}`)
+                            feedback(FeedbackType.warning, `Skipping already existing ${outPath}`)
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-number.@{locale}.lu
+- @{builtinEntityFilename('numberEntity')}
 
 # template
 - $PREBUILT:number @{roles()}
