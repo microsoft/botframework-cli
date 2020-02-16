@@ -90,7 +90,7 @@ export function typeName(property: any): string {
         type = 'enum'
     }
     if (isArray) {
-        type = type + '[]'
+        type = type + 'Array'
     }
     return type
 }
