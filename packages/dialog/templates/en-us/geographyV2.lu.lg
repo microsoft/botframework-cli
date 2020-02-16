@@ -2,6 +2,6 @@
 - @{builtinEntityFilename('geographyV2Entity')}
 
 # template
-- $PREBUILT:geographyV2 @{roles()}
+- @ prebuilt geographyV2 @{roles()}
 
 [generator.lg](../generator.lg)

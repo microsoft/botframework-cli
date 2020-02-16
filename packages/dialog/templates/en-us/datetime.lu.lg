@@ -2,6 +2,6 @@
 - @{builtinEntityFilename('datetimeEntity')}
 
 # template
-- $PREBUILT:datetimeV2 @{roles()}
+- @ prebuilt datetimeV2 @{roles()}
 
 [generator.lg](../generator.lg)

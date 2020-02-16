@@ -52,21 +52,6 @@
                 "none"
             ]
         },
-        "Toppings": {
-            "type": "array",
-            "items": {
-                "type": "string",
-                "enum": [
-                    "tomato",
-                    "lettuce",
-                    "pickles",
-                    "greenPeppers",
-                    "redPeppper",
-                    "whiteOnions",
-                    "redOnions"
-                ]
-            }
-        },
         "Price": {
             "$ref": "template:money.schema#/money"
         }

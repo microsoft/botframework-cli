@@ -2,6 +2,6 @@
 - @{builtinEntityFilename('numberEntity')}
 
 # template
-- $PREBUILT:number @{roles()}
+- @ prebuilt number @{roles()}
 
 [generator.lg](../generator.lg)

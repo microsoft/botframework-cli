@@ -1,6 +1,6 @@
 # roles
 - IF: @{role}
-    - roles=@{role}
+    - hasRole @{role}
 - ELSE:
     -
 
