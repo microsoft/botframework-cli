@@ -179,6 +179,9 @@ async function processTemplate(
                             let result = template
                             if (typeof template === 'object') {
                                 result = template.evaluateTemplate('template', scope)
+                                if (Array.isArray(result)) {
+                                    result = result.join('\n')
+                                }
                                 if (template.templates.some(f => f.name === 'filename')) {
                                     filename = template.evaluateTemplate('filename', scope)
                                 }

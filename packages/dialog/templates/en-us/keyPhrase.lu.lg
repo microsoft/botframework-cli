@@ -2,6 +2,6 @@
 - @{builtinEntityFilename('keyPhraseEntity')}
 
 # template
-- $PREBUILT:keyPhrase @{roles()}
+- @ prebuilt keyPhrase @{roles()}
 
 [generator.lg](../generator.lg)

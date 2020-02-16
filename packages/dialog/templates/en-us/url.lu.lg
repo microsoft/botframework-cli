@@ -2,6 +2,6 @@
 - @{builtinEntityFilename('urlEntity')}
 
 # template
-- $PREBUILT:url @{roles()}
+- @ prebuilt url @{roles()}
 
 [generator.lg](../generator.lg)

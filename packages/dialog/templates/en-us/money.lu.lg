@@ -2,6 +2,6 @@
 - @{builtinEntityFilename('moneyEntity')}
 
 # template
-- $PREBUILT:money @{roles()}
+- @ prebuilt money @{roles()}
 
 [generator.lg](../generator.lg)
