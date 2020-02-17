@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Settemperature.dialog
+- @{assignFilename('age')}
 
 # template
 - ```
@@ -8,25 +8,27 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "temperature",
+    "entity": "age",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        },
+        }, 
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.number",
-            "value": "=@temperature.number"          
+            "value": "=@age.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}.units",
-            "value": "=@temperature.units"          
+            "value": "=@age.units"          
         }
     ]               
 }
 ```
 
-# callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(string(@temperature.number), ' ', @temperature.units))}
+# callSetMessage()
+- @\{setObjectPropertyMessage('@{property}', concat(string(@age.number), ' ', @age.units))}
+
+[generator.lg](generator.lg)

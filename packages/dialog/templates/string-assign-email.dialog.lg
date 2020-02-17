@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setpercentage.dialog
+- @{assignFilename('email')}
 
 # template
 - ```
@@ -8,20 +8,22 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "percentage",
+    "entity": "email",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        }, 
+        },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@percentage"          
+            "value": "=@email"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @percentage)}
+- @\{setPropertyMessage('@{property}', @email)}
+
+[generator.lg](generator.lg)

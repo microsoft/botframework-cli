@@ -1,5 +1,7 @@
 # filename
-- @{schemaName}-@{property}Entity.@{locale}.lu
+- @{entityLUFilename()}
 
 # template
 - $@{property}Entity:Simple
+
+[generator.lg](../generator.lg)

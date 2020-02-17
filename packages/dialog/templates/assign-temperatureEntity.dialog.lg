@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}SetgeographyV2.dialog
+- @{assignFilename('temperature')}
 
 # template
 - ```
@@ -8,25 +8,27 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "geographyV2",
+    "entity": "temperature",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        }, 
-        {
-            "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.type",
-            "value": "=@geographyV2.type"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.location",
-            "value": "=@geographyV2.location"          
+            "property": "$@{property}.number",
+            "value": "=@temperature.number"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.units",
+            "value": "=@temperature.units"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
+- @\{setObjectPropertyMessage('@{property}', concat(string(@temperature.number), ' ', @temperature.units))}
+
+[generator.lg](generator.lg)

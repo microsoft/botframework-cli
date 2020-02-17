@@ -1,9 +1,9 @@
 # filename
-- @{schemaName}-@{property}Entity.@{locale}.lg
+- @{entityLGFilename()}
 
 >>> This is because of issues around ' and } in strings--see enumEntityDesired.lg for a test case
 # template
-- @{propertyEntity()}\n@{chooseEntity()}\n\[common.lg]\n
+- @{propertyEntity()}\n@{chooseEntity()}\n\[library.lg]
 
 # chooseEntity
 - # choose@{property}Entity\n- @\{chooseEnumEntity(@{concat("'", property, "'")})\}\n
@@ -22,3 +22,5 @@
 
 # default
 - - DEFAULT: \n - I don't understand @\{value\}
+
+[generator.lg](../generator.lg)

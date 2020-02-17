@@ -12,6 +12,6 @@
             }
         },
         "required": ["type", "timex"],
-        "$templates": ["datetime.lu","objectProperty.lg", "stringAsk.dialog","datetimeSet.dialog"]
+        "$templates": ["datetime.lu","objectProperty.lg", "string-missing.dialog","assign-datetimeEntity.dialog"]
     }
 }

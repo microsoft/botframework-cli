@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setnumber.dialog
+- @{assignFilename('keyPhrase')}
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "number",
+    "entity": "keyPhrase",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -17,11 +17,13 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@number"          
+            "value": "=@keyPhrase"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @number)}
+- @\{setPropertyMessage('@{property}', @keyPhrase)}
+
+[generator.lg](generator.lg)

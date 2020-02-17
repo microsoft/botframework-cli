@@ -1,5 +1,5 @@
 # filename
-- @{schemaName}-@{property}Ask.dialog
+- @{missingFilename()}
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$kind": "Microsoft.OnEndOfActions",
     "condition":"!$@{property}",
     "priority": "indexOf(dialog.requiredProperties, '@{property}')",
-    "actions": [        
+    "actions": [       
         {
             "$kind": "Microsoft.Ask",
             "activity": "@{callAsk()}",
@@ -22,3 +22,5 @@
 
 # callAsk
 - @\{Ask@{property}()}
+
+[generator.lg](generator.lg)

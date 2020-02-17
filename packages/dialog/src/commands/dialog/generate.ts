@@ -39,9 +39,12 @@ export default class GenerateDialog extends Command {
             await gen.generate(args.schema, outDir, flags.schema, flags.locale, flags.templates, flags.force,
                 (type, msg) => {
                     if (type === gen.FeedbackType.message
-                        || type === gen.FeedbackType.error
                         || (type === gen.FeedbackType.info && flags.verbose)) {
-                        this.progress(msg)
+                        this.info(msg)
+                    } else if (type === gen.FeedbackType.warning) {
+                        this.warning(msg)
+                    } else if (type === gen.FeedbackType.error) {
+                        this.errorMsg(msg)
                     }
                 })
             return true;
@@ -54,7 +57,15 @@ export default class GenerateDialog extends Command {
         this.error(err.message)
     }
 
-    progress(msg: string): void {
+    info(msg: string): void {
+        console.error(msg)
+    }
+
+    warning(msg: string): void {
+        this.warn(msg)
+    }
+
+    errorMsg(msg: string): void {
         this.error(msg)
     }
 }

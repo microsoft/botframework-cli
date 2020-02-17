@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Seturl.dialog
+- @{assignFilename('number')}
 
 # template
 - ```
@@ -8,20 +8,22 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "url",
+    "entity": "number",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
             "activity": "@{callSetMessage()}"
-        },
+        }, 
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@url"          
+            "value": "=@number"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @url)}
+- @\{setPropertyMessage('@{property}', @number)}
+
+[generator.lg](generator.lg)

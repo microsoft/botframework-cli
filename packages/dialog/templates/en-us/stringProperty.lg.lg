@@ -1,8 +1,8 @@
 # filename
-- @{schemaName}-@{property}.@{locale}.lg
+- @{propertyFilename()}
 
 # template
-- @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{schemaName}-@{property}Entity.@{locale}.lg]\n\[common.lg]
+- @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{schemaName}-@{property}Entity.@{locale}.lg]\n\[library.lg]
 
 # AskTemplate
 - # Ask@{property}\n- @\{askString('@{property}')\}\n
@@ -12,3 +12,5 @@
 
 # NameTemplate
 - # @{property}Name\n- @{phrase(property, locale)}\n
+
+[generator.lg](../generator.lg)

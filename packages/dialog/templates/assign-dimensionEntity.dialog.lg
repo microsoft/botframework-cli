@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setdimension.dialog
+- @{assignFilename('dimension')}
 
 # template
 - ```
@@ -30,3 +30,5 @@
 
 # callSetMessage
 - @\{setObjectPropertyMessage('@{property}',concat(string(@dimension.number), ' ', @dimension.units))}
+
+[generator.lg](generator.lg)
