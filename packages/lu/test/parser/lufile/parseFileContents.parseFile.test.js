@@ -520,7 +520,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, "i want a tomato");
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "I want a tomato");
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 1);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].startPos, 9);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].endPos, 14);
@@ -536,7 +536,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, "i want a tomato");
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "I want a tomato");
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 1);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].startPos, 9);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].endPos, 14);
@@ -552,7 +552,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.patterns.length, 1);
-                                assert.equal(res.LUISJsonStructure.patterns[0].pattern, "i want {foodType}");
+                                assert.equal(res.LUISJsonStructure.patterns[0].pattern, "I want {foodType}");
                                 assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 1);
                                 assert.equal(res.LUISJsonStructure.patternAnyEntities[0].name, "foodType");
                                 done();
@@ -566,7 +566,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, "i want a tomato and orange");
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "I want a tomato and orange");
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[1].startPos, 20);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[1].endPos, 25);
@@ -584,7 +584,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, "i want a tomato and orange");
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "I want a tomato and orange");
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[1].startPos, 20);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[1].endPos, 25);
@@ -602,7 +602,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.patterns.length, 1);
-                                assert.equal(res.LUISJsonStructure.patterns[0].pattern, "i want {foodType} and {foodType}");
+                                assert.equal(res.LUISJsonStructure.patterns[0].pattern, "I want {foodType} and {foodType}");
                                 assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 1);
                                 assert.equal(res.LUISJsonStructure.patternAnyEntities[0].name, "foodType");
                                 done();
@@ -684,7 +684,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, "i want to buy a shirt please");
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "I want to buy a shirt please");
                                 assert.equal(res.LUISJsonStructure.composites.length, 1);
                                 assert.equal(res.LUISJsonStructure.composites[0].name, 'productOrder');
                                 assert.deepEqual(res.LUISJsonStructure.composites[0].children, ["product"]);
@@ -706,7 +706,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, "i want another shirt and pant please");
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "I want another shirt and pant please");
                                 assert.equal(res.LUISJsonStructure.composites.length, 1);
                                 assert.equal(res.LUISJsonStructure.composites[0].name, 'productOrder');
                                 assert.deepEqual(res.LUISJsonStructure.composites[0].children, ["product"]);
@@ -730,7 +730,7 @@ describe('parseFile correctly parses utterances', function () {
                 parseFile.parseFile(testLUFile, false)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, "i want x y and a with tomato and orange");
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "I want x y and a with tomato and orange");
                                 assert.equal(res.LUISJsonStructure.composites.length, 1);
                                 assert.equal(res.LUISJsonStructure.composites[0].name, 'p');
                                 assert.deepEqual(res.LUISJsonStructure.composites[0].children, ["q", "r"]);

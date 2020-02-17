@@ -198,15 +198,14 @@ export class LuBuildCore {
     let yObj = []
 
     if (x && x.length > 0) {
-      xObj = JSON.parse(JSON.stringify(x))
+      xObj = JSON.parse(JSON.stringify(x).toLowerCase())
     }
 
     if (y && y.length > 0) {
-      yObj = JSON.parse(JSON.stringify(y))
+      yObj = JSON.parse(JSON.stringify(y).toLowerCase())
     }
 
     if (xObj.length !== yObj.length) return false
-    
     if (differenceWith(xObj, yObj, isEqual).length > 0) return false
 
     return true
