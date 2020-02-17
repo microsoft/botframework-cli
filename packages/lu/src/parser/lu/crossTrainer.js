@@ -266,19 +266,25 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
   return toResource
 }
 
-const extractIntentUtterances = function(resource) {
+const extractIntentUtterances = function(resource, intentName) {
   const intentSections = resource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
 
   let intentUtterances = []
-  intentSections.forEach(s => {
-    if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-      intentUtterances = intentUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance))
-    } else {
-      s.SimpleIntentSections.forEach(section => {
-        intentUtterances = intentUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance))
-      })
+  if (intentName && intentName !== '') {
+    const specificSections = intentSections.filter(s => s.Name === intentName)
+    if (specificSections.length > 0) {
+      intentUtterances = intentUtterances.concat(specificSections[0].UtteranceAndEntitiesMap.map(u => u.utterance))
     }
-  })
+  } else {
+    intentSections.forEach(s => {
+      if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+        intentUtterances = intentUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance))
+      } else {
+        s.SimpleIntentSections.forEach(section => {
+          intentUtterances = intentUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance))
+        })
+      }
+  })}
 
   return intentUtterances
 }
@@ -312,10 +318,11 @@ const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap) {
  * qna cross training core function
  * @param {LUResource} luResource the lu resource
  * @param {LUResource} qnaResource the qna resource
- * @param {string} name file name
+ * @param {string} fileName file name
+ * @param {string} interruptionIntentName interruption intent name
  * @returns {luResource: LUResource, qnaResource: LUResource} cross trained lu resource and qna resource
  */
-const qnaCrossTrainCore = function (luResource, qnaResource, name) {
+const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interruptionIntentName) {
   let trainedLuResource = luResource
   let trainedQnaResource = qnaResource
 
@@ -324,21 +331,51 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
   let questions = []
   qnaSections.forEach(q => questions = questions.concat(q.Questions))
   
-  // remove dup
+  // remove dups of questions themselves
   questions = Array.from(new Set(questions))
-  questions = questions.map(q => '- '.concat(q))
-  let questionsContent = questions.join(NEWLINE)
 
-  // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${name}
+  // extract lu utterances of all intents
+  let utterances = extractIntentUtterances(luResource)
+  utterances = Array.from(new Set(utterances))
+
+  // extract lu utterances of interruption intent
+  let utterancesOfInterruption = extractIntentUtterances(luResource, interruptionIntentName)
+
+  // extract lu utterances except interruption
+  let utterancesOfLocalIntents = utterances.filter(u => !utterancesOfInterruption.includes(u))
+
+  // remove questions which are duplicated with local lu utterances
+  let dedupedQuestions = questions.filter(q => !utterancesOfLocalIntents.includes(q))
+
+  // update interruption intent if there are duplications with questions
+  if (utterancesOfInterruption.some(u => dedupedQuestions.includes(u))) {
+    utterancesOfInterruption = utterancesOfInterruption.filter(u => !dedupedQuestions.includes(u))
+
+    // get section id
+    const sectionId = trainedLuResource.Sections.filter(s => s.Name === interruptionIntentName)[0].Id
+
+    // construct updated interruption intent content
+    utterancesOfInterruption = utterancesOfInterruption.map(u => '- '.concat(u))
+    let updatedSectionContent = utterancesOfInterruption.join(NEWLINE)
+    if (updatedSectionContent && updatedSectionContent !== '') {
+      trainedLuResource = new SectionOperator(trainedLuResource).updateSection(sectionId, `# ${interruptionIntentName}${NEWLINE}${updatedSectionContent}`)
+    }
+  }
+
+  // construct questions content
+  dedupedQuestions = dedupedQuestions.map(q => '- '.concat(q))
+  let questionsContent = dedupedQuestions.join(NEWLINE)
+
+  // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
   if (questionsContent && questionsContent !== '') {
-    const questionsToUtterances = `# DeferToRecognizer_QnA_${name}${NEWLINE}${questionsContent}`
+    const questionsToUtterances = `# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
     trainedLuResource = new SectionOperator(luResource).addSection(questionsToUtterances)
   }
 
   // update qna filters
   let qnaSectionContents = []
   for (const qnaSection of qnaSections) {
-    qnaSection.FilterPairs.push({ key: 'dialogName', value: name })
+    qnaSection.FilterPairs.push({ key: 'dialogName', value: fileName })
     const qnaSectionContent = `# ?${qnaSection.Questions.join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}${qnaSection.Answer}${NEWLINE}\`\`\``
     qnaSectionContents.push(qnaSectionContent)
   }
@@ -348,13 +385,15 @@ const qnaCrossTrainCore = function (luResource, qnaResource, name) {
     trainedQnaResource = new SectionOperator(new LUResource([], '', [])).addSection(qnaContents)
   }
 
-  // extract utterances
-  let utterances = extractIntentUtterances(luResource)
-  utterances = Array.from(new Set(utterances))
-  let utterancesContent = utterances.join(NEWLINE + '- ')
+  // remove utterances which are duplicated with local qna questions
+  const dedupedUtterances = utterances.filter(u => !questions.includes(utterances))
+
+  // construct new question content for qna resource
+  let utterancesContent = dedupedUtterances.join(NEWLINE + '- ')
+
   // add utterances from lu file to corresponding qna file with question set to all utterances
   if (utterancesContent && utterancesContent !== '' && qnaSections.length > 0) {
-    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${name}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${name}${NEWLINE}\`\`\``
+    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 
