@@ -41,7 +41,7 @@ class EntitySection {
             }
 
             for (const normalItemStr of parseTree.entityDefinition().entityListBody().normalItemString()) {
-                var itemStr = normalItemStr.getText().trim();
+                var itemStr = normalItemStr.getText().trim().toLowerCase();
                 synonymsOrPhraseList.push(itemStr.substr(1).trim());
             }
         }

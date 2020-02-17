@@ -75,7 +75,7 @@ class NewEntitySection {
             }
 
             for (const normalItemStr of parseTree.newEntityDefinition().newEntityListbody().normalItemString()) {
-                synonymsOrPhraseList.push(normalItemStr.getText());
+                synonymsOrPhraseList.push(normalItemStr.getText().toLowerCase());
             }
         }
 

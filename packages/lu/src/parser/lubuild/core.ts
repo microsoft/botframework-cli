@@ -48,13 +48,7 @@ export class LuBuildCore {
   public compareApplications(currentApp: any, existingApp: any) {
     currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture
-    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId !== existingApp.versionId ? currentApp.versionId : existingApp.versionId;
-
-    // convert utterance text from lu file to lower case
-    // as utterances from luis api are all converted to lower case automatically
-    (currentApp.utterances || []).forEach((u: any) => {
-      u.text = u.text.toLowerCase()
-    });
+    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId > existingApp.versionId ? currentApp.versionId : existingApp.versionId;
 
     // convert list entities to remove synonyms word in list which is same with canonicalForm
     (currentApp.closedLists || []).forEach((c: any) => {
@@ -84,7 +78,7 @@ export class LuBuildCore {
 
   public updateVersion(currentApp: any, existingApp: any) {
     let newVersionId: string
-    if (currentApp.versionId && currentApp.versionId !== existingApp.versionId) {
+    if (currentApp.versionId > existingApp.versionId) {
       newVersionId = currentApp.versionId
     } else {
       newVersionId = this.updateVersionValue(existingApp.versionId)
@@ -177,12 +171,12 @@ export class LuBuildCore {
     equal = equal && this.isArrayEqual(appA.closedLists, appB.closedLists)
     equal = equal && this.isArrayEqual(appA.composites, appB.composites)
     equal = equal && this.isArrayEqual(appA.entities, appB.entities)
-    equal = equal && this.isArrayEqual(appA.modelFeatures, appB.modelFeatures)
+    equal = equal && this.isArrayEqual(appA.model_features, appB.modelFeatures)
     equal = equal && this.isArrayEqual(appA.patternAnyEntities, appB.patternAnyEntities)
     equal = equal && this.isArrayEqual(appA.patterns, appB.patterns)
     equal = equal && this.isArrayEqual(appA.prebuiltEntities, appB.prebuiltEntities)
-    equal = equal && this.isArrayEqual(appA.regexEntities, appB.regexEntities)
-    equal = equal && this.isArrayEqual(appA.regexFeatures, appB.regexFeatures)
+    equal = equal && this.isArrayEqual(appA.regex_entities, appB.regexEntities)
+    equal = equal && this.isArrayEqual(appA.regex_features, appB.regexFeatures)
     equal = equal && this.isArrayEqual(appA.utterances, appB.utterances)
 
     // handle exception for none intent which is default added in luis portal
@@ -212,7 +206,7 @@ export class LuBuildCore {
     }
 
     if (xObj.length !== yObj.length) return false
-
+    
     if (differenceWith(xObj, yObj, isEqual).length > 0) return false
 
     return true

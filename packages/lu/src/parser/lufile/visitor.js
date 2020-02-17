@@ -45,7 +45,7 @@ class Visitor {
                     break;
                 }
                 default: {
-                    utterance = utterance.concat(innerNode.getText());
+                    utterance = utterance.concat(innerNode.getText().toLowerCase());
                     break;
                 }
             }
@@ -79,7 +79,7 @@ class Visitor {
                 if (compositeEntityEqualIndex !== -1) {
                     let compositeEntityName = compositeEntityDefinition.substring(0, compositeEntityEqualIndex).trim();
                     let compositeEntityValue = compositeEntityDefinition.substring(compositeEntityEqualIndex + 1).trim();
-                    entities.push({ entityName: compositeEntityName, entityValue: compositeEntityValue });
+                    entities.push({ entityName: compositeEntityName, entityValue: compositeEntityValue.toLowerCase() });
                     updatedEntityValue = updatedEntityValue.substring(0, compositeEntityLeftIndex) + compositeEntityValue + updatedEntityValue.substring(compositeEntityRightIndex + 1);
                     compositeEntityRightIndex = updatedEntityValue.indexOf('}');
                     compositeEntityLeftIndex = updatedEntityValue.substring(0, compositeEntityRightIndex).lastIndexOf('{');
@@ -89,7 +89,7 @@ class Visitor {
                 }
             }
 
-            entities.push({ entityName: entityName, entityValue: updatedEntityValue });
+            entities.push({ entityName: entityName, entityValue: updatedEntityValue.toLowerCase() });
             entities.forEach(entity => {
                 let colonIndex = entity.entityName.indexOf(':');
                 if (colonIndex !== -1) {
