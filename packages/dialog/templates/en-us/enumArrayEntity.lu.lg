@@ -2,16 +2,15 @@
 - @{entityLUFilename()}
 
 # template
-- TODO
->>> - ```
->>> @ list @{property}Entity =
->>> @{join(foreach(schema.properties[property].enum, enum, concat('\t- ', enum, ' :\n', >>> synonyms(enum))), '\n')}
->>> ```
+- ```
+@ list @{property}Entity =
+@{join(foreach(schema.properties[property].items.enum, enum, concat('  - ', enum, ' :\n', synonyms(enum))), '\n')}
+```
 
 >>> # None
 >>> - # None\n@{join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
 
->>> # synonyms(value)
->>> - @{join(foreach(phrases(value), phrase, concat('\t\t- ', phrase)), '\n')}
+# synonyms(value)
+- @{join(foreach(phrases(value), phrase, concat('    - ', phrase)), '\n')}
 
 [generator.lg](../generator.lg)

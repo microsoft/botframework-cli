@@ -10,6 +10,7 @@ import * as Validator from 'ajv'
 import * as os from 'os'
 import * as ppath from 'path'
 import * as ps from './processSchemas'
+import { stringify } from 'querystring'
 let allof: any = require('json-schema-merge-allof')
 let parser: any = require('json-schema-ref-parser')
 
@@ -105,11 +106,19 @@ export class Schema {
         return ps.typeName(this.schema)
     }
 
+    // Return templates defined in schema or supply default templates based on type
     templates(): string[] {
         let templates = this.schema.$templates
         if (!templates) {
             let type = this.typeName()
-            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + '-missing.dialog']
+            templates = this.defaultTemplates(type)
+            /* TODO: I don't think I need this
+            let array = type.indexOf('Array')
+            if (array > 0) {
+                let baseType = type.substring(0, array)
+                templates = templates.concat(this.defaultTemplates(baseType))
+            }
+            */
             for (let entity of this.schema.$entities) {
                 let [entityName, _] = entity.split(':')
                 if (entityName === this.path + 'Entity') {
@@ -150,6 +159,10 @@ export class Schema {
             }
         }
         return found
+    }
+
+    private defaultTemplates(type: string): string[] {
+        return [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + '-missing.dialog']
     }
 
     private addEntities(entities: Entity[]) {

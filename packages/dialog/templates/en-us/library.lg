@@ -12,6 +12,9 @@
 # enumEntityValue(property, val)
 - @{template(concat(property, 'Entity'), val)}
 
+# enumArrayValue(property, values)
+- @{join(foreach(values, val, enumEntityValue(val)), ', ')}
+
 >>> Ask prompts <<<
 
 > TODO: We should look at the schema and if a few items list them or do cards or..
@@ -19,6 +22,12 @@
 - ```
 @{askHelp()}
 Which value do you want for @{name(property)}?
+```
+
+# askEnumArray(property)
+- ```
+@{askHelp()}
+Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
 ```
 
 # askNumber(property)
@@ -95,6 +104,12 @@ Enter a value for @{name(property)}
 @{askHelp()}
 Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
 ```
+
+# chooseEnumArrayEntity(property)
+- ```
+@{askHelp()}
+Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
+``` 
 
 # cancel
 - Do you want to end the conversation? (yes/no)

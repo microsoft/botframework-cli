@@ -24,3 +24,21 @@ $BreadEntity:multiGrainWheat=
 - multi grain wheat
 
 $add
+
+Current defines: <prop>Entity, choose<prop>Entity, 
+
+For .lu: 
+1) Underlying entity type, ToppingsEntity, populated from enum if needed.
+2) Add/Remove composites on top of entity AddToppings, RemoveToppings
+3) Schema has $operations
+
+For .lg
+* ToppingsEntity(value) -> value for one entity
+* AskToppings
+* ToppingsName
+* Toppings(value) -> foreach ToppingsEntity(value)
+
+For .dialog:
+* ToppingsEntity-Choose
+* Toppings-missing
+* Toppings-assign-ToppingsEntity
