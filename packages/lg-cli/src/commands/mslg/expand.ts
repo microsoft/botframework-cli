@@ -7,10 +7,17 @@
  */
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
-import {Helper} from '../../utils'
+import {Helper, ErrorType} from '../../utils'
+import {MSLGTool} from 'botbuilder-lg'
+import * as txtfile from 'read-text-file'
+import * as path from 'path'
+import * as fs from 'fs-extra'
+import * as readlineSync from 'readline-sync'
 
 export default class ExpandCommand extends Command {
   static description = 'Expand one or all templates in a .lg file or an inline expression.'
+
+  private lgTool = new MSLGTool()
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
@@ -32,15 +39,191 @@ export default class ExpandCommand extends Command {
       throw new CLIError('No input. Please set file path with --in')
     }
 
-    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
-    for (const lgFilePath of lgFilePaths) {
-      const lgFile = LGFile.parseFile(lgFilePath)
-      const diagnostics = lgFile.diagnostics;
-      this.log(diagnostics)
-    }
+    this.expand(flags)
 
     if (flags.collate) {
       Helper.handlerCollect()
     }
+  }
+
+  private expand(flags: any) {
+    let fileToExpand: any
+    if (flags.in) {
+      fileToExpand = flags.in
+    }
+
+    let errors: string[] = []
+    errors = this.parseFile(fileToExpand, flags.expression)
+
+    if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
+      throw new Error('parsing lg file or inline expression failed.')
+    }
+
+    let templatesName: string[] = []
+    if (flags.templateName) {
+      templatesName.push(flags.templateName)
+    }
+
+    if (flags.all) {
+      templatesName = [...new Set(templatesName.concat(this.getTemplatesName(this.lgTool.collatedTemplates)))]
+    }
+
+    if (flags.expression) {
+      templatesName.push('__temp__')
+    }
+
+    const expandedTemplates: Map<string, string[]> = new Map<string, string[]>()
+    let variablesValue: Map<string, any>
+    const userInputValues: Map<string, any> = new Map<string, any>()
+    for (const templateName of templatesName) {
+      const expectedVariables = this.lgTool.getTemplateVariables(templateName)
+      variablesValue = this.getVariableValues(flags.testInput, expectedVariables, userInputValues)
+      for (const variableValue of variablesValue) {
+        if (variableValue[1] === undefined) {
+          if (flags.interactive) {
+            const value = readlineSync.question(`Please enter variable value of ${variableValue[0]} in template ${templateName}: `)
+            let valueObj: any
+            // eslint-disable-next-line max-depth
+            try {
+              valueObj = JSON.parse(value)
+            } catch {
+              valueObj = value
+            }
+
+            variablesValue.set(variableValue[0], valueObj)
+            userInputValues.set(variableValue[0], valueObj)
+          }
+        }
+      }
+
+      const variableObj: any = this.generateVariableObj(variablesValue)
+      const expandedTemplate: string[] = this.lgTool.expandTemplate(templateName, variableObj)
+      expandedTemplates.set(templateName, expandedTemplate)
+    }
+
+    if (expandedTemplates === undefined || expandedTemplates.size === 0) {
+      throw new Error('expanding templates or inline expression failed')
+    }
+
+    let expandedTemplatesFile: string = this.generateExpandedTemplatesFile(expandedTemplates)
+
+    const fileName: string = flags.in
+    if (fileName === undefined) {
+      expandedTemplatesFile = expandedTemplatesFile.replace('# __temp__\n- ', '')
+    }
+
+    process.stdout.write(expandedTemplatesFile + '\n')
+  }
+
+  private parseFile(fileName: string, inlineExpression: any = undefined): string[] {
+    let fileContent = ''
+    let filePath = ''
+    if (fileName !== undefined) {
+      if (!fs.existsSync(path.resolve(fileName))) {
+        throw new Error('unable to open file: ' + fileName)
+      }
+
+      fileContent = txtfile.readSync(fileName)
+      if (!fileContent) {
+        throw new Error('unable to read file: ' + fileName)
+      }
+
+      filePath = path.resolve(fileName)
+    }
+
+    if (inlineExpression !== undefined) {
+      const fakeTemplateId = '__temp__'
+      const wrappedStr = `\n# ${fakeTemplateId} \r\n - ${inlineExpression}`
+      fileContent += wrappedStr
+      filePath = path.resolve('./')
+    }
+
+    const errors: string[] = this.lgTool.validateFile(fileContent, filePath)
+    if (errors.length > 0) {
+      errors.forEach(error => {
+        if (error.startsWith(ErrorType.Error)) {
+          this.error(error + '\n')
+        } else {
+          this.warn(error + '\n')
+        }
+      })
+    }
+
+    return errors
+  }
+
+  private generateExpandedTemplatesFile(expandedTemplates: Map<string, string[]>): string {
+    let result = ''
+    for (const template of expandedTemplates) {
+      result += '# ' + template[0] + '\n'
+      if (Array.isArray(template[1])) {
+        for (const templateStr of template[1]) {
+          if (templateStr.trim().startsWith('[') && templateStr.trim().endsWith(']')) {
+            result += templateStr + '\n'
+            break
+          } else {
+            result += '- ' + templateStr + '\n'
+          }
+        }
+      } else {
+        throw new TypeError('generating expanded lg file failed')
+      }
+
+      result += '\n'
+    }
+
+    return result
+  }
+
+  private getTemplatesName(collatedTemplates: Map<string, any>): string[] {
+    const result: string[] = []
+    for (const template of collatedTemplates) {
+      result.push(template[0])
+    }
+
+    return result
+  }
+
+  private getVariableValues(testFileName: string, expectedVariables: string[], userInputValues: Map<string, any>): Map<string, any> {
+    const result: Map<string, any> = new Map<string, any>()
+    let variablesObj: any
+    if (testFileName !== undefined) {
+      const filePath: string = path.resolve(testFileName)
+      if (!fs.existsSync(filePath)) {
+        throw new Error('unable to open file: ' + filePath)
+      }
+
+      const fileContent = txtfile.readSync(filePath)
+      if (!fileContent) {
+        throw new Error('unable to read file: ' + filePath)
+      }
+
+      variablesObj = JSON.parse(fileContent)
+    }
+
+    if (expectedVariables !== undefined) {
+      for (const variable of expectedVariables) {
+        if (variablesObj !== undefined && variablesObj[variable] !== undefined) {
+          result.set(variable, variablesObj[variable])
+        } else if (userInputValues !== undefined && userInputValues.has(variable)) {
+          result.set(variable, userInputValues.get(variable))
+        } else {
+          result.set(variable, undefined)
+        }
+      }
+    }
+
+    return result
+  }
+
+  private generateVariableObj(variablesValue: Map<string, any>): any {
+    const result: any = {}
+    if (variablesValue !== undefined) {
+      for (const variable of variablesValue) {
+        result[variable[0]] =  variable[1]
+      }
+    }
+
+    return result
   }
 }

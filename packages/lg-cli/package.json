@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/fs-extra": "^8.0.1",
     "@types/node-fetch":"2.5.4",
+    "@types/readline-sync": "^1.4.3",
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",

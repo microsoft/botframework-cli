@@ -8,6 +8,8 @@
  */
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
+import {MSLGTool} from 'botbuilder-lg'
+import * as txtfile from 'read-text-file'
 
 export default class ParseCommand extends Command {
   static description = 'Parse any provided .lg file and collate them into a single file.'
@@ -22,6 +24,7 @@ export default class ParseCommand extends Command {
   }
 
   async run() {
+    const lgTool = new MSLGTool()
     const {flags} = this.parse(ParseCommand)
     if (!flags.in) {
       throw new CLIError('No input. Please set file path with --in')
@@ -29,9 +32,13 @@ export default class ParseCommand extends Command {
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
     for (const lgFilePath of lgFilePaths) {
-      const lgFile = LGFile.parseFile(lgFilePath)
-      const diagnostics = lgFile.diagnostics;
-      this.log(diagnostics)
+      // const lgFile = LGFile.parseFile(lgFilePath)
+      // const diagnostics = lgFile.diagnostics;
+      // this.log(diagnostics)
+
+      const fileContent = txtfile.readSync(lgFilePath)
+      const errors = lgTool.validateFile(fileContent, lgFilePath)
+      this.log(errors.join(', '))
     }
 
     if (flags.collate) {
