@@ -32,17 +32,20 @@ export class Helper {
     } else if (pathState.isDirectory()) {
       for (const dirItem of fs.readdirSync(input)) {
         const dirContent = path.resolve(input, dirItem)
-        if (recurse && fs.statSync(dirContent).isDirectory()) {
-          results = results.concat(this.findLGFiles(dirContent, recurse))
-        }
-        if (fs.statSync(dirContent).isFile()) {
-          if (dirContent.endsWith(lgExt)) {
+        try {
+          const dirContentState = fs.statSync(dirContent)
+          if (recurse && dirContentState.isDirectory()) {
+            results = results.concat(this.findLGFiles(dirContent, recurse))
+          }
+          if (dirContentState.isFile() && dirContent.endsWith(lgExt)) {
             results.push(dirContent)
           }
+        } catch (error) {
+          // do nothing, just continue the iterator
         }
       }
     } else {
-      throw new CLIError('file states is not support.')
+      throw new Error('file states is not support.')
     }
 
     return results

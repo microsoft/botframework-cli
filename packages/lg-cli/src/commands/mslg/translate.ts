@@ -14,6 +14,8 @@ import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as os from 'os'
+// eslint-disable-next-line node/no-extraneous-require
+const fetch = require('node-fetch')
 
 export default class TranslateCommand extends Command {
   static description = 'Translate .lg files to a target language by microsoft translation API.'
@@ -25,6 +27,8 @@ export default class TranslateCommand extends Command {
   private readonly MAX_CHAR_IN_REQUEST = 4990
 
   private readonly NEWLINE = os.EOL
+
+  private readonly DEFAULT_SOURCE_LANG = 'en'
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
@@ -70,37 +74,43 @@ export default class TranslateCommand extends Command {
 
     let outFolder: string = process.cwd()
     if (flags.out) {
-      if (path.isAbsolute(flags.out)) {
-        outFolder = flags.out
-      } else {
-        outFolder = path.resolve('', flags.out)
-      }
-
-      if (!fs.existsSync(outFolder)) {
-        throw new CLIError('output folder ' + outFolder + ' does not exist')
-      }
+      outFolder = this.getOutputFolder(flags.out)
     }
 
     while (lgFilePaths.length > 0) {
       const file = lgFilePaths[0]
-      let src_lang = 'en'
+      let src_lang = this.DEFAULT_SOURCE_LANG
       if (flags.srclang) {
         src_lang = flags.srclang
       }
 
-      await this.parseFile(file, outFolder, flags.translatekey, flags.tgtlang, src_lang, flags.translate_comments)
+      await this.translateFile(file, outFolder, flags.translatekey, flags.tgtlang, src_lang, flags.translate_comments)
       lgFilePaths.splice(0, 1)
     }
   }
 
-  private async parseFile(
+  private getOutputFolder(output: string): string {
+    let outFolder = output
+    if (path.isAbsolute(output)) {
+      outFolder = output
+    } else {
+      outFolder = path.resolve('', output)
+    }
+
+    if (!fs.existsSync(outFolder)) {
+      throw new CLIError('output folder ' + outFolder + ' does not exist')
+    }
+
+    return outFolder
+  }
+
+  private async translateFile(
     file: string,
     outFolder: string,
     translate_key: string,
     to_lang: string,
     src_lang: string,
     translate_comments: boolean) {
-    const fileName = path.basename(file)
     if (!fs.existsSync(path.resolve(file))) {
       throw new CLIError('unable to open file: ' + file)
     }
@@ -110,38 +120,51 @@ export default class TranslateCommand extends Command {
       throw new CLIError('unable to read file: ' + file)
     }
 
-    let parsedLocContent = ''
-
     // Support multi-language specification for targets.
     // Accepted formats are space or comma separated list of target language codes.
     // Tokenize to_lang
     const toLangs = to_lang.split(/[, ]/g)
     for (const toLang of toLangs) {
       const tgt_lang = toLang.trim()
-      if (tgt_lang === '') continue
-      try {
-        parsedLocContent = await this.parseAndTranslate(fileContent, translate_key, tgt_lang, src_lang, translate_comments)
-      } catch (error) {
-        throw (error)
+      if (tgt_lang !== '') {
+        await this.translateFileToSpecificLang(file, outFolder, translate_key, tgt_lang, src_lang, translate_comments, fileContent)
       }
-      if (!parsedLocContent) {
-        throw (new CLIError('Sorry, file : ' + file + ' had invalid content'))
-      } else {
-        // write out file
-        const loutFolder = path.join(outFolder, tgt_lang)
-        try {
-          fs.mkdirSync(loutFolder)
-        } catch (error) {
-          if (error.code !== 'EEXIST') {
-            throw (new CLIError('Unable to create folder - ' + error))
-          }
+    }
+  }
+
+  private async translateFileToSpecificLang(
+    file: string,
+    outFolder: string,
+    translate_key: string,
+    tgt_lang: string,
+    src_lang: string,
+    translate_comments: boolean,
+    fileContent: string
+  ) {
+    const fileName = path.basename(file)
+    let parsedLocContent = ''
+    try {
+      parsedLocContent = await this.parseAndTranslate(fileContent, translate_key, tgt_lang, src_lang, translate_comments)
+    } catch (error) {
+      throw (error)
+    }
+    if (!parsedLocContent) {
+      throw (new CLIError('Sorry, file : ' + file + ' had invalid content'))
+    } else {
+      // write out file
+      const loutFolder = path.join(outFolder, tgt_lang)
+      try {
+        fs.mkdirSync(loutFolder)
+      } catch (error) {
+        if (error.code !== 'EEXIST') {
+          throw (new CLIError('Unable to create folder - ' + error))
         }
-        const outFileName = path.join(loutFolder, fileName)
-        try {
-          fs.writeFileSync(outFileName, parsedLocContent, 'utf-8')
-        } catch (error) {
-          throw (new CLIError('Unable to write lg file - ' + outFileName))
-        }
+      }
+      const outFileName = path.join(loutFolder, fileName)
+      try {
+        fs.writeFileSync(outFileName, parsedLocContent, 'utf-8')
+      } catch (error) {
+        throw (new CLIError('Unable to write lg file - ' + outFileName))
       }
     }
   }

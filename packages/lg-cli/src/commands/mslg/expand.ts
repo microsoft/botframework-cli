@@ -61,15 +61,11 @@ export default class ExpandCommand extends Command {
   private expand(flags: any) {
     let fileToExpand: any
     if (flags.in) {
-      fileToExpand = Helper.normalizePath(fileToExpand)
-      if (!fs.existsSync(fileToExpand) || !fs.statSync(fileToExpand).isFile() || !fileToExpand.endsWith('.lg')) {
-        throw new CLIError('please input the valid file path.')
-      }
-      fileToExpand = flags.in
+      fileToExpand = this.getFilePath(flags.in)
     }
 
     let errors: string[] = []
-    errors = this.parseFile(fileToExpand, flags.expression)
+    errors = this.expandFile(fileToExpand, flags.expression)
 
     if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
       throw new CLIError('parsing lg file or inline expression failed.')
@@ -118,7 +114,7 @@ export default class ExpandCommand extends Command {
     }
 
     if (expandedTemplates === undefined || expandedTemplates.size === 0) {
-      throw new Error('expanding templates or inline expression failed')
+      throw new CLIError('expanding templates or inline expression failed')
     }
 
     let expandedTemplatesFile: string = this.generateExpandedTemplatesFile(expandedTemplates)
@@ -131,7 +127,16 @@ export default class ExpandCommand extends Command {
     process.stdout.write(expandedTemplatesFile + '\n')
   }
 
-  private parseFile(fileName: string, inlineExpression: any = undefined): string[] {
+  private getFilePath(input: string): string {
+    const fileToExpand = Helper.normalizePath(input)
+    if (!fs.existsSync(fileToExpand) || !fs.statSync(fileToExpand).isFile() || !fileToExpand.endsWith('.lg')) {
+      throw new CLIError('please input the valid file path.')
+    }
+
+    return input
+  }
+
+  private expandFile(fileName: string, inlineExpression: any = undefined): string[] {
     let fileContent = ''
     let filePath = ''
     if (fileName !== undefined) {
