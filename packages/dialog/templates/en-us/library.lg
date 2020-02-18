@@ -12,24 +12,6 @@
 # enumEntityValue(property, val)
 - @{template(concat(property, 'Entity'), val)}
 
->>> Ask prompts <<<
-
-> TODO: We should look at the schema and if a few items list them or do cards or..
-# askEnum(property)
-- ```
-@{askHelp()}
-Which value do you want for @{name(property)}?
-```
-
-# askNumber(property)
-- IF: @{dialogClass.schema.properties[property].minimum && dialogClass.schema.properties[property].maximum}
-- Enter a number for @{name(property)} between @{dialogClass.schema.properties[property].minimum} and @{dialogClass.schema.properties[property].maximum}
-- ELSEIF:  @{dialogClass.schema.properties[property].minimum}
-- Enter a number for @{name(property)} that is greater than @{dialogClass.schema.properties[property].minimum}
-- ELSEIF: @{dialogClass.schema.properties[property].maximum}
-- Enter a number for @{name(property)} that is less than @{dialogClass.schema.properties[property].maximum}
-- ELSE:
-- Enter a number for @{name(property)}
 
 # numberValidation(property, number)
 - IF: @{less(number, dialogClass.schema.properties[property].minimum)}
@@ -43,11 +25,6 @@ Which value do you want for @{name(property)}?
 - ELSE:
 - Unit for @{property} is not defined in the schema.
 
-# askString(property)
-- ```
-@{askHelp()}
-Enter a value for @{name(property)}
-```
 
 # askHelp
 - IF: @{$retries > 0 && $lastIntent != 'Help'}

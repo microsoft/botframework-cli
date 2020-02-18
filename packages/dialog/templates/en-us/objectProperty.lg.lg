@@ -2,7 +2,7 @@
 - @{propertyFilename()}
 
 # template
-- @{AskTemplate()}\n@{NameTemplate()}\n\[library.lg]
+- @{AskTemplate()}\n@{NameTemplate()}\n\[library.lg]\n\[library-Missing.lg]
 
 # AskTemplate
 - # Ask@{property}\n- @\{askString('@{property}')\}\n

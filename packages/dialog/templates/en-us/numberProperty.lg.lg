@@ -2,7 +2,7 @@
 - @{propertyFilename()}
 
 # template
-- @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{schemaName}-@{property}Entity.@{locale}.lg]\n\[library.lg]
+- @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{schemaName}-@{property}Entity.@{locale}.lg]\n\[library.lg]\n\[library-Missing.lg]
 
 # AskTemplate
 - # Ask@{property}\n- @\{askNumber('@{property}')\}\n
