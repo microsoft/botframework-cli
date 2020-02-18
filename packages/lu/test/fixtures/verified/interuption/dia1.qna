@@ -10,9 +10,17 @@
     ha ha ha
 ```
 
-> Source:cross training. Please do not edit these directly!
 # ?book a hotel in Seattle
-- Which type of hotel do you prefer
+
+**Filters:**
+- dialogName=dia1
+
+```
+    You can set your preferrences here
+```
+
+> Source:cross training. Please do not edit these directly!
+# ?Which type of hotel do you prefer
 - book a flight from Seattle to Beijing
 - which {flightTime} do you prefer
 - book a train ticket from Seattle to Portland

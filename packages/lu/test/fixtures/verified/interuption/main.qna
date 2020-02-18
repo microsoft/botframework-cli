@@ -8,6 +8,15 @@
     Here is the [user guide](http://contoso.com/userguide.pdf)
 ```
 
+# ?tell joke
+
+**Filters:**
+- dialogName=main
+
+```
+    Tell a funny joke
+```
+
 > Source:cross training. Please do not edit these directly!
 # ?book a hotel in Seattle
 - Which type of hotel do you prefer

@@ -53,7 +53,7 @@ module.exports = {
       }
 
       // do qna cross training with lu files
-      qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap)
+      qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap, intentName)
 
       return { luResult: luFileIdToResourceMap, qnaResult: qnaFileIdToResourceMap }
     } catch (err) {
@@ -293,9 +293,10 @@ const extractIntentUtterances = function(resource, intentName) {
  * do qna cross training with lu files
  * @param {Map<string, LUResource>} qnaFileIdToResourceMap map of qna file id and resource
  * @param {Map<string, LUResource>} luFileIdToResourceMap map of lu file id and resource
+ * @param {string} interruptionIntentName interruption intent name
  * @throws {exception} throws errors
  */
-const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap) {
+const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName) {
   try {
     for (const luObjectId of Array.from(luFileIdToResourceMap.keys())) {
       const qnaObjectId = path.join(path.dirname(luObjectId), path.basename(luObjectId, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
@@ -304,7 +305,7 @@ const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap) {
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
       if (Array.from(qnaFileIdToResourceMap.keys()).some(q => q === qnaObjectId)) {
-        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName)
+        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName)
         luFileIdToResourceMap.set(luObjectId, luResource)
         qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
       }
@@ -369,7 +370,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
   if (questionsContent && questionsContent !== '') {
     const questionsToUtterances = `# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
-    trainedLuResource = new SectionOperator(luResource).addSection(questionsToUtterances)
+    trainedLuResource = new SectionOperator(trainedLuResource).addSection(questionsToUtterances)
   }
 
   // update qna filters
@@ -386,7 +387,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   }
 
   // remove utterances which are duplicated with local qna questions
-  const dedupedUtterances = utterances.filter(u => !questions.includes(utterances))
+  const dedupedUtterances = utterances.filter(u => !questions.includes(u))
 
   // construct new question content for qna resource
   let utterancesContent = dedupedUtterances.join(NEWLINE + '- ')
