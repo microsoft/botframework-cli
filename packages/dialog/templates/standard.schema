@@ -64,6 +64,7 @@
         "library-PROPERTYName.lu",
         "library-PROPERTYName.lg",
         "library-Missing.lg",
+        "library-Assign.lg",
         "library.lg",
         "locale.lu",
         "locale.lg",
