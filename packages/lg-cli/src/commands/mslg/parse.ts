@@ -14,6 +14,8 @@ import * as txtfile from 'read-text-file'
 export default class ParseCommand extends Command {
   static description = 'Parse any provided .lg file and collate them into a single file.'
 
+  private lgTool = new MSLGTool()
+
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
     recurse: flags.string({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lg file(s)'}),
@@ -23,8 +25,14 @@ export default class ParseCommand extends Command {
     help: flags.help({char: 'h', description: 'mslg:parse helper'}),
   }
 
+  // schedule
+  // in √
+  // recurse √
+  // out ×
+  // force ×
+  // collate ×
+
   async run() {
-    const lgTool = new MSLGTool()
     const {flags} = this.parse(ParseCommand)
     if (!flags.in) {
       throw new CLIError('No input. Please set file path with --in')
@@ -37,7 +45,7 @@ export default class ParseCommand extends Command {
       // this.log(diagnostics)
 
       const fileContent = txtfile.readSync(lgFilePath)
-      const errors = lgTool.validateFile(fileContent, lgFilePath)
+      const errors = this.lgTool.validateFile(fileContent, lgFilePath)
       this.log(errors.join(', '))
     }
 

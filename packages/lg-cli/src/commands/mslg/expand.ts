@@ -20,7 +20,7 @@ export default class ExpandCommand extends Command {
   private lgTool = new MSLGTool()
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
+    in: flags.string({char: 'i', description: '.lg file', required: true}),
     recurse: flags.string({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lg file(s)'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     force: flags.string({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
@@ -32,6 +32,18 @@ export default class ExpandCommand extends Command {
     testInput: flags.string({description: 'full or relative path to a JSON file containing test input for all variable references.'}),
     help: flags.help({char: 'h', description: 'mslg:expand helper'}),
   }
+
+  // schedule
+  // in √
+  // recurse √
+  // out ×
+  // force ×
+  // collate ×
+  // templateName √
+  // expression √
+  // all √
+  // interactive √
+  // testInput √
 
   async run() {
     const {flags} = this.parse(ExpandCommand)
@@ -49,6 +61,10 @@ export default class ExpandCommand extends Command {
   private expand(flags: any) {
     let fileToExpand: any
     if (flags.in) {
+      fileToExpand = Helper.normalizePath(fileToExpand)
+      if (!fs.existsSync(fileToExpand) || !fs.statSync(fileToExpand).isFile() || !fileToExpand.endsWith('.lg')) {
+        throw new CLIError('please input the valid file path.')
+      }
       fileToExpand = flags.in
     }
 
@@ -56,7 +72,7 @@ export default class ExpandCommand extends Command {
     errors = this.parseFile(fileToExpand, flags.expression)
 
     if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
-      throw new Error('parsing lg file or inline expression failed.')
+      throw new CLIError('parsing lg file or inline expression failed.')
     }
 
     let templatesName: string[] = []
@@ -120,12 +136,12 @@ export default class ExpandCommand extends Command {
     let filePath = ''
     if (fileName !== undefined) {
       if (!fs.existsSync(path.resolve(fileName))) {
-        throw new Error('unable to open file: ' + fileName)
+        throw new CLIError('unable to open file: ' + fileName)
       }
 
       fileContent = txtfile.readSync(fileName)
       if (!fileContent) {
-        throw new Error('unable to read file: ' + fileName)
+        throw new CLIError('unable to read file: ' + fileName)
       }
 
       filePath = path.resolve(fileName)
@@ -190,12 +206,12 @@ export default class ExpandCommand extends Command {
     if (testFileName !== undefined) {
       const filePath: string = path.resolve(testFileName)
       if (!fs.existsSync(filePath)) {
-        throw new Error('unable to open file: ' + filePath)
+        throw new CLIError('unable to open file: ' + filePath)
       }
 
       const fileContent = txtfile.readSync(filePath)
       if (!fileContent) {
-        throw new Error('unable to read file: ' + filePath)
+        throw new CLIError('unable to read file: ' + filePath)
       }
 
       variablesObj = JSON.parse(fileContent)

@@ -52,7 +52,7 @@ export class Helper {
     // todo
   }
 
-  private static normalizePath(ambiguousPath: string): string {
+  public static normalizePath(ambiguousPath: string): string {
     let result = ''
     if (process.platform === 'win32') {
       // map linux/mac sep -> windows
