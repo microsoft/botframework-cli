@@ -13,7 +13,7 @@ const compareFiles = async function (file1: string, file2: string) {
   return result === fixtureFile
 }
 
-describe('luis:build cli parameters test', () => {
+xdescribe('luis:build cli parameters test', () => {
   test
     .stdout()
     .command(['luis:build', '--help'])
@@ -54,7 +54,7 @@ describe('luis:build cli parameters test', () => {
     })
 })
 
-describe('luis:build create a new application successfully', () => {
+xdescribe('luis:build create a new application successfully', () => {
   before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
@@ -108,7 +108,7 @@ describe('luis:build create a new application successfully', () => {
     })
 })
 
-describe('luis:build update application succeed when utterances changed', () => {
+xdescribe('luis:build update application succeed when utterances changed', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.utteranceChanged.en-us.lu.json')
   before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
@@ -173,7 +173,7 @@ describe('luis:build update application succeed when utterances changed', () => 
     })
 })
 
-describe('luis:build update application succeed when utterances added', () => {
+xdescribe('luis:build update application succeed when utterances added', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.utteranceAdded.en-us.lu.json')
   before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
@@ -238,7 +238,7 @@ describe('luis:build update application succeed when utterances added', () => {
     })
 })
 
-describe('luis:build not update application if no changes', () => {
+xdescribe('luis:build not update application if no changes', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
   before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
@@ -270,7 +270,7 @@ describe('luis:build not update application if no changes', () => {
     })
 })
 
-describe('luis:build write dialog assets successfully if --dialog set', () => {
+xdescribe('luis:build write dialog assets successfully if --dialog set', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
@@ -309,7 +309,7 @@ describe('luis:build write dialog assets successfully if --dialog set', () => {
     })
 })
 
-describe('luis:build create multiple applications successfully when input is a folder', () => {
+xdescribe('luis:build create multiple applications successfully when input is a folder', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -444,7 +444,7 @@ describe('luis:build create multiple applications successfully when input is a f
     })
 })
 
-describe('luis:build update dialog assets successfully when dialog assets exist', () => {
+xdescribe('luis:build update dialog assets successfully when dialog assets exist', () => {
   const existingLuisApp_EN_US = require('./../../fixtures/testcases/lubuild/foo2/luis/test(development)-foo.en-us.lu.json')
   const existingLuisApp_FR_FR = require('./../../fixtures/testcases/lubuild/foo2/luis/test(development)-foo.fr-fr.lu.json')
   before(async function () {
