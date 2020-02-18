@@ -26,10 +26,12 @@ export interface ListEntry {
 
 export class Entity {
     name: string
+    property: string
     values?: ListEntry[]
 
-    constructor(name: string) {
+    constructor(name: string, property: string) {
         this.name = name
+        this.property = property
     }
 }
 
@@ -107,16 +109,16 @@ export class Schema {
         let templates = this.schema.$templates
         if (!templates) {
             let type = this.typeName()
-            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + 'Ask.dialog']
+            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + '-missing.dialog']
             for (let entity of this.schema.$entities) {
                 let [entityName, _] = entity.split(':')
                 if (entityName === this.path + 'Entity') {
-                    templates.push(`${type}Set${type}.dialog`)
+                    templates.push(`${type}-assign-${type}Entity.dialog`)
                     if (type === 'enum') {
-                        templates.push(`${type}ChooseEntity.dialog`)
+                        templates.push(`${type}Entity-choose.dialog`)
                     }
                 } else {
-                    templates.push(`${type}Set${entityName}.dialog`)
+                    templates.push(`${type}-assign-${entityName}.dialog`)
                 }
             }
         }
@@ -130,8 +132,8 @@ export class Schema {
     /**
      * Return all entities found in schema.
      */
-    allEntities(): EntitySet {
-        let entities: EntitySet = {}
+    allEntities(): Entity[] {
+        let entities: Entity[] = []
         this.addEntities(entities)
         return entities
     }
@@ -141,8 +143,8 @@ export class Schema {
      */
     entityTypes(): string[] {
         let found: string[] = []
-        for (let entity of Object.keys(this.allEntities())) {
-            let [entityName, _] = entity.split(':')
+        for (let entity of this.allEntities()) {
+            let [entityName, _] = entity.name.split(':')
             if (!found.includes(entityName)) {
                 found.push(entityName)
             }
@@ -150,23 +152,13 @@ export class Schema {
         return found
     }
 
-    /**
-     * Return the roles or entity types found in schema.
-     */
-    * roles(): Iterable<string> {
-        for (let entity of Object.keys(this.allEntities())) {
-            let [entityName, role] = entity.split(':')
-            yield role || entityName
-        }
-    }
-
-    private addEntities(entities: EntitySet) {
+    private addEntities(entities: Entity[]) {
         if (this.schema.$entities) {
             for (let entity of this.schema.$entities) {
                 // Do not include entities generated from property
                 if (!entities.hasOwnProperty(entity)) {
-                    let entityWrapper = new Entity(entity)
-                    entities[entity] = entityWrapper
+                    let entityWrapper = new Entity(entity, this.path)
+                    entities.push(entityWrapper)
                 }
             }
         } else {

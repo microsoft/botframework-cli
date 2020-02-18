@@ -26,7 +26,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botName', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`Missing required flag:\n --authoringKey AUTHORINGKEY`)
+      expect(ctx.stderr).to.contain('Missing required flag:\n --authoringKey AUTHORINGKEY')
     })
 
   test
@@ -34,7 +34,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--botName', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`Missing input. Please use stdin or pass a file or folder location with --in flag`)
+      expect(ctx.stderr).to.contain('Missing input. Please use stdin or pass a file or folder location with --in flag')
     })
 
   test
@@ -42,7 +42,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain(`Missing required flag:\n --botName BOTNAME  Bot name`)
+      expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag')
     })
   
   test
@@ -50,7 +50,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild/file-name-duplicated')}`, '--botName', 'Contoso'])
     .it('displays an error if files with same name and locale are found', ctx => {
-      expect(ctx.stderr).to.contain(`Files with same name and locale are found`)
+      expect(ctx.stderr).to.contain('Files with same name and locale are found')
     })
 })
 
@@ -97,7 +97,7 @@ describe('luis:build create a new application successfully', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should create a new application successfully', ctx => {
       expect(ctx.stdout).to.contain('Start to handle applications')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
@@ -162,7 +162,7 @@ describe('luis:build update application succeed when utterances changed', () => 
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should update a luis application when utterances changed', ctx => {
       expect(ctx.stdout).to.contain('Start to handle applications')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -227,7 +227,7 @@ describe('luis:build update application succeed when utterances added', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should update a luis application when utterances added', ctx => {
       expect(ctx.stdout).to.contain('Start to handle applications')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -263,7 +263,7 @@ describe('luis:build not update application if no changes', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
       expect(ctx.stdout).to.contain('Start to handle applications')
       expect(ctx.stdout).to.contain('no changes')
@@ -301,7 +301,7 @@ describe('luis:build write dialog assets successfully if --dialog set', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
     .it('should write dialog assets successfully when --dialog set', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.en-us.lu.dialog')).to.be.true
@@ -420,7 +420,7 @@ describe('luis:build create multiple applications successfully when input is a f
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
     .it('should create multiple applications and write dialog assets successfully when input is a folder', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
@@ -526,7 +526,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
     .it('should update dialog assets successfully when dialog assets exist', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')

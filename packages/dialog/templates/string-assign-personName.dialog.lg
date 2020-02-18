@@ -1,6 +1,6 @@
 
 # filename
-- @{schemaName}-@{property}Setordinal.dialog
+- @{assignFilename('personName')}
 
 # template
 - ```
@@ -8,7 +8,7 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity":"ordinal",
+    "entity": "personName", 
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -17,11 +17,13 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@ordinal"          
+            "value": "=@personName"          
         }
     ]               
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @ordinal)}
+- @\{setPropertyMessage('@{property}', @personName)}
+
+[generator.lg](generator.lg)
