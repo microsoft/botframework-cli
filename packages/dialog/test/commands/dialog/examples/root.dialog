@@ -1,58 +1,58 @@
 {
   "$schema": "./app.schema",
-  "$type": "root",
+  "$kind": "root",
   "prompt": {
-    "$type": "prompt",
+    "$kind": "prompt",
     "$copy": "myPromptCopy"
   },
   "condition": "true",
   "property": "foo.blah",
   "recognizers": [
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$copy": "#inlineRecognizer",
       "req": "forward ref"
     },
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$id": "inlineRecognizer",
       "req": "inline id"
     },
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$copy": "externalRecognizer",
       "req": "external whole file reference"
     },
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$copy": "missingRecognizer",
       "$comment": "reference does not exist"
     },
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$comment": "type error because missing $copy/$req"
     },
     {
       "$copy": "externalRecognizer",
-      "$comment": "missing $type"
+      "$comment": "missing $kind"
     },
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$copy": "typeMismatch",
       "req": "this type does not match ref type"
     },
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$id": "multiplyDefined",
       "req": "multiply defined in this file"
     },
     {
-      "$type": "Recognizer",
+      "$kind": "Recognizer",
       "$id": "multiplyDefined",
       "req": "multiply defined in this file"
     },
     {
-      "$type":"Recognizer",
+      "$kind":"Recognizer",
       "$copy": "#inlineRecognizer",
       "$comment": "after reference"
     }

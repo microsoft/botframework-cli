@@ -1,13 +1,27 @@
 
 # filename
-- @{formName}-@{property}Setutterance.dialog
+- @{schemaName}-@{property}Setutterance.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@utterance"
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "utterance",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@utterance"          
+        }
+    ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @utterance)}

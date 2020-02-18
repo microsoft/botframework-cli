@@ -1,5 +1,5 @@
 # filename
-- @{formName}.@{locale}.lu
+- ../luis/@{schemaName}.@{locale}.lu
 
 # template
-- >>> Library\n@{join(foreach(templates.lu, lu, concat('[', lu.fullName, '](./', lu.fullName, ')')), '\n')}
+- >>> Library\n@{join(foreach(templates.lu, lu, concat('[', lu.fullName, '](../', locale, '/', lu.fullName, ')')), '\n')}

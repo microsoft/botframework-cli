@@ -1,14 +1,27 @@
 
 # filename
-- @{formName}-@{property}Seturl.dialog
+- @{schemaName}-@{property}Seturl.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.SetProperty",
-    "property": "$@{property}",
-    "value": "@url"
-               
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "url",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@url"          
+        }
+    ]               
 }
 ```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @url)}

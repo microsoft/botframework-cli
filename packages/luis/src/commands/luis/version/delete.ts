@@ -8,18 +8,18 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionDelete extends Command {
-  static description = 'Deletes a version of a LUIS application'
+  static description = 'Deletes a LUIS application version'
 
   static examples = [`
     $ bf luis:version:delete --appId {APP_ID} --versionId {VERSION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags = {
+  static flags: any = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id'}),
-    versionId: flags.string({description: 'LUIS application version Id'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: flags.string({description: '(required) Version to delete'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
   }
 
   async run() {

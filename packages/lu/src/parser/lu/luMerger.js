@@ -25,6 +25,7 @@ module.exports = {
     Build: async function(luObjArray, verbose, luis_culture, luSearchFn){
         let allParsedContent = await buildLuJsonObject(luObjArray, verbose, luis_culture, luSearchFn)
         await resolveReferencesInUtterances(allParsedContent)
+        await resolveReferencesInQuestions(allParsedContent)
         return allParsedContent
     }
 }
@@ -141,6 +142,48 @@ const haveLUISContent = function(blob) {
     (blob.composites.length > 0));
 }
 
+const resolveReferencesInQuestions = async function(allParsedContent) {
+    (allParsedContent.QnAContent || []).forEach(qnaModel => {
+        (qnaModel.qnaJsonStructure.qnaList || []).forEach(qaPair => {
+            let refQIdx = [];
+            (qaPair.questions || []).forEach((question, idx) => {
+                // Is this question a reference? 
+                if (helpers.isUtteranceLinkRef(question || '')) {
+                    let result = findReferenceFileContent(question, qnaModel.srcFile, allParsedContent);
+                    if (result !== undefined) {
+                        if (result.patterns && result.patterns.length !== 0) {
+                            // throw
+                            let error = BuildDiagnostic({
+                                message: `Unable to parse ${question} in file: ${qnaModel.srcFile}. References cannot pull in patterns. Consider '*utterances*' suffix if you are looking to pull in only utteranes`
+                            });
+                    
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                        } else {
+                            refQIdx.push({
+                                id : idx,
+                                questions : result.utterances
+                            })
+                        }
+                    } else {
+                        // throw
+                        let error = BuildDiagnostic({
+                            message: `Unable to parse ${question} in file: ${qnaModel.srcFile}. Unable to resolve the reference.`
+                        });
+                
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
+                    }
+                }
+            })
+
+            refQIdx.forEach(refItem => {
+                // id to replace with refItem.id
+                qaPair.questions.splice(refItem.id, 1);
+                refItem.questions.forEach(item => qaPair.questions.push(item));
+            })
+        });
+    })
+}
+
 const resolveReferencesInUtterances = async function(allParsedContent) {
     // find LUIS utterances that have references
     (allParsedContent.LUISContent || []).forEach(luisModel => {
@@ -214,15 +257,7 @@ const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, ne
             return
         }
 
-        // we have stuff to parse and resolve
-        let parsedUtterance = helpers.parseLinkURI(utterance.text);
-
-        if (!path.isAbsolute(parsedUtterance.luFile)) parsedUtterance.luFile = path.resolve(path.dirname(luisModel.srcFile), parsedUtterance.luFile);
-        // see if we are in need to pull LUIS or QnA utterances
-        let filter = parsedUtterance.ref.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
-
-        // find the parsed file
-        let result = filter(allParsedContent, parsedUtterance, luisModel, utterance)
+        let result = findReferenceFileContent(utterance.text, luisModel.srcFile, allParsedContent)
         
         result.utterances.forEach((utr) => newUtterancesToAdd.push(new hClasses.uttereances(utr, utterance.intent)))
         result.patterns.forEach((it) => newPatternsToAdd.push(new hClasses.pattern(it, utterance.intent)))
@@ -230,42 +265,84 @@ const resolveNewUtterancesAndPatterns = function(luisModel, allParsedContent, ne
     });
 }
 
-const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, luisModel, utterance){
+const findReferenceFileContent = function(utteranceText, srcFile, allParsedContent) {
+    // we have stuff to parse and resolve
+    let parsedUtterance = helpers.parseLinkURI(utteranceText, srcFile);
+
+    // see if we are in need to pull LUIS or QnA utterances
+    let filter = parsedUtterance.path.endsWith('?') ? filterQuestionMarkRef : filterLuisContent
+
+    // find the parsed file
+    return filter(allParsedContent, parsedUtterance, srcFile, utteranceText)
+    
+}
+
+const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFile, utteranceText){
     let result = {
         utterances: [],
         patterns: []
     }
 
-    if (!parsedUtterance.ref.endsWith('?')) {
+    if (!parsedUtterance.path.endsWith('?')) {
         return result
     }
-
-    let parsedQnABlobs
-    if( parsedUtterance.luFile.endsWith('*')) {
-        parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(parsedUtterance.luFile.replace(/\*/g, '')));
+    
+    let parsedQnABlobs, parsedQnAAlterations
+    if( parsedUtterance.fileName.endsWith('*')) {
+        // this notation is only valid with file path. So try as file path.
+        let tPath = parsedUtterance.fileName.replace(/\*/g, '');
+        parsedQnABlobs = (allParsedContent.QnAContent || []).filter(item => item.srcFile.includes(path.resolve(path.dirname(srcFile), tPath)));
+        parsedQnAAlterations = (allParsedContent.QnAAlterations || []).filter(item => item.srcFile.includes(path.resolve(path.dirname(srcFile), tPath)));
     } else {
         // look for QnA
         parsedQnABlobs = []
-        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.luFile));
+        parsedQnAAlterations = []
+        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName)));
+        parsedQnAAlterations.push((allParsedContent.QnAAlterations || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName)));
     }
 
-    if(!parsedQnABlobs || !parsedQnABlobs[0]) {
+    if(!parsedQnABlobs || !parsedQnABlobs[0] || !parsedQnAAlterations || !parsedQnAAlterations[0]) {
         let error = BuildDiagnostic({
-            message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
+            message: `Unable to parse ${utteranceText} in file: ${srcFile}. Cannot find reference.`
         });
 
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
     }
-
-    parsedQnABlobs.forEach(blob => blob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => result.utterances.push(question))));
+    if (parsedUtterance.path.toLowerCase().startsWith('*answers*')) {
+        parsedQnABlobs.forEach(blob => blob.qnaJsonStructure.qnaList.forEach(item => result.utterances.push(item.answer)));
+    } else if (parsedUtterance.path.length > 1 && parsedUtterance.path.startsWith('?') && parsedUtterance.path.endsWith('?')) {
+        let itemsFound = undefined;
+        let testQuestion = parsedUtterance.path.replace(/\?/g, '').replace(/-/g, ' ').trim();
+        // find the specific question
+        parsedQnABlobs.forEach(blob => {
+            if (itemsFound) return;
+            itemsFound = blob.qnaJsonStructure.qnaList.find(item => item.questions.includes(testQuestion));
+        })
+        if (itemsFound) {
+            itemsFound.questions.forEach(question => result.utterances.push(question));
+        }
+    } else if (parsedUtterance.path.toLowerCase().startsWith('*alterations*')) {
+        parsedQnAAlterations.forEach(blob => blob.qnaAlterations.wordAlterations.forEach(item => item.alterations.forEach(alter => result.utterances.push(alter))));
+    } else if (parsedUtterance.path.startsWith('$') && parsedUtterance.path.endsWith('?')) {
+        // specific alteration to find 
+        let alterToFind = parsedUtterance.path.replace(/[$\?]/g, '').trim();
+        parsedQnAAlterations.forEach(blob => blob.qnaAlterations.wordAlterations.forEach(item => {
+            if (item.alterations.includes(alterToFind)) {
+                item.alterations.forEach(alter => result.utterances.push(alter));
+            }
+        }));
+    } else {
+        parsedQnABlobs.forEach(blob => blob.qnaJsonStructure.qnaList.forEach(item => item.questions.forEach(question => result.utterances.push(question))));
+    }
+    
     return result
 }
 
-const filterLuisContent = function(allParsedContent, parsedUtterance, luisModel, utterance){
-    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.luFile);
+const filterLuisContent = function(allParsedContent, parsedUtterance, srcFile, utteranceText){
+    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName));
     if(!parsedLUISBlob ) {
         let error = BuildDiagnostic({
-            message: `Unable to parse ${utterance.text} in file: ${luisModel.srcFile}`
+            message: `Unable to parse ${utteranceText} in file: ${srcFile}. Cannot find reference.`
         });
 
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
@@ -276,23 +353,38 @@ const filterLuisContent = function(allParsedContent, parsedUtterance, luisModel,
         utterances: [],
         patterns: []
     }
-    if (parsedUtterance.ref.toLowerCase().includes('utterancesandpatterns')) {
-        // get all utterances and add them
-        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
-        // Find all patterns and add them
-        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => {
-            let newUtterance = new hClasses.uttereances(item.pattern, item.intent);
-            if (utterances.find(match => deepEqual(newUtterance, match)) !== undefined) utterances.push(new hClasses.uttereances(item.pattern, item.intent)) 
-        });
-    } else if (parsedUtterance.ref.toLowerCase().includes('utterances')) {
-        // get all utterances and add them
-        utterances = parsedLUISBlob.LUISJsonStructure.utterances;
-    } else if (parsedUtterance.ref.toLowerCase().includes('patterns')) {
-        // Find all patterns and add them
-        (parsedLUISBlob.LUISJsonStructure.patterns || []).forEach(item => utterances.push(new hClasses.uttereances(item.pattern, item.intent)));
+    if (parsedUtterance.path.toLowerCase().endsWith('*utterancesandpatterns*')) {
+        // get utterance list from reference intent and update list
+        let referenceIntent = parsedUtterance.path.toLowerCase().replace(/-/g, ' ').replace('*utterancesandpatterns*', '').trim();
+        if (referenceIntent === '') {
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances;
+            patterns = parsedLUISBlob.LUISJsonStructure.patterns;
+        } else {
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);
+            // find and add any patterns for this intent
+            patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);
+        }
+    } else if (parsedUtterance.path.toLowerCase().endsWith('*utterances*')) {
+        // get utterance list from reference intent and update list
+        let referenceIntent = parsedUtterance.path.toLowerCase().replace(/-/g, ' ').replace('*utterances*', '').trim();
+        if (referenceIntent === '') { 
+            // get all utterances and add them
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances;
+        } else {
+            utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);    
+        }
+    } else if (parsedUtterance.path.toLowerCase().endsWith('*patterns*')) {
+        // get utterance list from reference intent and update list
+        let referenceIntent = parsedUtterance.path.toLowerCase().replace(/-/g, ' ').replace('*patterns*', '').trim();
+        if (referenceIntent === '') { 
+            patterns = parsedLUISBlob.LUISJsonStructure.patterns;
+        } else {
+            // find and add any patterns for this intent
+            patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);
+        }
     } else {
         // get utterance list from reference intent and update list
-        let referenceIntent = parsedUtterance.ref.replace(/-/g, ' ').trim();
+        let referenceIntent = parsedUtterance.path.replace(/-/g, ' ').trim();
         utterances = parsedLUISBlob.LUISJsonStructure.utterances.filter(item => item.intent == referenceIntent);
         // find and add any patterns for this intent
         patterns = parsedLUISBlob.LUISJsonStructure.patterns.filter(item => item.intent == referenceIntent);

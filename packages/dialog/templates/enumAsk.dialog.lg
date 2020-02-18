@@ -1,26 +1,16 @@
 # filename
-- @{formName}-@{property}Ask.dialog
+- @{schemaName}-@{property}Ask.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnAsk",
-    "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
-    "actions": [
+    "$kind": "Microsoft.OnEndOfActions",
+    "condition":"!$@{property}",
+    "priority": "indexOf(dialog.requiredProperties, '@{property}')",
+    "actions": [       
         {
-            "$type": "Microsoft.IfCondition",
-            "condition":"$lastExpectedProperty == '@{property}'",
-            "actions":[
-                {
-                    "$type": "Microsoft.SendActivity",
-                    "activity": "@{callHelp()}"
-                }
-                    
-            ]
-        },
-        {
-            "$type": "Microsoft.Ask",
+            "$kind": "Microsoft.Ask",
             "activity": "@{callAsk()}",
             "expectedProperties": [
                 "@{property}"
@@ -31,7 +21,4 @@
 ```
 
 # callAsk
-- @\{Ask{property}()}
-
-# callHelp
-- @\{help(@PropertyName)}
+- @\{Ask@{property}()}

@@ -1,7 +1,7 @@
 # filename
-- @{entityFilename()}
+- @{schemaName}-datetime.@{locale}.lu
 
 # template
-- $PREBUILT:datetime @{roles()}
+- $PREBUILT:datetimeV2 @{roles()}
 
 [generator.lg](../generator.lg)

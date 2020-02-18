@@ -1,5 +1,5 @@
 # filename
-- @{entityFilename()}
+- @{schemaName}-keyPhrase.@{locale}.lu
 
 # template
 - $PREBUILT:keyPhrase @{roles()}

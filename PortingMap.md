@@ -17,15 +17,19 @@ The principles guiding the tool include:
 
 Commands invoked by BF [New Command] as follows:
 
-| New Command                                    | Old Tool(s) | Status |
-| ---------------------------------------------- | ----------- | ------ |
-| chatdown                                       | Chatdown    | GA     |
-| qnamaker                                       | QnAMaker    | GA     |
-| luis/qnamaker:convert, luis/qnamaker:translate | LuDown      | GA     |
-| luis:generate                                  | LuisGen     | GA     |
-| luis                                           | LUIS (api)  | GA     |
-| lg                                             | MSLG        | TBD    |
-| dispatch                                       | Dispatch    | TBD    |
+
+| New Command                                    | Old Tool(s) | Release Date   | Status |
+| ---------------------------------------------- | ----------- | ---------- | ------ |
+| chatdown                                       | Chatdown    | 10/30/19   | GA     |
+| qnamaker                                       | QnAMaker    | 10/30/19   | GA     |
+| luis/qnamaker:convert, luis/qnamaker:translate | LuDown      | 10/30/19   | GA     |
+| luis:generate                                  | LuisGen     | 10/30/19   | GA     |
+| luis:application, endpoints, train, version    | LUIS (api)  | 12/18/19   | GA     |
+| luis:build                                     | N/A         | ETA 3/16/20 | TBD    |
+| lg                                             | MSLG        | ETA 5/19/20 | TBD    |
+| dialog                                         | N/A         | ETA 5/19/20 | TBD    |
+| \<In Design>                                   | Dispatch    | ETA 5/19/20 | TBD    |
+
 
 ## Deprecation Schedule
 

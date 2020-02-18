@@ -1,47 +1,26 @@
 # filename
-- @{formName}-@{property}Set@{property}Entity.dialog
+- @{schemaName}-@{property}Set@{property}Entity.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnSetProperty",
+    "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
     "entity": "@{property}Entity",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
-            "condition": "!turn.dialogevent.value.expected",
-            "actions":[               
-                {
-                    "$type": "Microsoft.IfCondition",
-                    "condition": "!${property}",
-                    "actions":[
-                        {
-                            "$type": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedSet()}"
-                        }
-                    ],
-                    "elseActions":[
-                        {
-                            "$type": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedChange()}"
-                        }
-                    ]
-                }                
-            ]           
-        },
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        },    
         {
-            "$type": "Microsoft.SetProperty",
-            "property": "${property}",
-            "value": "@@{property}Entity"
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@@{property}Entity"
         }
     ]
 }
 ```
 
-# callUnexpectedSet
-- @\{unexpectedPropertySet('@{property}', @@{property}Entity)}
-
-# callUnexpectedChange
-- @\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @@{property}Entity)}

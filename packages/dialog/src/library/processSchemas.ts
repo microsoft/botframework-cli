@@ -13,13 +13,15 @@ let parser: any = require('json-schema-ref-parser')
 
 type idToSchema = { [id: string]: any }
 
+// All .schema files found in template directories
 async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): Promise<idToSchema> {
     let map: idToSchema = {}
     for (let dir of templateDirs) {
-        for (let file of await glob(ppath.join(dir, '**/*.schema*'))) {
+        for (let file of await glob(ppath.join(dir, '**/*.schema'))) {
             let schema = await getSchema(file, feedback)
             let id: string = schema.$id || ppath.basename(file)
             if (!map[id]) {
+                // First definition found wins
                 map[id] = schema
             }
         }
@@ -27,10 +29,11 @@ async function templateSchemas(templateDirs: string[], feedback: fg.Feedback): P
     return map
 }
 
-async function findRequires(schema: any, map: idToSchema, found: idToSchema, feedback: fg.Feedback): Promise<void> {
+// Find recursive requires
+async function findRequires(schema: any, map: idToSchema, found: idToSchema, resolver: any, feedback: fg.Feedback): Promise<void> {
     let addRequired = async (required: string) => {
         if (!found[required]) {
-            let schema = map[required] || await getSchema(required, feedback)
+            let schema = map[required] || await getSchema(required, feedback, resolver)
             if (!schema) {
                 feedback(fg.FeedbackType.error, `Schema ${required} cannot be found`)
             } else {
@@ -45,7 +48,7 @@ async function findRequires(schema: any, map: idToSchema, found: idToSchema, fee
                     await addRequired(required)
                 }
             } else {
-                await findRequires(val, map, found, feedback)
+                await findRequires(val, map, found, resolver, feedback)
             }
         }
     }
@@ -55,7 +58,7 @@ async function findRequires(schema: any, map: idToSchema, found: idToSchema, fee
 async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): Promise<any> {
     let schema
     try {
-        let noref = await parser.dereference(path, { template: resolver })
+        let noref = await parser.dereference(path, { resolve: { template: resolver } })
         schema = allof(noref)
     } catch (err) {
         feedback(fg.FeedbackType.error, err)
@@ -63,37 +66,97 @@ async function getSchema(path: string, feedback: fg.Feedback, resolver?: any): P
     return schema
 }
 
-// Process the form schema to generate all schemas
-// 1) A property can $ref to a property definition to reuse a type like address. Ref resolver includes.
-// 2) $requires:[] can be in a property or at the top.  This is handled by finding all of them and then merging
-//    properties, definition and required.  
-//    The assumption here is that the required properties are orthogonal to the form so unique names are important.
-export type Schemas = { form: s.Schema, schema: s.Schema }
-export async function processSchemas(formPath: string, templateDirs: string[], outDir: string, force: boolean, feedback: fg.Feedback)
-    : Promise<Schemas> {
-    let allRequired = await templateSchemas(templateDirs, feedback)
-    let resolver: any = {
-        canRead: true,
-        read(file: string): any {
-            return allRequired[ppath.basename(file)]
-        }
-    }
-    let formSchema = await getSchema(formPath, feedback, resolver)
-    let required = {}
-    await findRequires(formSchema, allRequired, required, feedback)
-    let allSchema = clone(formSchema)
-    if (!allSchema.required) allSchema.required = []
-    if (!allSchema.$expectedOnly) allSchema.$expectedOnly = []
-    if (!allSchema.$templates) allSchema.$templates = []
-    for (let schema of Object.values(allRequired)) {
+// Merge together multiple schemas
+function mergeSchemas(allSchema: any, schemas: any[]) {
+    for (let schema of schemas) {
         allSchema.properties = { ...allSchema.properties, ...schema.properties }
-        allSchema.definition = { ...allSchema.definition, ...schema.definition }
+        allSchema.definitions = { ...allSchema.definitions, ...schema.definitions }
         if (schema.required) allSchema.required = allSchema.required.concat(schema.required)
         if (schema.$expectedOnly) allSchema.$expectedOnly = allSchema.$expectedOnly.concat(schema.$expectedOnly)
         if (schema.$templates) allSchema.$templates = allSchema.$templates.concat(schema.$templates)
+        if (schema.$public) allSchema.$public = allSchema.$public.concat(schema.$public)
     }
-    let name = s.Schema.basename(formPath)
-    await fg.writeFile(ppath.join(outDir, `${name}.form.dialog`), JSON.stringify(formSchema, undefined, 4), force, feedback)
-    await fg.writeFile(ppath.join(outDir, `${name}.schema.dialog`), JSON.stringify(allSchema, undefined, 4), force, feedback)
-    return { form: new s.Schema(formPath, formSchema), schema: new s.Schema(formPath, allSchema) }
+}
+
+export function typeName(property: any): string {
+    let type = property.type
+    let isArray = false
+    if (type === 'array') {
+        property = property.items
+        type = property.type
+        isArray = true
+    }
+    if (property.enum) {
+        type = 'enum'
+    }
+    if (isArray) {
+        type = type + '[]'
+    }
+    return type
+}
+
+function addMissingEntities(property: any, path: string) {
+    let entities: string[] = property.$entities
+    if (!entities) {
+        let type = typeName(property)
+        if (type === 'number') {
+            entities = [`number:${path}`, 'number']
+        } else if (type === 'string') {
+            entities = [path + 'Entity', 'utterance']
+        } else if (type === 'object') {
+            // For objects go to leaves
+            for (let childPath of Object.keys(property.properties)) {
+                let child = property.properties[childPath]
+                addMissingEntities(child, path + '.' + child)
+            }
+        } else {
+            entities = [path + 'Entity']
+        }
+        if (!entities) {
+            entities = []
+        }
+        property.$entities = entities
+    }
+}
+
+// Fill in $entities if missing
+function addMissing(schema: any) {
+    for (let path of Object.keys(schema.properties)) {
+        let property = schema.properties[path]
+        addMissingEntities(property, path)
+    }
+}
+
+// Process the root schema to generate all schemas
+// 1) A property can $ref to a property definition to reuse a type like address. 
+//    Ref resolver includes template: for referring to template files.
+// 2) $requires:[] can be in a property or at the top.  
+//    This is handled by finding all of the referenced schemas and then merging.  
+export async function processSchemas(schemaPath: string, templateDirs: string[], feedback: fg.Feedback)
+    : Promise<any> {
+    let allRequired = await templateSchemas(templateDirs, feedback)
+    let resolver: any = {
+        canRead: /template:/,
+        read(file: any): any {
+            let base = file.url.substring(file.url.indexOf(':') + 1)
+            return allRequired[base]
+        }
+    }
+    let formSchema = await getSchema(schemaPath, feedback, resolver)
+    let required = {}
+    await findRequires(formSchema, allRequired, required, resolver, feedback)
+    let allSchema = clone(formSchema)
+    addMissing(allSchema)
+    if (!allSchema.required) allSchema.required = []
+    if (!allSchema.$expectedOnly) allSchema.$expectedOnly = []
+    if (!allSchema.$templates) allSchema.$templates = []
+    if (formSchema.$public) {
+        allSchema.$public = formSchema.$public
+    } else {
+        // Default to properties in root schema
+        allSchema.$public = Object.keys(formSchema.properties)
+    }
+    mergeSchemas(allSchema, Object.values(required));
+
+    return new s.Schema(schemaPath, allSchema)
 }

@@ -28,6 +28,7 @@ const luisToLuContent = function(luisJSON){
     fileContent += parseToLuClosedLists(luisJSON)
     fileContent += parseRegExEntitiesToLu(luisJSON)
     fileContent += parseCompositesToLu(luisJSON)
+    fileContent += parsePatternAnyEntitiesToLu(luisJSON)
     return fileContent
 }
 
@@ -58,9 +59,12 @@ const parseIntentsToLu = function(luisObj, luisJSON){
         fileContent += parseUtterancesToLu(intent.utterances, luisJSON)
         fileContent += NEWLINE + NEWLINE;
         if (intent.intent.features) {
-            fileContent += `@ intent ${intent.intent.name}`;
-            fileContent += addRolesAndFeatures(intent.intent);
-            fileContent += NEWLINE + NEWLINE;
+            let rolesAndFeatures = addRolesAndFeatures(intent.intent);
+            if (rolesAndFeatures !== '') {
+                fileContent += `@ intent ${intent.intent.name}`;
+                fileContent += rolesAndFeatures;
+                fileContent += NEWLINE + NEWLINE;
+            }
         }
     });
     return fileContent
@@ -210,6 +214,33 @@ const parseCompositesToLu = function(luisJson){
     return fileContent
 }
 
+const parsePatternAnyEntitiesToLu = function(luisJson){
+    let fileContent = ''
+    if(!luisJson.patternAnyEntities || luisJson.patternAnyEntities.length <= 0) {
+        return fileContent;
+    }
+    luisJson.patternAnyEntities.forEach(patternAnyEntity => {
+        // Add inherits information if any
+        if (patternAnyEntity.inherits !== undefined) {
+            fileContent += '> # Pattern.Any entities' + NEWLINE + NEWLINE;
+            // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
+            fileContent += '> !# @patternAnyEntity.inherits = name : ' + patternAnyEntity.name;
+            if (patternAnyEntity.inherits.domain_name !== undefined) {
+                fileContent += '; domain_name : ' + patternAnyEntity.inherits.domain_name;
+            }
+            if (patternAnyEntity.inherits.model_name !== undefined) {
+                fileContent += '; model_name : ' + patternAnyEntity.inherits.model_name;
+            }
+            fileContent += NEWLINE + NEWLINE;
+            // For back compat we will only write this if the pattern.any has inherits information.
+            fileContent += `@ patternany ${patternAnyEntity.name}`;
+            fileContent += addRolesAndFeatures(patternAnyEntity);
+            fileContent += NEWLINE;
+        }
+    })
+    return fileContent;
+}
+
 /**
  * Helper to handle phrase lists both in the new and old property.
  * @param {Object[]} collection 
@@ -248,6 +279,11 @@ const addAppMetaData = function(LUISJSON) {
     if (LUISJSON.versionId) fileContent += `> !# @app.versionId = ${LUISJSON.versionId}` + NEWLINE;
     if (LUISJSON.culture) fileContent += `> !# @app.culture = ${LUISJSON.culture}` + NEWLINE;
     if (LUISJSON.luis_schema_version) fileContent += `> !# @app.luis_schema_version = ${LUISJSON.luis_schema_version}` + NEWLINE;
+    if (LUISJSON.settings) {
+        LUISJSON.settings.forEach(setting => {
+            fileContent += `> !# @app.settings.${setting.name} = ${setting.value}` + NEWLINE;
+        })
+    }
     return fileContent === '' ? fileContent : `> LUIS application information` + NEWLINE + fileContent + NEWLINE + NEWLINE;
 }
 /**

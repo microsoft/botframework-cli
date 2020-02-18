@@ -2,11 +2,11 @@
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnIntent",
+    "$kind": "Microsoft.OnIntent",
     "intent": "Help",
     "actions": [
         {
-            "$type": "Microsoft.SendActivity",
+            "$kind": "Microsoft.SendActivity",
             "activity": "@{callHelp()}"           
         }
     ]

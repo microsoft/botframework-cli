@@ -1,16 +1,16 @@
 # filename
-- @{formName}-@{triggerIntent}Intent.dialog
+- @{schemaName}-@{triggerIntent}Intent.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnIntent",
+    "$kind": "Microsoft.OnIntent",
     "intent": "@{triggerIntent}",
     "condition": "count(turn.recognizedentities) == 0",
     "actions": [
         {
-            "$type": "Microsoft.SendActivity",
+            "$kind": "Microsoft.SendActivity",
             "activity": "@{callNotUnderstood()}"           
         }
     ]

@@ -1,50 +1,20 @@
 # filename
-- @{formName}-@{property}Ask.dialog
+- @{schemaName}-@{property}Ask.dialog
 
 # template
 - ```
 {
     "$schema": "@{appSchema}",
-    "$type": "Microsoft.OnAsk",
-    "condition":"and(!$@{property}, contains(dialog.requiredProperties, '@{property}'))",
+    "$kind": "Microsoft.OnEndOfActions",
+    "condition":"!$@{property}",
+    "priority": "indexOf(dialog.requiredProperties, '@{property}')",
     "actions": [
         {
-            "$type": "Microsoft.IfCondition",
-            "condition":"$lastExpectedProperty == '@{property}'",
-            "actions":[
-                {
-                    "$type": "Microsoft.SendActivity",
-                    "activity": "@{callHelp()}"
-                }
-                    
+            "$kind": "Microsoft.Ask",
+            "activity": "@{callAsk()}",
+            "expectedProperties": [
+                "@{property}"
             ]
-        },
-        {
-            "$type": "Microsoft.IfCondition",
-            "condition": "contains(turn.schema.properties['@{property}'].$mappings, 'utterance')",
-            "actions":[
-                {
-                    "$type": "Microsoft.Ask",
-                    "activity": "@{callAsk()}",
-                    "expectedProperties": [
-                         "utterance","@{property}"
-            ]
-                }
-            ],
-            "elseActions":[
-                {
-                    "$type": "Microsoft.Ask",
-                    "activity": "@{callAsk()}",
-                    "expectedProperties": [
-                        "@{property}"
-                    ]
-                }
-            ]
-        },
-        {
-            "$type": "Microsoft.SetProperty",
-            "property": "$lastExpectedProperty",
-            "value": "'@{property}'"
         }
     ]
 }

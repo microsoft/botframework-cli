@@ -1,0 +1,7 @@
+# filename
+- @{schemaName}-ordinal.@{locale}.lu
+
+# template
+- $PREBUILT:ordinal @{roles()}
+
+[generator.lg](../generator.lg)
