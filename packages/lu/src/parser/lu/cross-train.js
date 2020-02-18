@@ -13,30 +13,28 @@ module.exports = {
   /**
    * Cross train lu and qna files.
    * @param {string} input input lu and qna files folder.
-   * @param {string} root root lu files to do cross training. Separated by comma if multiple root files exist.
    * @param {string} intentName interuption intent name. Default value is _Interuption.
    * @param {string} configPath path to config of mapping rules. If undefined, it will read config.json from input folder.
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, root, intentName, configPath) {
+  train: async function (input, intentName, configPath) {
     let trainedResult
 
     // Parse lu and qna objects
-    if (root) {
-      const luObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.LUFile)
-      const qnaObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.QnAFile)
-      const rootObjects = await file.getLuObjects(undefined, root, true, fileExtEnum.LUFile)
+    const luObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.LUFile)
+    const qnaObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.QnAFile)
 
-      let luConfigObject
-      if (configPath && configPath !== '') {
-        luConfigObject = await file.getConfigObject(configPath)
-      } else {
-        luConfigObject = await file.getConfigObject(input)
-      }
+    let configObject
+    if (configPath && configPath !== '') {
+      configObject = await file.getConfigObject(configPath)
+    } else {
+      configObject = await file.getConfigObject(input)
+    }
 
+    if (configObject.rootIds.length > 0) {
       let crossTrainConfig = {
-        rootIds: rootObjects.map(r => r.id),
-        triggerRules: luConfigObject,
+        rootIds: configObject.rootIds,
+        triggerRules: configObject.triggerRules,
         intentName: intentName,
         verbose: true
       }

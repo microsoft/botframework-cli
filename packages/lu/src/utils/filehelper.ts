@@ -188,6 +188,7 @@ export async function getConfigObject(input: string) {
   const luConfigFile = await getConfigFile(input)
 
   let finalLuConfigObj = Object.create(null)
+  let rootLuFiles: string[] = []
   const configFileDir = path.dirname(luConfigFile)
   const luConfigContent = await getContentFromFile(luConfigFile)
   if (luConfigContent && luConfigContent !== '') {
@@ -195,30 +196,37 @@ export async function getConfigObject(input: string) {
       const luConfigObj = JSON.parse(luConfigContent)
       for (const rootluFilePath of Object.keys(luConfigObj)) {
         const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
-        const destLuFileToIntent = luConfigObj[rootluFilePath]
-        for (const destLuFilePath of Object.keys(destLuFileToIntent)) {
-          const triggerIntent = destLuFileToIntent[destLuFilePath]
-          const destLuFileFullPath = path.resolve(configFileDir, destLuFilePath)
-          if (rootLuFileFullPath in finalLuConfigObj) {
-            const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
-            finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
-          } else {
-            let finalDestLuFileToIntent = Object.create(null)
-            finalDestLuFileToIntent[destLuFileFullPath] = triggerIntent
-            finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
+        const triggerObj = luConfigObj[rootluFilePath]
+        for (const triggerObjKey of Object.keys(triggerObj)) {
+          if (triggerObjKey === 'rootDialog') {
+            if (triggerObj[triggerObjKey]) {
+              rootLuFiles.push(rootLuFileFullPath)
+            }
+          } else if (triggerObjKey === 'triggers'){
+            const triggers = triggerObj[triggerObjKey]
+            for (const triggerKey of Object.keys(triggers)) {
+              const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
+              for (const destLuFile of destLuFiles) {
+                const destLuFileFullPath = path.resolve(configFileDir, destLuFile)
+                if (rootLuFileFullPath in finalLuConfigObj) {
+                  const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
+                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                } else {
+                  let finalDestLuFileToIntent = Object.create(null)
+                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                  finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
+                }
+              }
+            }
           }
         }
       }
     } catch (err) {
-      if (err instanceof CLIError) {
-        throw err
-      } else {
-        throw new CLIError(`Sorry, invalid cross training config:\r\n${luConfigContent}`)
-      }
+      throw new Error(`Sorry, invalid cross training config: ${err}`)
     }
   }
 
-  return finalLuConfigObj
+  return {rootIds: rootLuFiles, triggerRules: finalLuConfigObj}
 }
 
 export function parseJSON(input: string, appType: string) {

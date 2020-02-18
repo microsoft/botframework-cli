@@ -21,7 +21,6 @@ describe('luis:convert interuption intent among lu files', () => {
     .it('luis:convert interuption intents and qna', async () => {
       const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption')}`,
-        `${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.lu')},${path.join(__dirname, './../../fixtures/testcases/interuption/main/main.fr-fr.lu')}`,
         '_Interuption',
         `${path.join(__dirname, './../../fixtures/testcases/interuption/mapping_rules.json')}`)
 
@@ -50,7 +49,6 @@ describe('luis:convert interuption intent among lu files', () => {
     .it('luis:convert interuption intents when empty lu file occurs', async () => {
       const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption2')}`,
-        `${path.join(__dirname, './../../fixtures/testcases/interuption2/main/main.lu')}`,
         '_Interuption')
 
       await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
@@ -67,7 +65,6 @@ describe('luis:convert interuption intent among lu files', () => {
     .it('luis:convert interuption intents when nestedIntentSection is enabled', async () => {
       const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption3')}`,
-        `${path.join(__dirname, './../../fixtures/testcases/interuption3/main/main.lu')}`,
         '_Interuption')
 
       await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
@@ -85,7 +82,6 @@ describe('luis:convert interuption intent among lu files', () => {
     .it('luis:convert interuption intents when local intents occur', async () => {
       const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption4')}`,
-        `${path.join(__dirname, './../../fixtures/testcases/interuption4/main/main.lu')}`,
         '_Interuption')
 
       await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
@@ -102,7 +98,6 @@ describe('luis:convert interuption intent among lu files', () => {
     .it('luis:convert interuption intents when multiple dialog invocations occur in same trigger', async () => {
       const trainedResult = await crossTrain.train(
         `${path.join(__dirname, './../../fixtures/testcases/interuption5')}`,
-        `${path.join(__dirname, './../../fixtures/testcases/interuption5/main/main.lu')}`,
         '_Interuption')
 
       await crossTrain.writeFiles(trainedResult.luResult, 'interuptionGen')
@@ -122,7 +117,6 @@ describe('luis:convert interuption intent among lu files', () => {
       try {
         await crossTrain.train(
           `${path.join(__dirname, './../../fixtures/testcases/interuption6')}`,
-          `${path.join(__dirname, './../../fixtures/testcases/interuption6/main/main.lu')}`,
           '_Interuption')
       } catch (err) {
         err.message.includes('Sorry, dialog call loop detected for lu file')
