@@ -4,10 +4,9 @@
  */
 
 import {Command, flags} from '@microsoft/bf-cli-command'
-import * as file from './../../utils/filehelper'
-
 const path = require('path')
 const fs = require('fs-extra')
+import * as file from './../../utils/filehelper'
 const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const Content = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/lu')
 const Settings = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/settings')

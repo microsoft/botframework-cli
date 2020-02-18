@@ -6,9 +6,9 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import {camelCase, upperFirst} from 'lodash'
 import * as path from 'path'
+const fs = require('fs-extra')
 import * as file from './../../../utils/filehelper'
 const LuisToCsConverter = require('./../../../../node_modules/@microsoft/bf-lu/lib/parser/converters/luistocsconverter')
-const fs = require('fs-extra')
 
 export default class LuisGenerateCs extends Command {
   static description = 'Generate:cs generates a strongly typed C# source code from an exported (json) LUIS model.'
