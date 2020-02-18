@@ -202,7 +202,7 @@ export async function getConfigObject(input: string) {
             if (triggerObj[triggerObjKey]) {
               rootLuFiles.push(rootLuFileFullPath)
             }
-          } else if (triggerObjKey === 'triggers'){
+          } else if (triggerObjKey === 'triggers') {
             const triggers = triggerObj[triggerObjKey]
             for (const triggerKey of Object.keys(triggers)) {
               const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]

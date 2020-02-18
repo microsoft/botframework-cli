@@ -24,7 +24,7 @@ export default class LuisCrossTrian extends Command {
 
       flags.config = path.join(flags.in, flags.config)
       const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config)
-      
+
       if (flags.out === undefined) {
         flags.out = path.join(process.cwd(), 'cross-trained')
       }
