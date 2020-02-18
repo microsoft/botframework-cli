@@ -59,7 +59,7 @@ xdescribe('luis:translate luis json', async () => {
     })
 })
 
-describe('luis:translate Phrase list entity references are translated correctly', async () => {
+xdescribe('luis:translate Phrase list entity references are translated correctly', async () => {
   const response = require('./../../fixtures/translation/serviceresponses/phraseList.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../de/'))
