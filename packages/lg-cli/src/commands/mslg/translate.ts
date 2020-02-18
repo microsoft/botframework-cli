@@ -6,7 +6,8 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {Helper} from '../../utils'
 
 export default class TranslateCommand extends Command {
   static description = 'Translate .lg files to a target language by microsoft translation API.'
@@ -26,6 +27,20 @@ export default class TranslateCommand extends Command {
   }
 
   async run() {
-    this.log('translate')
+    const {flags} = this.parse(TranslateCommand)
+    if (!flags.in) {
+      throw new CLIError('No input. Please set file path with --in')
+    }
+
+    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
+    for (const lgFilePath of lgFilePaths) {
+      const lgFile = LGFile.parseFile(lgFilePath)
+      const diagnostics = lgFile.diagnostics;
+      this.log(diagnostics)
+    }
+
+    if (flags.collate) {
+      Helper.handlerCollect()
+    }
   }
 }

@@ -8,26 +8,61 @@
 
 import * as path from 'path'
 import * as fs from 'fs-extra'
+import {CLIError} from '@microsoft/bf-cli-command'
 const NEWLINE = require('os').EOL
 const ANY_NEWLINE = /\r\n|\r|\n/g
 
 export class Helper {
-  public static findLGFiles(inputFolder: string, getSubFolders: boolean): any[] {
-    let results: any[] = []
-    const luExt = '.lg'
-    fs.readdirSync(inputFolder).forEach(function (dirContent: string) {
-      dirContent = path.resolve(inputFolder, dirContent)
-      if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
-        results = results.concat(Helper.findLGFiles(dirContent, getSubFolders))
-      }
-      if (fs.statSync(dirContent).isFile()) {
-        if (dirContent.endsWith(luExt)) {
-          results.push(dirContent)
+  public static findLGFiles(input: string, recurse: boolean): string[] {
+    let results: string[] = []
+    const lgExt = '.lg'
+    input = this.normalizePath(input)
+    if (!path.isAbsolute(input)) {
+      throw new CLIError('please input the absolute path.')
+    }
+
+    if (!fs.existsSync(input)) {
+      throw new CLIError(`can not access to ${input}.`)
+    }
+
+    const pathState = fs.statSync(input)
+
+    if (pathState.isFile() && input.endsWith(lgExt)) {
+      results.push(input)
+    } else if (pathState.isDirectory()) {
+      for (const dirItem of fs.readdirSync(input)) {
+        const dirContent = path.resolve(input, dirItem)
+        if (recurse && fs.statSync(dirContent).isDirectory()) {
+          results = results.concat(this.findLGFiles(dirContent, recurse))
+        }
+        if (fs.statSync(dirContent).isFile()) {
+          if (dirContent.endsWith(lgExt)) {
+            results.push(dirContent)
+          }
         }
       }
-    })
+    } else {
+      throw new CLIError('file states is not support.')
+    }
 
     return results
+  }
+
+  public static handlerCollect() {
+    // todo
+  }
+
+  private static normalizePath(ambiguousPath: string): string {
+    let result = ''
+    if (process.platform === 'win32') {
+      // map linux/mac sep -> windows
+      result = ambiguousPath.replace(/\//g, '\\')
+    } else {
+      // map windows sep -> linux/mac
+      result = ambiguousPath.replace(/\\/g, '/')
+    }
+
+    return path.normalize(result)
   }
 
   public static sanitizeNewLines(fileContent: string) {
