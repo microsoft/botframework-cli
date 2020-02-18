@@ -17,7 +17,7 @@ We have a preview [MSLG][1] tool in botbuilder-tools repo. This specification br
 
 1. Parse and validate
 ```bash
-> bf lg:parse
+> bf lg:verify
 ```
 This command will output all validation errors found across all provided content. Optionally the user can persist the validation output to a file.
 
@@ -46,7 +46,7 @@ Translate provided .lg content into one or more target languages.
 | --tgtlang=tgtlang           | [Required] Comma separated list of target languages.                                         |
 | --translate_comments        | [Optional] When set, machine translate comments found in .lg file                            |
 | --translate_link_text       | [Optional] When set, machine translate link description in .lg file                          |
-| --translatekey=translatekey | [Required] Machine translation endpoint key.                                                 |
+| --translatekey=translatekey | [Required] Machine translation endpoint key. [Translator Text API][10]                       |
 
 3. Expand
 ```bash
@@ -54,15 +54,18 @@ Translate provided .lg content into one or more target languages.
 ```
 Expand one or all templates in a .lg file or an inline expression.
 
-| Parameter                   | Description                                                                                                         |
-|-----------------------------|---------------------------------------------------------------------------------------------------------------------|
-| -i, --in <file or folder>   | [Required] .lg file or folder that contains .lg file.                                                               |
-| -r, --recurse               | [Optional] Indicates if sub-folders need to be considered to file .lg file(s)                                       |
-| -o, --out=out               | [Optional] Output file or folder name. If not specified stdout will be used as output                               |
-| -f, --force                 | [Optional] If --out flag is provided with the path to an existing file, overwrites that file                        |
-| -c, --collate               | [Optional] If not set, same template name across multiple .lg files will throw exceptions.                          |
-| --templateName=templateName | [Optional] Name of the template to expand. Template names with spaces must be enclosed in quotes.                   |
-| --expression=expression     | [Optional] Inline expression provided as a string to evaluate.                                                      |
-| --all                       | [Optional] Flag option to request that all templates in the .lg file be expanded.                                   |
-| --interactive               | [Optional] Flag option to request that all missing entity value references be obtained through interactive prompts. |
-| --testInput=testJSONfile    | [Optional] full or relative path to a JSON file containing test input for all variable references.                  |
+| Parameter                 | Description                                                                                                                         |
+|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| -i, --in <file or folder> | [Required] .lg file or folder that contains .lg file.                                                                               |
+| -r, --recurse             | [Optional] Indicates if sub-folders need to be considered to file .lg file(s)                                                       |
+| -o, --out=out             | [Optional] Output file or folder name. If not specified stdout will be used as output                                               |
+| -f, --force               | [Optional] If --out flag is provided with the path to an existing file, overwrites that file                                        |
+| -c, --collate             | [Optional] If not set, same template name across multiple .lg files will throw exceptions.                                          |
+| --template=templateName   | [Optional] Name of the template to expand. Template names with spaces must be enclosed in quotes.                                   |
+| --expression=expression   | [Optional] Inline expression provided as a string to evaluate.                                                                      |
+| --all                     | [Optional] Flag option to request that all templates in the .lg file be expanded.                                                   |
+| --interactive             | [Optional] Flag option to request that all missing entity value references be obtained through interactive prompts. Default (false) |
+| --testInput=testJSONfile  | [Optional] full or relative path to a JSON file containing test input for all variable references.                                  |
+
+[1]:https://github.com/microsoft/botbuilder-tools/tree/V.Future/packages/MSLG
+[10]:https://azure.microsoft.com/en-us/services/cognitive-services/translator-text-api/
