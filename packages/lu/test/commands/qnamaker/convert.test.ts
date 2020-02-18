@@ -25,7 +25,7 @@ function sanitizeExampleJson(fileContent: string) {
   return fileContent.replace(new RegExp(escapedExampleNewLine, 'g'), escapedNewLine);
 }
 
-describe('qnamaker:convert', () => {
+xdescribe('qnamaker:convert', () => {
   before(async function(){
     await fs.mkdirp(path.join(__dirname, './../../../results/'))
   })
@@ -111,7 +111,7 @@ describe('qnamaker:convert', () => {
   })
 })
 
-describe('qnamaker:convert with --sort option', () => {
+xdescribe('qnamaker:convert with --sort option', () => {
   before(async function(){
     await fs.mkdirp(path.join(__dirname, './../../../results/'))
   })
@@ -135,7 +135,7 @@ describe('qnamaker:convert with --sort option', () => {
   })
 })
 
-describe('qnamaker:convert file creation', () => {
+xdescribe('qnamaker:convert file creation', () => {
   test
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', '/testfolder/qna.lu'])
@@ -144,7 +144,7 @@ describe('qnamaker:convert file creation', () => {
   })
 })
 
-describe('qnamaker:convert empty file handling', () => {
+xdescribe('qnamaker:convert empty file handling', () => {
   test
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.lu')}`])

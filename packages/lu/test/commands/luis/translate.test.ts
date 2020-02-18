@@ -11,7 +11,7 @@ const compareLuFiles = async function(file1: string, file2: string) {
   expect(result).to.deep.equal(fixtureFile)
 }
 
-describe('luis:translate lu file', async () => {
+xdescribe('luis:translate lu file', async () => {
   const response = require('./../../fixtures/translation/translateLuResponse.json')
   const response2 = require('./../../fixtures/translation/translateLuResponseSecond.json')
   after(async function(){
@@ -35,7 +35,7 @@ describe('luis:translate lu file', async () => {
     })
 })
 
-describe('luis:translate luis json', async () => {
+xdescribe('luis:translate luis json', async () => {
   const responseLuis = require('./../../fixtures/translation/translateLuisResponse.json')
   const responseLuis2 = require('./../../fixtures/translation/translateLuisResponseSecond.json')
   after(async function(){
@@ -99,7 +99,7 @@ xdescribe('luis:translate References can be skipped from being translated', asyn
     })
 })
 
-describe('luis:translate Intents and utterances are translated correctly', async () => {
+xdescribe('luis:translate Intents and utterances are translated correctly', async () => {
   const response = require('./../../fixtures/translation/serviceresponses/intentsAndutterances.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../fr/'))
@@ -119,7 +119,7 @@ describe('luis:translate Intents and utterances are translated correctly', async
     })
 })
 
-describe('luis:translate All entity types are translated correctly', async () => {
+xdescribe('luis:translate All entity types are translated correctly', async () => {
   const response = require('./../../fixtures/translation/serviceresponses/allEntities.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../de/'))
@@ -139,7 +139,7 @@ describe('luis:translate All entity types are translated correctly', async () =>
     })
 })
 
-describe('luis:translate Labelled entity values are translated correctly', async () => {
+xdescribe('luis:translate Labelled entity values are translated correctly', async () => {
   const response = require('./../../fixtures/translation/serviceresponses/labelledEntityValue.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../de/'))
@@ -159,7 +159,7 @@ describe('luis:translate Labelled entity values are translated correctly', async
     })
 })
 
-describe('luis:translate Translate for new entity type is handled correctly', async () => {
+xdescribe('luis:translate Translate for new entity type is handled correctly', async () => {
   const response = require('./../../fixtures/translation/serviceresponses/newEntity.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../fr/'))
@@ -179,7 +179,7 @@ describe('luis:translate Translate for new entity type is handled correctly', as
     })
 })
 
-describe('luis:translate For list entities, normalized value is added as synonym', async () => {
+xdescribe('luis:translate For list entities, normalized value is added as synonym', async () => {
   const response = require('./../../fixtures/translation/serviceresponses/normalizedValue.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../fr/'))
@@ -199,7 +199,7 @@ describe('luis:translate For list entities, normalized value is added as synonym
     })
 })
 
-describe('luis:translate Options in utterance are translated correctly', async () => {
+xdescribe('luis:translate Options in utterance are translated correctly', async () => {
   const response = require('./../../fixtures/translation/serviceresponses/options.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../de/'))

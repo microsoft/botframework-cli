@@ -1,0 +1,174 @@
+{
+  "intents": [
+    {
+      "name": "Calendar.Add"
+    },
+    {
+      "name": "Calendar.Find"
+    },
+    {
+      "name": "None"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "ajouter un nouvel événement le 27 - avr",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter une nouvelle tâche d'affectation de finition",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter un événement à lire sur adam lambert nouvelles",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter un événement pour visiter 209 nashville gym",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "ajouter du théâtre imax à mes événements à venir",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "calendrier i ' ll être au garage de 8 à 3 ce samedi",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "dunmore pa sons sonores vendredi matin s'il vous plaît",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "rencontrer mon manager",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "enregistrer la date mai 17 photos partie",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "rendez-vous pour demain s'il vous plaît",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "la réunion durera une heure",
+      "intent": "Calendar.Add",
+      "entities": []
+    },
+    {
+      "text": "dites-moi les détails de l'événement",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "voix activée lecture des rendez-vous cette semaine",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "suis-je libre d'être avec des amis samedi ?",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "rendez-vous avec Johnson doit être la semaine prochaine",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "appeler papa mike",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "changer la réunion avec Chris à 9: 00 h",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "email cloney john",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "prolonger la réunion du déjeuner 30 minutes de plus",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "Je veux reprogrammer la réuni on au club de l'armée de l'air",
+      "intent": "Calendar.Find",
+      "entities": []
+    },
+    {
+      "text": "réunions de marketing le mardi sera maintenant tous les mercredis s'il vous plaît changer sur mon calendrier",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "déplacer la fête bbq à vendredi",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "l'atelier durera 10 heures",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "change the meeting with chris to 9 : 00 am",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "extend lunch meeting 30 minutes extra",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "i want to reschedule the meeting at the air force club",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "marketing meetings on tuesdays will now be every wednesday please change on my calendar",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "move the bbq party to friday",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "the workshop will last for 10 hours",
+      "intent": "None",
+      "entities": []
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [],
+  "luis_schema_version": "3.2.0",
+  "versionId": "0.1",
+  "name": "file",
+  "desc": "",
+  "culture": "en-us"
+}

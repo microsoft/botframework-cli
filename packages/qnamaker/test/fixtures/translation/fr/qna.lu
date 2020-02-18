@@ -1,0 +1,25 @@
+> # QnA Definitions
+> This is a QnA definition. Follows # ? Question: \<list of questions\> \```markdown \<Answer> ``` format
+
+### ? qui est le ceo?
+```markdown
+Vous pouvez modifier le message par défaut si vous utilisez le QnAMakerDialog.
+Voir [ce lien] (https://docs.botframework.com/fr-us/azure-bot-service/templates/qnamaker/#navtitle) pour plus de détails.
+```
+
+### ? Comment puis-je mettre à jour programmatiquement mon KB ?
+```markdown
+Vous pouvez utiliser notre apis REST pour gérer votre KB.
+\#1. Voir ici pour plus de détails: https://westus.dev.cognitive.microsoft.com/docs/services/58994a073d9e04097c7ba6fe/operations/58994a073d9e041ad42d9baa
+```
+
+> You can add URLs for QnA maker to ingest using the #URL reference scheme
+[QnA URL - faqs](https://docs.microsoft.com/en-in/azure/cognitive-services/qnamaker/faqs)
+
+
+> You can define multilple questions for single answer as well
+### ? Qui est ton ceo ?
+- m'obtenir votre info ceo
+```markdown
+Vishwac Vishwac
+```
