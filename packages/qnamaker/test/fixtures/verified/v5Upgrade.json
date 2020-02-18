@@ -1,0 +1,55 @@
+{
+  "intents": [],
+  "entities": [
+    {
+      "name": "xyz1",
+      "roles": [],
+      "children": [
+        {
+          "name": "xyz",
+          "instanceOf": null,
+          "children": []
+        }
+      ]
+    }
+  ],
+  "composites": [
+    {
+      "name": "1",
+      "children": [
+        {
+          "name": {
+            "name": "number"
+          }
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "closedLists": [],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [
+    {
+      "name": "number",
+      "roles": []
+    }
+  ],
+  "luis_schema_version": "6.0.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us",
+  "phraselists": [
+    {
+      "name": "abc",
+      "words": "one,two,three",
+      "mode": false,
+      "activated": true,
+      "enabledForAllModels": true
+    }
+  ]
+}

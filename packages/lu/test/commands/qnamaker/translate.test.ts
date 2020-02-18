@@ -13,7 +13,7 @@ const compareLuFiles = async function(file1: string, file2: string) {
   expect(result).to.deep.equal(fixtureFile)
 }
 
-describe('qnamaker:translate qna.lu', () => {
+xdescribe('qnamaker:translate qna.lu', () => {
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../fr/'))
   })
@@ -53,7 +53,7 @@ xdescribe('qnamaker:translate qna.json', () => {
       })
   })
 
-  describe('qnamaker:translate QnA content is translated correctly', async () => {
+  xdescribe('qnamaker:translate QnA content is translated correctly', async () => {
     const response = require('./../../fixtures/translation/serviceresponses/qna.json')
     after(async function(){
       await fs.remove(path.join(__dirname, './../../../de/'))
@@ -73,7 +73,7 @@ xdescribe('qnamaker:translate qna.json', () => {
       })
   })
 
-  describe('qnamaker:translate QnA content is translated correctly', async () => {
+  xdescribe('qnamaker:translate QnA content is translated correctly', async () => {
     const response = require('./../../fixtures/translation/serviceresponses/qnaContent.json')
     after(async function(){
       await fs.remove(path.join(__dirname, './../../../de/'))
@@ -93,7 +93,7 @@ xdescribe('qnamaker:translate qna.json', () => {
       })
   })
 
-  describe('qnamaker:translate QnA link references are translated correctly', async () => {
+  xdescribe('qnamaker:translate QnA link references are translated correctly', async () => {
     const response = require('./../../fixtures/translation/serviceresponses/fileRef.json')
     after(async function(){
       await fs.remove(path.join(__dirname, './../../../de/'))

@@ -1,0 +1,18 @@
+{
+  "urls": [],
+  "qnaList": [
+    {
+      "id": 0,
+      "answer": "Test answer",
+      "source": "custom editorial",
+      "questions": [
+        "importUtterances",
+        "this is an utterance",
+        "this is another test utterance"
+      ],
+      "metadata": []
+    }
+  ],
+  "files": [],
+  "name": ""
+}
