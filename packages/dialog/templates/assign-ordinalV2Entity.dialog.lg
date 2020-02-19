@@ -1,0 +1,34 @@
+
+# filename
+- @{assignFilename('ordinalV2')}
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "ordinalV2",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.offset",
+            "value": "=@ordinalV2.offset"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.relativeTo",
+            "value": "=@ordinalV2.relativeTo"          
+        }
+    ]               
+}
+```
+
+# callSetMessage
+- @\{setObjectPropertyMessage('@{property}', concat(string(@ordinalV2.offset), ' ', @ordinalV2.relativeTo))}
+
+[generator.lg](generator.lg)

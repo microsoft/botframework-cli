@@ -1,0 +1,34 @@
+
+# filename
+- @{assignFilename('money')}
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "money",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.number",
+            "value": "=@money.number"          
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}.units",
+            "value": "=@money.units"          
+        }
+    ]               
+}
+```
+
+# callSetMessage
+- @\{setObjectPropertyMessage('@{property}', concat(string(@money.number), ' ', @money.units))}
+
+[generator.lg](generator.lg)

@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["temperature.lu","objectProperty.lg", "stringAsk.dialog","temperatureSet.dialog"]
+        "$templates": ["temperature.lu","objectProperty.lg", "string-missing.dialog","assign-temperatureEntity.dialog"]
     }
 }

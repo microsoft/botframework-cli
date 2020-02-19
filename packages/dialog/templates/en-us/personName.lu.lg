@@ -1,7 +1,7 @@
 # filename
-- @{schemaName}-personName.@{locale}.lu
+- @{builtinEntityFilename('personNameEntity')}
 
 # template
-- $PREBUILT:personName @{roles()}
+- @ prebuilt personName @{roles()}
 
 [generator.lg](../generator.lg)

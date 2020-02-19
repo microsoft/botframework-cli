@@ -1,0 +1,83 @@
+{
+    "qnaList": [
+      {
+        "id": 1,
+        "answer": "ans1",
+        "source": "Editorial",
+        "questions": [
+          "ques1"
+        ],
+        "context": {
+          "isContextOnly": false,
+          "prompts": [
+            {
+              "displayOrder": 1,
+              "qnaId": 2,
+              "qna": null,
+              "displayText": "p1"
+            },
+            {
+              "displayOrder": 3,
+              "qnaId": 3,
+              "qna": null,
+              "displayText": "p2"
+            },
+            {
+              "displayOrder": 6,
+              "qnaId": 4,
+              "qna": null,
+              "displayText": "p3"
+            }
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "answer": "ap1",
+        "source": "Editorial",
+        "questions": [
+          "p1"
+        ],
+        "context": {
+          "isContextOnly": true,
+          "prompts": [          ]
+        }
+      },
+      {
+        "id": 3,
+        "answer": "ap2",
+        "source": "Editorial",
+        "questions": [
+          "p2"
+        ],
+        "context": {
+          "isContextOnly": true,
+          "prompts": [          ]
+        }
+      },
+      {
+        "id": 4,
+        "answer": "ap3",
+        "source": "Editorial",
+        "questions": [
+          "p3"
+        ],
+        "context": {
+          "isContextOnly": false,
+          "prompts": [          ]
+        }
+      },
+      {
+        "id": 5,
+        "answer": "zxc",
+        "source": "Editorial",
+        "questions": [
+          "qew"
+        ],
+        "context": {
+          "isContextOnly": false,
+          "prompts": [          ]
+        }
+      }
+    ]
+  }

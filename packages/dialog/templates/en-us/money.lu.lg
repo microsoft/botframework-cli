@@ -1,7 +1,7 @@
 # filename
-- @{schemaName}-money.@{locale}.lu
+- @{builtinEntityFilename('moneyEntity')}
 
 # template
-- $PREBUILT:money @{roles()}
+- @ prebuilt money @{roles()}
 
 [generator.lg](../generator.lg)
