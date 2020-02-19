@@ -5,10 +5,10 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
+    "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
-    "tslib": "^1.10.0",
-    "@microsoft/bf-cli-command": "1.0.0"
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -54,7 +54,13 @@
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif-dev readme && git add README.md"
+    "build": "tsc -b",
+    "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
+    "test": "mocha",
+    "coverage": "nyc npm run test",
+    "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
+    "doc:readme": "oclif-dev manifest && oclif-dev readme",
+    "version": "npm run doc:readme && git add README.md"
   }
 }
