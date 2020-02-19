@@ -70,7 +70,6 @@ module.exports = {
  * @throws {exception} throws errors
  */
 const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
-  let visitedChildren = new Set()
   let resources = []
   let fileIdsFromInput = Array.from(fileIdToLuResourceMap.keys())
   for (const fileId of fileIdsFromInput) {
@@ -98,11 +97,6 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
     for (const destLuFile of Object.keys(destLuFileToIntent)) {
       if (!fileIdsFromInput.includes(destLuFile)) continue
 
-      if (visitedChildren.has(destLuFile)) {
-        // validate loop in a tree or forest
-        throw new Error(`Sorry, dialog call loop detected for lu file ${destLuFile} when doing cross training`)
-      }
-
       const triggerIntentName = destLuFileToIntent[destLuFile]
       if (!intents.some(i => i.Name === triggerIntentName)) {
         throw new Error(`Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`)
@@ -112,8 +106,6 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
         target: destLuFile,
         intent: triggerIntentName
       })
-
-      visitedChildren.add(destLuFile)
     }
 
     resources.push(resource)
@@ -368,7 +360,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   let questionsContent = dedupedQuestions.join(NEWLINE)
 
   // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
-  if (questionsContent && questionsContent !== '') {
+  if (questionsContent && questionsContent !== '' && utterances.length > 0) {
     const questionsToUtterances = `# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
     trainedLuResource = new SectionOperator(trainedLuResource).addSection(questionsToUtterances)
   }

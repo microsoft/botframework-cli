@@ -109,17 +109,4 @@ describe('luis:convert interuption intent among lu files', () => {
       expect(await compareLuFiles('./../../../interuptionGen/dia3.lu', './../../fixtures/verified/interuption5/dia3.lu')).to.be.true
       expect(await compareLuFiles('./../../../interuptionGen/dia4.lu', './../../fixtures/verified/interuption5/dia4.lu')).to.be.true
     })
-
-  test
-    .stdout()
-    .stderr()
-    .it('luis:convert should throw exception when dialog call loop is detected in config', async (ctx) => {
-      try {
-        await crossTrain.train(
-          `${path.join(__dirname, './../../fixtures/testcases/interuption6')}`,
-          '_Interuption')
-      } catch (err) {
-        err.message.includes('Sorry, dialog call loop detected for lu file')
-      }
-    })
 })
