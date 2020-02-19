@@ -556,3 +556,35 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
       expect(await compareFiles('./../../../results/foo.zh-cn.lu.dialog', './../../fixtures/testcases/lubuild/foo2/dialogs/foo.zh-cn.lu.dialog')).to.be.true
     })
 })
+
+describe('luis:build not update application if only cases of utterances or patterns are changed', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/case-insensitive/luis/test(development)-case-insensitive.en-us.lu.json')
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-case-insensitive.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-case-insensitive.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .it('should not update a luis application when only cases of utterances or patterns are different for the coming lu file', ctx => {
+      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('no changes')
+    })
+})
