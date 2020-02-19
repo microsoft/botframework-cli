@@ -40,16 +40,16 @@
       "projectFolder": "packages/qnamaker"
     },
     {
+      "packageName": "@microsoft/bf-orchestrator",
+      "projectFolder": "packages/orchestrator"
+    },
+    {
       "packageName": "@microsoft/bf-cli-plugins",
       "projectFolder": "packages/plugins"
     }, 
     {
       "packageName": "@microsoft/botframework-cli",
       "projectFolder": "packages/cli"
-    },
-    {
-      "packageName": "@microsoft/bf-orchestrator",
-      "projectFolder": "packages/orchestrator"
-    },
+    }
   ]
 }
