@@ -24,7 +24,7 @@ export default class GenerateDialog extends Command {
         locale: flags.string({ char: 'l', description: 'Locales to generate. [default: en-us]', multiple: true }),
         output: flags.string({ char: 'o', description: 'Output path for where to put generated .lu, .lg, .qna and .dialog files. [default: .]', default: '.', required: false }),
         schema: flags.string({ char: 's', description: 'Path to your app.schema file.', required: false }),
-        templates: flags.string({ char: 't', description: 'Directory with templates to use for generating assets.', multiple: true }),
+        templates: flags.string({ char: 't', description: 'Directory with templates to use for generating assets.  With multiple directories, the first definition found wins.  To include the standard templates, just use "standard" as a template directory name.', multiple: true }),
         verbose: flags.boolean({ description: 'Output verbose logging of files as they are processed', default: false }),
     }
 
@@ -39,9 +39,12 @@ export default class GenerateDialog extends Command {
             await gen.generate(args.schema, outDir, flags.schema, flags.locale, flags.templates, flags.force,
                 (type, msg) => {
                     if (type === gen.FeedbackType.message
-                        || type === gen.FeedbackType.error
                         || (type === gen.FeedbackType.info && flags.verbose)) {
-                        this.progress(msg)
+                        this.info(msg)
+                    } else if (type === gen.FeedbackType.warning) {
+                        this.warning(msg)
+                    } else if (type === gen.FeedbackType.error) {
+                        this.errorMsg(msg)
                     }
                 })
             return true;
@@ -54,7 +57,15 @@ export default class GenerateDialog extends Command {
         this.error(err.message)
     }
 
-    progress(msg: string): void {
+    info(msg: string): void {
+        console.error(msg)
+    }
+
+    warning(msg: string): void {
+        this.warn(msg)
+    }
+
+    errorMsg(msg: string): void {
         this.error(msg)
     }
 }

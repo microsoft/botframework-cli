@@ -1,4 +1,4 @@
-// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
+// Generated from LUFileParser.g4 by ANTLR 4.7.1
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -174,12 +174,6 @@ LUFileParserVisitor.prototype.visitNewEntityRoleOrFeatures = function(ctx) {
 };
 
 
-// Visit a parse tree produced by LUFileParser#text.
-LUFileParserVisitor.prototype.visitText = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
 // Visit a parse tree produced by LUFileParser#newEntityName.
 LUFileParserVisitor.prototype.visitNewEntityName = function(ctx) {
   return this.visitChildren(ctx);
@@ -276,6 +270,18 @@ LUFileParserVisitor.prototype.visitQnaDefinition = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#qnaSourceInfo.
+LUFileParserVisitor.prototype.visitQnaSourceInfo = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserVisitor.prototype.visitQnaIdMark = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#qnaQuestion.
 LUFileParserVisitor.prototype.visitQnaQuestion = function(ctx) {
   return this.visitChildren(ctx);
@@ -314,6 +320,12 @@ LUFileParserVisitor.prototype.visitQnaAnswerBody = function(ctx) {
 
 // Visit a parse tree produced by LUFileParser#filterSection.
 LUFileParserVisitor.prototype.visitFilterSection = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#promptSection.
+LUFileParserVisitor.prototype.visitPromptSection = function(ctx) {
   return this.visitChildren(ctx);
 };
 

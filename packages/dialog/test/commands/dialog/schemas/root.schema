@@ -14,7 +14,7 @@
             "$role": "expression"
         },
         "property": {
-            "$role": "memoryPath"
+            "type": "string"
         }
     },
     "required": [

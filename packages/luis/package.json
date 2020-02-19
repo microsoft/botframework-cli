@@ -38,16 +38,18 @@
     "version": "npm run doc:readme && git add README.md"
   },
   "dependencies": {
+    "@azure/cognitiveservices-luis-authoring": "4.0.0-preview.1",
+    "@azure/cognitiveservices-luis-runtime": "5.0.0",
+    "@azure/ms-rest-azure-js": "2.0.1",
     "@microsoft/bf-cli-command": "1.0.0",
+    "@microsoft/bf-lu": "1.0.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "@types/sinon": "^7.5.0",
-    "azure-cognitiveservices-luis-authoring": "2.1.1",
-    "azure-cognitiveservices-luis-runtime": "3.0.0",
     "cli-ux": "~5.3.3",
     "fs-extra": "^8.1.0",
-    "ms-rest": "2.5.3",
+    "lodash": "^4.17.15",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
@@ -56,6 +58,7 @@
     "@oclif/test": "~1.2.5",
     "@oclif/tslint": "~3.1.1",
     "@types/chai": "^4.2.4",
+    "@types/lodash": "~4.14.146",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.17.4",
     "@types/rimraf": "^2.0.3",

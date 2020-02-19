@@ -33,7 +33,7 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
             await fs.ensureDir(dir)
             await fs.writeFile(path, val)
         } else {
-            feedback(FeedbackType.info, `Skipping already existing ${path}`)
+            feedback(FeedbackType.warning, `Skipping already existing ${path}`)
         }
     } catch (e) {
         feedback(FeedbackType.error, e.message)
@@ -124,6 +124,8 @@ async function processLibraryTemplates(template: string, outPath: string, templa
     }
 }
 
+// Add entry to the .lg generation context and return it.  
+// This also ensures the file does not exist already.
 type FileRef = { name: string, fallbackName: string, fullName: string, relative: string }
 function addEntry(fullPath: string, outDir: string, tracker: any): FileRef | undefined {
     let ref: FileRef | undefined
@@ -177,17 +179,27 @@ async function processTemplate(
                             let result = template
                             if (typeof template === 'object') {
                                 result = template.evaluateTemplate('template', scope)
+                                if (Array.isArray(result)) {
+                                    result = result.join('\n')
+                                }
                                 if (template.templates.some(f => f.name === 'filename')) {
                                     filename = template.evaluateTemplate('filename', scope)
                                 }
                             }
+
+                            // See if generated file has been overridden in templates
+                            let existing = await findTemplate(filename, templateDirs, scope.locale)
+                            if (existing) {
+                                result = existing
+                            }
+
                             result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, scope, force, feedback)
                             let dir = ppath.dirname(outPath)
                             await fs.ensureDir(dir)
                             await fs.writeFile(outPath, result)
                             scope.templates[ppath.extname(outPath).substring(1)].push(ref)
                         } else {
-                            feedback(FeedbackType.info, `Skipping already existing ${outPath}`)
+                            feedback(FeedbackType.warning, `Skipping already existing ${outPath}`)
                         }
                     }
                 }
@@ -219,10 +231,11 @@ async function processTemplates(
     }
 
     // Entities first--ok to ignore templates because they might be property specific
-    for (let entity of Object.keys(schema.allEntities())) {
-        let [entityName, role] = entity.split(':')
+    for (let entity of schema.allEntities()) {
+        let [entityName, role] = entity.name.split(':')
         scope.entity = entityName
         scope.role = role
+        scope.property = entity.property
         for (let ext of ['.lu', '.lg', '.qna', '.dialog']) {
             if (extensions.includes(ext)) {
                 await processTemplate(entityName + ext, templateDirs, outDir, scope, force, feedback, true)
@@ -231,6 +244,7 @@ async function processTemplates(
     }
     scope.entity = undefined
     scope.role = undefined
+    scope.property = undefined
 
     // Process per property templates
     for (let prop of schema.schemaProperties()) {
@@ -271,7 +285,7 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
             if (inProperties) {
                 newPath += newPath === '' ? key : '.' + key;
             }
-            let newVal = expandSchema(val, { ...scope, property: newPath}, newPath, key === 'properties', missingIsError, feedback)
+            let newVal = expandSchema(val, { ...scope, property: newPath }, newPath, key === 'properties', missingIsError, feedback)
             newSchema[key] = newVal
         }
     } else if (typeof schema === 'string' && schema.startsWith('@{')) {
@@ -283,8 +297,6 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
             } else {
                 if (missingIsError) {
                     feedback(FeedbackType.error, `${expr}: ${error}`)
-                } else {
-                    newSchema = expr;
                 }
             }
         } catch (e) {
@@ -294,9 +306,21 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
     return newSchema
 }
 
+function expandStandard(dirs: string[]): string[] {
+    let expanded: string[] = []
+    for (let dir of dirs) {
+        if (dir === 'standard') {
+            dir = ppath.join(__dirname, '../../templates')
+        }
+        expanded.push(dir)
+    }
+    return expanded;
+}
+
 /**
  * Iterate through the locale templates and generate per property/locale files.
  * Each template file will map to <filename>_<property>.<ext>.
+ * @param schemaPath Path to JSON Schema to use for generation.
  * @param outDir Where to put generated files.
  * @param metaSchema Schema to use when generating .dialog files
  * @param allLocales Locales to generate.
@@ -330,7 +354,7 @@ export async function generate(
     }
 
     if (!templateDirs) {
-        templateDirs = [ppath.join(__dirname, '../../templates')]
+        templateDirs = ['standard']
     }
 
     let op = 'Regenerating'
@@ -343,6 +367,7 @@ export async function generate(
     feedback(FeedbackType.message, `Templates: ${JSON.stringify(templateDirs)} `)
     feedback(FeedbackType.message, `App.schema: ${metaSchema} `)
     try {
+        templateDirs = expandStandard(templateDirs)
         await fs.ensureDir(outDir)
         let schema = await processSchemas(schemaPath, templateDirs, feedback)
         schema.schema = expandSchema(schema.schema, {}, '', false, false, feedback)

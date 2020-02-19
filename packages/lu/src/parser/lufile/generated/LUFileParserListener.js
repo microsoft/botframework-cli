@@ -1,4 +1,4 @@
-// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
+// Generated from LUFileParser.g4 by ANTLR 4.7.1
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -254,15 +254,6 @@ LUFileParserListener.prototype.exitNewEntityRoleOrFeatures = function(ctx) {
 };
 
 
-// Enter a parse tree produced by LUFileParser#text.
-LUFileParserListener.prototype.enterText = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#text.
-LUFileParserListener.prototype.exitText = function(ctx) {
-};
-
-
 // Enter a parse tree produced by LUFileParser#newEntityName.
 LUFileParserListener.prototype.enterNewEntityName = function(ctx) {
 };
@@ -407,6 +398,24 @@ LUFileParserListener.prototype.exitQnaDefinition = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#qnaSourceInfo.
+LUFileParserListener.prototype.enterQnaSourceInfo = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#qnaSourceInfo.
+LUFileParserListener.prototype.exitQnaSourceInfo = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserListener.prototype.enterQnaIdMark = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#qnaIdMark.
+LUFileParserListener.prototype.exitQnaIdMark = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#qnaQuestion.
 LUFileParserListener.prototype.enterQnaQuestion = function(ctx) {
 };
@@ -467,6 +476,15 @@ LUFileParserListener.prototype.enterFilterSection = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#filterSection.
 LUFileParserListener.prototype.exitFilterSection = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#promptSection.
+LUFileParserListener.prototype.enterPromptSection = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#promptSection.
+LUFileParserListener.prototype.exitPromptSection = function(ctx) {
 };
 
 

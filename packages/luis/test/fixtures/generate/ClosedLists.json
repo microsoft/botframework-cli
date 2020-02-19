@@ -1,0 +1,50 @@
+{
+  "luis_schema_version": "3.2.0",
+  "versionId": "GeoPeople",
+  "name": "Contoso App",
+  "desc": "Default Intents for Azure Bot Service V2",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [],
+  "entities": [],
+  "composites": [],
+  "closedLists": [
+    {
+      "name": "Airline",
+      "subLists": [
+        {
+          "canonicalForm": "Delta",
+          "list": [
+            "DL"
+          ]
+        },
+        {
+          "canonicalForm": "Alaska",
+          "list": []
+        },
+        {
+          "canonicalForm": "United",
+          "list": []
+        },
+        {
+          "canonicalForm": "Virgin",
+          "list": [
+            "DL"
+          ]
+        }
+      ],
+      "roles": [
+        "Buyer",
+        "Seller"
+      ]
+    }
+  ],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [],
+  "model_features": [],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [],
+  "settings": []
+}

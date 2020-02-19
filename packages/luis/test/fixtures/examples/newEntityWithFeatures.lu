@@ -1,0 +1,54 @@
+> LUIS application information
+> !# @app.name = test nDepth entity with features
+> !# @app.desc = this is a test application
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 6.0.0
+
+# Greeting
+- Hi
+- Hello
+
+# GetUserProfile
+- I'm {@userProfile = {@userAge = 36}} years old
+- My age is {@userProfile = {@userAge = 36}}
+- My name is {@userProfile = {@userName = {@firstName = vishwac}}}
+- My last name is {@userProfile = {@userName = {@lastName = kannan}}}
+- {@userProfile = {@userName = {@firstName = vishwac}}}
+- {@userProfile = {@userAge = 36}}
+- I'm {@firstName} and I'm {@userAge} [years old]
+
+> Featurize intent
+@ intent GetUserProfile usesFeatures userProfile, profileDefinition
+
+> Prebuilt entities
+@ prebuilt age
+@ prebuilt personName
+
+> Phrase list
+@ phraselist profileDefinition(interchangeable) = 
+    - I'm 
+    - my
+    - I am
+
+> Define a userProfile ML entity
+@ ml userProfile =
+    - @ ml userName usesFeatures personName
+        - @ personName firstName
+        - @ personName lastName
+    - @ age userAge
+    - @ cities userCity
+    - @ zipCode userZipCode
+
+> Define a list entity for user city
+@ list cities = 
+    - seattle :
+        - SEA
+        - Seatac
+    - redmond : 
+        - microsoft
+        - REA
+
+> Define a regex entity for user zip code
+@ regex zipCode = /[0-9]{5}/
+
+@ userProfile usesFeatures personName, cities, zipCode

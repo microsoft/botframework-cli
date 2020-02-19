@@ -10,6 +10,7 @@ const chalk = require('chalk')
 const path = require('path')
 const latestVersion = require('latest-version')
 const semver = require('semver')
+const isCI = require('is-ci')
 
 const hook: Hook<'init'> = async function (opts) {
   // get config settings
@@ -70,7 +71,9 @@ const hook: Hook<'init'> = async function (opts) {
 
   // Ensure telemetry is set
   try {
-    if (userConfig.telemetry === null) {
+    if (process.env.BF_CLI_TELEMETRY) {
+      userConfig.telemetry = process.env.BF_CLI_TELEMETRY.toLowerCase() === 'true' ? true : false
+    } else if (userConfig.telemetry === null && !isCI) {
       const disableTelemetry = await cli.prompt(chalk.red('Help us improve products by allowing Microsoft to collect anonymous command and flags usage: (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
         userConfig.telemetry = true
@@ -89,7 +92,7 @@ const hook: Hook<'init'> = async function (opts) {
       await writeUserConfig(userConfig)
     }
 
-    this.config.pjson.telemetry = userConfig.telemetry
+    this.config.pjson.telemetry = userConfig.telemetry === null ? false : userConfig.telemetry
   /* tslint:disable:no-unused */
 
   } catch (err) {

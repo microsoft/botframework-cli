@@ -3,6 +3,8 @@
  * Licensed under the MIT License.
  */
 const parseFile = require('../../../src/parser/lufile/parseFileContents');
+const luconvert = require('../../../src/parser/luis/luConverter');
+const entityNameWithSpaceAndFeature = require('../../fixtures/testcases/entityNameWithSpaceAndFeature.json');
 var chai = require('chai');
 var assert = chai.assert;
 describe('Model as feature definitions', function () {
@@ -609,6 +611,7 @@ describe('Model as feature definitions', function () {
 
         })
 
+        
 
     });
     it('Intent, simple entity, composite entity can use anything as a feature except for patternany', function(done) {
@@ -643,4 +646,207 @@ describe('Model as feature definitions', function () {
             })
             .catch(err => done(err))
     });
+
+    describe("[BF CLI #472 - entities can have spaces in the name", function() {
+        it ('Phrase list can be added to ml entity with spaces in its name', function(done) {
+            let lufile = `
+    ## Demo
+    - demo
+    
+    @ ml "phone number entity" usesFeature phonePL
+    
+    @ phraselist phonePL(interchangeable) = 
+        - phone,phone number,telephone,cellphone
+            `;
+
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.entities.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].name, "phone number entity");
+                    assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, "phonePL");
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it ('ml entity names with spaces are converted correctly to lu', function(done) {
+            let luContent = luconvert(entityNameWithSpaceAndFeature);
+            assert.equal(luContent.includes(`@ ml "phone number entity"`), true);
+            done()
+        })
+
+        it ('phrase list names can have spaces in it', function(done) {
+            let lufile = `
+@ phraselist "phone pl"(interchangeable) = 
+    - phone,phone number,telephone,cellphone
+`;
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, "phone pl");
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it ('phrase list names with spaces in them convert correctly to lu format', function(done){
+            let luContent = luconvert(entityNameWithSpaceAndFeature);
+            assert.equal(luContent.includes(`@ phraselist "phone pl"(interchangeable)`), true);
+            done()
+        })
+
+        it ('list entity names can have spaces in it', function(done) {
+            let lufile = `
+@ list "my city"
+`;
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, "my city");
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it ('list entity names with spaces in them convert correctly to lu format', function(done){
+            let luContent = luconvert(entityNameWithSpaceAndFeature);
+            assert.equal(luContent.includes(`@ list "my city"`), true);
+            done()
+        })
+
+        it ('composite entity names can have spaces in it', function(done) {
+            let lufile = `
+@ composite "test composite"
+`;
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites[0].name, "test composite");
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it ('composite entity names with spaces in them convert correctly to lu format', function(done){
+            let luContent = luconvert(entityNameWithSpaceAndFeature);
+            assert.equal(luContent.includes(`@ composite "test composite"`), true);
+            done()
+        })
+
+        it ('regex entity names can have spaces in it', function(done) {
+            let lufile = `
+@ regex "test regex"
+`;
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.regex_entities[0].name, "test regex");
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it ('regex entity names with spaces in them convert correctly to lu format', function(done){
+            let luContent = luconvert(entityNameWithSpaceAndFeature);
+            assert.equal(luContent.includes(`@ regex "test regex"`), true);
+            done()
+        })
+
+        it ('pattern.any entity names can have spaces in it', function(done) {
+            let lufile = `
+@ patternany "test pa"
+`;
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.patternAnyEntities[0].name, "test pa");
+                    done();
+                })
+                .catch(err => done(err))
+        })
+
+        it ('uses feature supports spaces for all features', function(done) {
+            let lufile = `
+# test intent
+- foo
+
+@ ml "test ml entity"
+
+@ phraselist "test pl"
+
+@ ml "another entity" usesFeatures "test intent", "test ml entity", "test pl"`;
+
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.entities[1].features.length, 3);
+                    assert.equal(res.LUISJsonStructure.entities[1].features[0].modelName, "test intent");
+                    assert.equal(res.LUISJsonStructure.entities[1].features[1].modelName, "test ml entity");
+                    assert.equal(res.LUISJsonStructure.entities[1].features[2].featureName, "test pl");
+                    done();
+                })
+        });
+
+        it ('intent with spaces in it can be assigned features', function(done) {
+            let lufile = `
+# test intent
+- foo
+
+@ ml bar
+
+@ intent "test intent" usesFeature bar`;
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.intents[0].features[0].modelName, "bar");
+                    done()
+                })
+                .catch(err => done(err))
+        });
+
+        it ('ml entity with spaces in it can be lablled', function(done) {
+            let lufile = `
+# test intent
+- I want {@food type = tomato}
+
+@ ml 'food type'`;
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.utterances[0].entities[0].entity, "food type")
+                    done()
+                })
+                .catch(err => done(err))
+        });
+
+        it ('roles can have spaces in them', function(done) {
+            let lufile = `
+@ ml "entity 1" hasRoles "role 1", "role 2"
+`   
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ["role 1", "role 2"]);
+                    done()
+                })
+                .catch(err => done(err))
+        })
+
+        it ('roles with spaces can be lablled in an utterance', function(done) {
+            let lufile = `
+@ ml "entity 1" hasRoles "role 1", "role 2"
+
+# test intent
+- I want {@role 1 = something}
+`   
+            parseFile.parseFile(lufile)
+                .then(res => {
+                    assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ["role 1", "role 2"]);
+                    assert.equal(res.LUISJsonStructure.utterances[0].entities[0].entity, "entity 1");
+                    assert.equal(res.LUISJsonStructure.utterances[0].entities[0].role, "role 1");
+                    done()
+                })
+                .catch(err => done(err))
+        });
+
+        it ('entity definitions with roles (with spaces in them) and features (with spaces in them) convert back correctly back to lu' , function(done) {
+            let luContent = luconvert(entityNameWithSpaceAndFeature);
+            assert.equal(luContent.includes(`@ ml "phone number entity" hasRole "role 1" usesFeature "phone pl"`), true)
+            assert.equal(luContent.includes(`@ regex "test regex" hasRole "role 4"`), true);
+            done()
+        })
+        
+    })
 });

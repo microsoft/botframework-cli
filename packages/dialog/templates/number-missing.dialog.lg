@@ -1,0 +1,26 @@
+# filename
+- @{missingFilename()}
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnEndOfActions",
+    "condition":"!$@{property}",
+    "priority": "indexOf(dialog.requiredProperties, '@{property}')",
+    "actions": [        
+        {
+            "$kind": "Microsoft.Ask",
+            "activity": "@{callAsk()}",
+            "expectedProperties": [
+                "@{property}"
+            ]
+        }
+    ]
+}
+```
+
+# callAsk
+- @\{Ask@{property}()}
+
+[generator.lg](generator.lg)

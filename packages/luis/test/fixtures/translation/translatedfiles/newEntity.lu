@@ -1,0 +1,14 @@
+@ ml s1 sr1
+@ phraselist pl1 =
+		- fromage
+		- tomate
+		- pomme de terre
+@ list l1 hasRoles lr1,lr2 =
+	- one:
+		- un
+		- deux
+		- trois
+	- four:
+		- quatre
+		- cinq
+		- six
