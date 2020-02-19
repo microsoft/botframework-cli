@@ -7,6 +7,18 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "luis:convert",
+            "program": "${workspaceFolder}/packages/lu/bin/run",
+            "args":[
+                "luis:convert",
+                "--in",
+                "c:\\todelete\\test.lu"
+            ],
+            "preLaunchTask": "tsc: build - packages/lu/tsconfig.json"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Dialog Merge Tests",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
