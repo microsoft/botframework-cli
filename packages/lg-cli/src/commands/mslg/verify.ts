@@ -11,8 +11,8 @@ import {Helper} from '../../utils'
 import {MSLGTool} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 
-export default class ParseCommand extends Command {
-  static description = 'Parse any provided .lg file and collate them into a single file.'
+export default class VerifyCommand extends Command {
+  static description = 'Verify any provided .lg file and collate them into a single file.'
 
   private lgTool = new MSLGTool()
 
@@ -33,7 +33,7 @@ export default class ParseCommand extends Command {
   // collate ×
 
   async run() {
-    const {flags} = this.parse(ParseCommand)
+    const {flags} = this.parse(VerifyCommand)
     if (!flags.in) {
       throw new CLIError('No input. Please set file path with --in')
     }
