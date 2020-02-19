@@ -426,7 +426,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
-            
+            section.Name = section.Name.replace(/[\'\"]/g, "");
             let intentExists = parsedContent.LUISJsonStructure.intents.find(item => item.name === section.Name);
             if (intentExists !== undefined) {
                 // verify the list of features requested have all been defined.
@@ -477,6 +477,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 let srcEntityInFlatList = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == section.Name);
                 let entityType = srcEntityInFlatList ? srcEntityInFlatList.type : undefined;
                 (featuresList || []).forEach(feature => {
+                    feature = feature.replace(/[\'\"]/g, "");
                     let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
                     let featureIntentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
                     // find the entity based on its type.
@@ -970,7 +971,7 @@ const getEntityType = function(entityName, entities) {
  * @param {String} entityName name of the entity being added.
  */
 const validateAndGetRoles = function(parsedContent, roles, line, entityName, entityType) {
-    let newRoles = roles ? roles.split(',').map(item => item.trim()) : [];
+    let newRoles = roles ? roles.split(',').map(item => item.replace(/[\'\"]/g, "").trim()) : [];
     // de-dupe roles
     newRoles = [...new Set(newRoles)];
     // entity roles need to unique within the application
@@ -1032,7 +1033,8 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
     if (entities && entities.length > 0) {
         for (const entity of entities) {
             if (entity.Type !== INTENTTYPE) {
-                let entityName = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
+                entity.Name = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
+                let entityName = entity.Name;
                 let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
                 if (!entityType) {
                     let errorMsg = `No type definition found for entity "${entityName}". Supported types are ${Object.values(EntityTypeEnum).join(', ')}. Note: Type names are case sensitive.`;
@@ -1314,6 +1316,8 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                 isPLEnabled = false;
             } else if (item.toLowerCase() === 'enabledforallmodels') {
                 isPLEnabledForAllModels = true;
+            } else if (item.toLowerCase() === '(interchangeable)') {
+                entityName += item;
             } else {
                 let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
                 let error = BuildDiagnostic({
