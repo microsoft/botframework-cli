@@ -7,6 +7,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import {camelCase, kebabCase, upperFirst} from 'lodash'
 import * as path from 'path'
 const fs = require('fs-extra')
+const exception = require('./../../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
 const file = require('./../../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
 const LuisToTsConverter = require('./../../../../node_modules/@microsoft/bf-lu/lib/parser/converters/luistotsconverter')
 
@@ -28,37 +29,44 @@ export default class LuisGenerateTs extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(LuisGenerateTs)
-    const stdInput = await this.readStdin()
-
-    if (!flags.in && !stdInput) {
-      throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
-    }
-
-    const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
-    let app: any
     try {
-      app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+      const {flags} = this.parse(LuisGenerateTs)
+      const stdInput = await this.readStdin()
+
+      if (!flags.in && !stdInput) {
+        throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
+      }
+
+      const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
+      let app: any
+      try {
+        app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+      } catch (error) {
+        throw new CLIError(error)
+      }
+
+      flags.className = flags.className || app.name
+      flags.className = upperFirst(camelCase(flags.className))
+
+      this.reorderEntities(app, 'entities')
+      this.reorderEntities(app, 'prebuiltEntities')
+      this.reorderEntities(app, 'closedLists')
+      this.reorderEntities(app, 'regex_entities')
+      this.reorderEntities(app, 'patternAnyEntities')
+      this.reorderEntities(app, 'composites')
+
+      const outputPath = flags.out ? file.validatePath(flags.out, kebabCase(flags.className) + '.ts', flags.force) : flags.out
+
+      this.log(
+        `Generating file at ${outputPath || 'stdout'} that contains class ${flags.className}.`
+      )
+
+      await LuisToTsConverter.writeFromLuisJson(app, flags.className, outputPath)
     } catch (error) {
-      throw new CLIError(error)
+      if (error instanceof exception) {
+        throw new CLIError(error.text)
+      }
+      throw error
     }
-
-    flags.className = flags.className || app.name
-    flags.className = upperFirst(camelCase(flags.className))
-
-    this.reorderEntities(app, 'entities')
-    this.reorderEntities(app, 'prebuiltEntities')
-    this.reorderEntities(app, 'closedLists')
-    this.reorderEntities(app, 'regex_entities')
-    this.reorderEntities(app, 'patternAnyEntities')
-    this.reorderEntities(app, 'composites')
-
-    const outputPath = flags.out ? file.validatePath(flags.out, kebabCase(flags.className) + '.ts', flags.force) : flags.out
-
-    this.log(
-      `Generating file at ${outputPath || 'stdout'} that contains class ${flags.className}.`
-    )
-
-    await LuisToTsConverter.writeFromLuisJson(app, flags.className, outputPath)
   }
 }
