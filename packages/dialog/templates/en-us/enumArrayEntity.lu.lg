@@ -5,10 +5,20 @@
 - ```
 @ list @{property}Entity =
 @{join(foreach(schema.properties[property].items.enum, enum, concat('  - ', enum, ' :\n', synonyms(enum))), '\n')}
-```
 
+@ composite addToArray = @{string(select(where(indicesAndValues(schema.properties), propDef, value.type == 'array'), propDef, concat(propDef.index, Entity)))}
+
+@ composite removeFromArray = [@{property}Entity]
+
+# @{triggerIntent}
+@{substitutions('enumArrayEntity.data', json(concat('{"phrase": ', string(allSynonyms()), '}')), 3)}
+
+```
+> >concat('{\'phrase\':', string(@{allSynonyms()}), '}')))}
 >>> # None
 >>> - # None\n@{join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
+# allSynonyms
+- @{foreach(schema.properties[property].items.enum, enum, phrases(enum))}
 
 # synonyms(value)
 - @{join(foreach(phrases(value), phrase, concat('    - ', phrase)), '\n')}

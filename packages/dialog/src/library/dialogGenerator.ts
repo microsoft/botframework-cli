@@ -10,6 +10,7 @@ import * as fs from 'fs-extra'
 import * as lg from 'botbuilder-lg'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
+import * as sub from './substitutions'
 import { processSchemas } from './processSchemas'
 
 export enum FeedbackType {
@@ -41,9 +42,16 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
 }
 
 const expressionEngine = new expressions.ExpressionEngine((func: any) => {
+    // TODO: Remove
+    if (func.startsWith('sub'))
+    {
+        let a = 1
+    }
+
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
+        case 'substitutions': return sub.SubstitutionsEvaluator
         default: return expressions.BuiltInFunctions.lookup(func)
     }
 })
@@ -52,7 +60,7 @@ const expressionEngine = new expressions.ExpressionEngine((func: any) => {
 type Template = lg.TemplateEngine | string | undefined
 
 async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<Template> {
-    let template
+    let template: Template
     for (let dir of templateDirs) {
         let loc = localePath(name, dir, locale)
         if (await fs.pathExists(loc)) {
@@ -158,6 +166,7 @@ async function processTemplate(
     feedback: Feedback,
     ignorable: boolean): Promise<string> {
     let outPath = ''
+    let oldDir = process.cwd()
     try {
         let ref = existingRef(templateName, scope.templates)
         if (ref) {
@@ -178,6 +187,7 @@ async function processTemplate(
                             feedback(FeedbackType.info, `Generating ${outPath}`)
                             let result = template
                             if (typeof template === 'object') {
+                                process.chdir(ppath.dirname(template.templates[0].source))
                                 result = template.evaluateTemplate('template', scope)
                                 if (Array.isArray(result)) {
                                     result = result.join('\n')
@@ -209,6 +219,8 @@ async function processTemplate(
         }
     } catch (e) {
         feedback(FeedbackType.error, e.message)
+    } finally {
+        process.chdir(oldDir)
     }
     return outPath
 }

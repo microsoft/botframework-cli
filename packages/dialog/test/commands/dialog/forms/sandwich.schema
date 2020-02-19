@@ -68,6 +68,20 @@
                 "maxItems": 3
             }
         },
+        "Sauces": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "pepper",
+                    "salt",
+                    "yellowMustard",
+                    "dijonMustard",
+                    "mayo",
+                    "vinegar"
+                ]
+            }
+        },
         "Price": {
             "$ref": "template:money.schema#/money"
         }
@@ -77,6 +91,8 @@
         "Bread",
         "Cheese",
         "Meat",
+        "Toppings",
+        "Sauces",
         "Price"
     ],
     "$requires": [

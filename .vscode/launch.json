@@ -19,9 +19,10 @@
                 ".*Test schema merge.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./package/dialog/lib/**"
-            ]
+            ],
         },
         {
             "type": "node",
@@ -38,6 +39,7 @@
                 ".*dialog:verify.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./package/dialog/lib/**"
             ]
@@ -57,6 +59,7 @@
                 ".*dialog:generate.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./package/dialog/lib/**"
             ]
@@ -76,6 +79,7 @@
                 ".*luis:build.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/lu/lib/**"
             ]
@@ -86,6 +90,7 @@
             "name": "BotBuilder schema",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/dialog/lib/**"
             ],
@@ -106,6 +111,7 @@
             "name": "LUIS Build Sandwich",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/lu/bin/run",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/lu/lib/**"
             ],
@@ -130,6 +136,7 @@
             "name": "LUIS Build DynamicLists",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/lu/bin/run",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/lu/lib/**"
             ],
@@ -152,6 +159,7 @@
             "name": "Generate Sandwich",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/dialog/lib/**"
             ],
@@ -171,6 +179,7 @@
             "name": "Generate Unit Test",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/dialog/lib/**"
             ],

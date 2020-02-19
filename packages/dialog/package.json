@@ -58,7 +58,8 @@
     "path": "^0.12.7",
     "semver": "^5.7.0",
     "tslib": "^1.10.0",
-    "xml2js": "^0.4.19"
+    "xml2js": "^0.4.19",
+    "seedrandom": "~3.0.5"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",
@@ -69,6 +70,7 @@
     "@types/fs-extra": "^8.0.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.14.15",
+    "@types/seedrandom": "~2.4.28",
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
