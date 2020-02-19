@@ -1,6 +1,7 @@
 const LuisGen = require('./luisGen')
 const propertyHelper = require('./propertyHelper')
-const {CLIError} = require('@microsoft/bf-cli-command')
+const error = require('./../utils/exception')
+const retCode = require('./../utils/enums/CLI-errors')
 
 class LuisGenBuilder {
     static build(luisApp) {
@@ -14,7 +15,7 @@ class LuisGenBuilder {
             result.patternAnyEntities = extractEntities(luisApp.patternAnyEntities);
             result.composites = extractComposites(luisApp.composites);
         } catch (err) {
-            throw new CLIError("Invalid LUIS JSON file content.")
+            throw (new error(retCode.errorCode.INVALID_INPUT_FILE, "Invalid LUIS JSON file content."))
         }
         return result
     }

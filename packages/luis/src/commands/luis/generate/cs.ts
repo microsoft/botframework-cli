@@ -7,7 +7,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import {camelCase, upperFirst} from 'lodash'
 import * as path from 'path'
 const fs = require('fs-extra')
-import * as file from './../../../utils/filehelper'
+const file = require('./../../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
 const LuisToCsConverter = require('./../../../../node_modules/@microsoft/bf-lu/lib/parser/converters/luistocsconverter')
 
 export default class LuisGenerateCs extends Command {

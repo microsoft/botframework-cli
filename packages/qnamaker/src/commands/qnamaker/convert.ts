@@ -4,7 +4,7 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-import * as file from './../../utils/filehelper'
+const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
 const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
 const fs = require('fs-extra')
 const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
