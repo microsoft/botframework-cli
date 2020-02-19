@@ -12,6 +12,7 @@ const fs = require('fs-extra')
 const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
+const exception = require('./../utils/exception')
 const LuisBuilder = require('./../luis/luisBuilder')
 const Content = require('./../lu/lu')
 
@@ -36,8 +37,18 @@ export class Builder {
       let fileCulture: string
       let fileName: string
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
-      const result = await LuisBuilder.build(luFiles, true, culture)
-      const fileContent = result.parseToLuContent()
+
+      let fileContent = ''
+      try {
+        const result = await LuisBuilder.build(luFiles, true, culture)
+        fileContent = result.parseToLuContent()
+      } catch (err) {
+        if (err instanceof exception) {
+          throw new Error(`Errors occurred when parsing file ${file}: ${err.text}`)
+        }
+        throw err
+      }
+
       this.handler(`${file} loaded\n`)
       let cultureFromPath = fileHelper.getCultureFromPath(file)
       if (cultureFromPath) {

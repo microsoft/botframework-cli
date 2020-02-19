@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
@@ -38,93 +38,97 @@ export default class LuisBuild extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(LuisBuild)
+    try {
+      const {flags} = this.parse(LuisBuild)
 
-    flags.stdin = await this.readStdin()
+      flags.stdin = await this.readStdin()
 
-    let files: string[] = []
-    if (flags.luConfig) {
-      const configFilePath = path.resolve(flags.luConfig)
-      if (fs.existsSync(configFilePath)) {
-        const configObj = JSON.parse(await file.getContentFromFile(configFilePath))
-        if (configObj.name && configObj.name !== '') flags.botName = configObj.name
-        if (configObj.defaultLanguage && configObj.defaultLanguage !== '') flags.defaultCulture = configObj.defaultLanguage
-        if (configObj.deleteOldVersion) flags.deleteOldVersion = true
-        if (configObj.out && configObj.out !== '') flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
-        if (configObj.writeDialogFiles) flags.dialog = true
-        if (configObj.models && configObj.models.length > 0) {
-          files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
+      let files: string[] = []
+      if (flags.luConfig) {
+        const configFilePath = path.resolve(flags.luConfig)
+        if (fs.existsSync(configFilePath)) {
+          const configObj = JSON.parse(await file.getContentFromFile(configFilePath))
+          if (configObj.name && configObj.name !== '') flags.botName = configObj.name
+          if (configObj.defaultLanguage && configObj.defaultLanguage !== '') flags.defaultCulture = configObj.defaultLanguage
+          if (configObj.deleteOldVersion) flags.deleteOldVersion = true
+          if (configObj.out && configObj.out !== '') flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
+          if (configObj.writeDialogFiles) flags.dialog = true
+          if (configObj.models && configObj.models.length > 0) {
+            files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
+          }
         }
       }
-    }
 
-    if (!flags.stdin && !flags.in && files.length === 0) {
-      throw new Error('Missing input. Please use stdin or pass a file or folder location with --in flag')
-    }
-
-    if (!flags.botName) {
-      throw new Error('Missing bot name. Please pass bot name with --botName flag')
-    }
-
-    flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'
-    flags.region = flags.region && flags.region !== '' ? flags.region : 'westus'
-    flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
-    flags.fallbackLocale = flags.fallbackLocale && flags.fallbackLocale !== '' ? flags.fallbackLocale : 'en-us'
-
-    // create builder class
-    const builder = new Builder((input: string) => {
-      if (flags.log) this.log(input)
-    })
-
-    let luContents: any[] = []
-    let recognizers = new Map<string, any>()
-    let multiRecognizers = new Map<string, any>()
-    let settings = new Map<string, any>()
-
-    if (flags.stdin && flags.stdin !== '') {
-      // load lu content from stdin and create default recognizer, multiRecognier and settings
-      this.log('Load lu content from stdin\n')
-      const content = new Content(flags.stdin, 'stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin'))
-      luContents.push(content)
-      multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
-      settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {}))
-      const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
-      recognizers.set(content.name, recognizer)
-    } else {
-      this.log('Start to load lu files\n')
-
-      // get lu files from flags.in
-      if (flags.in && flags.in !== '') {
-        const luFiles = await file.getLuFiles(flags.in, true, fileExtEnum.LUFile)
-        files.push(...luFiles)
+      if (!flags.stdin && !flags.in && files.length === 0) {
+        throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
       }
 
-      // load lu contents from lu files
-      // load existing recognizers, multiRecogniers and settings or create default ones
-      const loadedResources = await builder.loadContents(files, flags.defaultCulture, flags.suffix, flags.region)
-      luContents = loadedResources.luContents
-      recognizers = loadedResources.recognizers
-      multiRecognizers = loadedResources.multiRecognizers
-      settings = loadedResources.settings
-    }
+      if (!flags.botName) {
+        throw new CLIError('Missing bot name. Please pass bot name with --botName flag')
+      }
 
-    // update or create and then train and publish luis applications based on loaded resources
-    this.log('Start to handle applications\n')
-    const dialogContents = await builder.build(luContents, recognizers, flags.authoringKey, flags.region, flags.botName, flags.suffix, flags.fallbackLocale, flags.deleteOldVersion, multiRecognizers, settings)
+      flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'
+      flags.region = flags.region && flags.region !== '' ? flags.region : 'westus'
+      flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
+      flags.fallbackLocale = flags.fallbackLocale && flags.fallbackLocale !== '' ? flags.fallbackLocale : 'en-us'
 
-    // write dialog assets based on config
-    if (flags.dialog) {
-      const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, flags.out)
-      const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
-      const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
-      if (writeDone) {
-        this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
+      // create builder class
+      const builder = new Builder((input: string) => {
+        if (flags.log) this.log(input)
+      })
+
+      let luContents: any[] = []
+      let recognizers = new Map<string, any>()
+      let multiRecognizers = new Map<string, any>()
+      let settings = new Map<string, any>()
+
+      if (flags.stdin && flags.stdin !== '') {
+        // load lu content from stdin and create default recognizer, multiRecognier and settings
+        this.log('Load lu content from stdin\n')
+        const content = new Content(flags.stdin, 'stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin'))
+        luContents.push(content)
+        multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
+        settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {}))
+        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
+        recognizers.set(content.name, recognizer)
       } else {
-        this.log(`No changes to the .dialog files in ${outputFolder}\n`)
+        this.log('Start to load lu files\n')
+
+        // get lu files from flags.in
+        if (flags.in && flags.in !== '') {
+          const luFiles = await file.getLuFiles(flags.in, true, fileExtEnum.LUFile)
+          files.push(...luFiles)
+        }
+
+        // load lu contents from lu files
+        // load existing recognizers, multiRecogniers and settings or create default ones
+        const loadedResources = await builder.loadContents(files, flags.defaultCulture, flags.suffix, flags.region)
+        luContents = loadedResources.luContents
+        recognizers = loadedResources.recognizers
+        multiRecognizers = loadedResources.multiRecognizers
+        settings = loadedResources.settings
       }
-    } else {
-      this.log('The published application ids:')
-      this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).luis)
+
+      // update or create and then train and publish luis applications based on loaded resources
+      this.log('Start to handle applications\n')
+      const dialogContents = await builder.build(luContents, recognizers, flags.authoringKey, flags.region, flags.botName, flags.suffix, flags.fallbackLocale, flags.deleteOldVersion, multiRecognizers, settings)
+
+      // write dialog assets based on config
+      if (flags.dialog) {
+        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, flags.out)
+        const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
+        const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
+        if (writeDone) {
+          this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
+        } else {
+          this.log(`No changes to the .dialog files in ${outputFolder}\n`)
+        }
+      } else {
+        this.log('The published application ids:')
+        this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).luis)
+      }
+    } catch (error) {
+      throw new CLIError(error)
     }
   }
 }
