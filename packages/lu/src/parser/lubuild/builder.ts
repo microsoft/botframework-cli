@@ -267,7 +267,7 @@ export class Builder {
         const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
         for (const versionObj of versionObjs) {
           if (versionObj.version !== newVersionId) {
-            this.handler(`deleting old version=${versionObj.version}`)
+            this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}\n`)
             await luBuildCore.deleteVersion(recognizer.getAppId(), versionObj.version)
           }
         }

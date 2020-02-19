@@ -588,3 +588,94 @@ describe('luis:build not update application if only cases of utterances or patte
       expect(ctx.stdout).to.contain('no changes')
     })
 })
+
+describe('luis:build update application succeed with parameters set from luconfig', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/luconfig/luis/MyProject(development)-test.en-us.lu.json')
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'MyProject(development)-test.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'MyProject(development)-test.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('import'))
+      .reply(201, '0.2')
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [
+        {
+          version: '0.1'
+        },
+        {
+          version: '0.2'
+        }
+      ])
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .delete(uri => uri.includes('apps'))
+      .reply(200)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.2',
+        isStaging: true
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--authoringKey', uuidv1(), '--luConfig', './test/fixtures/testcases/lubuild/luconfig/lufiles/luconfig.json', '--log'])
+    .it('should update a luis application when utterances changed', async ctx => {
+      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('creating version=0.2')
+      expect(ctx.stdout).to.contain('deleting old version=0.1')
+      expect(ctx.stdout).to.contain('training version=0.2')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.2')
+      expect(ctx.stdout).to.contain('publishing version=0.2')
+      expect(ctx.stdout).to.contain('publishing finished')
+
+      expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/luconfig/config/luis.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/test.en-us.lu.dialog', './../../fixtures/testcases/lubuild/luconfig/dialogs/test.en-us.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.lu.dialog', './../../fixtures/testcases/lubuild/luconfig/dialogs/test.lu.dialog')).to.be.true
+    })
+})
