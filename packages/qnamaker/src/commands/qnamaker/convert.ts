@@ -4,7 +4,7 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-import * as file from './../../utils/filehelper'
+const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
 const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
 const fs = require('fs-extra')
 const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
@@ -78,6 +78,7 @@ export default class QnamakerConvert extends Command {
         this.log(result)
       }
     } catch (error) {
+      console.log(error)
       if (error instanceof exception) {
         throw new CLIError(error.text)
       }

@@ -3,7 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, utils} from '@microsoft/bf-cli-command'
+import {readTextFile} from './textfilereader'
+const exception = require('./../parser/utils/exception')
+const retCode = require('./../parser/utils/enums/CLI-errors')
 const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
@@ -35,13 +37,13 @@ export async function getLuFiles(input: string | undefined, recurse = false, ext
   }
 
   if (!fileStat.isDirectory()) {
-    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, ' + input + ' is not a folder or does not exist'))
   }
 
   filesToParse = helpers.findLUFiles(input, recurse, extType)
 
   if (filesToParse.length === 0) {
-    throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, no ${extType} files found in the specified folder.`))
   }
   return filesToParse
 }
@@ -49,16 +51,16 @@ export async function getLuFiles(input: string | undefined, recurse = false, ext
 export async function getContentFromFile(file: string) {
   // catch if input file is a folder
   if (fs.lstatSync(file).isDirectory()) {
-    throw new CLIError('Sorry, "' + file + '" is a directory! Unable to read as a file')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, "' + file + '" is a directory! Unable to read as a file'))
   }
   if (!fs.existsSync(path.resolve(file))) {
-    throw new CLIError('Sorry [' + file + '] does not exist')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry [' + file + '] does not exist'))
   }
   let fileContent
   try {
-    fileContent = await utils.readTextFile(file)
+    fileContent = await readTextFile(file)
   } catch (err) {
-    throw new CLIError('Sorry, error reading file: ' + file)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, error reading file: ' + file))
   }
   return fileContent
 }
@@ -67,7 +69,7 @@ export async function generateNewFilePath(outFileName: string, inputfile: string
   let base = path.resolve(outFileName)
   let root = path.dirname(base)
   if (!fs.existsSync(root)) {
-    throw new CLIError('Path not found: ' + root)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Path not found: ' + root))
   }
 
   let extension = path.extname(base)
@@ -90,11 +92,11 @@ export async function generateNewTranslatedFilePath(fileName: string, translated
 
   let extension = path.extname(newPath)
   if (extension) {
-    throw new CLIError('Output can only be writen to a folder')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Output can only be writen to a folder'))
   }
 
   if (!fs.existsSync(newPath)) {
-    throw new CLIError('Path not found: ' + newPath)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Path not found: ' + newPath))
   }
 
   newPath = path.join(output, translatedLanguage)
@@ -107,7 +109,7 @@ export function validatePath(outputPath: string, defaultFileName: string, forceW
   const containingDir = path.dirname(completePath)
 
   // If the cointaining folder doesnt exist
-  if (!fs.existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
+  if (!fs.existsSync(containingDir)) throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Containing directory path doesn't exist: ${containingDir}`))
 
   const baseElement = path.basename(completePath)
   const pathAlreadyExist = fs.existsSync(completePath)
@@ -118,7 +120,7 @@ export function validatePath(outputPath: string, defaultFileName: string, forceW
   }
 
   // If the last element in the path is a folder
-  if (!pathAlreadyExist) throw new CLIError(`Target directory path doesn't exist: ${completePath}`)
+  if (!pathAlreadyExist) throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Target directory path doesn't exist: ${completePath}`))
   completePath = path.join(completePath, defaultFileName)
   return fs.existsSync(completePath) && !forceWrite ? enumerateFileName(completePath) : completePath
 }
@@ -127,7 +129,7 @@ function enumerateFileName(filePath: string): string {
   const fileName = path.basename(filePath)
   const containingDir = path.dirname(filePath)
 
-  if (!fs.existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
+  if (!fs.existsSync(containingDir)) throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Containing directory path doesn't exist: ${containingDir}`))
 
   const extension = path.extname(fileName)
   const baseName = path.basename(fileName, extension)
@@ -143,12 +145,12 @@ function enumerateFileName(filePath: string): string {
 
 export async function detectLuContent(stdin: string, input: string) {
   if (!stdin && !input) {
-    throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Missing input. Please use stdin or pass a file location with --in flag'))
   }
 
   if (!stdin) {
     if (!fs.existsSync(path.resolve(input))) {
-      throw new CLIError(`Sorry unable to open [${input}]`)
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry unable to open [${input}]`))
     }
 
     let inputStat = await fs.stat(input)
@@ -167,7 +169,7 @@ export function parseJSON(input: string, appType: string) {
   try {
     return JSON.parse(input)
   } catch (error) {
-    throw new CLIError(`Sorry, error parsing content as ${appType} JSON`)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, error parsing content as ${appType} JSON`))
   }
 }
 
