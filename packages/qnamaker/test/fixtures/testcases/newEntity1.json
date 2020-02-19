@@ -1,0 +1,147 @@
+{
+    "intents": [],
+    "entities": [
+      {
+        "name": "s1",
+        "roles": [
+          "sr1",
+          "sr2"
+        ]
+      }
+    ],
+    "composites": [
+      {
+        "name": "c1",
+        "children": [
+          "l1",
+          "l2"
+        ],
+        "roles": []
+      },
+      {
+        "name": "c2",
+        "children": [
+          "l1",
+          "l2"
+        ],
+        "roles": [
+          "cr1",
+          "cr2"
+        ]
+      }
+    ],
+    "closedLists": [
+      {
+        "name": "l1",
+        "subLists": [
+          {
+            "canonicalForm": "1",
+            "list": [
+              "one",
+              "uno"
+            ]
+          },
+          {
+            "canonicalForm": "2",
+            "list": [
+              "two",
+              "duo"
+            ]
+          }
+        ],
+        "roles": [
+          "lr1",
+          "lr2"
+        ]
+      },
+      {
+        "name": "l2",
+        "subLists": [
+          {
+            "canonicalForm": "one",
+            "list": [
+              "cheese"
+            ]
+          },
+          {
+            "canonicalForm": "two",
+            "list": [
+              "tomato"
+            ]
+          }
+        ],
+        "roles": []
+      }
+    ],
+    "regex_entities": [
+      {
+        "name": "r1",
+        "regexPattern": "[0-9]{6}",
+        "roles": [
+          "rr1",
+          "rr2"
+        ]
+      },
+      {
+        "name": "r2",
+        "regexPattern": "abc",
+        "roles": []
+      }
+    ],
+    "model_features": [
+      {
+        "name": "pl1",
+        "words": "cheese,tomato,potato",
+        "mode": false,
+        "activated": true
+      },
+      {
+        "name": "pl2",
+        "words": "I want,I have",
+        "mode": true,
+        "activated": true
+      }
+    ],
+    "regex_features": [],
+    "utterances": [],
+    "patterns": [],
+    "patternAnyEntities": [
+      {
+        "name": "p1",
+        "explicitList": [],
+        "roles": [
+          "pr1",
+          "pr2"
+        ]
+      }
+    ],
+    "prebuiltEntities": [
+      {
+        "name": "datetimeV2",
+        "roles": [
+          "dr1",
+          "dr2"
+        ]
+      },
+      {
+        "name": "number",
+        "roles": [
+          "nr1",
+          "nr2"
+        ]
+      },
+      {
+        "name": "personName",
+        "roles": [
+          "userName",
+          "firstName",
+          "lastName"
+        ]
+      }
+    ],
+    "luis_schema_version": "3.2.0",
+    "versionId": "0.1",
+    "name": "",
+    "desc": "",
+    "culture": "en-us"
+  }
