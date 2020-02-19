@@ -6,9 +6,9 @@ The task wraps [AZ CLI](https://docs.microsoft.com/en-us/cli/azure/?view=azure-c
 
 The task requires a zipped bot project as an input parameter, and does a [zip-deploy](https://github.com/projectkudu/kudu/wiki/Deploying-from-a-zip-file-or-url) to upload and deploy the bot to Azure.
 
-This allows the task to be able to deploy almost any bot*, whether they are .NET or JS, or use cognitive services such as LUIS, as long as they use the proper template and are zipped and prepared as the zip deployment is indicated for the language (see [link](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-deploy-az-cli?view=azure-bot-service-4.0&tabs=csharp#5-prepare-your-code-for-deployment)).
+This allows the task to be able to deploy any bot, whether they are .NET, JS or Python*, or use cognitive services such as LUIS, as long as they use the proper template and are zipped and prepared as the zip deployment is indicated for the language (see [link](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-deploy-az-cli?view=azure-bot-service-4.0&tabs=csharp#5-prepare-your-code-for-deployment)).
 
-**the deployment of bots in Python is not functional currently.*
+_(*) Python bots are deployed in Linux environments, therefore the pipeline needs to be set with a Linux agent._
 
 ## Requirements
 
@@ -18,9 +18,9 @@ To deploy to Azure, an Azure subscription has to be linked to Team Foundation Se
 
 ### Prerequisites
 
-- azure-pipelines-task-lib library
-- Project bot published in a zip file
+- Bot project published in a zip file
 - ARM template
+- [Microsoft App Registration](https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade) (_AppId_ and _AppSecret_)
 
 ### Use Cases
 
@@ -85,8 +85,6 @@ The parameters listed with a * are required for the task:
 - Select the organization you want to use the task and click on install. 
 
 - Then click **Proceed to organization**.
-
-  
 
 ![image-20200212170211974](./media/image-20200212170211974.png)
 
