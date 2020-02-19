@@ -1,5 +1,5 @@
 {
-  "name": "orchestrator",
+  "name": "@microsoft/bf-orchestrator",
   "description": "Bot Orchestrator",
   "version": "1.0.0",
   "author": "Microsoft",
