@@ -1,0 +1,4 @@
+> [link name](<.lu file path>#<INTENT-NAME>*utterances*) will find all utterances (and not patterns) found under <INTENT-NAME> in the .lu file and add them to the list of utterances where this reference is specified
+
+# importIntent
+- [impotOnlyUtterances](./ref_src1.lu#test*utterances*)
