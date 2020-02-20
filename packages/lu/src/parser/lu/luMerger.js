@@ -1,6 +1,10 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 const fs = require('fs');
 const path = require('path');
-const deepEqual = require('deep-equal')
 const parseFileContents = require('./../lufile/parseFileContents');
 const retCode = require('./../utils/enums/CLI-errors');
 const helpers = require('./../utils/helpers');
@@ -34,7 +38,7 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
     let allParsedLUISContent = []
     let allParsedQnAContent = []
     let allParsedAlterationsContent = []
-    let filesToParse = luObjArray
+    let filesToParse = Array.from(luObjArray)
     let parsedFiles = []
     while (filesToParse.length > 0) {
         let luOb = filesToParse[0]
