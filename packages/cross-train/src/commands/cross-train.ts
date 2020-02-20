@@ -4,10 +4,10 @@
  */
 
 import {Command, flags} from '@microsoft/bf-cli-command'
-const crossTrain = require('./../../node_modules/@microsoft/bf-lu/lib/parser/cross-train/cross-train')
+const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
 const path = require('path')
 
-export default class CrossTrian extends Command {
+export default class CrossTrain extends Command {
   static description = 'Lu and Qna cross train tool'
 
   static flags: flags.Input<any> = {
@@ -20,7 +20,7 @@ export default class CrossTrian extends Command {
 
   async run() {
     try {
-      const {flags} = this.parse(CrossTrian)
+      const {flags} = this.parse(CrossTrain)
 
       if (flags.config && flags.config !== '') {
         if (!path.isAbsolute(flags.config)) {
