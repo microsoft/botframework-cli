@@ -49,4 +49,3 @@
 
 > TODO: Would be good to split out all the component pieces, i.e. help, cancel, confirmation into their own files
 [library-PROPERTYName.lg]
-[library-ConfirmationEntity.lg]
