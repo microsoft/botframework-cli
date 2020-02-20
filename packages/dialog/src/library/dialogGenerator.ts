@@ -42,12 +42,6 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
 }
 
 const expressionEngine = new expressions.ExpressionEngine((func: any) => {
-    // TODO: Remove
-    if (func.startsWith('sub'))
-    {
-        let a = 1
-    }
-
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator

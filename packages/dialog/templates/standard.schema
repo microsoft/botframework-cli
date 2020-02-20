@@ -53,6 +53,7 @@
         }
     },
     "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
+    "$operations": ["AddToProperty", "RemoveFromProperty", "ClearProperty", "ShowProperty"],
     "$templates": [
         "library-HelpIntent.lu",
         "library-CancelIntent.lu",

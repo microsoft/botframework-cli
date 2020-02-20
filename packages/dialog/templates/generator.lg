@@ -21,3 +21,4 @@
 
 # assignFilename(entity)
 - @{schemaName}-@{property}-assign-@{entity}Entity.dialog
+

@@ -1,0 +1,17 @@
+# filename
+- @{schemaName}-@{property}-clear.dialog
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnClearProperty",
+    "condition": "turn.dialogEvent.Value.Change.Slot == '@{property}'",
+    "actions": [
+        {
+            "$kind": "Microsoft.DeleteProperty",
+            "property": "$@{PROPERTY}"
+        }
+    ]
+}
+```

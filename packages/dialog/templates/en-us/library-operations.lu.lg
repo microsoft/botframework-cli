@@ -1,11 +1,12 @@
 # filename
-- @{entityLUFilename()}
+- @{schemaName}-library-operations.@{locale}.lu
 
 # template
 - ```
-@ list @{property}Entity =
-@{join(foreach(schema.properties[property].items.enum, enum, concat('  - ', enum, ' :\n', synonyms(enum))), '\n')}
-
+@ composite AddToProperty = @{propertyList()}
+@ composite RemoveFromProperty @{propertyList()}
+@ composite ClearProperty = [PROPERTYName]
+@ composite ShowPropery
 > @ composite addToArray = \@{string(select(where(indicesAndValues(schema.properties), propDef, value.type == 'array'), propDef, concat(propDef.index, Entity)))}
 @ composite addToArray = [@{property}Entity]
 
@@ -23,5 +24,11 @@
 
 # synonyms(value)
 - @{join(foreach(phrases(value), phrase, concat('    - ', phrase)), '\n')}
+
+# propertyList
+- @{string(properties()}
+
+# properties
+- @{foreach(indicesAndValues(schema.properties), property, concat(property, 'Entity'))}
 
 [generator.lg](../generator.lg)

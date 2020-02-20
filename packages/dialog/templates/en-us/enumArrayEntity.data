@@ -1,4 +1,0 @@
-- add {@addToArray=@{phrase} and @{phrase}} and remove {@removeFromArray=@{phrase}}
-- add {@addToArray=@{phrase}, @{phrase} and @{phrase}}
-- remove {@remove=@{phrase}, @{phrase} and @{phrase}}
-- remove {@remove=@{phrase}} and add {@addToArray=@{phrase}}

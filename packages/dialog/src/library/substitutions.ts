@@ -7,6 +7,7 @@ import * as expr from 'botframework-expressions'
 import * as fs from 'fs-extra'
 import * as os from 'os'
 import * as random from 'seedrandom'
+import { stringify } from 'querystring'
 
 /**
  * Return the result of replicating lines from a source file and substituting random values 
@@ -19,24 +20,28 @@ import * as random from 'seedrandom'
 function substitutions(path: string, bindings: any, copies?: number, seed?: string): string {
     if (!copies) copies = 1
     if (!seed) seed = '0'
-    for(let binding of Object.keys(bindings)) {
+    for (let binding of Object.keys(bindings)) {
         bindings[binding] = bindings[binding].flat()
     }
     let result: string[] = []
     let rand = random(seed)
     let lines = fs.readFileSync(path).toString().split(os.EOL)
     for (let line of lines) {
-        for (let i = 0; i < copies; ++i) {
-            let newline = line.replace(/\@{([^}]*)\}/g,
-                (_, key) => {
-                    let choice = '**MISSING**'
-                    let choices = bindings[key]
-                    if (choices) {
-                        choice = choices[Math.abs(rand.int32()) % choices.length]
-                    }
-                    return choice
-                })
-            result.push(newline)
+        if (line.startsWith('>') || line.trim() === '') { // Copy comments
+            result.push(line)
+        } else {
+            for (let i = 0; i < copies; ++i) {
+                let newline = line.replace(/\@{([^}]*)\}/g,
+                    (_, key) => {
+                        let choice = '**MISSING**'
+                        let choices = bindings[key]
+                        if (choices) {
+                            choice = choices[Math.abs(rand.int32()) % choices.length]
+                        }
+                        return choice
+                    })
+                result.push(newline)
+            }
         }
     }
     return result.join('\n')
