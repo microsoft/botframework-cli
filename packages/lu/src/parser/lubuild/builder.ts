@@ -12,6 +12,7 @@ const fs = require('fs-extra')
 const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
+const retCode = require('./../utils/enums/CLI-errors');
 const exception = require('./../utils/exception')
 const LuisBuilder = require('./../luis/luisBuilder')
 const Content = require('./../lu/lu')
@@ -43,9 +44,7 @@ export class Builder {
         const result = await LuisBuilder.build(luFiles, true, culture)
         fileContent = result.parseToLuContent()
       } catch (err) {
-        if (err instanceof exception) {
-          throw new Error(`Errors occurred when parsing file ${file}: ${err.text}`)
-        }
+        err.text = `Invalid LU file ${file}: ${err.text}`
         throw err
       }
 
@@ -104,7 +103,7 @@ export class Builder {
     })
 
     if (hasDuplicates) {
-      throw new Error('Files with same name and locale are found.')
+      throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Files with same name and locale are found.'))
     }
 
     return {luContents, recognizers, multiRecognizers, settings}

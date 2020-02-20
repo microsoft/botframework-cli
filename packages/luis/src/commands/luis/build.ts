@@ -7,6 +7,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
+const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
 const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const Content = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/lu')
 const Settings = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/settings')
@@ -128,7 +129,10 @@ export default class LuisBuild extends Command {
         this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).luis)
       }
     } catch (error) {
-      throw new CLIError(error)
+      if (error instanceof exception) {
+        throw new CLIError(error.text)
+      }
+      throw error
     }
   }
 }

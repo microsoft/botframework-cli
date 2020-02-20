@@ -58,7 +58,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3.lu')}`, '--botName', 'Contoso'])
     .it('displays an error if error occurs in parsing lu content', ctx => {
-      expect(ctx.stderr).to.contain('Errors occurred when parsing file')
+      expect(ctx.stderr).to.contain('Invalid LU file')
       expect(ctx.stderr).to.contain('[ERROR] line 4:0 - line 4:16: Invalid intent body line, did you miss \'-\' at line begin')
     })
 })
