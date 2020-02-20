@@ -37,7 +37,6 @@ export default class LuisApplicationShow extends Command {
       const appData = await client.apps.get(appId)
       if (appData) {
         await utils.writeToConsole(appData)
-        this.log('\nApplication data successfully output to console')
       }
     } catch (err) {
       throw new CLIError(`Failed to retrieve application data: ${err}`)

@@ -1,6 +1,6 @@
-# readForm
+# readForm(name)
 [Activity
-    Attachments=@{json(formCard())}
+    Attachments=@{json(formCard(name))}
 ]
 
 >>> To generate text instead of card, use this
@@ -15,7 +15,7 @@
 - ELSE:
 - The value of @{toLower(property)} is @{dialog[property]}.
 
-# formCard
+# formCard(name)
 -```
 {
     "type": "AdaptiveCard",
@@ -23,7 +23,7 @@
     "body": [
         {
             "type": "TextBlock",
-            "text": "sandwich",
+            "text": "@{name}",
             "size": "large"
         },
         {
