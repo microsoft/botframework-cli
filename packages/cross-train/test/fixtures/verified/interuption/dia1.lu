@@ -1,0 +1,18 @@
+# bookHotel
+- book a hotel in Seattle
+
+# hotelType
+- Which type of hotel do you prefer
+- book a hotel in Seattle
+
+# _Interuption
+- book a flight from Seattle to Beijing
+- which {flightTime} do you prefer
+- book a train ticket from Seattle to Portland
+- When do you want to leave from Seattle train station
+- user guide
+
+# DeferToRecognizer_QnA_dia1
+- tell joke
+- tell me a joke
+- can you make me laugh?

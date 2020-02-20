@@ -42,9 +42,6 @@ export async function getLuFiles(input: string | undefined, recurse = false, ext
 
   filesToParse = helpers.findLUFiles(input, recurse, extType)
 
-  if (filesToParse.length === 0) {
-    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, no ${extType} files found in the specified folder.`))
-  }
   return filesToParse
 }
 
@@ -222,7 +219,7 @@ export async function getConfigObject(input: string) {
         }
       }
     } catch (err) {
-      throw new Error(`Sorry, invalid cross training config: ${err}`)
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, invalid cross training config: ${err}`))
     }
   }
 

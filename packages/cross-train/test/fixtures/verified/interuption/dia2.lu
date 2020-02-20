@@ -1,0 +1,27 @@
+# dia3_trigger
+- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+- which {flightTime} do you prefer
+
+@simple fromLocation
+
+@ simple toLocation
+
+@ phraselist flightTimeline = 
+	- morning,afternoon,evening
+
+# dia4_trigger
+- book a train ticket from Seattle to Portland
+- When do you want to leave from Seattle train station
+
+# _Interuption
+- book a hotel in Seattle
+- Which type of hotel do you prefer
+- user guide
+
+# DeferToRecognizer_QnA_dia2
+- sing song
+- can you sing a song
+- make some tunes
+- tell joke
+- tell me a joke
+- can you make me laugh?

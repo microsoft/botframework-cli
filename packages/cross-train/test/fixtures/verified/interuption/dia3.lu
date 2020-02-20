@@ -1,0 +1,25 @@
+# bookFlight
+- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+
+@simple fromLocation
+
+@ simple toLocation
+
+# flightTime
+- which {flightTime} do you prefer
+
+@ phraselist flightTimeline = 
+	- morning,afternoon,evening
+
+# _Interuption
+- book a train ticket from Seattle to Portland
+- When do you want to leave from Seattle train station
+- book a hotel in Seattle
+- Which type of hotel do you prefer
+- user guide
+- tell joke
+- sing song
+- can you sing a song
+- make some tunes
+- tell me a joke
+- can you make me laugh?

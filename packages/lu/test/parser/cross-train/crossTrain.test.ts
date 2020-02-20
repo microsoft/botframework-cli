@@ -1,7 +1,7 @@
 import {expect, test} from '@oclif/test'
 const fs = require('fs-extra')
 const path = require('path')
-const crossTrain = require('./../../../src/parser/lu/cross-train')
+const crossTrain = require('./../../../src/parser/cross-train/cross-train')
 
 const compareLuFiles = async function (file1: string, file2: string) {
   let result = await fs.readFile(path.join(__dirname, file1))

@@ -1,0 +1,26 @@
+# ?chanter la chanson
+- pouvez-vous chanter une chanson
+- faire quelques airs
+
+**Filters:**
+- dialogName=dia2
+
+```
+    Bien sûr, je peux vous aider avec ça.
+```
+
+> Source:cross training. Please do not edit these directly!
+# ?réserver un vol de Seattle à Beijing
+- quel temps de vol préférez-vous
+- Réservez un billet de train de Seattle à Portland
+- Quand voulez-vous partir de la gare de Seattle
+- réserver un hôtel à Seattle
+- Quel type d'hôtel préférez-vous
+- guide de l'utilisateur
+
+**Filters:**
+- dialogName=dia2
+
+```
+intent=DeferToRecognizer_LUIS_dia2
+```
