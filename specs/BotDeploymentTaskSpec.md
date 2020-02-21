@@ -76,6 +76,8 @@ The parameters listed with a * are required for the task:
 
   *Note: Slack, Webex, Facebook and Twilio need extra credentials that will be required once the check box is selected.*
 
+- **Enable Telemetry**: Enables the option of sending anonymous usage telemetry. It's true by default.
+
 ## Usage and installation
 
 **Installing**
@@ -133,6 +135,6 @@ The final result is the bot deployed in Azure, you can check it on [Azure Portal
 
 The connection with the Slack, Twilio, Facebook and Webex channels is made through the [BotFramework SDK Adapters](https://github.com/microsoft/botbuilder-dotnet/tree/master/libraries/Adapters). Therefore, the deployed bot must include the corresponding adapters to connect with these channels.
 
-## Issues
+If the **_Enable Telemetry_** option is set to true, the task sends information about usage as the execution time, which channels were selected to connect the bot, exceptions and errors. 
 
-- TODO: Add telemetry to identify the use of the AZ CLI throughout the task.
+## Known Issues
