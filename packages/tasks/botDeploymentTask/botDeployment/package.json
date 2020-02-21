@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/microsoft/botframework-cli#readme",
   "dependencies": {
+    "@types/dotenv": "^8.2.0",
     "applicationinsights": "^1.7.0",
-    "azure-pipelines-task-lib": "^2.9.3"
+    "azure-pipelines-task-lib": "^2.9.3",
+    "dotenv": "^8.2.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.21",

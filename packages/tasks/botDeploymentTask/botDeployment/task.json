@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":78
+        "Release":81
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [

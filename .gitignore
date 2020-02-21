@@ -51,6 +51,7 @@ jspm_packages/
 
 # dotenv environment variables file
 .env
+!packages/tasks/botDeploymentTask/botDeployment/.env
 
 # next.js build output
 .next

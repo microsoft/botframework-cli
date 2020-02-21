@@ -9,20 +9,25 @@ import { SubscriptionHelper } from './subscriptionHelper';
 import { InputValues } from './inputValues';
 import { lstatSync, readFileSync } from 'fs';
 import * as AppInsights from 'applicationinsights';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 const input = new InputValues();
 const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
 const outputFileDirectLine = `${ rootPath }/DirectLineCreate.json`;
 const outputFileTeams = `${ rootPath }/TeamsCreate.json`;
-const instrumentationKey = 'xxxxxxxx';
 const taskType = taskLibrary.getVariable("Release.ReleaseId") ? "Release Task": "Build Task"
+
+const envFile = path.join(__dirname, '.env');
 let formattedParams = new Map<string, string>();  
 let botName:string = '';
 let webAppName:string = '';
 let telemetryClient: AppInsights.TelemetryClient;
 
+dotenv.config({ path: envFile });
+
 const appInsightInit = (): void => {
-    AppInsights.setup(instrumentationKey)
+    AppInsights.setup(process.env.InstrumentationKey)
       // turn off extra instrumentation
       .setAutoCollectConsole(false)
       .setAutoCollectDependencies(false)
