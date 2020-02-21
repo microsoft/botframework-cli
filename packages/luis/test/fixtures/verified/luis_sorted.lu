@@ -9,10 +9,10 @@
 > # Intent definitions
 
 ## AskForUserName
-- {@userName=vishwac}
-- I'm {@userName=vishwac}
 - call me {@userName=vishwac}
+- I'm {@userName=vishwac}
 - my name is {@userName=vishwac}
+- {@userName=vishwac}
 - {@userName=vishwac} is my name
 - you can call me {@userName=vishwac}
 
@@ -24,8 +24,8 @@
 
 
 ## CommunicationPreference
-- set phone call as my communication preference
 - I prefer to receive text message
+- set phone call as my communication preference
 
 
 ## CreateAlarm
@@ -40,22 +40,22 @@
 
 
 ## Greeting
-- Hi
-- Hello
-- Good morning
 - Good evening
+- Good morning
+- Hello
+- Hi
 
 
 ## Help
+- can you help
 - help
 - I need help
 - please help
-- can you help
 
 
 ## None
-- who is your ceo?
 - santa wants a blue ribbon
+- who is your ceo?
 
 
 ## setThermostat
