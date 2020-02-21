@@ -1,7 +1,0 @@
-# filename
-- @{entityLUFilename()}
-
-# template
-- $@{property}Entity:boolean
-
-[generator.lg](../generator.lg)

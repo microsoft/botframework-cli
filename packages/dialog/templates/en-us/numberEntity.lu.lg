@@ -1,7 +1,0 @@
-# filename
-- @{entityLUFilename()}
-
-# template
-- $@{property}Entity:number
-
-[generator.lg](../generator.lg)
