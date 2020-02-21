@@ -293,9 +293,10 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      Force write dialog and settings files
+  -f, --force                      If --dialog flag is provided, overwirtes relevant dialog file
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
+  -o, --out=out                    Output file or folder name. If not specified, current directory will be used as output
   --authoringKey=authoringKey      (required) LUIS authoring key
   --botName=botName                Bot name
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
@@ -303,9 +304,8 @@ OPTIONS
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set
   --log                            write out log messages to console
   --luConfig=luConfig              Path to config for lu build
-  --out=out                        Output location
-  --region=region                  LUIS authoring region
-  --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name
+  --region=region                  [default: westus] LUIS authoring region [westus|westeurope|australiaeast]
+  --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in useralias
 
 EXAMPLE
 

@@ -1,0 +1,65 @@
+> !# @app.culture = fr-fr
+
+> L’intention d’aide sera traitée contextuellement en fonction du dialogue actif.
+# Help
+- Qu’est-ce que je peux dire ?
+- Qui es-tu?
+- J'ai besoin d'aide
+- Je ne sais pas ce que je peux faire
+- Qu’est-ce que tu veux que je dise ?
+- Qu’est-ce que tu peux faire ?
+- Qu’est-ce que tu peux aider ?
+- aider s’il vous plaît
+- Quelles sont mes options?
+- Eh bien, je ne sais pas ce que le titre de mon todo est
+- Je ne sais pas
+- pouvez-vous s’il vous plaît aider?
+
+# Greeting
+- Salut
+- Bonjour
+- Salut
+- Comment vas-tu?
+- Comment vas-tu?
+
+> L’intention d’annulation sera traitée contextuellement en fonction du dialogue actif.
+# Cancel
+- Annuler
+- annuler tous les
+- Arrête ça
+- ne le faites pas
+- Annuler
+- s’il vous plaît arrêter ce que vous faites
+- J’ai changé d’avis
+- annuler add todo
+- annuler que
+- Je ne veux pas ajouter un todo
+- Pas tous pour moi
+- Annuler cette
+- annuler supprimer todo
+- Laissons les choses telles qu’on est.
+- Je ne veux plus supprimer mon todo
+- Gardez mes todos tels qu’ils sont
+- Pas tous pour moi
+
+[TodoPhraseList](./fr-fr/TodoPhraseList-frx.lu)
+
+# ViewToDoDialog
+- montrer mon todo
+- pouvez-vous s’il vous plaît montrer mes todos?
+- s’il vous plaît montrer ma liste de todo
+- liste de todo s’il vous plaît
+- J’ai besoin de voir ma liste de todo
+- pouvez-vous me montrer la liste?
+- s’il vous plaît montrer la liste
+- Qu’est-ce que j’ai sur mon todo ?
+- qu’est-ce qui est sur ma liste?
+- ai-je quelque chose à gauche sur ma liste de todo?
+- J’espère que je n’ai plus rien à faire
+- ai-je des tâches à gauche?
+- me frapper avec plus d’articles
+- voir mes todos
+- pouvez-vous montrer mon todo
+- voir todo
+- Je voudrais voir ma liste de todos
+

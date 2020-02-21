@@ -1,0 +1,14 @@
+{
+    "name":"todobot",
+    "defaultLanguage":"en-us",
+    "deleteOldVersion": true, 
+    "models": [
+        "docs/examples/luis-build/RootDialog/LU/root.lu",
+        "docs/examples/luis-build/RootDialog/LU/fr-fr/root.lu",
+        "docs/examples/luis-build/AddTodoDialog/LU/add.lu",
+        "docs/examples/luis-build/AddTodoDialog/LU/es-es/add.lu",
+        "docs/examples/luis-build/AddTodoDialog/LU/fr-fr/add.lu",
+        "docs/examples/luis-build/DeleteToDoDialog/LU/del.lu",
+        "docs/examples/luis-build/DeleteToDoDialog/it-it/LU/del.it-it.lu"
+    ]
+}
