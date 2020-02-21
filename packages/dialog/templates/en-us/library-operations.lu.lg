@@ -3,32 +3,41 @@
 
 # template
 - ```
-@ composite AddToProperty = @{propertyList()}
-@ composite RemoveFromProperty @{propertyList()}
+@ composite AddToProperty = @{enumEntities()}
+@ composite RemoveFromProperty = @{properties}
 @ composite ClearProperty = [PROPERTYName]
-@ composite ShowPropery
-> @ composite addToArray = \@{string(select(where(indicesAndValues(schema.properties), propDef, value.type == 'array'), propDef, concat(propDef.index, Entity)))}
-@ composite addToArray = [@{property}Entity]
-
-@ composite removeFromArray = [@{property}Entity]
+@ composite ShowPropery = [PROPERTYName]
 
 # @{triggerIntent}
-@{substitutions('enumArrayEntity.data', json(concat('{"phrase": ', string(allSynonyms()), '}')), 3)}
-
+@{allSynonyms()}
+\@{substitutions('library-operations.data', json(concat('{"entity": ', allSynonyms(), '"property": ', properties, '}')), 3)}
 ```
-> >concat('{\'phrase\':', string(@{allSynonyms()}), '}')))}
->>> # None
->>> - # None\n@{join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
+
+> TODO: Would be nice to have flatten function
 # allSynonyms
-- @{foreach(schema.properties[property].items.enum, enum, phrases(enum))}
+- @{foreach(enumValues(), prop, foreach(prop, enum, phrases(enum)))}
 
-# synonyms(value)
-- @{join(foreach(phrases(value), phrase, concat('    - ', phrase)), '\n')}
+# enumEntities
+- @{select(enumProperties(), prop, concat(prop.name, 'Entity'))}
 
-# propertyList
-- @{string(properties()}
+# enumValues
+- @{select(enumProperties(), prop, if(prop.value.enum, prop.value.enum, if(prop.value.items.enum, prop.value.items.enum, createArray())))}
 
-# properties
-- @{foreach(indicesAndValues(schema.properties), property, concat(property, 'Entity'))}
+# enumProperties
+- @{where(propertyDefinitions(), property, property.value.enum || property.value.items.enum)}
+
+# propertyDefinitions
+- @{foreach(createArray('Bread', 'Cheese', 'Meat', 'Toppings'), property, propertyDefinition(property))}
+>> TODO: - @{indicesAndValues(schema.properties)}
+
+# propertyDefinition(property)
+- @{json(jsonString(property))}
+
+# jsonString(property)
+- @{concat('{"name": "', property, '", "value": ', string(schema.properties[property]), '}')}
+
+> # properties
+> - @{createArray('BreadEntity', 'CheeseEntity', 'MeatEntity', 'ToppingsEntity')}
+>> TODO: Waiting on library: - @{foreach(indicesAndValues(schema.properties), property, concat(property, 'Entity'))}
 
 [generator.lg](../generator.lg)
