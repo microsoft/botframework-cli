@@ -76,7 +76,7 @@ To disable data collection see the  __*bf config*__ command.
 
 ### Enable Telemetry in Continuous Integration Pipelines
 
-It is possible to bypass prompting while enabling telemetry collection in Continuous Integration / Continuos Deployment pipeline environments.  Per above, Microsoft will only collect anonymous data to help improve the CLI. To set your CI/CD pipeline telemetry collection behavior set the following OS environment variable:
+It is possible to bypass prompting while enabling telemetry collection in Continuous Integration / Continous Deployment pipeline environments. Per above, Microsoft will only collect anonymous data to help improve the CLI. To set your CI/CD pipeline telemetry collection behavior set the following OS environment variable:
 
 * set BF_CLI_TELEMETRY = true  : Bypass prompts and **enables** telemetry collection.
 * set BF_CLI_TELEMETRY = false : Bypass prompts and **disables** telemetry collection (default).
