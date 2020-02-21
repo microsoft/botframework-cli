@@ -14,6 +14,7 @@ const exception = require('../utils/exception')
 const retCode = require('../utils/enums/CLI-errors');
 const NEWLINE = require('os').EOL
 const path = require('path')
+const QNA_GENERIC_SOURCE = "custom editorial"
 
 module.exports = {
   /**
@@ -393,7 +394,21 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   let qnaSectionContents = []
   for (const qnaSection of qnaSections) {
     qnaSection.FilterPairs.push({ key: 'dialogName', value: fileName })
-    const qnaSectionContent = `# ? ${Array.from(new Set(qnaSection.Questions)).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}${qnaSection.Answer}${NEWLINE}\`\`\``
+    let qnaSectionContent = ''
+    if (qnaSection.source !== QNA_GENERIC_SOURCE) {
+      qnaSectionContent += `> !# @qna.pair.source = ${qnaSection.source}${NEWLINE}${NEWLINE}`
+    }
+
+    if (qnaSection.Id) {
+      qnaSectionContent += `<a id = "${qnaSection.Id}"></a>${NEWLINE}${NEWLINE}`
+    }
+
+    qnaSectionContent += `# ? ${Array.from(new Set(qnaSection.Questions)).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}${qnaSection.Answer}${NEWLINE}\`\`\``
+    
+    if (qnaSection.promptsText && qnaSection.promptsText.length > 0) {
+      qnaSectionContent += `${NEWLINE}${NEWLINE}**Prompts:**${NEWLINE}- ${qnaSection.promptsText.join(NEWLINE + '- ')}`
+    }
+
     qnaSectionContents.push(qnaSectionContent)
   }
 

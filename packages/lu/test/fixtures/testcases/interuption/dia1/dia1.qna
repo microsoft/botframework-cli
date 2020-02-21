@@ -5,6 +5,9 @@
 > !# @app.culture = en-us
 > !# @app.luis_schema_version = 3.2.0
 
+> !# @qna.pair.source = xyz
+<a id = "1"></a>
+
 # ?tell joke
 - tell me a joke
 - can you make me laugh?
@@ -15,6 +18,11 @@
 ```
     ha ha ha
 ```
+**Prompts:**
+- [joke](#3)
+- [flight booking](#?-book-flight) `context-only`
+- [weather](#?weather) `context-only`
+- [flight booking](#?32) `context-only`
 
 # ?book a hotel in Seattle
 ```

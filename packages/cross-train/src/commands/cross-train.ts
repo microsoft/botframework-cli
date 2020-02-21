@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
 const path = require('path')
