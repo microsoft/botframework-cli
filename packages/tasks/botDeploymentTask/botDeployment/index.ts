@@ -8,29 +8,48 @@ import { execSync } from "child_process";
 import { SubscriptionHelper } from './subscriptionHelper';
 import { InputValues } from './inputValues';
 import { lstatSync, readFileSync } from 'fs';
+import * as AppInsights from 'applicationinsights';
 
 const input = new InputValues();
 const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
 const outputFileDirectLine = `${ rootPath }/DirectLineCreate.json`;
 const outputFileTeams = `${ rootPath }/TeamsCreate.json`;
+const instrumentationKey = 'xxxxxxxx';
+const taskType = taskLibrary.getVariable("Release.ReleaseId") ? "Release Task": "Build Task"
 let formattedParams = new Map<string, string>();  
 let botName:string = '';
 let webAppName:string = '';
+let telemetryClient: AppInsights.TelemetryClient;
+
+const appInsightInit = (): void => {
+    AppInsights.setup(instrumentationKey)
+      // turn off extra instrumentation
+      .setAutoCollectConsole(false)
+      .setAutoCollectDependencies(false)
+      .setAutoCollectExceptions(false)
+      .setAutoCollectPerformance(false)
+      .setAutoCollectRequests(false)
+      .setAutoDependencyCorrelation(false)
+      .start();
+
+    telemetryClient = AppInsights.defaultClient;
+    telemetryClient.commonProperties = {
+        collection: taskLibrary.getVariable("system.collectionId") as string, 
+        projectId: taskLibrary.getVariable("system.teamProjectId") as string
+    };
+    telemetryClient.config.disableAppInsights = !input.telemetry;
+  }
 
 const azureLogin = (helper: SubscriptionHelper): void => {
     const userName = helper.getServicePrincipalClientId();
     const password = helper.getServicePrincipalKey();
     const tenantId = helper.getTenantId();
 
-    try {
-        console.log('Logging in to Azure...');
-        const loginCommand = `az login --service-principal --username "${ userName }" --password "${ password }" --tenant "${ tenantId }"`;
-        
-        execSync(loginCommand);
-        console.log('Successful login');
-    } catch (error) {
-        throw new Error('Error in login: ' + error);
-    }
+    console.log('Logging in to Azure...');
+    const loginCommand = `az login --service-principal --username "${ userName }" --password "${ password }" --tenant "${ tenantId }"`;
+    
+    execSync(loginCommand);
+    console.log('Successful login');
 }
 
 const getTemplateParameters = (): string => {
@@ -101,7 +120,7 @@ const getOptionalParameters = (): string => {
     if (input.slackChannel) {
         command += input.slackVerificationToken? ` slackVerificationToken="${ input.slackVerificationToken }"`: '';
         command += input.slackBotToken ? ` slackBotToken="${ input.slackBotToken }"` : '';
-        command += input.slackClientSigningSecret ? ` slackClientSigningSecret="${ input.slackClientSigningSecret }"` : '';
+        command += input.slackSigningSecret ? ` slackClientSigningSecret="${ input.slackSigningSecret }"` : '';
     }
 
     if (input.webexChannel) {
@@ -128,134 +147,141 @@ const getOptionalParameters = (): string => {
 }
 
 const validateDeployment = (): void => {
-    try {
-        console.log('Validating Deployment...');
+    console.log('Validating Deployment...');
 
-        let command = `az deployment validate --location "${ input.location }" --template-file "${ input.templateFile }" `;
-            command += getTemplateParameters();
-            command += getOptionalParameters();
-
-        execSync(command);
-        console.log('Deployment successfully validated');      
-    } catch (error) {
-        throw new Error('Error in deployment validation: ' + error);    
-    }
-}
-
-const ResourceGroupExists = (): boolean => {
-    try {
-        const output: string = `${ rootPath }/Output.txt`;
-        const command = `az group exists --name "${ input.resourceGroup }" > "${ output }"`;
-        let exists: string = "false";
-        let buffer: Buffer;
-        
-        execSync(command);        
-        buffer = readFileSync(output);
-        exists = buffer.toString('utf-8').trim();
-        console.log('Resource Group exists: ' + exists);
-
-        return exists === "true";
-    }
-    catch (error) {
-        throw new Error('Error checking Resource Group existence: ' + error);    
-    }    
-}
-
-const createResourceGroup = (): void => {
-    try {
-        console.log('Creating Resource Group...');
-
-        let command = `az group create --location "${ input.location }" --name "${ input.resourceGroup }"`;
-        
-        execSync(command);
-        console.log('Resource Group successfully created');      
-    } catch (error) {
-        throw new Error('Error in Resource Group creation: ' + error);    
-    }
-}
-
-const resourcesDeployment = (): void => {
-    try {
-        let command: string = '';
-        
-        console.log('Deploying resources to Azure...');        
-        if (input.scope === 'Resource Group') {
-            command = `az group deployment create --name "${ input.resourceGroup }" -g "${ input.resourceGroup }" --template-file "${ input.templateFile }"`;            
-        } 
-        else {
-            command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.templateFile }"`;
-        }
-
+    let command = `az deployment validate --location "${ input.location }" --template-file "${ input.templateFile }" `;
         command += getTemplateParameters();
         command += getOptionalParameters();
 
-        execSync(command);
-        console.log('Successful deployment');      
-    } catch (error) {
-        throw new Error('Error in deploy: ' + error);    
+    execSync(command);
+    console.log('Deployment successfully validated');      
+}
+
+const ResourceGroupExists = (): boolean => {
+    const output: string = `${ rootPath }/Output.txt`;
+    const command = `az group exists --name "${ input.resourceGroup }" > "${ output }"`;
+    let exists: string = "false";
+    let buffer: Buffer;
+    
+    execSync(command);        
+    buffer = readFileSync(output);
+    exists = buffer.toString('utf-8').trim();
+    console.log('Resource Group exists: ' + exists);
+
+    return exists === "true";
+}
+
+const createResourceGroup = (): void => {
+    console.log('Creating Resource Group...');
+
+    let command = `az group create --location "${ input.location }" --name "${ input.resourceGroup }"`;
+    
+    execSync(command);
+    console.log('Resource Group successfully created');      
+}
+
+const resourcesDeployment = (): void => {
+    let command: string = '';
+    
+    console.log('Deploying resources to Azure...');        
+    if (input.scope === 'Resource Group') {
+        command = `az group deployment create --name "${ input.resourceGroup }" -g "${ input.resourceGroup }" --template-file "${ input.templateFile }"`;            
+    } 
+    else {
+        command = `az deployment create --name "${ input.resourceGroup }" --location "${ input.location }" --template-file "${ input.templateFile }"`;
     }
+
+    command += getTemplateParameters();
+    command += getOptionalParameters();
+
+    execSync(command);
+    console.log('Successful deployment');      
 }
 
 const botDeployment = (): void => {
-    try {
-        console.log('Deploying bot to Azure...');
-        const command = `az webapp deployment source config-zip --resource-group "${ input.resourceGroup }" --name "${ webAppName }" --src "${ input.zipFile }"`;
-        
-        execSync(command);
-        console.log('Bot successfully deployed');
-    } catch (error) {
-        throw new Error('Error in bot deployment: ' + error);    
-    }
+    console.log('Deploying bot to Azure...');
+    const command = `az webapp deployment source config-zip --resource-group "${ input.resourceGroup }" --name "${ webAppName }" --src "${ input.zipFile }"`;
+    
+    execSync(command);
+    console.log('Bot successfully deployed');
 }
 
 const directLineConnection = (): void => {
-    try {
-        console.log('Connecting to Channel: Direct Line...');         
-        const command = `az bot directline create -n "${ botName }" -g "${ input.resourceGroup }" > "${ outputFileDirectLine }"`;
-    
-        execSync(command);
-        console.log('Connection with Direct Line succeeded'); 
-    } catch (error) {
-        throw new Error('Error in Direct Line connection: ' + error);    
-    }
+    console.log('Connecting to Channel: Direct Line...');         
+    const command = `az bot directline create -n "${ botName }" -g "${ input.resourceGroup }" > "${ outputFileDirectLine }"`;
+
+    execSync(command);
+    console.log('Connection with Direct Line succeeded'); 
 }
 
 const teamsConnection = (): void => {
-    try {
-        console.log('Connecting to Channel: Teams...');         
-        const command = `az bot msteams create -n "${ botName }" -g "${ input.resourceGroup }" > "${ outputFileTeams }"`;
-    
-        execSync(command);
-        console.log('Connection with Teams succeeded'); 
-    } catch (error) {
-        throw new Error('Error in Teams connection: ' + error);    
-    }
+    console.log('Connecting to Channel: Teams...');         
+    const command = `az bot msteams create -n "${ botName }" -g "${ input.resourceGroup }" > "${ outputFileTeams }"`;
+
+    execSync(command);
+    console.log('Connection with Teams succeeded'); 
 }
 
 const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
+    const startTime  = Date.now();
     
+    appInsightInit();
+
     azureLogin(helper);
 
-    if (input.validationMode) {
-        validateDeployment();
-        return;
-    }
+    try {        
+        if (input.validationMode) {
+            validateDeployment();
+            return;
+        }
 
-    if(!ResourceGroupExists()) {
-        createResourceGroup();
-    }
+        if(!ResourceGroupExists()) {
+            createResourceGroup();
+        }
 
-    resourcesDeployment();   
-    botDeployment();
-    
-    if (input.directLineChannel) {
-        directLineConnection();
-    }
+        resourcesDeployment();   
+        botDeployment();
+        
+        if (input.directLineChannel) {
+            directLineConnection();
+            telemetryClient.trackEvent({ name: "DirectLineConnection" });  
+        }
 
-    if (input.teamsChannel) {
-        teamsConnection();
+        if (input.slackChannel) {
+            telemetryClient.trackEvent({ name: "SlackConnection" });  
+        }
+
+        if (input.teamsChannel) {
+            teamsConnection();
+            telemetryClient.trackEvent({ name: "MSTeamsConnection" });  
+        }
+
+        if (input.webexChannel) {
+            telemetryClient.trackEvent({ name: "WebexConnection" });  
+        }
+
+        if (input.facebookChannel) {
+            telemetryClient.trackEvent({ name: "FacebookConnection" });  
+        }
+
+        if (input.twilioChannel) {
+            telemetryClient.trackEvent({ name: "TwilioConnection" });  
+        }
+
+        let duration = Date.now() - startTime;
+        telemetryClient.trackRequest({ name: "Task Execution", url: taskType, duration: duration, success: true, resultCode: "OK" });
+        taskLibrary.setResult(taskLibrary.TaskResult.Succeeded, "Ok", true);
+    }
+    catch (error) {
+        let duration = Date.now() - startTime;
+        telemetryClient.trackException({ exception: error });   
+        telemetryClient.trackRequest({ name: "Task Execution", url: taskType, duration: duration, success: false, resultCode: "Error" });
+        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error.message, true);
+    } 
+    finally {
+        telemetryClient.flush();
     }
 }
 

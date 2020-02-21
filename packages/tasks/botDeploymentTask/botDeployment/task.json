@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":68
+        "Release":78
     },
     "instanceNameFormat": "Bot Deployment",
     "groups": [
@@ -197,20 +197,20 @@
             "visibleRule": "slackChannel = TRUE"
         },
         {
-            "name": "slackBotToken",
+            "name": "slackBotUserOAuthAccessToken",
             "type": "text",
-            "label": "Slack Bot Token",
+            "label": "Slack Bot User OAuth Access Token",
             "required": false,
-            "helpMarkDown": "Provide the bot token from the Slack Application.",
+            "helpMarkDown": "Provide the bot user oauth access token from the Slack Application.",
             "groupname": "channels",
             "visibleRule": "slackChannel = TRUE"
         },
         {
-            "name": "slackClientSigningSecret",
+            "name": "slackSigningSecret",
             "type": "text",
-            "label": "Slack Client Signing Secret",
+            "label": "Slack Signing Secret",
             "required": false,
-            "helpMarkDown": "Provide the client signing secret from the Slack Application.",
+            "helpMarkDown": "Provide the signing secret from the Slack Application.",
             "groupname": "channels",
             "visibleRule": "slackChannel = TRUE"
         },
@@ -294,6 +294,15 @@
             "helpMarkDown": "Provide the Twilio authorization token for the account.",
             "groupname": "channels",
             "visibleRule": "twilioChannel = TRUE"
+        },
+        {
+            "name": "telemetry",
+            "type": "boolean",
+            "label": "Enable telemetry",
+            "required": false,
+            "defaultValue": true,
+            "helpMarkDown": "Send anonymous usage Telemetry.",
+            "groupname": "advanced"
         }
     ],
     "dataSourceBindings": [

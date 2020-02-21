@@ -24,7 +24,7 @@ export class InputValues {
     public twilioChannel?: boolean;
     public slackVerificationToken?: string = '';
     public slackBotToken?: string = '';
-    public slackClientSigningSecret?: string = '';
+    public slackSigningSecret?: string = '';
     public webexAccessToken?: string = '';
     public webexSecret?: string = '';
     public webexWebhookName?: string = '';
@@ -34,6 +34,7 @@ export class InputValues {
     public twilioNumber?: string = '';
     public twilioAccountSid?: string = '';
     public twilioAuthToken?: string = '';
+    public telemetry?: boolean;
 
     constructor() {
         this.scope = getInput('scope', true) as string;
@@ -52,8 +53,8 @@ export class InputValues {
         
         if (this.slackChannel) {
             this.slackVerificationToken = getInput('slackVerificationToken', false);
-            this.slackBotToken = getInput('slackBotToken', false);
-            this.slackClientSigningSecret = getInput('slackClientSigningSecret', false);
+            this.slackBotToken = getInput('slackBotUserOAuthAccessToken', false);
+            this.slackSigningSecret = getInput('slackSigningSecret', false);
         }
 
         if (this.webexChannel) {
@@ -75,6 +76,7 @@ export class InputValues {
         }
 
         this.validationMode = getBoolInput('validationMode', false);
+        this.telemetry = getBoolInput('telemetry', true);
     }
 
     private validatePath = (inputName: string): string => {
