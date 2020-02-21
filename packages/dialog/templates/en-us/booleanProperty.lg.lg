@@ -5,7 +5,7 @@
 - @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{schemaName}-@{property}Entity.@{locale}.lg]\n\[library.lg]\n\[library-Missing.lg]
 
 # AskTemplate
-- # Ask@{property}\n- @\{askString('@{property}')\}\n
+- # Ask@{property}\n- @\{askBoolean('@{property}')\}\n
 
 # ValueTemplate
 - # @{property}(val)\n- @\{@{concat(property, 'Entity')}(val)}\n

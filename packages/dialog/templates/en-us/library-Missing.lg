@@ -20,5 +20,11 @@ Which value do you want for @{name(property)}?
 Enter a value for @{name(property)}
 ```
 
+# askBoolean(property)
+- ```
+@{askHelp()}
+Enter a value for @{name(property)}: true or false
+```
+
 [library.lg]
 [library-Help.lg]
