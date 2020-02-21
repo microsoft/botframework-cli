@@ -126,7 +126,7 @@ export class Builder {
     let luisApiTps = 5
 
     // set luis call delay duration to 1200 millisecond because 1000 can hit corner case of rate limit
-    let delayDuration = 1200
+    let delayDuration = 1100
 
     const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
     const apps = await luBuildCore.getApplicationList()

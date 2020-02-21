@@ -108,7 +108,7 @@ describe('luis:build create a new application successfully', () => {
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should create a new application successfully', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
       expect(ctx.stdout).to.contain('waiting for training for version=0.1')
@@ -173,7 +173,7 @@ describe('luis:build update application succeed when utterances changed', () => 
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should update a luis application when utterances changed', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('training version=0.2')
       expect(ctx.stdout).to.contain('waiting for training for version=0.2')
@@ -238,7 +238,7 @@ describe('luis:build update application succeed when utterances added', () => {
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should update a luis application when utterances added', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('training version=0.2')
       expect(ctx.stdout).to.contain('waiting for training for version=0.2')
@@ -274,7 +274,7 @@ describe('luis:build not update application if no changes', () => {
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
     })
 })
@@ -435,7 +435,7 @@ describe('luis:build create multiple applications successfully when input is a f
       expect(ctx.stdout).to.contain('foo.lu loaded')
       expect(ctx.stdout).to.contain('foo.zh-cn.lu loaded')
 
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
       expect(ctx.stdout).to.contain('waiting for training for version=0.1')
@@ -544,7 +544,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
       expect(ctx.stdout).to.contain('luis.settings.development.westus.json loaded')
       expect(ctx.stdout).to.contain('foo.lu.dialog loaded')
 
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
 
       expect(ctx.stdout).to.contain('foo.en-us.lu.dialog loaded')
       expect(ctx.stdout).to.contain('foo.fr-fr.lu.dialog loaded')
@@ -593,7 +593,7 @@ describe('luis:build not update application if only cases of utterances or patte
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should not update a luis application when only cases of utterances or patterns are different for the coming lu file', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
     })
 })
@@ -675,7 +675,8 @@ describe('luis:build update application succeed with parameters set from luconfi
     .stdout()
     .command(['luis:build', '--authoringKey', uuidv1(), '--luConfig', './test/fixtures/testcases/lubuild/luconfig/lufiles/luconfig.json', '--log'])
     .it('should update a luis application when utterances changed', async ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      console.log(ctx)
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('deleting old version=0.1')
       expect(ctx.stdout).to.contain('training version=0.2')

@@ -99,7 +99,7 @@ xdescribe('luis:build create a new application successfully', () => {
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should create a new application successfully', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
       expect(ctx.stdout).to.contain('waiting for training for version=0.1')
@@ -164,7 +164,7 @@ xdescribe('luis:build update application succeed when utterances changed', () =>
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should update a luis application when utterances changed', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('training version=0.2')
       expect(ctx.stdout).to.contain('waiting for training for version=0.2')
@@ -229,7 +229,7 @@ xdescribe('luis:build update application succeed when utterances added', () => {
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should update a luis application when utterances added', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('training version=0.2')
       expect(ctx.stdout).to.contain('waiting for training for version=0.2')
@@ -265,7 +265,7 @@ xdescribe('luis:build not update application if no changes', () => {
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
     .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
     })
 })
@@ -426,7 +426,7 @@ xdescribe('luis:build create multiple applications successfully when input is a 
       expect(ctx.stdout).to.contain('foo.lu loaded')
       expect(ctx.stdout).to.contain('foo.zh-cn.lu loaded')
 
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
       expect(ctx.stdout).to.contain('waiting for training for version=0.1')
@@ -535,7 +535,7 @@ xdescribe('luis:build update dialog assets successfully when dialog assets exist
       expect(ctx.stdout).to.contain('luis.settings.development.westus.json loaded')
       expect(ctx.stdout).to.contain('foo.lu.dialog loaded')
 
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
 
       expect(ctx.stdout).to.contain('foo.en-us.lu.dialog loaded')
       expect(ctx.stdout).to.contain('foo.fr-fr.lu.dialog loaded')

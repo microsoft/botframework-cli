@@ -25,7 +25,7 @@ export default class LuisBuild extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    in: flags.string({char: 'i', description: 'Lu file or folder', required: true}),
+    in: flags.string({char: 'i', description: 'Lu file or folder'}),
     authoringKey: flags.string({description: 'LUIS authoring key', required: true}),
     botName: flags.string({description: 'Bot name'}),
     region: flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
@@ -86,7 +86,7 @@ export default class LuisBuild extends Command {
 
       if (flags.stdin && flags.stdin !== '') {
         // load lu content from stdin and create default recognizer, multiRecognier and settings
-        this.log('Load lu content from stdin\n')
+        if (flags.log) this.log('Load lu content from stdin\n')
         const content = new Content(flags.stdin, 'stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin'))
         luContents.push(content)
         multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
@@ -94,7 +94,7 @@ export default class LuisBuild extends Command {
         const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
         recognizers.set(content.name, recognizer)
       } else {
-        this.log('Start to load lu files\n')
+        if (flags.log) this.log('Loading files...\n')
 
         // get lu files from flags.in. 
         if (flags.in && flags.in !== '') {
@@ -115,7 +115,7 @@ export default class LuisBuild extends Command {
       }
 
       // update or create and then train and publish luis applications based on loaded resources
-      this.log('Start to handle applications\n')
+      if (flags.log) this.log('Handling applications...n')
       const dialogContents = await builder.build(luContents, recognizers, flags.authoringKey, flags.region, flags.botName, flags.suffix, flags.fallbackLocale, flags.deleteOldVersion, multiRecognizers, settings)
 
       // write dialog assets based on config
