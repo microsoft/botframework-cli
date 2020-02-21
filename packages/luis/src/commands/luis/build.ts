@@ -14,6 +14,7 @@ const Settings = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu
 const MultiLanguageRecognizer = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
 const Recognizer = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/recognizer')
 const Builder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
+const username = require('username')
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
@@ -24,16 +25,16 @@ export default class LuisBuild extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    in: flags.string({char: 'i', description: 'Lu file or folder'}),
+    in: flags.string({char: 'i', description: 'Lu file or folder', required: true}),
     authoringKey: flags.string({description: 'LUIS authoring key', required: true}),
     botName: flags.string({description: 'Bot name'}),
-    out: flags.string({description: 'Output location'}),
+    region: flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
+    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
-    region: flags.string({description: 'LUIS authoring region'}),
-    suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name'}),
-    force: flags.boolean({char: 'f', description: 'Force write dialog and settings files', default: false}),
-    dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
+    suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in useralias'}),
+    dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
+    force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build'}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
   }
@@ -70,7 +71,7 @@ export default class LuisBuild extends Command {
 
       flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'
       flags.region = flags.region && flags.region !== '' ? flags.region : 'westus'
-      flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
+      flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : await username() || 'development'
       flags.fallbackLocale = flags.fallbackLocale && flags.fallbackLocale !== '' ? flags.fallbackLocale : 'en-us'
 
       // create builder class
@@ -95,11 +96,14 @@ export default class LuisBuild extends Command {
       } else {
         this.log('Start to load lu files\n')
 
-        // get lu files from flags.in
+        // get lu files from flags.in. 
         if (flags.in && flags.in !== '') {
           const luFiles = await file.getLuFiles(flags.in, true, fileExtEnum.LUFile)
           files.push(...luFiles)
         }
+
+        // de-dupe the files list
+        files = [...new Set(files)]
 
         // load lu contents from lu files
         // load existing recognizers, multiRecogniers and settings or create default ones

@@ -40,8 +40,9 @@ export class Builder {
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
 
       let fileContent = ''
+      let result
       try {
-        const result = await LuisBuilder.build(luFiles, true, culture)
+        result = await LuisBuilder.build(luFiles, true, culture)
         fileContent = result.parseToLuContent()
       } catch (err) {
         err.text = `Invalid LU file ${file}: ${err.text}`
@@ -55,7 +56,7 @@ export class Builder {
         let fileNameWithCulture = path.basename(file, path.extname(file))
         fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
       } else {
-        fileCulture = culture
+        fileCulture = result.culture !== 'en-us' ? result.culture : culture
         fileName = path.basename(file, path.extname(file))
       }
 
@@ -124,8 +125,8 @@ export class Builder {
     // can set to other value if switched to a higher TPS(transaction per second) key
     let luisApiTps = 5
 
-    // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
-    let delayDuration = 1100
+    // set luis call delay duration to 1200 millisecond because 1000 can hit corner case of rate limit
+    let delayDuration = 1200
 
     const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
     const apps = await luBuildCore.getApplicationList()
