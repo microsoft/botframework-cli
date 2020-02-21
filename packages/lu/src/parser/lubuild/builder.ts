@@ -125,7 +125,7 @@ export class Builder {
     // can set to other value if switched to a higher TPS(transaction per second) key
     let luisApiTps = 5
 
-    // set luis call delay duration to 1200 millisecond because 1000 can hit corner case of rate limit
+    // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
     let delayDuration = 1100
 
     const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
@@ -285,7 +285,7 @@ export class Builder {
         const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
         for (const versionObj of versionObjs) {
           if (versionObj.version !== newVersionId) {
-            this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}\n`)
+            this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
             await luBuildCore.deleteVersion(recognizer.getAppId(), versionObj.version)
           }
         }
