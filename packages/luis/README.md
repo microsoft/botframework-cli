@@ -6,6 +6,12 @@
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
 
+# Relevant docs
+- [.lu file format][1]
+- [Working with .lu files][2]
+- [Machine translating .lu content][3]
+- [Using luis:build][4]
+
 <!-- toc -->
 * [Commands](#commands)
 <!-- tocstop -->
@@ -21,6 +27,7 @@
 * [`bf luis:application:query`](#bf-luisapplicationquery)
 * [`bf luis:application:rename`](#bf-luisapplicationrename)
 * [`bf luis:application:show`](#bf-luisapplicationshow)
+* [`bf luis:build`](#bf-luisbuild)
 * [`bf luis:endpoints:list`](#bf-luisendpointslist)
 * [`bf luis:train:run`](#bf-luistrainrun)
 * [`bf luis:train:show`](#bf-luistrainshow)
@@ -276,6 +283,34 @@ EXAMPLE
 ```
 
 _See code: [src/commands/luis/application/show.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/show.ts)_
+
+## `bf-luisbuild`
+
+Build lu files to train and publish luis applications
+
+```
+USAGE
+  $ bf luis:build
+
+OPTIONS
+  -f, --force                      Force write dialog and settings files
+  -h, --help                       show CLI help
+  -i, --in=in                      Lu file or folder
+  --authoringKey=authoringKey      (required) LUIS authoring key
+  --botName=botName                Bot name
+  --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
+  --dialog                         Write out .dialog files
+  --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set
+  --log                            write out log messages to console
+  --luConfig=luConfig              Path to config for lu build
+  --out=out                        Output location
+  --region=region                  LUIS authoring region
+  --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name
+
+EXAMPLE
+
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
+```
 
 ## `bf luis:endpoints:list`
 
@@ -538,3 +573,8 @@ EXAMPLE
 
 _See code: [src/commands/luis/version/rename.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/rename.ts)_
 <!-- commandsstop -->
+
+[1]:./docs/lu-file-format.md
+[2]:./docs/working-with-luis.md
+[3]:./docs/translate-command.md
+[4]:./docs/using-luis-build.md
