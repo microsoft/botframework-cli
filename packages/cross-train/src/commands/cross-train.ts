@@ -3,8 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
+const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
 const path = require('path')
 
 export default class CrossTrain extends Command {
@@ -27,6 +28,7 @@ export default class CrossTrain extends Command {
           flags.config = path.resolve(path.join(flags.in, flags.config))
         }
       }
+
       const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config)
 
       if (flags.out === undefined) {
@@ -36,6 +38,9 @@ export default class CrossTrain extends Command {
       await crossTrain.writeFiles(trainedResult.luResult, flags.out)
       await crossTrain.writeFiles(trainedResult.qnaResult, flags.out)
     } catch (err) {
+      if (err instanceof exception) {
+        throw new CLIError(err.text)
+      }
       throw err
     }
   }

@@ -10,6 +10,8 @@ const LUSectionTypes = require('../utils/enums/lusectiontypes')
 const LUResource = require('../lufile/luResource')
 const DiagnosticSeverity = require('../lufile/diagnostic').DiagnosticSeverity
 const fileHelper = require('../../utils/filehelper')
+const exception = require('../utils/exception')
+const retCode = require('../utils/enums/CLI-errors');
 const NEWLINE = require('os').EOL
 const path = require('path')
 
@@ -48,7 +50,7 @@ module.exports = {
             luFileIdToResourceMap.set(res.id, res.content)
           }
         } else {
-          throw new Error(`Sorry, root lu file '${rootObjectId}' does not exist`)
+          throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, root lu file '${rootObjectId}' does not exist`))
         }
       }
 
@@ -99,7 +101,7 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
 
       const triggerIntentName = destLuFileToIntent[destLuFile]
       if (!intents.some(i => i.Name === triggerIntentName)) {
-        throw new Error(`Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`)
+        throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`))
       }
 
       resource.children.push({
@@ -132,12 +134,14 @@ const luCrossTrain = function (rootResourceId, resources, qnaFileToResourceMap, 
   let rootResource = resources.filter(r => r.id === rootResourceId)[0]
   rootResource.visited = true
   mergeRootInteruptionToLeaves(rootResource, idToResourceMap, qnaFileToResourceMap, intentName)
-
+  
   return Array.from(idToResourceMap.values())
 }
 
 const mergeRootInteruptionToLeaves = function (rootResource, result, qnaFileToResourceMap, intentName) {
   if (rootResource.children === undefined || rootResource.length <= 0) return
+
+  rootResource.content = removeDupUtterances(rootResource.content)
 
   mergeBrothersInteruption(rootResource, result, intentName)
   for (const child of rootResource.children) {
@@ -244,7 +248,7 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
     // construct new content here
     const dedupUtterances = dedupFromUtterances.filter(u => !existingUtterances.includes(u))
     if (dedupUtterances && dedupUtterances.length > 0) {
-      let newFileContent = `# ${intentName}${NEWLINE}- `
+      let newFileContent = `> Source: cross training. Please do not edit these directly!${NEWLINE}!# ${intentName}${NEWLINE}- `
       newFileContent += dedupUtterances.join(`${NEWLINE}- `)
 
       // add section here
@@ -256,6 +260,23 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
   }
 
   return toResource
+}
+
+const removeDupUtterances = function (resource) {
+  let newResource = resource
+  resource.Sections.forEach(s => {
+    if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
+      const intentUtterances = s.UtteranceAndEntitiesMap.map(u => u.utterance)
+      const dedupedUtterances = Array.from(new Set(intentUtterances))
+      if (intentUtterances.length > dedupedUtterances.length) {
+        const intentContent = dedupedUtterances.join(NEWLINE + '- ')
+        const newSectionContent = `# ${s.Name}${NEWLINE}- ${intentContent}`
+        newResource = new SectionOperator(newResource).updateSection(s.Id, newSectionContent)
+      }
+    }
+  })
+
+  return newResource
 }
 
 const extractIntentUtterances = function(resource, intentName) {
@@ -369,13 +390,15 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   let qnaSectionContents = []
   for (const qnaSection of qnaSections) {
     qnaSection.FilterPairs.push({ key: 'dialogName', value: fileName })
-    const qnaSectionContent = `# ?${qnaSection.Questions.join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}${qnaSection.Answer}${NEWLINE}\`\`\``
+    const qnaSectionContent = `# ? ${Array.from(new Set(qnaSection.Questions)).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}${qnaSection.Answer}${NEWLINE}\`\`\``
     qnaSectionContents.push(qnaSectionContent)
   }
 
   const qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
   if (qnaContents && qnaContents !== '') {
-    trainedQnaResource = new SectionOperator(new LUResource([], '', [])).addSection(qnaContents)
+    const modelInfoSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.MODELINFOSECTION)
+    const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
+    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
   }
 
   // remove utterances which are duplicated with local qna questions
@@ -386,7 +409,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
 
   // add utterances from lu file to corresponding qna file with question set to all utterances
   if (utterancesContent && utterancesContent !== '' && qnaSections.length > 0) {
-    const utterancesToQuestion = `> Source:cross training. Please do not edit these directly!${NEWLINE}# ?${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    const utterancesToQuestion = `> Source: cross training. Please do not edit these directly!${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 
@@ -416,7 +439,7 @@ const parseAndValidateContent = function (objectArray, verbose) {
 
       var errors = resource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR))
       if (errors.length > 0) {
-        throw new Error(errors.map(error => error.toString()).join(NEWLINE))
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Invlid file ${object.Id}: ${errors.map(error => error.toString()).join(NEWLINE)}`))
       }
     }
 

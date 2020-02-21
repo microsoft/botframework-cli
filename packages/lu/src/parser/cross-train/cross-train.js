@@ -7,6 +7,8 @@ const fs = require('fs-extra')
 const path = require('path')
 const file = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
+const exception = require('../utils/exception')
+const retCode = require('../utils/enums/CLI-errors');
 const crossTrainer = require('./crossTrainer')
 
 module.exports = {
@@ -41,7 +43,7 @@ module.exports = {
 
       trainedResult = crossTrainer.crossTrain(luObjects, qnaObjects, JSON.stringify(crossTrainConfig))
     } else {
-      throw new Error('Root lu file(s) is required!')
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
     }
 
     return trainedResult
@@ -77,7 +79,7 @@ module.exports = {
             await fs.writeFile(fileId, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
           }
         } catch (err) {
-          throw new Error('Unable to write file - ' + fileId + ' Error: ' + err.message)
+          throw (new exception(retCode.errorCode.OUTPUT_FOLDER_INVALID, `Unable to write to file ${fileId}. Error: ${err.message}`))
         }
       }
     }
