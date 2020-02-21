@@ -1,7 +1,7 @@
 # .lu File Format
 .lu files contain markdown-like, simple text based definitions for [LUIS][1] concepts. 
 
-See [here](./qna-file-format.md) to learn more about the .qna file format.
+See [here](../../qnamaker/docs/qna-file-format.md) to learn more about the .qna file format.
 
 - [Comments](#Adding-comments)
 - [Intent](#Intent)
