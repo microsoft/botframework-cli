@@ -35,13 +35,11 @@ class Luis {
     }
 
     sort() {
-        for (const prop in this) {
-            if (prop !== 'utterances' && prop !== 'patterns' && Array.isArray(this[prop])) this[prop].sort(sortComparers.compareNameFn)
+        let props = ['intents', 'composites', 'entities', 'closedLists', 'regex_entities', 'model_features', 'patternAnyEntities', 'prebuiltEntities']
+        for (const key of props) {
+            this[key].sort(sortComparers.compareNameFn)
         }
         this.utterances.sort(sortComparers.compareIntentFn);
-        this.utterances.sort(sortComparers.compareUttTextFn);
-        this.patterns.sort(sortComparers.compareIntentFn);
-        this.patterns.sort(sortComparers.comparePatternFn)
     }
 
     validate() {
@@ -106,12 +104,6 @@ const sortComparers = {
     },    
     compareIntentFn : function(a, b) {
         return compareString(a.intent.toUpperCase(), b.intent.toUpperCase())
-    },
-    compareUttTextFn : function(a, b) {
-        return compareString(a.text.toUpperCase(), b.text.toUpperCase())
-    },
-    comparePatternFn : function(a, b) {
-        return compareString(a.pattern.toUpperCase(), b.pattern.toUpperCase())
     }
 }
 

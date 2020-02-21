@@ -9,11 +9,8 @@ import {Settings} from './settings'
 import {isEqual, differenceWith} from 'lodash'
 import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
-//const LUIS = require('./../luis/luis')
 import * as path from 'path'
-//import {expect, assert} from 'chai'
 const Content = require('./../lu/lu')
-//const deepEqual = require('deep-equal')
 
 export class LuBuildCore {
   private readonly client: any
@@ -168,10 +165,6 @@ export class LuBuildCore {
 
   private isApplicationEqual(appA: any, appB: any): boolean {
     let equal = true
-    //appA = new LUIS(appA)
-    //appA.sort()
-    //appB = new LUIS(appB)
-    //appB.sort()
     equal = equal && isEqual(appA.desc, appB.desc)
     equal = equal && isEqual(appA.versionId, appB.versionId)
     equal = equal && isEqual(appA.culture, appB.culture)
@@ -215,7 +208,6 @@ export class LuBuildCore {
     if (xObj.length !== yObj.length) return false
     if (differenceWith(xObj, yObj, isEqual).length > 0) return false
 
-    //let result = deepEqual(xObj, yObj)
     return true
   }
 }

@@ -115,12 +115,12 @@ export default class LuisBuild extends Command {
       }
 
       // update or create and then train and publish luis applications based on loaded resources
-      if (flags.log) this.log('Handling applications...n')
+      if (flags.log) this.log('Handling applications...')
       const dialogContents = await builder.build(luContents, recognizers, flags.authoringKey, flags.region, flags.botName, flags.suffix, flags.fallbackLocale, flags.deleteOldVersion, multiRecognizers, settings)
 
       // write dialog assets based on config
       if (flags.dialog) {
-        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, flags.out)
+        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, flags.out, flags.luConfig)
         const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
         const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
         if (writeDone) {
