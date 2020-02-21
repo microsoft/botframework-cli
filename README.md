@@ -74,6 +74,7 @@ Privacy is very important to us. BF CLI contains optional instrumentation that i
 
 To disable data collection see the  __*bf config*__ command.
 
+
 Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.  
 
 ## Contributing
