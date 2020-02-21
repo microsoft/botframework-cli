@@ -4,6 +4,7 @@
 # hotelType
 - Quel type d'hôtel préférez-vous
 
+> Source: cross training. Please do not edit these directly!
 # _Interuption
 - réserver un vol de Seattle à Beijing
 - quel temps de vol préférez-vous
@@ -11,6 +12,7 @@
 - Quand voulez-vous partir de la gare de Seattle
 - guide de l'utilisateur
 
+> Source: cross training. Please do not edit these directly!
 # DeferToRecognizer_QnA_dia1
 - raconter la blague
 - dites-moi une blague

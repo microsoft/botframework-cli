@@ -1,4 +1,4 @@
-# ?tell joke
+# ? tell joke
 - tell me a joke
 - can you make me laugh?
 
@@ -10,7 +10,7 @@
     ha ha ha
 ```
 
-# ?book a hotel in Seattle
+# ? book a hotel in Seattle
 
 **Filters:**
 - dialogName=dia1
@@ -20,7 +20,7 @@
 ```
 
 > Source: cross training. Please do not edit these directly!
-# ?Which type of hotel do you prefer
+# ? Which type of hotel do you prefer
 - book a flight from Seattle to Beijing
 - which {flightTime} do you prefer
 - book a train ticket from Seattle to Portland

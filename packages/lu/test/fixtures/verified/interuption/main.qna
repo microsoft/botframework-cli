@@ -1,4 +1,4 @@
-# ?user guide
+# ? user guide
 
 **Filters:**
 - aa=bb
@@ -8,7 +8,7 @@
     Here is the [user guide](http://contoso.com/userguide.pdf)
 ```
 
-# ?tell joke
+# ? tell joke
 
 **Filters:**
 - dialogName=main
@@ -18,7 +18,7 @@
 ```
 
 > Source: cross training. Please do not edit these directly!
-# ?book a hotel in Seattle
+# ? book a hotel in Seattle
 - Which type of hotel do you prefer
 - book a flight from Seattle to Beijing
 - which {flightTime} do you prefer

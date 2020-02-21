@@ -1,3 +1,9 @@
+> !# @app.name = my luis application
+> !# @app.desc = description of my luis application
+> !# @app.versionId = 0.5
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
 # bookHotel
 - book a hotel in Seattle
 

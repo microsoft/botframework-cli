@@ -1,3 +1,9 @@
+> !# @app.name = my luis application
+> !# @app.desc = description of my luis application
+> !# @app.versionId = 0.5
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
 # bookHotel
 - book a hotel in Seattle
 
@@ -5,6 +11,7 @@
 - Which type of hotel do you prefer
 - book a hotel in Seattle
 
+> Source: cross training. Please do not edit these directly!
 # _Interuption
 - book a flight from Seattle to Beijing
 - which {flightTime} do you prefer
@@ -12,6 +19,7 @@
 - When do you want to leave from Seattle train station
 - user guide
 
+> Source: cross training. Please do not edit these directly!
 # DeferToRecognizer_QnA_dia1
 - tell joke
 - tell me a joke

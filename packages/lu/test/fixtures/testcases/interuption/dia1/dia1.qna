@@ -1,3 +1,10 @@
+> LUIS application description
+> !# @app.name = my luis application
+> !# @app.desc = description of my luis application
+> !# @app.versionId = 0.5
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
 # ?tell joke
 - tell me a joke
 - can you make me laugh?
