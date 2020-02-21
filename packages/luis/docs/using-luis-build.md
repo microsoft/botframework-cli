@@ -147,13 +147,14 @@ generates the following files
 ```jsonc
 {
     "luis": {
-        // LUIS App IDs generated for the provided configuration. 
-        "RootDialog_en-us_lu": "51c03ed1-766b-4a37-8ae3-2297f24de821",
-        "RootDialog-frx_fr-fr_lu": "9420e094-9aec-451d-a690-b345aca158fc",
-        "add_en-us_lu": "36f28d76-375e-43f7-af5d-8cf135a4dc2c",
-        "add_es-es_lu": "7f4807fe-ae12-4816-802b-4fdde53fbbad",
-        "del_en-us_lu": "bcb6b7b8-0eaf-4b1f-816d-64efb5ea1365",
-        "del_it-it_lu": "f8395740-baf6-4e38-bb5b-3f0218d18b10"
+        // LUIS application IDs for every application created/ updated
+        "root_en-us_lu": "c571f17e-7f10-4211-a21e-17ebb1f7f89b",
+        "root_fr-fr_lu": "d71ae2fe-d3e0-49e6-80a3-68a22fa666dc",
+        "add_en-us_lu": "f3674ea3-0ae5-4c06-af57-49d76fb86fba",
+        "add_es-es_lu": "53dc2dd2-8435-47ac-a080-b26249a57c6c",
+        "add_fr-fr_lu": "06f7ba22-41dd-4df0-b0f8-17608afa2aec",
+        "del_en-us_lu": "ecb34067-7917-45a5-821f-b0aace36df68",
+        "del_it-it_lu": "5299ca26-ec4f-4270-9221-196fcf834f84"
     }
 }
 ```
@@ -163,9 +164,9 @@ generates the following files
 {
     "$type": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
-        "en-us": "RootDialog.en-us.lu",
-        "fr-fr": "RootDialog.fr-fr.lu",
-        "": "RootDialog.en-us.lu"
+        "fr-fr": "root.fr-fr.lu",
+        "en-us": "root.en-us.lu",
+        "": "root.en-us.lu"
     }
 }
 ```
@@ -174,7 +175,7 @@ generates the following files
 ```jsonc
 {
     "$type": "Microsoft.LuisRecognizer",
-    "applicationId": "=settings.luis.RootDialog_en-us_lu",
+    "applicationId": "=settings.luis.root_en-us_lu",
     "endpoint": "=settings.luis.endpoint",
     "endpointKey": "=settings.luis.endpointKey"
 }
@@ -183,6 +184,6 @@ generates the following files
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-keys#programmatic-key
 [2]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-regions#luis-authoring-regions
 [3]:./lu-file-format.md#External-references
-[4]:./lu-file-format.md#Model description
+[4]:./lu-file-format.md#Model-description
 [5]:./examples/luis-build
 [6]:./examples/luis-build/luconfig.json

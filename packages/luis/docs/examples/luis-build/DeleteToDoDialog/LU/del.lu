@@ -53,4 +53,4 @@ $ PREBUILT : ordinal
 - cancel
 - abort that
 
-[TodoPhraseList](../../RootDialog/TodoPhraseList.lu)
+[TodoPhraseList](../../RootDialog/LU/TodoPhraseList.lu)
