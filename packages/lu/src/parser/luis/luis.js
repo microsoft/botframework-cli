@@ -25,13 +25,7 @@ class Luis {
             this.desc = "";
             this.culture = "en-us";
         }
-    }
-
-    hasContent(){
-        for (let prop in this) {
-            if (Array.isArray(this[prop]) && this[prop].length > 0 ) return true
-        }   
-        return false
+        validator(this)
     }
 
     parseToLuContent(){
@@ -39,13 +33,7 @@ class Luis {
         return luConverter(this)
     }
 
-    sort() {
-        let props = ['intents', 'composites', 'entities', 'closedLists', 'regex_entities', 'model_features', 'patternAnyEntities', 'prebuiltEntities']
-        for (const key of props) {
-            this[key].sort(sortComparers.compareNameFn)
-        }
-        this.utterances.sort(sortComparers.compareIntentFn);
-    }
+
 
     validate() {
         return validator(this)
@@ -58,25 +46,4 @@ const initialize = function(instance, LuisJSON) {
     for (let prop in LuisJSON) {
         instance[prop] = LuisJSON[prop];
     }   
-}
-
-const sortComparers = { 
-    compareNameFn : function(a, b) {
-        return compareString(a.name.toUpperCase(), b.name.toUpperCase())
-    },    
-    compareIntentFn : function(a, b) {
-        return compareString(a.intent.toUpperCase(), b.intent.toUpperCase())
-    }
-}
-
-const compareString = function(a, b) {
-    if (a < b) {
-        return -1;
-    }
-
-    if (a > b) {
-        return 1;
-    }
-
-    return 0;
 }

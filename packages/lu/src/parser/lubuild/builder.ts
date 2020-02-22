@@ -7,6 +7,7 @@ import {LuBuildCore} from './core'
 import {Settings} from './settings'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Recognizer} from './recognizer'
+import { LUFileLexer } from '../lufile/generated/LUFileLexer'
 const path = require('path')
 const fs = require('fs-extra')
 const delay = require('delay')
@@ -230,7 +231,7 @@ export class Builder {
   }
 
   async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
-    let currentApp = await content.parseToLuis(true, content.language)
+    let currentApp = await LuisBuilder.buildFromLU(content)  // content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
     currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${botName} app, targetting ${suffix}`
 

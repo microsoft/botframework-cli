@@ -1,7 +1,19 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 const Alterations = require('./alterations')
 const mergeLuFiles = require('./../../lu/luMerger').Build
+const parseFileContents = require('./../../lufile/parseFileContents').parseFile
 
-class AlterationsBuilder{
+class AlterationsBuilder {
+    
+    static async buildFromQnA(qnaObject) {
+        let parsedContent = await parseFileContents(qnaObject.content, false, '')
+        return new Alterations(parsedContent.qnaAlterations)
+    }
+
     /**
      * Builds a QnAMaker instance from a Qna list.
      * @param {Array<Qna>} qnaObjArray Array of QnA files to be merge

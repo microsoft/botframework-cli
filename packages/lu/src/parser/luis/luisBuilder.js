@@ -29,7 +29,7 @@ class LuisBuilder {
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
     static async buildFromLU(luObject) {
-        let parsedContent = await parseFileContents(luObject.content, false)
+        let parsedContent = await parseFileContents(luObject.content, false, luObject.language)
         return new Luis(parsedContent.LUISJsonStructure)
     }
 
