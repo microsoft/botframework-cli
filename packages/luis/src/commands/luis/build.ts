@@ -96,7 +96,7 @@ export default class LuisBuild extends Command {
       } else {
         if (flags.log) this.log('Loading files...\n')
 
-        // get lu files from flags.in. 
+        // get lu files from flags.in.
         if (flags.in && flags.in !== '') {
           const luFiles = await file.getLuFiles(flags.in, true, fileExtEnum.LUFile)
           files.push(...luFiles)
