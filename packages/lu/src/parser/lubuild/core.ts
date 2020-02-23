@@ -198,11 +198,11 @@ export class LuBuildCore {
     let yObj = []
 
     if (x && x.length > 0) {
-      xObj = JSON.parse(JSON.stringify(x).toLowerCase()).replace(/  /g, ' '))
+      xObj = JSON.parse(JSON.stringify(x).toLowerCase().replace(/  /g, ' '))
     }
 
     if (y && y.length > 0) {
-      yObj = JSON.parse(JSON.stringify(y).toLowerCase()).replace(/  /g, ' '))
+      yObj = JSON.parse(JSON.stringify(y).toLowerCase().replace(/  /g, ' '))
     }
 
     if (xObj.length !== yObj.length) return false
