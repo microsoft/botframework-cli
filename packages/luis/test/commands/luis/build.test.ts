@@ -106,7 +106,7 @@ describe('luis:build create a new application successfully', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should create a new application successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
@@ -171,7 +171,7 @@ describe('luis:build update application succeed when utterances changed', () => 
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances changed', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -236,7 +236,7 @@ describe('luis:build update application succeed when utterances added', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances added', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -272,7 +272,7 @@ describe('luis:build not update application if no changes', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
@@ -310,7 +310,7 @@ describe('luis:build write dialog assets successfully if --dialog set', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully when --dialog set', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.en-us.lu.dialog')).to.be.true
@@ -429,7 +429,7 @@ describe('luis:build create multiple applications successfully when input is a f
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
     .it('should create multiple applications and write dialog assets successfully when input is a folder', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
@@ -535,7 +535,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
     .it('should update dialog assets successfully when dialog assets exist', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
@@ -591,7 +591,7 @@ describe('luis:build not update application if only cases of utterances or patte
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should not update a luis application when only cases of utterances or patterns are different for the coming lu file', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
@@ -673,7 +673,7 @@ describe('luis:build update application succeed with parameters set from luconfi
 
   test
     .stdout()
-    .command(['luis:build', '--authoringKey', uuidv1(), '--luConfig', './test/fixtures/testcases/lubuild/luconfig/lufiles/luconfig.json', '--log'])
+    .command(['luis:build', '--authoringKey', uuidv1(), '--luConfig', './test/fixtures/testcases/lubuild/luconfig/lufiles/luconfig.json', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances changed', async ctx => {
       console.log(ctx)
       expect(ctx.stdout).to.contain('Handling applications...')
