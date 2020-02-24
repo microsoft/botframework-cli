@@ -1,27 +1,27 @@
 
 # filename
-- @{assignFilename('temperature')}
+- ${assignFilename('temperature')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "temperature",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "${callSetMessage()}"
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.number",
+            "property": "$${property}.number",
             "value": "=@temperature.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.units",
+            "property": "$${property}.units",
             "value": "=@temperature.units"          
         }
     ]               
@@ -29,6 +29,6 @@
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(string(@temperature.number), ' ', @temperature.units))}
+- @\{setObjectPropertyMessage('${property}', concat(string(@temperature.number), ' ', @temperature.units))}
 
 [generator.lg](generator.lg)

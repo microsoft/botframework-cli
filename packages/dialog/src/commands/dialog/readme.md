@@ -35,7 +35,7 @@ The generate command generates .lu, .lg, .qna and .dialog assets from a schema d
 
 ### Schema
 
-Schemas are specified using JSON Schema. You can use the normal JSON Schema mechanisms including \$ref and allOf which will be resolved into a single schema which also includes $entities for all properties. This makes the schema easier to use for things like language generation. You can  use expression syntax, i.e. `@{<expr>}` to compute schema, either initially or after generation is done if there are properties that are only available at the end. `<schemaName>.schema.dialog` will have the resulting schema with all references resolved and expanded to simplify usage in language generation and dialogs.
+Schemas are specified using JSON Schema. You can use the normal JSON Schema mechanisms including \$ref and allOf which will be resolved into a single schema which also includes $entities for all properties. This makes the schema easier to use for things like language generation. You can  use expression syntax, i.e. `${<expr>}` to compute schema, either initially or after generation is done if there are properties that are only available at the end. `<schemaName>.schema.dialog` will have the resulting schema with all references resolved and expanded to simplify usage in language generation and dialogs.
 
 Globally there are a few extra keywords including:
 - **\$public** List of the public properties in the schema. By default these are the top-level properties in the root schema and this will be automatically generated if missing.

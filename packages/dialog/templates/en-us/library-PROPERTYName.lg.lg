@@ -1,14 +1,14 @@
 # template
-- @{join(createArray(namePlusSwitch(), cases(), default()), '\n')}
+- ${join(createArray(namePlusSwitch(), cases(), default()), '\n')}
 
 # namePlusSwitch
 - # PROPERTYName(value) \n- SWITCH: @\{value\}
 
 # case(option)
-- - CASE: @\{'@{option}'\} \n - @{phrase(option)}
+- - CASE: @\{'${option}'\} \n - ${phrase(option)}
 
 # cases
-- @{join(foreach(properties, prop, case(prop)), '\n')}
+- ${join(foreach(properties, prop, case(prop)), '\n')}
 
 # default
 - - DEFAULT: \n - I don't understand @\{value\}

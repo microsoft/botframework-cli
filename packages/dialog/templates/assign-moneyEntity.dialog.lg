@@ -1,27 +1,27 @@
 
 # filename
-- @{assignFilename('money')}
+- ${assignFilename('money')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "money",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "${callSetMessage()}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.number",
+            "property": "$${property}.number",
             "value": "=@money.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.units",
+            "property": "$${property}.units",
             "value": "=@money.units"          
         }
     ]               
@@ -29,6 +29,6 @@
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(string(@money.number), ' ', @money.units))}
+- @\{setObjectPropertyMessage('${property}', concat(string(@money.number), ' ', @money.units))}
 
 [generator.lg](generator.lg)

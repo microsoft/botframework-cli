@@ -1,27 +1,27 @@
 
 # filename
-- @{assignFilename('datetime')}
+- ${assignFilename('datetime')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "datetime",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "${callSetMessage()}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.type",
+            "property": "$${property}.type",
             "value": "=@datetime.type"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.timex",
+            "property": "$${property}.timex",
             "value": "=join(@datetime.timex, ' ')"          
         }
     ]               
@@ -29,6 +29,6 @@
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(@datetime.type, ' ', string(@datetime.timex)))}
+- @\{setObjectPropertyMessage('${property}', concat(@datetime.type, ' ', string(@datetime.timex)))}
 
 [generator.lg](generator.lg)

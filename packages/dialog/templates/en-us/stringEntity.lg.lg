@@ -1,8 +1,8 @@
 # filename
-- @{entityLGFilename()}
+- ${entityLGFilename()}
 
 >>> This is because of issues around ' and } in strings--see enumEntityDesired.lg for a test case
 # template
-- # @{property}Entity(val)\n- @\{val\}
+- # ${property}Entity(val)\n- @\{val\}
 
 [generator.lg](../generator.lg)

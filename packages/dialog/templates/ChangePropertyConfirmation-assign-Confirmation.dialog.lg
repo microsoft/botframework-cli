@@ -1,7 +1,7 @@
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "ChangePropertyConfirmation",
     "entity": "Confirmation",
@@ -17,7 +17,7 @@
             "actions": [
                 {
                     "$kind": "Microsoft.Ask",
-                    "activity": "@{callAsk()}",
+                    "activity": "${callAsk()}",
                     "expectedProperties": 
                         "createArray($PropertyToRemember)"
                     

@@ -1,32 +1,32 @@
 
 # filename
-- @{assignFilename('number')}
+- ${assignFilename('number')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "number",
     "actions": [
         {
             "$kind": "Microsoft.IfCondition",
-            "condition":"or(less(@number, dialogClass.schema.properties['@{property}'].minimum), greater(@number, dialogClass.schema.properties['@{property}'].maximum))",
+            "condition":"or(less(@number, dialogClass.schema.properties['${property}'].minimum), greater(@number, dialogClass.schema.properties['${property}'].maximum))",
             "actions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "@{callNumberAlert()}"
+                    "activity": "${callNumberAlert()}"
                 }                    
             ],
             "elseActions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "@{callSetMessage()}"
+                    "activity": "${callSetMessage()}"
                 },
                 {
                     "$kind": "Microsoft.SetProperty",
-                    "property": "$@{property}",
+                    "property": "$${property}",
                     "value": "=@number"          
                 }
             ]
@@ -37,9 +37,9 @@
 ```
 
 # callNumberAlert
-- @\{numberValidation('@{property}', @number)}
+- @\{numberValidation('${property}', @number)}
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @number)}
+- @\{setPropertyMessage('${property}', @number)}
 
 [generator.lg](generator.lg)

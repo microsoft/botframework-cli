@@ -1,22 +1,22 @@
 
 # filename
-- @{assignFilename('phonenumber')}
+- ${assignFilename('phonenumber')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "phonenumber",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "${callSetMessage()}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@phonenumber"          
         }
     ]               
@@ -24,6 +24,6 @@
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @phonenumber)}
+- @\{setPropertyMessage('${property}', @phonenumber)}
 
 [generator.lg](generator.lg)

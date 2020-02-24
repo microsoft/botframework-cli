@@ -1,7 +1,7 @@
 # filename
-- @{builtinEntityFilename('urlEntity')}
+- ${builtinEntityFilename('urlEntity')}
 
 # template
-- @ prebuilt url @{roles()}
+- @ prebuilt url ${roles()}
 
 [generator.lg](../generator.lg)

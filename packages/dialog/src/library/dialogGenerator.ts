@@ -5,7 +5,7 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
-import * as expressions from 'botframework-expressions'
+import * as expressions from 'adaptive-expressions'
 import * as fs from 'fs-extra'
 import * as lg from 'botbuilder-lg'
 import * as ppath from 'path'
@@ -44,12 +44,12 @@ const expressionEngine = new expressions.ExpressionEngine((func: any) => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
-        default: return expressions.BuiltInFunctions.lookup(func)
+        default: return expressions.ExpressionFunctions.lookup(func)
     }
 })
 
 // Given a template name we look for it or an .lg version of it in template dirs (or their locale sub dirs)
-type Template = lg.TemplateEngine | string | undefined
+type Template = lg.Evaluator | string | undefined
 
 async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<Template> {
     let template
@@ -62,8 +62,8 @@ async function findTemplate(name: string, templateDirs: string[], locale?: strin
             // LG Engine with name/names added functions
             loc = localePath(name + '.lg', dir, locale)
             if (await fs.pathExists(loc)) {
-                template = new lg.TemplateEngine(expressionEngine)
-                template.addFile(loc)
+                template = lg.LGParser.parseFile(loc, lg.LGParser.defaultFileResolver)
+                template.expressionEngine = expressionEngine
             }
         }
     }
@@ -269,7 +269,7 @@ async function processTemplates(
     }
 }
 
-// Expand strings with @{} expression in them by evaluating and then interpreting as JSON.
+// Expand strings with ${} expression in them by evaluating and then interpreting as JSON.
 function expandSchema(schema: any, scope: any, path: string, inProperties: boolean, missingIsError: boolean, feedback: Feedback): any {
     let newSchema = schema
     if (Array.isArray(schema)) {
@@ -288,7 +288,7 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
             let newVal = expandSchema(val, { ...scope, property: newPath }, newPath, key === 'properties', missingIsError, feedback)
             newSchema[key] = newVal
         }
-    } else if (typeof schema === 'string' && schema.startsWith('@{')) {
+    } else if (typeof schema === 'string' && schema.startsWith('${')) {
         let expr = schema.substring(2, schema.length - 1)
         try {
             let { value, error } = expressionEngine.parse(expr).tryEvaluate(scope)

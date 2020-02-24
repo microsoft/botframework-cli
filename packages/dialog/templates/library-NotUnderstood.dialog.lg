@@ -1,14 +1,14 @@
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnIntent",
     "intent": "None",
     "condition": "count(turn.recognizedentities) == 0",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callNotUnderstood()}"           
+            "activity": "${callNotUnderstood()}"           
         }
     ]
 }

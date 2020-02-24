@@ -1,32 +1,32 @@
 # filename
-- @{assignFilename('dimension')}
+- ${assignFilename('dimension')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "dimension",
     "actions": [
         {
             "$kind": "Microsoft.IfCondition",
-            "condition": "equals(@dimension.units, dialogClass.schema.properties['@{property}'].$units)",
+            "condition": "equals(@dimension.units, dialogClass.schema.properties['${property}'].$units)",
             "actions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "@{callSetMessage()}"
+                    "activity": "${callSetMessage()}"
                 }, 
                 {
                     "$kind": "Microsoft.SetProperty",
-                    "property": "$@{property}",
+                    "property": "$${property}",
                     "value": "=@dimension.number"          
                 }
             ],
             "elseActions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "@{callUnitsAlert()}"
+                    "activity": "${callUnitsAlert()}"
                 }
             ]
         }
@@ -35,9 +35,9 @@
 ```
 
 # callSetMessage
-- @\{setObjectPropertyMessage('@{property}',string(@dimension.number))}
+- @\{setObjectPropertyMessage('${property}',string(@dimension.number))}
 
 # callUnitsAlert
-- @\{unitsAlert('@{property}')}
+- @\{unitsAlert('${property}')}
 
 [generator.lg](generator.lg)

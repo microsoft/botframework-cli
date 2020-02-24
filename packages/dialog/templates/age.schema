@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "age": {
         "type": "object",
-        "$entities": ["@{concat('age:', property)}", "age"],
+        "$entities": ["${concat('age:', property)}", "age"],
         "properties": {
             "number": {
                 "type": "number"

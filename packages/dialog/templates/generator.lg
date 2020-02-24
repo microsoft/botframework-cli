@@ -1,23 +1,23 @@
 # roles
-- IF: @{role}
-    - hasRole @{role}
+- IF: ${role}
+    - hasRole ${role}
 - ELSE:
     -
 
 # propertyFilename
-- @{schemaName}-@{property}.@{locale}.lg
+- ${schemaName}-${property}.${locale}.lg
 
 # entityLGFilename
-- @{schemaName}-@{property}Entity.@{locale}.lg
+- ${schemaName}-${property}Entity.${locale}.lg
 
 # entityLUFilename
-- @{schemaName}-@{property}Entity.@{locale}.lu
+- ${schemaName}-${property}Entity.${locale}.lu
 
 # missingFilename
-- @{schemaName}-@{property}-missing.dialog
+- ${schemaName}-${property}-missing.dialog
 
 # builtinEntityFilename(prebuiltEntity)
-- @{schemaName}-@{property}-@{prebuiltEntity}.@{locale}.lu
+- ${schemaName}-${property}-${prebuiltEntity}.${locale}.lu
 
 # assignFilename(entity)
-- @{schemaName}-@{property}-assign-@{entity}Entity.dialog
+- ${schemaName}-${property}-assign-${entity}Entity.dialog
