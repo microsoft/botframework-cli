@@ -122,7 +122,7 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
  * @param {string} rootResourceId the root resource object id
  * @param {any[]} resources all lu resource object list
  * @param {any[]} qnaFileToResourceMap map of qna file id and resource
- * @param {string} intentName interuption intent name
+ * @param {string} intentName interruption intent name
  * @returns {any[]} updated resource objects
  */
 const luCrossTrain = function (rootResourceId, resources, qnaFileToResourceMap, intentName) {
@@ -134,31 +134,31 @@ const luCrossTrain = function (rootResourceId, resources, qnaFileToResourceMap, 
   // Parse resources
   let rootResource = resources.filter(r => r.id === rootResourceId)[0]
   rootResource.visited = true
-  mergeRootInteruptionToLeaves(rootResource, idToResourceMap, qnaFileToResourceMap, intentName)
+  mergeRootInterruptionToLeaves(rootResource, idToResourceMap, qnaFileToResourceMap, intentName)
   
   return Array.from(idToResourceMap.values())
 }
 
-const mergeRootInteruptionToLeaves = function (rootResource, result, qnaFileToResourceMap, intentName) {
+const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToResourceMap, intentName) {
   if (rootResource.children === undefined || rootResource.length <= 0) return
 
   rootResource.content = removeDupUtterances(rootResource.content)
 
-  mergeBrothersInteruption(rootResource, result, intentName)
+  mergeBrothersInterruption(rootResource, result, intentName)
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
     if (childResource.visited === undefined) {
       const rootQnaFileId = path.join(path.dirname(rootResource.id), path.basename(rootResource.id, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
       const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
-      const newChildResource = mergeFatherInteruptionToChild(rootResource, rootQnaResource, childResource, intentName)
+      const newChildResource = mergeFatherInterruptionToChild(rootResource, rootQnaResource, childResource, intentName)
       result.set(child.target, newChildResource)
       newChildResource.visited = true
-      mergeRootInteruptionToLeaves(newChildResource, result, qnaFileToResourceMap, intentName)
+      mergeRootInterruptionToLeaves(newChildResource, result, qnaFileToResourceMap, intentName)
     }
   }
 }
 
-const mergeBrothersInteruption = function (resource, result, intentName) {
+const mergeBrothersInterruption = function (resource, result, intentName) {
   let children = resource.children
   for (const child of children) {
     let triggerIntent = child.intent
@@ -180,19 +180,19 @@ const mergeBrothersInteruption = function (resource, result, intentName) {
     let targetResource = result.get(child.target)
 
     // Merge direct brother's utterances
-    targetResource = mergeInteruptionIntent(brotherUtterances, targetResource, intentName)
+    targetResource = mergeInterruptionIntent(brotherUtterances, targetResource, intentName)
     result.set(targetResource.id, targetResource)
   }
 }
 
-const mergeFatherInteruptionToChild = function (fatherResource, fatherQnaResource, childResource, intentName) {
+const mergeFatherInterruptionToChild = function (fatherResource, fatherQnaResource, childResource, intentName) {
   let fatherUtterances = []
 
-  // extract father existing interuption utterances
-  const fatherInteruptions = fatherResource.content.Sections.filter(s => s.Name === intentName)
-  if (fatherInteruptions && fatherInteruptions.length > 0) {
-    const fatherInteruption = fatherInteruptions[0]
-    fatherUtterances = fatherUtterances.concat(fatherInteruption.UtteranceAndEntitiesMap.map(u => u.utterance))
+  // extract father existing interruption utterances
+  const fatherInterruptions = fatherResource.content.Sections.filter(s => s.Name === intentName)
+  if (fatherInterruptions && fatherInterruptions.length > 0) {
+    const fatherInterruption = fatherInterruptions[0]
+    fatherUtterances = fatherUtterances.concat(fatherInterruption.UtteranceAndEntitiesMap.map(u => u.utterance))
   }
 
   // extract corresponding qna questions from father
@@ -204,19 +204,19 @@ const mergeFatherInteruptionToChild = function (fatherResource, fatherQnaResourc
 
   fatherUtterances = fatherUtterances.concat(questions)
   if (fatherUtterances.length > 0) {
-    childResource = mergeInteruptionIntent(fatherUtterances, childResource, intentName)
+    childResource = mergeInterruptionIntent(fatherUtterances, childResource, intentName)
   }
 
   return childResource
 }
 
-const mergeInteruptionIntent = function (fromUtterances, toResource, intentName) {
+const mergeInterruptionIntent = function (fromUtterances, toResource, intentName) {
   // remove duplicated utterances in fromUtterances
   const dedupFromUtterances = Array.from(new Set(fromUtterances))
   let existingUtterances = extractIntentUtterances(toResource.content)
-  const toInteruptions = toResource.content.Sections.filter(section => section.Name === intentName)
-  if (toInteruptions && toInteruptions.length > 0) {
-    const toInteruption = toInteruptions[0]
+  const toInterruptions = toResource.content.Sections.filter(section => section.Name === intentName)
+  if (toInterruptions && toInterruptions.length > 0) {
+    const toInterruption = toInterruptions[0]
     // construct new content here
     let newFileContent = ''
     dedupFromUtterances.forEach(utterance => {
@@ -227,7 +227,7 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
 
     if (newFileContent === '') return toResource
 
-    const existingContent = `# ${toInteruption.Name}${NEWLINE}${toInteruption.Body}`
+    const existingContent = `# ${toInterruption.Name}${NEWLINE}${toInterruption.Body}`
     newFileContent = existingContent + NEWLINE + newFileContent
     let lines = newFileContent.split(/\r?\n/)
     let newLines = []
@@ -244,7 +244,7 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
     newFileContent = newLines.join(NEWLINE)
 
     // update section here
-    toResource.content = new SectionOperator(toResource.content).updateSection(toInteruption.Id, newFileContent)
+    toResource.content = new SectionOperator(toResource.content).updateSection(toInterruption.Id, newFileContent)
   } else {
     // construct new content here
     const dedupUtterances = dedupFromUtterances.filter(u => !existingUtterances.includes(u))
@@ -253,7 +253,7 @@ const mergeInteruptionIntent = function (fromUtterances, toResource, intentName)
       newFileContent += dedupUtterances.join(`${NEWLINE}- `)
 
       // add section here
-      // not add the interuption intent if original file is empty
+      // not add the interruption intent if original file is empty
       if (toResource.content.Content !== '') {
         toResource.content = new SectionOperator(toResource.content).addSection(newFileContent)
       }

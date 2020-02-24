@@ -15,7 +15,7 @@ module.exports = {
   /**
    * Cross train lu and qna files.
    * @param {string} input input lu and qna files folder.
-   * @param {string} intentName interuption intent name. Default value is _Interuption.
+   * @param {string} intentName interruption intent name. Default value is _Interruption.
    * @param {string} configPath path to config of mapping rules. If undefined, it will read config.json from input folder.
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */

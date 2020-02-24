@@ -16,7 +16,7 @@ export default class CrossTrain extends Command {
     in: flags.string({char: 'i', description: 'source lu and qna files folder'}),
     out: flags.string({char: 'o', description: 'output folder name. If not specified, the cross trained files will be wrote to cross-trained folder under folder of current command'}),
     config: flags.string({description: 'path to config file of mapping rules which is relative to folder specified by --in. If not specified, it will read default config.json from the folder specified by --in'}),
-    intentName: flags.string({description: 'Interuption intent name', default: '_Interuption'})
+    intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'})
   }
 
   async run() {

@@ -1,7 +1,7 @@
 > !# @enableSections = true
 > !# @enableMergeIntents = true
 
-# dia3_trigger
+# flight
 ## bookFlight
 - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
 
@@ -15,15 +15,11 @@
 @ phraselist flightTimeline = 
 	- morning,afternoon,evening
 
-# dia4_trigger
+> Source: cross training. Please do not edit these directly!
+# _Interruption
 - book a train ticket from Seattle to Portland
 - When do you want to leave from Seattle train station
-
-# local_intent
 - Hello
 - Hi
-
-> Source: cross training. Please do not edit these directly!
-# _Interuption
 - book a hotel in Seattle
 - Which type of hotel do you prefer

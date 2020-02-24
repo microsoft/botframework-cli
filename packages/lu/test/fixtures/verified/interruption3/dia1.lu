@@ -4,11 +4,11 @@
 # hotelType
 - Which type of hotel do you prefer
 
-# localIntentWithDupUtteranceInInteruption
-- which flight time do you prefer
-- Hello
-
 > Source: cross training. Please do not edit these directly!
-# _Interuption
+# _Interruption
 - book a flight from Seattle to Beijing
+- which flight time do you prefer
+- book a train ticket from Seattle to Portland
+- When do you want to leave from Seattle train station
+- Hello
 - Hi

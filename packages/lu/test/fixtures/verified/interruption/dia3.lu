@@ -6,14 +6,21 @@
 @ simple toLocation
 
 # flightTime
-- which flight time do you prefer
+- which {flightTime} do you prefer
 
 @ phraselist flightTimeline = 
 	- morning,afternoon,evening
 
 > Source: cross training. Please do not edit these directly!
-# _Interuption
+# _Interruption
+- book a train ticket from Seattle to Portland
+- When do you want to leave from Seattle train station
 - book a hotel in Seattle
 - Which type of hotel do you prefer
-- Hello
-- Hi
+- user guide
+- tell joke
+- sing song
+- can you sing a song
+- make some tunes
+- tell me a joke
+- can you make me laugh?
