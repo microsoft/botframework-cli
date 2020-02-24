@@ -3,23 +3,19 @@
  * Licensed under the MIT License.
  */
 
-const qnaConverter = require('./qnaConverter')
+const KB = require('./kb')
+const Alterations = require('./../alterations/alterations')
 
 class QnAMaker {
-    constructor(qnaJSON = null) {
-        if (qnaJSON) {
-            for (let prop in qnaJSON) {
-                this[prop] = qnaJSON[prop];
-            }
-        } else {
-            this.urls = [];
-            this.qnaList = [];
-            this.files = [];
-        }
+    constructor(kb = null, alterations = null){
+        this.kb = kb instanceof KB ? kb : null
+        this.alterations = alterations instanceof Alterations ? alterations : null 
     }
 
     parseToLuContent() {
-        return qnaConverter(this)
+        let content = this.kb ? this.kb.parseToLuContent() : ''
+        content += this.alterations ? this.alterations.parseToLuContent() : ''
+        return content
    }
 }
 

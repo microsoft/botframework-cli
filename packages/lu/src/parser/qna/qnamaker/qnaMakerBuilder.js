@@ -4,7 +4,9 @@
  */
 
 const mergeLuFiles = require('./../../lu/luMerger').Build
+const Alterations = require('./../alterations/alterations')
 const QnAMaker = require('./qnamaker')
+const KB = require('./kb')
 const deepEqual = require('deep-equal')
 const exception = require('../../utils/exception')
 const retCode = require('../../utils/enums/CLI-errors').errorCode
@@ -18,7 +20,7 @@ class QnABuilder{
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
     static async buildFromQnaMakerJson(qnamakerJson) {
-        return new QnAMaker(qnamakerJson)
+        return new QnAMaker(new KB(qnamakerJson))
     }
 
     /**
@@ -29,7 +31,7 @@ class QnABuilder{
      */
     static async buildFromQnA(qnaObject) {
         let parsedContent = await parseFileContents(qnaObject.content, false)
-        return new QnAMaker(parsedContent.qnaJsonStructure)
+        return new QnAMaker(new KB(parsedContent.qnaJsonStructure), new Alterations(parsedContent.qnaAlterations))
     }
 
     /**
@@ -59,14 +61,26 @@ class QnABuilder{
         parsedQnAList.forEach(index =>{
             qnaList.push(index.qnaJsonStructure)
         })
-        return collate(qnaList)
+        let kbResult = collate(qnaList)
+
+        let allParsedQnAAlterations = mergedContent.QnAAlterations.filter(item => item.includeInCollate)
+        let finalQnAAlterationsList = new Alterations()
+        allParsedQnAAlterations.forEach(function (alterationList) {
+            alterationList = alterationList.qnaAlterations;
+            if (alterationList.wordAlterations) {
+                alterationList.wordAlterations.forEach(function (alteration) {
+                    finalQnAAlterationsList.wordAlterations.push(alteration);
+                })
+            }
+        })
+        return new QnAMaker(kbResult, finalQnAAlterationsList)
     }
 }
 
 module.exports = QnABuilder
 
 const collate = function(qnaList) {
-    let result = new QnAMaker()
+    let result = new KB()
     for (let i = 0; i < qnaList.length; i++) {
         let blob = qnaList[i]
         // does this blob have URLs?

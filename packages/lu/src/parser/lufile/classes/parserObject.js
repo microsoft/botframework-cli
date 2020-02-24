@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-const QnA = require('./../../qna/qnamaker/qnamaker');
+const QnA = require('./../../qna/qnamaker/kb');
 const LUIS = require('./../../luis/luis');
 const qnaAlterations = require('./../../qna/alterations/alterations');
 class parserObject {

@@ -35,11 +35,11 @@ const modules = {
     Luis: require('./luis/luis'),
     LU: require('./lu/lu'),
     LuisBuilder: require('./luis/luisBuilder'),
-    QnAMaker: require('./qna/qnamaker/qnamaker'),
-    QnAMakerBuilder: require('./qna/qnamaker/qnaMakerBuilder'),
     QNA: require('./lu/qna'),
+    QnAMaker: require('./qna/qnamaker/qnamaker'),
+    KB: require('./qna/qnamaker/kb'),
     Alterations: require('./qna/alterations/alterations'),
-    AlterationsBuilder: require('./qna/alterations/alterationsBuilder'),
+    QnAMakerBuilder: require('./qna/qnamaker/qnaMakerBuilder'),
     Exception: require('./utils/exception')
 };
 
