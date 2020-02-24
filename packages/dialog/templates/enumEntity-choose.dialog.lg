@@ -10,12 +10,9 @@
     "actions": [
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callChoose()}",
+            "activity": "@\{choose@{property}Entity()}",
             "expectedProperties": ["@{property}"]
         }
     ]
 }
 ```
-
-# callChoose
-- @\{choose@{property}Entity()}
