@@ -5,17 +5,17 @@ In other cases, you might want to manage the translation and localization for th
 
 Translate command in the @microsoft/bf-lu library takes advantage of the [Microsoft text translation API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/) to automatically machine translate .lu files to one or more than [60+ languages](https://aka.ms/translate-langs) supported by the Microsoft text translation cognitive service.
 
-You can learn more about language x locale support for [LUIS.ai](https://www.luis.ai/) [here](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-supported-languages) and [qnamaker.ai](https://www.qnamaker.ai/) [here](https://docs.microsoft.com/en-us/azure/cognitive-services/qnamaker/overview/languages-supported)
+You can learn more about language x locale support for [LUIS.ai](https://www.luis.ai/) [here](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-supported-languages)
 
 ## What is translated? 
-- An .lu (or .qna) file and optionally translate
+- An .lu file and optionally translate
     - Comments in the lu file
-    - LU and QnA reference link texts
-- List of .lu/ .qna files under a specific path.
+    - LU reference link texts
+- List of .lu files under a specific path.
 
-When translating .lu/ .qna file, 
-- [Intents](docs/lu-file-format.md#intent) are not translated
-- [Entity](docs/lu-file-format.md#entity) names are not translated
+When translating .lu file, 
+- [Intent](lu-file-format.md#intent) names are not translated
+- [Entity](lu-file-format.md#entity) names are not translated
 
 ```
 >bf luis:translate
@@ -35,9 +35,8 @@ OPTIONS
 luis:translate command expects a Machine translation subscription key. You can obtain one [here](https://aka.ms/translate-key)
 
 ## Generating LUIS models from translated lu files
-You can follow instructions [here](./working-with-luis.md) to create LUIS models from lu files generated via luis:translate command. 
+You can follow instructions [here](./working-with-luis.md) to create LUIS applications from lu files generated via luis:translate command. 
 
 **Note**: You need to explicitly provide the correct [LUIS lang code](https://docs.microsoft.com/en-us/azure/cognitive-services/LUIS/luis-supported-languages) to the bf luis:translate command.
 
-
-**Note**: bf luis:translate command does not verify validity of the lu file. You might want to try to parse the .lu file(s) before translating to address validity issues in the source language before translating. 
+**Note**: bf luis:translate command does not verify validity of the .lu file. You might want to try `luis:convert` with the .lu file(s) before translating to address validity issues in the source language before translating. 
