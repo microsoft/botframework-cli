@@ -1,0 +1,26 @@
+> !# @enableSections = false
+
+@ simple none
+
+# Cancel
+# Greeting
+## HelloGreeting
+- Hi {userName=vishwac}
+- Hello my name is {userName=vishwac}
+
+@ simple hello hasRole hr1
+
+@ simple world hasRoles wr1, wr2
+## ByeGreeting
+- Bye {cityName = Seattle}
+- Bye bye {cityName = Beijing}
+@simple cityLocation
+@ simple help
+@ simple hello
+
+# Help
+- help
+- I need help
+- please help
+
+@ simple help

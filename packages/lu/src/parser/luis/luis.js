@@ -8,6 +8,7 @@ class Luis {
     constructor(LuisJSON = null){
         if (LuisJSON) {
             initialize(this, LuisJSON)
+            helpers.checkAndUpdateVersion(this)
         } else {
             this.intents = [];
             this.entities = [];
@@ -20,6 +21,12 @@ class Luis {
             this.patterns = [];
             this.patternAnyEntities = [];
             this.prebuiltEntities = [];
+            // fix for #255
+            this.luis_schema_version = "3.2.0";
+            this.versionId = "0.1";
+            this.name = "";
+            this.desc = "";
+            this.culture = "en-us";
         }
     }
 
@@ -41,7 +48,7 @@ class Luis {
 
     hasContent(){
         for (let prop in this) {
-            if (this[prop].length > 0 ) return true
+            if (Array.isArray(this[prop]) && this[prop].length > 0 ) return true
         }   
         return false
     }
@@ -52,27 +59,28 @@ class Luis {
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
     collate(luisList) {
+        let hashTable = {};
         if (luisList.length === 0) return
         if(!this.hasContent()) {
             initialize(this, luisList[0])
+            luisList.splice(0, 1)
         }
-        luisList.splice(0, 1)
+        initializeHash(this, hashTable)
         for(let i = 0; i < luisList.length; i++) {
             let blob = luisList[i]
             mergeResults(blob, this, LUISObjNameEnum.INTENT);
             mergeResults(blob, this, LUISObjNameEnum.ENTITIES);
             mergeResults_closedlists(blob, this, LUISObjNameEnum.CLOSEDLISTS);
-            mergeResults(blob, this, LUISObjNameEnum.UTTERANCE);
-            mergeResults(blob, this, LUISObjNameEnum.PATTERNS);
             mergeResults(blob, this, LUISObjNameEnum.PATTERNANYENTITY);
+            mergeResultsWithHash(blob, this, LUISObjNameEnum.UTTERANCE, hashTable);
+            mergeResultsWithHash(blob, this, LUISObjNameEnum.PATTERNS, hashTable);
             buildRegex(blob, this)
             buildPrebuiltEntities(blob, this)
             buildModelFeatures(blob, this)
             buildComposites(blob, this)
             buildPatternAny(blob, this)
-
         }
-        checkAndUpdateVersion(this)
+        helpers.checkAndUpdateVersion(this)
     }
 }
 
@@ -81,6 +89,13 @@ module.exports = Luis
 const initialize = function(instance, LuisJSON) {
     for (let prop in LuisJSON) {
         instance[prop] = LuisJSON[prop];
+    }   
+}
+const initializeHash = function(LuisJSON, hashTable = undefined) {
+    for (let prop in LuisJSON) {
+        if (hashTable !== undefined && (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS)) {
+            (LuisJSON[prop] || []).forEach(item => hashTable[helpers.hashCode(JSON.stringify(item))] = item)
+        }
     }   
 }
 const sortComparers = { 
@@ -102,6 +117,35 @@ const compareString = function(a, b) {
     }
 
     return 0;
+}
+
+const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
+    if (blob[type].length === 0) { 
+        return
+    }
+    blob[type].forEach(function (blobItem) {
+        // add if this item if it does not already exist by hash look up.
+        let hashCode = helpers.hashCode(JSON.stringify(blobItem));
+        if (!hashTable[hashCode]) {
+            finalCollection[type].push(blobItem);
+            hashTable[hashCode] = blobItem;
+        } else {
+            let item = hashTable[hashCode];
+
+            if (type !== LUISObjNameEnum.INTENT &&
+                type !== LUISObjNameEnum.PATTERNS &&
+                type !== LUISObjNameEnum.UTTERANCE &&
+                item.name === blobItem.name) {
+                    // merge roles
+                    (blobItem.roles || []).forEach(blobRole => {
+                        if (item.roles && 
+                            !item.roles.includes(blobRole)) {
+                                item.roles.push(blobRole);
+                            }
+                    });
+            }            
+        }
+    });
 }
 
 /**
@@ -322,32 +366,4 @@ const buildPatternAny = function(blob, FinalLUISJSON){
             }
         }
     })
-}
-
-const checkAndUpdateVersion = function(finalLUISJSON) {
-    if (!finalLUISJSON) return;
-    // clean up house keeping
-    if (finalLUISJSON.flatListOfEntityAndRoles)  delete finalLUISJSON.flatListOfEntityAndRoles
-    // Detect if there is content specific to 5.0.0 schema
-    // any entity with children
-    if (!finalLUISJSON) {
-        return
-    }
-    let v5DefFound = false;
-    v5DefFound = (finalLUISJSON.entities || []).find(i => i.children || i.features) ||
-                (finalLUISJSON.intents || []).find(i => i.features) || 
-                (finalLUISJSON.composites || []).find(i => i.features);
-    if (v5DefFound) {
-        finalLUISJSON.luis_schema_version = "6.0.0";
-        if (finalLUISJSON.model_features && finalLUISJSON.model_features.length !== 0) {
-            finalLUISJSON.phraselists = [];
-            finalLUISJSON.model_features.forEach(item => finalLUISJSON.phraselists.push(Object.assign({}, item)));
-        }
-        (finalLUISJSON.composites || []).forEach(composite => {
-            let children = composite.children;
-            composite.children = [];
-            children.forEach(c => composite.children.push({name : c}));
-        })
-        delete finalLUISJSON.model_features;
-    }
 }

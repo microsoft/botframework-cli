@@ -1,7 +1,7 @@
 # filename
-- @{schemaName}-percentage.@{locale}.lu
+- @{builtinEntityFilename('percentageEntity')}
 
 # template
-- $PREBUILT:percentage @{roles()}
+- @ prebuilt percentage @{roles()}
 
 [generator.lg](../generator.lg)

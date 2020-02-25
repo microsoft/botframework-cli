@@ -1,0 +1,17 @@
+[
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "un",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:2-0:1"
+          }
+        }
+      ]
+    }
+]

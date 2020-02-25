@@ -1,0 +1,182 @@
+[
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "dites-moi les détails de l'événement",
+          "to": "fr",
+          "alignment": {
+            "proj": "5:6-0:8 8:10-10:12 8:10-22:23 12:16-25:35 18:24-14:20"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "voix activée lecture des rendez-vous cette semaine",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:4-0:3 6:14-5:11 16:22-13:19 24:25-21:23 27:38-25:35 40:43-37:41 45:48-43:49"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "suis-je libre d'être avec des amis samedi ?",
+          "to": "fr",
+          "alignment": {
+            "proj": "3:3-0:6 5:8-8:12 10:11-26:28 13:14-14:19 16:19-21:24 21:27-30:33 29:36-35:40 38:38-42:42"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "rendez-vous avec Johnson doit être la semaine prochaine",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:10-0:10 12:15-12:15 17:23-17:23 25:29-25:28 31:32-35:36 34:35-30:33 37:40-46:54 42:45-38:44"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "appeler papa mike",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:3-0:6 5:7-8:11 9:12-13:16"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "changer la réunion avec Chris à 9: 00 h",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:5-0:6 7:9-8:9 11:17-11:17 19:22-19:22 24:28-24:28 30:31-30:30 35:35-32:33 37:38-35:36 40:41-38:38"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "email cloney john",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:4-0:4 6:11-6:11 13:16-13:16"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "prolonger la réunion du déjeuner 30 minutes de plus",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:5-0:8 0:5-10:11 7:11-24:31 7:11-21:22 13:19-13:19 21:22-33:34 24:30-36:42 32:36-47:50 32:36-44:45"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "Je veux reprogrammer la réuni on au club de l'armée de l'air",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:0-0:1 2:5-3:6 10:19-8:19 21:23-21:22 25:31-24:28 33:34-33:34 36:38-44:45 40:42-57:59 40:42-46:50 40:42-55:56 50:53-36:39"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "réunions de marketing le mardi sera maintenant tous les mercredis s'il vous plaît changer sur mon calendrier",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:8-12:20 0:8-9:10 10:17-0:7 10:17-22:23 22:29-25:29 31:34-31:34 36:38-36:45 43:47-52:54 43:47-47:50 49:57-56:64 59:64-71:74 59:64-76:80 59:64-66:69 66:71-82:88 73:74-90:92 76:77-94:96 79:86-98:107"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "déplacer la fête bbq à vendredi",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:3-0:7 5:7-9:10 9:11-17:19 13:17-12:15 19:20-21:21 22:27-23:30"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "l'atelier durera 10 heures",
+          "to": "fr",
+          "alignment": {
+            "proj": "4:11-0:8 18:21-10:15 27:28-17:18 30:34-20:25"
+          }
+        }
+      ]
+    }
+]

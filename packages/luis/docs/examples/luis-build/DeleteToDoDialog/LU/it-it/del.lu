@@ -1,0 +1,57 @@
+> !# @app.culture = it-it
+
+# DeleteToDoDialog
+- Rimuovi todo
+- Segno {todoTitle =  acquistare latte}  come completo
+- Bandiera {todoTitle =  primo}  come fatto
+- Rimuovere {todoTitle =  finire questa demo}  dall'elenco delle todo
+- rimuovere un altro
+- Rimuovere
+- cancellare il mio todo di nome {todoTitle =  ottenere una nuova auto}
+- L'ho fatto {todoTitle_patternAny}
+- Ho completato {todoTitle_patternAny}
+- Ho finito con il primo todo
+- Ho finito il {todoIdx =  Ultima}  Tutti
+- Segno {todoTitle_patternAny}  come completo
+- Rimuovere {todoTitle_patternAny}  dal mio [Tutti]  Elenco
+- [Si prega]  Elimina {todoTitle_patternAny}  dall'elenco
+- Rimuovere il primo todo
+- Elimina todo
+- Elimina {todoTitle_patternAny}
+- Cancellare le mie todos
+- Elimina tutte le mie todos
+- Rimuovi tutto il mio todo
+- Dimentica l'elenco
+- Eliminare l'elenco attività
+
+> Usa questo per catturare cose come il primo, l'ultimo, ecc.
+$ PREBUILT : ordinal
+
+# GetItemToDelete
+- il primo
+- ultimo
+- è l'ultimo
+- Vorrei eliminare il secondo elemento della mia lista
+- Ho bisogno di cancellare {todoTitle=acquistare latte}
+- Ho completato {todoTitle=finire questa demo}
+- rimuovere l'elemento con il titolo {todoTitle=acqua del cortile}
+> Aggiungere modelli
+- [Elimina]  [Le]  {todoTitle_patternAny}
+- (Elimina|Rimuovere)  [Le]  Elemento [con titolo]  {todoTitle_patternAny}
+- {todoTitle_patternAny}
+- [Si prega]  Rimuovere {todoTitle_patternAny}  Da (Mio|Le)  [Tutti]  [Elenco]
+
+# Help
+- Cosa posso dire
+- Guida
+- ho bisogno di aiuto
+- come faccio a dirvi cosa eliminare?
+- Cosa sono i titoli di todo validi?
+- Si è verificato un problema sconosciuto.
+- cosa si può prendere come titolo todo?
+
+# Cancel
+- Smettila
+- Annulla
+- abortire che
+

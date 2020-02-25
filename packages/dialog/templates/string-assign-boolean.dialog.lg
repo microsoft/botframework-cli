@@ -1,0 +1,29 @@
+
+# filename
+- @{assignFilename('boolean')}
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "boolean",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{callSetMessage()}"
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@boolean"          
+        }
+    ]               
+}
+```
+
+# callSetMessage
+- @\{setPropertyMessage('@{property}', @boolean)}
+
+[generator.lg](generator.lg)

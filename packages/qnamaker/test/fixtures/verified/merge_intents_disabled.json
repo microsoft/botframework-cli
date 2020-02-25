@@ -1,0 +1,118 @@
+{
+  "intents": [
+    {
+      "name": "Help"
+    },
+    {
+      "name": "Greeting.HelloGreeting"
+    },
+    {
+      "name": "Greeting.GoodbyeGreeting"
+    }
+  ],
+  "entities": [
+    {
+      "name": "dateTime",
+      "roles": []
+    },
+    {
+      "name": "userName",
+      "roles": []
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "help",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "I need help",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "please help",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "Hi vishwac",
+      "intent": "Greeting.HelloGreeting",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 3,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "Hello my name is vishwac",
+      "intent": "Greeting.HelloGreeting",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 17,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "Bye vishwac, see you tomorrow",
+      "intent": "Greeting.GoodbyeGreeting",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 4,
+          "endPos": 10
+        },
+        {
+          "entity": "dateTime",
+          "startPos": 21,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "Bye Bye vishwac, see you at the same time tomorrow",
+      "intent": "Greeting.GoodbyeGreeting",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 8,
+          "endPos": 14
+        },
+        {
+          "entity": "dateTime",
+          "startPos": 42,
+          "endPos": 49
+        }
+      ]
+    },
+    {
+      "text": "Good Bye vishwac",
+      "intent": "Greeting.GoodbyeGreeting",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 9,
+          "endPos": 15
+        }
+      ]
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [],
+  "luis_schema_version": "3.2.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us"
+}
