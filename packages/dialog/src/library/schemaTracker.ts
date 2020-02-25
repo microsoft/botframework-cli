@@ -90,6 +90,9 @@ export class SchemaTracker {
             this.validator.addSchema(schemaObject, schemaPath)
             validator = this.validator.getSchema(schemaPath)
         }
+        if (!validator) {
+            throw new Error('Could not find schema validator.')
+        }
         return [validator, added]
     }
 
