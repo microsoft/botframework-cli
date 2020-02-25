@@ -49,7 +49,6 @@ When the CLI route is attempting to infer the locale from the file name, we shou
 | --in              | lu file or folder                                                                                                       |
 | --force           | [optional] force write                                                                                                  |
 | --subscriptionkey | QnAMaker subscription key                                                                                               |
-| --hostname        | QnA Maker host name                                                                                                     |
 | --botname         | bot name                                                                                                                |
 | --out             | [Optional] output location                                                                                              |
 | --culture         | [Optional] culture code for the content. Infer from .qna if available. Defaults to `en-us`                              |
@@ -71,10 +70,11 @@ All up:qnamaker.settings.\<environmentname>.\<region>.json
 ```
 For each QnA file: 
 \<QNAfilename>_\<locale>.dialog
-```json
+```jsonc
 {
     "$type": "Microsoft.QnAMakerRecognizer",
     "KnowledgeBaseId": "{settings.qna.<dialogName>_<localeName>_qna}",
+    // endpoint here is fetched from the KB itself.
     "endpoint": "{settings.qna.hostname}",
     "endpointKey": "{settings.qna.endpointKey}"
 }
