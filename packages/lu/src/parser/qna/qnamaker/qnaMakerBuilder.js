@@ -12,19 +12,40 @@ const parseFileContents = require('./../../lufile/parseFileContents').parseFile
 
 class QnABuilder{
     /**
-     * Builds a Luis instance from a Lu list.
-     * @param {JSON} qnamakerJson QnAMaker json
+     * Builds a QnAMaker instance from a KB json.
+     * @param {JSON} kbJson QnAMaker json
      * @returns {QnAMaker} new QnAMaker instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async buildFromQnaMakerJson(qnamakerJson) {
-        return new QnAMaker(new KB(qnamakerJson))
+    static async buildFromKBJson(kbJson) {
+        return new QnAMaker(new KB(kbJson))
     }
 
     /**
-     * Builds a QnAMaker instance from a QnAMaker list.
+     * Builds a QnAMaker instance from a Alterations Json.
+     * @param {JSON} alterationsJson QnAMaker json
+     * @returns {QnAMaker} new QnAMaker instance
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    static async buildFromAlterationsJson(alterationsJson) {
+        return new QnAMaker('', new Alterations(alterationsJson))
+    }
+
+    /**
+     * Builds a QnAMaker instance from a KB and Alterations Json.
+     * @param {JSON} kbJson KB json
+     * @param {JSON} alterationsJsonson alterations json
+     * @returns {QnAMaker} new QnAMaker instance
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    static async buildFromKbAndAlterationsJson(kbJson, alterationsJson) {
+        return new QnAMaker(new KB(kbJson), new Alterations(alterationsJson))
+    }
+
+    /**
+     * Builds a QnAMaker instance from a qna instance.
      * @param {Qna} qnaObject QnA instance
-     * @returns {Luis} new QnAMaker instance
+     * @returns {QnAMaker} new QnAMaker instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
     static async buildFromQnA(qnaObject) {
@@ -33,7 +54,18 @@ class QnABuilder{
     }
 
     /**
-     * Builds a Luis instance from a Lu list.
+     * Builds a QnAMaker instance from a qna content.
+     * @param {Qna} qnaContent QnA content
+     * @returns {QnAMaker} new QnAMaker instance
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    static async buildFromQnaContent(qnaContent) {
+        let parsedContent = await parseFileContents(qnaContent, false)
+        return new QnAMaker(new KB(parsedContent.qnaJsonStructure), new Alterations(parsedContent.qnaAlterations))
+    }
+
+    /**
+     * Builds a QnAMaker instance from a qna list.
      * @param {Array<QnA>} qnaObjArray Array of LU files to be merge
      * @param {function} qnaSearchFn function to retrieve the qna files found in the references
      * @returns {QnAMaker} new QnAMaker instance

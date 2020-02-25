@@ -1,6 +1,7 @@
 const validator = require('./luisValidator')
 const luConverter = require('./luConverter')
 const helpers = require('./../utils/helpers')
+const LU = require('./../lu/lu')
 
 class Luis {
     constructor(LuisJSON = null){
@@ -32,7 +33,9 @@ class Luis {
         return luConverter(this)
     }
 
-
+    parseToLU(){
+        return new LU(this.parseToLuContent(), '')
+    }
 
     validate() {
         return validator(this)

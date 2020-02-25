@@ -11,7 +11,7 @@ const collate = require('./luisCollate')
 class LuisBuilder {
 
     /**
-     * Builds a Luis instance from a Lu list.
+     * Builds a Luis instance from a Luis json.
      * @param {JSON} luisJson Luis json
      * @returns {Luis} new Luis instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
@@ -21,13 +21,24 @@ class LuisBuilder {
     }
 
     /**
-     * Builds a Luis instance from a Lu list.
+     * Builds a Luis instance from a Lu instance.
      * @param {LU} luObject LU instance
      * @returns {Luis} new Luis instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
     static async buildFromLU(luObject) {
         let parsedContent = await parseFileContents(luObject.content, false, luObject.language)
+        return new Luis(parsedContent.LUISJsonStructure)
+    }
+
+    /**
+     * Builds a Luis instance from a Lu Content.
+     * @param {string} luContent LU content
+     * @returns {Luis} new Luis instance
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    static async buildFromLUContent(luContent) {
+        let parsedContent = await parseFileContents(luContent, false, '')
         return new Luis(parsedContent.LUISJsonStructure)
     }
 
