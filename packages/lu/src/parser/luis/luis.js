@@ -25,7 +25,6 @@ class Luis {
             this.desc = "";
             this.culture = "en-us";
         }
-        validator(this)
     }
 
     parseToLuContent(){

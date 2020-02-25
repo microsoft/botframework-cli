@@ -5,8 +5,8 @@
 const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
-const luis = require('./../../../src/parser/luis/luis')
 const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
+const collate = require('./../../../src/parser/luis/luisCollate')
 const translateHelpers = require('./../../../src/parser/lufile/translate-helpers');
 const TRANSLATE_KEY = process.env.TRANSLATOR_KEY;
 
@@ -100,9 +100,8 @@ $test:/hrf-[0-9]{6}/`;
                 parseFile(luFile2, false)
                     .then(res2 => {
                             try {
-                                let luisObj = new luis()
                                 let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                                luisObj.collate(luisList)
+                                let luisObj = collate(luisList)
                                 assert.equal(luisObj.regex_entities.length, 2);
                                 assert.deepEqual(luisObj.regex_entities[0], regexEntity1);
                                 assert.deepEqual(luisObj.regex_entities[1], regexEntity2);
@@ -124,9 +123,8 @@ $test:/hrf-[0-9]{6}/`;
                 parseFile(luFile2, false)
                     .then(res2 => {
                         try {
-                            let luisObj = new luis()
                             let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                            luisObj.collate(luisList)
+                            collate(luisList)
                             done(`Test failed - did not throw when expected`);
                         } catch(err) {
                             done()
@@ -146,9 +144,8 @@ $test:/hrf-[0-9]{6}/`;
                 parseFile(luFile2, false)
                     .then(res2 => {
                         try {
-                            let luisObj = new luis()
                             let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                            luisObj.collate(luisList)
+                            let luisObj = collate(luisList)
                             luisObj.validate()
                             done(`Test failed - did not throw when expected`);
                         } catch(err) {

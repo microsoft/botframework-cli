@@ -7,6 +7,7 @@ const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
 const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
 const luis = require('./../../../src/parser/luis/luis')
+const collate = require('./../../../src/parser/luis/luisCollate')
 const LUFromLUISJson = require('./../../../src/parser/luis/luConverter')
 const validateLUISModel = require('./../../../src/parser/luis/luisValidator')
 
@@ -124,9 +125,8 @@ $deviceTemperature:simple`;
                 parseFile(luFile2Content, false) 
                     .then(res2 => {
                       try {
-                        let luisObj = new luis()
                         let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                        luisObj.collate(luisList)
+                        collate(luisList)
                         done(`Test fail! Did not throw when expected`)        
                       } catch (error) {
                         done()
@@ -146,9 +146,8 @@ $deviceTemperature:simple`;
               parseFile(luFile2Content, false) 
                 .then(res2 => {
                   try {
-                    let luisObj = new luis()
                     let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                    luisObj.collate(luisList)
+                    let luisObj = collate(luisList)
                     luisObj.validate()
                     done(`Test fail! Did not throw when expected`)
                   } catch (error) {
@@ -171,15 +170,13 @@ $deviceTemperature:simple`;
                 parseFile(luFile2Content, false) 
                     .then(res2 => {
                           try {
-                            let luisObj = new luis()
                             let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                            luisObj.collate(luisList)
+                            let luisObj = collate(luisList)
                             validateLUISModel(luisObj)
                             done()
                           } catch (error) {
-                            done(`Test failed 3- ${error}`)
+                            done(`Test failed 3- ${JSON.stringify(error)}`)
                           }
-  
                     })
                     .catch(err => done(`Test failed 2- ${JSON.stringify(err)}`))
             })

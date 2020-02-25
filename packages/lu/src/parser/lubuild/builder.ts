@@ -7,7 +7,6 @@ import {LuBuildCore} from './core'
 import {Settings} from './settings'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Recognizer} from './recognizer'
-import { LUFileLexer } from '../lufile/generated/LUFileLexer'
 const path = require('path')
 const fs = require('fs-extra')
 const delay = require('delay')
