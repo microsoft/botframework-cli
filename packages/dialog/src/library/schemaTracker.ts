@@ -105,7 +105,7 @@ export class SchemaTracker {
             client.get(url, (resp: any) => {
                 let data = ''
 
-                // A chunk of data has been recieved.
+                // A chunk of data has been received.
                 resp.on('data', (chunk: any) => {
                     data += chunk
                 })
