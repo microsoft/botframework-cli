@@ -4,15 +4,15 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
+const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
 const fs = require('fs-extra')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
-const QnAMaker = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/qna/qnamaker/qnamaker')
-const Alterations = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/qna/alterations/alterations')
-const QnAMakerBuilder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/qna/qnamaker/qnaMakerBuilder')
-const alterationsBuilder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/qna/alterations/alterationsBuilder')
+const QnAMaker = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/qnamaker')
+const Alterations = require('@microsoft/bf-lu/lib/parser/qna/alterations/alterations')
+const QnAMakerBuilder = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/qnaMakerBuilder')
+const alterationsBuilder = require('@microsoft/bf-lu/lib/parser/qna/alterations/alterationsBuilder')
 
 export default class QnamakerConvert extends Command {
   static description = 'Converts .qna file(s) to QnA application JSON models or vice versa.'
