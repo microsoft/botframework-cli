@@ -47,5 +47,4 @@
 # notUnderstood
 - Sorry, I do not understand @{join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}
 
-> TODO: Would be good to split out all the component pieces, i.e. help, cancel, confirmation into their own files
 [library-PROPERTYName.lg]

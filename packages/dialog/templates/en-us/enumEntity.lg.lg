@@ -6,7 +6,9 @@
 -```
  @{propertyEntity()}
  @{chooseEntity()}
- \[library.lg]\n\[library-Choose.lg]
+ 
+ [library.lg]
+ [library-Choose.lg]
 ```
 
 # chooseEntity
@@ -16,7 +18,7 @@
 ```
 
 # propertyEntity
-- @{join(createArray(namePlusSwitch(), cases(), default()), '\n')}
+- @{join(createArray(namePlusSwitch(), cases(), default()), '')}
 
 # namePlusSwitch
 -```
@@ -31,7 +33,7 @@
 ```
 
 # cases
-- @{join(foreach(schema.properties[property].enum, enum, case(enum)), '\n')}
+- @{join(foreach(schema.properties[property].enum, enum, case(enum)), '')}
 
 # default
 -```
