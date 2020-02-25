@@ -7,7 +7,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{help(@PropertyName)}"           
+            "activity": "$\{help(@PropertyName)}"           
         }
     ]
 }

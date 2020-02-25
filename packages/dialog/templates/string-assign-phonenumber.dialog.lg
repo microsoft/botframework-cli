@@ -12,7 +12,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @phonenumber)}"
+            "activity": "$\{setPropertyMessage('${property}', @phonenumber)}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",

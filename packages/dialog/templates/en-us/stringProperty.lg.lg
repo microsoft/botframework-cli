@@ -3,31 +3,31 @@
 
 # template
 - ```
-@{AskTemplate()}
-@{NameTemplate()}
-@{ValueTemplate()}
+${AskTemplate()}
+${NameTemplate()}
+${ValueTemplate()}
 
-\[@{schemaName}-@{property}Entity.@{locale}.lg]
+\[${schemaName}-${property}Entity.${locale}.lg]
 \[library.lg]
 \[library-Missing.lg]
 ```
 
 # AskTemplate
 - ```
-# Ask@{property}
-- @\{askString('@{property}')\}
+# Ask${property}
+- $\{askString('${property}')\}
 ```
 
 # ValueTemplate
 - ```
-# @{property}(val)
-- @\{@{concat(property, 'Entity')}(val)}
+# ${property}(val)
+- $\{${concat(property, 'Entity')}(val)}
 ```
 
 # NameTemplate
 - ```
-# @{property}Name
-- @{phrase(property, locale)}
+# ${property}Name
+- ${phrase(property, locale)}
 ```
 
 [generator.lg](../generator.lg)

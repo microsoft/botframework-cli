@@ -7,11 +7,11 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{readForm('@{schemaName}')}"
+            "activity": "$\{readForm('${schemaName}')}"
         },
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@\{confirmChange()}",
+            "activity": "$\{confirmChange()}",
             "expectedProperties": [
                 "CompleteConfirmation"
             ]

@@ -19,13 +19,13 @@
                     "actions":[
                         {
                             "$kind": "Microsoft.SendActivity",
-                            "activity": "@\{unexpectedPropertySet('@{property}', @@{property}Entity)}"
+                            "activity": "$\{unexpectedPropertySet('${property}', @${property}Entity)}"
                         }
                     ],
                     "elseActions":[
                         {
                             "$kind": "Microsoft.SendActivity",
-                            "activity": "@\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}"
+                            "activity": "$\{unexpectedPropertyChange('${property}', @${property}Entity, $${property})}"
                         }
                     ]
                 }                

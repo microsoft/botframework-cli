@@ -11,7 +11,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @@{property}Entity)}"
+            "activity": "$\{setPropertyMessage('${property}', @${property}Entity)}"
         },    
         {
             "$kind": "Microsoft.SetProperty",

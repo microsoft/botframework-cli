@@ -11,7 +11,7 @@
     "actions": [        
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@\{Ask@{property}()}",
+            "activity": "$\{Ask${property}()}",
             "expectedProperties": [
                 "${property}"
             ]

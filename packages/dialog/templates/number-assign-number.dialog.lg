@@ -16,13 +16,13 @@
             "actions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "@\{numberValidation('@{property}', @number)}"
+                    "activity": "$\{numberValidation('${property}', @number)}"
                 }                    
             ],
             "elseActions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "@\{setPropertyMessage('@{property}', @number)}"
+                    "activity": "$\{setPropertyMessage('${property}', @number)}"
                 },
                 {
                     "$kind": "Microsoft.SetProperty",
