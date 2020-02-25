@@ -2,7 +2,7 @@ const LUISBuilder = require('./../../../src/parser/luis/luisBuilder')
 var chai = require('chai');
 var assert = chai.assert;
 
-describe('Luis Instance', function() {
+xdescribe('Luis Instance', function() {
     it('Parse to LU instance', async () => {
         let luFile = `
         @ ml test
@@ -42,7 +42,6 @@ describe('Luis Instance', function() {
 `
         const luisObject = await LUISBuilder.buildFromLUContent(luFile)
         const newLU = luisObject.parseToLU()
-        console.log(newLU.content)
         assert.equal(newLU.content, result); 
     });
 });
