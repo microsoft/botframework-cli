@@ -3,10 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+import {Command, flags} from '@microsoft/bf-cli-command'
 
 export default class OrchestratorCreate extends Command {
-  static description = 'Create orchestrator example file from .lu/.qna files to be used for bot runtime'
+  static description = 'describe the command here'
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
@@ -22,7 +22,7 @@ export default class OrchestratorCreate extends Command {
     const {args, flags} = this.parse(OrchestratorCreate)
 
     const name = flags.name || 'world'
-    this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\create.ts`)
+    this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\orchestrator\\create.ts`)
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }
