@@ -54,7 +54,7 @@ export class Dialog {
 
 // Definition of a Bot Framework component.
 export class Definition {
-    // $kind definition of the copmonent or undefined.
+    // $kind definition of the component or undefined.
     type?: st.Type
 
     // dialog that contains definition.
