@@ -147,3 +147,82 @@ ludown.translate.parseAndTranslate(luContent, subscriptionKey, targetLanguage, '
     })
 
 ```
+
+
+## V2 API
+
+## Parsing lu files
+To parse LU files, you can use the LUISBuilder class, which returns a LUIS class
+
+```js
+const Luis = require('@microsoft/bf-lu').Luis
+const LUISBuilder = require('@microsoft/bf-lu').LuisBuilder
+const luContent1 = `# Greeting
+- hi`;
+
+const luisObject = await LUISBuilder.buildFromLUContent(luContent1)
+
+// Parsed LUIS object
+console.log(JSON.stringify(luisObject, 2, null));
+        
+```
+
+## Validating parsed lu files
+
+You can use the available validate() function to verify if the parsed LUIS object is valid. This helps catch name conflicts, invalid labelled utterances etc. 
+
+```js
+const LUISBuilder = require('@microsoft/bf-lu').LuisBuilder
+const exception = require('@microsoft/bf-lu').Exception
+const luContent = `# Greeting
+- hi {userName=bob}
+$userName:first=
+-vishwac`;
+
+async function parseContent() {
+    try {   
+        const luisObject = await LUISBuilder.buildFromLUContent(luContent)
+        luisObject.validate()
+    } catch (error) {
+        if (error instanceof exception) {
+        // do something specific to this exception
+        } else {
+            console.log(errObj.text);
+        }
+    }
+}
+
+parseContent();
+```
+
+## Generating lu content from LUIS JSON
+
+You can generate lu content from LUIS instance using parseToLuContent() method. Here's an example code snippet. 
+
+```js
+const LUISBuilder = require('@microsoft/bf-lu').LuisBuilder
+const exception = require('@microsoft/bf-lu').Exception
+const luContent = `# Greeting
+- hi
+$userName:first=
+-vishwac`;
+const log = false;
+const locale = 'en-us';
+async function parseContent() {
+
+    try {   
+        const luisObject = await LUISBuilder.buildFromLUContent(luContent)
+        luisObject.validate()
+        const parsedLuisBackToLu = luisObject.parseToLuContent()
+    } catch (error) {
+        if (error instanceof exception) {
+        // do something specific to this exception
+        } else {
+            console.log(errObj.text);
+        }
+    }
+}
+
+parseContent();
+
+```
