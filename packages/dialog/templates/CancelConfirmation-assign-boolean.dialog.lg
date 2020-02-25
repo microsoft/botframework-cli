@@ -4,16 +4,16 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "CancelConfirmation",
-    "entity": "Confirmation",
+    "entity": "boolean",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$CancelConfirmation",
-            "value": "=@Confirmation"
+            "value": "=@boolean"
         },
         {
             "$kind": "Microsoft.IfCondition",
-            "condition":"$CancelConfirmation == 'yes'",
+            "condition":"$CancelConfirmation == 'true'",
             "actions": [
                 {
                     "$kind": "Microsoft.EndDialog"
