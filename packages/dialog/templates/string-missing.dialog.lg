@@ -11,7 +11,7 @@
     "actions": [
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callAsk()}",
+            "activity": "@\{Ask@{property}()}",
             "expectedProperties": [
                 "@{property}"
             ]
@@ -19,11 +19,5 @@
     ]
 }
 ```
-
-# callAsk
-- @\{Ask@{property}()}
-
-# callHelp
-- @\{help(@PropertyName)}
 
 [generator.lg](generator.lg)
