@@ -12,7 +12,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "${callSetMessage()}"
+            "activity": "@\{setPropertyMessage('@{property}', @email)}"
         },
         {
             "$kind": "Microsoft.SetProperty",
@@ -22,8 +22,5 @@
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setPropertyMessage('${property}', @email)}
 
 [generator.lg](generator.lg)

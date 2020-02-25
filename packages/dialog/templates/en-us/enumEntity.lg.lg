@@ -3,7 +3,7 @@
 
 >>> This is because of issues around ' and } in strings--see enumEntityDesired.lg for a test case
 # template
-- ${propertyEntity()}\n${chooseEntity()}\n\[library.lg]
+- @{propertyEntity()}\n@{chooseEntity()}\n\[library.lg]\n\[library-Choose.lg]
 
 # chooseEntity
 - # choose${property}Entity\n- @\{chooseEnumEntity(${concat("'", property, "'")})\}\n

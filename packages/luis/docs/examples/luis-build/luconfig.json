@@ -1,0 +1,14 @@
+{
+    "name":"todobot",
+    "defaultLanguage":"en-us",
+    "deleteOldVersion": true, 
+    "models": [
+        "RootDialog/LU/root.lu",
+        "RootDialog/LU/fr-fr/root.lu",
+        "AddTodoDialog/LU/add.lu",
+        "AddTodoDialog/LU/es-es/add.lu",
+        "AddTodoDialog/LU/fr-fr/add.lu",
+        "DeleteToDoDialog/LU/del.lu",
+        "DeleteToDoDialog/LU/it-it/del.lu"
+    ]
+}

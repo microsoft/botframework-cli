@@ -7,10 +7,15 @@
   "tokenizerVersion": "1.0.0",
   "intents": [
     {
-      "name": "None"
+      "name": "BookFlight",
+      "score": 0.582334042
     }
   ],
-  "entities": [],
+  "entities": [
+    {
+      "name": "flight"
+    }
+  ],
   "composites": [],
   "closedLists": [],
   "patternAnyEntities": [],
@@ -19,6 +24,12 @@
   "model_features": [],
   "regex_features": [],
   "patterns": [],
-  "utterances": [],
+  "utterances": [
+    {
+      "text": "book a flight",
+      "intent": "BookFlight",
+      "entities": []
+    }
+  ],
   "settings": []
 }

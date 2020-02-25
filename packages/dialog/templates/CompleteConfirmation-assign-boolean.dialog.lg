@@ -4,16 +4,16 @@
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "CompleteConfirmation",
-    "entity": "Confirmation",
+    "entity": "boolean",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$CompleteConfirmation",
-            "value": "=@Confirmation"
+            "value": "=@boolean"
         },
         {
             "$kind": "Microsoft.IfCondition",
-            "condition":"$CompleteConfirmation == 'no'",
+            "condition":"$CompleteConfirmation == 'false'",
             "actions": [
                 {
                     "$kind": "Microsoft.EndDialog"
@@ -22,7 +22,7 @@
             "elseActions":[
                 {
                     "$kind": "Microsoft.Ask",
-                    "activity": "${callChooseProperty()}",
+                    "activity": "@\{chooseProperty()}",
                     "expectedProperties": [
                         "PropertyToChange"
                     ]
@@ -32,6 +32,3 @@
     ]
 }
 ```
-
-# callChooseProperty
-- @\{chooseProperty()}

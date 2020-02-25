@@ -12,7 +12,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "${callSetMessage()}"
+            "activity": "@\{setObjectPropertyMessage('@{property}', concat(@datetime.type, ' ', string(@datetime.timex)))}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
@@ -27,8 +27,5 @@
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setObjectPropertyMessage('${property}', concat(@datetime.type, ' ', string(@datetime.timex)))}
 
 [generator.lg](generator.lg)

@@ -16,13 +16,13 @@
             "actions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "${callNumberAlert()}"
+                    "activity": "@\{numberValidation('@{property}', @number)}"
                 }                    
             ],
             "elseActions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "${callSetMessage()}"
+                    "activity": "@\{setPropertyMessage('@{property}', @number)}"
                 },
                 {
                     "$kind": "Microsoft.SetProperty",
@@ -35,11 +35,5 @@
     ]               
 }
 ```
-
-# callNumberAlert
-- @\{numberValidation('${property}', @number)}
-
-# callSetMessage
-- @\{setPropertyMessage('${property}', @number)}
 
 [generator.lg](generator.lg)

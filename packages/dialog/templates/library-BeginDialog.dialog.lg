@@ -7,11 +7,9 @@
     "actions":  [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "${callWelcome()}"           
+            "activity": "@\{welcome()}"           
         }
     ]
 }
 ```
 
-# callWelcome
-- @\{welcome()}

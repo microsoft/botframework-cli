@@ -15,7 +15,7 @@
             "actions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "${callSetMessage()}"
+                    "activity": "@\{setObjectPropertyMessage('@{property}',string(@dimension.number))}"
                 }, 
                 {
                     "$kind": "Microsoft.SetProperty",
@@ -26,18 +26,12 @@
             "elseActions":[
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "${callUnitsAlert()}"
+                    "activity": "@\{unitsAlert('@{property}')}"
                 }
             ]
         }
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setObjectPropertyMessage('${property}',string(@dimension.number))}
-
-# callUnitsAlert
-- @\{unitsAlert('${property}')}
 
 [generator.lg](generator.lg)
