@@ -13,7 +13,7 @@ const luObject = require('./../parser/lu/lu')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
-export async function getLuObjects(stdin: string, input: string, recurse = false, extType: string | undefined) {
+export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
     luObjects.push(new luObject(stdin, 'stdin'))
