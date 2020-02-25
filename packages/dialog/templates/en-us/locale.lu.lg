@@ -2,4 +2,7 @@
 - ../luis/@{schemaName}.@{locale}.lu
 
 # template
-- >>> Library\n@{join(foreach(templates.lu, lu, concat('[', lu.fullName, '](../', locale, '/', lu.fullName, ')')), '\n')}
+-```
+ >>> Library
+@{join(foreach(templates.lu, lu, concat('[', lu.fullName, '](../', locale, '/', lu.fullName, ')')), '\n')}
+ ```
