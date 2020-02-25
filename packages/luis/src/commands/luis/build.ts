@@ -6,13 +6,13 @@
 import {Command, flags} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
-const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
-const Content = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/lu')
-const Settings = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/settings')
-const MultiLanguageRecognizer = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
-const Recognizer = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/recognizer')
-const Builder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const Content = require('@microsoft/bf-lu/lib/parser/lu/lu')
+const Settings = require('@microsoft/bf-lu/lib/parser/lubuild/settings')
+const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
+const Recognizer = require('@microsoft/bf-lu/lib/parser/lubuild/recognizer')
+const Builder = require('@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'

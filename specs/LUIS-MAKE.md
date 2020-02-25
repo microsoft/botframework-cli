@@ -45,7 +45,7 @@ When the CLI route is attempting to infer the locale from the file name, we shou
 4. [Optional] LUIS authoring region to use. Defaults to `westus`
 5. [Optional] environment name (text property that can be set to e.g. `dev`, `staging`, `production`). Defaults to `development`
 6. [Optional] Output folder name to write out .dialog files generated. Defaults to `cwd()`
-7. [Optional] --dialog field to request that .dilog files be written out. Defaults to `false`
+7. [Optional] --dialog field to request that .dialog files be written out. Defaults to `false`
 
 ## CLI Command
 
