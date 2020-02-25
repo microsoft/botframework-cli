@@ -19,13 +19,13 @@
                     "actions":[
                         {
                             "$kind": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedSet()}"
+                            "activity": "@\{unexpectedPropertySet('@{property}', @@{property}Entity)}"
                         }
                     ],
                     "elseActions":[
                         {
                             "$kind": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedChange()}"
+                            "activity": "@\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}"
                         }
                     ]
                 }                
@@ -39,11 +39,5 @@
     ]
 }
 ```
-
-# callUnexpectedSet
-- @\{unexpectedPropertySet('@{property}', @@{property}Entity)}
-
-# callUnexpectedChange
-- @\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}
 
 [generator.lg](generator.lg)

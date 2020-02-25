@@ -1,6 +1,6 @@
 
 # filename
-- @{assignFilename('utterance')}
+- @{assignFilename('boolean')}
 
 # template
 - ```
@@ -8,16 +8,16 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "@{property}",
-    "entity": "utterance",
+    "entity": "boolean",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @utterance)}"
+            "activity": "@\{setPropertyMessage('@{property}', @boolean)}"
         },
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$@{property}",
-            "value": "=@utterance"          
+            "value": "=@boolean"          
         }
     ]               
 }

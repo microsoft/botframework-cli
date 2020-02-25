@@ -12,7 +12,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "@\{setObjectPropertyMessage('@{property}', concat(string(@money.number), ' ', @money.units))}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
@@ -27,8 +27,5 @@
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(string(@money.number), ' ', @money.units))}
 
 [generator.lg](generator.lg)

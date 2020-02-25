@@ -4,20 +4,20 @@
     "$schema": "@{appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "ChangePropertyConfirmation",
-    "entity": "Confirmation",
+    "entity": "boolean",
     "actions": [
         {
             "$kind": "Microsoft.SetProperty",
             "property": "$ChangePropertyConfirmation",
-            "value": "=@Confirmation"
+            "value": "=@boolean"
         },
         {
             "$kind": "Microsoft.IfCondition",
-            "condition":"$ChangePropertyConfirmation == 'yes'",
+            "condition":"$ChangePropertyConfirmation == 'true'",
             "actions": [
                 {
                     "$kind": "Microsoft.Ask",
-                    "activity": "@{callAsk()}",
+                    "activity": "@\{template(concat('Ask',$PropertyToRemember))}",
                     "expectedProperties": 
                         "createArray($PropertyToRemember)"
                     
@@ -27,6 +27,3 @@
     ]
 }
 ```
-
-# callAsk()
-- @\{template(concat('Ask',$PropertyToRemember))}
