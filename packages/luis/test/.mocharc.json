@@ -2,6 +2,6 @@
     "require": ["test/hook.js", "source-map-support/register"],
     "recursive": true,
     "reporter": "spec",
-    "timeout": 60000,
+    "timeout": 300000,
     "extension": ["js","ts"]
 }
