@@ -1,7 +1,13 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
 
-export default class Test extends Command {
-  static description = 'describe the command here'
+import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+
+
+export default class OrchestratorTest extends Command {
+  static description = 'Run orchestrator test evaluation using given test file'
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
@@ -14,7 +20,7 @@ export default class Test extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(Test)
+    const {args, flags} = this.parse(OrchestratorTest)
 
     const name = flags.name || 'world'
     this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\test.ts`)

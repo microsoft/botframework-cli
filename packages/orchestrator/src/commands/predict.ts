@@ -1,7 +1,12 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
 
-export default class Predict extends Command {
-  static description = 'describe the command here'
+import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+
+export default class OrchestratorPredict extends Command {
+  static description = 'Returns score of given utterance using previously created orchestrator examples'
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
@@ -14,7 +19,7 @@ export default class Predict extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(Predict)
+    const {args, flags} = this.parse(OrchestratorPredict)
 
     const name = flags.name || 'world'
     this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\predict.ts`)
