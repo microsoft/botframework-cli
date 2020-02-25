@@ -89,7 +89,6 @@ export default class QnamakerConvert extends Command {
         this.log(result)
       }
     } catch (error) {
-      console.log(error)
       if (error instanceof exception) {
         throw new CLIError(error.text)
       }
