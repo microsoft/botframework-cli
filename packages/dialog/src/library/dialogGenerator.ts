@@ -62,8 +62,7 @@ async function findTemplate(name: string, templateDirs: string[], locale?: strin
             // LG Engine with name/names added functions
             loc = localePath(name + '.lg', dir, locale)
             if (await fs.pathExists(loc)) {
-                template = lg.LGParser.parseFile(loc, lg.LGParser.defaultFileResolver)
-                template.expressionEngine = expressionEngine
+                template = lg.LGParser.parseFile(loc, undefined, expressionEngine)
             }
         }
     }

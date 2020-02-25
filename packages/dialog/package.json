@@ -46,7 +46,7 @@
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
     "ajv": "^6.9.1",
-    "botbuilder-lg": "~4.8.0-preview-107606",
+    "botbuilder-lg": "~4.8.0-preview-108336",
     "chalk": "^2.4.2",
     "clone": "^2.1.2",
     "fs-extra": "^8.1.0",
@@ -58,7 +58,7 @@
     "semver": "^5.7.0",
     "tslib": "^1.10.0",
     "xml2js": "^0.4.19",
-    "adaptive-expressions": "~4.8.0-preview-107606"
+    "adaptive-expressions": "~4.8.0-preview-108336"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",
