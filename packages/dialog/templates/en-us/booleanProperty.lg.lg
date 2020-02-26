@@ -7,9 +7,9 @@
 @{NameTemplate()}
 @{ValueTemplate()}
 
-\[@{schemaName}-@{property}Entity.@{locale}.lg]
-\[library.lg]
-\[library-Missing.lg]
+[@{schemaName}-@{property}Entity.@{locale}.lg]
+[library.lg]
+[library-Missing.lg]
 ```
 
 # AskTemplate
