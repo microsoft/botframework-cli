@@ -10,7 +10,8 @@ const retCode = require('./../utils/enums/CLI-errors');
 const helpers = require('./../utils/helpers');
 const hClasses = require('./../lufile/classes/hclasses');
 const exception = require('./../utils/exception');
-const luObject = require('./../lu/lu');
+const luObject = require('./lu');
+const luOptions = require('./luOptions')
 const parserObject = require('./../lufile/classes/parserObject');
 const txtfile = require('./../lufile/read-text-file');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
@@ -102,7 +103,8 @@ const findLuFilesInDir = async function(srcId, idsToFind){
             const luFilesToAdd = helpers.findLUFiles(rootPath, isRecursive);
             // add these to filesToParse
             for(let f = 0; f < luFilesToAdd.length; f++){
-                luObjects.push(new luObject(readLuFile(luFilesToAdd[f]), luFilesToAdd[f], file.includeInCollate))
+                const opts = new luOptions(luFilesToAdd[f], file.includeInCollate)
+                luObjects.push(new luObject(readLuFile(luFilesToAdd[f]), opts))
             } 
             continue
         } 
@@ -111,7 +113,7 @@ const findLuFilesInDir = async function(srcId, idsToFind){
             file.filePath = path.resolve(parentFilePath, file.filePath)
         } 
         // find matching parsed files and ensure includeInCollate is updated if needed.
-        luObjects.push(new luObject(readLuFile(file.filePath), file.filePath, file.includeInCollate))
+        luObjects.push(new luObject(readLuFile(file.filePath), new luOptions(file.filePath, file.includeInCollate)))
         
     }
     return luObjects
@@ -301,8 +303,8 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFil
         // look for QnA
         parsedQnABlobs = []
         parsedQnAAlterations = []
-        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName)));
-        parsedQnAAlterations.push((allParsedContent.QnAAlterations || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName)));
+        parsedQnABlobs.push((allParsedContent.QnAContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile ? srcFile : ''), parsedUtterance.fileName)));
+        parsedQnAAlterations.push((allParsedContent.QnAAlterations || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile ? srcFile : ''), parsedUtterance.fileName)));
     }
 
     if(!parsedQnABlobs || !parsedQnABlobs[0] || !parsedQnAAlterations || !parsedQnAAlterations[0]) {
@@ -343,7 +345,7 @@ const filterQuestionMarkRef = function(allParsedContent, parsedUtterance, srcFil
 }
 
 const filterLuisContent = function(allParsedContent, parsedUtterance, srcFile, utteranceText){
-    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile), parsedUtterance.fileName));
+    let parsedLUISBlob = (allParsedContent.LUISContent || []).find(item => item.srcFile == parsedUtterance.fileName || item.srcFile == path.resolve(path.dirname(srcFile ? srcFile : ''), parsedUtterance.fileName));
     if(!parsedLUISBlob ) {
         let error = BuildDiagnostic({
             message: `Unable to parse ${utteranceText} in file: ${srcFile}. Cannot find reference.`

@@ -13,6 +13,7 @@ const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('./../luis/luisBuilder')
+const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 
 export class Builder {
@@ -72,7 +73,7 @@ export class Builder {
         settings.set(fileFolder, new Settings(settingsPath, settingsContent))
       }
 
-      const content = new Content(fileContent, fileName, true, fileCulture, file)
+      const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
       luContents.push(content)
 
       const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
@@ -330,6 +331,6 @@ export class Builder {
       }
     }
 
-    return new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
+    return new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
   }
 }

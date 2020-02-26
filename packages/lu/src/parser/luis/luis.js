@@ -34,7 +34,7 @@ class Luis {
     }
 
     parseToLU(){
-        return new LU(this.parseToLuContent(), '')
+        return new LU(this.parseToLuContent())
     }
 
     validate() {

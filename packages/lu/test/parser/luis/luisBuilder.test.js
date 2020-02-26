@@ -1,6 +1,7 @@
 const LUISBuilder = require('./../../../src/parser/luis/luisBuilder')
 const Luis = require('./../../../src/parser/luis/luis')
 const LU = require('./../../../src/parser/lu/lu')
+const LUOptions = require('./../../../src/parser/lu/luOptions')
 var chai = require('chai');
 var assert = chai.assert;
 
@@ -38,8 +39,8 @@ describe('LUISBuilder', function() {
     it('Build luis app from LU Object List and collate them', async () => {
         let testLU1 = `$userName:simple role=firstName`;
         let testLU2 = `$userName:simple role=lastName`;
-        const luObject1 = new LU(testLU1, '1')
-        const luObject2 = new LU(testLU2, '2')
+        const luObject1 = new LU(testLU1)
+        const luObject2 = new LU(testLU2, new LUOptions('2'))
         const luisObject = await LUISBuilder.buildFromLUList([luObject1, luObject2])
         assert.equal(luisObject.entities.length, 1);
         assert.equal(luisObject.entities[0].roles.length, 2);

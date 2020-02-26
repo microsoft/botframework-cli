@@ -9,6 +9,7 @@ const fs = require('fs-extra')
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const Content = require('@microsoft/bf-lu').LU
+const LUOptions = require('@microsoft/bf-lu/lib/parser/lu/luOptions')
 const Settings = require('@microsoft/bf-lu/lib/parser/lubuild/settings')
 const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
 const Recognizer = require('@microsoft/bf-lu/lib/parser/lubuild/recognizer')
@@ -84,7 +85,7 @@ export default class LuisBuild extends Command {
     if (flags.stdin && flags.stdin !== '') {
       // load lu content from stdin and create default recognizer, multiRecognier and settings
       this.log('Load lu content from stdin')
-      const content = new Content(flags.stdin, 'stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin'))
+      const content = new Content(flags.stdin, new LUOptions('stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin')))
       luContents.push(content)
       multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
       settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {}))

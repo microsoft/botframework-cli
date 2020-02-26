@@ -4,19 +4,20 @@
  */
 
 const translateHelpers = require('./../lufile/translate-helpers')
+const luOptions = require('./luOptions')
 
 class Lu {
-    constructor(content, id, includeInCollate = true, language = '', path = ''){
-        this.id = id
+    constructor(content, options = new luOptions){
         this.content = content
-        this.includeInCollate = includeInCollate
-        this.language = language
-        this.path = path
+        this.id = options.id ? options.id : ''
+        this.includeInCollate = options.includeInCollate !== undefined ? options.includeInCollate : true
+        this.language = options.language ? options.language : ''
+        this.path = options.path ? options.path : ''
 
         if (this.language !== '') {
-            this.name = id + '.' + this.language + '.lu'
+            this.name = this.id + '.' + this.language + '.lu'
         } else {
-            this.name = id + '.lu'
+            this.name = this.id + '.lu'
         }
     }
 

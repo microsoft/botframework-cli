@@ -20,7 +20,7 @@ class QnAMaker {
    }
 
    parseToQNA() {
-       return new QnA(this.parseToQnAContent(), '')
+       return new QnA(this.parseToQnAContent())
    }
 }
 

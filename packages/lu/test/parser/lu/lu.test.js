@@ -24,7 +24,7 @@ describe('LU instance', function() {
     it('Transalte LU instance content', async () => {
         let luContent = await fs.readFile(path.join(__dirname, './../../fixtures/translation/files/intentsAndUtterances.lu'))
         let result = await fs.readFile(path.join(__dirname, './../../fixtures/translation/translatedfiles/intentsAndUtterances.lu'))
-        const luInstance = new LU(luContent.toString(), '')
+        const luInstance = new LU(luContent.toString())
         await luInstance.translate('xxxxxxx', 'fr', true, false)
         compareLuFiles(luInstance.content, result)
     });
