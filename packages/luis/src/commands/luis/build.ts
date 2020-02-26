@@ -21,7 +21,7 @@ export default class LuisBuild extends Command {
     $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
   `]
 
-  static flags: any = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
     in: flags.string({char: 'i', description: 'Lu file or folder'}),
     authoringKey: flags.string({description: 'LUIS authoring key', required: true}),
