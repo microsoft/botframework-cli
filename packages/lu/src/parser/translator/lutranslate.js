@@ -1,4 +1,3 @@
-const path = require('path')
 const exception = require('./../utils/exception')
 const retCode = require('./../utils/enums/CLI-errors')
 const translateHelpers = require('./../lufile/translate-helpers')

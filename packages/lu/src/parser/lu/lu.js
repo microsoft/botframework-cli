@@ -21,7 +21,7 @@ class Lu {
     }
 
     async translate(translate_key, tgt_lang, translate_comments = false, translate_link_text = false){
-        this.content = await translateHelpers.parseAndTranslate(this.content, translate_key, tgt_lang, '', translate_comments, translate_link_text, false)
+        this.content = await translateHelpers.parseAndTranslate(this.content, translate_key, tgt_lang, '', translate_comments, translate_link_text)
     }
 }
 

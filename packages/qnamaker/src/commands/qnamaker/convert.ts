@@ -10,8 +10,8 @@ const fs = require('fs-extra')
 const KB = require('@microsoft/bf-lu').KB
 const Alterations = require('@microsoft/bf-lu').Alterations
 const QnAMakerBuilder = require('@microsoft/bf-lu').QnAMakerBuilder
-const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 export default class QnamakerConvert extends Command {
   static description = 'Converts .qna file(s) to QnA application JSON models or vice versa.'

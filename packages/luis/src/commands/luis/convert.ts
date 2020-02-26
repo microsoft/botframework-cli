@@ -8,8 +8,8 @@ const fs = require('fs-extra')
 const Luis = require('@microsoft/bf-lu').Luis
 const LuisBuilder = require('@microsoft/bf-lu').LuisBuilder
 const exception = require('@microsoft/bf-lu').Exception
-const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 import {hasContent, sort} from './../../utils/luisinstanceutils'
 export default class LuisConvert extends Command {

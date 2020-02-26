@@ -149,7 +149,7 @@ ludown.translate.parseAndTranslate(luContent, subscriptionKey, targetLanguage, '
 ```
 
 
-## V2 API
+# V2 API
 
 ## Parsing lu files
 To parse LU files, you can use the LUISBuilder class, which returns a LUIS class
@@ -224,5 +224,27 @@ async function parseContent() {
 }
 
 parseContent();
+
+```
+## Translating lu files
+
+You can take advantage of the [Microsoft text translation API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/) to automatically machine translate .lu files to one or more than [60+ languages](https://aka.ms/translate-langs) supported by the Microsoft text translation cognitive service.
+
+To translate lu file content, you can simply use the translate() method in the LU class. Here's a code snippet.
+
+```js
+const ludown = require('@microsoft/bf-lu');
+const luContent = `# Greeting
+- hi
+$userName:first=
+-vishwac`;
+const targetLanguage = 'de';
+const subscriptionKey = '<YOUR TEXT TRANSLATION KEY>';
+const translateComments = true;
+const translateLinkText = true;
+
+const luInstance = new LU(luContent)
+await luInstance.translate(subscriptionKey, targetLanguage, translateComments, translateLinkText)
+const translatedCode = luInstance.content
 
 ```

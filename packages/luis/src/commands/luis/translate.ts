@@ -10,9 +10,9 @@ const Lu = require('@microsoft/bf-lu').LU
 const Luis = require('@microsoft/bf-lu').Luis
 const LuisBuilder = require('@microsoft/bf-lu').LuisBuilder
 const exception = require('@microsoft/bf-lu').Exception
-const fileHelper = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const luTranslator = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/translator/lutranslate')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
+const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'
