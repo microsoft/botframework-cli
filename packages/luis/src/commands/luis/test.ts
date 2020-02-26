@@ -14,7 +14,7 @@ const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/u
 const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luisBuilder')
 const Luis = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luis')
-const inputUtils = require('../../utils/index')
+//const inputUtils = require('../../utils/index')
 
 export default class LuisTest extends Command {
   static description = 'Predict .lu file(s) to test the result'
@@ -68,8 +68,16 @@ export default class LuisTest extends Command {
       await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr2.out', `${JSON.stringify(predictionData, null, 2)}`)
       this.log(`${JSON.stringify(predictionData, null, 2)}`)
       */
-      await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr.out', 'a')
-      await testHelper.GetPredictedResult(luisObject, flags, client)
+      //await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr.out', 'a')
+      //await testHelper.GetPredictedResult(luisObject, flags, client)
+      let slotName = 'production'
+      if (flags.staging) slotName = 'staging'
+
+      const options: any = {}
+      options.verbose = true
+      options.showAllIntents  = true
+
+      await testHelper.build(client, flags.appId, slotName, options, luisObject, flags.allowIntentsCount, flags.intentOnly)
 
       let result = luConverterWithTest(luisObject, flags)
       await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr1.out', 'a')

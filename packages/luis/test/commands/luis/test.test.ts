@@ -37,6 +37,7 @@ describe('luis:test cli single test', () => {
     expect(await compareFiles('./../../../SimpleEntity.out', './../../../SimpleEntity.test')).to.be.true
   })
 
+  
   test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .post(uri => uri.includes('apps'))
@@ -49,7 +50,9 @@ describe('luis:test cli single test', () => {
   .it('queries one simple query', async ctx => {
     expect(await compareFiles('./../../../CompositeEntity.out', './../../../CompositeEntity.test')).to.be.true
   })
+  
 })
+
 
 describe('luis:test cli test roles', () => {
   before(function () {
