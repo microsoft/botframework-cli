@@ -6,12 +6,9 @@
     "actions": [
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callChooseProperties()}",
+            "activity": "@\{chooseProperties()}",
             "expectedProperties": ["PropertyToChange"]
         }
     ]
 }
 ```
-
-# callChooseProperties
-- @\{chooseProperties()}

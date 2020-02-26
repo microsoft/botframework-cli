@@ -7,7 +7,7 @@ Ths will merge together [Microsoft Bot Builder](https://github.com/Microsoft/Bot
 In addition to types you can also mark properties with a `$role` which will define the underlying type and restrictions. This is also useful information for UI tools to help you construct values. Roles include:
 
 - `$role: "expression"`which marks a string property which is expected to contain an expression string.
-- `$role: "lg"`which marks a string property which is used for lanuage generation and can refer to LG templates.
+- `$role: "lg"`which marks a string property which is used for language generation and can refer to LG templates.
 - `$role: "memoryPath"`which marks a string property which is expected to contain a path in memory like `user.name`.
 
 For example look at these files:
@@ -15,7 +15,7 @@ For example look at these files:
 - [IRecognizer.schema](test/schemas/IRecognizer.schema) defines the place holder for `IRecognizer` including a default option which is a bare string.
 - [Recognizer.schema](test/schemas/Recognizer.schema) includes `$role:"union(IRecognizer)"` which extends the `IRecognizer` definition when merged.
 - [root.schema](test/schemas/root.schema) is a schema file that includes `$kind:"IRecognizer"` in order to make use of the `IRecognizer` place holder.
-- [app.schema](test/examples/app.schema) was created by this tool shows how all of these defintions are merged together. In particular if you look at `IRecognizer` you will see the definition that includes a string, or the complete definition of `Recognizer`.
+- [app.schema](test/examples/app.schema) was created by this tool shows how all of these definitions are merged together. In particular if you look at `IRecognizer` you will see the definition that includes a string, or the complete definition of `Recognizer`.
 
 [root.dialog](test/examples/root.dialog) Shows how you could use the resulting schema to enter in JSON schema and get intellisense.
 

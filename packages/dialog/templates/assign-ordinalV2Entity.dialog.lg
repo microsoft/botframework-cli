@@ -12,7 +12,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "@\{setObjectPropertyMessage('@{property}', concat(string(@ordinalV2.offset), ' ', @ordinalV2.relativeTo))}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
@@ -27,8 +27,5 @@
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(string(@ordinalV2.offset), ' ', @ordinalV2.relativeTo))}
 
 [generator.lg](generator.lg)
