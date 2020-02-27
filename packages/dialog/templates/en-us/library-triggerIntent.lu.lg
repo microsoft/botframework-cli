@@ -2,7 +2,10 @@
 - ${prefix}-${triggerIntent}.lu
 
 # template
-- # ${triggerIntent}\n${join(foreach(entities, entity, entityPattern(entity)), '\n')}
+-```
+# @{triggerIntent}
+@{join(foreach(entities, entity, entityPattern(entity)), '\n')}
+```
 
 # entityPattern(entity)
 - IF: ${contains(schema.$expectedOnly, entity)}

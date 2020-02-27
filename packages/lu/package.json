@@ -4,37 +4,27 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "main": "lib/parser/index.js",
+  "browser": "lib/parser/composerindex.js",
   "engines": {
     "node": ">=8.0.0"
   },
   "files": [
     "/lib",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
+    "/npm-shrinkwrap.json"
   ],
   "homepage": "https://github.com/microsoft/botframework-cli",
-  "keywords": [
-    "oclif-plugin"
-  ],
   "license": "MIT",
-  "oclif": {
-    "commands": "./lib/commands",
-    "bin": "bf",
-    "devPlugins": [
-      "@oclif/plugin-help"
-    ]
-  },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/lu",
   "scripts": {
-    "postpack": "rimraf oclif.manifest.json",
+    "postpack": "",
     "posttest": "tslint -p test -t stylish",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "coverage": "nyc npm run test",
     "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
-    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
-    "doc:readme": "oclif-dev manifest && oclif-dev readme",
+    "doc": "",
+    "doc:readme": "",
     "version": "npm run doc:readme && git add README.md"
   },
   "nyc": {
@@ -60,8 +50,6 @@
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
-    "@oclif/plugin-help": "^2.2.1",
     "@oclif/test": "^1.2.5",
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.2.0",

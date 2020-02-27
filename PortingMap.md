@@ -17,6 +17,7 @@ The principles guiding the tool include:
 
 Commands invoked by BF [New Command] as follows:
 
+
 | New Command                                    | Old Tool(s) | Release Date   | Status |
 | ---------------------------------------------- | ----------- | ---------- | ------ |
 | chatdown                                       | Chatdown    | 10/30/19   | GA     |
@@ -28,6 +29,7 @@ Commands invoked by BF [New Command] as follows:
 | lg                                             | MSLG        | ETA 5/19/20 | TBD    |
 | dialog                                         | N/A         | ETA 5/19/20 | TBD    |
 | \<In Design>                                   | Dispatch    | ETA 5/19/20 | TBD    |
+
 
 ## Deprecation Schedule
 

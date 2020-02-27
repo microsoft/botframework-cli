@@ -6,12 +6,13 @@
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
-const fileHelper = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
-const luTranslator = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/translator/lutranslate')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
-const Lu = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/lu/lu')
-const Luis = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luis')
+const Lu = require('@microsoft/bf-lu').V2.LU
+const Luis = require('@microsoft/bf-lu').V2.Luis
+const LuisBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
+const exception = require('@microsoft/bf-lu').V2.Exception
+const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
+const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 export default class LuisTranslate extends Command {
   static description = ' Translate given LUIS application JSON model or lu file(s)'
@@ -59,7 +60,7 @@ export default class LuisTranslate extends Command {
           [key]: {},
         }
         for (const lu of translatedLuis) {
-          result[key][lu.language] = await lu.parseToLuis()
+          result[key][lu.language] = await LuisBuilder.fromLU([lu])
         }
       }
 

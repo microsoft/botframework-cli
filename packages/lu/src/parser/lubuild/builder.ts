@@ -12,7 +12,9 @@ const fs = require('fs-extra')
 const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
+const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
+const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 
 export class Builder {
@@ -36,7 +38,7 @@ export class Builder {
       let fileCulture: string
       let fileName: string
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
-      const result = await LuisBuilder.build(luFiles, true, culture)
+      const result = await LuisBuilderVerbose.build(luFiles, true, culture)
       const fileContent = result.parseToLuContent()
       this.handler(`${file} loaded\n`)
       let cultureFromPath = fileHelper.getCultureFromPath(file)
@@ -72,7 +74,7 @@ export class Builder {
         settings.set(fileFolder, new Settings(settingsPath, settingsContent))
       }
 
-      const content = new Content(fileContent, fileName, true, fileCulture, file)
+      const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
       luContents.push(content)
 
       const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
@@ -230,7 +232,7 @@ export class Builder {
   }
 
   async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
-    let currentApp = await content.parseToLuis(true, content.language)
+    let currentApp = await LuisBuilder.fromLU([content])  // content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
     currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${botName} app, targetting ${suffix}`
 
@@ -330,6 +332,6 @@ export class Builder {
       }
     }
 
-    return new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
+    return new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
   }
 }

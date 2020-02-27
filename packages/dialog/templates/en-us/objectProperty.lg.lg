@@ -6,8 +6,8 @@
 ${AskTemplate()}
 ${NameTemplate()}
 
-\[library.lg]
-\[library-Missing.lg]
+[library.lg]
+[library-Missing.lg]
 ```
 
 # AskTemplate
