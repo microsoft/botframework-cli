@@ -5,26 +5,26 @@ const LU = require('./../lu/lu')
 
 class Luis {
     constructor(LuisJSON = null){
+        this.intents = [];
+        this.entities = [];
+        this.composites = [];
+        this.closedLists = [];
+        this.regex_entities = [];
+        this.model_features = [];
+        this.regex_features = [];
+        this.utterances = [];
+        this.patterns = [];
+        this.patternAnyEntities = [];
+        this.prebuiltEntities = [];
+        // fix for #255
+        this.luis_schema_version = "3.2.0";
+        this.versionId = "0.1";
+        this.name = "";
+        this.desc = "";
+        this.culture = "en-us";
+
         if (LuisJSON) {
             initialize(this, LuisJSON)
-        } else {
-            this.intents = [];
-            this.entities = [];
-            this.composites = [];
-            this.closedLists = [];
-            this.regex_entities = [];
-            this.model_features = [];
-            this.regex_features = [];
-            this.utterances = [];
-            this.patterns = [];
-            this.patternAnyEntities = [];
-            this.prebuiltEntities = [];
-            // fix for #255
-            this.luis_schema_version = "3.2.0";
-            this.versionId = "0.1";
-            this.name = "";
-            this.desc = "";
-            this.culture = "en-us";
         }
     }
 
@@ -45,7 +45,16 @@ class Luis {
 module.exports = Luis
 
 const initialize = function(instance, LuisJSON) {
-    for (let prop in LuisJSON) {
+    for (let prop in instance) {
         instance[prop] = LuisJSON[prop];
-    }   
+    } 
+    settingsAndTokenizerCheck(instance, LuisJSON) 
+}
+
+const settingsAndTokenizerCheck = function(instance, LuisJSON) {
+    const adds = ['tokenizerVersion', 'settings', 'phraselists']
+    for (let i = 0 ; i < adds.length; i++) {
+        if(!LuisJSON[adds[i]]) continue
+        instance[adds[i]]= LuisJSON[adds[i]];
+    }
 }

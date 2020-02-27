@@ -3,11 +3,10 @@
  * Licensed under the MIT License.
  */
 
-const mergeLuFiles = require('./../../lu/luMerger').Build
 const Alterations = require('./../alterations/alterations')
 const QnAMaker = require('./qnamaker')
 const KB = require('./kb')
-const collate = require('./kbCollate')
+const build = require('./kbCollate').build
 const parseFileContents = require('./../../lufile/parseFileContents').parseFile
 
 class QnABuilder{
@@ -17,7 +16,7 @@ class QnABuilder{
      * @returns {QnAMaker} new QnAMaker instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async buildFromKBJson(kbJson) {
+    static async fromKB(kbJson) {
         return new QnAMaker(new KB(kbJson))
     }
 
@@ -27,7 +26,7 @@ class QnABuilder{
      * @returns {QnAMaker} new QnAMaker instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async buildFromAlterationsJson(alterationsJson) {
+    static async fromAlterations(alterationsJson) {
         return new QnAMaker('', new Alterations(alterationsJson))
     }
 
@@ -38,19 +37,8 @@ class QnABuilder{
      * @returns {QnAMaker} new QnAMaker instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async buildFromKbAndAlterationsJson(kbJson, alterationsJson) {
+    static async fromKbAndAlterations(kbJson, alterationsJson) {
         return new QnAMaker(new KB(kbJson), new Alterations(alterationsJson))
-    }
-
-    /**
-     * Builds a QnAMaker instance from a qna instance.
-     * @param {Qna} qnaObject QnA instance
-     * @returns {QnAMaker} new QnAMaker instance
-     * @throws {exception} Throws on errors. exception object includes errCode and text. 
-     */
-    static async buildFromQnA(qnaObject) {
-        let parsedContent = await parseFileContents(qnaObject.content, false)
-        return new QnAMaker(new KB(parsedContent.qnaJsonStructure), new Alterations(parsedContent.qnaAlterations))
     }
 
     /**
@@ -59,7 +47,7 @@ class QnABuilder{
      * @returns {QnAMaker} new QnAMaker instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async buildFromQnaContent(qnaContent) {
+    static async fromContent(qnaContent) {
         let parsedContent = await parseFileContents(qnaContent, false)
         return new QnAMaker(new KB(parsedContent.qnaJsonStructure), new Alterations(parsedContent.qnaAlterations))
     }
@@ -71,39 +59,17 @@ class QnABuilder{
      * @returns {QnAMaker} new QnAMaker instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async buildFromQnAList(qnaObjArray, qnaSearchFn) {
-        return this.build(qnaObjArray, false, qnaSearchFn)
-    }
+    static async fromQna(qnaObjArray, qnaSearchFn) {
+        if(!Array.isArray(qnaObjArray)) {
+            new QnAMaker()
+        }
 
-    /**
-     * Builds a QnAMaker instance from a Qna list.
-     * @param {Array<Qna>} qnaObjArray Array of QnA files to be merge
-     * @param {boolean} verbose indicates if we need verbose logging.
-     * @param {function} qnaSearchFn function to retrieve the lu files found in the references
-     * @returns {QnAMaker} new QnAMaker instance
-     * @throws {exception} Throws on errors. exception object includes errCode and text. 
-     */
-    static async build(qnaObjArray, verbose, qnaSearchFn) {
-        let mergedContent = await mergeLuFiles(qnaObjArray, verbose, '', qnaSearchFn)
-        let parsedQnAList = mergedContent.QnAContent.filter(item => item.includeInCollate)
+        if(qnaObjArray.length === 1){
+            let parsedContent = await parseFileContents(qnaObjArray[0].content, false)
+            return new QnAMaker(new KB(parsedContent.qnaJsonStructure), new Alterations(parsedContent.qnaAlterations))
+        }
 
-        let qnaList = []
-        parsedQnAList.forEach(index =>{
-            qnaList.push(index.qnaJsonStructure)
-        })
-        let kbResult = collate(qnaList)
-
-        let allParsedQnAAlterations = mergedContent.QnAAlterations.filter(item => item.includeInCollate)
-        let finalQnAAlterationsList = new Alterations()
-        allParsedQnAAlterations.forEach(function (alterationList) {
-            alterationList = alterationList.qnaAlterations;
-            if (alterationList.wordAlterations) {
-                alterationList.wordAlterations.forEach(function (alteration) {
-                    finalQnAAlterationsList.wordAlterations.push(alteration);
-                })
-            }
-        })
-        return new QnAMaker(kbResult, finalQnAAlterationsList)
+        return build(qnaObjArray, false, qnaSearchFn)
     }
 }
 

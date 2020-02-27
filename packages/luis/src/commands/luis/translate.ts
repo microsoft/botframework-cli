@@ -6,10 +6,10 @@
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
-const Lu = require('@microsoft/bf-lu').LU
-const Luis = require('@microsoft/bf-lu').Luis
-const LuisBuilder = require('@microsoft/bf-lu').LuisBuilder
-const exception = require('@microsoft/bf-lu').Exception
+const Lu = require('@microsoft/bf-lu').V2.LU
+const Luis = require('@microsoft/bf-lu').V2.Luis
+const LuisBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
+const exception = require('@microsoft/bf-lu').V2.Exception
 const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
 const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
@@ -60,7 +60,7 @@ export default class LuisTranslate extends Command {
           [key]: {},
         }
         for (const lu of translatedLuis) {
-          result[key][lu.language] = await LuisBuilder.buildFromLU(lu)
+          result[key][lu.language] = await LuisBuilder.fromLU([lu])
         }
       }
 

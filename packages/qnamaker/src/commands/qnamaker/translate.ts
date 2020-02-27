@@ -6,9 +6,9 @@
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
-const QnA = require('@microsoft/bf-lu').QNA
-const exception = require('@microsoft/bf-lu').Exception
-const QnaMaker = require('@microsoft/bf-lu').KB
+const QnA = require('@microsoft/bf-lu').V2.QNA
+const exception = require('@microsoft/bf-lu').V2.Exception
+const QnaMaker = require('@microsoft/bf-lu').V2.KB
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
 const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')

@@ -5,11 +5,11 @@
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 import {sortQnA, sortAlterations} from './../../utils/qnamakerinstanceutils'
-const exception = require('@microsoft/bf-lu').Exception
+const exception = require('@microsoft/bf-lu').V2.Exception
 const fs = require('fs-extra')
-const KB = require('@microsoft/bf-lu').KB
-const Alterations = require('@microsoft/bf-lu').Alterations
-const QnAMakerBuilder = require('@microsoft/bf-lu').QnAMakerBuilder
+const KB = require('@microsoft/bf-lu').V2.KB
+const Alterations = require('@microsoft/bf-lu').V2.Alterations
+const QnAMakerBuilder = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/kbCollate')
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 

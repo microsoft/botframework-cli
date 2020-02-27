@@ -5,9 +5,9 @@
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
-const Luis = require('@microsoft/bf-lu').Luis
-const LuisBuilder = require('@microsoft/bf-lu').LuisBuilder
-const exception = require('@microsoft/bf-lu').Exception
+const Luis = require('@microsoft/bf-lu').V2.Luis
+const LuisBuilder = require('@microsoft/bf-lu/lib/parser/luis/luisCollate')
+const exception = require('@microsoft/bf-lu').V2.Exception
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 

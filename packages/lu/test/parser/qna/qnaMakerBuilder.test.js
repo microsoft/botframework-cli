@@ -10,7 +10,7 @@ describe('QnAMakerBuilder', function() {
         \`\`\`markdown
         hello
         \`\`\``;
-        const qnaMakerObject = await QnAMakerBuilder.buildFromQnaContent(qnaContent)
+        const qnaMakerObject = await QnAMakerBuilder.fromContent(qnaContent)
         assert.equal(qnaMakerObject.kb.name, 'my test kb');
     });
 
@@ -21,7 +21,7 @@ describe('QnAMakerBuilder', function() {
         hello
         \`\`\``;
         const qna = new QnA(qnaContent, '')
-        const qnaMakerObject = await QnAMakerBuilder.buildFromQnA(qna)
+        const qnaMakerObject = await QnAMakerBuilder.fromQna([qna])
         assert.equal(qnaMakerObject.kb.name, 'my test kb');
     });
 

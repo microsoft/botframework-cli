@@ -7,6 +7,40 @@ const KB = require('./kb')
 const deepEqual = require('deep-equal')
 const exception = require('../../utils/exception')
 const retCode = require('../../utils/enums/CLI-errors').errorCode
+const mergeLuFiles = require('./../../lu/luMerger').Build
+const Alterations = require('./../alterations/alterations')
+const QnAMaker = require('./qnamaker')
+
+/**
+ * Builds a QnAMaker instance from a Qna list.
+ * @param {Array<Qna>} qnaObjArray Array of QnA files to be merge
+ * @param {boolean} verbose indicates if we need verbose logging.
+ * @param {function} qnaSearchFn function to retrieve the lu files found in the references
+ * @returns {QnAMaker} new QnAMaker instance
+ * @throws {exception} Throws on errors. exception object includes errCode and text. 
+ */
+const build = async function(qnaObjArray, verbose, qnaSearchFn) {
+    let mergedContent = await mergeLuFiles(qnaObjArray, verbose, '', qnaSearchFn)
+    let parsedQnAList = mergedContent.QnAContent.filter(item => item.includeInCollate)
+
+    let qnaList = []
+    parsedQnAList.forEach(index =>{
+        qnaList.push(index.qnaJsonStructure)
+    })
+    let kbResult = collate(qnaList)
+
+    let allParsedQnAAlterations = mergedContent.QnAAlterations.filter(item => item.includeInCollate)
+    let finalQnAAlterationsList = new Alterations()
+    allParsedQnAAlterations.forEach(function (alterationList) {
+        alterationList = alterationList.qnaAlterations;
+        if (alterationList.wordAlterations) {
+            alterationList.wordAlterations.forEach(function (alteration) {
+                finalQnAAlterationsList.wordAlterations.push(alteration);
+            })
+        }
+    })
+    return new QnAMaker(kbResult, finalQnAAlterationsList)
+}
 
 const collate = function(qnaList) {
     let result = new KB()
@@ -27,7 +61,10 @@ const collate = function(qnaList) {
     return result
 }
 
-module.exports = collate
+module.exports = {
+    collate, 
+    build
+}
 
 const resolveMultiTurnReferences = function(qnaList) {
     let qnaPairsWithMultiTurn = qnaList.filter(item => item.context.prompts.length !== 0);

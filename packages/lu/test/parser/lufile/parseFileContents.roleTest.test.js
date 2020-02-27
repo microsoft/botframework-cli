@@ -7,7 +7,7 @@ const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile
 const toLU = require('./../../../src/parser/luis/luConverter')
 const luis = require('./../../../src/parser/luis/luis')
-const collate = require('./../../../src/parser/luis/luisCollate')
+const collate = require('./../../../src/parser/luis/luisCollate').collate
 describe('Roles in LU files', function() {
     it('Correctly parses prebuilt entity with roles defined via labelled utterance', function(done) {
         let fileContent = `> # Intent definitions

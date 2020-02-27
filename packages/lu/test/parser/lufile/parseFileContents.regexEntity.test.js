@@ -6,7 +6,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
 const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
-const collate = require('./../../../src/parser/luis/luisCollate')
+const collate = require('./../../../src/parser/luis/luisCollate').collate
 const translateHelpers = require('./../../../src/parser/lufile/translate-helpers');
 const TRANSLATE_KEY = process.env.TRANSLATOR_KEY;
 

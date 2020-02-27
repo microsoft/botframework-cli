@@ -7,7 +7,7 @@ const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
 const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
 const luis = require('./../../../src/parser/luis/luis')
-const collate = require('./../../../src/parser/luis/luisCollate')
+const collate = require('./../../../src/parser/luis/luisCollate').collate
 const LUFromLUISJson = require('./../../../src/parser/luis/luConverter')
 const validateLUISModel = require('./../../../src/parser/luis/luisValidator')
 

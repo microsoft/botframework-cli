@@ -3,7 +3,27 @@ const deepEqual = require('deep-equal')
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum')
 const Luis = require('./luis')
 const helpers = require('./../utils/helpers')
+const mergeLuFiles = require('./../lu/luMerger').Build
 
+/**
+ * Builds a Luis instance from a Lu list.
+ * @param {Array<Lu>} luObjArray Array of LU files to be merge
+ * @param {boolean} log indicates if we need verbose logging.
+ * @param {string} luis_culture LUIS locale code
+ * @param {function} luSearchFn function to retrieve the lu files found in the references
+ * @returns {Luis} new Luis instance
+ * @throws {exception} Throws on errors. exception object includes errCode and text. 
+ */
+const build =  async function(luArray, verbose, luis_culture, luSearchFn) {
+    let mergedContent = await mergeLuFiles(luArray, verbose, luis_culture, luSearchFn)
+    let parsedLUISList = mergedContent.LUISContent.filter(item => item.includeInCollate)
+    if (parsedLUISList.length === 0) return new Luis()
+    let luisList = []
+    parsedLUISList.forEach(i => {
+        luisList.push(i.LUISJsonStructure)
+    });
+    return collate(luisList)
+}
 
 /**
  * Collates a list of Luis instances into one.
@@ -34,7 +54,10 @@ const collate = function(luisList) {
     return luisObject
 }
 
-module.exports = collate
+module.exports = {
+    collate, 
+    build
+}
 
 const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
     if (blob[type].length === 0) { 
