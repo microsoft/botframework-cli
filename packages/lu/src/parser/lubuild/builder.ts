@@ -51,7 +51,6 @@ export class Builder {
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
-
       this.handler(`${file} loaded\n`)
       let cultureFromPath = fileHelper.getCultureFromPath(file)
       if (cultureFromPath) {

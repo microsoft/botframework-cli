@@ -27,10 +27,8 @@ const modules = {
 
         Parser: require('./lufile/classes/parserObject')
     },
-    sectionHandler: {
-        luParser: require('./lufile/luParser'),
-        sectionOperator: require('./lufile/sectionOperator'),
-        luSectionTypes: require('./utils/enums/lusectiontypes')
+    luBuild: {	
+        Builder: require('./lubuild/builder').Builder	
     },
     V2 : {
         Luis: require('./luis/luis'),
