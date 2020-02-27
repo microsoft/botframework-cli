@@ -1,0 +1,18 @@
+> !# @app.name = test app
+> !# @app.desc = test
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+
+# test
+- one
+- two
+
+@ ml address = 
+    - @ number doorNumber
+    - @ ml streetName
+    - @ geographyV2 city
+    - @ zipRegex zipcode
+
+@ prebuilt number
+@ prebuilt geographyV2
+@ regex zipRegex = /[0-9]{5}/

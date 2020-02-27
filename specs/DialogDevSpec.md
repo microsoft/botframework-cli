@@ -50,7 +50,7 @@ If there are "lint" errors, the command will display detailed error information 
 
 Wild card and recursive file pattern specifications do not follow common guidelines, instead, we're using the  [glob (programming)](https://en.wikipedia.org/wiki/Glob_(programming)) pattern. Note: this is an exceptional pattern to the standard  BF CLI. **TBD**: Can we avoid this exception and follow standard BF CLI patterns?
 
-Otherwise, with exception of Glob file pattern, `bf dialg` respects all global flags based on [Contributing Guide](https://github.com/microsoft/botframework-cli/blob/master/CONTRIBUTING.md#general-guidelines) .
+Otherwise, with exception of Glob file pattern, `bf dialog` respects all global flags based on [Contributing Guide](https://github.com/microsoft/botframework-cli/blob/master/CONTRIBUTING.md#general-guidelines) .
 
 
 ### Command Line Form

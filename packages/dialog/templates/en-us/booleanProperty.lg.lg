@@ -1,0 +1,33 @@
+# filename
+- @{propertyFilename()}
+
+# template
+- ```
+@{AskTemplate()}
+@{NameTemplate()}
+@{ValueTemplate()}
+
+[@{schemaName}-@{property}Entity.@{locale}.lg]
+[library.lg]
+[library-Missing.lg]
+```
+
+# AskTemplate
+- ```
+# Ask@{property}
+- @\{askBoolean('@{property}')\}
+```
+
+# ValueTemplate
+- ```
+# @{property}(val)
+- @\{@{concat(property, 'Entity')}(val)}
+```
+
+# NameTemplate
+- ```
+# @{property}Name
+- @{phrase(property, locale)}
+```
+
+[generator.lg](../generator.lg)

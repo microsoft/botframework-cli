@@ -1,0 +1,26 @@
+
+# filename
+- @{assignFilename('percentage')}
+
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "@{property}",
+    "entity": "percentage",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@\{setPropertyMessage('@{property}', @percentage)}"
+        }, 
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$@{property}",
+            "value": "=@percentage"          
+        }
+    ]               
+}
+```
+
+[generator.lg](generator.lg)

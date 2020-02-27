@@ -1,0 +1,16 @@
+# filename
+- @{schemaName}-@{triggerIntent}.lu
+
+# template
+-```
+# @{triggerIntent}
+@{join(foreach(entities, entity, entityPattern(entity)), '\n')}
+```
+
+# entityPattern(entity)
+- IF: @{contains(schema.$expectedOnly, entity)}
+- 
+- ELSEIF: @{equals(entity, 'datetime')}
+- - \{datetimeV2\}
+- ELSE:
+- @{concat('- {', entity, '}')}

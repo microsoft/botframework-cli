@@ -1,0 +1,26 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnIntent",
+    "intent": "ReadProperty",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@\{textProperty(@PropertyName)}"           
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$PropertyToRemember",
+            "value": "=@PROPERTYName" 
+        },
+        {
+            "$kind": "Microsoft.Ask",
+            "activity": "@\{confirmChangeProperty(@PropertyName)}",
+            "expectedProperties": [
+                "ChangePropertyConfirmation"
+            ]
+        }
+    ]
+}
+```

@@ -1,0 +1,21 @@
+# template
+- ```
+{
+    "$schema": "@{appSchema}",
+    "$kind": "Microsoft.OnEndOfActions",
+    "condition": "empty(where(dialog.requiredProperties, property, !dialog[property]))",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@\{readForm('@{schemaName}')}"
+        },
+        {
+            "$kind": "Microsoft.Ask",
+            "activity": "@\{confirmChange()}",
+            "expectedProperties": [
+                "CompleteConfirmation"
+            ]
+        }
+    ]
+}
+```

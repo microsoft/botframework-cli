@@ -31,7 +31,6 @@
       "@microsoft/bf-cli-config",
       "@microsoft/bf-qnamaker",
       "@microsoft/bf-luis-cli",
-      "@microsoft/bf-cli-lu",
       "@microsoft/bf-dialog",
       "@microsoft/bf-cli-plugins"
     ],
@@ -58,7 +57,6 @@
   "dependencies": {
     "@microsoft/bf-chatdown": "1.0.0",
     "@microsoft/bf-cli-config": "1.0.0",
-    "@microsoft/bf-cli-lu": "1.0.0",
     "@microsoft/bf-luis-cli": "1.0.0",
     "@microsoft/bf-qnamaker": "1.0.0",
     "@microsoft/bf-dialog": "1.0.0",

@@ -28,16 +28,12 @@
       "projectFolder": "packages/lu"
     },
     {
-      "packageName": "@microsoft/bf-cli-lu",
-      "projectFolder": "packages/lu-cli"
+      "packageName": "@microsoft/bf-dispatcher",
+      "projectFolder": "packages/dispatcher"
     },
     {
       "packageName": "@microsoft/bf-cli-lg",
       "projectFolder": "packages/lg-cli"
-    },
-    {
-      "packageName": "@microsoft/bf-dispatcher",
-      "projectFolder": "packages/dispatcher"
     },
     {
       "packageName": "@microsoft/bf-luis-cli",
