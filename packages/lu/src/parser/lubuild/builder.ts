@@ -12,6 +12,8 @@ const fs = require('fs-extra')
 const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
+const retCode = require('./../utils/enums/CLI-errors')
+const exception = require('./../utils/exception')
 const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
 const LUOptions = require('./../lu/luOptions')
@@ -38,8 +40,17 @@ export class Builder {
       let fileCulture: string
       let fileName: string
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
-      const result = await LuisBuilderVerbose.build(luFiles, true, culture)
-      const fileContent = result.parseToLuContent()
+
+      let fileContent = ''
+      let result
+      try {
+        result = await LuisBuilderVerbose.build(luFiles, true, culture)
+        fileContent = result.parseToLuContent()
+      } catch (err) {
+        err.text = `Invalid LU file ${file}: ${err.text}`
+        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
+      }
+
       this.handler(`${file} loaded\n`)
       let cultureFromPath = fileHelper.getCultureFromPath(file)
       if (cultureFromPath) {
@@ -47,7 +58,7 @@ export class Builder {
         let fileNameWithCulture = path.basename(file, path.extname(file))
         fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
       } else {
-        fileCulture = culture
+        fileCulture = result.culture !== 'en-us' ? result.culture : culture
         fileName = path.basename(file, path.extname(file))
       }
 
@@ -95,7 +106,7 @@ export class Builder {
     })
 
     if (hasDuplicates) {
-      throw new Error('Files with same name and locale are found.')
+      throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Files with same name and locale are found.'))
     }
 
     return {luContents, recognizers, multiRecognizers, settings}
@@ -200,16 +211,23 @@ export class Builder {
     return dialogContents
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, luconfig: string) {
     let writeDone = false
-    if (out) {
-      let settingsContents = contents.filter(c => c.id.endsWith('.json'))
-      let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
 
-      if (settingsContents && settingsContents.length > 0) {
-        writeContents.push(this.mergeSettingsContent(path.join(path.resolve(out), settingsContents[0].id), settingsContents))
+    let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
+    let settingsContents = contents.filter(c => c.id.endsWith('.json'))
+
+    if (settingsContents && settingsContents.length > 0) {
+      let outPath
+      if (luconfig) {
+        outPath = path.join(path.resolve(path.dirname(luconfig)), settingsContents[0].id)
+      } else if (out) {
+        outPath = path.join(path.resolve(out), settingsContents[0].id)
       }
+      writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
+    }
 
+    if (out) {
       for (const content of writeContents) {
         const outFilePath = path.join(path.resolve(out), path.basename(content.path))
         if (force || !fs.existsSync(outFilePath)) {
@@ -219,7 +237,7 @@ export class Builder {
         }
       }
     } else {
-      for (const content of contents) {
+      for (const content of writeContents) {
         if (force || !fs.existsSync(content.path)) {
           this.handler(`Writing to ${content.path}\n`)
           await fs.writeFile(content.path, content.content, 'utf-8')
@@ -269,7 +287,7 @@ export class Builder {
         const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
         for (const versionObj of versionObjs) {
           if (versionObj.version !== newVersionId) {
-            this.handler(`deleting old version=${versionObj.version}`)
+            this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
             await luBuildCore.deleteVersion(recognizer.getAppId(), versionObj.version)
           }
         }
