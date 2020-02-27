@@ -9,7 +9,7 @@ import {getConfigFile, Config} from '../../../utils/configfilehandler'
 export default class ConfigShowTelemetry extends Command {
   static description = 'Display telemetry settings'
 
-  static flags: any = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'config:show:telemetry help'})
   }
 
