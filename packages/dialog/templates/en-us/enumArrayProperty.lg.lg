@@ -1,27 +1,27 @@
 # filename
-- @{propertyFilename()}
+- ${propertyFilename()}
 
 # template
-- ```@{AskTemplate()}
-@{NameTemplate()}
-@{ValueTemplate()}
+- ```${AskTemplate()}
+${NameTemplate()}
+${ValueTemplate()}
 
-\[@{schemaName}-@{property}Entity.@{locale}.lg]
+\[${prefix}-${property}Entity.${locale}.lg]
 \[library.lg]```
 
 # AskTemplate
 - ```
-# Ask@{property}
-- @\{askEnumArray('@{property}')\}```
+# Ask${property}
+- @\{askEnumArray('${property}')\}```
 
 # NameTemplate
 -```
-# @{property}Name
-- @{phrase(property, locale)}```
+# ${property}Name
+- ${phrase(property, locale)}```
 
 # ValueTemplate
 - ```
-# @{property}(values)
-- @\{enumArrayValue('@{property}', values)}```
+# ${property}(values)
+- @\{enumArrayValue('${property}', values)}```
 
 [generator.lg](../generator.lg)

@@ -1,19 +1,19 @@
 # filename
-- @{missingFilename()}
+- ${missingFilename()}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnEndOfActions",
-    "condition":"!$@{property}",
-    "priority": "indexOf(dialog.requiredProperties, '@{property}')",
+    "condition":"!$${property}",
+    "priority": "indexOf(dialog.requiredProperties, '${property}')",
     "actions": [       
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callAsk()}",
+            "activity": "${callAsk()}",
             "expectedProperties": [
-                "@{property}"
+                "${property}"
             ]
         }
     ]
@@ -21,6 +21,6 @@
 ```
 
 # callAsk
-- @\{Ask@{property}()}
+- @\{Ask${property}()}
 
 [generator.lg](generator.lg)

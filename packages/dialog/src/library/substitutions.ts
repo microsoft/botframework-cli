@@ -11,7 +11,7 @@ import { stringify } from 'querystring'
 
 /**
  * Return the result of replicating lines from a source file and substituting random values 
- * from bindings into @{variable} placeholders.
+ * from bindings into ${variable} placeholders.
  * @param path Path to file with lines.
  * @param bindings Object with binding names and an array of choices.
  * @param copies Optional number of times to copy each line, default is 1.
@@ -31,7 +31,7 @@ function substitutions(path: string, bindings: any, copies?: number, seed?: stri
             result.push(line)
         } else {
             for (let i = 0; i < copies; ++i) {
-                let newline = line.replace(/\@{([^}]*)\}/g,
+                let newline = line.replace(/\${([^}]*)\}/g,
                     (_, key) => {
                         let choice = '**MISSING**'
                         let choices = bindings[key]

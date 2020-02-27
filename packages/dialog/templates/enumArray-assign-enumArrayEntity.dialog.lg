@@ -1,28 +1,28 @@
 # filename
-- @{assignFilename(property)}
+- ${assignFilename(property)}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
-    "entity": "@{property}Entity",
+    "property": "${property}",
+    "entity": "${property}Entity",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "${callSetMessage()}"
         },    
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
-            "value": "=@@{property}Entity"
+            "property": "$${property}",
+            "value": "=@${property}Entity"
         }
     ]
 }
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('@{property}', @@{property}Entity)}
+- @\{setPropertyMessage('${property}', @${property}Entity)}
 
 [generator.lg](generator.lg)

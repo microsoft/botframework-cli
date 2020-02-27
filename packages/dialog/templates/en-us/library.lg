@@ -31,8 +31,8 @@
 
 # chooseEnumArrayEntity(property)
 - ```
-@{askHelp()}
-Please choose a value for @{name(property)} from \[@{join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
+${askHelp()}
+Please choose a value for ${name(property)} from \[${join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
 ``` 
 
 # cancel
