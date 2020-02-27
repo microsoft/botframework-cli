@@ -106,7 +106,7 @@ const validateRequiredProps = (configObj: any) => {
 
 const writeToConsole = (outputContents: string) => {
   const output = JSON.stringify(outputContents, null, 2)
-  process.stdout.write(output, 'utf-8')
+  process.stdout.write(output)
 }
 
 const writeToFile = async (outputLocation: string, content: any, force: boolean) => {

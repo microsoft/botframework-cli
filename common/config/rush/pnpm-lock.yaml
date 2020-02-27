@@ -56,7 +56,6 @@ dependencies:
   md5: 2.2.1
   mime-types: 2.1.26
   minimist: 1.2.0
-  nock: 11.9.1
   node-fetch: 2.6.0
   nyc: 14.1.1
   pascal-case: 2.0.1
@@ -3864,6 +3863,13 @@ packages:
     hasBin: true
     resolution:
       integrity: sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
+  /mkdirp/1.0.3:
+    dev: false
+    engines:
+      node: '>=10'
+    hasBin: true
+    resolution:
+      integrity: sha1-TPLjCtRZWd3epTrZfVGLbIIF4eo=
   /mocha/5.2.0:
     dependencies:
       browser-stdout: 1.3.1
@@ -4010,6 +4016,18 @@ packages:
       node: '>= 8.0'
     resolution:
       integrity: sha1-KwJsW+ttDby0Hn5M76ZxvDbbnGE=
+  /nock/12.0.1:
+    dependencies:
+      debug: 4.1.1
+      json-stringify-safe: 5.0.1
+      lodash: 4.17.15
+      mkdirp: 1.0.3
+      propagate: 2.0.1
+    dev: false
+    engines:
+      node: '>= 10.13'
+    resolution:
+      integrity: sha1-bUl9AfI8tSxzNUXJfgnoMY9q+AE=
   /node-environment-flags/1.0.5:
     dependencies:
       object.getownpropertydescriptors: 2.1.0
@@ -6357,7 +6375,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-dqxqgTH863ozVnX01EcG9I14GIM8Bpv3S+oGIo1yNMFxzZ2MZuAHBA75J0hmoCeSeqdIqkWYNjzOnn63guFvPw==
+      integrity: sha512-PBpCq/DCETJx9lFj5I4wgQuvWuNHWLbiDjCacVMx7sa44WsMkXExsMQC5xe2BPqbsK4cp7yieiN9zrP+QsK+YA==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6384,6 +6402,7 @@ packages:
       globby: 10.0.2
       lodash: 4.17.15
       mocha: 6.2.2
+      nock: 12.0.1
       nyc: 14.1.1
       rimraf: 3.0.2
       sinon: 7.5.0
@@ -6395,7 +6414,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-+gVs1ztnVvU3Steh16j+g9IjLX2cMEUdnxzhpsmHd0YmUt+KkCzZ1OUp08J5gzpLdwH7XnLlJDS4qhRVPSJnyw==
+      integrity: sha512-N2l6v5HBt3D0t/Q/Fclde3VH3zkSOq3Hqr5hvZPle+wJocgiBrNhcsp8O+j3e+WXkkepTV4840u5dPEgZbgYGA==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6540,7 +6559,6 @@ specifiers:
   md5: ^2.2.1
   mime-types: ^2.1.18
   minimist: ^1.2.0
-  nock: ^11.7.0
   node-fetch: ^2.1.2
   nyc: ^14.1.1
   pascal-case: ^2.0.1

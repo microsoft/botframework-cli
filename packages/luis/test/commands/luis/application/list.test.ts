@@ -48,7 +48,7 @@ describe('luis:application:list', () => {
   .stdout()
   .command(['luis:application:list', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
   .it('displays a list of applications', ctx => {
-    expect(ctx.stdout).to.contain('List successfully output to console')
+    expect(ctx.stdout).to.contain('testapp')
   })
 
   test
