@@ -155,8 +155,8 @@ ludown.translate.parseAndTranslate(luContent, subscriptionKey, targetLanguage, '
 To parse LU files, you can use the LUISBuilder class, which returns a LUIS class
 
 ```js
-const Luis = require('@microsoft/bf-lu').Luis
-const LUISBuilder = require('@microsoft/bf-lu').LuisBuilder
+const Luis = require('@microsoft/bf-lu').V2.Luis
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
 const luContent1 = `# Greeting
 - hi`;
 
@@ -172,8 +172,8 @@ console.log(JSON.stringify(luisObject, 2, null));
 You can use the available validate() function to verify if the parsed LUIS object is valid. This helps catch name conflicts, invalid labelled utterances etc. 
 
 ```js
-const LUISBuilder = require('@microsoft/bf-lu').LuisBuilder
-const exception = require('@microsoft/bf-lu').Exception
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
+const exception = require('@microsoft/bf-lu').V2.Exception
 const luContent = `# Greeting
 - hi {userName=bob}
 $userName:first=
@@ -200,8 +200,8 @@ parseContent();
 You can generate lu content from LUIS instance using parseToLuContent() method. Here's an example code snippet. 
 
 ```js
-const LUISBuilder = require('@microsoft/bf-lu').LuisBuilder
-const exception = require('@microsoft/bf-lu').Exception
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
+const exception = require('@microsoft/bf-lu').V2.Exception
 const luContent = `# Greeting
 - hi
 $userName:first=
@@ -233,7 +233,7 @@ You can take advantage of the [Microsoft text translation API](https://docs.micr
 To translate lu file content, you can simply use the translate() method in the LU class. Here's a code snippet.
 
 ```js
-const ludown = require('@microsoft/bf-lu');
+const LU = require('@microsoft/bf-lu').V2.LU
 const luContent = `# Greeting
 - hi
 $userName:first=
