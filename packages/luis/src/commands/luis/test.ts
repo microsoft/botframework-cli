@@ -26,7 +26,7 @@ export default class LuisTest extends Command {
     endpoint: flags.string({description: '(required) LUIS endpoint hostname', required: true}),
     appId: flags.string({char: 'a', description: '(required) LUIS application Id', required: true}),
     intentOnly: flags.boolean({description: 'only test intent', default: false}),
-    staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production',default: false}),
+    staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production', default: false}),
     allowIntentsCount: flags.integer({description: 'intent number to show in the result', default: 1}),
     timezoneOffset: flags.string({description: 'Timezone offset for the location of the request in minutes (optional)'}),
     concurrency: flags.integer({description: 'parallel utterance test number', default: 1}),
@@ -62,29 +62,19 @@ export default class LuisTest extends Command {
 
       const creds = new CognitiveServicesCredentials(flags.subscriptionKey)
       const client = new LUISRuntimeClient(creds, flags.endpoint)
-      /*
-      await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr1.out', flags.in)
-      const predictionData = await client.prediction.getSlotPrediction(flags.appId, "production", {"query": "book a meeting"})
-      await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr2.out', `${JSON.stringify(predictionData, null, 2)}`)
-      this.log(`${JSON.stringify(predictionData, null, 2)}`)
-      */
-      //await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr.out', 'a')
-      //await testHelper.GetPredictedResult(luisObject, flags, client)
       let slotName = 'production'
       if (flags.staging) slotName = 'staging'
 
       const options: any = {}
       options.verbose = true
-      options.showAllIntents  = true
+      options.showAllIntents = true
 
       await testHelper.build(client, flags.appId, slotName, options, luisObject, flags.allowIntentsCount, flags.intentOnly)
 
       let result = luConverterWithTest(luisObject, flags)
-      await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr1.out', 'a')
       if (!result) {
         throw new CLIError('No LU content parsed!')
       }
-      await fs.writeFile('C:\\Users\\huanx\\source\\repos\\bf-cli\\packages\\luis\\xhr2.out', flags.out)
       // Print or write the parsed object
       if (flags.out) {
         await this.writeOutput(result, flags, false)

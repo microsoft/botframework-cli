@@ -24,33 +24,106 @@ describe('luis:test cli parameters test', () => {
 })
 
 describe('luis:test cli single test', () => {
-  test
-  .nock('https://westus.api.cognitive.microsoft.com', api => api
-  .post(uri => uri.includes('apps'))
-  .reply(200, {
-    "query":"accept my meeting at 7pm today","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.974321961},"TimeRemaining":{"score":0.01594631},"CreateCalendarEntry":{"score":0.01525001},"GoToLocation":{"score":0.004478747},"FindMeetingRoom":{"score":0.002986566},"None":{"score":0.00223820028}},"entities":{"PossessivePronoun":[["FirstPerson"]],"FromTime":["7pm"],"datetimeV2":[{"type":"datetime","values":[{"timex":"2020-02-23T19","resolution":[{"value":"2020-02-23 19:00:00"}]}]}],"FromDate":["today"],"$instance":{"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"FromTime":[{"type":"FromTime","text":"7pm","startIndex":21,"length":3,"score":0.966418564,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"datetimeV2":[{"type":"builtin.datetimeV2.datetime","text":"7pm today","startIndex":21,"length":9,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"today","startIndex":25,"length":5,"score":0.9794828,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
-  })
-  )
-  .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../../SimpleEntity.lu')}`, '-o', `${path.join(__dirname, './../../../SimpleEntity.test')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query', async ctx => {
-    expect(await compareFiles('./../../../SimpleEntity.out', './../../../SimpleEntity.test')).to.be.true
+  before(async function(){
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
   })
 
-  
+  after(async function(){
+    //await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .post(uri => uri.includes('apps'))
   .reply(200, {
-    "query":"go to peking university","prediction":{"topIntent":"GoToLocation","intents":{"GoToLocation":{"score":0.9334474},"TimeRemaining":{"score":0.0607358068},"FindMeetingRoom":{"score":0.0304907579},"CreateCalendarEntry":{"score":0.01878294},"None":{"score":0.0162154566},"AcceptEventEntry":{"score":0.002003329}},"entities":{"NamedOrgnization":[{"Location":["peking"],"Orgnization":["university"],"$instance":{"Location":[{"type":"Location","text":"peking","startIndex":6,"length":6,"score":0.9842029,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"Orgnization":[{"type":"Orgnization","text":"university","startIndex":13,"length":10,"score":0.9862096,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"$instance":{"NamedOrgnization":[{"type":"NamedOrgnization","text":"peking university","startIndex":6,"length":17,"score":0.9816306,"modelTypeId":4,"modelType":"Composite Entity Extractor","recognitionSources":["model"]}],"Building":[{"type":"Building","text":"peking university","startIndex":6,"length":17,"score":0.710241854,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    "query":"accept the event","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9916137},"None":{"score":0.0212100614},"FindCalendarEntry":{"score":0.0007991798},"CreateCalendarEntry":{"score":0.0007625492}},"entities":{}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"accept the event on feb.18 in beijing.","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9646782},"FindCalendarEntry":{"score":0.0154326865},"CreateCalendarEntry":{"score":0.0135070309},"None":{"score":0.005432111}},"entities":{"FromDate":["feb.18"],"Location":["beijing"],"$instance":{"FromDate":[{"type":"FromDate","text":"feb.18","startIndex":20,"length":6,"score":0.9591509,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"Location":[{"type":"Location","text":"beijing","startIndex":30,"length":7,"score":0.9749351,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
   })
   )
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../../CompositeEntity.lu')}`, '-o', `${path.join(__dirname, './../../../CompositeEntity.test')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/SimpleEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/SimpleEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
   .it('queries one simple query', async ctx => {
-    expect(await compareFiles('./../../../CompositeEntity.out', './../../../CompositeEntity.test')).to.be.true
+    expect(await compareFiles('./../../../results/SimpleEntity.lu', './../../fixtures/testcases/lutest/output/SimpleEntity.lu')).to.be.true
   })
-  
+
+  test
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"accept my meeting at tomorrow 10am","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9554455},"FindCalendarEntry":{"score":0.0266499873},"CreateCalendarEntry":{"score":0.008758012},"None":{"score":0.001980644}},"entities":{"FromDateTime":[{"FromDate":["tomorrow"],"FromTime":["10am"],"$instance":{"FromDate":[{"type":"FromDate","text":"tomorrow","startIndex":21,"length":8,"score":0.9908509,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromTime":[{"type":"FromTime","text":"10am","startIndex":30,"length":4,"score":0.96344924,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"PossessivePronoun":[["FirstPerson"]],"$instance":{"FromDateTime":[{"type":"FromDateTime","text":"tomorrow 10am","startIndex":21,"length":13,"score":0.9757744,"modelTypeId":4,"modelType":"Composite Entity Extractor","recognitionSources":["model"]}],"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"accept the meeting at 7pm today","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.963261545},"FindCalendarEntry":{"score":0.0145724509},"CreateCalendarEntry":{"score":0.0105748242},"None":{"score":0.00341928354}},"entities":{"FromDateTime":[{"FromTime":["7pm"],"FromDate":["today"],"$instance":{"FromTime":[{"type":"FromTime","text":"7pm","startIndex":22,"length":3,"score":0.99611336,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"today","startIndex":26,"length":5,"score":0.9730472,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"$instance":{"FromDateTime":[{"type":"FromDateTime","text":"7pm today","startIndex":22,"length":9,"score":0.970544636,"modelTypeId":4,"modelType":"Composite Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/CompositeEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/CompositeEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('queries one simple query', async ctx => {
+    expect(await compareFiles('./../../../results/CompositeEntity.lu', './../../fixtures/testcases/lutest/output/CompositeEntity.lu')).to.be.true
+  })
+
+  test
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"accept all meetings for christmas party next week.","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.948831439},"FindCalendarEntry":{"score":0.0371829346},"None":{"score":0.00728923827},"CreateCalendarEntry":{"score":0.007234955}},"entities":{"Subject":["christmas party"],"FromDate":["next week"],"$instance":{"Subject":[{"type":"Subject","text":"christmas party","startIndex":24,"length":15,"score":0.9657892,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"next week","startIndex":40,"length":9,"score":0.966946542,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"accept an appointment","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9806283},"CreateCalendarEntry":{"score":0.0107671674},"None":{"score":0.008749297},"FindCalendarEntry":{"score":0.00100262067}},"entities":{}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"accept my meeting at tomorrow 10am","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9551928},"FindCalendarEntry":{"score":0.0262713879},"CreateCalendarEntry":{"score":0.00927224848},"None":{"score":0.00191493623}},"entities":{"FromDateTime":[{"FromDate":["tomorrow"],"FromTime":["10am"],"$instance":{"FromDate":[{"type":"FromDate","text":"tomorrow","startIndex":21,"length":8,"score":0.9902214,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromTime":[{"type":"FromTime","text":"10am","startIndex":30,"length":4,"score":0.9724725,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"PossessivePronoun":[["FirstPerson"]],"$instance":{"FromDateTime":[{"type":"FromDateTime","text":"tomorrow 10am","startIndex":21,"length":13,"score":0.9746748,"modelTypeId":4,"modelType":"Composite Entity Extractor","recognitionSources":["model"]}],"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"book a meeting with huanx@abc.com","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.999999762},"FindCalendarEntry":{"score":8.77192235e-7},"None":{"score":4.94949234e-7},"AcceptEventEntry":{"score":3.24675227e-7}},"entities":{"Email":["huanx@abc.com"],"$instance":{"Email":[{"type":"Email","text":"huanx@abc.com","startIndex":20,"length":13,"modelTypeId":8,"modelType":"Regex Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"create a meeting at 6 o'clock","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.9999998},"FindCalendarEntry":{"score":0.0000013437832},"AcceptEventEntry":{"score":3.24675227e-7},"None":{"score":4.9e-10}},"entities":{}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"create a meeting for tomorrow 6pm with lucy chen","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.9999998},"FindCalendarEntry":{"score":1.108032E-06},"AcceptEventEntry":{"score":3.24675227E-07},"None":{"score":4.9E-10}},"entities":{"FromDate":["tomorrow"],"FromTime":["6pm"],"personName":["lucy chen"],"$instance":{"FromDate":[{"type":"FromDate","text":"tomorrow","startIndex":21,"length":8,"score":0.9780653,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromTime":[{"type":"FromTime","text":"6pm","startIndex":30,"length":3,"score":0.983653,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"personName":[{"type":"builtin.personName","text":"lucy chen","startIndex":39,"length":9,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"create a meeting from 9pm to tomorrow 6am","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.9999998},"FindCalendarEntry":{"score":6.511119e-7},"None":{"score":4.94949234e-7},"AcceptEventEntry":{"score":3.24675227e-7}},"entities":{"FromTime":["9pm"],"FromDate":["tomorrow"],"ToTime":["6am"],"$instance":{"FromTime":[{"type":"FromTime","text":"9pm","startIndex":22,"length":3,"score":0.9885789,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"tomorrow","startIndex":29,"length":8,"score":0.9875441,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"ToTime":[{"type":"ToTime","text":"6am","startIndex":38,"length":3,"score":0.952425957,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('apps'))
+  .reply(200, {
+    "query":"create a meeting with tom34@outlook.com","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.99999994},"AcceptEventEntry":{"score":3.24675227e-7},"FindCalendarEntry":{"score":2.126528e-7},"None":{"score":4.9e-10}},"entities":{"OutLook":["tom34@outlook.com"],"$instance":{"OutLook":[{"role":"OutLook","type":"Email","text":"tom34@outlook.com","startIndex":22,"length":17,"modelTypeId":8,"modelType":"Regex Entity Extractor","recognitionSources":["model"]}]}}}
+  })
+  )
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/AllEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/AllEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('queries one simple query', async ctx => {
+    expect(await compareFiles('./../../../results/AllEntity.lu', './../../fixtures/testcases/lutest/output/AllEntity.lu')).to.be.true
+  })
 })
 
 
@@ -59,39 +132,39 @@ describe('luis:test cli test roles', () => {
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"go to my school","prediction":{"topIntent":"GoToLocation","intents":{"GoToLocation":{"score":0.9930792},"TimeRemaining":{"score":0.07633762},"CreateCalendarEntry":{"score":0.00526066124},"None":{"score":0.004111623},"AcceptEventEntry":{"score":0.00113275938},"FindMeetingRoom":{"score":0.0008336723}},"entities":{"ListRole":[["FirstPerson"]],"$instance":{"ListRole":[{"role":"ListRole","type":"PossessivePronoun","text":"my","startIndex":6,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}]}}}  
+      "query":"accept dinner","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9898117},"None":{"score":0.0353774056},"FindCalendarEntry":{"score":0.000545575167},"CreateCalendarEntry":{"score":0.0003405154}},"entities":{"Meals":["dinner"],"$instance":{"Meals":[{"role":"Meals","type":"Subject","text":"dinner","startIndex":7,"length":6,"score":0.965874732,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
     })
 
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"go to the conf room","prediction":{"topIntent":"GoToLocation","intents":{"GoToLocation":{"score":0.8655018},"FindMeetingRoom":{"score":0.37376973},"TimeRemaining":{"score":0.00311733666},"None":{"score":0.00105911994},"AcceptEventEntry":{"score":0.0005873734},"CreateCalendarEntry":{"score":0.0000279697651}},"entities":{"RegexRole":["conf room"],"SlotAttributeName":[["room"]],"$instance":{"RegexRole":[{"role":"RegexRole","type":"MeetingRoomKeywordsDesc","text":"conf room","startIndex":10,"length":9,"modelTypeId":8,"modelType":"Regex Entity Extractor","recognitionSources":["model"]}],"SlotAttributeName":[{"type":"SlotAttributeName","text":"room","startIndex":15,"length":4,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}]}}}
+      "query":"accept my meeting with lucy","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.959497333},"FindCalendarEntry":{"score":0.0164357983},"CreateCalendarEntry":{"score":0.00772569841},"None":{"score":0.00273590558}},"entities":{"PossessivePronoun":[["FirstPerson"]],"Female":["lucy"],"$instance":{"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"Female":[{"role":"Female","type":"builtin.personName","text":"lucy","startIndex":23,"length":4,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}]}}}
     })
 
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"go to the new hosipital","prediction":{"topIntent":"GoToLocation","intents":{"GoToLocation":{"score":0.9816799},"TimeRemaining":{"score":0.0150100663},"None":{"score":0.01359638},"CreateCalendarEntry":{"score":0.00724994345},"FindMeetingRoom":{"score":0.00285139959},"AcceptEventEntry":{"score":0.00170470541}},"entities":{"Medical":["hosipital"],"$instance":{"Medical":[{"role":"Medical","type":"Orgnization","text":"hosipital","startIndex":14,"length":9,"score":0.961445451,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+      "query":"accept my next meeting","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.981132746},"FindCalendarEntry":{"score":0.0337465219},"None":{"score":0.00202137441},"CreateCalendarEntry":{"score":0.00107820414}},"entities":{"PossessivePronoun":[["FirstPerson"]],"Next":["next"],"$instance":{"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"Next":[{"role":"Next","type":"OrderReference","text":"next","startIndex":10,"length":4,"score":0.960370064,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
     })
 
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"go to the second school","prediction":{"topIntent":"GoToLocation","intents":{"GoToLocation":{"score":0.9291691},"TimeRemaining":{"score":0.025979219},"None":{"score":0.0242075529},"CreateCalendarEntry":{"score":0.00585309742},"FindMeetingRoom":{"score":0.003053247},"AcceptEventEntry":{"score":0.00227555074}},"entities":{"PreBuiltRole":[2],"$instance":{"PreBuiltRole":[{"role":"PreBuiltRole","type":"builtin.ordinal","text":"second","startIndex":10,"length":6,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}]}}}
+      "query":"accept the appointment sent by lucas","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9642574},"CreateCalendarEntry":{"score":0.01123041},"FindCalendarEntry":{"score":0.0105271041},"None":{"score":0.006968327}},"entities":{"Male":["lucas"],"$instance":{"Male":[{"role":"Male","type":"builtin.personName","text":"lucas","startIndex":31,"length":5,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}]}}}
     })
 
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"please go to the shanghai college","prediction":{"topIntent":"GoToLocation","intents":{"GoToLocation":{"score":0.923344254},"TimeRemaining":{"score":0.0298806038},"FindMeetingRoom":{"score":0.0212932322},"CreateCalendarEntry":{"score":0.0117360018},"None":{"score":0.00389994634},"AcceptEventEntry":{"score":0.00213410938}},"entities":{"CompositeRole":[{"Location":["shanghai"],"Orgnization":["college"],"$instance":{"Location":[{"type":"Location","text":"shanghai","startIndex":17,"length":8,"score":0.972533,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"Orgnization":[{"type":"Orgnization","text":"college","startIndex":26,"length":7,"score":0.9776695,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"$instance":{"CompositeRole":[{"role":"CompositeRole","type":"NamedOrgnization","text":"shanghai college","startIndex":17,"length":16,"score":0.9632718,"modelTypeId":4,"modelType":"Composite Entity Extractor","recognitionSources":["model"]}]}}}
+      "query":"create a meeting with tom34@outlook.com","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.99999994},"AcceptEventEntry":{"score":3.24675227e-7},"FindCalendarEntry":{"score":2.126528e-7},"None":{"score":4.9e-10}},"entities":{"OutLook":["tom34@outlook.com"],"$instance":{"OutLook":[{"role":"OutLook","type":"Email","text":"tom34@outlook.com","startIndex":22,"length":17,"modelTypeId":8,"modelType":"Regex Entity Extractor","recognitionSources":["model"]}]}}}
     })
   })
 
   test
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../../EntityRole.lu')}`, '-o', `${path.join(__dirname, './../../../EntityRole.test')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/EntityRole.lu')}`, '-o', `${path.join(__dirname, './../../../results/EntityRole.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
   .it('queries one simple query', async ctx => {
-    expect(await compareFiles('./../../../EntityRole.out', './../../../EntityRole.test')).to.be.true
+    expect(await compareFiles('./../../../results/EntityRole.lu', './../../fixtures/testcases/lutest/output/EntityRole.lu')).to.be.true
   })
 })
 
@@ -118,37 +191,153 @@ describe('luis:test cli test Hierarchical entity', () => {
 
   test
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../../HierarchicalEntity.lu')}`, '-o', `${path.join(__dirname, './../../../HierarchicalEntity.test')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/HierarchicalEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/HierarchicalEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
   .it('queries one simple query', async ctx => {
-    expect(await compareFiles('./../../../HierarchicalEntity.out', './../../../HierarchicalEntity.test')).to.be.true
+    expect(await compareFiles('./../../../results/HierarchicalEntity.lu', './../../fixtures/testcases/lutest/output/HierarchicalEntity.lu')).to.be.true
   })
 })
 
+
+
 describe('luis:test cli batch test', () => {
-  before(function () {
+  beforeEach(function () {
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"accept my meeting at 7pm today","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.974321961},"TimeRemaining":{"score":0.01594631},"CreateCalendarEntry":{"score":0.01525001},"GoToLocation":{"score":0.004478747},"FindMeetingRoom":{"score":0.002986566},"None":{"score":0.00223820028}},"entities":{"PossessivePronoun":[["FirstPerson"]],"FromTime":["7pm"],"datetimeV2":[{"type":"datetime","values":[{"timex":"2020-02-23T19","resolution":[{"value":"2020-02-23 19:00:00"}]}]}],"FromDate":["today"],"$instance":{"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"FromTime":[{"type":"FromTime","text":"7pm","startIndex":21,"length":3,"score":0.966418564,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"datetimeV2":[{"type":"builtin.datetimeV2.datetime","text":"7pm today","startIndex":21,"length":9,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"today","startIndex":25,"length":5,"score":0.9794828,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+      "query":"accept all meetings for christmas party next week.","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.948831439},"FindCalendarEntry":{"score":0.0371829346},"None":{"score":0.00728923827},"CreateCalendarEntry":{"score":0.007234955}},"entities":{"Subject":["christmas party"],"FromDate":["next week"],"$instance":{"Subject":[{"type":"Subject","text":"christmas party","startIndex":24,"length":15,"score":0.9657892,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"next week","startIndex":40,"length":9,"score":0.966946542,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"accept an appointment","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9806283},"CreateCalendarEntry":{"score":0.0107671674},"None":{"score":0.008749297},"FindCalendarEntry":{"score":0.00100262067}},"entities":{}}
     })
 
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"accept dinner","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9896916},"None":{"score":0.142624348},"GoToLocation":{"score":0.0377680659},"TimeRemaining":{"score":0.0120782675},"FindMeetingRoom":{"score":0.004313448},"CreateCalendarEntry":{"score":0.000225723838}},"entities":{"Subject":["dinner"],"$instance":{"Subject":[{"type":"Subject","text":"dinner","startIndex":7,"length":6,"score":0.977910936,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+      "query":"accept dinner","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9898117},"None":{"score":0.0353774056},"FindCalendarEntry":{"score":0.000545575167},"CreateCalendarEntry":{"score":0.0003405154}},"entities":{"Meals":["dinner"],"$instance":{"Meals":[{"role":"Meals","type":"Subject","text":"dinner","startIndex":7,"length":6,"score":0.965874732,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
     })
 
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
-      "query":"accept the appointment on january 18th in palace meeting room.","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9370904},"FindMeetingRoom":{"score":0.06788864},"TimeRemaining":{"score":0.006526119},"CreateCalendarEntry":{"score":0.00458626077},"GoToLocation":{"score":0.0006019147},"None":{"score":5.74635633E-05}},"entities":{"FromDate":["january 18th"],"datetimeV2":[{"type":"date","values":[{"timex":"XXXX-01-18","resolution":[{"value":"2020-01-18"},{"value":"2021-01-18"}]}]}],"ordinal":[18],"MeetingRoom":["palace meeting room"],"SlotAttributeName":[["room"],["room"]],"MeetingRoomKeywordsDesc":["meeting room"],"$instance":{"FromDate":[{"type":"FromDate","text":"january 18th","startIndex":26,"length":12,"score":0.998134,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"datetimeV2":[{"type":"builtin.datetimeV2.date","text":"january 18th","startIndex":26,"length":12,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}],"ordinal":[{"type":"builtin.ordinal","text":"18th","startIndex":34,"length":4,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}],"MeetingRoom":[{"type":"MeetingRoom","text":"palace meeting room","startIndex":42,"length":19,"score":0.9109025,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"SlotAttributeName":[{"type":"SlotAttributeName","text":"meeting room","startIndex":49,"length":12,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]},{"type":"SlotAttributeName","text":"room","startIndex":57,"length":4,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"MeetingRoomKeywordsDesc":[{"type":"MeetingRoomKeywordsDesc","text":"meeting room","startIndex":49,"length":12,"modelTypeId":8,"modelType":"Regex Entity Extractor","recognitionSources":["model"]}]}}}
+      "query":"accept my meeting at tomorrow 10am","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.9551928},"FindCalendarEntry":{"score":0.0262713879},"CreateCalendarEntry":{"score":0.00927224848},"None":{"score":0.00191493623}},"entities":{"FromDateTime":[{"FromDate":["tomorrow"],"FromTime":["10am"],"$instance":{"FromDate":[{"type":"FromDate","text":"tomorrow","startIndex":21,"length":8,"score":0.9902214,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromTime":[{"type":"FromTime","text":"10am","startIndex":30,"length":4,"score":0.9724725,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"PossessivePronoun":[["FirstPerson"]],"$instance":{"FromDateTime":[{"type":"FromDateTime","text":"tomorrow 10am","startIndex":21,"length":13,"score":0.9746748,"modelTypeId":4,"modelType":"Composite Entity Extractor","recognitionSources":["model"]}],"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"accept my meeting with lucy","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.959497333},"FindCalendarEntry":{"score":0.0164357983},"CreateCalendarEntry":{"score":0.00772569841},"None":{"score":0.00273590558}},"entities":{"PossessivePronoun":[["FirstPerson"]],"Female":["lucy"],"$instance":{"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"Female":[{"role":"Female","type":"builtin.personName","text":"lucy","startIndex":23,"length":4,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"accept my next meeting","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.981132746},"FindCalendarEntry":{"score":0.0337465219},"None":{"score":0.00202137441},"CreateCalendarEntry":{"score":0.00107820414}},"entities":{"PossessivePronoun":[["FirstPerson"]],"Next":["next"],"$instance":{"PossessivePronoun":[{"type":"PossessivePronoun","text":"my","startIndex":7,"length":2,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"Next":[{"role":"Next","type":"OrderReference","text":"next","startIndex":10,"length":4,"score":0.960370064,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"book a meeting with huanx@abc.com","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.999999762},"FindCalendarEntry":{"score":8.77192235e-7},"None":{"score":4.94949234e-7},"AcceptEventEntry":{"score":3.24675227e-7}},"entities":{"Email":["huanx@abc.com"],"$instance":{"Email":[{"type":"Email","text":"huanx@abc.com","startIndex":20,"length":13,"modelTypeId":8,"modelType":"Regex Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"create a calendar appointment at 3:30 tomorrow for half an hour","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.993257463},"FindCalendarEntry":{"score":0.0207973123},"AcceptEventEntry":{"score":0.00752841},"None":{"score":0.00258025876}},"entities":{"FromTime":["3:30"],"FromDate":["tomorrow"],"Duration":["half an hour"],"$instance":{"FromTime":[{"type":"FromTime","text":"3:30","startIndex":33,"length":4,"score":0.9714409,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"tomorrow","startIndex":38,"length":8,"score":0.9876196,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"Duration":[{"type":"Duration","text":"half an hour","startIndex":51,"length":12,"score":0.9637342,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"create a event with eden roth at 4pm today for 30 mins","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.9999999},"None":{"score":4.94949234e-7},"FindCalendarEntry":{"score":4.29645354e-7},"AcceptEventEntry":{"score":3.24675227e-7}},"entities":{"FromTime":["4pm"],"FromDate":["today"],"Duration":["30 mins"],"$instance":{"FromTime":[{"type":"FromTime","text":"4pm","startIndex":33,"length":3,"score":0.9858761,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"today","startIndex":37,"length":5,"score":0.9848769,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"Duration":[{"type":"Duration","text":"30 mins","startIndex":47,"length":7,"score":0.978632748,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"create a meeting at 6 o'clock","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.9999998},"FindCalendarEntry":{"score":0.0000013437832},"AcceptEventEntry":{"score":3.24675227e-7},"None":{"score":4.9e-10}},"entities":{}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"create an appointment with doctor lu from 8:30 am to 10:00 am tomorrow morning","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.99999994},"FindCalendarEntry":{"score":6.511119e-7},"AcceptEventEntry":{"score":3.24675227e-7},"None":{"score":4.9e-10}},"entities":{"personName":["doctor lu"],"FromTime":["8:30 am","morning"],"ToTime":["10:00 am"],"FromDate":["tomorrow"],"$instance":{"personName":[{"type":"builtin.personName","text":"doctor lu","startIndex":27,"length":9,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}],"FromTime":[{"type":"FromTime","text":"8:30 am","startIndex":42,"length":7,"score":0.968376338,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]},{"type":"FromTime","text":"morning","startIndex":71,"length":7,"score":0.9562449,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"ToTime":[{"type":"ToTime","text":"10:00 am","startIndex":53,"length":8,"score":0.9576419,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"tomorrow","startIndex":62,"length":8,"score":0.986595631,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"create appointment for 30 minutes","prediction":{"topIntent":"CreateCalendarEntry","intents":{"CreateCalendarEntry":{"score":0.972337842},"None":{"score":0.0147473346},"AcceptEventEntry":{"score":0.005768245},"FindCalendarEntry":{"score":0.004693006}},"entities":{"Duration":["30 minutes"],"$instance":{"Duration":[{"type":"Duration","text":"30 minutes","startIndex":23,"length":10,"score":0.9802576,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"find a meeting subject daily meeting","prediction":{"topIntent":"FindCalendarEntry","intents":{"FindCalendarEntry":{"score":0.951522648},"CreateCalendarEntry":{"score":0.0267035775},"AcceptEventEntry":{"score":0.009956521},"None":{"score":0.00728210947}},"entities":{"Subject":["daily meeting"],"$instance":{"Subject":[{"type":"Subject","text":"daily meeting","startIndex":23,"length":13,"score":0.9644481,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"find a meeting with subject weekly report","prediction":{"topIntent":"FindCalendarEntry","intents":{"FindCalendarEntry":{"score":0.959091961},"CreateCalendarEntry":{"score":0.024054775},"None":{"score":0.009452751},"AcceptEventEntry":{"score":0.008683719}},"entities":{"Subject":["weekly report"],"$instance":{"Subject":[{"type":"Subject","text":"weekly report","startIndex":28,"length":13,"score":0.963532269,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"1","prediction":{"topIntent":"None","intents":{"None":{"score":0.962541759},"FindCalendarEntry":{"score":0.0138276508},"AcceptEventEntry":{"score":0.005194204},"CreateCalendarEntry":{"score":0.00211010128}},"entities":{}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"i want them all","prediction":{"topIntent":"None","intents":{"None":{"score":0.9742338},"FindCalendarEntry":{"score":0.012520914},"AcceptEventEntry":{"score":0.00728971139},"CreateCalendarEntry":{"score":0.006515513}},"entities":{}}
+    })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+    .post(uri => uri.includes('apps'))
+    .reply(200, {
+      "query":"the third one","prediction":{"topIntent":"None","intents":{"None":{"score":0.9528941},"FindCalendarEntry":{"score":0.0206986461},"AcceptEventEntry":{"score":0.007648055},"CreateCalendarEntry":{"score":0.006207045}},"entities":{"PositionReference":["third"],"ordinal":[3],"$instance":{"PositionReference":[{"type":"PositionReference","text":"third","startIndex":4,"length":5,"score":0.9843544,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"ordinal":[{"type":"builtin.ordinal","text":"third","startIndex":4,"length":5,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}]}}}
     })
   })
 
   test
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../../TestFile.lu')}`, '-o', `${path.join(__dirname, './../../../TestFile.test')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile.lu')}`, '-o', `${path.join(__dirname, './../../../results/TestFile.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
   .it('queries one simple query', async ctx => {
-    expect(await compareFiles('./../../../TestFile.out', './../../../TestFile.test')).to.be.true
+    expect(await compareFiles('./../../../results/TestFile.lu', './../../fixtures/testcases/lutest/output/TestFile.lu')).to.be.true
+  })
+
+  
+  test
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile1.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile1.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('queries one simple query2', async ctx => {
+    expect(ctx.stdout).to.contain('')
+  })
+  
+
+  test
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile2.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('queries one simple query3', async ctx => {
+    expect(ctx.stdout).to.contain('')
+  })
+
+  test
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile2_intentOnly.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force', '--intentOnly'])
+  .it('queries one simple query4', async ctx => {
+    expect(ctx.stdout).to.contain('')
+  })
+
+  test
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile2_3intent.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force', '--allowIntentsCount', '3'])
+  .it('queries one simple query5', async ctx => {
+    expect(ctx.stdout).to.contain('')
   })
 })

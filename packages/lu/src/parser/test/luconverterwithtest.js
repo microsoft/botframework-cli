@@ -75,46 +75,49 @@ const parseIntentsToLu = function(luisObj, luisJSON){
 const parseUtterancesToLu = function(utterances, luisJSON){
     let fileContent = ''
     utterances.forEach(function(utterance) {
-
         let intents = []
-        if(utterance.predictedResult.predictedIntents.length > 0){
-            for(let intent of utterance.predictedResult.predictedIntents){
-              intents.push(`${intent.intent}(${intent.score})`);
-            }
-        }
-        let passText = utterance.predictedResult.IntentPass? "> PASS." : "> FAIL.";
-        fileContent += passText + " Predicted intent: " + intents.join(', ')  + NEWLINE;
-
         let updatedText = utterance.text;
-        if(utterance.predictedResult.predictedEntities!==undefined) {
-            if (utterance.predictedResult.predictedEntities.length > 0){
-                // update utterance for each entity
-                let text = utterance.text;
-                let sortedEntitiesList = objectSortByStartPos(utterance.predictedResult.predictedEntities);
-                let tokenizedText = text.split('');
-                let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
-                nonCompositesInUtterance.forEach(entity => {
-                    if (entity.role !== undefined) {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                    } else {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                    }
-                    tokenizedText[parseInt(entity.endPos)] += `}`;
-                })
-                let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
-                compositeEntitiesInUtterance.forEach(entity => {
-                    if (entity.role !== undefined) {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
-                    } else {
-                        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
-                    }
-                    tokenizedText[parseInt(entity.endPos)] += `}`;
-                })
-                updatedText = tokenizedText.join(''); 
+        if (utterance.predictedResult !== undefined)
+        {
+            if(utterance.predictedResult.predictedIntents!=undefined && utterance.predictedResult.predictedIntents.length > 0){
+                for(let intent of utterance.predictedResult.predictedIntents){
+                  intents.push(`${intent.intent}(${intent.score})`);
+                }
             }
-            let passText = utterance.predictedResult.EntityPass ? "> PASS." : "> FAIL.";
-            if(updatedText) fileContent +=  passText + ' Predicted entities: ' + updatedText + NEWLINE;
-            updatedText = utterance.text;
+            let passText = utterance.predictedResult.IntentPass? "> PASS." : "> FAIL.";
+            fileContent += passText + " Predicted intent: " + intents.join(', ')  + NEWLINE;
+    
+    
+            if(utterance.predictedResult.predictedEntities!==undefined) {
+                if (utterance.predictedResult.predictedEntities.length > 0){
+                    // update utterance for each entity
+                    let text = utterance.text;
+                    let sortedEntitiesList = objectSortByStartPos(utterance.predictedResult.predictedEntities);
+                    let tokenizedText = text.split('');
+                    let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
+                    nonCompositesInUtterance.forEach(entity => {
+                        if (entity.role !== undefined) {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                        } else {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                        }
+                        tokenizedText[parseInt(entity.endPos)] += `}`;
+                    })
+                    let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
+                    compositeEntitiesInUtterance.forEach(entity => {
+                        if (entity.role !== undefined) {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
+                        } else {
+                            tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
+                        }
+                        tokenizedText[parseInt(entity.endPos)] += `}`;
+                    })
+                    updatedText = tokenizedText.join(''); 
+                }
+                let passText = utterance.predictedResult.EntityPass ? "> PASS." : "> FAIL.";
+                if(updatedText) fileContent +=  passText + ' Predicted entities: ' + updatedText + NEWLINE;
+                updatedText = utterance.text;
+            }
         }
 
         if(utterance.entities.length >= 0) {
