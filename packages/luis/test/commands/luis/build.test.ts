@@ -52,6 +52,15 @@ describe('luis:build cli parameters test', () => {
     .it('displays an error if files with same name and locale are found', ctx => {
       expect(ctx.stderr).to.contain('Files with same name and locale are found')
     })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3.lu')}`, '--botName', 'Contoso'])
+    .it('displays an error if error occurs in parsing lu content', ctx => {
+      expect(ctx.stderr).to.contain('Invalid LU file')
+      expect(ctx.stderr).to.contain('[ERROR] line 4:0 - line 4:16: Invalid intent body line, did you miss \'-\' at line begin')
+    })
 })
 
 describe('luis:build create a new application successfully', () => {
@@ -97,9 +106,9 @@ describe('luis:build create a new application successfully', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should create a new application successfully', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
       expect(ctx.stdout).to.contain('waiting for training for version=0.1')
@@ -162,9 +171,9 @@ describe('luis:build update application succeed when utterances changed', () => 
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances changed', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('training version=0.2')
       expect(ctx.stdout).to.contain('waiting for training for version=0.2')
@@ -227,9 +236,9 @@ describe('luis:build update application succeed when utterances added', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances added', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('training version=0.2')
       expect(ctx.stdout).to.contain('waiting for training for version=0.2')
@@ -263,9 +272,9 @@ describe('luis:build not update application if no changes', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
     })
 })
@@ -301,7 +310,7 @@ describe('luis:build write dialog assets successfully if --dialog set', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully when --dialog set', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.en-us.lu.dialog')).to.be.true
@@ -420,13 +429,13 @@ describe('luis:build create multiple applications successfully when input is a f
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
     .it('should create multiple applications and write dialog assets successfully when input is a folder', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
       expect(ctx.stdout).to.contain('foo.zh-cn.lu loaded')
 
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
       expect(ctx.stdout).to.contain('waiting for training for version=0.1')
@@ -526,7 +535,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
     .it('should update dialog assets successfully when dialog assets exist', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
@@ -535,7 +544,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
       expect(ctx.stdout).to.contain('luis.settings.development.westus.json loaded')
       expect(ctx.stdout).to.contain('foo.lu.dialog loaded')
 
-      expect(ctx.stdout).to.contain('Start to handle applications')
+      expect(ctx.stdout).to.contain('Handling applications...')
 
       expect(ctx.stdout).to.contain('foo.en-us.lu.dialog loaded')
       expect(ctx.stdout).to.contain('foo.fr-fr.lu.dialog loaded')
@@ -554,5 +563,129 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
       expect(await compareFiles('./../../../results/foo.en-us.lu.dialog', './../../fixtures/testcases/lubuild/foo2/dialogs/foo.en-us.lu.dialog')).to.be.true
       expect(await compareFiles('./../../../results/foo.fr-fr.lu.dialog', './../../fixtures/testcases/lubuild/foo2/dialogs/foo.fr-fr.lu.dialog')).to.be.true
       expect(await compareFiles('./../../../results/foo.zh-cn.lu.dialog', './../../fixtures/testcases/lubuild/foo2/dialogs/foo.zh-cn.lu.dialog')).to.be.true
+    })
+})
+
+describe('luis:build not update application if only cases of utterances or patterns are changed', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/case-insensitive/luis/test(development)-case-insensitive.en-us.lu.json')
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-case-insensitive.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-case-insensitive.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .it('should not update a luis application when only cases of utterances or patterns are different for the coming lu file', ctx => {
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('no changes')
+    })
+})
+
+describe('luis:build update application succeed with parameters set from luconfig', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/luconfig/luis/MyProject(development)-test.en-us.lu.json')
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'MyProject(development)-test.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'MyProject(development)-test.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('import'))
+      .reply(201, '0.2')
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [
+        {
+          version: '0.1'
+        },
+        {
+          version: '0.2'
+        }
+      ])
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .delete(uri => uri.includes('apps'))
+      .reply(200)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.2',
+        isStaging: true
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--authoringKey', uuidv1(), '--luConfig', './test/fixtures/testcases/lubuild/luconfig/lufiles/luconfig.json', '--log', '--suffix', 'development'])
+    .it('should update a luis application when utterances changed', async ctx => {
+      console.log(ctx)
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('creating version=0.2')
+      expect(ctx.stdout).to.contain('deleting old version=0.1')
+      expect(ctx.stdout).to.contain('training version=0.2')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.2')
+      expect(ctx.stdout).to.contain('publishing version=0.2')
+      expect(ctx.stdout).to.contain('publishing finished')
+
+      expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/luconfig/config/luis.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/test.en-us.lu.dialog', './../../fixtures/testcases/lubuild/luconfig/dialogs/test.en-us.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.lu.dialog', './../../fixtures/testcases/lubuild/luconfig/dialogs/test.lu.dialog')).to.be.true
     })
 })
