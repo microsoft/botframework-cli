@@ -1,29 +1,26 @@
 
 # filename
-- @{assignFilename('email')}
+- ${assignFilename('email')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "email",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "$\{setPropertyMessage('${property}', @email)}"
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@email"          
         }
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setPropertyMessage('@{property}', @email)}
 
 [generator.lg](generator.lg)

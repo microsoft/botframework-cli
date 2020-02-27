@@ -1,34 +1,32 @@
 
 # filename
-- @{assignFilename('geographyV2')}
+- ${assignFilename('geographyV2')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "geographyV2",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "$\{setObjectPropertyMessage('${property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
+"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.type",
+            "property": "$${property}.type",
             "value": "=@geographyV2.type"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.location",
+            "property": "$${property}.location",
             "value": "=@geographyV2.location"          
         }
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
 
 [generator.lg](generator.lg)

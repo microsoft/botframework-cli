@@ -1,13 +1,13 @@
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnIntent",
     "intent": "ReadProperty",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callTextProperty()}"           
+            "activity": "$\{textProperty(@PropertyName)}"           
         },
         {
             "$kind": "Microsoft.SetProperty",
@@ -16,7 +16,7 @@
         },
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callConfirmChangeProperty()}",
+            "activity": "$\{confirmChangeProperty(@PropertyName)}",
             "expectedProperties": [
                 "ChangePropertyConfirmation"
             ]
@@ -24,9 +24,3 @@
     ]
 }
 ```
-
-# callTextProperty
-- @\{textProperty(@PropertyName)}
-
-# callConfirmChangeProperty
-- @\{confirmChangeProperty(@PropertyName)}

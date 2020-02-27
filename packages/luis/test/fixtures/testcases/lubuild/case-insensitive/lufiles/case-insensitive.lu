@@ -1,0 +1,34 @@
+# Greeting
+- Hi Morning
+- Hello Evening
+
+# Help
+- Help me with {Item}
+- Please Help {Item} 
+
+# GetUserProfile
+- I'm 36 years old
+- My age is 36
+- I am 36
+
+> Prebuilt entities
+@ prebuilt age
+@ prebuilt personName
+
+> Phrase list
+@ phraselist profileDefinition(interchangeable) = 
+    - I'm 
+    - My
+    - I am
+
+> Define a list entity for user city
+@ list Cities = 
+    - seattle :
+        - SEA
+        - Seatac
+    - redmond : 
+        - microsoft
+        - REA
+
+> Define a regex entity for user zip code
+@ regex zipCode = /[0-9]{5}/

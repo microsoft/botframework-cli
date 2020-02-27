@@ -67,6 +67,25 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "LUIS Tests",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/luis/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/luis",
+            "args": [
+                "test/",
+                "--timeout",
+                "999999",
+                "--colors",
+                "-g", 
+                "luis:.*"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "outFiles": [
+                "./lib/**"
+            ]
+        },        {
+            "type": "node",
+            "request": "launch",
             "name": "LUIS Build Tests",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/lu/node_modules/mocha/bin/_mocha",

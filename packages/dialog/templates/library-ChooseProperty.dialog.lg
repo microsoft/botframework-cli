@@ -1,17 +1,14 @@
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnChooseProperty",
     "actions": [
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callChooseProperties()}",
+            "activity": "$\{chooseProperties()}",
             "expectedProperties": ["PropertyToChange"]
         }
     ]
 }
 ```
-
-# callChooseProperties
-- @\{chooseProperties()}

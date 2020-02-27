@@ -90,6 +90,9 @@ export class SchemaTracker {
             this.validator.addSchema(schemaObject, schemaPath)
             validator = this.validator.getSchema(schemaPath)
         }
+        if (!validator) {
+            throw new Error('Could not find schema validator.')
+        }
         return [validator, added]
     }
 
@@ -105,7 +108,7 @@ export class SchemaTracker {
             client.get(url, (resp: any) => {
                 let data = ''
 
-                // A chunk of data has been recieved.
+                // A chunk of data has been received.
                 resp.on('data', (chunk: any) => {
                     data += chunk
                 })

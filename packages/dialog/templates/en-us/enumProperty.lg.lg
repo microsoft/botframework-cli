@@ -1,16 +1,33 @@
 # filename
-- @{propertyFilename()}
+- ${propertyFilename()}
 
 # template
-- @{AskTemplate()}\n@{NameTemplate()}\n@{ValueTemplate()}\n\[@{schemaName}-@{property}Entity.@{locale}.lg]\n\[library.lg]
+- ```
+${AskTemplate()}
+${NameTemplate()}
+${ValueTemplate()}
+
+[${prefix}-${property}Entity.${locale}.lg]
+[library.lg]
+[library-Missing.lg]
+```
 
 # AskTemplate
-- # Ask@{property}\n- @\{askEnum('@{property}')\}\n
+- ```
+# Ask${property}
+- $\{askEnum('${property}')\}
+```
 
 # ValueTemplate
-- # @{property}(val)\n- @\{@{concat(property, 'Entity')}(val)}\n
+- ```
+# ${property}(val)
+- $\{${concat(property, 'Entity')}(val)}
+```
 
 # NameTemplate
-- # @{property}Name\n- @{phrase(property, locale)}\n
+- ```
+# ${property}Name
+- ${phrase(property, locale)}
+```
 
 [generator.lg](../generator.lg)

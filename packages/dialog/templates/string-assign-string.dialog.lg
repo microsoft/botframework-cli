@@ -1,12 +1,12 @@
 # filename
-- @{assignFilename(property)}
+- ${assignFilename(property)}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "{property}Entity",
     "actions": [
         {
@@ -19,13 +19,13 @@
                     "actions":[
                         {
                             "$kind": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedSet()}"
+                            "activity": "$\{unexpectedPropertySet('${property}', @${property}Entity)}"
                         }
                     ],
                     "elseActions":[
                         {
                             "$kind": "Microsoft.SendActivity",
-                            "activity": "@{callUnexpectedChange()}"
+                            "activity": "$\{unexpectedPropertyChange('${property}', @${property}Entity, $${property})}"
                         }
                     ]
                 }                
@@ -34,16 +34,10 @@
         {
             "$kind": "Microsoft.SetProperty",
             "property": "${property}",
-            "value": "@@{property}Entity"
+            "value": "@${property}Entity"
         }
     ]
 }
 ```
-
-# callUnexpectedSet
-- @\{unexpectedPropertySet('@{property}', @@{property}Entity)}
-
-# callUnexpectedChange
-- @\{unexpectedPropertyChange('@{property}', @@{property}Entity, $@{property})}
 
 [generator.lg](generator.lg)

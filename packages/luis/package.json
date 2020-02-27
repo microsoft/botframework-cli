@@ -30,6 +30,7 @@
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
+    "test:functional": "mocha --config ./test/functional/.mocharc.json **/functional/*.test.{js,ts}",
     "coverage": "nyc npm run test",
     "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
@@ -41,12 +42,14 @@
     "@azure/cognitiveservices-luis-runtime": "5.0.0",
     "@azure/ms-rest-azure-js": "2.0.1",
     "@microsoft/bf-cli-command": "1.0.0",
+    "@microsoft/bf-lu": "1.0.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "@types/sinon": "^7.5.0",
     "cli-ux": "~5.3.3",
     "fs-extra": "^8.1.0",
+    "lodash": "^4.17.15",
     "tslib": "^1.10.0"
   },
   "devDependencies": {
@@ -55,18 +58,21 @@
     "@oclif/test": "~1.2.5",
     "@oclif/tslint": "~3.1.1",
     "@types/chai": "^4.2.4",
+    "@types/lodash": "~4.14.146",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.17.4",
     "@types/rimraf": "^2.0.3",
     "chai": "^4.2.0",
     "globby": "^10.0.1",
     "mocha": "^6.2.2",
+    "nock": "^12.0.1",
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "sinon": "^7.5.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.1",
     "typescript": "^3.5.3",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "username": "^4.1.0"
   }
 }
