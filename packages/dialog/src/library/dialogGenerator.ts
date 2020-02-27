@@ -69,10 +69,10 @@ async function findTemplate(name: string, templateDirs: string[], locale?: strin
     return template
 }
 
-function addLocale(name: string, locale: string, schemaName: string): string {
-    let result = `${schemaName}-${name}`
+function addLocale(name: string, locale: string, prefix: string): string {
+    let result = `${prefix}-${name}`
     if (locale) {
-        let base = `${schemaName}-${ppath.basename(name, '.lg')}`
+        let base = `${prefix}-${ppath.basename(name, '.lg')}`
         let extStart = base.indexOf('.')
         let filename
         if (extStart < 0) {
@@ -166,7 +166,7 @@ async function processTemplate(
             if (template !== undefined) {
                 // NOTE: Ignore templates that are defined, but are empty
                 if (template) {
-                    let filename = addLocale(templateName, scope.locale, scope.schemaName)
+                    let filename = addLocale(templateName, scope.locale, scope.prefix)
                     if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
                         filename = template.evaluateTemplate('filename', scope)
                     }
@@ -320,6 +320,7 @@ function expandStandard(dirs: string[]): string[] {
  * Iterate through the locale templates and generate per property/locale files.
  * Each template file will map to <filename>_<property>.<ext>.
  * @param schemaPath Path to JSON Schema to use for generation.
+ * @param prefix Prefix to use for generated files.
  * @param outDir Where to put generated files.
  * @param metaSchema Schema to use when generating .dialog files
  * @param allLocales Locales to generate.
@@ -329,7 +330,8 @@ function expandStandard(dirs: string[]): string[] {
  */
 export async function generate(
     schemaPath: string,
-    outDir: string,
+    prefix?: string,
+    outDir?: string,
     metaSchema?: string,
     allLocales?: string[],
     templateDirs?: string[],
@@ -339,6 +341,14 @@ export async function generate(
 
     if (!feedback) {
         feedback = (_info, _message) => true
+    }
+
+    if (!prefix) {
+        prefix = ppath.basename(schemaPath, '.schema')
+    }
+
+    if (!outDir) {
+        outDir = ppath.join(prefix + '-resources')
     }
 
     if (!metaSchema) {
@@ -372,7 +382,7 @@ export async function generate(
         schema.schema = expandSchema(schema.schema, {}, '', false, false, feedback)
         let scope: any = {
             locales: allLocales,
-            schemaName: schema.name(),
+            prefix: prefix || schema.name(),
             schema: schema.schema,
             properties: schema.schema.$public,
             entities: schema.entityTypes(),
@@ -388,10 +398,9 @@ export async function generate(
         await processTemplates(schema, ['.dialog', '.json'], templateDirs, outDir, scope, force, feedback)
 
         // Expand schema expressions
-        let name = s.Schema.basename(schemaPath)
         let expanded = expandSchema(schema.schema, scope, '', false, true, feedback)
         let body = JSON.stringify(expanded, (key, val) => (key === '$templates' || key === '$requires') ? undefined : val, 4)
-        await writeFile(ppath.join(outDir, `${name}.schema.dialog`), body, force, feedback)
+        await writeFile(ppath.join(outDir, `${prefix}.schema.dialog`), body, force, feedback)
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }

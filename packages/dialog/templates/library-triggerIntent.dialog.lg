@@ -1,5 +1,5 @@
 # filename
-- ${schemaName}-library-${triggerIntent}.dialog
+- ${prefix}-library-${triggerIntent}.dialog
 
 # template
 - ```

@@ -1,5 +1,5 @@
 # filename
-- ${schemaName}-${property}Entity-choose.dialog
+- ${prefix}-${property}Entity-choose.dialog
 
 # template
 - ```
