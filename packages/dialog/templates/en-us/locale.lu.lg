@@ -4,5 +4,5 @@
 # template
 -```
  >>> Library
-@{join(foreach(templates.lu, lu, concat('[', lu.fullName, '](../', locale, '/', lu.fullName, ')')), '\n')}
+${join(foreach(templates.lu, lu, concat('[', lu.fullName, '](../', locale, '/', lu.fullName, ')')), '\n')}
  ```

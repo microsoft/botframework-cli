@@ -9,8 +9,8 @@
 
 # case(option)
 -```
- - CASE: @\{'@{option}'\} 
-  - @{phrase(option)}
+ - CASE: @\{'${option}'\} 
+  - ${phrase(option)}
 ```
 
 # cases

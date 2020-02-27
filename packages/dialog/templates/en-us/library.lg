@@ -13,8 +13,8 @@
 - ${template(concat(property, 'Entity'), val)}
 
 # requiredProperties
-- IF: @{count(dialogClass.schema.required) > 0}
-- Required properties include: @{join(foreach(dialogClass.schema.required, property, name(property)), ',')}
+- IF: ${count(dialogClass.schema.required) > 0}
+- Required properties include: ${join(foreach(dialogClass.schema.required, property, name(property)), ',')}
 - ELSE:
 - 
 
@@ -45,6 +45,6 @@
 - Which property do you want to change?
 
 # notUnderstood
-- Sorry, I do not understand @{join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}
+- Sorry, I do not understand ${join(foreach(turn.unrecognizedtext, chunk, concat("'", chunk, "'")), ' or ')}
 
 [library-PROPERTYName.lg]

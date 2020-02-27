@@ -4,8 +4,8 @@
 >>> This is because of issues around ' and } in strings--see enumEntityDesired.lg for a test case
 # template
 -```
- @{propertyEntity()}
- @{chooseEntity()}
+ ${propertyEntity()}
+ ${chooseEntity()}
  
  [library.lg]
  [library-Choose.lg]
@@ -13,27 +13,27 @@
 
 # chooseEntity
 -```
- # choose@{property}Entity
- - @\{chooseEnumEntity(@{concat("'", property, "'")})\}
+ # choose${property}Entity
+ - @\{chooseEnumEntity(${concat("'", property, "'")})\}
 ```
 
 # propertyEntity
-- @{join(createArray(namePlusSwitch(), cases(), default()), '')}
+- ${join(createArray(namePlusSwitch(), cases(), default()), '')}
 
 # namePlusSwitch
 -```
- # @{property}Entity(value) 
+ # ${property}Entity(value) 
  - SWITCH: @\{value\}
 ```
 
 # case(option)
 -```
- - CASE: @\{'@{option}'\} 
-  - @{phrase(option)}
+ - CASE: @\{'${option}'\} 
+  - ${phrase(option)}
 ```
 
 # cases
-- @{join(foreach(schema.properties[property].enum, enum, case(enum)), '')}
+- ${join(foreach(schema.properties[property].enum, enum, case(enum)), '')}
 
 # default
 -```
