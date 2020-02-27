@@ -3,7 +3,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-import * as expr from 'botframework-expressions'
+import * as expr from 'adaptive-expressions'
 import * as fs from 'fs-extra'
 import * as os from 'os'
 import * as random from 'seedrandom'
@@ -48,7 +48,7 @@ function substitutions(path: string, bindings: any, copies?: number, seed?: stri
 }
 
 export let SubstitutionsEvaluator = new expr.ExpressionEvaluator('substitutions',
-    expr.BuiltInFunctions.apply(
+    expr.ExpressionFunctions.apply(
         args => {
             let path = args[0]
             let bindings = args[1]
@@ -74,7 +74,7 @@ export let SubstitutionsEvaluator = new expr.ExpressionEvaluator('substitutions'
             return error
         }),
     expr.ReturnType.String,
-    e => expr.BuiltInFunctions.validateOrder(e,
+    e => expr.ExpressionFunctions.validateOrder(e,
         [expr.ReturnType.Number, expr.ReturnType.String],
         expr.ReturnType.String,
         expr.ReturnType.Object))

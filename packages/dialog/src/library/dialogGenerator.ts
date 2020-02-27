@@ -51,7 +51,7 @@ const expressionEngine = new expressions.ExpressionEngine((func: any) => {
 })
 
 // Given a template name we look for it or an .lg version of it in template dirs (or their locale sub dirs)
-type Template = lg.Evaluator | string | undefined
+type Template = lg.LGFile | string | undefined
 
 async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<Template> {
     let template: Template
@@ -171,7 +171,7 @@ async function processTemplate(
                 if (template) {
                     let filename = addLocale(templateName, scope.locale, scope.prefix)
                     if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
-                        filename = template.evaluateTemplate('filename', scope)
+                        filename = <string> <any> template.evaluateTemplate('filename', scope)
                     }
                     outPath = ppath.join(outDir, scope.locale, filename)
                     let ref = addEntry(outPath, outDir, scope.templates)
@@ -181,12 +181,12 @@ async function processTemplate(
                             let result = template
                             if (typeof template === 'object') {
                                 process.chdir(ppath.dirname(template.templates[0].source))
-                                result = template.evaluateTemplate('template', scope)
+                                result = <string> <any> template.evaluateTemplate('template', scope)
                                 if (Array.isArray(result)) {
                                     result = result.join('\n')
                                 }
                                 if (template.templates.some(f => f.name === 'filename')) {
-                                    filename = template.evaluateTemplate('filename', scope)
+                                    filename = <string> <any> template.evaluateTemplate('filename', scope)
                                 }
                             }
 
