@@ -11,6 +11,7 @@ import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import * as path from 'path'
 const Content = require('./../lu/lu')
+const LUOptions = require('./../lu/luOptions')
 
 export class LuBuildCore {
   private readonly client: any
@@ -123,17 +124,17 @@ export class LuBuildCore {
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
-      let content = new Content(recognizer.save(), path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath())
+      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
       contents.push(content)
     }
 
     for (const multiRecognizer of multiRecognizers) {
-      const multiLangContent = new Content(multiRecognizer.save(), path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath())
+      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
       contents.push(multiLangContent)
     }
 
     for (const setting of settings) {
-      const settingsContent = new Content(setting.save(), path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath())
+      const settingsContent = new Content(setting.save(), new LUOptions(path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath()))
       contents.push(settingsContent)
     }
 

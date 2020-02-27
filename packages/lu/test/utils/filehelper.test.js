@@ -2,6 +2,7 @@ import {readTextFile} from './../../src/utils/textfilereader'
 const expect = require('chai').expect;   
 const fileHelper = require('./../../src/utils/filehelper')
 const luObject = require('./../../src/parser/lu/lu')
+const luOptions = require('./../../src/parser/lu/luOptions')
 const path = require('path')
 
 describe('utils/filehelper test', () => {
@@ -9,7 +10,7 @@ describe('utils/filehelper test', () => {
             let expected = []
             let pathToFile = path.resolve(path.join(__dirname, './../fixtures/file.lu'))
             let content = await readTextFile(pathToFile)
-            expected.push(new luObject(content, pathToFile))
+            expected.push(new luObject(content, new luOptions(pathToFile)))
             let luObjArray = await fileHelper.getLuObjects('', pathToFile)
             expect(luObjArray).to.deep.equal(expected)
     })
@@ -24,7 +25,7 @@ describe('utils/filehelper test', () => {
             - Good evening`
             let luObjArray = await fileHelper.getLuObjects(content, '')
             let expected = []
-            expected.push(new luObject(content, 'stdin'))
+            expected.push(new luObject(content, new luOptions('stdin')))
             expect(luObjArray).to.deep.equal(expected)
     })
 })

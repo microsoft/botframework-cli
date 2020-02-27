@@ -14,7 +14,9 @@ const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
+const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
+const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 
 export class Builder {
@@ -42,12 +44,13 @@ export class Builder {
       let fileContent = ''
       let result
       try {
-        result = await LuisBuilder.build(luFiles, true, culture)
+        result = await LuisBuilderVerbose.build(luFiles, true, culture)
         fileContent = result.parseToLuContent()
       } catch (err) {
         err.text = `Invalid LU file ${file}: ${err.text}`
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
+
 
       this.handler(`${file} loaded\n`)
       let cultureFromPath = fileHelper.getCultureFromPath(file)
@@ -83,7 +86,7 @@ export class Builder {
         settings.set(fileFolder, new Settings(settingsPath, settingsContent))
       }
 
-      const content = new Content(fileContent, fileName, true, fileCulture, file)
+      const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
       luContents.push(content)
 
       const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
@@ -248,7 +251,7 @@ export class Builder {
   }
 
   async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
-    let currentApp = await content.parseToLuis(true, content.language)
+    let currentApp = await LuisBuilder.fromLU([content])  // content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
     currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${botName} app, targetting ${suffix}`
 
@@ -348,6 +351,6 @@ export class Builder {
       }
     }
 
-    return new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
+    return new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
   }
 }
