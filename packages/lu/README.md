@@ -149,9 +149,9 @@ ludown.translate.parseAndTranslate(luContent, subscriptionKey, targetLanguage, '
 ```
 
 
-# V2 API
+# V2 API (Preview. Download from [here](https://botbuilder.myget.org/feed/botframework-cli/package/npm/@microsoft/bf-lu))
 
-## Parsing lu files
+## Parsing LU Content
 To parse LU files, you can use the LUISBuilder class, which returns a LUIS class
 
 ```js
@@ -167,7 +167,7 @@ console.log(JSON.stringify(luisObject, 2, null));
         
 ```
 
-## Validating parsed lu files
+## Validating parsed LU content
 
 You can use the available validate() function to verify if the parsed LUIS object is valid. This helps catch name conflicts, invalid labelled utterances etc. 
 
