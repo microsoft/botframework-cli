@@ -74,7 +74,7 @@
                 "999999",
                 "--colors",
                 "-g", 
-                "luis:endpoints:list"
+                "luis:.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outFiles": [
