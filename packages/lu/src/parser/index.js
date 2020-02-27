@@ -27,9 +27,6 @@ const modules = {
 
         Parser: require('./lufile/classes/parserObject')
     },
-    luBuild: {	
-        Builder: require('./lubuild/builder').Builder	
-    },
     V2 : {
         Luis: require('./luis/luis'),
         LU: require('./lu/lu'),
