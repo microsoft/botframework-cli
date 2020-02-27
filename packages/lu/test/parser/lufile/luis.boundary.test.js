@@ -10,7 +10,7 @@ const retCode = require('./../../../src/parser/utils/enums/CLI-errors');
 const POSSIBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789 ";
 describe('Validations for LU content (based on LUIS boundaries)', function () {
     it (`At most ${retCode.boundaryLimits.MAX_NUM_INTENTS} intents in LU content`, function(done) {
-        luMerger.Build(new Array(new luObj(getMaxIntentTestData(), 'stdin', true)))
+        luMerger.Build(new Array(new luObj(getMaxIntentTestData())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_INTENTS);
@@ -20,7 +20,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_UTTERANCES} utterances in LU content`, function(done) {
-        luMerger.Build(new Array(new luObj(getMaxUtteranceTestData(), 'stdin', true)))
+        luMerger.Build(new Array(new luObj(getMaxUtteranceTestData())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_UTTERANCES);
@@ -30,7 +30,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_PATTERNANY_ENTITIES} pattern.any entities in LU content`, function(done) {
-        luMerger.Build(new Array(new luObj(getMaxPatternAnyEntities(), 'stdin', true)))
+        luMerger.Build(new Array(new luObj(getMaxPatternAnyEntities())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_PATTERNANYENTITY);

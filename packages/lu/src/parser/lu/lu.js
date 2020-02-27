@@ -1,24 +1,28 @@
-const Luis = require('./../luis/luis')
-const parseFileContents = require('./../lufile/parseFileContents').parseFile
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+const translateHelpers = require('./../lufile/translate-helpers')
+const luOptions = require('./luOptions')
 
 class Lu {
-    constructor(content, id, includeInCollate = true, language = '', path = ''){
-        this.id = id
+    constructor(content, options = new luOptions){
         this.content = content
-        this.includeInCollate = includeInCollate
-        this.language = language
-        this.path = path
+        this.id = options.id ? options.id : ''
+        this.includeInCollate = options.includeInCollate !== undefined ? options.includeInCollate : true
+        this.language = options.language ? options.language : ''
+        this.path = options.path ? options.path : ''
 
         if (this.language !== '') {
-            this.name = id + '.' + this.language + '.lu'
+            this.name = this.id + '.' + this.language + '.lu'
         } else {
-            this.name = id + '.lu'
+            this.name = this.id + '.lu'
         }
     }
 
-    async parseToLuis(verbose, luis_culture){
-        let parsedContent = await parseFileContents(this.content, verbose, luis_culture)
-        return new Luis(parsedContent.LUISJsonStructure)
+    async translate(translate_key, tgt_lang, translate_comments = false, translate_link_text = false){
+        this.content = await translateHelpers.parseAndTranslate(this.content, translate_key, tgt_lang, '', translate_comments, translate_link_text)
     }
 }
 

@@ -6,6 +6,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const luMerger = require('./../../../src/parser/lu/luMerger');
 const luObj = require('../../../src/parser/lu/lu');
+const luOptions = require('./../../../src/parser/lu/luOptions')
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
 describe('QnA document', function() {
     describe('Negative tests', function() {
@@ -15,7 +16,7 @@ describe('QnA document', function() {
             answer
             \`\`\`
             `;
-            luMerger.Build([new luObj(qnaContent, 'stdin')], false, undefined, findLuFiles)
+            luMerger.Build([new luObj(qnaContent)], false, undefined, findLuFiles)
                 .then(res => done(res))
                 .catch(err => {
                     assert(err.text.includes("References cannot pull in patterns."))
@@ -129,7 +130,7 @@ const findLuFiles = async function(srcId, idsToFind){
                 retPayload.push(new luObj(`
 # intent1
 - this is an {utterance}
-`, ask.filePath, false));
+`, new luOptions(ask.filePath, false)));
                 break;
             
         }
