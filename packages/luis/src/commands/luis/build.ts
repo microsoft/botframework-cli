@@ -6,6 +6,8 @@
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
+const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
+const username = require('username')
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const Content = require('@microsoft/bf-lu').V2.LU
@@ -64,37 +66,8 @@ export default class LuisBuild extends Command {
         throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
       }
 
-    flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'
-    flags.region = flags.region && flags.region !== '' ? flags.region : 'westus'
-    flags.suffix = flags.suffix && flags.suffix !== '' ? flags.suffix : 'development'
-    flags.fallbackLocale = flags.fallbackLocale && flags.fallbackLocale !== '' ? flags.fallbackLocale : 'en-us'
-
-    // create builder class
-    const builder = new Builder((input: string) => {
-      if (flags.log) this.log(input)
-    })
-
-    let luContents: any[] = []
-    let recognizers = new Map<string, any>()
-    let multiRecognizers = new Map<string, any>()
-    let settings = new Map<string, any>()
-
-    if (flags.stdin && flags.stdin !== '') {
-      // load lu content from stdin and create default recognizer, multiRecognier and settings
-      this.log('Load lu content from stdin')
-      const content = new Content(flags.stdin, new LUOptions('stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin')))
-      luContents.push(content)
-      multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
-      settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {}))
-      const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
-      recognizers.set(content.name, recognizer)
-    } else {
-      this.log('Start to load lu files')
-
-      // get lu files from flags.in
-      if (flags.in && flags.in !== '') {
-        const luFiles = await file.getLuFiles(flags.in, true, fileExtEnum.LUFile)
-        files.push(...luFiles)
+      if (!flags.botName) {
+        throw new CLIError('Missing bot name. Please pass bot name with --botName flag')
       }
 
       flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'
@@ -115,7 +88,7 @@ export default class LuisBuild extends Command {
       if (flags.stdin && flags.stdin !== '') {
         // load lu content from stdin and create default recognizer, multiRecognier and settings
         if (flags.log) this.log('Load lu content from stdin\n')
-        const content = new Content(flags.stdin, 'stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin'))
+        const content = new Content(flags.stdin, new LUOptions('stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin')))
         luContents.push(content)
         multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
         settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${flags.suffix}.${flags.region}.json`), {}))
