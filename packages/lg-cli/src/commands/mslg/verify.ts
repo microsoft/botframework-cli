@@ -49,8 +49,6 @@ export default class VerifyCommand extends Command {
       this.log(errors.join(', '))
     }
 
-    if (flags.collate) {
-      Helper.handlerCollect()
-    }
+    Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
   }
 }

@@ -6,7 +6,6 @@ dependencies:
   '@rush-temp/bf-cli-command': 'file:projects/bf-cli-command.tgz'
   '@rush-temp/bf-cli-config': 'file:projects/bf-cli-config.tgz'
   '@rush-temp/bf-cli-lg': 'file:projects/bf-cli-lg.tgz'
-  '@rush-temp/bf-cli-lu': 'file:projects/bf-cli-lu.tgz'
   '@rush-temp/bf-cli-plugins': 'file:projects/bf-cli-plugins.tgz'
   '@rush-temp/bf-dialog': 'file:projects/bf-dialog.tgz'
   '@rush-temp/bf-dispatcher': 'file:projects/bf-dispatcher.tgz'
@@ -6346,37 +6345,6 @@ packages:
       integrity: sha512-gVvuDk8jKt7Fz0mhP9bABzOVqzoVCNuNgmhmHkuB52brLPGN4AB20H2krq5ZsaNuHSqQQq2ZYDph6bb6NoCViw==
       tarball: 'file:projects/bf-cli-lg.tgz'
     version: 0.0.0
-  'file:projects/bf-cli-lu.tgz':
-    dependencies:
-      '@oclif/command': 1.5.19
-      '@oclif/config': 1.14.0
-      '@oclif/dev-cli': 1.22.2
-      '@oclif/plugin-help': 2.2.3
-      '@oclif/test': 1.2.5
-      '@types/chai': 4.2.9
-      '@types/lodash': 4.14.149
-      '@types/mocha': 5.2.7
-      '@types/node': 10.17.15
-      chai: 4.2.0
-      delay: 4.3.0
-      eslint: 5.16.0
-      eslint-config-oclif: 3.1.0_eslint@5.16.0
-      eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.7.5
-      fs-extra: 8.1.0
-      globby: 10.0.2
-      lodash: 4.17.15
-      mocha: 5.2.0
-      nyc: 14.1.1
-      rimraf: 2.7.1
-      ts-node: 8.6.2_typescript@3.7.5
-      tslib: 1.10.0
-      typescript: 3.7.5
-    dev: false
-    name: '@rush-temp/bf-cli-lu'
-    resolution:
-      integrity: sha512-lwkOD3V+VxCg8Wsq7V1LrtzYAuSAYANcMhV3ir1XEh369cK1ZhdvL8XqDI+xc9C1ZUJL85PaGmf6qZFMr79ZJw==
-      tarball: 'file:projects/bf-cli-lu.tgz'
-    version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
     dependencies:
       '@oclif/command': 1.5.19
@@ -6520,7 +6488,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-Hs49Cqyc/xZQ3Buw+cg53NLAAEw42pSuaq2hFGIWjtwiZcmmLOAyIxSkBXFsq/zKinDSx4k50xovkZTYH1TtTQ==
+      integrity: sha512-PBpCq/DCETJx9lFj5I4wgQuvWuNHWLbiDjCacVMx7sa44WsMkXExsMQC5xe2BPqbsK4cp7yieiN9zrP+QsK+YA==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6536,6 +6504,7 @@ packages:
       '@oclif/test': 1.2.5
       '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.7.4
       '@types/chai': 4.2.7
+      '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
       '@types/node': 10.17.13
       '@types/rimraf': 2.0.3
@@ -6546,6 +6515,7 @@ packages:
       cli-ux: 5.3.3
       fs-extra: 8.1.0
       globby: 10.0.1
+      lodash: 4.17.15
       mocha: 6.2.2
       ms-rest: 2.5.3
       nyc: 14.1.1
@@ -6559,7 +6529,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-JH3A+XDHWIh3PXmu/g7kh1Fe5m/3IsBfTaL6Ofq63DbQfjaMJxX6f63Ut4mDR/2uvb/zF2X/m8kHQtsZuwyg2g==
+      integrity: sha512-+gVs1ztnVvU3Steh16j+g9IjLX2cMEUdnxzhpsmHd0YmUt+KkCzZ1OUp08J5gzpLdwH7XnLlJDS4qhRVPSJnyw==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6608,7 +6578,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-s3Ep0rXW+CbZqcup2ceqA3Pw/4/BSv6N6wcaU+Eh6Zj1cn9RSGnhxktr2igeWbO3HYXRul0YKNOM4Lg5ki93vA==
+      integrity: sha512-tMkq5ynIurSZZFLV0dRPYs31ee/RwvW6+6P3GPO1fIJTX4TZrQMmwQFGKUi1Lne0YL5FbWJRjGt3E+sWAyuuzg==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6642,7 +6612,7 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-zAt/gcBtP8s94t7pwuFPGbTf88z/2RftjwT9IYKOwahPM4IQO93ANQGzJAil3mvNF8CI30YtuQ9QbAzTctZCvQ==
+      integrity: sha512-tdK9IsNI0XIbPYUbb39kcaS3l8el5U3E6Cf15h4eeSZhQ2Jjq7ZQ7KkyPXyBvBbpDqzfiyLYwDUwXDNHowyaUQ==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
@@ -6654,7 +6624,6 @@ specifiers:
   '@rush-temp/bf-cli-command': 'file:./projects/bf-cli-command.tgz'
   '@rush-temp/bf-cli-config': 'file:./projects/bf-cli-config.tgz'
   '@rush-temp/bf-cli-lg': 'file:./projects/bf-cli-lg.tgz'
-  '@rush-temp/bf-cli-lu': 'file:./projects/bf-cli-lu.tgz'
   '@rush-temp/bf-cli-plugins': 'file:./projects/bf-cli-plugins.tgz'
   '@rush-temp/bf-dialog': 'file:./projects/bf-dialog.tgz'
   '@rush-temp/bf-dispatcher': 'file:./projects/bf-dispatcher.tgz'

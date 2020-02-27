@@ -53,9 +53,7 @@ export default class ExpandCommand extends Command {
 
     this.expand(flags)
 
-    if (flags.collate) {
-      Helper.handlerCollect()
-    }
+    Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
   }
 
   private expand(flags: any) {

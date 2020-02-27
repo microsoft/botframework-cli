@@ -64,9 +64,7 @@ export default class TranslateCommand extends Command {
 
     await this.translate(flags)
 
-    if (flags.collate) {
-      Helper.handlerCollect()
-    }
+    Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
   }
 
   public async translate(flags: any) {

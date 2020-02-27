@@ -9,8 +9,14 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import {CLIError} from '@microsoft/bf-cli-command'
+import {MSLGTool} from 'botbuilder-lg'
 const NEWLINE = require('os').EOL
 const ANY_NEWLINE = /\r\n|\r|\n/g
+
+export enum ErrorType {
+  Error = '[Error]',
+  Warning = '[Warning]'
+}
 
 export class Helper {
   public static findLGFiles(input: string, recurse: boolean): string[] {
@@ -51,8 +57,50 @@ export class Helper {
     return results
   }
 
-  public static handlerCollect() {
-    // todo
+  public static collect(tool: MSLGTool, out: string, force: boolean, collect: boolean) {
+    const filePath = Helper.getCollectFileName(out)
+
+    if (tool.collationMessages.length > 0) {
+      tool.collationMessages.forEach(error => {
+        if (error.startsWith(ErrorType.Error)) {
+          // process.stderr.write(chalk.default.redBright(error + '\n'))
+        } else {
+          // process.stdout.write(chalk.default.yellowBright(error + '\n'))
+        }
+      })
+
+      throw new Error('collating lg files failed.\n')
+    } else if (collect === undefined && tool.nameCollisions.length > 0) {
+      throw new Error('below template names are defined in multiple files: ' + tool.nameCollisions.toString())
+    } else {
+      const mergedLgFileContent = tool.collateTemplates()
+      if (mergedLgFileContent === undefined || mergedLgFileContent === '') {
+        throw new Error('generating collated lg file failed.')
+      }
+
+      if (fs.existsSync(filePath)) {
+        if (!force) {
+          throw new Error(`${filePath} exists`)
+        }
+        fs.removeSync(filePath)
+      }
+
+      fs.writeFileSync(filePath, mergedLgFileContent)
+      // process.stdout.write(chalk.default.whiteBright(`Collated lg file is generated here: ${filePath}.\n`))
+    }
+  }
+
+  public static getCollectFileName(outOption: string): string {
+    let filePath = this.normalizePath(outOption)
+    if (!path.isAbsolute(filePath)) {
+      return filePath
+    }
+
+    if (fs.statSync(filePath).isDirectory()) {
+      filePath = path.join(filePath, 'collect.lg')
+    }
+
+    return filePath
   }
 
   public static normalizePath(ambiguousPath: string): string {
@@ -71,11 +119,6 @@ export class Helper {
   public static sanitizeNewLines(fileContent: string) {
     return fileContent.replace(ANY_NEWLINE, NEWLINE)
   }
-}
-
-export enum ErrorType {
-    Error = '[Error]',
-    Warning = '[Warning]'
 }
 
 export class Block {
