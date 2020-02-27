@@ -28,7 +28,7 @@ module.exports = {
   crossTrain: function (luObjectArray, qnaObjectArray, crossTrainConfig) {
     try {
       const crossTrainConfigObj = JSON.parse(crossTrainConfig)
-      const rootObjectIds = crossTrainConfigObj.rootIds.map(x => path.resolve(x))
+      const rootObjectIds = crossTrainConfigObj.rootIds
       const triggerRules = crossTrainConfigObj.triggerRules
       const intentName = crossTrainConfigObj.intentName
       const verbose = crossTrainConfigObj.verbose
@@ -148,7 +148,7 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
     if (childResource.visited === undefined) {
-      const rootQnaFileId = path.join(path.dirname(rootResource.id), path.basename(rootResource.id, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
+      const rootQnaFileId = rootResource.id.replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
       const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
       const newChildResource = mergeFatherInterruptionToChild(rootResource, rootQnaResource, childResource, intentName)
       result.set(child.target, newChildResource)
@@ -313,7 +313,7 @@ const extractIntentUtterances = function(resource, intentName) {
 const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName) {
   try {
     for (const luObjectId of Array.from(luFileIdToResourceMap.keys())) {
-      const qnaObjectId = path.join(path.dirname(luObjectId), path.basename(luObjectId, helpers.FileExtTypeEnum.LUFile).concat(helpers.FileExtTypeEnum.QnAFile))
+      const qnaObjectId = luObjectId.replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
       let fileName = path.basename(luObjectId, path.extname(luObjectId))
       const culture = fileHelper.getCultureFromPath(luObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
