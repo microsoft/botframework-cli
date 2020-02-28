@@ -1,16 +1,16 @@
 # filename
-- @{schemaName}.main.dialog
+- ${prefix}.main.dialog
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.AdaptiveDialog",
-    "recognizer": "@{schemaName}.lu",
-    "generator": "@{schemaName}.lg",
-    "schema": "@{schemaName}.schema",
+    "recognizer": "${prefix}.lu",
+    "generator": "${prefix}.lg",
+    "schema": "${prefix}.schema",
     "triggers": [ 
-        @{join(foreach(where(templates.dialog, dialog, !contains(dialog.name, '.')), dialog, concat('"', dialog.name, '"')), ',\n')} 
+        ${join(foreach(where(templates.dialog, dialog, !contains(dialog.name, '.')), dialog, concat('"', dialog.name, '"')), ',\n')} 
         ]
 }
 ```

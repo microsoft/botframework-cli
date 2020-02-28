@@ -1,22 +1,22 @@
 
 # filename
-- @{assignFilename('boolean')}
+- ${assignFilename('boolean')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "boolean",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @boolean)}"
+            "activity": "$\{setPropertyMessage('${property}', @boolean)}"
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@boolean"          
         }
     ]               

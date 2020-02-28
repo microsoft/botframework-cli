@@ -1,22 +1,22 @@
 
 # filename
-- @{assignFilename('percentage')}
+- ${assignFilename('percentage')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "percentage",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @percentage)}"
+            "activity": "$\{setPropertyMessage('${property}', @percentage)}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@percentage"          
         }
     ]               
