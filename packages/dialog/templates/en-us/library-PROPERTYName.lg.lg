@@ -4,20 +4,18 @@
 # namePlusSwitch
 -```
  # PROPERTYName(value) 
- - SWITCH: @\{value\}
-```
+ - SWITCH: $\{value\}```
 
 # case(option)
 -```
- - CASE: @\{'${option}'\} 
-  - ${phrase(option)}
-```
+ - CASE: $\{'${option}'\} 
+  - ${phrase(option)}```
 
 # cases
-- ${join(foreach(properties, prop, case(prop)), '\n')}
+- ${foreach(properties, prop, case(prop))}
 
 # default
 -```
  - DEFAULT: 
-  - I don't understand @\{value\}
+  - I don't understand $\{value\}
 ```

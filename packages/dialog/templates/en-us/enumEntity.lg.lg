@@ -14,7 +14,7 @@
 # chooseEntity
 -```
  # choose${property}Entity
- - @\{chooseEnumEntity(${concat("'", property, "'")})\}
+ - $\{chooseEnumEntity(${concat("'", property, "'")})\}
 ```
 
 # propertyEntity
@@ -23,14 +23,12 @@
 # namePlusSwitch
 -```
  # ${property}Entity(value) 
- - SWITCH: @\{value\}
-```
+ - SWITCH: $\{value\}```
 
 # case(option)
 -```
- - CASE: @\{'${option}'\} 
-  - ${phrase(option)}
-```
+ - CASE: $\{'${option}'\} 
+  - ${phrase(option)}```
 
 # cases
 - ${join(foreach(schema.properties[property].enum, enum, case(enum)), '')}
@@ -38,7 +36,7 @@
 # default
 -```
  - DEFAULT: 
-  - I don't understand @\{value\}
+  - I don't understand $\{value\}
 ```
 
 [generator.lg](../generator.lg)
