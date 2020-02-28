@@ -45,8 +45,9 @@
     "@types/lru-cache": "^5.1.0",
     "@types/semver": "^6.0.1",
     "@types/xml2js": "^0.4.4",
+    "adaptive-expressions": "~4.8.0-preview-109324",
     "ajv": "^6.9.1",
-    "botbuilder-lg": "~4.8.0-preview-1093245",
+    "botbuilder-lg": "4.8.0-preview-109324",
     "chalk": "^2.4.2",
     "clone": "^2.1.2",
     "fs-extra": "^8.1.0",
@@ -55,11 +56,10 @@
     "json-schema-merge-allof": "^0.6.0",
     "json-schema-ref-parser": "^7.1.0",
     "path": "^0.12.7",
+    "seedrandom": "~3.0.5",
     "semver": "^5.7.0",
     "tslib": "^1.10.0",
-    "xml2js": "^0.4.19",
-    "seedrandom": "~3.0.5",
-    "adaptive-expressions": "~4.8.0-preview-109324"
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",

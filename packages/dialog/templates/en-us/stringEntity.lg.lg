@@ -5,7 +5,7 @@
 # template
 -```
  # ${property}Entity(val)
- - @\{val\}
+ - $\{val\}
 ```
 
 [generator.lg](../generator.lg)
