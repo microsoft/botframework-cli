@@ -24,8 +24,7 @@ const helpers = {
      */
     FileExtTypeEnum: {
         LUFile : '.lu',
-        QnAFile : '.qna',
-        CROSSTRAINCONFIG: '.json'
+        QnAFile : '.qna'
     },
     /**
      * Helper function to recursively get all .lu files
@@ -39,7 +38,7 @@ const helpers = {
         fs.readdirSync(inputFolder).forEach(function (dirContent) {
             dirContent = path.resolve(inputFolder, dirContent);
             if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
-                results = results.concat(helpers.findLUFiles(dirContent, getSubFolders));
+                results = results.concat(helpers.findLUFiles(dirContent, getSubFolders, extType));
             }
             if (fs.statSync(dirContent).isFile()) {
                 if (dirContent.endsWith(extType)) {
@@ -50,26 +49,19 @@ const helpers = {
         return results;
     },
     /**
-     * Helper function to recursively get all .config files
+     * Helper function to get config.json files
      * @param {string} inputfolder input folder name
-     * @param {boolean} getSubFolder indicates if we should recursively look in sub-folders as well
-     * @param {FileExtTypeEnum} extType indicates if we should look for LUFile or QnAFile or cross train config file
-     * @returns {Array} Array of .config files found
+     * @returns {string} config.json file path found
     */
-    findConfigFiles: function (inputFolder, getSubFolders, extType = this.FileExtTypeEnum.CROSSTRAINCONFIG) {
-        let results = [];
-        fs.readdirSync(inputFolder).forEach(function (dirContent) {
-            dirContent = path.resolve(inputFolder, dirContent);
-            if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
-                results = results.concat(helpers.findConfigFiles(dirContent, getSubFolders));
-            }
+    findConfigFile: function (inputFolder) {
+        const dirContent = path.resolve(inputFolder, 'config.json')
+        try{
             if (fs.statSync(dirContent).isFile()) {
-                if (dirContent.endsWith(extType)) {
-                    results.push(dirContent);
-                }
+                return dirContent
             }
-        });
-        return results;
+        } catch {
+            throw new Error(`No config.json file found under folder ${path.resolve(inputFolder)}`)
+        }        
     },
     /**
      * Helper function to parse link URIs in utterances

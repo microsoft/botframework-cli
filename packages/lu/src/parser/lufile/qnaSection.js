@@ -22,6 +22,7 @@ class QnaSection {
         this.Answer = this.ExtractAnswer(parseTree);
         result = this.ExtractPrompts(parseTree);
         this.prompts = result.promptDefinitions;
+        this.promptsText = result.promptTextList;
         this.Errors = this.Errors.concat(result.errors);
         this.Id = this.ExtractAssignedId(parseTree);
         this.source = this.ExtractSourceInfo(parseTree);
@@ -49,6 +50,7 @@ class QnaSection {
 
     ExtractPrompts(parseTree) {
         let promptDefinitions = [];
+        let promptTextList = []
         let errors = [];
         let promptSection = parseTree.qnaDefinition().promptSection();
         if (!promptSection) {
@@ -67,6 +69,7 @@ class QnaSection {
         for (const promptLine of promptSection.filterLine()) {
             let filterLineText = promptLine.getText().trim();
             filterLineText = filterLineText.substr(1).trim();
+            promptTextList.push(filterLineText);
             let promptConfigurationRegExp = new RegExp(/^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?.*?$/gmi);
             let splitLine = promptConfigurationRegExp.exec(filterLineText);
             if (!splitLine) {
@@ -77,7 +80,7 @@ class QnaSection {
             }
             promptDefinitions.push(splitLine.groups);
         }
-        return { promptDefinitions, errors};
+        return { promptDefinitions, promptTextList, errors };
     }
 
     ExtractQuestion(parseTree) {
