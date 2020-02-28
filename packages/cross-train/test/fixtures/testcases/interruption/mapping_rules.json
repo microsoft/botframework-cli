@@ -15,8 +15,7 @@
     "./main/main.fr-fr.lu": {
         "rootDialog": true,
         "triggers": {
-            "dia1_trigger": "./dia1/dia1.fr-fr.lu",
-            "dia2_trigger": "./dia2/dia2.fr-fr.lu"
+            "dia1_trigger": "./dia1/dia1.fr-fr.lu"
         }
     }
 }

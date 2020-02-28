@@ -1,30 +1,35 @@
+> !# @app.desc = description of my luis application
+
+> !# @qna.pair.source = xyz
+
+<a id = "1"></a>
+
 # ? tell joke
 - tell me a joke
-- can you make me laugh?
 
 **Filters:**
-- aa=bb
 - dialogName=dia1
 
 ```
     ha ha ha
 ```
 
-# ? book a hotel in Seattle
+**Prompts:**
+- [flight booking](#?-book-flight) `context-only`
+
+# ? can I book a hotel near space needle
 
 **Filters:**
 - dialogName=dia1
 
 ```
-    You can set your preferrences here
+    of course you can
 ```
 
 > Source: cross training. Please do not edit these directly!
-# ? Which type of hotel do you prefer
-- book a flight from Seattle to Beijing
-- which {flightTime} do you prefer
-- book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
+# ? I need a four star hotel
+- book a flight for me
+- book a train ticket for me
 - user guide
 
 **Filters:**

@@ -1,25 +1,6 @@
-> !# @enableSections = true
-> !# @enableMergeIntents = true
-
-# flight
-## bookFlight
-- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
-
-@simple fromLocation
-
-@ simple toLocation
-
-## flightTime
-- which flight time do you prefer
-
-@ phraselist flightTimeline = 
-	- morning,afternoon,evening
+# HotelLevel
+- I prefer 4 stars hotel
 
 > Source: cross training. Please do not edit these directly!
 # _Interruption
-- book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
-- Hello
-- Hi
-- book a hotel in Seattle
-- Which type of hotel do you prefer
+- I want to travel to Seattle

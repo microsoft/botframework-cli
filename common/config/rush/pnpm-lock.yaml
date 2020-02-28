@@ -71,6 +71,7 @@ dependencies:
   source-map-support: 0.5.16
   testdouble: 3.12.5
   ts-md5: 1.2.7
+  username: 4.1.0
   uuid: 3.3.3
   window-size: 1.1.1
   xml2js: 0.4.23
@@ -2193,6 +2194,20 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-7XOMnz8Ynx1gGo/3hyV9loYNPWM94jG3+3T3Y8tsfSstFmETmENCMU/A/zj8Lyaj1lkgEepKepvd6240tBRvlw==
+  /execa/1.0.0:
+    dependencies:
+      cross-spawn: 6.0.5
+      get-stream: 4.1.0
+      is-stream: 1.1.0
+      npm-run-path: 2.0.2
+      p-finally: 1.0.0
+      signal-exit: 3.0.2
+      strip-eof: 1.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-adbxcyWV46qiHyvSp50TKt05tB4tK3HcmF7/nxfAdhnox83seTDbwnaqKO4sXRy7roHAIFqJP/Rw/AuEbX61LA==
   /expand-brackets/2.1.4:
     dependencies:
       debug: 2.6.9
@@ -2570,6 +2585,14 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-jpQ9E1jcN1VQVOy+LtsFqhdO3hQ=
+  /get-stream/4.1.0:
+    dependencies:
+      pump: 3.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-GMat4EJ5161kIy2HevLlr4luNjBgvmj413KaQA7jt4V8B4RDsfpHk7WQ9GVqfYyyx8OS/L66Kox+rJRNklLK7w==
   /get-stream/5.1.0:
     dependencies:
       pump: 3.0.0
@@ -3730,6 +3753,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-c3sIjNUow0+8swNwVpqoH4YCShKNFkMaw6oH1mNS2haDZQqkeZFlHS3dhoeEbKKmJB4vXpJucU6oH75aDYeE9g==
+  /map-age-cleaner/0.1.3:
+    dependencies:
+      p-defer: 1.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-bJzx6nMoP6PDLPBFmg7+xRKeFZvFboMrGlxmNj9ClvX53KrmvM5bXFXEWjbz4cz1AFn+jWJ9z/DJSz7hrs0w3w==
   /map-cache/0.2.2:
     dev: false
     engines:
@@ -3752,6 +3783,16 @@ packages:
     dev: false
     resolution:
       integrity: sha1-U6s41f48iJG6RlMp6iP6wFQBJvk=
+  /mem/4.3.0:
+    dependencies:
+      map-age-cleaner: 0.1.3
+      mimic-fn: 2.1.0
+      p-is-promise: 2.1.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-qX2bG48pTqYRVmDB37rn/6PT7LcR8T7oAX3bf99u1Tt1nzxYfxkgqDwUwolPlXweM0XzBOBFzSx4kfp7KP1s/w==
   /merge-descriptors/1.0.1:
     dev: false
     resolution:
@@ -3817,6 +3858,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-jf84uxzwiuiIVKiOLpfYk7N46TSy8ubTonmneY9vrpHNAnp0QBt2BxWV9dO3/j+BoVAb+a5G6YDPW3M5HOdMWQ==
+  /mimic-fn/2.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
   /mimic-response/1.0.1:
     dev: false
     engines:
@@ -4229,6 +4276,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-HNa1A8LvB1kie7cERyy21VNeHb2CWJJYqyyC2o3klWFfMGlFmWv2Z7sFgZH8ZiaYL95ydToKTFVXgMV/Os0bBQ==
+  /p-defer/1.0.0:
+    dev: false
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha1-n26xgvbJqozXQwBKfU+WsZaw+ww=
   /p-finally/1.0.0:
     dev: false
     engines:
@@ -4241,6 +4294,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-nJRWmJ6fZYgBewQ01WCXZ1w9oF4=
+  /p-is-promise/2.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-Y3W0wlRPK8ZMRbNq97l4M5otioeA5lm1z7bkNkxCka8HSPjR0xRWmpCmc9utiaLP9Jb1eD8BgeIxTW4AIF45Pg==
   /p-limit/2.2.2:
     dependencies:
       p-try: 2.2.0
@@ -5489,21 +5548,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-emODogvKGWi1KO1l9c6YxLMBn6CEH3VrH5mVPIyOtxBG52BvV4jP3GWz6bOZCz61nLgBc3ffQYE4+EHfCD+V7w==
-  /ts-node/8.5.4:
-    dependencies:
-      arg: 4.1.2
-      diff: 4.0.1
-      make-error: 1.3.5
-      source-map-support: 0.5.16
-      yn: 3.1.1
-    dev: false
-    engines:
-      node: '>=4.2.0'
-    hasBin: true
-    peerDependencies:
-      typescript: '>=2.0'
-    resolution:
-      integrity: sha512-izbVCRV68EasEPQ8MSIGBNK9dc/4sYJJKYA+IarMQct1RtEot6Xp0bXuClsbUSnKpg50ho+aOAx8en5c+y4OFw==
   /ts-node/8.5.4_typescript@3.7.4:
     dependencies:
       arg: 4.1.2
@@ -5579,29 +5623,6 @@ packages:
       typescript: '*'
     resolution:
       integrity: sha512-Zk5jBdQVUaHEmR9TUoh1TJOjjCr7/nRplA+jDZBvucyBMx65pt0unTr6H/0HvrtSlucFvOMYsyBZE1W8b4AOig==
-  /tslint/5.20.1:
-    dependencies:
-      '@babel/code-frame': 7.5.5
-      builtin-modules: 1.1.1
-      chalk: 2.4.2
-      commander: 2.20.3
-      diff: 4.0.1
-      glob: 7.1.6
-      js-yaml: 3.13.1
-      minimatch: 3.0.4
-      mkdirp: 0.5.1
-      resolve: 1.14.1
-      semver: 5.7.1
-      tslib: 1.10.0
-      tsutils: 2.29.0
-    dev: false
-    engines:
-      node: '>=4.8.0'
-    hasBin: true
-    peerDependencies:
-      typescript: '>=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >=3.0.0-dev || >= 3.1.0-dev || >= 3.2.0-dev'
-    resolution:
-      integrity: sha512-EcMxhzCFt8k+/UP5r8waCf/lzmeSyVlqxqMEDQE7rWYiQky8KpIBz1JAoYXfROHrPZ1XXd43q8yQnULOLiBRQg==
   /tslint/5.20.1_typescript@3.7.4:
     dependencies:
       '@babel/code-frame': 7.5.5
@@ -5635,14 +5656,6 @@ packages:
       typescript: '>=2.1.0 || >=2.1.0-dev || >=2.2.0-dev || >=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >= 3.0.0-dev || >= 3.1.0-dev'
     resolution:
       integrity: sha512-bh5nAtW0tuhvOJnx1GLRn5ScraRLICGyJV5wJhtRWOLsxW70Kk5tZtpK3O/hW6LDnqKS9mlUMPZj9fEMJ0gxqA==
-  /tsutils/2.29.0:
-    dependencies:
-      tslib: 1.10.0
-    dev: false
-    peerDependencies:
-      typescript: '>=2.1.0 || >=2.1.0-dev || >=2.2.0-dev || >=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >= 3.0.0-dev || >= 3.1.0-dev'
-    resolution:
-      integrity: sha512-g5JVHCIJwzfISaXpXE1qvNalca5Jwob6FjI4AoPlqMusJ6ftFE7IkkFoMhVLRgK+4Kx3gkzb8UZK5t5yTTvEmA==
   /tsutils/2.29.0_typescript@3.7.4:
     dependencies:
       tslib: 1.10.0
@@ -5811,6 +5824,15 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
+  /username/4.1.0:
+    dependencies:
+      execa: 1.0.0
+      mem: 4.3.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-sKh1KCsMfv8jPIC9VdeQhrNAgkl842jS/M74HQv7Byr0AMAwKZt8mLWX9DmtMeD8nQA3eKa10f5LbqlSVmokMg==
   /util-deprecate/1.0.2:
     dev: false
     resolution:
@@ -6214,17 +6236,22 @@ packages:
       '@oclif/errors': 1.2.2
       '@oclif/plugin-help': 2.2.3
       '@oclif/test': 1.2.5
+      '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.7.4
       '@types/mocha': 5.2.7
       '@types/node': 10.17.13
+      '@types/rimraf': 2.0.3
       fs-extra: 5.0.0
       mocha: 6.2.2
-      ts-node: 8.5.4
+      nyc: 14.1.1
+      rimraf: 3.0.0
+      ts-node: 8.5.4_typescript@3.7.4
       tslib: 1.10.0
-      tslint: 5.20.1
+      tslint: 5.20.1_typescript@3.7.4
+      typescript: 3.7.4
     dev: false
     name: '@rush-temp/bf-cross-train'
     resolution:
-      integrity: sha512-cWxBPTetscY/i56FUHn0MKJSd3LR0iitjS4MApNcbTwwfAVajYINJ+rNqMnKxpf41/OUOlXxQNn1nq6F7Iq2iA==
+      integrity: sha512-MEonYzzDi8DYtH39beNLNNeHCpXi6KIRaCgefvCqK8ZE97CviMBfzqnqZrbzPgbkgf9hRkCQafcZF4Gg0jguKA==
       tarball: 'file:projects/bf-cross-train.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6341,7 +6368,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-dqxqgTH863ozVnX01EcG9I14GIM8Bpv3S+oGIo1yNMFxzZ2MZuAHBA75J0hmoCeSeqdIqkWYNjzOnn63guFvPw==
+      integrity: sha512-PBpCq/DCETJx9lFj5I4wgQuvWuNHWLbiDjCacVMx7sa44WsMkXExsMQC5xe2BPqbsK4cp7yieiN9zrP+QsK+YA==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6378,11 +6405,12 @@ packages:
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
+      username: 4.1.0
       uuid: 3.3.3
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-+gVs1ztnVvU3Steh16j+g9IjLX2cMEUdnxzhpsmHd0YmUt+KkCzZ1OUp08J5gzpLdwH7XnLlJDS4qhRVPSJnyw==
+      integrity: sha512-xeOJkvoT6na1GX2Aq2c+2cA/o5McnDUjhSWXFVcs0yzhZvIwpLKff37Zo6sZEMO84H++F6qrA0g/NJMSLqBxXw==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6542,6 +6570,7 @@ specifiers:
   source-map-support: ~0.5.16
   testdouble: ^3.11.0
   ts-md5: ^1.2.6
+  username: ^4.1.0
   uuid: ^3.3.3
   window-size: ^1.1.0
   xml2js: ^0.4.19

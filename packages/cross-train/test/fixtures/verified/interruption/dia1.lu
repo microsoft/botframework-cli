@@ -1,20 +1,18 @@
-# bookHotel
-- book a hotel in Seattle
+> !# @app.name = my luis application
 
-# hotelType
-- Which type of hotel do you prefer
-- book a hotel in Seattle
+# hotelLevel
+- I need a four star hotel
+
+# hotelLocation
+- can I book a hotel near space needle
 
 > Source: cross training. Please do not edit these directly!
 # _Interruption
-- book a flight from Seattle to Beijing
-- which {flightTime} do you prefer
-- book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
+- book a flight for me
+- book a train ticket for me
 - user guide
 
 > Source: cross training. Please do not edit these directly!
 # DeferToRecognizer_QnA_dia1
 - tell joke
 - tell me a joke
-- can you make me laugh?

@@ -22,7 +22,7 @@ OPTIONS
   -h, --help       cross-train command help
   -i, --in         source lu and qna files folder
   -o, --out        output folder name. If not specified, the cross trained files will be wrote to cross-trained folder under folder of current command
-  -- config        path to config file of mapping rules which is relative to folder specified by --in. If not specified, it will read default config.json from the folder specified by --in
+  --config         path to config file of mapping rules which is relative to folder specified by --in. If not specified, it will read default config.json from the folder specified by --in
   --intentName     Interruption intent name. Default: _Interruption
 ```
 

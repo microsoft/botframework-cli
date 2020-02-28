@@ -1,16 +1,2 @@
-> !# @enableSections = true
-> !# @enableMergeIntents = true
-
-# flight
-## bookFlight
-- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
-
-@simple fromLocation
-
-@ simple toLocation
-
-## flightTime
-- which flight time do you prefer
-
-@ phraselist flightTimeline = 
-	- morning,afternoon,evening
+# HotelLevel
+- I prefer 4 stars hotel

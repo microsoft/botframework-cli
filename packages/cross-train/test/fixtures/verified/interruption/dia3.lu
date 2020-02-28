@@ -1,26 +1,16 @@
-# bookFlight
-- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
-
-@simple fromLocation
+# flightDestination
+- book a flight to {toLocation = Beijing}
 
 @ simple toLocation
 
 # flightTime
 - which {flightTime} do you prefer
 
-@ phraselist flightTimeline = 
-	- morning,afternoon,evening
-
 > Source: cross training. Please do not edit these directly!
 # _Interruption
 - book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
-- book a hotel in Seattle
-- Which type of hotel do you prefer
+- book a hotel for me
 - user guide
 - tell joke
 - sing song
-- can you sing a song
-- make some tunes
-- tell me a joke
-- can you make me laugh?
+- tell a joke

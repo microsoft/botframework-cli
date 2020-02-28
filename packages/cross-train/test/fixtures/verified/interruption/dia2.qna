@@ -1,20 +1,15 @@
 # ? sing song
-- can you sing a song
-- make some tunes
 
 **Filters:**
 - dialogName=dia2
 
 ```
-    Sure, I can help with that.
+    Sure, I can sing song.
 ```
 
-# ? tell joke
-- tell me a joke
-- can you make me laugh?
+# ? tell a joke
 
 **Filters:**
-- xx=yy
 - dialogName=dia2
 
 ```
@@ -23,12 +18,10 @@
 
 > Source: cross training. Please do not edit these directly!
 # ? book a flight from Seattle to Beijing
-- which {flightTime} do you prefer
 - book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
-- book a hotel in Seattle
-- Which type of hotel do you prefer
+- book a hotel for me
 - user guide
+- tell joke
 
 **Filters:**
 - dialogName=dia2

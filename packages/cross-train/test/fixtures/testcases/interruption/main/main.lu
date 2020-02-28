@@ -1,16 +1,6 @@
 # dia1_trigger
-- book a hotel in Seattle
-- Which type of hotel do you prefer
+- book a hotel for me
 
 # dia2_trigger
-- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
-- which {flightTime} do you prefer
-- book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
-
-@simple fromLocation
-
-@ simple toLocation
-
-@ phraselist flightTimeline = 
-	- morning,afternoon,evening
+- book a flight for me
+- book a train ticket for me

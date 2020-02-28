@@ -1,12 +1,7 @@
-# bookFlight
-- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
-
-@simple fromLocation
+# flightDestination
+- book a flight to {toLocation = Beijing}
 
 @ simple toLocation
 
 # flightTime
 - which {flightTime} do you prefer
-
-@ phraselist flightTimeline = 
-	- morning,afternoon,evening

@@ -18,12 +18,9 @@
 ```
 
 > Source: cross training. Please do not edit these directly!
-# ? book a hotel in Seattle
-- Which type of hotel do you prefer
-- book a flight from Seattle to Beijing
-- which {flightTime} do you prefer
-- book a train ticket from Seattle to Portland
-- When do you want to leave from Seattle train station
+# ? book a hotel for me
+- book a flight for me
+- book a train ticket for me
 
 **Filters:**
 - dialogName=main
