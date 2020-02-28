@@ -6,6 +6,7 @@ const chai = require('chai');
 const assert = chai.assert;
 const luMerger = require('./../../../src/parser/lu/luMerger');
 const luObj = require('../../../src/parser/lu/lu');
+const luOptions = require('../../../src/parser/lu/luOptions');
 describe('Deep reference tests', function() {
     it('Ability to pull in all answers from a qna', function(done) {
         let luContent = `
@@ -14,7 +15,7 @@ describe('Deep reference tests', function() {
 # intent1
 - [all answers](qna1#*answers*?)
         `;
-        luMerger.Build([new luObj(luContent, 'stdin')], false, undefined, findLuFiles)
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
             .then(res => {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 2);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "answer1");
@@ -31,7 +32,7 @@ describe('Deep reference tests', function() {
 # intent1
 - [all.qna](qna2#?-book-flight?)
         `;
-        luMerger.Build([new luObj(luContent, 'stdin')], false, undefined, findLuFiles)
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
             .then(res => {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 4);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "book flight");
@@ -48,7 +49,7 @@ describe('Deep reference tests', function() {
 # intent1
 - [all.qna](qna3#*alterations*?)
         `;
-        luMerger.Build([new luObj(luContent, 'stdin')], false, undefined, findLuFiles)
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
             .then(res => {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 3);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "botframework");
@@ -65,7 +66,7 @@ describe('Deep reference tests', function() {
 # intent1
 - [all.qna](qna4#$myListName1?)
         `;
-        luMerger.Build([new luObj(luContent, 'stdin')], false, undefined, findLuFiles)
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
             .then(res => {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 2);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "myListName1");
@@ -80,7 +81,7 @@ describe('Deep reference tests', function() {
 # intent1
 - [all.lu](lu1#*utterancesandpatterns*)
         `;
-        luMerger.Build([new luObj(luContent, 'stdin')], false, undefined, findLuFiles)
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
             .then(res => {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 4);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "one");
@@ -97,7 +98,7 @@ describe('Deep reference tests', function() {
 # intent1
 - [all.lu](lu1#*utterances*)
         `;
-        luMerger.Build([new luObj(luContent, 'stdin')], false, undefined, findLuFiles)
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
             .then(res => {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 4);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "one");
@@ -113,7 +114,7 @@ describe('Deep reference tests', function() {
 # intent1
 - [all.lu](lu1#*patterns*)
         `;
-        luMerger.Build([new luObj(luContent, 'stdin')], false, undefined, findLuFiles)
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
             .then(res => {
                 assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 0);
                 assert.equal(res.LUISContent[0].LUISJsonStructure.patterns.length, 1);
@@ -141,7 +142,7 @@ answer1
 \`\`\`
 answer2
 \`\`\`
-`, ask.filePath, false));
+`, new luOptions(ask.filePath, false)));
                 break;
             case 'qna2':
                 retPayload.push(new luObj(`
@@ -152,7 +153,7 @@ answer2
 \`\`\`
 Sure, happpy to help
 \`\`\`
-`, ask.filePath, false));
+`, new luOptions(ask.filePath, false)));
                 break;
             case 'qna3':
                 retPayload.push(new luObj(`
@@ -167,7 +168,7 @@ Sure, happpy to help
 $botframework : qna-alterations=
 - bot framework
 - Microsoft bot framework
-`, ask.filePath, false));
+`, new luOptions(ask.filePath, false)));
                 break;
 
             case 'qna4':
@@ -186,7 +187,7 @@ $botframework : qna-alterations=
 
 $myListName1 : qna-alterations=
 - test list
-`, ask.filePath, false));
+`, new luOptions(ask.filePath, false)));
                 break;
 
             case 'lu1':
@@ -201,7 +202,7 @@ $myListName1 : qna-alterations=
 # i4
 - four
 - pattern {one}
-`, ask.filePath, false));
+`, new luOptions(ask.filePath, false)));
                 break;
         }
     })

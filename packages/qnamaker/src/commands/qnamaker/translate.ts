@@ -4,14 +4,15 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fs = require('fs-extra')
 const path = require('path')
-const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
-const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
-const QnaMaker = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/qnamaker')
-const QnA = require('@microsoft/bf-lu/lib/parser/lu/qna')
+const QnA = require('@microsoft/bf-lu').V2.QNA
+const exception = require('@microsoft/bf-lu').V2.Exception
+const QnaMaker = require('@microsoft/bf-lu').V2.KB
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
+const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
+
 
 export default class QnamakerTranslate extends Command {
   static description = 'Translate given QnA maker application JSON model or qna file(s)'

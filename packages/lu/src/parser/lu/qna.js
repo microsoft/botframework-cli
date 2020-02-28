@@ -1,23 +1,22 @@
-const QnAMaker = require('./../qna/qnamaker/qnamaker')
-const Alterations = require('./../qna/alterations/alterations')
-const parseFileContents = require('./../lufile/parseFileContents').parseFile
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+const translateHelpers = require('./../lufile/translate-helpers')
+const qnaOptions = require('./qnaOptions')
 
 class Qna {
-    constructor(content, id, includeInCollate = true, language = ''){
-        this.id = id
+    constructor(content, options = new qnaOptions()){
         this.content = content
-        this.includeInCollate = includeInCollate
-        this.language = language
+        this.id = options.id ? options.id : ''
+        this.includeInCollate = options.includeInCollate !== undefined ? options.includeInCollate : true
+        this.language = options.language ? options.language : ''
+
     }
 
-    async parseToQna(verbose, luis_culture){
-        let parsedContent = await parseFileContents(this.content, verbose, luis_culture)
-        return new QnAMaker(parsedContent.qnaJsonStructure)
-    }
-
-    async parseToQnaAlterations(verbose, luis_culture){
-        let parsedContent = await parseFileContents(this.content, verbose, luis_culture)
-        return new Alterations(parsedContent.qnaAlterations)
+    async translate(translate_key, tgt_lang, translate_comments = false, translate_link_text = false){
+        this.content = await translateHelpers.parseAndTranslate(this.content, translate_key, tgt_lang, '', translate_comments, translate_link_text, false)
     }
 }
 

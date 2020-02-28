@@ -24,12 +24,20 @@ const modules = {
         Exception: require('./utils/exception'),
         LUIS: require('./luis/luis'),
         QnA: require('./qna/qnamaker/qnamaker'),
+
         Parser: require('./lufile/classes/parserObject')
     },
-    sectionHandler: {
-        luParser: require('./lufile/luParser'),
-        sectionOperator: require('./lufile/sectionOperator'),
-        luSectionTypes: require('./utils/enums/lusectiontypes')
+    V2 : {
+        Luis: require('./luis/luis'),
+        LU: require('./lu/lu'),
+        LuisBuilder: require('./luis/luisBuilder'),
+        QNA: require('./lu/qna'),
+        QnAMaker: require('./qna/qnamaker/qnamaker'),
+        KB: require('./qna/qnamaker/kb'),
+        Alterations: require('./qna/alterations/alterations'),
+        QnAMakerBuilder: require('./qna/qnamaker/qnaMakerBuilder'),
+        Exception: require('./utils/exception')
     }
 };
+
 module.exports = modules;

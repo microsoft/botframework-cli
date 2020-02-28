@@ -1,0 +1,10 @@
+{
+    "name": "MyProject",
+    "defaultLanguage": "en-us",
+    "deleteOldVersion": true,
+    "out": "./../../../../../../results",
+    "writeDialogFiles": true,
+    "models": [
+        "./test.lu"
+    ]
+}

@@ -147,3 +147,104 @@ ludown.translate.parseAndTranslate(luContent, subscriptionKey, targetLanguage, '
     })
 
 ```
+
+
+# V2 API (Preview. Download from [here](https://botbuilder.myget.org/feed/botframework-cli/package/npm/@microsoft/bf-lu))
+
+## Parsing LU Content
+To parse LU files, you can use the LUISBuilder class, which returns a LUIS class
+
+```js
+const Luis = require('@microsoft/bf-lu').V2.Luis
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
+const luContent1 = `# Greeting
+- hi`;
+
+const luisObject = await LUISBuilder.buildFromLUContent(luContent1)
+
+// Parsed LUIS object
+console.log(JSON.stringify(luisObject, 2, null));
+        
+```
+
+## Validating parsed LU content
+
+You can use the available validate() function to verify if the parsed LUIS object is valid. This helps catch name conflicts, invalid labelled utterances etc. 
+
+```js
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
+const exception = require('@microsoft/bf-lu').V2.Exception
+const luContent = `# Greeting
+- hi {userName=bob}
+$userName:first=
+-vishwac`;
+
+async function parseContent() {
+    try {   
+        const luisObject = await LUISBuilder.buildFromLUContent(luContent)
+        luisObject.validate()
+    } catch (error) {
+        if (error instanceof exception) {
+        // do something specific to this exception
+        } else {
+            console.log(errObj.text);
+        }
+    }
+}
+
+parseContent();
+```
+
+## Generating lu content from LUIS JSON
+
+You can generate lu content from LUIS instance using parseToLuContent() method. Here's an example code snippet. 
+
+```js
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
+const exception = require('@microsoft/bf-lu').V2.Exception
+const luContent = `# Greeting
+- hi
+$userName:first=
+-vishwac`;
+const log = false;
+const locale = 'en-us';
+async function parseContent() {
+
+    try {   
+        const luisObject = await LUISBuilder.buildFromLUContent(luContent)
+        luisObject.validate()
+        const parsedLuisBackToLu = luisObject.parseToLuContent()
+    } catch (error) {
+        if (error instanceof exception) {
+        // do something specific to this exception
+        } else {
+            console.log(errObj.text);
+        }
+    }
+}
+
+parseContent();
+
+```
+## Translating lu files
+
+You can take advantage of the [Microsoft text translation API](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/) to automatically machine translate .lu files to one or more than [60+ languages](https://aka.ms/translate-langs) supported by the Microsoft text translation cognitive service.
+
+To translate lu file content, you can simply use the translate() method in the LU class. Here's a code snippet.
+
+```js
+const LU = require('@microsoft/bf-lu').V2.LU
+const luContent = `# Greeting
+- hi
+$userName:first=
+-vishwac`;
+const targetLanguage = 'de';
+const subscriptionKey = '<YOUR TEXT TRANSLATION KEY>';
+const translateComments = true;
+const translateLinkText = true;
+
+const luInstance = new LU(luContent)
+await luInstance.translate(subscriptionKey, targetLanguage, translateComments, translateLinkText)
+const translatedCode = luInstance.content
+
+```

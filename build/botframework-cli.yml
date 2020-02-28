@@ -52,10 +52,10 @@ jobs:
     - script: 'rush update'
       displayName: 'rush update'
 
-    - script: 'rush build'
+    - script: 'rush build -p 2'
       displayName: 'rush build'
 
-    - script: 'rush test -v'
+    - script: 'rush test -v -p 2'
       displayName: 'rush test'
     
     - script: 'rush posttest'
