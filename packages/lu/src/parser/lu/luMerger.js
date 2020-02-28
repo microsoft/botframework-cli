@@ -38,13 +38,20 @@ module.exports = {
 const buildRefTree = function(allParsedContent) {
     let refs = {};
     allParsedContent.LUISContent.forEach((parserObj, objIdx) => {
-        if (refs[parserObj.srcFile] === undefined) refs[parserObj.srcFile] = {
-            'luis': {
-                obj : parserObj.LUISJsonStructure,
-                srcFile : parserObj.srcFile,
-                refs : []
-            }
+        let luObj = {
+            obj : parserObj.LUISJsonStructure,
+            srcFile : parserObj.srcFile,
+            refs : []
         };
+        if (refs[parserObj.srcFile] === undefined) {
+             refs[parserObj.srcFile] = {
+                'luis': luObj
+            };
+        } else {
+            if (refs[parsedObj.srcFile].luis === undefind) {
+                ref[parserObj.srcFile].luis = luObj;
+            }
+        }
         parserObj.LUISJsonStructure.uttHash = {};
         (parserObj.LUISJsonStructure.utterances || []).forEach((utterance, uttIdx) => {
             parserObj.LUISJsonStructure.uttHash[utterance.text] = '';
@@ -63,14 +70,19 @@ const buildRefTree = function(allParsedContent) {
     })
 
     allParsedContent.QnAContent.forEach((parserObj, objIdx) => {
-        if (refs[parserObj.srcFile] === undefined) refs[parserObj.srcFile] = {
-            'qna': {
-                obj : parserObj.qnaJsonStructure,
-                alt : allParsedContent.QnAAlterations[objIdx].qnaAlterations,
-                srcFile : parserObj.srcFile,
-                refs : []
+        let qnaObj = {
+            obj : parserObj.qnaJsonStructure,
+            alt : allParsedContent.QnAAlterations[objIdx].qnaAlterations,
+            srcFile : parserObj.srcFile,
+            refs : []
+        }
+        if (refs[parserObj.srcFile] === undefined) {
+            refs[parserObj.srcFile] = {'qna': qnaObj};
+        } else {
+            if (refs[parserObj.srcFile].qna === undefined) {
+                refs[parserObj.srcFile].qna = qnaObj;
             }
-        };
+        }
         (parserObj.qnaJsonStructure.qnaList.forEach(qnaPair => {
             qnaPair.questions.forEach((question, qIdx) => {
                 if (helpers.isUtteranceLinkRef(question)) {
@@ -151,7 +163,7 @@ const resolveRefs = function(refTree, srcId) {
     
     if (refTree[srcId] !== undefined && refTree[srcId].qna) {
         // Handle qna refs
-        (refTree[srcId].qna.refs || []).forEach(ref => {
+        (refTree[srcId].qna.refs || []).forEach((ref, rIdx) => {
             let result = resolveRefByType(srcId, ref, refTree)
 
             if (result.patterns && result.patterns.length !== 0) {
@@ -162,6 +174,13 @@ const resolveRefs = function(refTree, srcId) {
         
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString()));
             }
+
+            // process utterances
+            let qObj = ref.qObj;
+            // remove the reference utterance
+            qObj.questions.splice((ref.qId - rIdx), 1);
+            // add new utterances
+            result.utterances.forEach(utt => qObj.questions.push(utt));
         })
     }
     
@@ -278,7 +297,7 @@ const resolveUttAndPattRef = function(srcId, ref, refTree) {
     let utterances = [];
     let patterns = [];
     let srcFile = refTree[srcId][ref.type].srcFile;
-    let newId = path.resolve(path.dirname(srcFile ? srcFile : ''), srcId)
+    let newId = path.resolve(path.dirname(srcFile ? srcFile : ''), ref.parsedLink.fileName)
     let tgtId = (refTree[ref.parsedLink.fileName] && refTree[ref.parsedLink.fileName].luis !== undefined) ? ref.parsedLink.fileName : undefined;
     tgtId = (tgtId === undefined && refTree[newId] !== undefined && refTree[newId].luis !== undefined) ? newId : tgtId;
     let tgtObj = refTree[ref.parsedLink.fileName] || refTree[newId] || undefined;
@@ -315,7 +334,7 @@ const resolveUttAndPattRef = function(srcId, ref, refTree) {
     if (utterances !== undefined) {
         luisObj.utterances.forEach(item => {
             if (referenceIntent !== undefined && referenceIntent !== "") {
-                if (item.intent === referenceIntent) {
+                if (item.intent.toLowerCase() === referenceIntent.toLowerCase()) {
                     utterances.push(item.text)
                 } 
             } else {
@@ -326,7 +345,7 @@ const resolveUttAndPattRef = function(srcId, ref, refTree) {
     if (patterns !== undefined) {
         luisObj.patterns.forEach(patt => {
             if (referenceIntent !== undefined && referenceIntent !== "") {
-                if (patt.intent === referenceIntent) {
+                if (patt.intent.toLowerCase() === referenceIntent.toLowerCase()) {
                     patterns.push(patt.pattern)
                 }
             } else {
