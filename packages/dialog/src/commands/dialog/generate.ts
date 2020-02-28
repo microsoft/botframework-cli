@@ -5,7 +5,6 @@
 
 import { Command, flags } from '@microsoft/bf-cli-command';
 import * as gen from '../../library/dialogGenerator'
-import * as ppath from 'path'
 
 export default class GenerateDialog extends Command {
     static description = '[PREVIEW] Generate localized .lu, .lg, .qna and .dialog assets to define a bot based on a schema using templates.'
