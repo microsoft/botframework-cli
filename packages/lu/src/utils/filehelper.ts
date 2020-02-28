@@ -10,18 +10,20 @@ const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
 const luObject = require('./../parser/lu/lu')
+const LUOptions = require('./../parser/lu/luOptions')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
-    luObjects.push(new luObject(stdin, 'stdin'))
+    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
   } else {
     let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
-      luObjects.push(new luObject(luContent, path.resolve(luFiles[i])))
+      const opts = new LUOptions(path.resolve(luFiles[i]))
+      luObjects.push(new luObject(luContent, opts))
     }
   }
 
@@ -42,9 +44,6 @@ export async function getLuFiles(input: string | undefined, recurse = false, ext
 
   filesToParse = helpers.findLUFiles(input, recurse, extType)
 
-  if (filesToParse.length === 0) {
-    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, no ${extType} files found in the specified folder.`))
-  }
   return filesToParse
 }
 
@@ -163,6 +162,70 @@ export async function detectLuContent(stdin: string, input: string) {
     return true
   }
   return false
+}
+
+async function getConfigFile(input: string): Promise<string> {
+  let fileStat = await fs.stat(input)
+  if (fileStat.isFile()) {
+    return input
+  }
+
+  if (!fileStat.isDirectory()) {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, ${input} is not a folder or does not exist`))
+  }
+
+  const defaultConfigFile = helpers.findConfigFile(input)
+
+  if (defaultConfigFile === undefined || defaultConfigFile === '') {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, no config file found in folder ${input}.`))
+  }
+
+  return defaultConfigFile
+}
+
+export async function getConfigObject(input: string) {
+  const luConfigFile = await getConfigFile(input)
+
+  let finalLuConfigObj = Object.create(null)
+  let rootLuFiles: string[] = []
+  const configFileDir = path.dirname(luConfigFile)
+  const luConfigContent = await getContentFromFile(luConfigFile)
+  if (luConfigContent && luConfigContent !== '') {
+    try {
+      const luConfigObj = JSON.parse(luConfigContent)
+      for (const rootluFilePath of Object.keys(luConfigObj)) {
+        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
+        const triggerObj = luConfigObj[rootluFilePath]
+        for (const triggerObjKey of Object.keys(triggerObj)) {
+          if (triggerObjKey === 'rootDialog') {
+            if (triggerObj[triggerObjKey]) {
+              rootLuFiles.push(rootLuFileFullPath)
+            }
+          } else if (triggerObjKey === 'triggers') {
+            const triggers = triggerObj[triggerObjKey]
+            for (const triggerKey of Object.keys(triggers)) {
+              const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
+              for (const destLuFile of destLuFiles) {
+                const destLuFileFullPath = path.resolve(configFileDir, destLuFile)
+                if (rootLuFileFullPath in finalLuConfigObj) {
+                  const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
+                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                } else {
+                  let finalDestLuFileToIntent = Object.create(null)
+                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                  finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, invalid cross training config: ${err}`))
+    }
+  }
+
+  return {rootIds: rootLuFiles, triggerRules: finalLuConfigObj}
 }
 
 export function parseJSON(input: string, appType: string) {

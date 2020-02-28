@@ -4,15 +4,15 @@
  */
 
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-const file = require('@microsoft/bf-lu/lib/utils/filehelper')
-const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
+import {sortQnA, sortAlterations} from './../../utils/qnamakerinstanceutils'
+const exception = require('@microsoft/bf-lu').V2.Exception
 const fs = require('fs-extra')
+const KB = require('@microsoft/bf-lu').V2.KB
+const Alterations = require('@microsoft/bf-lu').V2.Alterations
+const QnAMakerBuilder = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/kbCollate')
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
-const QnAMaker = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/qnamaker')
-const Alterations = require('@microsoft/bf-lu/lib/parser/qna/alterations/alterations')
-const QnAMakerBuilder = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/qnaMakerBuilder')
-const alterationsBuilder = require('@microsoft/bf-lu/lib/parser/qna/alterations/alterationsBuilder')
 
 export default class QnamakerConvert extends Command {
   static description = 'Converts .qna file(s) to QnA application JSON models or vice versa.'
@@ -44,15 +44,24 @@ export default class QnamakerConvert extends Command {
       let result: any
       if (isQnA) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
-        result = {}
-        result.finalQnAJSON = await QnAMakerBuilder.build([...luFiles], false, flags.luis_culture)
-        result.finalQnAAlterations = await alterationsBuilder.build([...luFiles], false, flags.luis_culture)
+        result = await QnAMakerBuilder.build([...luFiles], false, flags.luis_culture) 
       } else {
         const qnaContent = stdin ? stdin : await file.getContentFromFile(flags.in)
-        const QnA = flags.alterations ? new Alterations(file.parseJSON(qnaContent, 'QnA Alterations')) : new QnAMaker(file.parseJSON(qnaContent, 'QnA'))
-        if (flags.sort) {
-          QnA.sort()
+        let QnA 
+        let sortFucntion
+
+        if(flags.alterations) {
+          QnA = new Alterations(file.parseJSON(qnaContent, 'QnA Alterations')) 
+          sortFucntion = sortAlterations
+        } else {
+          QnA = new KB(file.parseJSON(qnaContent, 'QnA'))
+          sortFucntion = sortQnA
         }
+
+        if (flags.sort) {
+          sortFucntion(QnA)
+        }
+        
         result = QnA.parseToLuContent()
       }
 
@@ -63,7 +72,7 @@ export default class QnamakerConvert extends Command {
 
       // Add headers to QnAJson
       if (isQnA) {
-        result.finalQnAJSON.name = flags.name || result.name || ''
+        result.kb.name = flags.name || result.name || ''
       }
 
       // Print or write the parsed object
@@ -72,13 +81,15 @@ export default class QnamakerConvert extends Command {
         return
       }
       if (isQnA) {
-        this.log(JSON.stringify(result.finalQnAJSON, null, 2))
-        this.log(JSON.stringify(result.finalQnAAlterations, null, 2))
+        const output = {
+          kb: result.kb,
+          alterations: result.alterations
+        }
+        this.log(JSON.stringify(output, null, 2))
       } else {
         this.log(result)
       }
     } catch (error) {
-      console.log(error)
       if (error instanceof exception) {
         throw new CLIError(error.text)
       }
@@ -91,11 +102,11 @@ export default class QnamakerConvert extends Command {
     const validatedPath = utils.validatePath(filePath, '', flags.force)
     try {
       if (isQnA) {
-        await fs.writeFile(validatedPath, JSON.stringify(convertedObject.finalQnAJSON, null, 2), 'utf-8')
-        if (convertedObject.finalQnAAlterations) {
+        await fs.writeFile(validatedPath, JSON.stringify(convertedObject.kb, null, 2), 'utf-8')
+        if (convertedObject.alterations) {
           const filePathAlterations = await file.generateNewFilePath(flags.out, flags.in, isQnA, 'alterations_', fileExtEnum.QnAFile)
           const validatedPathAlter = utils.validatePath(filePathAlterations, '', flags.force)
-          await fs.writeFile(validatedPathAlter, JSON.stringify(convertedObject.finalQnAAlterations, null, 2), 'utf-8')
+          await fs.writeFile(validatedPathAlter, JSON.stringify(convertedObject.alterations, null, 2), 'utf-8')
         }
       } else {
         await fs.writeFile(validatedPath, convertedObject, 'utf-8')
