@@ -37,6 +37,7 @@ dependencies:
   debug: 4.1.1
   deep-equal: 1.1.1
   delay: 4.3.0
+  dotnet-3.1: 3.1.1007
   eslint: 5.16.0
   eslint-config-oclif: 3.1.0_eslint@5.16.0
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0
@@ -1916,6 +1917,14 @@ packages:
       node: '>=6.0.0'
     resolution:
       integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==
+  /dotnet-3.1/3.1.1007:
+    dev: false
+    engines:
+      node: '>=6.4.0'
+    hasBin: true
+    requiresBuild: true
+    resolution:
+      integrity: sha512-EPi7BLBdA9qbmy1OMwLM+dI0kg7lEUKO4vo+k2BVtmS3OIsljVvh+pYE6qalj0KtmD3uGCr3ezjEVjXvZkDqGQ==
   /duplexer/0.1.1:
     dev: false
     resolution:
@@ -6225,7 +6234,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-Kpnd+g8xRbeN6t1LtDIwTjWdzLQ3WxnQQQkAHZGM+eK4BlTJrTNTnz3RW0owqM0Leao0y+IvP+iuFQyNYQKstA==
+      integrity: sha512-u9dwkEjLX2IEAsUCwN40KLqZzDTiQolaPKb+dXzAibc303zGEP8h0MNZpHvT9e9/wDhzTQzSuvC8ZbWkWoBtyQ==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -6265,7 +6274,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-command'
     resolution:
-      integrity: sha512-Ka3DtQMqMdVH/dW1MvF7sWulMlkvIXapd9Emm577bVthPp6N6fEJigkLJCRGWI0D4RXG4ldHrnhePmsW9fwesg==
+      integrity: sha512-Cx2jECsJgRe4K74pqmjEoddPmrayTDmMg/rD90kRYiQ6agSNWbC7o638KTUDYZ5VJlhu+PEV/MuVG0oV+wu19Q==
       tarball: 'file:projects/bf-cli-command.tgz'
     version: 0.0.0
   'file:projects/bf-cli-config.tgz':
@@ -6294,7 +6303,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-config'
     resolution:
-      integrity: sha512-vwZf1fXZ7BWQsJjKHFMEQ95zRfQ48Na7ae9cMH36cw/fk/a6MYUkzwSgSabel0S2D8uT/BodVucYXJXPfl9NTw==
+      integrity: sha512-ZvUZsW96vljeLO69GRz/kfBazChVv9O6BkikOIQCHUbUP32PzIh8a0jjEmppA+/RtqajtmKQWGq0q5DEQY4x5A==
       tarball: 'file:projects/bf-cli-config.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6323,7 +6332,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-plugins'
     resolution:
-      integrity: sha512-fegDj5NfXQCsabktk5fStFptRwmJccyH0qzjDqasi0mhTjLi72+ucovjYrzbVmrA73LdOoIsRIAT8tuCfLkkMg==
+      integrity: sha512-2n8WG0y6vxBpyUrSJLVWwLcwUN+FqR8wI5htyMvDmPJOBp/PnH4WrupuQXDhl0UacI6LBhI4RWiZtunIkJ1zBw==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6368,7 +6377,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-s/80P9QduIAYy3HGOycjq+smgFPZD8bANxSojRNm1k+IjEXD8DYhZb5b03EGajcNTvIxgWIDqyefgwcvn1hZPA==
+      integrity: sha512-wLqkv6TapzOAmIExo+h14rfw7e2BinNmi30yDcV+01KndJSTH41dyhmdpD0jnvru7YMYRNaQoh8zpea6Y2/6dg==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6397,7 +6406,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-eXMc0AkAcBYSAjDKfUoHVjF+huBN7ESR1I9do3Pi4BAhz/5DrIz2u7Uy4iHGWkZoBEu/izsfz1UgEKnhn+pUbw==
+      integrity: sha512-s4Ar6m12VKpS8u3yyNtXMaShnRZTOCUIFYwXTyXXmN4oX8mkbG0O4zLB47xP68mDHgAvtQ8BNVg42vzq/or0wg==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6440,7 +6449,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-7SyXpwe1mc1yOJjI8p5+f/IeHGFoyAcclZKa5Ziz7yQlxb/OHPyma6c0YCV685uzcI3PXeBP27K3RtqxxTNQPQ==
+      integrity: sha512-dqxqgTH863ozVnX01EcG9I14GIM8Bpv3S+oGIo1yNMFxzZ2MZuAHBA75J0hmoCeSeqdIqkWYNjzOnn63guFvPw==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6481,7 +6490,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-DDMDOkSq7aCvKWx8lg4izYltihcctg06xLi2eQ6qC7pIUg5i1ZiQI192RKFHAGvrIFf2ZKVhE0e82c+OYivS4w==
+      integrity: sha512-+gVs1ztnVvU3Steh16j+g9IjLX2cMEUdnxzhpsmHd0YmUt+KkCzZ1OUp08J5gzpLdwH7XnLlJDS4qhRVPSJnyw==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-orchestrator.tgz':
@@ -6489,12 +6498,14 @@ packages:
       '@oclif/command': 1.5.19
       '@oclif/config': 1.14.0
       '@oclif/dev-cli': 1.22.2
+      '@oclif/errors': 1.2.2
       '@oclif/plugin-help': 2.2.3
       '@oclif/test': 1.2.5
       '@types/chai': 4.2.9
       '@types/mocha': 5.2.7
       '@types/node': 10.17.16
       chai: 4.2.0
+      dotnet-3.1: 3.1.1007
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
       eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.7.5
@@ -6508,7 +6519,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-orchestrator'
     resolution:
-      integrity: sha512-Rfm9bJSHj7OHCZEglKih1w7cDo25unN1dgVIv4gPLrZYPz6DguTeyZJyPAzLAE86O+/9VkYdWsuFTyvnef7LHA==
+      integrity: sha512-wb8wWeoXeaoNYSpkh5kDhh1AZ/oKbgbIjj7xyN8jbsy0wq7uPdsyssPpThEa8fP9DuSkTzIw7hJDfSeoxOvV9w==
       tarball: 'file:projects/bf-orchestrator.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6557,7 +6568,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-5lkIAwurdLZ/7+K3BJ0k/urDM1rup4Y+pySSb56WHTtLvMWeLfH2gF+1zkw/8fn00qMsSJ79VkvjVyrT3Z5sWQ==
+      integrity: sha512-tMkq5ynIurSZZFLV0dRPYs31ee/RwvW6+6P3GPO1fIJTX4TZrQMmwQFGKUi1Lne0YL5FbWJRjGt3E+sWAyuuzg==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6591,7 +6602,7 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-RQEvGW2fhVDnDlAQoQb7vNZ4UEbPb5B4tvjjWYGHhwaddQwYFbSHv2bvsMHgYtbpcNqYpx8ESOqLR8zAB2/CZg==
+      integrity: sha512-tdK9IsNI0XIbPYUbb39kcaS3l8el5U3E6Cf15h4eeSZhQ2Jjq7ZQ7KkyPXyBvBbpDqzfiyLYwDUwXDNHowyaUQ==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
@@ -6634,6 +6645,7 @@ specifiers:
   debug: ^4.1.1
   deep-equal: ^1.0.1
   delay: ^4.3.0
+  dotnet-3.1: ^3.1.1
   eslint: ^5.16.0
   eslint-config-oclif: ^3.1.0
   eslint-config-oclif-typescript: ^0.1.0
