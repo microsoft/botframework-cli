@@ -1,27 +1,27 @@
 
 # filename
-- @{assignFilename('age')}
+- ${assignFilename('age')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "age",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setObjectPropertyMessage('@{property}', concat(string(@age.number), ' ', @age.units))}"
+            "activity": "$\{setObjectPropertyMessage('${property}', concat(string(@age.number), ' ', @age.units))}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.number",
+            "property": "$${property}.number",
             "value": "=@age.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.units",
+            "property": "$${property}.units",
             "value": "=@age.units"          
         }
     ]               

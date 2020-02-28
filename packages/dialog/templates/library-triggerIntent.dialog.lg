@@ -1,17 +1,17 @@
 # filename
-- @{schemaName}-library-@{triggerIntent}.dialog
+- ${prefix}-library-${triggerIntent}.dialog
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnIntent",
-    "intent": "@{triggerIntent}",
+    "intent": "${triggerIntent}",
     "condition": "count(turn.recognizedentities) == 0",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{notUnderstood()}"           
+            "activity": "$\{notUnderstood()}"           
         }
     ]
 }

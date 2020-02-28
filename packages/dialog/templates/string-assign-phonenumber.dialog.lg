@@ -1,22 +1,22 @@
 
 # filename
-- @{assignFilename('phonenumber')}
+- ${assignFilename('phonenumber')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "phonenumber",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @phonenumber)}"
+            "activity": "$\{setPropertyMessage('${property}', @phonenumber)}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@phonenumber"          
         }
     ]               

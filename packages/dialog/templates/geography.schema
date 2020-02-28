@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "geographyV2": {
         "type": "object",
-        "$entities": ["@{concat('geographyV2:', property)}", "geographyV2"],
+        "$entities": ["${concat('geographyV2:', property)}", "geographyV2"],
         "properties": {
             "type": {
                 "type": "type"

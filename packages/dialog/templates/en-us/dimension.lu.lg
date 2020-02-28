@@ -1,7 +1,7 @@
 # filename
-- @{builtinEntityFilename('dimensionEntity')}
+- ${builtinEntityFilename('dimensionEntity')}
 
 # template
-- @ prebuilt dimension @{roles()}
+- @ prebuilt dimension ${roles()}
 
 [generator.lg](../generator.lg)
