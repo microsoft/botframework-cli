@@ -19,7 +19,7 @@ describe('luis:test cli parameters test', () => {
   .stdout()
   .command(['luis:test', '--help'])
   .it('should print the help contents when --help is passed as an argument', ctx => {
-    expect(ctx.stdout).to.contain('Predict .lu file(s) to test the result')
+    expect(ctx.stdout).to.contain('Test a .lu file or LUIS application JSON model against a published LUIS model')
   })
 })
 

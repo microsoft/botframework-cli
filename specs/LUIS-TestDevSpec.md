@@ -38,7 +38,6 @@ Based on the requirement, user needs to provide the testdata file and the LUIS c
     - eg. simiple entity, ml entity, composite entity, regex entity, list entity, prebuit entity, pattern.any entity  
 - Support batch testing.
 - Result includes the summary at the beginning and the detail attached right after that.
-  - Precision, Recall, and F1 for each intent and entity at the top of the report.
   - Both entity and intent matched with the expected ones can be counted as pass.
   - Detail result will include the actual predicted intent with the score and the predicted entities.
   - If "allowIntentsCount" is set, user can get prediction score for \<number\> intents and default is the top-scoring intent.
@@ -51,15 +50,17 @@ USAGE
   $bf luis:test
 
 OPTIONS
-  -a, --appid=appid                       A luis app id where to test the model
+  -a, --appid=appid                       (required) LUIS application Id
   -h, --help                              luis:convert help
-  -i, --in=in                             Source .lu file(s) or JSON file for luis testing
+  -i, --in=in                             Source .lu file or LUIS application JSON model for testing
   -o, --out=out                           Output file or folder name. If not specified stdout will be used as output
-  -s, --subscriptionKey=subscriptionKey   An azure subscription
+  -s, --subscriptionKey=subscriptionKey   (required) LUIS cognitive services subscription key
   --allowIntentsCount=allowIntentsCount   [default: 1] top-scoring intent or top n Intent with score to show in the result
   --concurrency=concurrency               [default: 1] parallel utterance test number
-  --force                                 If --out flag is provided with the path to an existing file, Overwrites that file
-  --intentOnly                            Only test intent
+  --endpoint=endpoint                     (required) LUIS endpoint hostname, e.g. https://westus.api.cognitive.microsoft.com
+  --force                                 If --out flag is provided with the path to an existing file, overwrites that file
+  --intentOnly                            only test intent
+  --staging                               Presence of flag targets the staging app, if no flag passed defaults to production
 
 ```
 

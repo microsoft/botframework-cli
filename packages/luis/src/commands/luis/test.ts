@@ -16,20 +16,20 @@ const LuisBuilder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser
 const Luis = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luis')
 
 export default class LuisTest extends Command {
-  static description = 'Predict .lu file(s) to test the result'
+  static description = 'Test a .lu file or LUIS application JSON model against a published LUIS model'
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Source .lu file(s) or LUIS application JSON model'}),
+    in: flags.string({char: 'i', description: 'Source .lu file or LUIS application JSON model for testing'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
-    subscriptionKey: flags.string({char: 's', description: '(required) LUIS cognitive services subscription key', required: true}),
-    endpoint: flags.string({description: '(required) LUIS endpoint hostname', required: true}),
-    appId: flags.string({char: 'a', description: '(required) LUIS application Id', required: true}),
-    intentOnly: flags.boolean({description: 'only test intent', default: false}),
+    subscriptionKey: flags.string({char: 's', description: 'LUIS cognitive services subscription key', required: true}),
+    endpoint: flags.string({description: 'LUIS endpoint hostname, e.g. https://westus.api.cognitive.microsoft.com', required: true}),
+    appId: flags.string({char: 'a', description: 'LUIS application Id', required: true}),
+    intentOnly: flags.boolean({description: 'Only test intent', default: false}),
     staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production', default: false}),
-    allowIntentsCount: flags.integer({description: 'intent number to show in the result', default: 1}),
-    concurrency: flags.integer({description: 'parallel utterance test number(max:5)', default: 1}),
+    allowIntentsCount: flags.integer({description: 'Top-scoring intent or top n Intent with score to show in the result', default: 1}),
+    concurrency: flags.integer({description: 'Parallel utterance test number(max:5)', default: 1}),
     force: flags.boolean({description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    help: flags.help({char: 'h', description: 'luis:predict help'})
+    help: flags.help({char: 'h', description: 'luis:test help'})
   }
 
   async run() {

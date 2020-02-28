@@ -17,6 +17,7 @@ export async function test(
   // luis api TPS which means 5 concurrent transactions to luis api in 1 second
   // can set to other value if switched to a higher TPS(transaction per second) key
   let luisApiTps = 5
+  concurrency = concurrency > 5? concurrency : 5
   let minTime = 1100 * concurrency / luisApiTps
 
   // here we do a while loop to make full use of luis tps capacity
