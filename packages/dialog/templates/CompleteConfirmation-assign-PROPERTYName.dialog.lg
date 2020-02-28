@@ -1,7 +1,7 @@
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "property": "CompleteConfirmation",
     "entity": "PROPERTYName",

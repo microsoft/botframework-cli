@@ -1,22 +1,22 @@
 
 # filename
-- @{assignFilename('url')}
+- ${assignFilename('url')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "url",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @url)}"
+            "activity": "$\{setPropertyMessage('${property}', @url)}"
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@url"          
         }
     ]               
