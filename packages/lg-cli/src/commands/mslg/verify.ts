@@ -28,9 +28,9 @@ export default class VerifyCommand extends Command {
   // schedule
   // in √
   // recurse √
-  // out ×
-  // force ×
-  // collate ×
+  // out √
+  // force √
+  // collate √
 
   async run() {
     const {flags} = this.parse(VerifyCommand)
@@ -40,21 +40,16 @@ export default class VerifyCommand extends Command {
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
     for (const lgFilePath of lgFilePaths) {
-      // const lgFile = LGFile.parseFile(lgFilePath)
-      // const diagnostics = lgFile.diagnostics;
-      // this.log(diagnostics)
-
       const fileContent = txtfile.readSync(lgFilePath)
       const errors = this.lgTool.validateFile(fileContent, lgFilePath)
       this.log(errors.join(', '))
     }
 
-    let collectFilePath: string
-    try {
-      collectFilePath = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
-      this.log(`Collated lg file is generated here: ${collectFilePath}.\n`)
-    } catch (error) {
-      this.log(error)
+    const collectResult = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
+    if (collectResult.filepath) {
+      this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
+    } else {
+      this.log(collectResult.content)
     }
   }
 }

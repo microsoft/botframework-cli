@@ -57,36 +57,39 @@ export class Helper {
     return results
   }
 
-  public static collect(tool: MSLGTool, out: string, force: boolean, collect: boolean): string {
-    const filePath = Helper.getCollectFileName(out)
-
+  public static collect(tool: MSLGTool, out: string, force: boolean, collect: boolean): { content: string; filepath: string | undefined } {
     if (tool.collationMessages.length > 0) {
       tool.collationMessages.forEach(error => {
         if (error.startsWith(ErrorType.Error)) {
-          throw new Error(`collating lg files failed with error : ${error}.\n`)
+          throw new CLIError(`collating lg files failed with error : ${error}.\n`)
         } else {
-          throw new Error(`collating lg files failed with warning : ${error}.\n`)
+          throw new CLIError(`collating lg files failed with warning : ${error}.\n`)
         }
       })
     } else if (collect === undefined && tool.nameCollisions.length > 0) {
-      throw new Error('below template names are defined in multiple files: ' + tool.nameCollisions.toString())
+      throw new CLIError('below template names are defined in multiple files: ' + tool.nameCollisions.toString())
     } else {
       const mergedLgFileContent = tool.collateTemplates()
       if (mergedLgFileContent === undefined || mergedLgFileContent === '') {
-        throw new Error('generating collated lg file failed.')
+        throw new CLIError('generating collated lg file failed.')
       }
+      if (out) {
+        const filePath = Helper.getCollectFileName(out)
 
-      if (fs.existsSync(filePath)) {
-        if (!force) {
-          throw new Error(`${filePath} exists`)
+        if (fs.existsSync(filePath)) {
+          if (!force) {
+            throw new CLIError(`${filePath} exists`)
+          }
+          fs.removeSync(filePath)
         }
-        fs.removeSync(filePath)
-      }
 
-      fs.writeFileSync(filePath, mergedLgFileContent)
-      // process.stdout.write(chalk.default.whiteBright(`Collated lg file is generated here: ${filePath}.\n`))
+        fs.writeFileSync(filePath, mergedLgFileContent)
+        return {content: mergedLgFileContent, filepath: filePath}
+      }
+      return {content: mergedLgFileContent, filepath: undefined}
     }
-    return filePath
+
+    throw new CLIError('collating lg files failed')
   }
 
   public static getCollectFileName(outOption: string): string {

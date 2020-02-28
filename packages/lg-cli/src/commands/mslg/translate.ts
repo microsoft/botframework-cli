@@ -49,9 +49,9 @@ export default class TranslateCommand extends Command {
   // tgtlang √
   // translatekey √
   // recurse √
-  // out ×
-  // force ×
-  // collate ×
+  // out √
+  // force √
+  // collate √
   // srclang √
   // translate_comments √
   // translate_link_text ×
@@ -64,12 +64,11 @@ export default class TranslateCommand extends Command {
 
     await this.translate(flags)
 
-    let collectFilePath: string
-    try {
-      collectFilePath = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
-      this.log(`Collated lg file is generated here: ${collectFilePath}.\n`)
-    } catch (error) {
-      this.log(error)
+    const collectResult = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
+    if (collectResult.filepath) {
+      this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
+    } else {
+      this.log(collectResult.content)
     }
   }
 

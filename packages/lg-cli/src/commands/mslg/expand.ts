@@ -35,10 +35,10 @@ export default class ExpandCommand extends Command {
 
   // schedule
   // in √
-  // recurse ×
-  // out ×
-  // force ×
-  // collate ×
+  // recurse x
+  // out √
+  // force √
+  // collate √
   // template √
   // expression √
   // all √
@@ -53,12 +53,11 @@ export default class ExpandCommand extends Command {
 
     this.expand(flags)
 
-    let collectFilePath: string
-    try {
-      collectFilePath = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
-      this.log(`Collated lg file is generated here: ${collectFilePath}.\n`)
-    } catch (error) {
-      this.log(error)
+    const collectResult = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
+    if (collectResult.filepath) {
+      this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
+    } else {
+      this.log(collectResult.content)
     }
   }
 
