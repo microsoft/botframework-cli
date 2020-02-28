@@ -57,19 +57,17 @@ export class Helper {
     return results
   }
 
-  public static collect(tool: MSLGTool, out: string, force: boolean, collect: boolean) {
+  public static collect(tool: MSLGTool, out: string, force: boolean, collect: boolean): string {
     const filePath = Helper.getCollectFileName(out)
 
     if (tool.collationMessages.length > 0) {
       tool.collationMessages.forEach(error => {
         if (error.startsWith(ErrorType.Error)) {
-          // process.stderr.write(chalk.default.redBright(error + '\n'))
+          throw new Error(`collating lg files failed with error : ${error}.\n`)
         } else {
-          // process.stdout.write(chalk.default.yellowBright(error + '\n'))
+          throw new Error(`collating lg files failed with warning : ${error}.\n`)
         }
       })
-
-      throw new Error('collating lg files failed.\n')
     } else if (collect === undefined && tool.nameCollisions.length > 0) {
       throw new Error('below template names are defined in multiple files: ' + tool.nameCollisions.toString())
     } else {
@@ -88,6 +86,7 @@ export class Helper {
       fs.writeFileSync(filePath, mergedLgFileContent)
       // process.stdout.write(chalk.default.whiteBright(`Collated lg file is generated here: ${filePath}.\n`))
     }
+    return filePath
   }
 
   public static getCollectFileName(outOption: string): string {
