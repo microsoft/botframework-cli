@@ -2,50 +2,61 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+const delay = require('delay')
 
-export async function build(
+export async function test(
   client: any,
   appId: string,
   slotName: string,
   options: {},
   luisObject: any,
   allowIntentsCount: number,
-  intentOnly: boolean) {
+  concurrency: number,
+  intentOnly: boolean,
+  resultLog: any[]) {
   // luis api TPS which means 5 concurrent transactions to luis api in 1 second
   // can set to other value if switched to a higher TPS(transaction per second) key
   let luisApiTps = 5
+  let minTime = 1100 * concurrency / luisApiTps
 
-  // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
-  let delayDuration = 1100
-
-  let i = 0
   // here we do a while loop to make full use of luis tps capacity
-  while (luisObject.utterances.length > i) {
-    // get a number(set by luisApiTps) of contents for each loop
-    let utterance = luisObject.utterances[i]
-    const predictionRequest: any = {"query": utterance.text}
-    let predictedResult = await client.prediction.getSlotPrediction(appId, slotName, predictionRequest, options)
-    console.log(`${JSON.stringify(predictedResult, null, 0)}`)
-    let result : any = new Object()
-    result.predictedIntents = []
-    
-    let intentCount = 0
-    for (let intent in predictedResult.prediction.intents){
-      if (intentCount >= allowIntentsCount){
-        break;
+  let index = 0
+  while (index < luisObject.utterances.length) {
+    let subUtterances: any[] = [minTime]
+    let subIndex = 0
+    while (subIndex < concurrency && index+subIndex < luisObject.utterances.length){
+      subUtterances.push(luisObject.utterances[index+subIndex])
+      subIndex++
+    }
+    await Promise.all(subUtterances.map(async (utterance: any) => {
+      if (typeof utterance === "number"){
+        await delay(minTime)
+        return
       }
-      result.predictedIntents.push({"intent" : intent, "score": predictedResult.prediction.intents[intent]["score"]})
-      intentCount++
-    }
-    result.IntentPass = compareIntent(result.predictedIntents, utterance)
-    
-    if (!intentOnly){
-      result.predictedEntities = []
-      ParseEntitiyResult(predictedResult.prediction.entities, result)
-      result.EntityPass = compareEntity(result.predictedEntities, utterance)
-    }
-    utterance.predictedResult = result
-    i++
+      const predictionRequest: any = {"query": utterance.text}
+      let predictedResult = await client.prediction.getSlotPrediction(appId, slotName, predictionRequest, options)
+      resultLog.push(predictedResult)
+      let result : any = new Object()
+      result.predictedIntents = []
+      
+      let intentCount = 0
+      for (let intent in predictedResult.prediction.intents){
+        if (intentCount >= allowIntentsCount){
+          break;
+        }
+        result.predictedIntents.push({"intent" : intent, "score": predictedResult.prediction.intents[intent]["score"]})
+        intentCount++
+      }
+      result.IntentPass = compareIntent(result.predictedIntents, utterance)
+      
+      if (!intentOnly){
+        result.predictedEntities = []
+        ParseEntitiyResult(predictedResult.prediction.entities, result)
+        result.EntityPass = compareEntity(result.predictedEntities, utterance)
+      }
+      utterance.predictedResult = result
+    }))
+    index+=subIndex
   }
 
   luisObject.intents.forEach((intent: any) => {

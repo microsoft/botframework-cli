@@ -23,13 +23,13 @@ describe('luis:test cli parameters test', () => {
   })
 })
 
-describe('luis:test cli single test', () => {
+describe('luis:test cli entity test', () => {
   before(async function(){
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
   })
 
   after(async function(){
-    //await fs.remove(path.join(__dirname, './../../../results/'))
+    await fs.remove(path.join(__dirname, './../../../results/'))
   })
 
   test
@@ -47,7 +47,7 @@ describe('luis:test cli single test', () => {
   )
   .stdout()
   .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/SimpleEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/SimpleEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query', async ctx => {
+  .it('test basic simple entity', async ctx => {
     expect(await compareFiles('./../../../results/SimpleEntity.lu', './../../fixtures/testcases/lutest/output/SimpleEntity.lu')).to.be.true
   })
 
@@ -66,7 +66,7 @@ describe('luis:test cli single test', () => {
   )
   .stdout()
   .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/CompositeEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/CompositeEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query', async ctx => {
+  .it('test compositeEntity', async ctx => {
     expect(await compareFiles('./../../../results/CompositeEntity.lu', './../../fixtures/testcases/lutest/output/CompositeEntity.lu')).to.be.true
   })
 
@@ -121,14 +121,22 @@ describe('luis:test cli single test', () => {
   )
   .stdout()
   .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/AllEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/AllEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query', async ctx => {
+  .it('test all kinds of entites', async ctx => {
     expect(await compareFiles('./../../../results/AllEntity.lu', './../../fixtures/testcases/lutest/output/AllEntity.lu')).to.be.true
   })
 })
 
 
-describe('luis:test cli test roles', () => {
-  before(function () {
+describe('luis:test cli role test', () => {
+  before(async function(){
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+  })
+
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  beforeEach(function () {
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
@@ -163,13 +171,21 @@ describe('luis:test cli test roles', () => {
   test
   .stdout()
   .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/EntityRole.lu')}`, '-o', `${path.join(__dirname, './../../../results/EntityRole.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query', async ctx => {
+  .it('test role of entities', async ctx => {
     expect(await compareFiles('./../../../results/EntityRole.lu', './../../fixtures/testcases/lutest/output/EntityRole.lu')).to.be.true
   })
 })
 
-describe('luis:test cli test Hierarchical entity', () => {
-  before(function () {
+describe('luis:test cli Hierarchical entity test', () => {
+  before(async function(){
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+  })
+
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  beforeEach(function () {
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
     .reply(200, {
@@ -187,19 +203,35 @@ describe('luis:test cli test Hierarchical entity', () => {
     .reply(200, {
       "query":"can i get 3 pepperoni pizzas and a four cheese pizza with a large house salad and a large fries","prediction":{"topIntent":"ModifyOrder","intents":{"ModifyOrder":{"score":0.999949932},"None":{"score":0.000797458},"CancelOrder":{"score":0.000371012837},"Confirmation":{"score":0.000123555365},"Greetings":{"score":0.00005131555}},"entities":{"Order":[{"FullPizzaWithModifiers":[{"PizzaType":["pepperoni pizzas"],"Quantity":[3],"$instance":{"PizzaType":[{"type":"PizzaType","text":"pepperoni pizzas","startIndex":12,"length":16,"score":0.99253273,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"Quantity":[{"type":"builtin.number","text":"3","startIndex":10,"length":1,"score":0.9941294,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}},{"PizzaType":["four cheese pizza"],"$instance":{"PizzaType":[{"type":"PizzaType","text":"four cheese pizza","startIndex":35,"length":17,"score":0.9262008,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"SideOrder":[{"SideProduct":["a large house salad","a large fries"],"$instance":{"SideProduct":[{"type":"SideProduct","text":"a large house salad","startIndex":58,"length":19,"score":0.949831665,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]},{"type":"SideProduct","text":"a large fries","startIndex":82,"length":13,"score":0.958258033,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"$instance":{"FullPizzaWithModifiers":[{"type":"FullPizzaWithModifiers","text":"3 pepperoni pizzas","startIndex":10,"length":18,"score":0.9982099,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]},{"type":"FullPizzaWithModifiers","text":"a four cheese pizza","startIndex":33,"length":19,"score":0.9491937,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"SideOrder":[{"type":"SideOrder","text":"with a large house salad and a large fries","startIndex":53,"length":42,"score":0.9409128,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}],"ToppingList":[["Pepperoni"],["Cheese"]],"number":[4],"ModifierList":[["Add"]],"SizeList":[["Large"],["Large"]],"$instance":{"Order":[{"type":"Order","text":"3 pepperoni pizzas and a four cheese pizza with a large house salad and a large fries","startIndex":10,"length":85,"score":0.996587336,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"ToppingList":[{"type":"ToppingList","text":"pepperoni","startIndex":12,"length":9,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]},{"type":"ToppingList","text":"cheese","startIndex":40,"length":6,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"number":[{"type":"builtin.number","text":"four","startIndex":35,"length":4,"modelTypeId":2,"modelType":"Prebuilt Entity Extractor","recognitionSources":["model"]}],"ModifierList":[{"type":"ModifierList","text":"with","startIndex":53,"length":4,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}],"SizeList":[{"type":"SizeList","text":"large","startIndex":60,"length":5,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]},{"type":"SizeList","text":"large","startIndex":84,"length":5,"modelTypeId":5,"modelType":"List Entity Extractor","recognitionSources":["model"]}]}}}
     })
+    
   })
 
   test
   .stdout()
   .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/HierarchicalEntity.lu')}`, '-o', `${path.join(__dirname, './../../../results/HierarchicalEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query', async ctx => {
+  .it('test hierarchical entity', async ctx => {
+    expect(await compareFiles('./../../../results/HierarchicalEntity.lu', './../../fixtures/testcases/lutest/output/HierarchicalEntity.lu')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/HierarchicalEntity.json')}`, '-o', `${path.join(__dirname, './../../../results/HierarchicalEntity.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('test hierarchical entity in json format', async ctx => {
     expect(await compareFiles('./../../../results/HierarchicalEntity.lu', './../../fixtures/testcases/lutest/output/HierarchicalEntity.lu')).to.be.true
   })
 })
 
 
 
-describe('luis:test cli batch test', () => {
+describe('luis:test normal test', () => {
+  before(async function(){
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+  })
+
+  after(async function(){
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   beforeEach(function () {
     nock('https://westus.api.cognitive.microsoft.com')
     .post(uri => uri.includes('apps'))
@@ -307,37 +339,43 @@ describe('luis:test cli batch test', () => {
   test
   .stdout()
   .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile.lu')}`, '-o', `${path.join(__dirname, './../../../results/TestFile.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query', async ctx => {
+  .it('test a noraml file in which all utterances pass', async ctx => {
     expect(await compareFiles('./../../../results/TestFile.lu', './../../fixtures/testcases/lutest/output/TestFile.lu')).to.be.true
   })
 
-  
   test
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile1.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile1.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query2', async ctx => {
-    expect(ctx.stdout).to.contain('')
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile.json')}`, '-o', `${path.join(__dirname, './../../../results/TestFile.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('test a noraml file in json format in which all utterances pass', async ctx => {
+    expect(await compareFiles('./../../../results/TestFile.lu', './../../fixtures/testcases/lutest/output/TestFile.lu')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile1.lu')}`, '-o', `${path.join(__dirname, './../../../results/TestFile1.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('test a noraml file in which some utterances do not pass because of incorrect intent prediction', async ctx => {
+    expect(await compareFiles('./../../../results/TestFile1.lu', './../../fixtures/testcases/lutest/output/TestFile1.lu')).to.be.true
   })
   
 
   test
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile2.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
-  .it('queries one simple query3', async ctx => {
-    expect(ctx.stdout).to.contain('')
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../../results/TestFile2.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force'])
+  .it('test a noraml file in which some utterances do not pass because of incorrect entity prediction', async ctx => {
+    expect(await compareFiles('./../../../results/TestFile2.lu', './../../fixtures/testcases/lutest/output/TestFile2.lu')).to.be.true
   })
 
   test
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile2_intentOnly.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force', '--intentOnly'])
-  .it('queries one simple query4', async ctx => {
-    expect(ctx.stdout).to.contain('')
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../../results/TestFile2_intentOnly.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force', '--intentOnly'])
+  .it('test a noraml file for intentOnly', async ctx => {
+    expect(await compareFiles('./../../../results/TestFile2_intentOnly.lu', './../../fixtures/testcases/lutest/output/TestFile2_intentOnly.lu')).to.be.true
   })
 
   test
   .stdout()
-  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../fixtures/testcases/lutest/output/TestFile2_3intent.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force', '--allowIntentsCount', '3'])
-  .it('queries one simple query5', async ctx => {
-    expect(ctx.stdout).to.contain('')
+  .command(['luis:test', '-i', `${path.join(__dirname, './../../fixtures/testcases/lutest/input/TestFile2.lu')}`, '-o', `${path.join(__dirname, './../../../results/TestFile2_3intent.lu')}`, '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--force', '--allowIntentsCount', '3'])
+  .it('test a noraml file with top3 intent in the predicted result for each utterance', async ctx => {
+    expect(await compareFiles('./../../../results/TestFile2_3intent.lu', './../../fixtures/testcases/lutest/output/TestFile2_3intent.lu')).to.be.true
   })
 })

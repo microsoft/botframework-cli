@@ -1,6 +1,6 @@
 const NEWLINE = require('os').EOL;
-const helperClasses = require('./../lufile/classes/hclasses')
-const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
+const helperClasses = require('../lufile/classes/hclasses')
+const EntityTypeEnum = require('../utils/enums/luisEntityTypes');
 
 /**
  * Parses a Luis object into Lu Content
@@ -8,7 +8,7 @@ const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
  * @returns {string} Lu Content
  * @throws {exception} Throws on errors. exception object includes errCode and text. 
  */
-const luisToLuContentWithTest = function(luisJSON){
+const luisToLuContentForTest = function(luisJSON){
     let fileContent = '';
     let luisObj = new helperClasses.rLuisObj();
     (luisJSON.intents || []).forEach(function(intent) {
@@ -461,4 +461,4 @@ const objectSortByStartPos = function (objectArray) {
     return ObjectByStartPos;
 }
 
-module.exports = luisToLuContentWithTest
+module.exports = luisToLuContentForTest

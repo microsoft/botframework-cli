@@ -8,13 +8,12 @@ import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const luConverterWithTest = require('./../../../../lu/src/parser/test/luconverterwithtest')
+const luConverterForTest = require('./../../../../lu/src/parser/test/luConverterForTest')
 const testHelper = require('./../../../../lu/src/utils/testhelper')
 const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
 const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luisBuilder')
 const Luis = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luis')
-//const inputUtils = require('../../utils/index')
 
 export default class LuisTest extends Command {
   static description = 'Predict .lu file(s) to test the result'
@@ -28,8 +27,7 @@ export default class LuisTest extends Command {
     intentOnly: flags.boolean({description: 'only test intent', default: false}),
     staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production', default: false}),
     allowIntentsCount: flags.integer({description: 'intent number to show in the result', default: 1}),
-    timezoneOffset: flags.string({description: 'Timezone offset for the location of the request in minutes (optional)'}),
-    concurrency: flags.integer({description: 'parallel utterance test number', default: 1}),
+    concurrency: flags.integer({description: 'parallel utterance test number(max:5)', default: 1}),
     force: flags.boolean({description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     help: flags.help({char: 'h', description: 'luis:predict help'})
   }
@@ -47,7 +45,7 @@ export default class LuisTest extends Command {
       // Parse the object depending on the input
       let luisObject: any
       if (isLu) {
-        const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
+        const luFiles = await file.getLuObjects(stdin, flags.in, false, fileExtEnum.LUFile)
         luisObject = await LuisBuilder.build(luFiles, flags.log, flags.culture)
         if (!luisObject.hasContent()) {
           throw new CLIError('No LU content parsed!')
@@ -69,15 +67,25 @@ export default class LuisTest extends Command {
       options.verbose = true
       options.showAllIntents = true
 
-      await testHelper.build(client, flags.appId, slotName, options, luisObject, flags.allowIntentsCount, flags.intentOnly)
+      let predictedResults: any[] = []
+      await testHelper.test(client,
+        flags.appId,
+        slotName,
+        options,
+        luisObject,
+        flags.allowIntentsCount,
+        flags.concurrency,
+        flags.intentOnly,
+        predictedResults)
 
-      let result = luConverterWithTest(luisObject, flags)
+      let result = luConverterForTest(luisObject, flags)
+      let detailLog = `${JSON.stringify(predictedResults, null, 2)}`
       if (!result) {
         throw new CLIError('No LU content parsed!')
       }
       // Print or write the parsed object
       if (flags.out) {
-        await this.writeOutput(result, flags, false)
+        await this.writeOutput(result, flags, detailLog)
       } else {
         this.log(result)
       }
@@ -89,12 +97,14 @@ export default class LuisTest extends Command {
     }
   }
 
-  private async writeOutput(convertedObject: any, flags: any, isLu: boolean) {
-    let filePath = await file.generateNewFilePath(flags.out, flags.in, isLu)
+  private async writeOutput(convertedObject: any, flags: any, log: any) {
+    let filePath = await file.generateNewFilePath(flags.out, flags.in, false)
     const validatedPath = utils.validatePath(filePath, '', flags.force)
+    const validatedLogPath = utils.validatePath(filePath + '.log', '', flags.force)
     // write out the final file
     try {
       await fs.writeFile(validatedPath, convertedObject, 'utf-8')
+      await fs.writeFile(validatedLogPath, log, 'utf-8')
     } catch (err) {
       throw new CLIError('Unable to write file - ' + validatedPath + ' Error: ' + err.message)
     }
