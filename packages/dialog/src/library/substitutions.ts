@@ -7,7 +7,6 @@ import * as expr from 'adaptive-expressions'
 import * as fs from 'fs-extra'
 import * as os from 'os'
 import * as random from 'seedrandom'
-import { stringify } from 'querystring'
 
 /**
  * Return the result of replicating lines from a source file and substituting random values 

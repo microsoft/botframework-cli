@@ -76,14 +76,15 @@
                 "--timeout",
                 "999999",
                 "--colors",
-                "-g", 
+                "-g",
                 "luis:.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outFiles": [
                 "./lib/**"
             ]
-        },        {
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "LUIS Build Tests",

@@ -10,7 +10,7 @@ import * as fs from 'fs-extra'
 import * as lg from 'botbuilder-lg'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
-import * as sub from './substitutions'
+import { SubstitutionsEvaluator } from './substitutions'
 import { processSchemas } from './processSchemas'
 
 export enum FeedbackType {
@@ -45,7 +45,7 @@ const expressionEngine = new expressions.ExpressionEngine((func: any) => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
-        case 'substitutions': return sub.SubstitutionsEvaluator
+        case 'substitutions': return SubstitutionsEvaluator
         default: return expressions.ExpressionFunctions.lookup(func)
     }
 })
@@ -171,7 +171,7 @@ async function processTemplate(
                 if (template) {
                     let filename = addLocale(templateName, scope.locale, scope.prefix)
                     if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
-                        filename = <string> <any> template.evaluateTemplate('filename', scope)
+                        filename = <string><any>template.evaluateTemplate('filename', scope)
                     }
                     outPath = ppath.join(outDir, scope.locale, filename)
                     let ref = addEntry(outPath, outDir, scope.templates)
@@ -181,12 +181,12 @@ async function processTemplate(
                             let result = template
                             if (typeof template === 'object') {
                                 process.chdir(ppath.dirname(template.templates[0].source))
-                                result = <string> <any> template.evaluateTemplate('template', scope)
+                                result = <string><any>template.evaluateTemplate('template', scope)
                                 if (Array.isArray(result)) {
                                     result = result.join('\n')
                                 }
                                 if (template.templates.some(f => f.name === 'filename')) {
-                                    filename = <string> <any> template.evaluateTemplate('filename', scope)
+                                    filename = <string><any>template.evaluateTemplate('filename', scope)
                                 }
                             }
 
