@@ -10,18 +10,20 @@ const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
 const luObject = require('./../parser/lu/lu')
+const LUOptions = require('./../parser/lu/luOptions')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
 export async function getLuObjects(stdin: string, input: string, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
-    luObjects.push(new luObject(stdin, 'stdin'))
+    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
   } else {
     let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
-      luObjects.push(new luObject(luContent, path.resolve(luFiles[i])))
+      const opts = new LUOptions(path.resolve(luFiles[i]))
+      luObjects.push(new luObject(luContent, opts))
     }
   }
 

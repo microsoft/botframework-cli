@@ -1,9 +1,10 @@
-const path = require('path')
 const exception = require('./../utils/exception')
 const retCode = require('./../utils/enums/CLI-errors')
 const translateHelpers = require('./../lufile/translate-helpers')
 const Lu = require('./../lu/lu')
+const LUOptions = require('./../lu/luOptions')
 const Qna = require('./../lu/qna')
+const QNAOptions = require('./../lu/qnaOptions')
 
 module.exports = {
     translateLuList: async function(files, translate_key, to_lang, src_lang, translate_comments, translate_link_text) {
@@ -54,7 +55,7 @@ const translateMarkDown =  async function(luObject, translate_key, to_lang, src_
             throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, file : ' + file + 'had invalid content'));
         } 
 
-        result.push(isLu ? new Lu(parsedLocContent, luObject.id, luObject.includeInCollate, tgt_lang) : new Qna(parsedLocContent, luObject.id, luObject.includeInCollate, tgt_lang))
+        result.push(isLu ? new Lu(parsedLocContent, new LUOptions(luObject.id, luObject.includeInCollate, tgt_lang)) : new Qna(parsedLocContent, new QNAOptions(luObject.id, luObject.includeInCollate, tgt_lang)))
     }
     return result
 }

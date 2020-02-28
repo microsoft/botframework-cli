@@ -51,7 +51,7 @@ const helpers = {
     /**
      * Helper function to get config.json files
      * @param {string} inputfolder input folder name
-     * @returns {Array} Array of .config files found
+     * @returns {string} config.json file path found
     */
     findConfigFile: function (inputFolder) {
         const dirContent = path.resolve(inputFolder, 'config.json')

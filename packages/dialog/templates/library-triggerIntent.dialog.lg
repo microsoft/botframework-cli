@@ -11,11 +11,9 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callNotUnderstood()}"           
+            "activity": "@\{notUnderstood()}"           
         }
     ]
 }
 ```
-
-# callNotUnderstood
-- @\{notUnderstood()}
+ 

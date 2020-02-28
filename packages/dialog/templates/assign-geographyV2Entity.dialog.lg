@@ -12,7 +12,8 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "@\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
+"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
@@ -27,8 +28,5 @@
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setObjectPropertyMessage('@{property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
 
 [generator.lg](generator.lg)
