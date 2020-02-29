@@ -40,16 +40,6 @@
       "text": "I need coffee",
       "intent": "None",
       "entities": []
-    },
-    {
-      "text": "Where can I get coffee?",
-      "intent": "None",
-      "entities": []
-    },
-    {
-      "text": "I need coffee",
-      "intent": "None",
-      "entities": []
     }
   ],
   "patterns": [],
