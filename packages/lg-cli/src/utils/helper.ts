@@ -10,6 +10,8 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import {CLIError} from '@microsoft/bf-cli-command'
 import {MSLGTool} from 'botbuilder-lg'
+// eslint-disable-next-line node/no-extraneous-require
+const fetch = require('node-fetch')
 const NEWLINE = require('os').EOL
 const ANY_NEWLINE = /\r\n|\r|\n/g
 
@@ -120,6 +122,37 @@ export class Helper {
 
   public static sanitizeNewLines(fileContent: string) {
     return fileContent.replace(ANY_NEWLINE, NEWLINE)
+  }
+
+  public static async translateText(text: any, subscriptionKey: string, to_lang: string, from_lang: string) {
+    const payload = Array.isArray(text) ? text : [{Text: text}]
+    let tUri = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=' + to_lang + '&includeAlignment=true'
+    if (from_lang) tUri += '&from=' + from_lang
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'X-ClientTraceId': Helper.get_guid(),
+      },
+    }
+    const res = await fetch(tUri, options)
+    if (!res.ok) {
+      throw (new CLIError('Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'))
+    }
+
+    const data = await res.json()
+    return data
+  }
+
+  private static get_guid(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0
+      // eslint-disable-next-line no-mixed-operators
+      const v = c === 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
   }
 }
 

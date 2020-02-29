@@ -10,13 +10,14 @@
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
-    "botbuilder-lg":"^4.7.0-preview",
+    "botbuilder-lg":"^4.8.0-preview-109324",
     "delay": "^4.3.0",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",
     "tslib": "^1.10.0",
     "read-text-file": "^1.1.0",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "antlr4ts": "0.5.0-alpha.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",

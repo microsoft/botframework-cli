@@ -15,7 +15,7 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as os from 'os'
 // eslint-disable-next-line node/no-extraneous-require
-const fetch = require('node-fetch')
+
 
 export default class TranslateCommand extends Command {
   static description = 'Translate .lg files to a target language by microsoft translation API.'
@@ -29,6 +29,8 @@ export default class TranslateCommand extends Command {
   private readonly NEWLINE = os.EOL
 
   private readonly DEFAULT_SOURCE_LANG = 'en'
+
+  private readonly ImportRegex = /^\].+\]\(.+\)$/g
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
@@ -54,7 +56,7 @@ export default class TranslateCommand extends Command {
   // collate √
   // srclang √
   // translate_comments √
-  // translate_link_text ×
+  // translate_link_text √
 
   async run() {
     const {flags} = this.parse(TranslateCommand)
@@ -87,7 +89,7 @@ export default class TranslateCommand extends Command {
         src_lang = flags.srclang
       }
 
-      await this.translateFile(file, outFolder, flags.translatekey, flags.tgtlang, src_lang, flags.translate_comments)
+      await this.translateFile(file, outFolder, flags.translatekey, flags.tgtlang, src_lang, flags.translate_comments, flags.translate_link_text)
       lgFilePaths.splice(0, 1)
     }
   }
@@ -113,7 +115,8 @@ export default class TranslateCommand extends Command {
     translate_key: string,
     to_lang: string,
     src_lang: string,
-    translate_comments: boolean) {
+    translate_comments: boolean,
+    translate_link_text: boolean) {
     if (!fs.existsSync(path.resolve(file))) {
       throw new CLIError('unable to open file: ' + file)
     }
@@ -130,7 +133,7 @@ export default class TranslateCommand extends Command {
     for (const toLang of toLangs) {
       const tgt_lang = toLang.trim()
       if (tgt_lang !== '') {
-        await this.translateFileToSpecificLang(file, outFolder, translate_key, tgt_lang, src_lang, translate_comments, fileContent)
+        await this.translateFileToSpecificLang(file, outFolder, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, fileContent)
       }
     }
   }
@@ -142,12 +145,13 @@ export default class TranslateCommand extends Command {
     tgt_lang: string,
     src_lang: string,
     translate_comments: boolean,
+    translate_link_text: boolean,
     fileContent: string
   ) {
     const fileName = path.basename(file)
     let parsedLocContent = ''
     try {
-      parsedLocContent = await this.parseAndTranslate(fileContent, translate_key, tgt_lang, src_lang, translate_comments)
+      parsedLocContent = await this.parseAndTranslate(fileContent, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text)
     } catch (error) {
       throw (error)
     }
@@ -174,10 +178,10 @@ export default class TranslateCommand extends Command {
 
   private async parseAndTranslate(
     fileContent: string,
-    subscriptionKey: string,
-    to_lang: string,
+    subscriptionKey: string,   to_lang: string,
     src_lang: string,
-    translate_comments: boolean): Promise<string> {
+    translate_comments: boolean,
+    translate_link_text: boolean): Promise<string> {
     const batch_translate_size = this.MAX_TRANSLATE_BATCH_SIZE
     fileContent = Helper.sanitizeNewLines(fileContent)
     const linesInFile = fileContent.split(this.NEWLINE)
@@ -209,7 +213,8 @@ export default class TranslateCommand extends Command {
         }
 
         this.addSegment(linesToTranslate, this.NEWLINE, false)
-      } else if (currentLine.trim().indexOf(PARSERCONSTS.TEMPLATENAME) === 0) {
+      } 
+      else if (currentLine.trim().indexOf(PARSERCONSTS.TEMPLATENAME) === 0) {
         this.addSegment(linesToTranslate, currentLine, false)
         this.addSegment(linesToTranslate, this.NEWLINE, false)
       } else if (currentLine.trim().indexOf(PARSERCONSTS.SEPARATOR) === 0) {
@@ -222,7 +227,7 @@ export default class TranslateCommand extends Command {
         } else if (content.includes('{') || content.includes('[')) {
           this.addSegment(linesToTranslate, currentLine.substring(0, currentLine.indexOf(PARSERCONSTS.SEPARATOR) + 1) + ' ', false)
           content = currentLine.trim().slice(1).trim()
-          const expressionRegex = new RegExp(/\{(.*?)\}/g) // match {}
+          const expressionRegex = new RegExp(/\$\{(.*?)\}/g) // match ${}
           const expressionsFound = content.match(expressionRegex)
           if (expressionsFound) {
             // eslint-disable-next-line max-depth
@@ -230,17 +235,6 @@ export default class TranslateCommand extends Command {
               const eStartIndex = content.indexOf(expression)
               const eEndIndex = eStartIndex + expression.length - 1
               blockList.push(new Block(expression, eStartIndex, eEndIndex))
-            }
-          }
-
-          const refRegex = new RegExp(/\[(.*?)\]/g) // match []
-          const refsFound = content.match(refRegex)
-          if (refsFound) {
-            // eslint-disable-next-line max-depth
-            for (const ref of refsFound) {
-              const eStartIndex = content.indexOf(ref)
-              const eEndIndex = eStartIndex + ref.length - 1
-              blockList.push(new Block(ref, eStartIndex, eEndIndex))
             }
           }
 
@@ -365,7 +359,7 @@ export default class TranslateCommand extends Command {
     if (batchRequest.length === 0) return
     let data
     try {
-      data = await this.translateText(batchRequest, subscriptionKey, to_lang, src_lang)
+      data = await Helper.translateText(batchRequest, subscriptionKey, to_lang, src_lang)
     } catch (error) {
       throw (error)
     }
@@ -376,37 +370,6 @@ export default class TranslateCommand extends Command {
         itemInLine.text = item.translations[0].text
         itemInLine.idx = -1
       }
-    })
-  }
-
-  private async translateText(text: any, subscriptionKey: string, to_lang: string, from_lang: string) {
-    const payload = Array.isArray(text) ? text : [{Text: text}]
-    let tUri = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=' + to_lang + '&includeAlignment=true'
-    if (from_lang) tUri += '&from=' + from_lang
-    const options = {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey,
-        'X-ClientTraceId': this.get_guid(),
-      },
-    }
-    const res = await fetch(tUri, options)
-    if (!res.ok) {
-      throw (new CLIError('Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'))
-    }
-
-    const data = await res.json()
-    return data
-  }
-
-  private get_guid(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = Math.random() * 16 | 0
-      // eslint-disable-next-line no-mixed-operators
-      const v = c === 'x' ? r : (r & 0x3 | 0x8)
-      return v.toString(16)
     })
   }
 }
