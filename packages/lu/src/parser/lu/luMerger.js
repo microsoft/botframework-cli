@@ -48,7 +48,7 @@ const buildRefTree = function(allParsedContent) {
                 'luis': luObj
             };
         } else {
-            if (refs[parsedObj.srcFile].luis === undefind) {
+            if (refs[parsedObj.srcFile].luis === undefined) {
                 ref[parserObj.srcFile].luis = luObj;
             }
         }
