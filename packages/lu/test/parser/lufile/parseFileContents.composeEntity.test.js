@@ -141,6 +141,28 @@ $deviceTemperature:simple`;
             .catch(err => done(`Test failed - ${err}`))
     });
 
+    it('composite entity definition can be split across .lu files', function(done) {
+      let luFile1Content = `@ ml username`;
+        let luFile2Content = `@ composite fooBar = [username]`;
+        parseFile(luFile1Content, false)
+            .then(res1 => {
+                parseFile(luFile2Content, false) 
+                    .then(res2 => {
+                      try {
+                        let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                        let finalConten = collate(luisList)
+                        assert.equal(finalConten.composites.length, 1)
+                        assert.equal(finalConten.composites[0].children.length, 1)
+                        done()        
+                      } catch (error) {
+                        done(error)
+                      }
+                    })
+                    .catch(err => done(`Test failed - ${err}`))
+            })
+            .catch(err => done(`Test failed - ${err}`))
+    })
+
     it('Parser throws and correctly identifies a child without an explicit or implicit child entity definition [across .lu files]', function(done){
         let luFile1Content = `$deviceTemperature : [p1; child2]`;
         let luFile2Content = `# test

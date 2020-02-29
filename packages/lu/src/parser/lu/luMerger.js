@@ -378,8 +378,10 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
         let parsedContent = await parseLuFile(luOb, log, luis_culture)
         parsedFiles.push(luOb.id)
 
-        if (haveLUISContent(parsedContent.LUISJsonStructure)
-            && parsedContent.LUISJsonStructure.validate()) {
+        // Fix for BF-CLI #620
+        // We do not perform validation here. for parseFile V1 API route, 
+        //  the recommendation is to vall validate() after parse.
+        if (haveLUISContent(parsedContent.LUISJsonStructure)) {
             allParsedLUISContent.push(parserObject.create(parsedContent.LUISJsonStructure, undefined, undefined, luOb.id, luOb.includeInCollate))
         }
 
