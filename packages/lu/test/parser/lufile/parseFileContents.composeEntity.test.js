@@ -117,19 +117,23 @@ $deviceTemperature:simple`;
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
     });
 
-    it('Parser throws when a composite entity has different definition across two different .lu file', function(done){
-        let luFile1Content = `$deviceTemperature : [child1; child2]`;
-        let luFile2Content = `$deviceTemperature : [child3]`;
+    it('Merge composite entity definition split across .lu files', function(done){
+        let luFile1Content = `@ ml userDOB
+        @ composite fooBar = [userDOB]`;
+        let luFile2Content = `@ ml username
+        @ composite fooBar = [username]`;
         parseFile(luFile1Content, false)
             .then(res1 => {
                 parseFile(luFile2Content, false) 
                     .then(res2 => {
                       try {
                         let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                        collate(luisList)
-                        done(`Test fail! Did not throw when expected`)        
+                        let finalConten = collate(luisList)
+                        assert.equal(finalConten.composites.length, 1)
+                        assert.equal(finalConten.composites[0].children.length, 2)
+                        done()        
                       } catch (error) {
-                        done()
+                        done(error)
                       }
                     })
                     .catch(err => done(`Test failed - ${err}`))
