@@ -124,16 +124,17 @@ export class Helper {
     return fileContent.replace(ANY_NEWLINE, NEWLINE)
   }
 
-  public static async translateText(text: any, subscriptionKey: string, to_lang: string, from_lang: string) {
+  public static async translateText(text: string, translateOption: TranslateOption) {
     const payload = Array.isArray(text) ? text : [{Text: text}]
-    let tUri = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=' + to_lang + '&includeAlignment=true'
-    if (from_lang) tUri += '&from=' + from_lang
+    const baseUri = 'https://api.cognitive.microsofttranslator.com/translate'
+    let tUri = `${baseUri}?api-version=3.0&to=${translateOption.to_lang}&includeAlignment=true`
+    if (translateOption.src_lang) tUri += `&from=${translateOption.src_lang}`
     const options = {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey,
+        'Ocp-Apim-Subscription-Key': translateOption.subscriptionKey,
         'X-ClientTraceId': Helper.get_guid(),
       },
     }
@@ -156,6 +157,48 @@ export class Helper {
   }
 }
 
+/**
+ * Translate options, including translate key, source language and target language
+ */
+export class TranslateOption {
+  /**
+   * translate key, see https://azure.microsoft.com/en-us/services/cognitive-services/translator-text-api/
+   */
+  public subscriptionKey: string
+
+  /**
+   * target language
+   */
+  public to_lang: string
+
+  /**
+   * source language
+   */
+  public src_lang: string
+
+  constructor(subscriptionKey: string, to_lang: string, src_lang: string) {
+    this.subscriptionKey = subscriptionKey
+    this.to_lang = to_lang
+    this.src_lang = src_lang
+  }
+}
+
+export class TranslateParts {
+  /**
+   * LG comments, start with ">"
+   */
+  public comments: boolean
+
+  /**
+   * LG link in import part, [abc](link) the abc part
+   */
+  public link: boolean
+
+  constructor(comments = false, link = false) {
+    this.comments = comments
+    this.link = link
+  }
+}
 export class Block {
     public block: string;
 

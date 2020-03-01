@@ -38,10 +38,10 @@ export default class VerifyCommand extends Command {
       throw new CLIError('No input. Please set file path with --in')
     }
 
-    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
-    for (const lgFilePath of lgFilePaths) {
-      const fileContent = txtfile.readSync(lgFilePath)
-      const errors = this.lgTool.validateFile(fileContent, lgFilePath)
+    const filePaths = Helper.findLGFiles(flags.in, flags.recurse)
+    for (const filePath of filePaths) {
+      const fileContent = txtfile.readSync(filePath)
+      const errors = this.lgTool.validateFile(fileContent, filePath)
       this.log(errors.join(', '))
     }
 

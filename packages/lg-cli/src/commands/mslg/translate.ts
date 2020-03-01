@@ -8,14 +8,13 @@
  */
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
-import {Helper, TranslateLine, PARSERCONSTS, Block} from '../../utils'
+import {Helper, TranslateLine, PARSERCONSTS, Block, TranslateOption, TranslateParts} from '../../utils'
 import {MSLGTool} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as os from 'os'
 // eslint-disable-next-line node/no-extraneous-require
-
 
 export default class TranslateCommand extends Command {
   static description = 'Translate .lg files to a target language by microsoft translation API.'
@@ -64,7 +63,10 @@ export default class TranslateCommand extends Command {
       throw new CLIError('No input. Please set file path with --in')
     }
 
-    await this.translate(flags)
+    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
+    for (const filePath of lgFilePaths) {
+      await this.translateLGFile(filePath, flags)
+    }
 
     const collectResult = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
     if (collectResult.filepath) {
@@ -74,23 +76,38 @@ export default class TranslateCommand extends Command {
     }
   }
 
-  public async translate(flags: any) {
-    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
-
+  private async translateLGFile(filePath: string, flags: any) {
     let outFolder: string = process.cwd()
     if (flags.out) {
       outFolder = this.getOutputFolder(flags.out)
     }
 
-    while (lgFilePaths.length > 0) {
-      const file = lgFilePaths[0]
-      let src_lang = this.DEFAULT_SOURCE_LANG
-      if (flags.srclang) {
-        src_lang = flags.srclang
-      }
+    if (!fs.existsSync(path.resolve(filePath))) {
+      throw new CLIError('unable to open file: ' + filePath)
+    }
 
-      await this.translateFile(file, outFolder, flags.translatekey, flags.tgtlang, src_lang, flags.translate_comments, flags.translate_link_text)
-      lgFilePaths.splice(0, 1)
+    const fileContent = txtfile.readSync(filePath)
+    if (!fileContent) {
+      throw new CLIError('unable to read file: ' + filePath)
+    }
+
+    let src_lang = this.DEFAULT_SOURCE_LANG
+    if (flags.srclang) {
+      src_lang = flags.srclang
+    }
+
+    const translateParts = new TranslateParts(flags.translate_comments, flags.translate_link_text)
+
+    // Support multi-language specification for targets.
+    // Accepted formats are space or comma separated list of target language codes.
+    // Tokenize to_lang
+    const toLangs = flags.tgtlang.split(/[, ]/g)
+    for (const toLang of toLangs) {
+      const tgt_lang = toLang.trim()
+      if (tgt_lang !== '') {
+        const translateOption = new TranslateOption(flags.translatekey, toLang, src_lang)
+        await this.translateLGFileToSpecificLang(filePath, outFolder, translateOption, translateParts)
+      }
     }
   }
 
@@ -109,57 +126,24 @@ export default class TranslateCommand extends Command {
     return outFolder
   }
 
-  private async translateFile(
-    file: string,
+  private async translateLGFileToSpecificLang(
+    filePath: string,
     outFolder: string,
-    translate_key: string,
-    to_lang: string,
-    src_lang: string,
-    translate_comments: boolean,
-    translate_link_text: boolean) {
-    if (!fs.existsSync(path.resolve(file))) {
-      throw new CLIError('unable to open file: ' + file)
-    }
-
-    const fileContent = txtfile.readSync(file)
-    if (!fileContent) {
-      throw new CLIError('unable to read file: ' + file)
-    }
-
-    // Support multi-language specification for targets.
-    // Accepted formats are space or comma separated list of target language codes.
-    // Tokenize to_lang
-    const toLangs = to_lang.split(/[, ]/g)
-    for (const toLang of toLangs) {
-      const tgt_lang = toLang.trim()
-      if (tgt_lang !== '') {
-        await this.translateFileToSpecificLang(file, outFolder, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text, fileContent)
-      }
-    }
-  }
-
-  private async translateFileToSpecificLang(
-    file: string,
-    outFolder: string,
-    translate_key: string,
-    tgt_lang: string,
-    src_lang: string,
-    translate_comments: boolean,
-    translate_link_text: boolean,
-    fileContent: string
+    translateOption: TranslateOption,
+    translateParts: TranslateParts
   ) {
-    const fileName = path.basename(file)
-    let parsedLocContent = ''
-    try {
-      parsedLocContent = await this.parseAndTranslate(fileContent, translate_key, tgt_lang, src_lang, translate_comments, translate_link_text)
-    } catch (error) {
-      throw (error)
+    const fileName = path.basename(filePath)
+    const fileContent = txtfile.readSync(filePath)
+    if (!fileContent) {
+      throw new CLIError('unable to read file: ' + filePath)
     }
+    const parsedLocContent = await this.parseAndTranslate(fileContent, translateOption, translateParts)
+
     if (!parsedLocContent) {
-      throw (new CLIError('Sorry, file : ' + file + ' had invalid content'))
+      throw (new CLIError('Sorry, file : ' + filePath + ' had invalid content'))
     } else {
       // write out file
-      const loutFolder = path.join(outFolder, tgt_lang)
+      const loutFolder = path.join(outFolder, translateOption.to_lang)
       try {
         fs.mkdirSync(loutFolder)
       } catch (error) {
@@ -178,10 +162,8 @@ export default class TranslateCommand extends Command {
 
   private async parseAndTranslate(
     fileContent: string,
-    subscriptionKey: string,   to_lang: string,
-    src_lang: string,
-    translate_comments: boolean,
-    translate_link_text: boolean): Promise<string> {
+    translateOption: TranslateOption,
+    translateParts: TranslateParts): Promise<string> {
     const batch_translate_size = this.MAX_TRANSLATE_BATCH_SIZE
     fileContent = Helper.sanitizeNewLines(fileContent)
     const linesInFile = fileContent.split(this.NEWLINE)
@@ -205,7 +187,7 @@ export default class TranslateCommand extends Command {
       }
 
       if (currentLine.trim().indexOf(PARSERCONSTS.COMMENT) === 0) {
-        if (translate_comments) {
+        if (translateParts.comments) {
           this.addSegment(linesToTranslate, currentLine.substring(0, currentLine.indexOf(PARSERCONSTS.COMMENT) + 1) + ' ', false)
           this.addSegment(linesToTranslate, currentLine.trim().slice(1).trim(), true)
         } else {
@@ -213,8 +195,7 @@ export default class TranslateCommand extends Command {
         }
 
         this.addSegment(linesToTranslate, this.NEWLINE, false)
-      } 
-      else if (currentLine.trim().indexOf(PARSERCONSTS.TEMPLATENAME) === 0) {
+      } else if (currentLine.trim().indexOf(PARSERCONSTS.TEMPLATENAME) === 0) {
         this.addSegment(linesToTranslate, currentLine, false)
         this.addSegment(linesToTranslate, this.NEWLINE, false)
       } else if (currentLine.trim().indexOf(PARSERCONSTS.SEPARATOR) === 0) {
@@ -283,7 +264,7 @@ export default class TranslateCommand extends Command {
 
       if ((linesToTranslate.length !== 0) && (lineCtr % batch_translate_size === 0)) {
         try {
-          localizedContent += await this.batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang)
+          localizedContent += await this.batchTranslateText(linesToTranslate, translateOption)
           linesToTranslate = []
         } catch (error) {
           throw (error)
@@ -293,7 +274,7 @@ export default class TranslateCommand extends Command {
 
     if ((linesToTranslate.length !== 0)) {
       try {
-        localizedContent += await this.batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang)
+        localizedContent += await this.batchTranslateText(linesToTranslate, translateOption)
         linesToTranslate = []
       } catch (error) {
         throw (error)
@@ -316,7 +297,7 @@ export default class TranslateCommand extends Command {
     }
   }
 
-  private async batchTranslateText(linesToTranslate: TranslateLine[], subscriptionKey: string, to_lang: string, src_lang: string) {
+  private async batchTranslateText(linesToTranslate: TranslateLine[], translateOption: TranslateOption) {
     // responsible for breaking localizable text into chunks that are
     // - not more than 5000 characters in combined length
     // - not more than 25 segments in one chunk
@@ -327,13 +308,13 @@ export default class TranslateCommand extends Command {
     for (const idx in linesToTranslate) {
       const item = linesToTranslate[idx]
       if (item.text.length + charCountInChunk >= this.MAX_CHAR_IN_REQUEST) {
-        await this.translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate)
+        await this.translateAndMap(batchTranslate, translateOption, linesToTranslate)
         batchTranslate = []
         charCountInChunk = 0
       }
       const currentBatchSize = batchTranslate.length > 0 ? batchTranslate.length : 1
       if (currentBatchSize % this.MAX_TRANSLATE_BATCH_SIZE === 0) {
-        await this.translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate)
+        await this.translateAndMap(batchTranslate, translateOption, linesToTranslate)
         batchTranslate = []
         charCountInChunk = 0
       }
@@ -344,7 +325,7 @@ export default class TranslateCommand extends Command {
       }
     }
     if (batchTranslate.length !== 0) {
-      await this.translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate)
+      await this.translateAndMap(batchTranslate, translateOption, linesToTranslate)
       batchTranslate = []
       charCountInChunk = 0
     }
@@ -355,14 +336,10 @@ export default class TranslateCommand extends Command {
     return retValue
   }
 
-  private async translateAndMap(batchRequest: any, subscriptionKey: string, to_lang: string, src_lang: string, linesToTranslateCopy: TranslateLine[]) {
+  private async translateAndMap(batchRequest: any, translateOption: TranslateOption, linesToTranslateCopy: TranslateLine[]) {
     if (batchRequest.length === 0) return
-    let data
-    try {
-      data = await Helper.translateText(batchRequest, subscriptionKey, to_lang, src_lang)
-    } catch (error) {
-      throw (error)
-    }
+    const data = await Helper.translateText(batchRequest, translateOption)
+
     data.forEach((item: any, idx: number) => {
       // find the correponding item in linesToTranslate
       const itemInLine = linesToTranslateCopy.find(item => item.idx === idx)

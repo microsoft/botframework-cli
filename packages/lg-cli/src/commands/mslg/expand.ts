@@ -51,7 +51,10 @@ export default class ExpandCommand extends Command {
       throw new CLIError('No input. Please set file path with --in')
     }
 
-    this.expand(flags)
+    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
+    for (const filePath of lgFilePaths) {
+      this.expandFile(filePath, flags)
+    }
 
     const collectResult = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
     if (collectResult.filepath) {
@@ -61,47 +64,44 @@ export default class ExpandCommand extends Command {
     }
   }
 
-  private expand(flags: any) {
-    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
-    for (const fileToExpand of lgFilePaths) {
-      this.log(`${fileToExpand} \n`)
-      let errors: string[] = []
-      errors = this.parseFile(fileToExpand, flags.expression)
+  private expandFile(filePath: string, flags: any) {
+    this.log(`${filePath} \n`)
+    let errors: string[] = []
+    errors = this.parseFile(filePath, flags.expression)
 
-      if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
-        throw new CLIError('parsing lg file or inline expression failed.')
-      }
-
-      // construct template name list
-      let templateNameList: string[] = []
-      if (flags.templateName) {
-        templateNameList.push(flags.template)
-      }
-
-      if (flags.all) {
-        templateNameList = [...new Set(templateNameList.concat(this.getTemplatesName(this.lgTool.collatedTemplates)))]
-      }
-
-      if (flags.expression) {
-        templateNameList.push('__temp__')
-      }
-
-      const expandedTemplates = this.expandTemplates(flags, templateNameList)
-
-      if (expandedTemplates === undefined || expandedTemplates.size === 0) {
-        throw new CLIError('expanding templates or inline expression failed')
-      }
-
-      let expandedTemplatesFile: string = this.generateExpandedTemplatesFile(expandedTemplates)
-
-      // ?
-      const fileName: string = flags.in
-      if (fileName === undefined) {
-        expandedTemplatesFile = expandedTemplatesFile.replace('# __temp__\n- ', '')
-      }
-
-      this.log(expandedTemplatesFile + '\n')
+    if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
+      throw new CLIError('parsing lg file or inline expression failed.')
     }
+
+    // construct template name list
+    let templateNameList: string[] = []
+    if (flags.template) {
+      templateNameList.push(flags.template)
+    }
+
+    if (flags.all) {
+      templateNameList = [...new Set(templateNameList.concat(this.getTemplatesName(this.lgTool.collatedTemplates)))]
+    }
+
+    if (flags.expression) {
+      templateNameList.push('__temp__')
+    }
+
+    const expandedTemplates = this.expandTemplates(flags, templateNameList)
+
+    if (expandedTemplates === undefined || expandedTemplates.size === 0) {
+      throw new CLIError('expanding templates or inline expression failed')
+    }
+
+    let expandedTemplatesFile: string = this.generateExpandedTemplatesFile(expandedTemplates)
+
+    // ?
+    const fileName: string = flags.in
+    if (fileName === undefined) {
+      expandedTemplatesFile = expandedTemplatesFile.replace('# __temp__\n- ', '')
+    }
+
+    this.log(expandedTemplatesFile + '\n')
   }
 
   private expandTemplates(flags: any, templateNameList: string[]) {
