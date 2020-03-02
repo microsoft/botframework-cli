@@ -146,7 +146,7 @@ export default class DialogMerge extends Command {
                         }
                         let filename = schemaPath.split(/[\\\/]/).pop() as string
                         let kind = filename.substr(0, filename.lastIndexOf('.'))
-                        if (!schema.type && !this.isUnion(schema)) {
+                        if (!schema.type && !this.isInterface(schema)) {
                             schema.type = 'object'
                         }
                         definitions[kind] = schema
@@ -157,7 +157,7 @@ export default class DialogMerge extends Command {
                 this.addKindTitles(definitions)
                 this.expandKinds(definitions)
                 this.addStandardProperties(definitions, metaSchema)
-                this.sortUnions(definitions)
+                this.sortImplementations(definitions)
                 let finalDefinitions: any = {}
                 for (let key of Object.keys(definitions).sort()) {
                     finalDefinitions[key] = definitions[key]
@@ -169,7 +169,7 @@ export default class DialogMerge extends Command {
                     title: 'Component kinds',
                     description: 'These are all of the kinds that can be created by the loader.',
                     oneOf: Object.keys(definitions)
-                        .filter(schemaName => !this.isUnion(definitions[schemaName]))
+                        .filter(schemaName => !this.isInterface(definitions[schemaName]))
                         .sort()
                         .map(schemaName => {
                             return {
@@ -360,7 +360,7 @@ export default class DialogMerge extends Command {
     }
 
     processRole(role: string, elt: any, kind: string, definitions: any, key?: string): void {
-        const prefix = 'union('
+        const prefix = 'implements('
         if (role === 'expression') {
             const reserved = ['title', 'description', 'examples', '$role']
             if (elt.kind) {
@@ -400,29 +400,29 @@ export default class DialogMerge extends Command {
                     choices.push({ type: 'string', title: 'Expression' })
                 }
             }
-        } else if (role === 'union') {
+        } else if (role === 'interface') {
             if (key) {
-                this.error(`${this.currentFile}:error: union $role can only be defined at the top of the schema definition.`)
+                this.error(`${this.currentFile}:error: interface $role can only be defined at the top of the schema definition.`)
             }
         } else if (role.startsWith(prefix) && role.endsWith(')')) {
-            let union = role.substring(prefix.length, role.length - 1)
-            if (!definitions[union]) {
-                this.error(`${this.currentFile}:error: union ${union} is not defined.`)
-            } else if (!this.isUnion(definitions[union])) {
-                this.error(`${this.currentFile}:error: is missing $role of union.`)
+            let interfaceName = role.substring(prefix.length, role.length - 1)
+            if (!definitions[interfaceName]) {
+                this.error(`${this.currentFile}:error: interface ${interfaceName} is not defined.`)
+            } else if (!this.isInterface(definitions[interfaceName])) {
+                this.error(`${this.currentFile}:error: is missing $role of interface.`)
             } else {
                 let definition = definitions[kind]
-                let unionDefinition = definitions[union]
-                if (!unionDefinition.oneOf) {
-                    unionDefinition.oneOf = [
+                let interfaceDefinition = definitions[interfaceName]
+                if (!interfaceDefinition.oneOf) {
+                    interfaceDefinition.oneOf = [
                         {
                             type: 'string',
-                            title: `Reference to ${union}`,
-                            description: `Reference to ${union} .dialog file.`
+                            title: `Reference to ${interfaceName}`,
+                            description: `Reference to ${interfaceName} .dialog file.`
                         }
                     ]
                 }
-                unionDefinition.oneOf.push({
+                interfaceDefinition.oneOf.push({
                     title: kind,
                     description: definition.description || '',
                     $ref: `#/definitions/${kind}`
@@ -478,7 +478,7 @@ export default class DialogMerge extends Command {
     addStandardProperties(definitions: any, dialogSchema: any): void {
         for (let kind in definitions) {
             let definition = definitions[kind]
-            if (!this.isUnion(definition)) {
+            if (!this.isInterface(definition)) {
                 // Reorder properties to put $ first.
                 let props: any = {
                     $kind: clone(dialogSchema.definitions.kind),
@@ -516,10 +516,10 @@ export default class DialogMerge extends Command {
         }
     }
 
-    sortUnions(definitions: any): void {
+    sortImplementations(definitions: any): void {
         for (let key in definitions) {
             let definition = definitions[key]
-            if (this.isUnion(definition) && definition.oneOf) {
+            if (this.isInterface(definition) && definition.oneOf) {
                 definition.oneOf = definition.oneOf.sort((a: any, b: any) => a.title.localeCompare(b.title))
             }
         }
@@ -573,8 +573,8 @@ export default class DialogMerge extends Command {
         })
     }
 
-    isUnion(schema: any): boolean {
-        return schema.$role === 'union'
+    isInterface(schema: any): boolean {
+        return schema.$role === 'interface'
     }
 
     missing(kind: string): void {
