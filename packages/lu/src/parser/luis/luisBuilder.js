@@ -26,8 +26,7 @@ class LuisBuilder {
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
     static async fromContent(luContent) {
-        let parsedContent = await parseFileContents(luContent, false, '')
-        return new Luis(parsedContent.LUISJsonStructure)
+        return await parseAndValidateLuFile(luContent)
     }
 
     /**
@@ -43,8 +42,7 @@ class LuisBuilder {
         }
 
         if(luArray.length === 1){
-            let parsedContent = await parseFileContents(luArray[0].content, false, luArray[0].language)
-            return new Luis(parsedContent.LUISJsonStructure)
+            return await parseAndValidateLuFile(luArray[0].content, false, luArray[0].language)
         }
 
         return build(luArray, false, '', luSearchFn)
@@ -53,3 +51,10 @@ class LuisBuilder {
 }
 
 module.exports = LuisBuilder
+
+const parseAndValidateLuFile = async function(luContent, log = undefined, culture = undefined) {
+    let parsedContent = await parseFileContents(luContent, log, culture)
+    let LUISObj = new Luis(parsedContent.LUISJsonStructure)
+    LUISObj.validate()
+    return LUISObj
+}

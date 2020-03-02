@@ -4,6 +4,7 @@ const LUISObjNameEnum = require('./../utils/enums/luisobjenum')
 const Luis = require('./luis')
 const helpers = require('./../utils/helpers')
 const mergeLuFiles = require('./../lu/luMerger').Build
+const exception = require('./../utils/exception')
 
 /**
  * Builds a Luis instance from a Lu list.
@@ -259,7 +260,9 @@ const buildComposites = function(blob, FinalLUISJSON){
             FinalLUISJSON.composites.push(composite);
         } else {
             if (JSON.stringify(composite.children.sort()) !== JSON.stringify(compositeInMaster[0].children.sort())) {
-                throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, `[ERROR]: Composite entity: ${composite.name} has multiple definition with different children. \n 1. ${compositeInMaster[0].children.join(', ')}\n 2. ${composite.children.join(', ')}`));
+                composite.children.forEach(child => {
+                    if (!compositeInMaster[0].children.includes(child)) compositeInMaster[0].children.push(child)
+                })
             } else {
                 // merge roles
                 (composite.roles || []).forEach(blobRole => {
