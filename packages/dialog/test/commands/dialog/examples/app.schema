@@ -30,10 +30,10 @@
         "INothing": {
             "title": "Microsoft Nothing",
             "description": "Definition of a union type with no implementations.",
-            "$role": "union"
+            "$role": "interface"
         },
         "IRecognizer": {
-            "$role": "union",
+            "$role": "interface",
             "oneOf": [
                 {
                     "title": "Recognizer",
@@ -48,7 +48,7 @@
             ]
         },
         "Recognizer": {
-            "$role": "union(IRecognizer)",
+            "$role": "implements(IRecognizer)",
             "properties": {
                 "$kind": {
                     "title": "$kind",
@@ -116,7 +116,7 @@
             ]
         },
         "RecognizerTypeMismatch": {
-            "$role": "union(IRecognizer)",
+            "$role": "implements(IRecognizer)",
             "type": "object",
             "properties": {
                 "$kind": {
