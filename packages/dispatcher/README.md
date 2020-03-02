@@ -1,6 +1,7 @@
 ﻿@microsoft/bf-dispatcher
 ========================
 
+This package is for microsoft internal use only. Please do not install as a dependency
 'bf-dispatcher' is a generic NLP intent classification package/library.
 It currently can do:
 
