@@ -1,5 +1,5 @@
 
-This package is for microsoft internal use only and should be consumed through @microsoft/botframework-cli. Please do not install as a dependency
+This package is intended for Microsoft use only. It is not designed to be consumed as an independent package.
 
 # Consuming @microsoft/bf-lu as a library
 @microsoft/bf-lu can be used within a Node.js application as an imported library. Install locally:
