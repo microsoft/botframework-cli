@@ -1,27 +1,27 @@
 
 # filename
-- @{assignFilename('dimension')}
+- ${assignFilename('dimension')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "dimension",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setObjectPropertyMessage('@{property}',concat(string(@dimension.number), ' ', @dimension.units))}"
+            "activity": "$\{setObjectPropertyMessage('${property}',concat(string(@dimension.number), ' ', @dimension.units))}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.number",
+            "property": "$${property}.number",
             "value": "=@dimension.number"          
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}.units",
+            "property": "$${property}.units",
             "value": "=@dimension.units"          
         }
     ]               

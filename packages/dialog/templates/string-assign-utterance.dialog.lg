@@ -1,22 +1,22 @@
 
 # filename
-- @{assignFilename('utterance')}
+- ${assignFilename('utterance')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "utterance",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@\{setPropertyMessage('@{property}', @utterance)}"
+            "activity": "$\{setPropertyMessage('${property}', @utterance)}"
         },
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@utterance"          
         }
     ]               

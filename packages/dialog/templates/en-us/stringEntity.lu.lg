@@ -1,7 +1,7 @@
 # filename
-- @{entityLUFilename()}
+- ${entityLUFilename()}
 
 # template
-- @ ml @{property}Entity
+- @ ml ${property}Entity
 
 [generator.lg](../generator.lg)

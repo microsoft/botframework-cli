@@ -5,7 +5,7 @@
 - bread
 
 # Bread(val)
-- @{BreadEntity(val)}
+- ${BreadEntity(val)}
 
 [sandwich-BreadEntity.lg](sandwich-BreadEntity.lg)
 
