@@ -36,6 +36,8 @@ jobs:
       displayName: 'Tag Build with version number'
       inputs:
         tags: 'Version=$(_version)'
+      continueOnError: true
+      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], 'False'))
 
     - task: NodeTool@0
       displayName: 'Use Node 12.x'
