@@ -17,23 +17,19 @@ export async function test(
   // luis api TPS which means 5 concurrent transactions to luis api in 1 second
   // can set to other value if switched to a higher TPS(transaction per second) key
   let luisApiTps = 5
-  concurrency = concurrency > 5? concurrency : 5
-  let minTime = 1100 * concurrency / luisApiTps
+  concurrency = concurrency < 5? concurrency : 5
+  let minTime = 1000 * concurrency / luisApiTps
 
   // here we do a while loop to make full use of luis tps capacity
   let index = 0
   while (index < luisObject.utterances.length) {
-    let subUtterances: any[] = [minTime]
+    let subUtterances: any[] = []
     let subIndex = 0
     while (subIndex < concurrency && index+subIndex < luisObject.utterances.length){
       subUtterances.push(luisObject.utterances[index+subIndex])
       subIndex++
     }
     await Promise.all(subUtterances.map(async (utterance: any) => {
-      if (typeof utterance === "number"){
-        await delay(minTime)
-        return
-      }
       const predictionRequest: any = {"query": utterance.text}
       let predictedResult = await client.prediction.getSlotPrediction(appId, slotName, predictionRequest, options)
       resultLog.push(predictedResult)
@@ -57,6 +53,7 @@ export async function test(
       }
       utterance.predictedResult = result
     }))
+    await delay(minTime)
     index+=subIndex
   }
 
