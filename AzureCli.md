@@ -78,3 +78,6 @@ To remove a channel from a bot, use `az bot directline delete`.
 These are the known issues and limitations that the CLI has right now.  
 1) Creation of msa app id and password is not supported for hotmail.com accounts.
 2) `az bot publish` fails for a c# solution , when the project is open in visual studio. To work around this for now, please close the solution before doing a publish.
+
+# See Also
+* Refer to [az bot](https://docs.microsoft.com/en-us/cli/azure/bot?view=azure-cli-latest) for complete command usage documentation.
