@@ -11,8 +11,23 @@ const path = require('path')
 const helpers = require('./../parser/utils/helpers')
 const luObject = require('./../parser/lu/lu')
 const LUOptions = require('./../parser/lu/luOptions')
-
+const globby = require('globby');
 /* tslint:disable:prefer-for-of no-unused*/
+
+export async function getFilesContent(input: string, extType: string) {
+  const paths = await globby([`**/*${extType}`], { cwd: input, dot: true });
+  return await Promise.all(paths.map(async (item: string) => {
+    const itemPath = path.resolve(path.join(input, item))
+    const content = await getContentFromFile(itemPath);
+    return {path: itemPath, content}
+  }))
+}
+
+export async function getConfigContent(input: string) {
+  const luConfigFile = await getConfigFile(input)
+  const content = await getContentFromFile(luConfigFile);
+  return {path: luConfigFile, content};
+}
 
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []

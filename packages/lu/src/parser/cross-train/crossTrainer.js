@@ -15,6 +15,8 @@ const retCode = require('../utils/enums/CLI-errors');
 const NEWLINE = require('os').EOL
 const path = require('path')
 const QNA_GENERIC_SOURCE = "custom editorial"
+const luObject = require('./../lu/lu')
+const LUOptions = require('./../lu/luOptions')
 
 module.exports = {
   /**
@@ -25,8 +27,9 @@ module.exports = {
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
    */
-  crossTrain: function (luObjectArray, qnaObjectArray, crossTrainConfig) {
+  crossTrain: function (luContents, qnaContents, crossTrainConfig) {
     try {
+      const {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents);
       const crossTrainConfigObj = JSON.parse(crossTrainConfig)
       const rootObjectIds = crossTrainConfigObj.rootIds
       const triggerRules = crossTrainConfigObj.triggerRules
@@ -62,7 +65,76 @@ module.exports = {
     } catch (err) {
       throw (err)
     }
+  },
+  
+  getConfigObject : function (configContent, intentName) {
+    const configFileDir = path.dirname(configContent.path)
+    const luConfigContent = configContent.content;
+    if (luConfigContent && luConfigContent !== '') {
+      try {
+        const luConfigObj = JSON.parse(luConfigContent)
+        for (const rootluFilePath of Object.keys(luConfigObj)) {
+          const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
+          const triggerObj = luConfigObj[rootluFilePath]
+          for (const triggerObjKey of Object.keys(triggerObj)) {
+            if (triggerObjKey === 'rootDialog') {
+              if (triggerObj[triggerObjKey]) {
+                rootLuFiles.push(rootLuFileFullPath)
+              }
+            } else if (triggerObjKey === 'triggers') {
+              const triggers = triggerObj[triggerObjKey]
+              for (const triggerKey of Object.keys(triggers)) {
+                const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
+                for (const destLuFile of destLuFiles) {
+                  const destLuFileFullPath = path.resolve(configFileDir, destLuFile)
+                  if (rootLuFileFullPath in finalLuConfigObj) {
+                    const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
+                    finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                  } else {
+                    let finalDestLuFileToIntent = Object.create(null)
+                    finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                    finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, invalid cross training config: ${err}`))
+      }
+    }
+
+    if (configObject.rootIds.length > 0) {
+      let crossTrainConfig = {
+        rootIds: rootLuFiles,
+        triggerRules: finalLuConfigObj,
+        intentName: intentName,
+        verbose: true
+      }
+
+      return crossTrainConfig;
+    } else {
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
+    }
   }
+}
+
+const getParsedObjects = function(contents) {
+  const parsedObjects = contents.map((content) => {
+    const opts = new LUOptions(content.path)
+    return new luObject(content.content, opts); 
+  })
+
+  return parsedObjects
+}
+
+const pretreatment = function (luContents, qnaContents) {
+   // Parse lu and qna objects
+   const luObjectArray = getParsedObjects(luContents);
+   const qnaObjectArray = getParsedObjects(qnaContents);
+
+   return {luObjectArray, qnaObjectArray}
 }
 
 /**

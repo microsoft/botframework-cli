@@ -22,30 +22,14 @@ module.exports = {
   train: async function (input, intentName, configPath) {
     let trainedResult
 
-    // Parse lu and qna objects
-    const luObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.LUFile)
-    const qnaObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.QnAFile)
+    // Get all related file content.
+    const luContents = await file.getFilesContent(input, fileExtEnum.LUFile);
+    const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile);
+    const configContent = await file.getConfigContent(configPath || input);
 
-    let configObject
-    if (configPath && configPath !== '') {
-      configObject = await file.getConfigObject(configPath)
-    } else {
-      configObject = await file.getConfigObject(input)
-    }
+    const configObject = crossTrainer.getConfigObject(configContent, intentName);
 
-    if (configObject.rootIds.length > 0) {
-      let crossTrainConfig = {
-        rootIds: configObject.rootIds,
-        triggerRules: configObject.triggerRules,
-        intentName: intentName,
-        verbose: true
-      }
-
-      trainedResult = crossTrainer.crossTrain(luObjects, qnaObjects, JSON.stringify(crossTrainConfig))
-    } else {
-      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
-    }
-
+    trainedResult = crossTrainer.crossTrain(luContents, qnaContents, JSON.stringify(configObject))
     return trainedResult
   },
 

@@ -14,17 +14,17 @@ describe('luis:cross training tests among lu and qna contents', () => {
     let luContentArray = []
     let qnaContentArray = []
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# dia1_trigger
       - book a hotel for me
       
       # dia2_trigger
       - book a flight for me
       - book a train ticket for me`,
-      new luOptions('./main/main.lu'))
+      path:'./main/main.lu'}
     )
 
-    qnaContentArray.push(new content(
+    qnaContentArray.push({content:
       `# ?user guide
 
       **Filters:**
@@ -38,16 +38,16 @@ describe('luis:cross training tests among lu and qna contents', () => {
       \`\`\`
           tell a funny joke
       \`\`\``,
-      new luOptions('./main/main.qna'))
+      path:'./main/main.qna'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# dia1_trigger
       - réserver un hôtel`,
-      new luOptions('./main/main.fr-fr.lu'))
+      path: './main/main.fr-fr.lu'}
     )
 
-    qnaContentArray.push(new content(
+    qnaContentArray.push({content:
       `# ?guide de l'utilisateur
 
       **Filters:**
@@ -56,10 +56,10 @@ describe('luis:cross training tests among lu and qna contents', () => {
       \`\`\`
           Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
       \`\`\``,
-      new luOptions('./main/main.fr-fr.qna'))
+      path:'./main/main.fr-fr.qna'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `> !# @app.name = my luis application
       
       # hotelLevel
@@ -67,10 +67,10 @@ describe('luis:cross training tests among lu and qna contents', () => {
       
       # hotelLocation
       - can I book a hotel near space needle`,
-      new luOptions('./dia1/dia1.lu'))
+      path:'./dia1/dia1.lu'}
     )
 
-    qnaContentArray.push(new content(
+    qnaContentArray.push({content:
       `> !# @app.desc = description of my luis application
       
       > !# @qna.pair.source = xyz
@@ -89,37 +89,37 @@ describe('luis:cross training tests among lu and qna contents', () => {
       \`\`\`
           of course you can
       \`\`\``,
-      new luOptions('./dia1/dia1.qna'))
+      path:'./dia1/dia1.qna'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# hotelLevel
       - J'ai besoin d'un hôtel quatre étoiles
       
       # hotelLocation
       - puis-je réserver un hôtel près de l'aiguille spatiale`,
-      new luOptions('./dia1/dia1.fr-fr.lu'))
+      path:'./dia1/dia1.fr-fr.lu'}
     )
 
-    qnaContentArray.push(new content(
+    qnaContentArray.push({content:
       `# ?raconter la blague
       
       \`\`\`
           ha ha ha
       \`\`\``,
-      new luOptions('./dia1/dia1.fr-fr.qna'))
+      path:'./dia1/dia1.fr-fr.qna'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# dia3_trigger
       - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
       
       # dia4_trigger
       - book a train ticket from Seattle to Portland`,
-      new luOptions('./dia2/dia2.lu'))
+      path:'./dia2/dia2.lu'}
     )
 
-    qnaContentArray.push(new content(
+    qnaContentArray.push({content:
       `# ?sing song
       \`\`\`
           sure, I can sing song.
@@ -129,30 +129,34 @@ describe('luis:cross training tests among lu and qna contents', () => {
       \`\`\`
           ha ha ha
       \`\`\``,
-      new luOptions('./dia2/dia2.qna'))
+     path:'./dia2/dia2.qna'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push(
+      {
+        content:
       `# flightDestination
       - book a flight to {toLocation = Beijing}
       
       # flightTime
       - which {flightTime} do you prefer`,
-      new luOptions('./dia3/dia3.lu'))
+      path:'./dia3/dia3.lu'}
     )
 
-    qnaContentArray.push(new content(
-      ``,
-      new luOptions('./dia3/dia3.qna'))
+    qnaContentArray.push(
+      {
+        content:``,
+        path: './dia3/dia3.qna'
+      }
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# railwayStation
       - which station will you leave from
       
       # railwayTime
       - when do you want to leave from Seattle train station`,
-      new luOptions('./dia4/dia4.lu'))
+      path: './dia4/dia4.lu'}
     )
 
     let crossTrainConfig = {
@@ -243,7 +247,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
   it('luis:cross training can get expected result when nestedIntentSection is enabled', () => {
     let luContentArray = []
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `> !# @enableSections = true
       > !# @enableMergeIntents = true
       
@@ -253,19 +257,19 @@ describe('luis:cross training tests among lu and qna contents', () => {
                   
       #dia2_trigger
       - book a hotel for me`,
-      new luOptions('./main/main.lu'))
+      path:'./main/main.lu'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# FlightTime
       - which {flightTime} do you prefer`,
-      new luOptions('./dia1/dia1.lu'))
+      path:'./dia1/dia1.lu'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# HotelLevel
       - which hotel star do you prefer`,
-      new luOptions('./dia2/dia2.lu'))
+      path:'./dia2/dia2.lu'}
     )
 
     let crossTrainConfig = {
@@ -292,31 +296,31 @@ describe('luis:cross training tests among lu and qna contents', () => {
   it('luis:cross training can get expected result when multiple dialog invocations occur in same trigger', () => {
     let luContentArray = []
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# dia1_trigger
       - I want to travel to Seattle
                   
       #dia2_trigger
       - book a hotel for me`,
-      new luOptions('./main/main.lu'))
+      path:'./main/main.lu'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# bookFlight
       - book a flight for me`,
-      new luOptions('./dia1/dia1.lu'))
+      path:'./dia1/dia1.lu'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# bookTrain
       - book a train ticket for me`,
-      new luOptions('./dia2/dia2.lu'))
+      path:'./dia2/dia2.lu'}
     )
 
-    luContentArray.push(new content(
+    luContentArray.push({content:
       `# HotelLevel
       - I prefer 4 stars hotel`,
-      new luOptions('./dia3/dia3.lu'))
+      path:'./dia3/dia3.lu'}
     )
 
     let crossTrainConfig = {
