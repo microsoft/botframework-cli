@@ -40,13 +40,13 @@ export async function test(
       result.predictedIntents = []
 
       let intentCount = 0
-      for (const intent of predictedResult.prediction.intents.keys()) {
+      for (const intent of Object.keys(predictedResult.prediction.intents)) {
         if (intentCount >= allowIntentsCount) {
           break
         }
         const predictedIntents: any = {}
         predictedIntents.intent = intent
-        predictedIntents.score = predictedResult.prediction.intents.intent.score
+        predictedIntents.score = predictedResult.prediction.intents[intent].score
         result.predictedIntents.push(predictedIntents)
         intentCount++
       }
@@ -109,9 +109,9 @@ function compareEntity(predictedEntities: any[], utterance: any) {
 
 // convert the predicted result to specific format
 function ParseEntitiyResult(entities: any, result: any) {
-  for (const name of entities.keys()) {
+  for (const name of Object.keys(entities)) {
     if (name === '$instance') {
-      for (const entityType of entities.$instance.keys()) {
+      for (const entityType of Object.keys(entities.$instance)) {
         for (const entity of entities.$instance[entityType]) {
           if (entity.modelTypeId === 1 || entity.modelTypeId === 4 || (entity.role !== undefined && entity.role !== '')) {
             let newEntity: any = new Object()
