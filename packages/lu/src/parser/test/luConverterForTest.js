@@ -456,6 +456,8 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
 const objectSortByStartPos = function (objectArray) {
     let ObjectByStartPos = objectArray.slice(0);
     ObjectByStartPos.sort(function(a,b) {
+        if (a.startPos == b.startPos)
+            return a.endPos - b.endPos; 
         return a.startPos - b.startPos;
     });
     return ObjectByStartPos;

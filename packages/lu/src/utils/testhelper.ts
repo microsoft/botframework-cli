@@ -37,7 +37,7 @@ export async function test(
       result.predictedIntents = []
       
       let intentCount = 0
-      for (let intent in predictedResult.prediction.intents){
+      for (const intent in predictedResult.prediction.intents){
         if (intentCount >= allowIntentsCount){
           break;
         }
@@ -45,7 +45,6 @@ export async function test(
         intentCount++
       }
       result.IntentPass = compareIntent(result.predictedIntents, utterance)
-      
       if (!intentOnly){
         result.predictedEntities = []
         ParseEntitiyResult(predictedResult.prediction.entities, result)
@@ -88,11 +87,11 @@ function compareIntent(predictedIntents: any[], utterance: any){
 
 function compareEntity(predictedEntities: any[], utterance: any){
   let pass = true
-  for (let entity of utterance.entities){
+  for (const entity of utterance.entities){
     if(!predictedEntities.find((x: any)=> 
-      (entity.role!==undefined && entity.role==x.role || entity.role === undefined && entity.entity==x.entity)
-      && entity.startPos==x.startPos 
-      && entity.endPos==x.endPos)){
+      (entity.role!==undefined && entity.role===x.role || entity.role === undefined && entity.entity===x.entity)
+      && entity.startPos===x.startPos 
+      && entity.endPos===x.endPos)){
       pass = false;
       break;
     }
@@ -101,10 +100,10 @@ function compareEntity(predictedEntities: any[], utterance: any){
 }
 
 function ParseEntitiyResult(entities :any, result: any){
-  for(let name in entities){
+  for(const name in entities){
     if (name == "$instance"){
-      for(let entityType in entities.$instance){
-        for(let entity of entities.$instance[entityType]){
+      for(const entityType in entities.$instance){
+        for(const entity of entities.$instance[entityType]){
           if (entity.modelTypeId === 1 || entity.modelTypeId === 4 || (entity.role !== undefined && entity.role !== "")){
             let newEntity: any = new Object()
             newEntity.entity = entityType
@@ -119,7 +118,7 @@ function ParseEntitiyResult(entities :any, result: any){
       }
     }
     else{
-      for(let subEntity of entities[name]){
+      for(const subEntity of entities[name]){
         if (typeof subEntity == "object"){
           ParseEntitiyResult(subEntity, result);
         }

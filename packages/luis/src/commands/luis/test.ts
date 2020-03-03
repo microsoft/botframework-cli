@@ -7,14 +7,15 @@ import {LUISRuntimeClient} from '@azure/cognitiveservices-luis-runtime'
 import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
-const file = require('./../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
+const testHelper = require('@microsoft/bf-lu/lib/utils/testhelper')
+const exception = require('@microsoft/bf-lu').V2.Exception
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
+const LuisBuilder = require('@microsoft/bf-lu/lib/parser/luis/luisCollate')
+const Luis = require('@microsoft/bf-lu').V2.Luis
 const luConverterForTest = require('./../../../../lu/src/parser/test/luConverterForTest')
-const testHelper = require('./../../../../lu/src/utils/testhelper')
-const exception = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
-const fileExtEnum = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
-const LuisBuilder = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luisBuilder')
-const Luis = require('./../../../node_modules/@microsoft/bf-lu/lib/parser/luis/luis')
 
+import {hasContent} from './../../utils/luisinstanceutils'
 export default class LuisTest extends Command {
   static description = 'Test a .lu file or LUIS application JSON model against a published LUIS model'
 
@@ -47,13 +48,13 @@ export default class LuisTest extends Command {
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, false, fileExtEnum.LUFile)
         luisObject = await LuisBuilder.build(luFiles, flags.log, flags.culture)
-        if (!luisObject.hasContent()) {
+        if (!hasContent(luisObject)) {
           throw new CLIError('No LU content parsed!')
         }
       } else {
         const luisContent = stdin ? stdin : await file.getContentFromFile(flags.in)
         luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
-        if (!luisObject.hasContent()) {
+        if (!hasContent(luisObject)) {
           throw new CLIError('No LUIS content found!')
         }
       }
