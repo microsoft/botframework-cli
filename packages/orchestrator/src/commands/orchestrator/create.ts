@@ -26,7 +26,7 @@ export default class OrchestratorCreate extends Command {
     const input = flags.in || __dirname;
     const output = flags.out || __dirname;
     
-    let args = `-i ${input} -o ${output}`;
+    let args = `create -i ${input} -o ${output}`;
     this.log(`arguments -- ${args}`);
 
     // TODO: figure out rush package dependency with regard to oclif folder structure

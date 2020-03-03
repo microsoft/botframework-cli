@@ -19,12 +19,23 @@ export default class OrchestratorPredict extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(OrchestratorPredict)
+    const {flags} = this.parse(OrchestratorPredict)
 
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\predict.ts`)
-    if (args.file && flags.force) {
-      this.log(`you input --force and --file: ${args.file}`)
+    const input = flags.in || __dirname;
+    const output = flags.out || __dirname;
+    
+    let args = `predict -i ${input} -o ${output}`;
+    this.log(`arguments -- ${args}`);
+
+    // TODO: figure out rush package dependency with regard to oclif folder structure
+    // require("dotnet-3.1") statement works only for local package install
+    // process.argv= [process.argv[0], process.argv[1], __dirname + '/netcoreapp3.1/OrchestratorCli.dll', ...process.argv.slice(2)]
+    // require("dotnet-3.1")
+
+    try {
+        require('child_process').execSync('dotnet "' + __dirname + '/netcoreapp3.1/OrchestratorCli.dll" ' + args, { stdio: [0, 1, 2] });
+    } catch (err) {
+        return 0;
     }
   }
 }
