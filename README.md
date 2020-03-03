@@ -75,7 +75,27 @@ Privacy is very important to us. BF CLI contains optional instrumentation that i
 To disable data collection see the  __*bf config*__ command.
 
 
-Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.  
+Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.
+
+## Nightly builds
+
+Nightly builds are generated using the latest code. Therefore, they may not be stable, and most likely lack up to date documentation. These builds are better suited for more experienced users, although everyone is welcome to use them and provide feedback.
+
+You can get the latest nightly build of bot framework cli from the [BotBuilder MyGet](https://botbuilder.myget.org/gallery) feed. To install the nightly -
+
+```shell
+npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
+```
+
+Install using npm:
+```shell
+npm i -g @microsoft/botframework-cli
+```
+
+To reset registry:
+```shell
+npm config set registry https://registry.npmjs.org/
+```
 
 ## Contributing
 
