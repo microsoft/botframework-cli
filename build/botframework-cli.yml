@@ -55,7 +55,7 @@ jobs:
     - script: 'rush build -p 2'
       displayName: 'rush build'
 
-    - script: 'rush test -p 2'
+    - script: 'rush test -p 2 -v'
       displayName: 'rush test'
     
     - script: 'rush posttest'
