@@ -32,7 +32,7 @@ jobs:
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
 
     steps:
-    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+    - task: tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
         tags: 'Version=$(_version)'
