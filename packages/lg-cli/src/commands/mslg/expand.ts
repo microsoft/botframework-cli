@@ -8,7 +8,7 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper, ErrorType} from '../../utils'
-import {MSLGTool} from 'botbuilder-lg'
+import {MSLGTool, LGParser, LGFile} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
@@ -60,6 +60,7 @@ export default class ExpandCommand extends Command {
     if (collectResult.filepath) {
       this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
     } else {
+      this.log('collect result:')
       this.log(collectResult.content)
     }
   }
@@ -67,27 +68,17 @@ export default class ExpandCommand extends Command {
   private expandFile(filePath: string, flags: any) {
     this.log(`${filePath} \n`)
     let errors: string[] = []
+
     errors = this.parseFile(filePath, flags.expression)
 
     if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
       throw new CLIError('parsing lg file or inline expression failed.')
     }
+    const lg = LGParser.parseFile(filePath)
 
-    // construct template name list
-    let templateNameList: string[] = []
-    if (flags.template) {
-      templateNameList.push(flags.template)
-    }
-
-    if (flags.all) {
-      templateNameList = [...new Set(templateNameList.concat(this.getTemplatesName(this.lgTool.collatedTemplates)))]
-    }
-
-    if (flags.expression) {
-      templateNameList.push('__temp__')
-    }
-
-    const expandedTemplates = this.expandTemplates(flags, templateNameList)
+    const originTemplates = lg.templates.map(u => u.name)
+    const templateNameList = this.buildTemplateNameList(originTemplates, flags)
+    const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput, flags.interactive)
 
     if (expandedTemplates === undefined || expandedTemplates.size === 0) {
       throw new CLIError('expanding templates or inline expression failed')
@@ -104,16 +95,33 @@ export default class ExpandCommand extends Command {
     this.log(expandedTemplatesFile + '\n')
   }
 
-  private expandTemplates(flags: any, templateNameList: string[]) {
+  private buildTemplateNameList(origintemplateNames: string[], flags: any): string[] {
+    let templateNameList: string[] = []
+    if (flags.template) {
+      templateNameList.push(flags.template)
+    }
+
+    if (flags.all) {
+      templateNameList = [...new Set(templateNameList.concat(origintemplateNames))]
+    }
+
+    if (flags.expression) {
+      templateNameList.push('__temp__')
+    }
+
+    return templateNameList
+  }
+
+  private expandTemplates(lg: LGFile, templateNameList: string[], testInput: string, interactive = false) {
     const expandedTemplates: Map<string, string[]> = new Map<string, string[]>()
     let variablesValue: Map<string, any>
     const userInputValues: Map<string, any> = new Map<string, any>()
     for (const templateName of templateNameList) {
-      const expectedVariables = this.lgTool.getTemplateVariables(templateName)
-      variablesValue = this.getVariableValues(flags.testInput, expectedVariables, userInputValues)
+      const expectedVariables = lg.analyzeTemplate(templateName).Variables
+      variablesValue = this.getVariableValues(testInput, expectedVariables, userInputValues)
       for (const variableValue of variablesValue) {
         if (variableValue[1] === undefined) {
-          if (flags.interactive) {
+          if (interactive) {
             const value = readlineSync.question(`Please enter variable value of ${variableValue[0]} in template ${templateName}: `)
             let valueObj: any
             // eslint-disable-next-line max-depth
@@ -130,7 +138,7 @@ export default class ExpandCommand extends Command {
       }
 
       const variableObj: any = this.generateVariableObj(variablesValue)
-      const expandedTemplate: string[] = this.lgTool.expandTemplate(templateName, variableObj)
+      const expandedTemplate: string[] =  lg.expandTemplate(templateName, variableObj)
       expandedTemplates.set(templateName, expandedTemplate)
     }
 

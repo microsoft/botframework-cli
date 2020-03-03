@@ -200,39 +200,38 @@ export class TranslateParts {
   }
 }
 export class Block {
-    public block: string;
+  public block: string;
 
-    public start: number;
+  public start: number;
 
-    public end: number;
+  public end: number;
 
-    constructor(block: string, start: number, end: number) {
-      this.block = block
-      this.start = start
-      this.end = end
-    }
+  constructor(block: string, start: number, end: number) {
+    this.block = block
+    this.start = start
+    this.end = end
+  }
 }
 
 export class TranslateLine {
-    public text: string;
+  public text: string;
 
-    public localize: boolean;
+  public localize: boolean;
 
-    public idx: number;
+  public idx: number;
 
-    constructor(text: string, localize: boolean, idx = -1) {
-      this.text = text
-      this.localize = localize
-      this.idx = idx
-    }
+  constructor(text: string, localize: boolean, idx = -1) {
+    this.text = text
+    this.localize = localize
+    this.idx = idx
+  }
 }
 
 export const PARSERCONSTS = {
   TEMPLATENAME: '#',
-  CONDITIONIF: 'IF:',
-  CONDITIONELSEIF: 'ELSEIF:',
-  CONDITIONELSE: 'ELSE:',
   COMMENT: '>',
   MULTILINE: '```',
-  SEPARATOR: '-',
+  DASH: '-',
+  LEFT_SQUARE_BRACKET: '[',
+  RIGHT_SQUARE_BRACKET: ']',
 }

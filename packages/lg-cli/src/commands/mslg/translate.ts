@@ -29,7 +29,11 @@ export default class TranslateCommand extends Command {
 
   private readonly DEFAULT_SOURCE_LANG = 'en'
 
-  private readonly ImportRegex = /^\].+\]\(.+\)$/g
+  private readonly ImportRegex = /^\[.+\]\(.+\)$/g
+
+  private readonly ConditionRegex = /^(if|(else\s*if)|else|switch|case|default)\s*:.*/gi
+
+  private readonly ExpressionRegex = /(?<!\\)\$\{(('[^'\r\n]*')|("[^"\r\n]*")|(`(\\`|[^`])*`)|([^\r\n{}'"`]))+\}?/g
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
@@ -72,6 +76,7 @@ export default class TranslateCommand extends Command {
     if (collectResult.filepath) {
       this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
     } else {
+      this.log('collect result:')
       this.log(collectResult.content)
     }
   }
@@ -91,12 +96,15 @@ export default class TranslateCommand extends Command {
       throw new CLIError('unable to read file: ' + filePath)
     }
 
+    const errors = this.lgTool.validateFile(fileContent, filePath)
+    this.log(errors.join(', '))
+
     let src_lang = this.DEFAULT_SOURCE_LANG
     if (flags.srclang) {
       src_lang = flags.srclang
     }
 
-    const translateParts = new TranslateParts(flags.translate_comments, flags.translate_link_text)
+    const translateParts = new TranslateParts(Boolean(flags.translate_comments), Boolean(flags.translate_link_text))
 
     // Support multi-language specification for targets.
     // Accepted formats are space or comma separated list of target language codes.
@@ -151,137 +159,162 @@ export default class TranslateCommand extends Command {
           throw (new CLIError('Unable to create folder - ' + error))
         }
       }
-      const outFileName = path.join(loutFolder, fileName)
+      const outFilePath = path.join(loutFolder, fileName)
       try {
-        fs.writeFileSync(outFileName, parsedLocContent, 'utf-8')
+        fs.writeFileSync(outFilePath, parsedLocContent, 'utf-8')
+        this.log(`file has writtern into ${outFilePath}`)
       } catch (error) {
-        throw (new CLIError('Unable to write lg file - ' + outFileName))
+        throw (new CLIError('Unable to write lg file - ' + outFilePath))
       }
     }
   }
 
+  // eslint-disable-next-line no-warning-comments
+  // TODO: this part should refactoring
   private async parseAndTranslate(
     fileContent: string,
     translateOption: TranslateOption,
     translateParts: TranslateParts): Promise<string> {
-    const batch_translate_size = this.MAX_TRANSLATE_BATCH_SIZE
     fileContent = Helper.sanitizeNewLines(fileContent)
     const linesInFile = fileContent.split(this.NEWLINE)
     let linesToTranslate: TranslateLine[] = []
     let localizedContent = ''
     let lineCtr = 0
-    let isMultiLine = false
+    let inMultiLine = false
+    let inStructure = false
     for (const currentLine of linesInFile) {
       lineCtr++
-      if (currentLine.trim() === PARSERCONSTS.MULTILINE) {
+      if (inStructure) {
+        // structure mode
+        const equalIndex = currentLine.indexOf('=')
+        if (equalIndex > 0) {
+          this.addSegment(linesToTranslate, currentLine.substr(0, equalIndex + 1), false)
+          this.addSegmentWithExpression(linesToTranslate, currentLine.substr(equalIndex + 1))
+        } else {
+          this.addSegment(linesToTranslate, currentLine, false)
+        }
+      } else if (inMultiLine) {
+        // multiline
         this.addSegment(linesToTranslate, currentLine, false)
-        this.addSegment(linesToTranslate, this.NEWLINE, false)
-        isMultiLine = false
-        continue
-      }
+      } else if (this.ImportRegex.test(currentLine.trim())) {
+        // [abc](def) -> transfer abc
+        if (translateParts.link) {
+          const linkValueRegEx = new RegExp(/\(.*?\)/g)
+          let linkValue = ''
+          const linkValueList = currentLine.trim().match(linkValueRegEx)
+          if (linkValueList && linkValueList.length > 0 && linkValueList[0]) {
+            linkValue = linkValueList[0].replace('(', '').replace(')', '')
+          }
 
-      if (isMultiLine) {
+          const linkTextRegEx = new RegExp(/\[.*\]/g)
+          let linkTextValue = ''
+          const linkTextList = currentLine.trim().match(linkTextRegEx)
+          if (linkTextList && linkTextList.length > 0 && linkTextList[0]) {
+            linkTextValue = linkTextList[0].replace('[', '').replace(']', '')
+          }
+
+          this.addSegment(linesToTranslate, '[', false)
+          this.addSegment(linesToTranslate, linkTextValue, true)
+          this.addSegment(linesToTranslate, ']', false)
+          this.addSegment(linesToTranslate, '(' + linkValue + ')', false)
+        } else {
+          this.addSegment(linesToTranslate, currentLine, false)
+        }
+        // > abc -> translate abc
+      } else if ((inMultiLine && currentLine.trim().endsWith(PARSERCONSTS.MULTILINE)) ||  // meet abc ```, multi line end mark
+      // meet - ``` abc, start multi line
+      (!inMultiLine && currentLine.trim().startsWith(PARSERCONSTS.DASH) && currentLine.trim().substr(PARSERCONSTS.DASH.length).trim().startsWith(PARSERCONSTS.MULTILINE))) {
         this.addSegment(linesToTranslate, currentLine, false)
-        this.addSegment(linesToTranslate, this.NEWLINE, false)
-        continue
-      }
-
-      if (currentLine.trim().indexOf(PARSERCONSTS.COMMENT) === 0) {
+        inMultiLine = !inMultiLine
+      }  else if ((!inStructure && currentLine.trim().startsWith(PARSERCONSTS.LEFT_SQUARE_BRACKET)) || // start structure
+      (inStructure && currentLine.trim() === PARSERCONSTS.RIGHT_SQUARE_BRACKET)) { // end structure
+        this.addSegment(linesToTranslate, currentLine, false)
+        inStructure = !inStructure
+      }  else if (currentLine.trim().startsWith(PARSERCONSTS.COMMENT)) {
+        // comments. > abc
         if (translateParts.comments) {
-          this.addSegment(linesToTranslate, currentLine.substring(0, currentLine.indexOf(PARSERCONSTS.COMMENT) + 1) + ' ', false)
-          this.addSegment(linesToTranslate, currentLine.trim().slice(1).trim(), true)
+          const commentIndex = currentLine.trim().indexOf(PARSERCONSTS.COMMENT)
+          this.addSegment(linesToTranslate, currentLine.substr(0, commentIndex + 1) + ' ', false)
+          this.addSegment(linesToTranslate, currentLine.trim().substr(commentIndex + 1), true)
         } else {
           this.addSegment(linesToTranslate, currentLine, false)
         }
+      } else if (currentLine.trim().startsWith(PARSERCONSTS.DASH)) {
+        // - abc dash
+        // 1. normal template string
+        // 2. condition/switch expression template string
+        // 3. condition/swich template string
+        // 4. structure value
+        const dashIndex = currentLine.indexOf(PARSERCONSTS.DASH)
 
-        this.addSegment(linesToTranslate, this.NEWLINE, false)
-      } else if (currentLine.trim().indexOf(PARSERCONSTS.TEMPLATENAME) === 0) {
-        this.addSegment(linesToTranslate, currentLine, false)
-        this.addSegment(linesToTranslate, this.NEWLINE, false)
-      } else if (currentLine.trim().indexOf(PARSERCONSTS.SEPARATOR) === 0) {
-        const blockList: Block[] = []
-        let content = currentLine.trim().slice(1).trim().replace(/\s+/, '')
-        if (content.indexOf(PARSERCONSTS.CONDITIONIF) === 0 ||
-                content.indexOf(PARSERCONSTS.CONDITIONELSEIF) === 0 ||
-                content.indexOf(PARSERCONSTS.CONDITIONELSE) === 0) {
-          this.addSegment(linesToTranslate, currentLine, false)
-        } else if (content.includes('{') || content.includes('[')) {
-          this.addSegment(linesToTranslate, currentLine.substring(0, currentLine.indexOf(PARSERCONSTS.SEPARATOR) + 1) + ' ', false)
-          content = currentLine.trim().slice(1).trim()
-          const expressionRegex = new RegExp(/\$\{(.*?)\}/g) // match ${}
-          const expressionsFound = content.match(expressionRegex)
-          if (expressionsFound) {
-            // eslint-disable-next-line max-depth
-            for (const expression of expressionsFound) {
-              const eStartIndex = content.indexOf(expression)
-              const eEndIndex = eStartIndex + expression.length - 1
-              blockList.push(new Block(expression, eStartIndex, eEndIndex))
-            }
-          }
-
-          let offset = 0
-          let candidateText = ''
-          // Tokenize the input utterance.
-          for (const block of blockList) {
-            // eslint-disable-next-line max-depth
-            if (block.start !== offset) {
-              candidateText = content.substring(offset, block.start)
-              // eslint-disable-next-line max-depth
-              if (candidateText.trim() !== '') {
-                this.addSegment(linesToTranslate, candidateText, true)
-              } else {
-                this.addSegment(linesToTranslate, candidateText, false)
-              }
-            }
-
-            this.addSegment(linesToTranslate, block.block, false)
-            offset = block.end + 1
-          }
-
-          if (offset !== content.length) {
-            candidateText = content.substring(offset)
-            // eslint-disable-next-line max-depth
-            if (candidateText.trim() !== '') {
-              this.addSegment(linesToTranslate, candidateText, true)
-            } else {
-              this.addSegment(linesToTranslate, candidateText, false)
-            }
-          }
-        } else if (content.indexOf(PARSERCONSTS.MULTILINE) === 0) {
-          this.addSegment(linesToTranslate, currentLine, false)
-          isMultiLine = true
-        } else {
-          this.addSegment(linesToTranslate, currentLine.substring(0, currentLine.indexOf(PARSERCONSTS.SEPARATOR) + 1) + ' ', false)
-          this.addSegment(linesToTranslate, currentLine.trim().slice(1).trim(), true)
+        this.addSegment(linesToTranslate, currentLine.substr(0, dashIndex + 1) + ' ', false)
+        const content = currentLine.substr(dashIndex + 1).trim()
+        if (this.ConditionRegex.test(content)) {
+          // condition/switch expression template string
+          this.addSegment(linesToTranslate, content, false)
+        }  else {
+          // other template string
+          this.addSegmentWithExpression(linesToTranslate, content)
         }
-
-        this.addSegment(linesToTranslate, this.NEWLINE, false)
       } else if (currentLine.trim() === '') {
-        this.addSegment(linesToTranslate, this.NEWLINE, false)
+        // do nothing
       } else {
-        throw (new Error('Error: Unexpected line encountered when parsing ' + currentLine))
+        // add default value
+        this.addSegment(linesToTranslate, currentLine, false)
       }
+      // add new line for each line
+      this.addSegment(linesToTranslate, this.NEWLINE, false)
 
-      if ((linesToTranslate.length !== 0) && (lineCtr % batch_translate_size === 0)) {
-        try {
-          localizedContent += await this.batchTranslateText(linesToTranslate, translateOption)
-          linesToTranslate = []
-        } catch (error) {
-          throw (error)
-        }
+      if ((linesToTranslate.length !== 0) && (lineCtr % this.MAX_TRANSLATE_BATCH_SIZE === 0)) {
+        localizedContent += await this.batchTranslateText(linesToTranslate, translateOption)
+        linesToTranslate = []
       }
     }
 
     if ((linesToTranslate.length !== 0)) {
-      try {
-        localizedContent += await this.batchTranslateText(linesToTranslate, translateOption)
-        linesToTranslate = []
-      } catch (error) {
-        throw (error)
-      }
+      localizedContent += await this.batchTranslateText(linesToTranslate, translateOption)
+      linesToTranslate = []
     }
 
     return localizedContent
+  }
+
+  private addSegmentWithExpression(linesToTranslate: TranslateLine[], content: string) {
+    const blockList: Block[] = []
+    const expressionsFound = content.match(this.ExpressionRegex)
+    if (expressionsFound) {
+      for (const expression of expressionsFound) {
+        const eStartIndex = content.indexOf(expression)
+        const eEndIndex = eStartIndex + expression.length - 1
+        blockList.push(new Block(expression, eStartIndex, eEndIndex))
+      }
+    }
+
+    let offset = 0
+    let candidateText = ''
+    // Tokenize the input utterance.
+    for (const block of blockList) {
+      if (block.start !== offset) {
+        candidateText = content.substring(offset, block.start)
+        if (candidateText.trim() !== '') {
+          this.addSegment(linesToTranslate, candidateText, true)
+        } else {
+          this.addSegment(linesToTranslate, candidateText, false)
+        }
+      }
+
+      this.addSegment(linesToTranslate, block.block, false)
+      offset = block.end + 1
+    }
+
+    if (offset !== content.length) {
+      candidateText = content.substring(offset)
+      if (candidateText.trim() !== '') {
+        this.addSegment(linesToTranslate, candidateText, true)
+      } else {
+        this.addSegment(linesToTranslate, candidateText, false)
+      }
+    }
   }
 
   private addSegment(linesToTranslate: TranslateLine[], text: string, localize: boolean) {

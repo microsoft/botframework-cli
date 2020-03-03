@@ -49,6 +49,7 @@ export default class VerifyCommand extends Command {
     if (collectResult.filepath) {
       this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
     } else {
+      this.log('collect result:')
       this.log(collectResult.content)
     }
   }
