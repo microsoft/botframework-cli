@@ -3,32 +3,32 @@
     "type": "object",
     "properties": {
         "CancelConfirmation": {
-            "type": "string",
+            "type": "boolean",
             "$entities": [
-                "Confirmation"
+                "boolean"
             ],
             "$templates": [
                 "library-CancelIntent.dialog",
-                "CancelConfirmation-assign-Confirmation.dialog"
+                "CancelConfirmation-assign-boolean.dialog"
             ]
         },
         "ChangePropertyConfirmation": {
-            "type": "string",
+            "type": "boolean",
             "$entities": [
-                "Confirmation"
+                "boolean"
             ],
             "$templates": [
-                "ChangePropertyConfirmation-assign-Confirmation.dialog"
+                "ChangePropertyConfirmation-assign-boolean.dialog"
             ]
         },
         "CompleteConfirmation": {
             "type": "string",
             "$entities": [
-                "Confirmation", "PROPERTYName"
+                "boolean", "PROPERTYName"
             ],
             "$templates": [
                 "library-CompleteConfirmation.dialog",
-                "CompleteConfirmation-assign-Confirmation.dialog",
+                "CompleteConfirmation-assign-boolean.dialog",
                 "CompleteConfirmation-assign-PROPERTYName.dialog"
             ]
         },
@@ -48,19 +48,17 @@
     "definitions": {
         "PROPERTYName": {
             "type": "string",
-            "enum": "@{properties}",
+            "enum": "${properties}",
             "$entities": ["PROPERTYName"]
         }
     },
-    "$expectedOnly": ["Confirmation", "PROPERTYName", "utterance", "keyPhrase", "personName"],
+    "$expectedOnly": ["boolean", "PROPERTYName", "utterance", "keyPhrase", "personName"],
     "$templates": [
         "library-HelpIntent.lu",
         "library-CancelIntent.lu",
         "library-NoneIntent.lu",
         "library-triggerIntent.lu",
         "library-ReadPropertyIntent.lu",
-        "library-ConfirmationEntity.lu",
-        "library-ConfirmationEntity.lg",
         "library-PROPERTYName.lu",
         "library-PROPERTYName.lg",
         "library-Missing.lg",

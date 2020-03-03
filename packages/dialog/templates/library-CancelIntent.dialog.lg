@@ -1,14 +1,14 @@
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnIntent",
     "intent": "Cancel",
     "condition": "turn.recognized.score > 0.5",
     "actions": [
         {
             "$kind": "Microsoft.Ask",
-            "activity": "@{callCancel()}",
+            "activity": "$\{cancel()}",
             "expectedProperties": [
                 "CancelConfirmation"                    
             ]           
@@ -16,6 +16,3 @@
     ]
 }
 ```
-
-# callCancel
-- @\{cancel()}

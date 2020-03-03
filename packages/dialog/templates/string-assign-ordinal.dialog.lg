@@ -1,29 +1,26 @@
 
 # filename
-- @{assignFilename('ordinal')}
+- ${assignFilename('ordinal')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity":"ordinal",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "$\{setPropertyMessage('${property}', @ordinal)}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@ordinal"          
         }
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setPropertyMessage('@{property}', @ordinal)}
 
 [generator.lg](generator.lg)

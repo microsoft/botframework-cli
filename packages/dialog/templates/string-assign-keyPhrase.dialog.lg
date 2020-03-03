@@ -1,29 +1,26 @@
 
 # filename
-- @{assignFilename('keyPhrase')}
+- ${assignFilename('keyPhrase')}
 
 # template
 - ```
 {
-    "$schema": "@{appSchema}",
+    "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "property": "@{property}",
+    "property": "${property}",
     "entity": "keyPhrase",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "@{callSetMessage()}"
+            "activity": "$\{setPropertyMessage('${property}', @keyPhrase)}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",
-            "property": "$@{property}",
+            "property": "$${property}",
             "value": "=@keyPhrase"          
         }
     ]               
 }
 ```
-
-# callSetMessage
-- @\{setPropertyMessage('@{property}', @keyPhrase)}
 
 [generator.lg](generator.lg)
