@@ -214,4 +214,5 @@ Rush and pnpm are newer tools and not all that popular outside of Microsoft, why
       }
     
     4. Implement the run method
-    5. To run the new command locally, run "bin\run <command-name>" from the package root, ie \botframework-cli\packages\<package-name>\bin\run <command-name>
+    5. Run "rush update" and "rush build" from root or package root
+    6. To run the new command locally, run "bin\run <command-name>" from the package root, ie \botframework-cli\packages\<package-name>\bin\run <command-name>

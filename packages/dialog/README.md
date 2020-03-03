@@ -1,7 +1,7 @@
 @microsoft/bf-dialog
 ====================
 
-
+This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)

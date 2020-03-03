@@ -1,7 +1,7 @@
 # filename
-- @{builtinEntityFilename('percentageEntity')}
+- ${builtinEntityFilename('percentageEntity')}
 
 # template
-- @ prebuilt percentage @{roles()}
+- @ prebuilt percentage ${roles()}
 
 [generator.lg](../generator.lg)

@@ -1,7 +1,7 @@
 # filename
-- @{builtinEntityFilename('datetimeEntity')}
+- ${builtinEntityFilename('datetimeEntity')}
 
 # template
-- @ prebuilt datetimeV2 @{roles()}
+- @ prebuilt datetimeV2 ${roles()}
 
 [generator.lg](../generator.lg)

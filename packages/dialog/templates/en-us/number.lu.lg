@@ -1,7 +1,7 @@
 # filename
-- @{builtinEntityFilename('numberEntity')}
+- ${builtinEntityFilename('numberEntity')}
 
 # template
-- @ prebuilt number @{roles()}
+- @ prebuilt number ${roles()}
 
 [generator.lg](../generator.lg)
