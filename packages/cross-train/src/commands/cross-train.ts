@@ -7,6 +7,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
 const path = require('path')
+const helper  = require('./../utils/helper')
 
 export default class CrossTrain extends Command {
   static description = 'Lu and Qna cross train tool'
@@ -16,17 +17,20 @@ export default class CrossTrain extends Command {
     in: flags.string({char: 'i', description: 'source lu and qna files folder'}),
     out: flags.string({char: 'o', description: 'output folder name. If not specified, the cross trained files will be wrote to cross-trained folder under folder of current command'}),
     config: flags.string({description: 'path to config file of mapping rules which is relative to folder specified by --in. If not specified, it will read default config.json from the folder specified by --in'}),
-    intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'})
+    intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
+    rootDialog: flags.string({description: 'rootDialog file path which is relative to folder specified by --in. If --config not specified, cross-trian will automatically construct the config from file system based on root dialog file'})
   }
 
   async run() {
     try {
       const {flags} = this.parse(CrossTrain)
 
+      if (!path.isAbsolute(flags.in)) flags.in = path.resolve(flags.in)
       if (flags.config && flags.config !== '') {
-        if (!path.isAbsolute(flags.config)) {
-          flags.config = path.resolve(path.join(flags.in, flags.config))
-        }
+        if (!path.isAbsolute(flags.config)) flags.config = path.join(flags.in, flags.config)
+      } else if (flags.rootDialog && flags.rootDialog !== '') {
+        if (!path.isAbsolute(flags.rootDialog)) flags.rootDialog = path.join(flags.in, flags.rootDialog)
+        flags.config = await helper.generateConfig(flags.in, flags.rootDialog)
       }
 
       const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config)

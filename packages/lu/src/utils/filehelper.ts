@@ -164,35 +164,34 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-async function getConfigFile(input: string): Promise<string> {
+export async function getConfigContent(input: string): Promise<string> {
+  let configFilePath
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
-    return input
+    configFilePath = input
+  } else {
+    if (!fileStat.isDirectory()) {
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, ${input} is not a folder or does not exist`))
+    }
+
+    configFilePath = helpers.findConfigFile(input)
+
+    if (configFilePath === undefined || configFilePath === '') {
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, no config file found in folder ${input}.`))
+    }
   }
 
-  if (!fileStat.isDirectory()) {
-    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, ${input} is not a folder or does not exist`))
-  }
+  const configContent = await getContentFromFile(configFilePath)
 
-  const defaultConfigFile = helpers.findConfigFile(input)
-
-  if (defaultConfigFile === undefined || defaultConfigFile === '') {
-    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, no config file found in folder ${input}.`))
-  }
-
-  return defaultConfigFile
+  return configContent
 }
 
-export async function getConfigObject(input: string) {
-  const luConfigFile = await getConfigFile(input)
-
+export function getConfigObject(configContent: string, configFileDir: string) {
   let finalLuConfigObj = Object.create(null)
   let rootLuFiles: string[] = []
-  const configFileDir = path.dirname(luConfigFile)
-  const luConfigContent = await getContentFromFile(luConfigFile)
-  if (luConfigContent && luConfigContent !== '') {
+  if (configContent && configContent !== '') {
     try {
-      const luConfigObj = JSON.parse(luConfigContent)
+      const luConfigObj = JSON.parse(configContent)
       for (const rootluFilePath of Object.keys(luConfigObj)) {
         const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
         const triggerObj = luConfigObj[rootluFilePath]

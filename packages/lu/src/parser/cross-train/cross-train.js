@@ -14,24 +14,34 @@ const crossTrainer = require('./crossTrainer')
 module.exports = {
   /**
    * Cross train lu and qna files.
-   * @param {string} input input lu and qna files folder.
+   * @param {string} input full path of input lu and qna files folder.
    * @param {string} intentName interruption intent name. Default value is _Interruption.
-   * @param {string} configPath path to config of mapping rules. If undefined, it will read config.json from input folder.
+   * @param {string} config full path to config of mapping rules or mapping rules content json string. If undefined, it will read config.json from input folder.
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, intentName, configPath) {
+  train: async function (input, intentName, config) {
     let trainedResult
 
     // Parse lu and qna objects
     const luObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.LUFile)
     const qnaObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.QnAFile)
 
-    let configObject
-    if (configPath && configPath !== '') {
-      configObject = await file.getConfigObject(configPath)
+    let configContent
+    let configPath
+    if (config && config !== '') {
+      if (fs.existsSync(config)) {
+        configContent = await file.getConfigContent(config)
+        configPath = path.dirname(config)
+      } else {
+        configContent = config
+        configPath = input
+      }
     } else {
-      configObject = await file.getConfigObject(input)
+      configContent = await file.getConfigContent(input)
+      configPath = input
     }
+
+    const configObject = file.getConfigObject(configContent, configPath)
 
     if (configObject.rootIds.length > 0) {
       let crossTrainConfig = {

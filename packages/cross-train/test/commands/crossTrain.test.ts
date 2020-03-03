@@ -62,4 +62,19 @@ describe('luis:cross training tests among lu and qna contents', () => {
       expect(await compareLuFiles('./../../interruptionGen/dia2.lu', './../fixtures/verified/interruption3/dia2.lu')).to.be.true
       expect(await compareLuFiles('./../../interruptionGen/dia3.lu', './../fixtures/verified/interruption3/dia3.lu')).to.be.true
     })
+
+  test
+    .stdout()
+    .command(['cross-train',
+      '--in', `${path.join(__dirname, './../fixtures/testcases/interruption4')}`,
+      '--intentName', '_Interruption',
+      '--out', './interruptionGen',
+      '--rootDialog', 'main/main.dialog'])
+    .it('luis:cross training can get expected result when automatically detecting config based on rootdialog and file system', async () => {
+      expect(await compareLuFiles('./../../interruptionGen/main.lu', './../fixtures/verified/interruption4/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../interruptionGen/dia1.lu', './../fixtures/verified/interruption4/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../interruptionGen/dia2.lu', './../fixtures/verified/interruption4/dia2.lu')).to.be.true
+      expect(await compareLuFiles('./../../interruptionGen/dia3.lu', './../fixtures/verified/interruption4/dia3.lu')).to.be.true
+      expect(await compareLuFiles('./../../interruptionGen/dia4.lu', './../fixtures/verified/interruption4/dia4.lu')).to.be.true
+    })
 })
