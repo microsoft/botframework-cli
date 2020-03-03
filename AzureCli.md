@@ -11,8 +11,6 @@ Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure
 Remove the azure bot extension if it's already installed.  
 `az extension list`  
 `az extension remove -n <extensionname>`  
-Install the bot service extension as follows -  
-`az extension add -n botservice`  
 
 **NOTE:** Please ensure you have Azure CLI version >= 2.0.45 installed to get the latest botservice extension. You can verify your AZ CLI version via `az -v`.
 
