@@ -8,7 +8,7 @@ const EntityTypeEnum = require('../utils/enums/luisEntityTypes');
  * @returns {string} Lu Content
  * @throws {exception} Throws on errors. exception object includes errCode and text. 
  */
-const luisToLuContentForTest = function(luisJSON){
+const testLuConverter = function(luisJSON){
     let fileContent = '';
     let luisObj = new helperClasses.rLuisObj();
     (luisJSON.intents || []).forEach(function(intent) {
@@ -79,6 +79,7 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         let updatedText = utterance.text;
         if (utterance.predictedResult !== undefined)
         {
+            // parse predicted result into the .lu content
             if(utterance.predictedResult.predictedIntents!=undefined && utterance.predictedResult.predictedIntents.length > 0){
                 for(let intent of utterance.predictedResult.predictedIntents){
                   intents.push(`${intent.intent}(${intent.score})`);
@@ -463,4 +464,4 @@ const objectSortByStartPos = function (objectArray) {
     return ObjectByStartPos;
 }
 
-module.exports = luisToLuContentForTest
+module.exports = testLuConverter
