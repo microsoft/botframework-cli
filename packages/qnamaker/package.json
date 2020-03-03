@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
-  "main": "utils/api/index.js",
   "engines": {
     "node": ">=8.0.0"
   },
