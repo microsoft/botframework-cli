@@ -1,18 +1,9 @@
 # Azure CLI
 
-Botservice Extension is an Azure CLI extension that provides support for managing bots and channels on the Azure Bot Service.</br>
-
 ## Prerequisites
 
 Get a [valid Azure subscription](https://azure.microsoft.com/en-us/free/).
 Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).
-
-## Installation
-Remove the azure bot extension if it's already installed.  
-`az extension list`  
-`az extension remove -n <extensionname>`  
-
-**NOTE:** Please ensure you have Azure CLI version >= 2.0.45 installed to get the latest botservice extension. You can verify your AZ CLI version via `az -v`.
 
 # Managing a Bot
 
