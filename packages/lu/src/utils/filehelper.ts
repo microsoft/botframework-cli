@@ -216,7 +216,7 @@ async function getConfigFile(input: string): Promise<string> {
 
 export function getParsedObjects(contents: FileInfo[]) {
   const parsedObjects = contents.map(content => {
-    const opts = new LUOptions(content.path)
+    const opts = new LUOptions(path.resolve(content.path))
     return new luObject(content.content, opts)
   })
 
