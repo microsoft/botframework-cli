@@ -250,7 +250,7 @@ export class Builder {
   }
 
   async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
-    let currentApp = await LuisBuilder.fromLU([content])  // content.parseToLuis(true, content.language)
+    let currentApp = await LuisBuilder.fromLUAsync([content])  // content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
     currentApp.desc = currentApp.desc && currentApp.desc !== '' ? currentApp.desc : `Model for ${botName} app, targetting ${suffix}`
 
