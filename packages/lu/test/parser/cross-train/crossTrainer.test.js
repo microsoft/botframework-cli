@@ -181,7 +181,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, qnaContentArray, JSON.stringify(crossTrainConfig))
+    const trainedResult = crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
@@ -286,7 +286,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, [], JSON.stringify(crossTrainConfig))
+    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
     const luResult = trainedResult.luResult
 
     assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
@@ -338,7 +338,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, [], JSON.stringify(crossTrainConfig))
+    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
     const luResult = trainedResult.luResult
 
     assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Name, '_Interruption')

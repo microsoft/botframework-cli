@@ -23,12 +23,11 @@ module.exports = {
     // Get all related file content.
     const luContents = await file.getFilesContent(input, fileExtEnum.LUFile)
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
-
     const configContent = config && !fs.existsSync(config) ? config : await file.getConfigContent(config || input)
 
-    const configObject = crossTrainer.getConfigObject(configContent, intentName)
-    const trainedResult = crossTrainer.crossTrain(luContents, qnaContents, JSON.stringify(configObject))
-    
+    const configObject = crossTrainer.getConfigObject(configContent, intentName);
+
+    trainedResult = crossTrainer.crossTrain(luContents, qnaContents, configObject)
     return trainedResult
   },
 
