@@ -10,7 +10,7 @@ const compareSourceFiles = async function (file1: string, file2: string) {
   expect(result).to.be.equal(fixtureFile)
 }
 
-xdescribe('luis:generate:cs', () => {
+describe('luis:generate:cs', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, '../../../fixtures/generate/results'))
   })
