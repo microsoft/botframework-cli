@@ -8,7 +8,7 @@ const path = require('path')
 const file = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const exception = require('../utils/exception')
-const retCode = require('../utils/enums/CLI-errors');
+const retCode = require('../utils/enums/CLI-errors')
 const crossTrainer = require('./crossTrainer')
 
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
     const configContent = config && !fs.existsSync(config) ? config : await file.getConfigContent(config || input)
 
-    const configObject = crossTrainer.getConfigObject(configContent, intentName);
+    const configObject = crossTrainer.getConfigObject(configContent, intentName)
 
     const trainedResult = crossTrainer.crossTrain(luContents, qnaContents, configObject)
     

@@ -11,7 +11,7 @@ const LUResource = require('../lufile/luResource')
 const DiagnosticSeverity = require('../lufile/diagnostic').DiagnosticSeverity
 const fileHelper = require('../../utils/filehelper')
 const exception = require('../utils/exception')
-const retCode = require('../utils/enums/CLI-errors');
+const retCode = require('../utils/enums/CLI-errors')
 const NEWLINE = require('os').EOL
 const path = require('path')
 const QNA_GENERIC_SOURCE = "custom editorial"
@@ -27,8 +27,8 @@ module.exports = {
    */
   crossTrain: function (luContents, qnaContents, crossTrainConfig) {
     try {
-      const {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents);
-      const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig;
+      const {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
+      const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
 
       // parse lu content to LUResource object
       let luFileIdToResourceMap = parseAndValidateContent(luObjectArray, verbose)
@@ -70,7 +70,7 @@ module.exports = {
    */
   getConfigObject : function (configContent, intentName) {
     const configFileDir = path.dirname(configContent.path)
-    const luConfigContent = configContent.content;
+    const luConfigContent = configContent.content
     if (luConfigContent && luConfigContent !== '') {
       try {
         const luConfigObj = JSON.parse(luConfigContent)
@@ -114,7 +114,7 @@ module.exports = {
         verbose: true
       }
 
-      return crossTrainConfig;
+      return crossTrainConfig
     } else {
       throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
     }
