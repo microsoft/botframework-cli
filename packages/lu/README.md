@@ -163,7 +163,7 @@ const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
 const luContent = `# Greeting
 - hi`;
 
-const luisObject = await LUISBuilder.fromLUAsync(luContent)
+const luisObject = await LUISBuilder.fromContentAsync(luContent)
 
 // Parsed LUIS object
 console.log(JSON.stringify(luisObject, 2, null));
@@ -201,7 +201,7 @@ const locale = 'en-us';
 async function parseContent() {
 
     try {   
-        const luisObject = await LUISBuilder.fromLUAsync(luContent)
+        const luisObject = await LUISBuilder.fromContentAsync(luContent)
         luisObject.validate()
         const parsedLuisBackToLu = luisObject.parseToLuContent()
     } catch (error) {
