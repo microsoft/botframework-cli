@@ -141,7 +141,7 @@ export default class TranslateCommand extends Command {
     translateParts: TranslateParts
   ) {
     const fileName = path.basename(filePath)
-    const fileContent = txtfile.readSync(filePath)
+    const fileContent = await txtfile.read(filePath)
     if (!fileContent) {
       throw new CLIError('unable to read file: ' + filePath)
     }
@@ -153,7 +153,7 @@ export default class TranslateCommand extends Command {
       // write out file
       const loutFolder = path.join(outFolder, translateOption.to_lang)
       try {
-        fs.mkdirSync(loutFolder)
+        await fs.mkdir(loutFolder)
       } catch (error) {
         if (error.code !== 'EEXIST') {
           throw (new CLIError('Unable to create folder - ' + error))
@@ -161,7 +161,7 @@ export default class TranslateCommand extends Command {
       }
       const outFilePath = path.join(loutFolder, fileName)
       try {
-        fs.writeFileSync(outFilePath, parsedLocContent, 'utf-8')
+        await fs.writeFile(outFilePath, parsedLocContent, 'utf-8')
         this.log(`file has writtern into ${outFilePath}`)
       } catch (error) {
         throw (new CLIError('Unable to write lg file - ' + outFilePath))

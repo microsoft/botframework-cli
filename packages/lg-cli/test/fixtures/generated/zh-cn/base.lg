@@ -1,15 +1,15 @@
-[import](simple.lg)
+[进口](simple.lg)
 > Welcome Phrase template
 > LG runtime will pick a text value from the one-of collection list at random.
 # wPhrase
-- Salut
-- Bonjour
-- Hé, je ne suis
+- 你好
+- 你好
+- 嘿
 
 > Using a template in another template
 > Sometimes the bot will say 'Hi' and other times it will say 'Hi :)'
 # welcome-user(userName)
-- ${wPhrase()} ${userName} :)
+- ${wPhrase()} ${userName}:)
 
 > Using entity references
 # welcome
@@ -21,28 +21,28 @@
 
 
 # ShowAlarm(alarm)
-- ${alarm.time} À ${alarm.date}
+- ${alarm.time}在${alarm.date}
 
 # ShowAlarmsWithForeach
 - IF: ${count(alarms) == 1}
-   - Vous avez une alarme ${ShowAlarm(alarms[0])}
+   - 你有一个闹钟${ShowAlarm(alarms[0])}
 - ELSEIF: ${count(alarms) == 2}
-  - Vous avez ${count(alarms)} Alarmes ${join(foreach(alarms, x, ShowAlarm(x)), ', ', ' and ')}
+  - 你有${count(alarms)}警报${join(foreach(alarms, x, ShowAlarm(x)), ', ', ' and ')}
 - ELSE:
-  - Vous n’avez pas d’alarmes
+  - 您没有任何警报
 
 # ShowAlarmsWithLgTemplate
 - IF: ${count(alarms) == 1}
-   - Vous avez une alarme ${ShowAlarm(alarms[0])}
+   - 你有一个闹钟${ShowAlarm(alarms[0])}
 - ELSEIF: ${count(alarms) == 2}
-  - Vous avez ${count(alarms)} Alarmes ${join(foreach(alarms, x, template('ShowAlarm', x)), ', ', ' and ')}
+  - 你有${count(alarms)}警报${join(foreach(alarms, x, template('ShowAlarm', x)), ', ', ' and ')}
 - ELSE:
-  - Vous n’avez pas d’alarmes
+  - 您没有任何警报
 
 # ShowAlarmsWithDynamicLgTemplate(templateName)
 - IF: ${count(alarms) == 1}
-   - Vous avez une alarme ${ShowAlarm(alarms[0])}
+   - 你有一个闹钟${ShowAlarm(alarms[0])}
 - ELSEIF: ${count(alarms) == 2}
-  - Vous avez ${count(alarms)} Alarmes ${join(foreach(alarms, x, template(templateName, x)), ', ', ' and ')}
+  - 你有${count(alarms)}警报${join(foreach(alarms, x, template(templateName, x)), ', ', ' and ')}
 - ELSE:
-  - Vous n’avez pas d’alarmes
+  - 您没有任何警报

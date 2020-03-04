@@ -1,3 +1,4 @@
+[import](simple.lg)
 > Welcome Phrase template
 > LG runtime will pick a text value from the one-of collection list at random.
 # wPhrase

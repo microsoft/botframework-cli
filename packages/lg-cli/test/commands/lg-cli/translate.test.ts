@@ -20,7 +20,7 @@ const translatekey = 'edabe9fb17244f6a92ec617867e6d7cd'
 describe('mslg:translate lg file', async () => {
 
     after(async function(){
-        await fs.remove(generatedFolder)
+        //await fs.remove(generatedFolder)
         })
 
     before(async function(){
@@ -28,19 +28,56 @@ describe('mslg:translate lg file', async () => {
         await fs.mkdir(generatedFolder)
     })
 
-    // basic translate
-    const fileName = 'base.lg'
-    const tgtlang = 'fr'
+    // basic translate for fr
+    let fileName = 'base.lg'
+    const fr = 'fr'
 
     test
     .command(['mslg:translate',
     '--translatekey', translatekey,
     '--in', path.join(__dirname, testcaseFolderPath, fileName),
-    '--tgtlang', tgtlang,
+    '--tgtlang', fr,
     '--out', generatedFolder])
     .it('', async () => {
-        await compareLgFiles(path.join(generatedFolderPath, tgtlang, fileName), path.join(verifiedFolderPath, tgtlang, fileName))
+        await compareLgFiles(path.join(generatedFolderPath, fr, fileName), path.join(verifiedFolderPath, fr, fileName))
     })
 
-    
+    // basic translate for zh-cn
+    const zhcn = 'zh-cn'
+
+    test
+    .command(['mslg:translate',
+    '--translatekey', translatekey,
+    '--in', path.join(__dirname, testcaseFolderPath, fileName),
+    '--tgtlang', zhcn,
+    '--out', generatedFolder])
+    .it('', async () => {
+        await compareLgFiles(path.join(generatedFolderPath, zhcn, fileName), path.join(verifiedFolderPath, zhcn, fileName))
+    })
+
+    // test translate_comments option
+    const commentFileName = 'base.comments.lg'
+    test
+    .command(['mslg:translate',
+    '--translatekey', translatekey,
+    '--in', path.join(__dirname, testcaseFolderPath, fileName),
+    '--tgtlang', zhcn,
+    '--out', generatedFolder,
+    '--translate_comments'])
+    .it('', async () => {
+        await compareLgFiles(path.join(generatedFolderPath, zhcn, commentFileName), path.join(verifiedFolderPath, zhcn, commentFileName))
+    })
+
+    // test translate_link_text option
+    const linkFileName = 'base.link.lg'
+    test
+    .command(['mslg:translate',
+    '--translatekey', translatekey,
+    '--in', path.join(__dirname, testcaseFolderPath, fileName),
+    '--tgtlang', zhcn,
+    '--out', generatedFolder,
+    '--translate_link_text'])
+    .it('', async () => {
+        await compareLgFiles(path.join(generatedFolderPath, zhcn, commentFileName), path.join(verifiedFolderPath, zhcn, commentFileName))
+    })
 })

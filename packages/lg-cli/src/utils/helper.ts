@@ -101,7 +101,7 @@ export class Helper {
     }
 
     if (fs.statSync(filePath).isDirectory()) {
-      filePath = path.join(filePath, 'collect.lg')
+      filePath = path.join(filePath, `collect.${this.get_guid()}.lg`)
     }
 
     return filePath
