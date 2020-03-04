@@ -181,7 +181,7 @@ const helpers = {
             (finalLUISJSON.composites || []).forEach(composite => {
                 let children = composite.children;
                 composite.children = [];
-                children.forEach(c => composite.children.push({name : c}));
+                children.forEach(c => composite.children.push(typeof c === 'string' ? { name: c } : c));
             })
         }
     }

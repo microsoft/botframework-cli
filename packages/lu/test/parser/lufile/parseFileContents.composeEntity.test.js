@@ -117,25 +117,52 @@ $deviceTemperature:simple`;
             .catch(err => done(`Test failed - ${JSON.stringify(err)}`))
     });
 
-    it('Parser throws when a composite entity has different definition across two different .lu file', function(done){
-        let luFile1Content = `$deviceTemperature : [child1; child2]`;
-        let luFile2Content = `$deviceTemperature : [child3]`;
+    it('Merge composite entity definition split across .lu files', function(done){
+        let luFile1Content = `@ ml userDOB
+        @ composite fooBar = [userDOB]`;
+        let luFile2Content = `@ ml username
+        @ composite fooBar = [username]`;
         parseFile(luFile1Content, false)
             .then(res1 => {
                 parseFile(luFile2Content, false) 
                     .then(res2 => {
                       try {
                         let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                        collate(luisList)
-                        done(`Test fail! Did not throw when expected`)        
+                        let finalContent = collate(luisList)
+                        assert.equal(finalContent.composites.length, 1)
+                        assert.equal(finalContent.composites[0].children.length, 2)
+                        finalContent.composites[0].children.forEach(c => assert(c.name));
+                        done()        
                       } catch (error) {
-                        done()
+                        done(error)
                       }
                     })
                     .catch(err => done(`Test failed - ${err}`))
             })
             .catch(err => done(`Test failed - ${err}`))
     });
+
+    it('composite entity definition can be split across .lu files', function(done) {
+      let luFile1Content = `@ ml username`;
+        let luFile2Content = `@ composite fooBar = [username]`;
+        parseFile(luFile1Content, false)
+            .then(res1 => {
+                parseFile(luFile2Content, false) 
+                    .then(res2 => {
+                      try {
+                        let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
+                        let finalConten = collate(luisList)
+                        assert.equal(finalConten.composites.length, 1)
+                        assert.equal(finalConten.composites[0].children.length, 1)
+                        done()        
+                      } catch (error) {
+                        done(error)
+                      }
+                    })
+                    .catch(err => done(`Test failed - ${err}`))
+            })
+            .catch(err => done(`Test failed - ${err}`))
+    })
 
     it('Parser throws and correctly identifies a child without an explicit or implicit child entity definition [across .lu files]', function(done){
         let luFile1Content = `$deviceTemperature : [p1; child2]`;

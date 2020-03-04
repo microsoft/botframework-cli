@@ -50,7 +50,8 @@
     "cli-ux": "~5.3.3",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "username": "^4.1.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "~1.22.2",
@@ -72,7 +73,6 @@
     "ts-node": "^8.4.1",
     "tslint": "^5.20.1",
     "typescript": "^3.5.3",
-    "uuid": "^3.3.3",
-    "username": "^4.1.0"
+    "uuid": "^3.3.3"
   }
 }
