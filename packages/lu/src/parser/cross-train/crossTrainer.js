@@ -108,7 +108,7 @@ module.exports = {
       }
     }
 
-    if (configObject.rootIds.length > 0) {
+    if (rootLuFiles.length > 0) {
       let crossTrainConfig = {
         rootIds: rootLuFiles,
         triggerRules: finalLuConfigObj,
