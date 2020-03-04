@@ -12,7 +12,7 @@ const LuisBuilder = require('./../../../src/parser/luis/luisBuilder');
 
 describe('Validations for LU content (based on LUIS boundaries)', function () {
     it (`At most ${retCode.boundaryLimits.MAX_NUM_INTENTS} intents in LU content`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxIntentTestData())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxIntentTestData())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_INTENTS);
@@ -22,7 +22,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_UTTERANCES} utterances in LU content`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxUtteranceTestData())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxUtteranceTestData())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_UTTERANCES);
@@ -32,7 +32,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_PATTERNANY_ENTITIES} pattern.any entities in LU content`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxPatternAnyEntities())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPatternAnyEntities())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_PATTERNANYENTITY);
@@ -42,7 +42,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_CHAR_IN_UTTERANCE} characters in any utterance`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxUtteranceCharLimit(), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxUtteranceCharLimit(), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_UTTERANCE_CHAR_LENGTH);
@@ -52,7 +52,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_PATTERNS} patterns in LU content`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxPatterns(), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPatterns(), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_PATTERNS);
@@ -62,7 +62,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_CHAR_IN_PATTERNS} characters in any pattern`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxPatternCharLimit(), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPatternCharLimit(), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_PATTERN_CHAR_LIMIT);
@@ -72,7 +72,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_REGEX_ENTITIES} regex entities`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxRegeExEntityDefinition(retCode.boundaryLimits.MAX_NUM_REGEX_ENTITIES), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxRegeExEntityDefinition(retCode.boundaryLimits.MAX_NUM_REGEX_ENTITIES), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_REGEX_ENTITY);
@@ -82,7 +82,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_CHAR_REGEX_ENTITY_PATTERN} characters in regex entity pattern`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxRegeExEntityDefinition(1, retCode.boundaryLimits.MAX_CHAR_REGEX_ENTITY_PATTERN), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxRegeExEntityDefinition(1, retCode.boundaryLimits.MAX_CHAR_REGEX_ENTITY_PATTERN), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_REGEX_CHAR_LIMIT);
@@ -92,7 +92,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS} synonyms under any parent for a list entity`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getListEntity(0, retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getListEntity(0, retCode.boundaryLimits.MAX_LIST_ENTITY_SYNONYMS), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_SYNONYMS_LENGTH);
@@ -102,7 +102,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_PHRASE_LISTS} phrase lists`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxPhraseLists(), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPhraseLists(), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_PHRASE_LIST_LIMIT);
@@ -112,7 +112,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_INTERCHANGEABLE_PHRASES} phrases across all interchangeable phrase lists`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxPhraseLists(0, retCode.boundaryLimits.MAX_INTERCHANGEABLE_PHRASES, true), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPhraseLists(0, retCode.boundaryLimits.MAX_INTERCHANGEABLE_PHRASES, true), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_INTC_PHRASES_LIMIT);
@@ -122,7 +122,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NON_INTERCHANGEABLE_PHRASES} phrases across all non-interchangeable phrase lists`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxPhraseLists(0, retCode.boundaryLimits.MAX_NON_INTERCHANGEABLE_PHRASES), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPhraseLists(0, retCode.boundaryLimits.MAX_NON_INTERCHANGEABLE_PHRASES), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_NINTC_PHRASES_LIMIT);
@@ -132,7 +132,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_ROLES_PER_ENTITY} roles per entity`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getEntityWithRoles())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getEntityWithRoles())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_ROLES_PER_ENTITY);
@@ -142,7 +142,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_ROLES} roles across all entities per LU content`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getEntityWithRoles(51, 6))))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getEntityWithRoles(51, 6))))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_TOTAL_ROLES);
@@ -152,7 +152,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} descriptors per model`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getEntityWithFeatures())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getEntityWithFeatures())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_FEATURE_PER_MODEL);
@@ -162,7 +162,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_PARENT_ENTITIES} parent nodes in an ML entitiy`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMLEntity())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMLEntity())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_PARENT_ENTITY_LIMIT);
@@ -172,7 +172,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_TOTAL_ENTITES_AND_ROLES} total entities and roles in given LU content`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxEntityAndRoles())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxEntityAndRoles())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_TOTAL_ENTITIES_AND_ROLES);
@@ -182,7 +182,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_CLOSED_LISTS} list entities`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxListEntity())))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxListEntity())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_TOTAL_CLOSED_LISTS);
@@ -192,7 +192,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_PHRASES_IN_ALL_PHRASE_LIST} phrases across all phrase lists`, function(done) {
-        LuisBuilder.fromLU(new Array(new luObj(getMaxPhraseLists(0, retCode.boundaryLimits.MAX_NUM_PHRASES_IN_ALL_PHRASE_LIST), 'stdin', true)))
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPhraseLists(0, retCode.boundaryLimits.MAX_NUM_PHRASES_IN_ALL_PHRASE_LIST), 'stdin', true)))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_TOTAL_PHRASES);

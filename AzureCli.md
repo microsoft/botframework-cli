@@ -1,20 +1,9 @@
 # Azure CLI
 
-Botservice Extension is an Azure CLI extension that provides support for managing bots and channels on the Azure Bot Service.</br>
-
 ## Prerequisites
 
 Get a [valid Azure subscription](https://azure.microsoft.com/en-us/free/).
 Install the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).
-
-## Installation
-Remove the azure bot extension if it's already installed.  
-`az extension list`  
-`az extension remove -n <extensionname>`  
-Install the bot service extension as follows -  
-`az extension add -n botservice`  
-
-**NOTE:** Please ensure you have Azure CLI version >= 2.0.45 installed to get the latest botservice extension. You can verify your AZ CLI version via `az -v`.
 
 # Managing a Bot
 
@@ -89,3 +78,6 @@ To remove a channel from a bot, use `az bot directline delete`.
 These are the known issues and limitations that the CLI has right now.  
 1) Creation of msa app id and password is not supported for hotmail.com accounts.
 2) `az bot publish` fails for a c# solution , when the project is open in visual studio. To work around this for now, please close the solution before doing a publish.
+
+# See Also
+* Refer to [az bot](https://docs.microsoft.com/en-us/cli/azure/bot?view=azure-cli-latest) for complete command usage documentation.
