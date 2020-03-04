@@ -24,12 +24,12 @@ dependencies:
   '@types/semver': 6.2.0
   '@types/supports-color': 5.3.0
   '@types/xml2js': 0.4.5
-  adaptive-expressions: 4.8.0-preview-110079
+  adaptive-expressions: 4.8.0-preview-110700
   ajv: 6.10.2
   antlr4: 4.7.2
   applicationinsights: 1.6.0
   await-delay: 1.0.0
-  botbuilder-lg: 4.8.0-preview-110079
+  botbuilder-lg: 4.8.0-preview-110700
   botframework-schema: 4.7.0
   camelcase: 4.1.0
   chai: 4.2.0
@@ -849,7 +849,7 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-gac8OEcQ2Li1dxIEWGZzsp2BitJxwkwcOm0zHAJLcPJaVvm58FRnk6RkuLRpU1EujipU2ZFODv2P9DLMfnV8mw==
-  /adaptive-expressions/4.8.0-preview-110079:
+  /adaptive-expressions/4.8.0-preview-110700:
     dependencies:
       '@microsoft/recognizers-text-data-types-timex-expression': 1.1.4
       '@types/lru-cache': 5.1.0
@@ -863,7 +863,7 @@ packages:
       moment-timezone: 0.5.27
     dev: false
     resolution:
-      integrity: sha1-p4AaBhm1Zp5RE28/F39jDnnmrL8=
+      integrity: sha1-6veLR37Y0kvZNqjLC3ERbSsKrvE=
   /agent-base/4.3.0:
     dependencies:
       es6-promisify: 5.0.0
@@ -1150,24 +1150,24 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Wukm9Ui5hLWQpjgZQUnGruN0yx+aC9HjIpCEDdcmsLOZ3hXN9YW9NqLbvzfjP43h8BywqFWQt+q3qSI/1aP86Q==
-  /botbuilder-core/4.8.0-preview-110079:
+  /botbuilder-core/4.8.0-preview-110700:
     dependencies:
       assert: 1.5.0
-      botframework-schema: 4.8.0-preview-110079
+      botframework-schema: 4.8.0-preview-110700
     dev: false
     resolution:
-      integrity: sha1-8fMGpCQmMiU9Mr2TKDA+WJWrGHc=
-  /botbuilder-lg/4.8.0-preview-110079:
+      integrity: sha1-IfGKRTgkZvu3RWVEyPvH+c9erPM=
+  /botbuilder-lg/4.8.0-preview-110700:
     dependencies:
-      adaptive-expressions: 4.8.0-preview-110079
+      adaptive-expressions: 4.8.0-preview-110700
       antlr4ts: 0.5.0-alpha.1
-      botbuilder-core: 4.8.0-preview-110079
+      botbuilder-core: 4.8.0-preview-110700
       lodash: 4.17.15
       path: 0.12.7
       uuid: 3.3.3
     dev: false
     resolution:
-      integrity: sha1-yHuvz3NHMIJ1Pjca6+A5MnoRCgU=
+      integrity: sha1-oh8MnGEDOTjni6KEbJGRW1enZ1Y=
   /botframework-expressions/4.7.0-preview:
     dependencies:
       '@microsoft/recognizers-text-data-types-timex-expression': 1.1.4
@@ -1186,10 +1186,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-xtmp9Jg3BO2G5THpiPAiFV9oNct/E44BE+J+/SViivNYaM9fLv9QiwNSIxCf1Dn/2X6mQEX5UyBk7Yr+uTq9yA==
-  /botframework-schema/4.8.0-preview-110079:
+  /botframework-schema/4.8.0-preview-110700:
     dev: false
     resolution:
-      integrity: sha1-YNabjuKkeATYqCvvB8p5WJyw8aY=
+      integrity: sha1-IGHDk9tpqW+TJzu5RG7ZHswIQaE=
   /brace-expansion/1.1.11:
     dependencies:
       balanced-match: 1.0.0
@@ -6480,9 +6480,9 @@ packages:
       '@types/seedrandom': 2.4.28
       '@types/semver': 6.2.0
       '@types/xml2js': 0.4.5
-      adaptive-expressions: 4.8.0-preview-110079
+      adaptive-expressions: 4.8.0-preview-110700
       ajv: 6.10.2
-      botbuilder-lg: 4.8.0-preview-110079
+      botbuilder-lg: 4.8.0-preview-110700
       botframework-expressions: 4.7.0-preview
       chai: 4.2.0
       chalk: 2.4.2
@@ -6506,7 +6506,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-bXf8T/+WqX10g5isURkKMHW8uZX0/lbxd5LfQVU/3bZ8POAvPn9E5sfSCfauqD+s5+WPyqYy30CoaqbQmQ0Iaw==
+      integrity: sha512-I0SYhJoKLgPthILQ61CHjEhogs9tmkjKnbaG6qipv4zOMN3m2PE/mrXz6gui9+//IZa810GedvpTPrFxwFUKpw==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6734,12 +6734,12 @@ specifiers:
   '@types/semver': ^6.0.1
   '@types/supports-color': ^5.3.0
   '@types/xml2js': ^0.4.4
-  adaptive-expressions: 4.8.0-preview-110079
+  adaptive-expressions: 4.8.0-preview-110700
   ajv: ^6.9.1
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
-  botbuilder-lg: 4.8.0-preview-110079
+  botbuilder-lg: 4.8.0-preview-110700
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0
