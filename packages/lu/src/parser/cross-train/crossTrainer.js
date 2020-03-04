@@ -69,6 +69,8 @@ module.exports = {
    * @throws {exception} throws errors
    */
   getConfigObject : function (configContent, intentName) {
+    let finalLuConfigObj = Object.create(null)
+    let rootLuFiles = []
     const configFileDir = path.dirname(configContent.path)
     const luConfigContent = configContent.content
     if (luConfigContent && luConfigContent !== '') {
