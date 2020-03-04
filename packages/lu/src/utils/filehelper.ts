@@ -170,7 +170,7 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-export async function getFilesContent(input: string, extType: string):Promise<FileInfo[]> {
+export async function getFilesContent(input: string, extType: string): Promise<FileInfo[]> {
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
@@ -215,7 +215,7 @@ async function getConfigFile(input: string): Promise<string> {
 }
 
 export function getParsedObjects(contents: FileInfo[]) {
-  const parsedObjects = contents.map((content) => {
+  const parsedObjects = contents.map(content => {
     const opts = new LUOptions(content.path)
     return new luObject(content.content, opts)
   })
