@@ -21,3 +21,16 @@
 
 # assignFilename(entity)
 - ${prefix}-${property}-assign-${entity}Entity.dialog
+
+# operations(entity, values)
+-```
+@composite AddToProperty = [entity]
+@composite RemoveFromProperty = [entity]
+${substitutions('abc', json('{}'), 3)}
+```
+
+# list(values)
+- [${join(foreach(values, value, `"${value}"`), ', ')}]
+
+> # ${triggerIntent}
+> ${substitutions(`${locale}/library-operations.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}

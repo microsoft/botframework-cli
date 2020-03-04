@@ -3,12 +3,12 @@
 - add {@AddToProperty=${entity} and ${entity}}
 - add {@AddToProperty=${entity}, ${entity} and ${entity}}
 > Remove only
-- remove {@AddToProperty=${entity}}
-- remove {@AddToProperty=${entity} and ${entity}}
-- remove {@AddToProperty=${entity}, ${entity} and ${entity}}
-- delete {@AddToProperty=${entity}}
-- delete {@AddToProperty=${entity} and ${entity}}
-- delete {@AddToProperty=${entity}, ${entity} and ${entity}}
+- remove {@RemoveFromProperty=${entity}}
+- remove {@RemoveFromProperty=${entity} and ${entity}}
+- remove {@RemoveFromProperty=${entity}, ${entity} and ${entity}}
+- delete {@RemoveFromProperty=${entity}}
+- delete {@RemoveFromProperty=${entity} and ${entity}}
+- delete {@RemoveFromProperty=${entity}, ${entity} and ${entity}}
 > Clear only
 - clear {@ClearProperty=${property}}
 - remove {@ClearProperty=${property}}
