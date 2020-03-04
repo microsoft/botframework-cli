@@ -1,11 +1,16 @@
 @microsoft/bf-chatdown
 ========
 
-Tool for parsing chat files and outputting replayable activities
+This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-chatdown)](https://www.npmjs.com/package/@microsoft/bf-chatdown)
 
+Tool for parsing chat files and outputting replayable activities.
+
+# Relevant docs
+- [.chat file format][1]
+- [Example .chat files][2]
 
 # Commands
 <!-- commands -->
@@ -58,3 +63,6 @@ EXAMPLE
 
 _See code: [src/commands/chatdown/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/chatdown/src/commands/chatdown/convert.ts)_
 <!-- commandsstop -->
+
+[1]:./docs/chatdown-format.md
+[2]:./docs/examples

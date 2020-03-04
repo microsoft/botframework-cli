@@ -1,7 +1,7 @@
 # filename
-- @{schemaName}-ordinalV2.@{locale}.lu
+- ${builtinEntityFilename('ordinalV2Entity')}
 
 # template
-- $PREBUILT:ordinalV2 @{roles()}
+- @ prebuilt ordinalV2 ${roles()}
 
 [generator.lg](../generator.lg)

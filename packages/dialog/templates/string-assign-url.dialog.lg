@@ -1,0 +1,29 @@
+
+# filename
+- ${assignFilename('url')}
+
+# template
+- ```
+{
+    "$schema": "${appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "${property}",
+    "entity": "url",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "$\{setPropertyMessage('${property}', @url)}"
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$${property}",
+            "value": "=@url"          
+        }
+    ]               
+}
+```
+
+# callSetMessage
+- 
+
+[generator.lg](generator.lg)

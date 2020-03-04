@@ -1,0 +1,26 @@
+
+# filename
+- ${assignFilename('utterance')}
+
+# template
+- ```
+{
+    "$schema": "${appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "${property}",
+    "entity": "utterance",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "$\{setPropertyMessage('${property}', @utterance)}"
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$${property}",
+            "value": "=@utterance"          
+        }
+    ]               
+}
+```
+
+[generator.lg](generator.lg)

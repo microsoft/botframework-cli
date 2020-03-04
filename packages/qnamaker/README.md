@@ -1,10 +1,16 @@
 @microsoft/bf-qnamaker
 ======================
 
-
+This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-qnamaker)](https://npmjs.org/package/@microsoft/bf-qnamaker)
+
+
+# Relevant docs
+- [.qna file format][1]
+- [Working with .qna files][2]
+- [Machine translating .qna content][3]
 
 # Commands
 <!-- commands -->
@@ -514,3 +520,7 @@ OPTIONS
 
 _See code: [src/commands/qnamaker/train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/train.ts)_
 <!-- commandsstop -->
+
+[1]:./docs/qna-file-format.md
+[2]:./docs/working-with-qna.md
+[3]:./docs/translate-command.md

@@ -1,0 +1,15 @@
+# template
+- ```
+{
+    "$schema": "${appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "PropertyToChange",
+    "entity": "PROPERTYName",
+    "actions": [
+        {
+            "$kind": "Microsoft.DeleteProperty",
+            "property": "dialog[@PROPERTYName]"            
+        }
+    ]
+}
+```

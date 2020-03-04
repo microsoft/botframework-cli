@@ -1,29 +1,60 @@
-const mergeLuFiles = require('./../lu/luMerger').Build
-const Luis = require('./luis')
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
 
+const Luis = require('./luis')
+const parseFileContents = require('./../lufile/parseFileContents').parseFile
+const build = require('./luisCollate').build
+const LU = require('./../lu/lu')
 class LuisBuilder {
+
+    /**
+     * Builds a Luis instance from a Luis json.
+     * @param {JSON} luisJson Luis json
+     * @returns {Luis} new Luis instance
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    static fromJson(luisJson) {
+        return new Luis(luisJson)
+    }
+
+    /**
+     * Builds a Luis instance from a Lu Content.
+     * @param {string} luContent LU content
+     * @returns {Luis} new Luis instance
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    static async fromContentAsync(luContent) {
+        return await parseAndValidateLuFile(luContent)
+    }
+
     /**
      * Builds a Luis instance from a Lu list.
-     * @param {Array<Lu>} luObjArray Array of LU files to be merge
-     * @param {boolean} log indicates if we need verbose logging.
-     * @param {string} luis_culture LUIS locale code
+     * @param {Array<LU>} luArray Array of LU files to be merge
      * @param {function} luSearchFn function to retrieve the lu files found in the references
      * @returns {Luis} new Luis instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async build(luArray, verbose, luis_culture, luSearchFn) {
-        let mergedContent = await mergeLuFiles(luArray, verbose, luis_culture, luSearchFn)
-        let parsedLUISList = mergedContent.LUISContent.filter(item => item.includeInCollate)
-        let result = new Luis();
-        if (parsedLUISList.length === 0) return result
-        let luisList = []
-        parsedLUISList.forEach(i => {
-            luisList.push(i.LUISJsonStructure)
-        });
-        result.collate(luisList)
-        return result
+    static async fromLUAsync(luArray, luSearchFn) {
+        if(!Array.isArray(luArray)){
+            if (luArray instanceof LU)
+                luArray = new Array(luArray)
+            else 
+                luArray = new Array(new LU(luArray))
+        }
+        let parsedContent = await build(luArray, false, '', luSearchFn)
+        parsedContent.validate()
+        return parsedContent
     }
+
 }
 
 module.exports = LuisBuilder
 
+const parseAndValidateLuFile = async function(luContent, log = undefined, culture = undefined) {
+    let parsedContent = await parseFileContents(luContent, log, culture)
+    let LUISObj = new Luis(parsedContent.LUISJsonStructure)
+    LUISObj.validate()
+    return LUISObj
+}

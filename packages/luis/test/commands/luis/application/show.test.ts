@@ -38,7 +38,6 @@ describe('luis:application:show', () => {
   .stdout()
   .command(['luis:application:show', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
   .it('displays a list of application versions', ctx => {
-    expect(ctx.stdout).to.contain('Application data successfully output to console')
     expect(ctx.stdout).to.contain('99999')
     expect(ctx.stdout).to.contain('test-app')
   })

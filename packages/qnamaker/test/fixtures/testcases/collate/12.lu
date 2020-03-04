@@ -1,0 +1,90 @@
+> # Intents
+
+## Greeting
+- Hi
+- Hello
+- Good morning
+- Good evening
+
+## Help
+- help
+- I need help
+- please help
+
+## AskForUserName
+- {userName=vishwac}
+- I'm {userName=vishwac}
+- call me {userName=vishwac}
+- my name is {userName=vishwac}
+- {userName=vishwac} is my name
+- you can call me {userName=vishwac}
+
+## CreateAlarm
+- create an alarm
+- create an alarm for 7AM
+- set an alarm for 7AM next thursday
+
+## DeleteAlarm
+- delete alarm
+- delete the {alarmTime} alarm
+
+
+
+## CommunicationPreference
+- set call as my communication preference
+- I prefer to receive text messages
+
+## Help
+- can you help
+
+
+
+> # Entity Types
+$userName:simple
+
+$PREBUILT:datetimeV2
+
+> # SYNONYMS
+
+> **NOTE:** your synonym definitions can be defined anywhere chunks, interleaved within a .lu file or even spread across .lu files.
+
+> This defines that **$comPreference** should map synonyms -> canonical **list** value
+
+$commPreference:call=
+- phone call
+- give me a ring
+- ring
+- call
+- cell phone
+- phone
+
+> This defines that **$comPreference** should map synonyms -> canonical **text** value
+
+$commPreference:text=
+- message
+- text
+- sms
+- text message
+
+> This defines that **$comPreference** should map synonyms -> canonical **fax** value
+
+$commPreference:fax=
+- fax
+- fascimile
+
+> This is a phrase list
+
+$ChocolateType:phraseList
+- m&m
+- mars
+- mints
+- spearmings
+- payday
+- jelly
+- kit kat
+- kitkat
+- twix
+
+> # File ref urls
+
+[None Intent definition](./none.lu)

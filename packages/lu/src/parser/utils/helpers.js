@@ -24,8 +24,7 @@ const helpers = {
      */
     FileExtTypeEnum: {
         LUFile : '.lu',
-        QnAFile : '.qna',
-        CROSSTRAINCONFIG: '.json'
+        QnAFile : '.qna'
     },
     /**
      * Helper function to recursively get all .lu files
@@ -39,7 +38,7 @@ const helpers = {
         fs.readdirSync(inputFolder).forEach(function (dirContent) {
             dirContent = path.resolve(inputFolder, dirContent);
             if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
-                results = results.concat(helpers.findLUFiles(dirContent, getSubFolders));
+                results = results.concat(helpers.findLUFiles(dirContent, getSubFolders, extType));
             }
             if (fs.statSync(dirContent).isFile()) {
                 if (dirContent.endsWith(extType)) {
@@ -50,26 +49,19 @@ const helpers = {
         return results;
     },
     /**
-     * Helper function to recursively get all .config files
+     * Helper function to get config.json files
      * @param {string} inputfolder input folder name
-     * @param {boolean} getSubFolder indicates if we should recursively look in sub-folders as well
-     * @param {FileExtTypeEnum} extType indicates if we should look for LUFile or QnAFile or cross train config file
-     * @returns {Array} Array of .config files found
+     * @returns {string} config.json file path found
     */
-    findConfigFiles: function (inputFolder, getSubFolders, extType = this.FileExtTypeEnum.CROSSTRAINCONFIG) {
-        let results = [];
-        fs.readdirSync(inputFolder).forEach(function (dirContent) {
-            dirContent = path.resolve(inputFolder, dirContent);
-            if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
-                results = results.concat(helpers.findConfigFiles(dirContent, getSubFolders));
-            }
+    findConfigFile: function (inputFolder) {
+        const dirContent = path.resolve(inputFolder, 'config.json')
+        try{
             if (fs.statSync(dirContent).isFile()) {
-                if (dirContent.endsWith(extType)) {
-                    results.push(dirContent);
-                }
+                return dirContent
             }
-        });
-        return results;
+        } catch {
+            throw new Error(`No config.json file found under folder ${path.resolve(inputFolder)}`)
+        }        
     },
     /**
      * Helper function to parse link URIs in utterances
@@ -154,6 +146,9 @@ const helpers = {
         let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
         return detectPatternRegex.test(utterance);
     },
+    hashCode : function(s) {
+        return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+    },
     /**
      * Helper to detect luis schema version based on content and update the final payload as needed.
      * @param {LUIS} finalLUISJSON 
@@ -162,6 +157,7 @@ const helpers = {
         if (!finalLUISJSON) return;
         // clean up house keeping
         if (finalLUISJSON.flatListOfEntityAndRoles)  delete finalLUISJSON.flatListOfEntityAndRoles
+        if (finalLUISJSON.utteranceHash) delete finalLUISJSON.utteranceHash
         // Detect if there is content specific to 5.0.0 schema
         // any entity with children
         if (!finalLUISJSON) {
@@ -174,18 +170,26 @@ const helpers = {
                     (finalLUISJSON.luis_schema_version === '6.0.0');
         if (v5DefFound) {
             finalLUISJSON.luis_schema_version = "6.0.0";
-            if (finalLUISJSON.model_features) {
-                finalLUISJSON.phraselists = [];
-                finalLUISJSON.model_features.forEach(item => {
-                    if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
-                    finalLUISJSON.phraselists.push(Object.assign({}, item))
-                });
+            if (finalLUISJSON.hasOwnProperty("model_features")) {
+                if (finalLUISJSON.model_features !== undefined) {
+                    finalLUISJSON.phraselists = finalLUISJSON.phraselists || [];
+                    finalLUISJSON.model_features.forEach(item => {
+                        if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
+                        finalLUISJSON.phraselists.push(Object.assign({}, item))
+                    });
+                }
                 delete finalLUISJSON.model_features;
             }
             (finalLUISJSON.composites || []).forEach(composite => {
                 let children = composite.children;
                 composite.children = [];
-                children.forEach(c => composite.children.push({name : c}));
+                children.forEach(c => {
+                    if (c.name === undefined) {
+                        composite.children.push({name : c})
+                    } else {
+                        composite.children.push(c)
+                    }
+                });
             })
         }
     }

@@ -1,0 +1,117 @@
+{
+  "luis_schema_version": "4.0.0",
+  "versionId": "0.2",
+  "name": "test(development)-case-insensitive.en-us.lu",
+  "desc": "Model for test app, targetting development",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "intents": [
+    {
+      "name": "GetUserProfile"
+    },
+    {
+      "name": "Greeting"
+    },
+    {
+      "name": "Help"
+    },
+    {
+      "name": "None"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [
+    {
+      "name": "Cities",
+      "subLists": [
+        {
+          "canonicalForm": "seattle",
+          "list": [
+            "SEA",
+            "Seatac"
+          ]
+        },
+        {
+          "canonicalForm": "redmond",
+          "list": [
+            "microsoft",
+            "REA"
+          ]
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "patternAnyEntities": [
+    {
+      "name": "Item",
+      "roles": [],
+      "explicitList": []
+    }
+  ],
+  "regex_entities": [
+    {
+      "name": "zipCode",
+      "regexPattern": "[0-9]{5}",
+      "roles": []
+    }
+  ],
+  "prebuiltEntities": [
+    {
+      "name": "age",
+      "roles": []
+    },
+    {
+      "name": "personName",
+      "roles": []
+    }
+  ],
+  "model_features": [
+    {
+      "name": "profileDefinition",
+      "mode": true,
+      "words": "I'm,My,I am",
+      "activated": true
+    }
+  ],
+  "regex_features": [],
+  "patterns": [
+    {
+      "pattern": "please help {Item}",
+      "intent": "Help"
+    },
+    {
+      "pattern": "help me with {Item}",
+      "intent": "Help"
+    }
+  ],
+  "utterances": [
+    {
+      "text": "hello evening",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "hi morning",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "i am 36",
+      "intent": "GetUserProfile",
+      "entities": []
+    },
+    {
+      "text": "i'm 36 years old",
+      "intent": "GetUserProfile",
+      "entities": []
+    },
+    {
+      "text": "my age is 36",
+      "intent": "GetUserProfile",
+      "entities": []
+    }
+  ],
+  "settings": []
+}

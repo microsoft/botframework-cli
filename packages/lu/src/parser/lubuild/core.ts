@@ -11,6 +11,7 @@ import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import * as path from 'path'
 const Content = require('./../lu/lu')
+const LUOptions = require('./../lu/luOptions')
 
 export class LuBuildCore {
   private readonly client: any
@@ -21,40 +22,34 @@ export class LuBuildCore {
     this.client = new LUISAuthoringClient(creds, endpoint)
   }
 
-  public async GetApplicationList() {
+  public async getApplicationList() {
     let apps = await this.client.apps.list(undefined, undefined)
 
     return apps
   }
 
-  public async GetApplicationInfo(appId: string) {
+  public async getApplicationInfo(appId: string) {
     let appInfo = await this.client.apps.get(appId)
 
     return appInfo
   }
 
-  public async ImportApplication(currentApp: any): Promise<any> {
+  public async importApplication(currentApp: any): Promise<any> {
     let response = await this.client.apps.importMethod(currentApp)
 
     return response
   }
 
-  public async ExportApplication(appId: string, versionId: string) {
+  public async exportApplication(appId: string, versionId: string) {
     const response = await this.client.versions.exportMethod(appId, versionId)
 
     return response
   }
 
-  public CompareApplications(currentApp: any, existingApp: any) {
+  public compareApplications(currentApp: any, existingApp: any) {
     currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture
-    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId !== existingApp.versionId ? currentApp.versionId : existingApp.versionId;
-
-    // convert utterance text from lu file to lower case
-    // as utterances from luis api are all converted to lower case automatically
-    (currentApp.utterances || []).forEach((u: any) => {
-      u.text = u.text.toLowerCase()
-    });
+    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId > existingApp.versionId ? currentApp.versionId : existingApp.versionId;
 
     // convert list entities to remove synonyms word in list which is same with canonicalForm
     (currentApp.closedLists || []).forEach((c: any) => {
@@ -82,12 +77,12 @@ export class LuBuildCore {
     return !this.isApplicationEqual(currentApp, existingApp)
   }
 
-  public UpdateVersion(currentApp: any, existingApp: any) {
+  public updateVersion(currentApp: any, existingApp: any) {
     let newVersionId: string
-    if (currentApp.versionId && currentApp.versionId !== existingApp.versionId) {
+    if (currentApp.versionId > existingApp.versionId) {
       newVersionId = currentApp.versionId
     } else {
-      newVersionId = this.updateVersion(existingApp.versionId)
+      newVersionId = this.updateVersionValue(existingApp.versionId)
     }
 
     currentApp.versionId = newVersionId
@@ -95,21 +90,29 @@ export class LuBuildCore {
     return newVersionId
   }
 
-  public async ImportNewVersion(appId: string, app: any, options: any) {
+  public async importNewVersion(appId: string, app: any, options: any) {
     await this.client.versions.importMethod(appId, app, options)
   }
 
-  public async TrainApplication(appId: string, versionId: string) {
+  public async listApplicationVersions(appId: string) {
+    return this.client.versions.list(appId)
+  }
+
+  public async deleteVersion(appId: string, versionId: string) {
+    await this.client.versions.deleteMethod(appId, versionId)
+  }
+
+  public async trainApplication(appId: string, versionId: string) {
     await this.client.train.trainVersion(appId, versionId)
   }
 
-  public async GetTrainingStatus(appId: string, versionId: string) {
+  public async getTrainingStatus(appId: string, versionId: string) {
     const status = this.client.train.getStatus(appId, versionId)
 
     return status
   }
 
-  public async PublishApplication(appId: string, versionId: string) {
+  public async publishApplication(appId: string, versionId: string) {
     this.client.apps.publish(appId,
       {
         versionId,
@@ -117,26 +120,28 @@ export class LuBuildCore {
       })
   }
 
-  public GenerateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings)
+  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
-      let content = new Content(recognizer.save(), path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath())
+      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
       contents.push(content)
     }
 
     for (const multiRecognizer of multiRecognizers) {
-      const multiLangContent = new Content(multiRecognizer.save(), path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath())
+      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
       contents.push(multiLangContent)
     }
 
-    const settingsContent = new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
-    contents.push(settingsContent)
+    for (const setting of settings) {
+      const settingsContent = new Content(setting.save(), new LUOptions(path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath()))
+      contents.push(settingsContent)
+    }
 
     return contents
   }
 
-  private updateVersion(versionId: string) {
+  private updateVersionValue(versionId: string) {
     let numberVersionId = parseFloat(versionId)
     if (isNaN(numberVersionId)) {
       const index = versionId.lastIndexOf('-')
@@ -167,12 +172,12 @@ export class LuBuildCore {
     equal = equal && this.isArrayEqual(appA.closedLists, appB.closedLists)
     equal = equal && this.isArrayEqual(appA.composites, appB.composites)
     equal = equal && this.isArrayEqual(appA.entities, appB.entities)
-    equal = equal && this.isArrayEqual(appA.modelFeatures, appB.modelFeatures)
+    equal = equal && this.isArrayEqual(appA.model_features, appB.modelFeatures)
     equal = equal && this.isArrayEqual(appA.patternAnyEntities, appB.patternAnyEntities)
     equal = equal && this.isArrayEqual(appA.patterns, appB.patterns)
     equal = equal && this.isArrayEqual(appA.prebuiltEntities, appB.prebuiltEntities)
-    equal = equal && this.isArrayEqual(appA.regexEntities, appB.regexEntities)
-    equal = equal && this.isArrayEqual(appA.regexFeatures, appB.regexFeatures)
+    equal = equal && this.isArrayEqual(appA.regex_entities, appB.regexEntities)
+    equal = equal && this.isArrayEqual(appA.regex_features, appB.regexFeatures)
     equal = equal && this.isArrayEqual(appA.utterances, appB.utterances)
 
     // handle exception for none intent which is default added in luis portal
@@ -194,15 +199,14 @@ export class LuBuildCore {
     let yObj = []
 
     if (x && x.length > 0) {
-      xObj = JSON.parse(JSON.stringify(x))
+      xObj = JSON.parse(JSON.stringify(x).toLowerCase().replace(/ {2}/g, ' '))
     }
 
     if (y && y.length > 0) {
-      yObj = JSON.parse(JSON.stringify(y))
+      yObj = JSON.parse(JSON.stringify(y).toLowerCase().replace(/ {2}/g, ' '))
     }
 
     if (xObj.length !== yObj.length) return false
-
     if (differenceWith(xObj, yObj, isEqual).length > 0) return false
 
     return true

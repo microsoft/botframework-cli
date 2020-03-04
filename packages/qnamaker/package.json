@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
-  "main": "utils/api/index.js",
   "engines": {
     "node": ">=8.0.0"
   },
@@ -40,6 +39,7 @@
   },
   "dependencies": {
     "@microsoft/bf-cli-command": "1.0.0",
+    "@microsoft/bf-lu": "1.0.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",

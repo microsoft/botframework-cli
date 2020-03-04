@@ -1,14 +1,16 @@
 # filename
-- @{schemaName}-@{property}Entity.@{locale}.lu
+- ${entityLUFilename()}
 
 # template
-- @{Entity()}
-
-# Entity
-- @{join(foreach(schema.properties[property].enum, enum, concat('$', property, 'Entity:', enum, '=\n', synonyms(enum))), '\n\n')}
+- ```
+@ list ${property}Entity =
+${join(foreach(schema.properties[property].enum, enum, concat('\t- ', enum, ' :\n', synonyms(enum))), '\n')}
+```
 
 >>> # None
->>> - # None\n@{join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
+>>> - # None\n${join(foreach(schema.properties[property].enum, enum, synonyms(enum)), '\n')}
 
 # synonyms(value)
-- @{join(foreach(phrases(value), phrase, concat('- ', phrase)), '\n')}
+- ${join(foreach(phrases(value), phrase, concat('\t\t- ', phrase)), '\n')}
+
+[generator.lg](../generator.lg)

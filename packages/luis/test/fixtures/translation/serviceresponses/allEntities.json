@@ -1,0 +1,107 @@
+[
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "rufen",
+          "to": "de",
+          "alignment": {
+            "proj": "0:3-0:4"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "Telefonanruf",
+          "to": "de",
+          "alignment": {
+            "proj": "6:9-0:11"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "gib mir einen Ring",
+          "to": "de",
+          "alignment": {
+            "proj": "0:3-0:2 5:6-4:6 8:8-8:12 10:13-14:17"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "ring",
+          "to": "de",
+          "alignment": {
+            "proj": "0:3-0:3"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "rufen",
+          "to": "de",
+          "alignment": {
+            "proj": "0:3-0:4"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "Handy",
+          "to": "de",
+          "alignment": {
+            "proj": "0:9-0:4"
+          }
+        }
+      ]
+    },
+    {
+      "detectedLanguage": {
+        "language": "en",
+        "score": 1
+      },
+      "translations": [
+        {
+          "text": "telefon",
+          "to": "de",
+          "alignment": {
+            "proj": "0:4-0:6"
+          }
+        }
+      ]
+    }
+]

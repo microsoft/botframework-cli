@@ -1,6 +1,7 @@
 const LuisGen = require('./luisGen')
 const propertyHelper = require('./propertyHelper')
-const {CLIError} = require('@microsoft/bf-cli-command')
+const error = require('./../utils/exception')
+const retCode = require('./../utils/enums/CLI-errors')
 
 class LuisGenBuilder {
     static build(luisApp) {
@@ -10,7 +11,7 @@ class LuisGenBuilder {
         } else if (luisApp.luis_schema_version >= "6.0.0") {
             buildWithVersion = buildVersion6;
         } else {
-            throw new CLIError("Invalid LUIS JSON schema version.")
+            throw (new error(retCode.errorCode.INVALID_INPUT_FILE, "Invalid LUIS JSON schema version."))
         }
 
         return buildWithVersion(luisApp);
@@ -30,7 +31,7 @@ const buildUpToVersion4 = function(luisApp) {
         result.patternAnyEntities = extractEntities(luisApp.patternAnyEntities);
         result.composites = extractComposites(luisApp.composites);
     } catch (err) {
-        throw new CLIError("Invalid LUIS JSON file content.")
+        throw (new error(retCode.errorCode.INVALID_INPUT_FILE, "Invalid LUIS JSON file content."))
     }
     return result
 }
@@ -45,7 +46,7 @@ const buildVersion6 = function(luisApp) {
         result.regex_entities = extractEntities(luisApp.regex_entities);
         result.patternAnyEntities = extractEntities(luisApp.patternAnyEntities);
     } catch (err) {
-        throw new CLIError("Invalid LUIS JSON file content.")
+        throw (new error(retCode.errorCode.INVALID_INPUT_FILE, "Invalid LUIS JSON file content."))
     }
     return result
 }

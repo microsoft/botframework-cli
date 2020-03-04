@@ -426,7 +426,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
-            
+            section.Name = section.Name.replace(/[\'\"]/g, "");
             let intentExists = parsedContent.LUISJsonStructure.intents.find(item => item.name === section.Name);
             if (intentExists !== undefined) {
                 // verify the list of features requested have all been defined.
@@ -477,6 +477,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 let srcEntityInFlatList = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == section.Name);
                 let entityType = srcEntityInFlatList ? srcEntityInFlatList.type : undefined;
                 (featuresList || []).forEach(feature => {
+                    feature = feature.replace(/[\'\"]/g, "");
                     let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
                     let featureIntentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
                     // find the entity based on its type.
@@ -725,6 +726,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
 const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
     // handle intent
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
+    let hashTable = {}
     if (intents && intents.length > 0) {
         for (const intent of intents) {
             let intentName = intent.Name;
@@ -733,6 +735,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
             for (const utteranceAndEntities of intent.UtteranceAndEntitiesMap) {
                 // add utterance
                 let utterance = utteranceAndEntities.utterance.trim();
+                let uttHash = helpers.hashCode(utterance);
                 // Fix for BF-CLI #122. 
                 // Ensure only links are detected and passed on to be parsed.
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
@@ -758,8 +761,9 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                         }
 
                         let newPattern = new helperClass.pattern(utterance, intentName);
-                        if (!parsedContent.LUISJsonStructure.patterns.find(item => deepEqual(item, newPattern))) {
+                        if (!hashTable[uttHash]) {
                             parsedContent.LUISJsonStructure.patterns.push(newPattern);
+                            hashTable[uttHash] = newPattern;
                         }
 
                         // add all entities to pattern.Any only if they do not have another type.
@@ -901,8 +905,14 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                         });
 
                         // add utterance
-                        let utteranceExists = parsedContent.LUISJsonStructure.utterances.find(item => item.text == utterance && item.intent == intentName);
-                        let utteranceObject = utteranceExists || new helperClass.uttereances(utterance, intentName, []);
+                        let utteranceObject;
+                        if (hashTable[uttHash]) {
+                            utteranceObject = hashTable[uttHash];
+                        } else {
+                            utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                            parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
+                            hashTable[uttHash] = utteranceObject;
+                        }
                         entitiesFound.forEach(item => {
                             if (item.startPos > item.endPos) {
                                 let errorMsg = `No labelled value found for entity: "${item.entity}" in utterance: "${utteranceAndEntities.context.getText()}"`;
@@ -920,19 +930,22 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                             }
                             if (!utteranceObject.entities.find(item => deepEqual(item, utteranceEntity))) utteranceObject.entities.push(utteranceEntity)
                         });
-                        if (utteranceExists === undefined) parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                     }
 
                 } else {
                     // detect if utterance is a pattern and if so add it as a pattern
                     if (helpers.isUtterancePattern(utterance)) {
                         let patternObject = new helperClass.pattern(utterance, intentName);
-                        parsedContent.LUISJsonStructure.patterns.push(patternObject);
-                    } else {
-                        if(parsedContent.LUISJsonStructure.utterances.find(item => item.text == utterance && item.intent == intentName) === undefined) {
-                            let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
-                            parsedContent.LUISJsonStructure.utterances.push(utteranceObject);    
+                        if (!hashTable[uttHash]) {
+                            parsedContent.LUISJsonStructure.patterns.push(patternObject);
+                            hashTable[uttHash] = patternObject;
                         }
+                    } else {
+                        if(!hashTable[uttHash]) {
+                            let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                            parsedContent.LUISJsonStructure.utterances.push(utteranceObject); 
+                            hashTable[uttHash] = utteranceObject;
+                        } 
                     }
                 }
             }
@@ -958,7 +971,7 @@ const getEntityType = function(entityName, entities) {
  * @param {String} entityName name of the entity being added.
  */
 const validateAndGetRoles = function(parsedContent, roles, line, entityName, entityType) {
-    let newRoles = roles ? roles.split(',').map(item => item.trim()) : [];
+    let newRoles = roles ? roles.split(',').map(item => item.replace(/[\'\"]/g, "").trim()) : [];
     // de-dupe roles
     newRoles = [...new Set(newRoles)];
     // entity roles need to unique within the application
@@ -1020,7 +1033,8 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
     if (entities && entities.length > 0) {
         for (const entity of entities) {
             if (entity.Type !== INTENTTYPE) {
-                let entityName = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
+                entity.Name = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
+                let entityName = entity.Name;
                 let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
                 if (!entityType) {
                     let errorMsg = `No type definition found for entity "${entityName}". Supported types are ${Object.values(EntityTypeEnum).join(', ')}. Note: Type names are case sensitive.`;
@@ -1302,6 +1316,8 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                 isPLEnabled = false;
             } else if (item.toLowerCase() === 'enabledforallmodels') {
                 isPLEnabledForAllModels = true;
+            } else if (item.toLowerCase() === '(interchangeable)') {
+                entityName += item;
             } else {
                 let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
                 let error = BuildDiagnostic({
@@ -1528,7 +1544,8 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
                 addNV = true;
             }
         } else {
-            line.split(/[,;]/g).map(item => item.trim()).forEach(item => {
+            line.split(/[,;]/g).forEach(item => {
+                item = item.trim();
                 if (!nvExists || !nvExists.list) {
                     let errorMsg = `Closed list ${entityName} has synonyms list "${line}" without a normalized value.`;
                     let error = BuildDiagnostic({
@@ -1538,15 +1555,15 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
 
                     throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString(), [error]));
                 }
-                if (!nvExists.list.includes(item)) nvExists.list.push(item);
+                nvExists.list.push(item);
             })
         }
     });
-
+    // de-dupe the list
+    if (nvExists && nvExists.list)nvExists.list = [...new Set(nvExists.list)];
     if (addNV) {
         closedListExists.subLists.push(nvExists);
     }
-
     // merge roles
     entityRoles.forEach(item => {
         if(!closedListExists.roles.includes(item)) closedListExists.roles.push(item);

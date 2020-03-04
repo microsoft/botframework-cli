@@ -1,0 +1,43 @@
+# filename
+- ${assignFilename(property)}
+
+# template
+- ```
+{
+    "$schema": "${appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "${property}",
+    "entity": "{property}Entity",
+    "actions": [
+        {
+            "$kind": "Microsoft.IfCondition",
+            "condition": "!turn.dialogevent.value.expected",
+            "actions":[               
+                {
+                    "$kind": "Microsoft.IfCondition",
+                    "condition": "!${property}",
+                    "actions":[
+                        {
+                            "$kind": "Microsoft.SendActivity",
+                            "activity": "$\{unexpectedPropertySet('${property}', @${property}Entity)}"
+                        }
+                    ],
+                    "elseActions":[
+                        {
+                            "$kind": "Microsoft.SendActivity",
+                            "activity": "$\{unexpectedPropertyChange('${property}', @${property}Entity, $${property})}"
+                        }
+                    ]
+                }                
+            ]           
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "${property}",
+            "value": "@${property}Entity"
+        }
+    ]
+}
+```
+
+[generator.lg](generator.lg)

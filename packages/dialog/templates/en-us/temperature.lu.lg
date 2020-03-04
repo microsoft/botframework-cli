@@ -1,7 +1,7 @@
 # filename
-- @{schemaName}-temperature.@{locale}.lu
+- ${builtinEntityFilename('temperatureEntity')}
 
 # template
-- $PREBUILT:temperature @{roles()}
+- @ prebuilt temperature ${roles()}
 
 [generator.lg](../generator.lg)

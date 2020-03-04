@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "dimension": {
         "type": "object",
-        "$entities": ["@{concat('dimension:', property)}", "dimension"],
+        "$entities": ["${concat('dimension:', property)}", "dimension"],
         "properties": {
             "number": {
                 "type": "number"
@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["dimension.lu","objectProperty.lg", "stringAsk.dialog","dimensionSet.dialog"]
+        "$templates": ["dimension.lu","objectProperty.lg", "string-missing.dialog","assign-dimensionEntity.dialog"]
     }
 }

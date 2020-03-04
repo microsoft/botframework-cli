@@ -27,12 +27,12 @@ describe('dialog:generate', async () => {
 
     it('Generation with override', async () => {
         try {
-            await gen.generate(schemaPath, output, undefined, ['en-us'], [override, 'standard'], false, (type, msg) => {
+            await gen.generate(schemaPath, undefined, output, undefined, ['en-us'], [override, 'standard'], false, (type, msg) => {
                 console.log(`${type}: ${msg}`)
             })
             let lg = await fs.readFile(ppath.join(output, 'en-us', 'sandwich-Bread.en-us.lg'))
             assert.ok(lg.toString().includes('What kind of bread?'), 'Did not override locale generated file')
-            let dialog = await fs.readFile(ppath.join(output, 'sandwich-BreadAsk.dialog'))
+            let dialog = await fs.readFile(ppath.join(output, 'sandwich-Bread-missing.dialog'))
             assert.ok(!dialog.toString().includes('priority'), 'Did not override top-level file')
         } catch (e) {
             assert.fail(e.message)
@@ -41,14 +41,13 @@ describe('dialog:generate', async () => {
 
     it('Generation', async () => {
         try {
-            await gen.generate(schemaPath, output, undefined, ['en-us'], undefined, false, (type, msg) => {
+            await gen.generate(schemaPath, undefined, output, undefined, ['en-us'], undefined, false, (type, msg) => {
                 console.log(`${type}: ${msg}`)
             })
         } catch (e) {
             assert.fail(e.message)
         }
     })
-
 
     it('Not object type', async () => {
         try {

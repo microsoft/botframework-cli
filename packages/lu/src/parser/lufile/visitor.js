@@ -15,33 +15,8 @@ class Visitor {
             switch (innerNode.symbol.type) {
                 case lp.DASH: break;
                 case lp.EXPRESSION: {
-                    let result = this.extractEntityFromUtterence(innerNode.getText());
-                    let entityObjects = result.entities;
-                    errorMsgs = errorMsgs.concat(result.errorMsgs);
-                    if (entityObjects[entityObjects.length - 1].entityValue !== undefined) {
-                        // simple entitiy
-                        utterance = utterance.concat(entityObjects[entityObjects.length - 1].entityValue).trimLeft();
-                        for (const entityObject of entityObjects) {
-                            let startPos = utterance.lastIndexOf(entityObject.entityValue);
-                            let endPos = startPos + entityObject.entityValue.length - 1;
-                            entities.push({
-                                type: LUISObjNameEnum.ENTITIES,
-                                entity: entityObject.entityName,
-                                role: entityObject.role,
-                                startPos: startPos,
-                                endPos: endPos
-                            });
-                        }
-                    } else {
-                        // pattern.any entity
-                        const patternStr = entityObjects[0].role ? `{${entityObjects[0].entityName}:${entityObjects[0].role}}` : `{${entityObjects[0].entityName}}`
-                        utterance = utterance.concat(patternStr);
-                        entities.push({
-                            type: LUISObjNameEnum.PATTERNANYENTITY,
-                            entity: entityObjects[0].entityName,
-                            role: entityObjects[0].role
-                        })
-                    }
+                    let tokUtt = this.tokenizeUtterance(innerNode.getText().trim());
+                    utterance = this.recurselyResolveTokenizedUtterance(tokUtt, entities, errorMsgs, utterance.trimLeft()); 
                     break;
                 }
                 default: {
@@ -53,66 +28,114 @@ class Visitor {
 
         return { utterance: utterance.trim(), entities, errorMsgs };
     }
-
+    /**
+     * 
+     * @param {Object[]} tokUtt 
+     * @param {Object[]} entities 
+     * @param {Object[]} errorMsgs 
+     * @param {String} srcUtterance 
+     */
+    static recurselyResolveTokenizedUtterance(tokUtt, entities, errorMsgs, srcUtterance) {
+        for (const item of tokUtt) {
+            if (item === Object(item)) {
+                if (item.entityValue === undefined) {
+                    // we have a pattern.any entity
+                    const patternStr = item.role ? `{${item.entityName}:${item.role}}` : `{${item.entityName}}`
+                    srcUtterance += patternStr;
+                    entities.push({
+                        type: LUISObjNameEnum.PATTERNANYENTITY,
+                        entity: item.entityName.trim(),
+                        role: item.role.trim()
+                    })
+                } else {
+                    // we have a new entity
+                    let newEntity = {
+                        type: LUISObjNameEnum.ENTITIES,
+                        entity: item.entityName.trim(),
+                        role: item.role.trim(),
+                        startPos: srcUtterance.length,
+                        endPos: undefined
+                    };
+                    if (item.entityValue === undefined) {
+                        errorMsgs.push(`Composite entity "${item.parent.entityName}" includes pattern.any entity "${item.entityName}".\r\n\tComposites cannot include pattern.any entity as a child.`)
+                    } else {
+                        srcUtterance = this.recurselyResolveTokenizedUtterance(item.entityValue, entities, errorMsgs, srcUtterance).trimLeft();
+                        newEntity.endPos = srcUtterance.length - 1;
+                        entities.push(newEntity);
+                    }
+                }
+            } else {
+                srcUtterance += item;
+            }
+        }
+        return srcUtterance;
+    }
     /**
      * @param {string} exp 
      * @returns {object}
      */
-    static extractEntityFromUtterence(exp) {
-        let entities = [];
-        let errorMsgs = [];
-
-        exp = exp.substring(1, exp.length - 1).trim();
-        let equalIndex = exp.indexOf('=');
-        if (equalIndex !== -1) {
-            // entity with labelled value
-            let entityName = exp.substring(0, equalIndex).trim();
-            let entityValue = exp.substring(equalIndex + 1).trim();
-
-            let updatedEntityValue = entityValue;
-            let compositeEntityRightIndex = updatedEntityValue.indexOf('}');
-            let compositeEntityLeftIndex = updatedEntityValue.substring(0, compositeEntityRightIndex).lastIndexOf('{');
-            while (compositeEntityLeftIndex > -1 && compositeEntityRightIndex > compositeEntityLeftIndex) {
-                // composite entities
-                let compositeEntityDefinition = updatedEntityValue.substring(compositeEntityLeftIndex + 1, compositeEntityRightIndex).trim();
-                let compositeEntityEqualIndex = compositeEntityDefinition.indexOf('=');
-                if (compositeEntityEqualIndex !== -1) {
-                    let compositeEntityName = compositeEntityDefinition.substring(0, compositeEntityEqualIndex).trim();
-                    let compositeEntityValue = compositeEntityDefinition.substring(compositeEntityEqualIndex + 1).trim();
-                    entities.push({ entityName: compositeEntityName, entityValue: compositeEntityValue });
-                    updatedEntityValue = updatedEntityValue.substring(0, compositeEntityLeftIndex) + compositeEntityValue + updatedEntityValue.substring(compositeEntityRightIndex + 1);
-                    compositeEntityRightIndex = updatedEntityValue.indexOf('}');
-                    compositeEntityLeftIndex = updatedEntityValue.substring(0, compositeEntityRightIndex).lastIndexOf('{');
-                } else {
-                    errorMsgs.push(`Composite entity "${entityName}" includes pattern.any entity "${compositeEntityDefinition}".\r\n\tComposites cannot include pattern.any entity as a child.`)
+    static tokenizeUtterance(exp) {
+        let splitString = [];
+        let curList = splitString;
+        let curEntity = undefined;
+        let entityNameCapture = false;
+        let entityValueCapture = false;
+        let entityRoleCapture = false;
+        exp.split('').forEach(char => {
+            switch(char) 
+            {
+                case '{':
+                    let newEntity = {entityName : '', role : '', entityValue : undefined, parent : curEntity};
+                    curList.push(newEntity);
+                    curEntity = newEntity;
+                    entityNameCapture = true;
+                    entityRoleCapture = false;
+                    entityValueCapture = false;
                     break;
-                }
+                case '}':
+                    curEntity = curEntity.parent || undefined;
+                    curList = curEntity != undefined ? curEntity.entityValue : splitString;
+                    entityValueCapture = false;
+                    entityRoleCapture = false;
+                    entityNameCapture = false;
+                    break;
+                case '=':
+                    curEntity.entityValue = [];
+                    curList = curEntity.entityValue;
+                    entityNameCapture = false;
+                    entityValueCapture = true;
+                    entityRoleCapture = false;
+                    break;
+                case ':':
+                    if (curEntity !== undefined && curEntity.entityName !== '' && entityNameCapture === true) {
+                        entityRoleCapture = true;
+                        entityNameCapture = false;
+                        entityValueCapture = false;
+                    } else {
+                        curList.push(char);
+                    }
+                    break;
+                default :
+                    if (entityNameCapture) {
+                        curEntity.entityName += char;
+                    } else if (entityValueCapture) {
+                        if (char === ' ') {
+                            // we do not want leading spaces
+                            if (curList.length !== 0) {
+                                curList.push(char);
+                            }
+                        } else {
+                            curList.push(char);
+                        }
+                    } else if (entityRoleCapture) {
+                        curEntity.role += char;
+                    } else {
+                        curList.push(char);
+                    }
+                    break;
             }
-
-            entities.push({ entityName: entityName, entityValue: updatedEntityValue });
-            entities.forEach(entity => {
-                let colonIndex = entity.entityName.indexOf(':');
-                if (colonIndex !== -1) {
-                    let entityName = entity.entityName.substring(0, colonIndex).trim();
-                    let roleName = entity.entityName.substring(colonIndex + 1).trim();
-                    entity.entityName = entityName;
-                    entity.role = roleName;
-                }
-            });
-        } else {
-            // pattern.any entity
-            let colonIndex = exp.indexOf(':');
-            if (colonIndex !== -1) {
-                let entityName = exp.substring(0, colonIndex).trim();
-                let roleName = exp.substring(colonIndex + 1).trim();
-                entities.push({ entityName: entityName, role: roleName });
-            } else {
-                let entityName = exp.trim();
-                entities.push({ entityName: entityName });
-            }
-        }
-
-        return { entities, errorMsgs };
+        });
+        return splitString;
     }
 }
 
