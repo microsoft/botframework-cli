@@ -16,13 +16,13 @@ const NEWLINE = require('os').EOL
 const path = require('path')
 const QNA_GENERIC_SOURCE = "custom editorial"
 const luObject = require('./../lu/lu')
-const LUOptions = require('./../lu/luOptions')
+const luOptions = require('./../lu/luOptions')
 
 module.exports = {
   /**
    * Do cross training among lu files
-   * @param {luObject[]} luObjectArray the lu object list to be parsed
-   * @param {luObject[]} qnaObjectArray the qna Object list to be parsed
+   * @param {any[]} luContents the lu content array whose element includes path and content
+   * @param {any[]} qnaContents the qna content array whose element includes path and content
    * @param {any} crossTrainConfig cross train json config
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
@@ -67,6 +67,13 @@ module.exports = {
     }
   },
   
+  /**
+   * Get cross train config object based on config content
+   * @param {any} configContent config content with config path and text content
+   * @param {string} intentName cross train interruption intent name
+   * @returns {any} cross train config object
+   * @throws {exception} throws errors
+   */
   getConfigObject : function (configContent, intentName) {
     const configFileDir = path.dirname(configContent.path)
     const luConfigContent = configContent.content;
@@ -118,23 +125,6 @@ module.exports = {
       throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
     }
   }
-}
-
-const getParsedObjects = function(contents) {
-  const parsedObjects = contents.map((content) => {
-    const opts = new LUOptions(content.path)
-    return new luObject(content.content, opts); 
-  })
-
-  return parsedObjects
-}
-
-const pretreatment = function (luContents, qnaContents) {
-   // Parse lu and qna objects
-   const luObjectArray = getParsedObjects(luContents);
-   const qnaObjectArray = getParsedObjects(qnaContents);
-
-   return {luObjectArray, qnaObjectArray}
 }
 
 /**
@@ -537,4 +527,12 @@ const parseAndValidateContent = function (objectArray, verbose) {
   }
 
   return fileIdToResourceMap
+}
+
+const pretreatment = function (luContents, qnaContents) {
+   // Parse lu and qna objects
+   const luObjectArray = fileHelper.getParsedObjects(luContents)
+   const qnaObjectArray = fileHelper.getParsedObjects(qnaContents)
+
+   return {luObjectArray, qnaObjectArray}
 }
