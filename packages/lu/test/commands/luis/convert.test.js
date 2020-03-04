@@ -7,7 +7,11 @@ const LuisBuilder = require('./../../../src/parser/luis/luisBuilder')
 
 const loadLuFile = async function(filePath) {
     let fileContent = await fs.readFile(path.join(__dirname, filePath))
-    return fileContent.toString().replace(/\r\n/g, "\n")
+    return sanitize(fileContent)
+}
+
+const sanitize = function(content) {
+    return content.toString().replace(/\r\n/g, "\n")
 }
   
 const loadJsonFile = async function(filePath) {
@@ -27,7 +31,7 @@ const assertToLu = async function(srcJSONFile, tgtLUFile) {
     let testInputJSON = LuisBuilder.fromJson(testInputFile)
     let testContent = testInputJSON.parseToLuContent();
     let verifiedContent = await loadLuFile(tgtLUFile)
-    assert.deepEqual(testContent, verifiedContent)
+    assert.deepEqual(sanitize(testContent), verifiedContent)
 }
 
 const assertToJSON = async function(srcLUFile, tgtJSONFile, name = undefined) {
@@ -89,7 +93,47 @@ describe('luis:convert', () => {
         await assertToJSON('./../../fixtures/examples/9a.lu', './../../fixtures/verified/9a.json', '9a')
     })
 
-    
+    it('Parse to LU instance', async () => {
+        let luFile = `
+        @ ml test
+        # test
+        - this is a {@test = one}
+        `;
+
+        let result = `
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> # Intent definitions
+
+## test
+- this is a {@test=one}
+
+
+> # Entity definitions
+
+@ ml test
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+
+`
+        const luisObject = await LuisBuilder.fromLUAsync(luFile)
+        const newLU = luisObject.parseToLU()
+        assert.equal(sanitize(newLU.content), result); 
+    });
 })
 describe('luis:convert version 5 upgrade test', () => {
     it('luis:convert successfully reconstructs a markdown file from a LUIS input file with v5 constructs', async () => {

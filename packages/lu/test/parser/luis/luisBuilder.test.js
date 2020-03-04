@@ -59,45 +59,5 @@ assert.isTrue(luisObject.validate())
         assert.deepEqual(luisObject.entities[0].roles, ['firstName', 'lastName']);
     });
 
-    it('Parse to LU instance', async () => {
-        let luFile = `
-        @ ml test
-        # test
-        - this is a {@test = one}
-        `;
-
-        let result = `
-> LUIS application information
-> !# @app.versionId = 0.1
-> !# @app.culture = en-us
-> !# @app.luis_schema_version = 3.2.0
-
-
-> # Intent definitions
-
-## test
-- this is a {@test=one}
-
-
-> # Entity definitions
-
-@ ml test
-
-
-> # PREBUILT Entity definitions
-
-
-> # Phrase list definitions
-
-
-> # List entities
-
-> # RegEx entities
-
-
-`
-        const luisObject = await LUISBuilder.fromLUAsync(luFile)
-        const newLU = luisObject.parseToLU()
-        assert.equal(newLU.content, result); 
-    });
+    
 });
