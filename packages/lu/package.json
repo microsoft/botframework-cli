@@ -36,6 +36,8 @@
   "dependencies": {
     "@azure/cognitiveservices-luis-authoring": "3.0.1",
     "@azure/ms-rest-azure-js": "2.0.1",
+    "@oclif/command": "~1.5.19",
+    "@oclif/errors": "~1.2.2",
     "antlr4": "^4.7.2",
     "chalk": "2.4.1",
     "console-stream": "^0.1.1",
