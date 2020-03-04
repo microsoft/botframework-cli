@@ -337,7 +337,7 @@ export default class TranslateCommand extends Command {
     let retValue = ''
     if (!Array.isArray(linesToTranslate) || linesToTranslate.length === 0) return retValue
     let charCountInChunk = 0
-    let batchTranslate = []
+    let batchTranslate: any[] = []
     for (const idx in linesToTranslate) {
       const item = linesToTranslate[idx]
       if (item.text.length + charCountInChunk >= this.MAX_CHAR_IN_REQUEST) {
@@ -353,7 +353,10 @@ export default class TranslateCommand extends Command {
       }
       if (item.localize) {
         item.idx = batchTranslate.length
-        batchTranslate.push({Text: item.text})
+        const textItem = {
+          Text: item.text,
+        }
+        batchTranslate.push(textItem)
         charCountInChunk += item.text.length
       }
     }

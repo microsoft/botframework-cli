@@ -124,7 +124,7 @@ export class Helper {
     return fileContent.replace(ANY_NEWLINE, NEWLINE)
   }
 
-  public static async translateText(text: string, translateOption: TranslateOption) {
+  public static async translateText(text: any[], translateOption: TranslateOption) {
     const payload = Array.isArray(text) ? text : [{Text: text}]
     const baseUri = 'https://api.cognitive.microsofttranslator.com/translate'
     let tUri = `${baseUri}?api-version=3.0&to=${translateOption.to_lang}&includeAlignment=true`
