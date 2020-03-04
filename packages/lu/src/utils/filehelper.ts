@@ -14,13 +14,37 @@ const LUOptions = require('./../parser/lu/luOptions')
 const globby = require('globby')
 /* tslint:disable:prefer-for-of no-unused*/
 
-export async function getFilesContent(input: string, extType: string) {
+export interface FileInfo {
+  path: string,
+  content: string,
+}
+
+export async function getFilesContent(input: string, extType: string):Promise<FileInfo[]> {
+  let fileStat = await fs.stat(input)
+  if (fileStat.isFile()) {
+    const filePath = path.resolve(input);
+    const content = await getContentFromFile(input)
+    return [{path: filePath, content}]
+  }
+
+  if (!fileStat.isDirectory()) {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, ' + input + ' is not a folder or does not exist'))
+  }
   const paths = await globby([`**/*${extType}`], {cwd: input, dot: true})
   return Promise.all(paths.map(async (item: string) => {
     const itemPath = path.resolve(path.join(input, item))
     const content = await getContentFromFile(itemPath)
     return {path: itemPath, content}
   }))
+}
+
+export function getParsedObjects(contents: FileInfo[]) {
+  const parsedObjects = contents.map((content) => {
+    const opts = new LUOptions(content.path)
+    return new luObject(content.content, opts); 
+  })
+
+  return parsedObjects
 }
 
 export async function getConfigContent(input: string) {

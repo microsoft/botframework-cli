@@ -29,7 +29,7 @@ module.exports = {
 
     const configObject = crossTrainer.getConfigObject(configContent, intentName);
 
-    trainedResult = crossTrainer.crossTrain(luContents, qnaContents, JSON.stringify(configObject))
+    trainedResult = crossTrainer.crossTrain(luContents, qnaContents, configObject)
     return trainedResult
   },
 

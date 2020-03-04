@@ -15,8 +15,6 @@ const retCode = require('../utils/enums/CLI-errors');
 const NEWLINE = require('os').EOL
 const path = require('path')
 const QNA_GENERIC_SOURCE = "custom editorial"
-const luObject = require('./../lu/lu')
-const LUOptions = require('./../lu/luOptions')
 
 module.exports = {
   /**
@@ -30,11 +28,7 @@ module.exports = {
   crossTrain: function (luContents, qnaContents, crossTrainConfig) {
     try {
       const {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents);
-      const crossTrainConfigObj = JSON.parse(crossTrainConfig)
-      const rootObjectIds = crossTrainConfigObj.rootIds
-      const triggerRules = crossTrainConfigObj.triggerRules
-      const intentName = crossTrainConfigObj.intentName
-      const verbose = crossTrainConfigObj.verbose
+      const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig;
 
       // parse lu content to LUResource object
       let luFileIdToResourceMap = parseAndValidateContent(luObjectArray, verbose)
@@ -46,7 +40,7 @@ module.exports = {
       let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
 
       // do lu cross training from roots. One root one core training
-      for (const rootObjectId of rootObjectIds) {
+      for (const rootObjectId of rootIds) {
         if (resources.some(r => r.id === rootObjectId)) {
           // do cross training for each root at top level
           const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName)
@@ -120,19 +114,10 @@ module.exports = {
   }
 }
 
-const getParsedObjects = function(contents) {
-  const parsedObjects = contents.map((content) => {
-    const opts = new LUOptions(content.path)
-    return new luObject(content.content, opts); 
-  })
-
-  return parsedObjects
-}
-
 const pretreatment = function (luContents, qnaContents) {
    // Parse lu and qna objects
-   const luObjectArray = getParsedObjects(luContents);
-   const qnaObjectArray = getParsedObjects(qnaContents);
+   const luObjectArray = fileHelper.getParsedObjects(luContents);
+   const qnaObjectArray = fileHelper.getParsedObjects(qnaContents);
 
    return {luObjectArray, qnaObjectArray}
 }
