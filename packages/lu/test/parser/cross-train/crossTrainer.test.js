@@ -20,7 +20,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         # dia2_trigger
         - book a flight for me
         - book a train ticket for me`,
-      id: './main/main.lu'})
+      id: 'main.lu'})
 
     qnaContentArray.push({
       content:
@@ -37,14 +37,14 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             tell a funny joke
         \`\`\``,
-      id: './main/main.qna'}
+      id: 'main.qna'}
     )
 
     luContentArray.push({
       content:
         `# dia1_trigger
         - réserver un hôtel`,
-      id: './main/main.fr-fr.lu'}
+      id: 'main.fr-fr.lu'}
     )
 
     qnaContentArray.push({
@@ -57,7 +57,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
         \`\`\``,
-      id: './main/main.fr-fr.qna'}
+      id: 'main.fr-fr.qna'}
     )
 
     luContentArray.push({
@@ -69,7 +69,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # hotelLocation
         - can I book a hotel near space needle`,
-      id: './dia1/dia1.lu'}
+      id: 'dia1.lu'}
     )
 
     qnaContentArray.push({
@@ -92,7 +92,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             of course you can
         \`\`\``,
-      id: './dia1/dia1.qna'}
+      id: 'dia1.qna'}
     )
 
     luContentArray.push({
@@ -102,7 +102,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # hotelLocation
         - puis-je réserver un hôtel près de l'aiguille spatiale`,
-      id: './dia1/dia1.fr-fr.lu'}
+      id: 'dia1.fr-fr.lu'}
     )
 
     qnaContentArray.push({
@@ -112,7 +112,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             ha ha ha
         \`\`\``,
-      id: './dia1/dia1.fr-fr.qna'}
+      id: 'dia1.fr-fr.qna'}
     )
 
     luContentArray.push({
@@ -122,7 +122,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # dia4_trigger
         - book a train ticket from Seattle to Portland`,
-      id: './dia2/dia2.lu'}
+      id: 'dia2.lu'}
     )
 
     qnaContentArray.push({
@@ -136,7 +136,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             ha ha ha
         \`\`\``,
-     id: './dia2/dia2.qna'}
+     id: 'dia2.qna'}
     )
 
     luContentArray.push({
@@ -146,12 +146,12 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # flightTime
         - which {flightTime} do you prefer`,
-      id: './dia3/dia3.lu'}
+      id: 'dia3.lu'}
     )
 
     qnaContentArray.push({
       content: ``,
-      id: './dia3/dia3.qna'
+      id: 'dia3.qna'
     })
 
     luContentArray.push({
@@ -161,24 +161,24 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # railwayTime
         - when do you want to leave from Seattle train station`,
-      id: './dia4/dia4.lu'})
+      id: 'dia4.lu'})
 
     let crossTrainConfig = {
       rootIds: [
-        './main/main.lu',
-        './main/main.fr-fr.lu'
+        'main.lu',
+        'main.fr-fr.lu'
       ],
       triggerRules: {
-        './main/main.lu': {
-          './dia1/dia1.lu': 'dia1_trigger',
-          './dia2/dia2.lu': 'dia2_trigger'
+        'main.lu': {
+          'dia1.lu': 'dia1_trigger',
+          'dia2.lu': 'dia2_trigger'
         },
-        './dia2/dia2.lu': {
-          './dia3/dia3.lu': 'dia3_trigger',
-          './dia4/dia4.lu': 'dia4_trigger'
+        'dia2.lu': {
+          'dia3.lu': 'dia3_trigger',
+          'dia4.lu': 'dia4_trigger'
         },
-        './main/main.fr-fr.lu': {
-          './dia1/dia1.fr-fr.lu': 'dia1_trigger'
+        'main.fr-fr.lu': {
+          'dia1.fr-fr.lu': 'dia1_trigger'
         }
       },
       intentName: '_Interruption',
@@ -189,62 +189,62 @@ describe('luis:cross training tests among lu and qna contents', () => {
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
-    assert.equal(luResult.get('./main/main.lu').Sections[2].Name, 'DeferToRecognizer_QnA_main')
-    assert.equal(luResult.get('./main/main.lu').Sections[2].Body, `- user guide${NEWLINE}- tell joke`)
+    assert.equal(luResult.get('main.lu').Sections[2].Name, 'DeferToRecognizer_QnA_main')
+    assert.equal(luResult.get('main.lu').Sections[2].Body, `- user guide${NEWLINE}- tell joke`)
 
-    assert.equal(qnaResult.get('./main/main.qna').Sections[2].Answer, 'intent=DeferToRecognizer_LUIS_main')
-    assert.equal(qnaResult.get('./main/main.qna').Sections[2].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('./main/main.qna').Sections[2].FilterPairs[0].value, 'main')
-    assert.equal(qnaResult.get('./main/main.qna').Sections[2].Questions[0], 'book a hotel for me')
-    assert.equal(qnaResult.get('./main/main.qna').Sections[2].Questions[2], 'book a train ticket for me')
+    assert.equal(qnaResult.get('main.qna').Sections[2].Answer, 'intent=DeferToRecognizer_LUIS_main')
+    assert.equal(qnaResult.get('main.qna').Sections[2].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('main.qna').Sections[2].FilterPairs[0].value, 'main')
+    assert.equal(qnaResult.get('main.qna').Sections[2].Questions[0], 'book a hotel for me')
+    assert.equal(qnaResult.get('main.qna').Sections[2].Questions[2], 'book a train ticket for me')
 
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[0].ModelInfo, '> !# @app.name = my luis application')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[3].Name, '_Interruption')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[3].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide`)
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[4].Name, 'DeferToRecognizer_QnA_dia1')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[4].Body, `- tell joke${NEWLINE}- tell me a joke`)
+    assert.equal(luResult.get('dia1.lu').Sections[0].ModelInfo, '> !# @app.name = my luis application')
+    assert.equal(luResult.get('dia1.lu').Sections[3].Name, '_Interruption')
+    assert.equal(luResult.get('dia1.lu').Sections[3].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide`)
+    assert.equal(luResult.get('dia1.lu').Sections[4].Name, 'DeferToRecognizer_QnA_dia1')
+    assert.equal(luResult.get('dia1.lu').Sections[4].Body, `- tell joke${NEWLINE}- tell me a joke`)
 
-    assert.equal(qnaResult.get('./dia1/dia1.qna').Sections[0].ModelInfo, '> !# @app.desc = description of my luis application')
-    assert.equal(qnaResult.get('./dia1/dia1.qna').Sections[1].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('./dia1/dia1.qna').Sections[1].FilterPairs[0].value, 'dia1')
-    assert.equal(qnaResult.get('./dia1/dia1.qna').Sections[1].promptsText[0], '[flight booking](#?-book-flight) `context-only`')
-    assert.equal(qnaResult.get('./dia1/dia1.qna').Sections[3].Questions.join(', '), 'I need a four star hotel, book a flight for me, book a train ticket for me, user guide')
+    assert.equal(qnaResult.get('dia1.qna').Sections[0].ModelInfo, '> !# @app.desc = description of my luis application')
+    assert.equal(qnaResult.get('dia1.qna').Sections[1].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('dia1.qna').Sections[1].FilterPairs[0].value, 'dia1')
+    assert.equal(qnaResult.get('dia1.qna').Sections[1].promptsText[0], '[flight booking](#?-book-flight) `context-only`')
+    assert.equal(qnaResult.get('dia1.qna').Sections[3].Questions.join(', '), 'I need a four star hotel, book a flight for me, book a train ticket for me, user guide')
 
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[2].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke`)
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia2')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[3].Body, `- sing song${NEWLINE}- tell a joke`)
+    assert.equal(luResult.get('dia2.lu').Sections[2].Name, '_Interruption')
+    assert.equal(luResult.get('dia2.lu').Sections[2].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke`)
+    assert.equal(luResult.get('dia2.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia2')
+    assert.equal(luResult.get('dia2.lu').Sections[3].Body, `- sing song${NEWLINE}- tell a joke`)
 
-    assert.equal(qnaResult.get('./dia2/dia2.qna').Sections[0].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('./dia2/dia2.qna').Sections[0].FilterPairs[0].value, 'dia2')
-    assert.equal(qnaResult.get('./dia2/dia2.qna').Sections[2].Questions.join(', '), 'book a flight from Seattle to Beijing, book a train ticket from Seattle to Portland, book a hotel for me, user guide, tell joke')
+    assert.equal(qnaResult.get('dia2.qna').Sections[0].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('dia2.qna').Sections[0].FilterPairs[0].value, 'dia2')
+    assert.equal(qnaResult.get('dia2.qna').Sections[2].Questions.join(', '), 'book a flight from Seattle to Beijing, book a train ticket from Seattle to Portland, book a hotel for me, user guide, tell joke')
 
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections.length, 3)
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections[2].Body, `- book a train ticket from Seattle to Portland${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
+    assert.equal(luResult.get('dia3.lu').Sections.length, 3)
+    assert.equal(luResult.get('dia3.lu').Sections[2].Name, '_Interruption')
+    assert.equal(luResult.get('dia3.lu').Sections[2].Body, `- book a train ticket from Seattle to Portland${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
 
-    assert.equal(qnaResult.get('./dia3/dia3.qna').Sections.length, 0)
+    assert.equal(qnaResult.get('dia3.qna').Sections.length, 0)
 
-    assert.equal(luResult.get('./dia4/dia4.lu').Sections.length, 3)
-    assert.equal(luResult.get('./dia4/dia4.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('./dia4/dia4.lu').Sections[2].Body, `- book a flight from Seattle to Beijing${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
+    assert.equal(luResult.get('dia4.lu').Sections.length, 3)
+    assert.equal(luResult.get('dia4.lu').Sections[2].Name, '_Interruption')
+    assert.equal(luResult.get('dia4.lu').Sections[2].Body, `- book a flight from Seattle to Beijing${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
 
-    assert.equal(luResult.get('./main/main.fr-fr.lu').Sections[1].Name, 'DeferToRecognizer_QnA_main')
-    assert.equal(luResult.get('./main/main.fr-fr.lu').Sections[1].Body, `- guide de l'utilisateur`)
+    assert.equal(luResult.get('main.fr-fr.lu').Sections[1].Name, 'DeferToRecognizer_QnA_main')
+    assert.equal(luResult.get('main.fr-fr.lu').Sections[1].Body, `- guide de l'utilisateur`)
 
-    assert.equal(qnaResult.get('./main/main.fr-fr.qna').Sections[1].Answer, 'intent=DeferToRecognizer_LUIS_main')
-    assert.equal(qnaResult.get('./main/main.fr-fr.qna').Sections[1].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('./main/main.fr-fr.qna').Sections[1].FilterPairs[0].value, 'main')
-    assert.equal(qnaResult.get('./main/main.fr-fr.qna').Sections[1].Questions.length, 1)
-    assert.equal(qnaResult.get('./main/main.fr-fr.qna').Sections[1].Questions[0], 'réserver un hôtel')
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].Answer, 'intent=DeferToRecognizer_LUIS_main')
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].FilterPairs[0].value, 'main')
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].Questions.length, 1)
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].Questions[0], 'réserver un hôtel')
 
 
-    assert.equal(luResult.get('./dia1/dia1.fr-fr.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('./dia1/dia1.fr-fr.lu').Sections[2].Body, `- guide de l'utilisateur`)
-    assert.equal(luResult.get('./dia1/dia1.fr-fr.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia1')
-    assert.equal(luResult.get('./dia1/dia1.fr-fr.lu').Sections[3].Body, `- raconter la blague`)
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Name, '_Interruption')
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Body, `- guide de l'utilisateur`)
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia1')
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Body, `- raconter la blague`)
 
-    assert.equal(qnaResult.get('./dia1/dia1.fr-fr.qna').Sections[1].Questions.join(', '), 'J\'ai besoin d\'un hôtel quatre étoiles, puis-je réserver un hôtel près de l\'aiguille spatiale, guide de l\'utilisateur')
+    assert.equal(qnaResult.get('dia1.fr-fr.qna').Sections[1].Questions.join(', '), 'J\'ai besoin d\'un hôtel quatre étoiles, puis-je réserver un hôtel près de l\'aiguille spatiale, guide de l\'utilisateur')
   })
 
 
