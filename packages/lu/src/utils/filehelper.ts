@@ -15,11 +15,6 @@ const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
-export interface ContentInfo {
-  id: string,
-  content: string,
-}
-
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
@@ -170,7 +165,7 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-export async function getFilesContent(input: string, extType: string): Promise<ContentInfo[]> {
+export async function getFilesContent(input: string, extType: string) {
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
@@ -192,7 +187,7 @@ export async function getFilesContent(input: string, extType: string): Promise<C
 export async function getConfigContent(input: string) {
   const luConfigFile = await getConfigFile(input)
   const content = await getContentFromFile(luConfigFile)
-  return {path: luConfigFile, content}
+  return {id: luConfigFile, content}
 }
 
 async function getConfigFile(input: string): Promise<string> {
@@ -214,7 +209,7 @@ async function getConfigFile(input: string): Promise<string> {
   return defaultConfigFile
 }
 
-export function getParsedObjects(contents: ContentInfo[]) {
+export function getParsedObjects(contents: {id: string, content: string}[]) {
   const parsedObjects = contents.map(content => {
     const opts = new LUOptions(content.id)
     return new luObject(content.content, opts)

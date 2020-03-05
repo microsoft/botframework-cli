@@ -25,7 +25,7 @@ module.exports = {
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
     const configContent = config && !fs.existsSync(config) ? config : await file.getConfigContent(config || input)
 
-    const configObject = crossTrainer.getConfigObject(configContent, intentName)
+    const configObject = file.getConfigObject(configContent, intentName)
 
     const trainedResult = crossTrainer.crossTrain(luContents, qnaContents, configObject)
     
