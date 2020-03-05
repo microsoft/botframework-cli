@@ -221,7 +221,7 @@ export function getParsedObjects(contents: {id: string, content: string}[]) {
 export function getConfigObject(configContent: any, intentName: string) {
   let finalLuConfigObj = Object.create(null)
   let rootLuFiles: string[] = []
-  const configFileDir = path.dirname(configContent.path)
+  const configFileDir = path.dirname(configContent.id)
   const luConfigContent = configContent.content
   if (luConfigContent && luConfigContent !== '') {
     try {
