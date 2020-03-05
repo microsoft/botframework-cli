@@ -11,6 +11,7 @@ const path = require('path')
 const helpers = require('./../parser/utils/helpers')
 const luObject = require('./../parser/lu/lu')
 const LUOptions = require('./../parser/lu/luOptions')
+const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
@@ -164,6 +165,31 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
+export async function getFilesContent(input: string, extType: string) {
+  let fileStat = await fs.stat(input)
+  if (fileStat.isFile()) {
+    const filePath = path.resolve(input)
+    const content = await getContentFromFile(input)
+    return [{id: filePath, content}]
+  }
+
+  if (!fileStat.isDirectory()) {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, ' + input + ' is not a folder or does not exist'))
+  }
+  const paths = await globby([`**/*${extType}`], {cwd: input, dot: true})
+  return Promise.all(paths.map(async (item: string) => {
+    const itemPath = path.resolve(path.join(input, item))
+    const content = await getContentFromFile(itemPath)
+    return {id: itemPath, content}
+  }))
+}
+
+export async function getConfigContent(input: string) {
+  const luConfigFile = await getConfigFile(input)
+  const content = await getContentFromFile(luConfigFile)
+  return {id: luConfigFile, content}
+}
+
 async function getConfigFile(input: string): Promise<string> {
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
@@ -183,13 +209,20 @@ async function getConfigFile(input: string): Promise<string> {
   return defaultConfigFile
 }
 
-export async function getConfigObject(input: string) {
-  const luConfigFile = await getConfigFile(input)
+export function getParsedObjects(contents: {id: string, content: string}[]) {
+  const parsedObjects = contents.map(content => {
+    const opts = new LUOptions(content.id)
+    return new luObject(content.content, opts)
+  })
 
+  return parsedObjects
+}
+
+export function getConfigObject(configContent: any, intentName: string) {
   let finalLuConfigObj = Object.create(null)
   let rootLuFiles: string[] = []
-  const configFileDir = path.dirname(luConfigFile)
-  const luConfigContent = await getContentFromFile(luConfigFile)
+  const configFileDir = path.dirname(configContent.id)
+  const luConfigContent = configContent.content
   if (luConfigContent && luConfigContent !== '') {
     try {
       const luConfigObj = JSON.parse(luConfigContent)
@@ -225,7 +258,18 @@ export async function getConfigObject(input: string) {
     }
   }
 
-  return {rootIds: rootLuFiles, triggerRules: finalLuConfigObj}
+  if (rootLuFiles.length > 0) {
+    let crossTrainConfig = {
+      rootIds: rootLuFiles,
+      triggerRules: finalLuConfigObj,
+      intentName,
+      verbose: true
+    }
+
+    return crossTrainConfig
+  } else {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
+  }
 }
 
 export function parseJSON(input: string, appType: string) {
