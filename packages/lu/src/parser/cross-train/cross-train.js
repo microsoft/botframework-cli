@@ -8,7 +8,7 @@ const path = require('path')
 const file = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const exception = require('../utils/exception')
-const retCode = require('../utils/enums/CLI-errors');
+const retCode = require('../utils/enums/CLI-errors')
 const crossTrainer = require('./crossTrainer')
 
 module.exports = {
@@ -16,46 +16,19 @@ module.exports = {
    * Cross train lu and qna files.
    * @param {string} input full path of input lu and qna files folder.
    * @param {string} intentName interruption intent name. Default value is _Interruption.
-   * @param {string} config full path to config of mapping rules or mapping rules content json string. If undefined, it will read config.json from input folder.
+   * @param {string} config path to config of mapping rules or mapping rules json content itself. If undefined, it will read config.json from input folder.
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
   train: async function (input, intentName, config) {
-    let trainedResult
+    // Get all related file content.
+    const luContents = await file.getFilesContent(input, fileExtEnum.LUFile)
+    const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
+    const configContent = config && !fs.existsSync(config) ? config : await file.getConfigContent(config || input)
 
-    // Parse lu and qna objects
-    const luObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.LUFile)
-    const qnaObjects = await file.getLuObjects(undefined, input, true, fileExtEnum.QnAFile)
+    const configObject = file.getConfigObject(configContent, intentName)
 
-    let configContent
-    let configPath
-    if (config && config !== '') {
-      if (fs.existsSync(config)) {
-        configContent = await file.getConfigContent(config)
-        configPath = path.dirname(config)
-      } else {
-        configContent = config
-        configPath = input
-      }
-    } else {
-      configContent = await file.getConfigContent(input)
-      configPath = input
-    }
-
-    const configObject = file.getConfigObject(configContent, configPath)
-
-    if (configObject.rootIds.length > 0) {
-      let crossTrainConfig = {
-        rootIds: configObject.rootIds,
-        triggerRules: configObject.triggerRules,
-        intentName: intentName,
-        verbose: true
-      }
-
-      trainedResult = crossTrainer.crossTrain(luObjects, qnaObjects, JSON.stringify(crossTrainConfig))
-    } else {
-      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
-    }
-
+    const trainedResult = crossTrainer.crossTrain(luContents, qnaContents, configObject)
+    
     return trainedResult
   },
 
