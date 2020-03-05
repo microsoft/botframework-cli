@@ -59,67 +59,6 @@ module.exports = {
     } catch (err) {
       throw (err)
     }
-  },
-  
-  /**
-   * Get cross train config object based on config content
-   * @param {any} configContent config content with config path and text content
-   * @param {string} intentName cross train interruption intent name
-   * @returns {any} cross train config object
-   * @throws {exception} throws errors
-   */
-  getConfigObject : function (configContent, intentName) {
-    let finalLuConfigObj = Object.create(null)
-    let rootLuFiles = []
-    const configFileDir = path.dirname(configContent.path)
-    const luConfigContent = configContent.content
-    if (luConfigContent && luConfigContent !== '') {
-      try {
-        const luConfigObj = JSON.parse(luConfigContent)
-        for (const rootluFilePath of Object.keys(luConfigObj)) {
-          const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
-          const triggerObj = luConfigObj[rootluFilePath]
-          for (const triggerObjKey of Object.keys(triggerObj)) {
-            if (triggerObjKey === 'rootDialog') {
-              if (triggerObj[triggerObjKey]) {
-                rootLuFiles.push(rootLuFileFullPath)
-              }
-            } else if (triggerObjKey === 'triggers') {
-              const triggers = triggerObj[triggerObjKey]
-              for (const triggerKey of Object.keys(triggers)) {
-                const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
-                for (const destLuFile of destLuFiles) {
-                  const destLuFileFullPath = path.resolve(configFileDir, destLuFile)
-                  if (rootLuFileFullPath in finalLuConfigObj) {
-                    const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
-                    finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
-                  } else {
-                    let finalDestLuFileToIntent = Object.create(null)
-                    finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
-                    finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
-                  }
-                }
-              }
-            }
-          }
-        }
-      } catch (err) {
-        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, invalid cross training config: ${err}`))
-      }
-    }
-
-    if (rootLuFiles.length > 0) {
-      let crossTrainConfig = {
-        rootIds: rootLuFiles,
-        triggerRules: finalLuConfigObj,
-        intentName: intentName,
-        verbose: true
-      }
-
-      return crossTrainConfig
-    } else {
-      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
-    }
   }
 }
 

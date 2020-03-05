@@ -5,8 +5,6 @@
 
 const assert = require('chai').assert
 const crossTrainer = require('../../../src/parser/cross-train/crossTrainer')
-const content = require('../../../src/parser/lu/lu')
-const luOptions = require('../../../src/parser/lu/luOptions')
 const NEWLINE = require('os').EOL
 
 describe('luis:cross training tests among lu and qna contents', () => {
@@ -14,150 +12,156 @@ describe('luis:cross training tests among lu and qna contents', () => {
     let luContentArray = []
     let qnaContentArray = []
 
-    luContentArray.push({content:
-      `# dia1_trigger
-      - book a hotel for me
-      
-      # dia2_trigger
-      - book a flight for me
-      - book a train ticket for me`,
-      path:'./main/main.lu'}
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - book a hotel for me
+        
+        # dia2_trigger
+        - book a flight for me
+        - book a train ticket for me`,
+      id: './main/main.lu'})
+
+    qnaContentArray.push({
+      content:
+        `# ?user guide
+
+        **Filters:**
+        - aa=bb
+        
+        \`\`\`
+            Here is the [user guide](http://contoso.com/userguide.pdf)
+        \`\`\`
+        
+        # ?tell joke
+        \`\`\`
+            tell a funny joke
+        \`\`\``,
+      id: './main/main.qna'}
     )
 
-    qnaContentArray.push({content:
-      `# ?user guide
-
-      **Filters:**
-      - aa=bb
-      
-      \`\`\`
-          Here is the [user guide](http://contoso.com/userguide.pdf)
-      \`\`\`
-      
-      # ?tell joke
-      \`\`\`
-          tell a funny joke
-      \`\`\``,
-      path:'./main/main.qna'}
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - réserver un hôtel`,
+      id: './main/main.fr-fr.lu'}
     )
 
-    luContentArray.push({content:
-      `# dia1_trigger
-      - réserver un hôtel`,
-      path: './main/main.fr-fr.lu'}
+    qnaContentArray.push({
+      content:
+        `# ?guide de l'utilisateur
+
+        **Filters:**
+        - aa=bb
+        
+        \`\`\`
+            Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
+        \`\`\``,
+      id: './main/main.fr-fr.qna'}
     )
 
-    qnaContentArray.push({content:
-      `# ?guide de l'utilisateur
-
-      **Filters:**
-      - aa=bb
-      
-      \`\`\`
-          Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
-      \`\`\``,
-      path:'./main/main.fr-fr.qna'}
+    luContentArray.push({
+      content:
+        `> !# @app.name = my luis application
+        
+        # hotelLevel
+        - I need a four star hotel
+        
+        # hotelLocation
+        - can I book a hotel near space needle`,
+      id: './dia1/dia1.lu'}
     )
 
-    luContentArray.push({content:
-      `> !# @app.name = my luis application
-      
-      # hotelLevel
-      - I need a four star hotel
-      
-      # hotelLocation
-      - can I book a hotel near space needle`,
-      path:'./dia1/dia1.lu'}
+    qnaContentArray.push({
+      content:
+        `> !# @app.desc = description of my luis application
+        
+        > !# @qna.pair.source = xyz
+        <a id = "1"></a>
+        
+        # ?tell joke
+        - tell me a joke
+        
+        \`\`\`
+            ha ha ha
+        \`\`\`
+        **Prompts:**
+        - [flight booking](#?-book-flight) \`context-only\`
+        
+        # ?can I book a hotel near space needle
+        \`\`\`
+            of course you can
+        \`\`\``,
+      id: './dia1/dia1.qna'}
     )
 
-    qnaContentArray.push({content:
-      `> !# @app.desc = description of my luis application
-      
-      > !# @qna.pair.source = xyz
-      <a id = "1"></a>
-      
-      # ?tell joke
-      - tell me a joke
-      
-      \`\`\`
-          ha ha ha
-      \`\`\`
-      **Prompts:**
-      - [flight booking](#?-book-flight) \`context-only\`
-      
-      # ?can I book a hotel near space needle
-      \`\`\`
-          of course you can
-      \`\`\``,
-      path:'./dia1/dia1.qna'}
+    luContentArray.push({
+      content:
+        `# hotelLevel
+        - J'ai besoin d'un hôtel quatre étoiles
+        
+        # hotelLocation
+        - puis-je réserver un hôtel près de l'aiguille spatiale`,
+      id: './dia1/dia1.fr-fr.lu'}
     )
 
-    luContentArray.push({content:
-      `# hotelLevel
-      - J'ai besoin d'un hôtel quatre étoiles
-      
-      # hotelLocation
-      - puis-je réserver un hôtel près de l'aiguille spatiale`,
-      path:'./dia1/dia1.fr-fr.lu'}
+    qnaContentArray.push({
+      content:
+        `# ?raconter la blague
+        
+        \`\`\`
+            ha ha ha
+        \`\`\``,
+      id: './dia1/dia1.fr-fr.qna'}
     )
 
-    qnaContentArray.push({content:
-      `# ?raconter la blague
-      
-      \`\`\`
-          ha ha ha
-      \`\`\``,
-      path:'./dia1/dia1.fr-fr.qna'}
+    luContentArray.push({
+      content:
+        `# dia3_trigger
+        - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+        
+        # dia4_trigger
+        - book a train ticket from Seattle to Portland`,
+      id: './dia2/dia2.lu'}
     )
 
-    luContentArray.push({content:
-      `# dia3_trigger
-      - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
-      
-      # dia4_trigger
-      - book a train ticket from Seattle to Portland`,
-      path:'./dia2/dia2.lu'}
+    qnaContentArray.push({
+      content:
+        `# ?sing song
+        \`\`\`
+            sure, I can sing song.
+        \`\`\`
+        
+        # ?tell a joke
+        \`\`\`
+            ha ha ha
+        \`\`\``,
+     id: './dia2/dia2.qna'}
     )
 
-    qnaContentArray.push({content:
-      `# ?sing song
-      \`\`\`
-          sure, I can sing song.
-      \`\`\`
-      
-      # ?tell a joke
-      \`\`\`
-          ha ha ha
-      \`\`\``,
-     path:'./dia2/dia2.qna'}
+    luContentArray.push({
+      content:
+        `# flightDestination
+        - book a flight to {toLocation = Beijing}
+        
+        # flightTime
+        - which {flightTime} do you prefer`,
+      id: './dia3/dia3.lu'}
     )
 
-    luContentArray.push(
-      {
-        content:
-      `# flightDestination
-      - book a flight to {toLocation = Beijing}
-      
-      # flightTime
-      - which {flightTime} do you prefer`,
-      path:'./dia3/dia3.lu'}
-    )
+    qnaContentArray.push({
+      content: ``,
+      id: './dia3/dia3.qna'
+    })
 
-    qnaContentArray.push(
-      {
-        content:``,
-        path: './dia3/dia3.qna'
-      }
-    )
-
-    luContentArray.push({content:
-      `# railwayStation
-      - which station will you leave from
-      
-      # railwayTime
-      - when do you want to leave from Seattle train station`,
-      path: './dia4/dia4.lu'}
-    )
+    luContentArray.push({
+      content:
+        `# railwayStation
+        - which station will you leave from
+        
+        # railwayTime
+        - when do you want to leave from Seattle train station`,
+      id: './dia4/dia4.lu'})
 
     let crossTrainConfig = {
       rootIds: [
@@ -247,29 +251,32 @@ describe('luis:cross training tests among lu and qna contents', () => {
   it('luis:cross training can get expected result when nestedIntentSection is enabled', () => {
     let luContentArray = []
 
-    luContentArray.push({content:
-      `> !# @enableSections = true
-      > !# @enableMergeIntents = true
-      
-      # dia1_trigger
-      ## bookFlight
-      - book a flight for me
-                  
-      #dia2_trigger
-      - book a hotel for me`,
-      path:'./main/main.lu'}
+    luContentArray.push({
+      content:
+        `> !# @enableSections = true
+        > !# @enableMergeIntents = true
+        
+        # dia1_trigger
+        ## bookFlight
+        - book a flight for me
+                    
+        #dia2_trigger
+        - book a hotel for me`,
+      id:'./main/main.lu'}
     )
 
-    luContentArray.push({content:
-      `# FlightTime
-      - which {flightTime} do you prefer`,
-      path:'./dia1/dia1.lu'}
+    luContentArray.push({
+      content:
+        `# FlightTime
+        - which {flightTime} do you prefer`,
+      id:'./dia1/dia1.lu'}
     )
 
-    luContentArray.push({content:
-      `# HotelLevel
-      - which hotel star do you prefer`,
-      path:'./dia2/dia2.lu'}
+    luContentArray.push({
+      content:
+        `# HotelLevel
+        - which hotel star do you prefer`,
+      id:'./dia2/dia2.lu'}
     )
 
     let crossTrainConfig = {
@@ -296,31 +303,35 @@ describe('luis:cross training tests among lu and qna contents', () => {
   it('luis:cross training can get expected result when multiple dialog invocations occur in same trigger', () => {
     let luContentArray = []
 
-    luContentArray.push({content:
-      `# dia1_trigger
-      - I want to travel to Seattle
-                  
-      #dia2_trigger
-      - book a hotel for me`,
-      path:'./main/main.lu'}
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - I want to travel to Seattle
+                    
+        #dia2_trigger
+        - book a hotel for me`,
+      id: './main/main.lu'}
     )
 
-    luContentArray.push({content:
-      `# bookFlight
-      - book a flight for me`,
-      path:'./dia1/dia1.lu'}
+    luContentArray.push({
+      content:
+        `# bookFlight
+        - book a flight for me`,
+      id: './dia1/dia1.lu'}
     )
 
-    luContentArray.push({content:
-      `# bookTrain
-      - book a train ticket for me`,
-      path:'./dia2/dia2.lu'}
+    luContentArray.push({
+      content:
+        `# bookTrain
+        - book a train ticket for me`,
+      id: './dia2/dia2.lu'}
     )
 
-    luContentArray.push({content:
-      `# HotelLevel
-      - I prefer 4 stars hotel`,
-      path:'./dia3/dia3.lu'}
+    luContentArray.push({
+      content:
+        `# HotelLevel
+        - I prefer 4 stars hotel`,
+      id: './dia3/dia3.lu'}
     )
 
     let crossTrainConfig = {

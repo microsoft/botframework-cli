@@ -15,8 +15,8 @@ const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
-export interface FileInfo {
-  path: string,
+export interface ContentInfo {
+  id: string,
   content: string,
 }
 
@@ -170,12 +170,12 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-export async function getFilesContent(input: string, extType: string): Promise<FileInfo[]> {
+export async function getFilesContent(input: string, extType: string): Promise<ContentInfo[]> {
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
     const content = await getContentFromFile(input)
-    return [{path: filePath, content}]
+    return [{id: filePath, content}]
   }
 
   if (!fileStat.isDirectory()) {
@@ -185,7 +185,7 @@ export async function getFilesContent(input: string, extType: string): Promise<F
   return Promise.all(paths.map(async (item: string) => {
     const itemPath = path.resolve(path.join(input, item))
     const content = await getContentFromFile(itemPath)
-    return {path: itemPath, content}
+    return {id: itemPath, content}
   }))
 }
 
@@ -214,13 +214,67 @@ async function getConfigFile(input: string): Promise<string> {
   return defaultConfigFile
 }
 
-export function getParsedObjects(contents: FileInfo[]) {
+export function getParsedObjects(contents: ContentInfo[]) {
   const parsedObjects = contents.map(content => {
-    const opts = new LUOptions(path.resolve(content.path))
+    const opts = new LUOptions(content.id)
     return new luObject(content.content, opts)
   })
 
   return parsedObjects
+}
+
+export function getConfigObject(configContent: any, intentName: string) {
+  let finalLuConfigObj = Object.create(null)
+  let rootLuFiles: string[] = []
+  const configFileDir = path.dirname(configContent.path)
+  const luConfigContent = configContent.content
+  if (luConfigContent && luConfigContent !== '') {
+    try {
+      const luConfigObj = JSON.parse(luConfigContent)
+      for (const rootluFilePath of Object.keys(luConfigObj)) {
+        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
+        const triggerObj = luConfigObj[rootluFilePath]
+        for (const triggerObjKey of Object.keys(triggerObj)) {
+          if (triggerObjKey === 'rootDialog') {
+            if (triggerObj[triggerObjKey]) {
+              rootLuFiles.push(rootLuFileFullPath)
+            }
+          } else if (triggerObjKey === 'triggers') {
+            const triggers = triggerObj[triggerObjKey]
+            for (const triggerKey of Object.keys(triggers)) {
+              const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
+              for (const destLuFile of destLuFiles) {
+                const destLuFileFullPath = path.resolve(configFileDir, destLuFile)
+                if (rootLuFileFullPath in finalLuConfigObj) {
+                  const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
+                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                } else {
+                  let finalDestLuFileToIntent = Object.create(null)
+                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                  finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, invalid cross training config: ${err}`))
+    }
+  }
+
+  if (rootLuFiles.length > 0) {
+    let crossTrainConfig = {
+      rootIds: rootLuFiles,
+      triggerRules: finalLuConfigObj,
+      intentName,
+      verbose: true
+    }
+
+    return crossTrainConfig
+  } else {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
+  }
 }
 
 export function parseJSON(input: string, appType: string) {
