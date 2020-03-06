@@ -3,6 +3,7 @@ dependencies:
   '@azure/ms-rest-azure-js': 2.0.1
   '@chrimc62/adaptive-expressions': 4.1.11
   '@chrimc62/botbuilder-lg': 4.1.11
+  '@chrimc62/botframework-schema': 4.1.11
   '@oclif/command': 1.5.19
   '@oclif/config': 1.13.3
   '@oclif/errors': 1.2.2
@@ -30,7 +31,6 @@ dependencies:
   antlr4: 4.7.2
   applicationinsights: 1.6.0
   await-delay: 1.0.0
-  botframework-schema: 4.7.0
   camelcase: 4.1.0
   chai: 4.2.0
   cli-table3: 0.5.1
@@ -6360,6 +6360,7 @@ packages:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
   'file:projects/bf-chatdown.tgz':
     dependencies:
+      '@chrimc62/botframework-schema': 4.1.11
       '@oclif/command': 1.5.19
       '@oclif/config': 1.13.3
       '@oclif/dev-cli': 1.22.2
@@ -6396,7 +6397,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-j1iiQeAmX7P9A+fEonEpyyqTrzI5l1uhddGWjTiKkOjTmtjhwAT1VPJfIjpUiHKKQpAXIPz8EjJIh7WdsaSUaQ==
+      integrity: sha512-OMRWgLBTtZp2IWtj6w9bOdgp2yphvxNjApbhghDWCOW5sFNoRJ7eDtiyi7sDhmsTO4gWNz6oYZf1TLBeMLh+3w==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -6436,7 +6437,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-command'
     resolution:
-      integrity: sha512-Cx2jECsJgRe4K74pqmjEoddPmrayTDmMg/rD90kRYiQ6agSNWbC7o638KTUDYZ5VJlhu+PEV/MuVG0oV+wu19Q==
+      integrity: sha512-Ka3DtQMqMdVH/dW1MvF7sWulMlkvIXapd9Emm577bVthPp6N6fEJigkLJCRGWI0D4RXG4ldHrnhePmsW9fwesg==
       tarball: 'file:projects/bf-cli-command.tgz'
     version: 0.0.0
   'file:projects/bf-cli-config.tgz':
@@ -6465,7 +6466,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-config'
     resolution:
-      integrity: sha512-ZvUZsW96vljeLO69GRz/kfBazChVv9O6BkikOIQCHUbUP32PzIh8a0jjEmppA+/RtqajtmKQWGq0q5DEQY4x5A==
+      integrity: sha512-vwZf1fXZ7BWQsJjKHFMEQ95zRfQ48Na7ae9cMH36cw/fk/a6MYUkzwSgSabel0S2D8uT/BodVucYXJXPfl9NTw==
       tarball: 'file:projects/bf-cli-config.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6494,7 +6495,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-plugins'
     resolution:
-      integrity: sha512-2n8WG0y6vxBpyUrSJLVWwLcwUN+FqR8wI5htyMvDmPJOBp/PnH4WrupuQXDhl0UacI6LBhI4RWiZtunIkJ1zBw==
+      integrity: sha512-fegDj5NfXQCsabktk5fStFptRwmJccyH0qzjDqasi0mhTjLi72+ucovjYrzbVmrA73LdOoIsRIAT8tuCfLkkMg==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6544,7 +6545,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-3gItrP8gQCu1AJlisbIoXtrjlGanrok1D0eTk+jat3nbwW6nLKGMwPaKmIT7pDdMLg/Q1PLI/zuiIB187MrZuA==
+      integrity: sha512-jGVogcg66C++mOSChpQppjdbGNdnRdBXAWZMCOIAwbR0sX4k3o3lxwVGBev9vLT4mIioM6G63c0oG1YC/ZSoEQ==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6573,7 +6574,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-s4Ar6m12VKpS8u3yyNtXMaShnRZTOCUIFYwXTyXXmN4oX8mkbG0O4zLB47xP68mDHgAvtQ8BNVg42vzq/or0wg==
+      integrity: sha512-eXMc0AkAcBYSAjDKfUoHVjF+huBN7ESR1I9do3Pi4BAhz/5DrIz2u7Uy4iHGWkZoBEu/izsfz1UgEKnhn+pUbw==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6616,7 +6617,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-clAVWKyKgmjDUhlLUOHtN6QBjE5dtMtRFYRmni5X9kYbHmtqYTXAosrHhoPvoy6PlkrS35OTryW3TbMPaso8uA==
+      integrity: sha512-wDcktJ3eDa8UTswTMEqxtrO4QUCtow+izf+2Jk61p33p8yIclsMpslGA/t8r/s4ei7k8e0SnE4xAVNQAGgaR5g==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6659,7 +6660,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-aBToQJUjyKj5Yy7P9z/rY23M647swSg7P++qR6Mp/WHTsW1by28hReuacoQpO9t8JnwfzxUz8H9HxBlI/Mx3Xw==
+      integrity: sha512-fBXwO9INBWudyPfPRQDEOQx4LpuqEu1PF/z0AT/YFxubXhYh1R4HTf11QJgxrI1PX9433jqt0d2/3CpzSp9btg==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6708,7 +6709,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-tMkq5ynIurSZZFLV0dRPYs31ee/RwvW6+6P3GPO1fIJTX4TZrQMmwQFGKUi1Lne0YL5FbWJRjGt3E+sWAyuuzg==
+      integrity: sha512-5lkIAwurdLZ/7+K3BJ0k/urDM1rup4Y+pySSb56WHTtLvMWeLfH2gF+1zkw/8fn00qMsSJ79VkvjVyrT3Z5sWQ==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6742,7 +6743,7 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-tdK9IsNI0XIbPYUbb39kcaS3l8el5U3E6Cf15h4eeSZhQ2Jjq7ZQ7KkyPXyBvBbpDqzfiyLYwDUwXDNHowyaUQ==
+      integrity: sha512-RQEvGW2fhVDnDlAQoQb7vNZ4UEbPb5B4tvjjWYGHhwaddQwYFbSHv2bvsMHgYtbpcNqYpx8ESOqLR8zAB2/CZg==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
@@ -6751,6 +6752,7 @@ specifiers:
   '@azure/ms-rest-azure-js': 2.0.1
   '@chrimc62/adaptive-expressions': ^4.1.6
   '@chrimc62/botbuilder-lg': ^4.1.6
+  '@chrimc62/botframework-schema': ^4.1.6
   '@oclif/command': ~1.5.19
   '@oclif/config': ~1.13.3
   '@oclif/errors': ~1.2.2
@@ -6778,7 +6780,6 @@ specifiers:
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
-  botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0
   cli-table3: ^0.5.1
