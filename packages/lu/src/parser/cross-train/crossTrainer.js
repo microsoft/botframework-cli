@@ -11,7 +11,7 @@ const LUResource = require('../lufile/luResource')
 const DiagnosticSeverity = require('../lufile/diagnostic').DiagnosticSeverity
 const fileHelper = require('../../utils/filehelper')
 const exception = require('../utils/exception')
-const retCode = require('../utils/enums/CLI-errors');
+const retCode = require('../utils/enums/CLI-errors')
 const NEWLINE = require('os').EOL
 const path = require('path')
 const QNA_GENERIC_SOURCE = "custom editorial"
@@ -19,19 +19,16 @@ const QNA_GENERIC_SOURCE = "custom editorial"
 module.exports = {
   /**
    * Do cross training among lu files
-   * @param {luObject[]} luObjectArray the lu object list to be parsed
-   * @param {luObject[]} qnaObjectArray the qna Object list to be parsed
+   * @param {any[]} luContents the lu content array whose element includes path and content
+   * @param {any[]} qnaContents the qna content array whose element includes path and content
    * @param {any} crossTrainConfig cross train json config
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
    */
-  crossTrain: function (luObjectArray, qnaObjectArray, crossTrainConfig) {
+  crossTrain: function (luContents, qnaContents, crossTrainConfig) {
     try {
-      const crossTrainConfigObj = JSON.parse(crossTrainConfig)
-      const rootObjectIds = crossTrainConfigObj.rootIds
-      const triggerRules = crossTrainConfigObj.triggerRules
-      const intentName = crossTrainConfigObj.intentName
-      const verbose = crossTrainConfigObj.verbose
+      const {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
+      const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
 
       // parse lu content to LUResource object
       let luFileIdToResourceMap = parseAndValidateContent(luObjectArray, verbose)
@@ -43,7 +40,7 @@ module.exports = {
       let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
 
       // do lu cross training from roots. One root one core training
-      for (const rootObjectId of rootObjectIds) {
+      for (const rootObjectId of rootIds) {
         if (resources.some(r => r.id === rootObjectId)) {
           // do cross training for each root at top level
           const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName)
@@ -465,4 +462,12 @@ const parseAndValidateContent = function (objectArray, verbose) {
   }
 
   return fileIdToResourceMap
+}
+
+const pretreatment = function (luContents, qnaContents) {
+   // Parse lu and qna objects
+   const luObjectArray = fileHelper.getParsedObjects(luContents)
+   const qnaObjectArray = fileHelper.getParsedObjects(qnaContents)
+
+   return {luObjectArray, qnaObjectArray}
 }
