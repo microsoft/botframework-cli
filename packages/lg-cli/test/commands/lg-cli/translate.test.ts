@@ -20,7 +20,7 @@ const translatekey = 'edabe9fb17244f6a92ec617867e6d7cd'
 describe('mslg:translate lg file', async () => {
 
     after(async function(){
-        //await fs.remove(generatedFolder)
+        await fs.remove(generatedFolder)
         })
 
     before(async function(){
@@ -29,7 +29,7 @@ describe('mslg:translate lg file', async () => {
     })
 
     // basic translate for fr
-    let fileName = 'base.lg'
+    let fileName = '2.lg'
     const fr = 'fr'
 
     test
@@ -39,7 +39,7 @@ describe('mslg:translate lg file', async () => {
     '--tgtlang', fr,
     '--out', generatedFolder])
     .it('', async () => {
-        await compareLgFiles(path.join(generatedFolderPath, fr, fileName), path.join(verifiedFolderPath, fr, fileName))
+        await compareLgFiles(path.join(generatedFolderPath, '2.fr.lg'), path.join(verifiedFolderPath, '2.fr.lg'))
     })
 
     // basic translate for zh-cn
@@ -52,32 +52,32 @@ describe('mslg:translate lg file', async () => {
     '--tgtlang', zhcn,
     '--out', generatedFolder])
     .it('', async () => {
-        await compareLgFiles(path.join(generatedFolderPath, zhcn, fileName), path.join(verifiedFolderPath, zhcn, fileName))
+        await compareLgFiles(path.join(generatedFolderPath, '2.zh-cn.lg'), path.join(verifiedFolderPath, '2.zh-cn.lg'))
     })
 
     // test translate_comments option
-    const commentFileName = 'base.comments.lg'
+    const commentsName = '2.comments.zh-cn.lg'
     test
     .command(['mslg:translate',
     '--translatekey', translatekey,
     '--in', path.join(__dirname, testcaseFolderPath, fileName),
     '--tgtlang', zhcn,
-    '--out', generatedFolder,
+    '--out',  path.join(__dirname, generatedFolderPath, commentsName),
     '--translate_comments'])
     .it('', async () => {
-        await compareLgFiles(path.join(generatedFolderPath, zhcn, commentFileName), path.join(verifiedFolderPath, zhcn, commentFileName))
+        await compareLgFiles( path.join(generatedFolderPath, commentsName), path.join(verifiedFolderPath, commentsName))
     })
 
     // test translate_link_text option
-    const linkFileName = 'base.link.lg'
+    const linkName = '2.link.zh-cn.lg'
     test
     .command(['mslg:translate',
     '--translatekey', translatekey,
     '--in', path.join(__dirname, testcaseFolderPath, fileName),
     '--tgtlang', zhcn,
-    '--out', generatedFolder,
+    '--out',  path.join(__dirname, generatedFolderPath, linkName),
     '--translate_link_text'])
     .it('', async () => {
-        await compareLgFiles(path.join(generatedFolderPath, zhcn, commentFileName), path.join(verifiedFolderPath, zhcn, commentFileName))
+        await compareLgFiles( path.join(generatedFolderPath, linkName), path.join(verifiedFolderPath, linkName))
     })
 })

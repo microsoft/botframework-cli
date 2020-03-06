@@ -68,9 +68,12 @@ export class Helper {
     }
 
     outputFilePath = Helper.normalizePath(outputFilePath)
-
-    if (fs.statSync(outputFilePath).isDirectory()) {
-      return true
+    try {
+      if (fs.statSync(outputFilePath).isDirectory()) {
+        return true
+      }
+    } catch (error) {
+      return false
     }
 
     return false
@@ -166,6 +169,7 @@ export class Helper {
       }
       fs.removeSync(filePath)
     }
+    fs.createFileSync(filePath)
     fs.writeFileSync(filePath, content)
   }
 }

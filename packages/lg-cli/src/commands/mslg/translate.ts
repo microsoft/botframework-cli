@@ -107,7 +107,7 @@ export default class TranslateCommand extends Command {
     if (!inputFileName) {
       return undefined
     }
-    const diagnosticName = inputFileName.replace('.lg', '') + '.' + language + '_.lg'
+    const diagnosticName = inputFileName.replace('.lg', '') + '.' + language + '.lg'
 
     if (!path.isAbsolute(out)) {
       outputFilePath = path.join(process.cwd(), out)
@@ -115,8 +115,12 @@ export default class TranslateCommand extends Command {
 
     outputFilePath = Helper.normalizePath(outputFilePath)
 
-    if (fs.statSync(outputFilePath).isDirectory()) {
-      outputFilePath = path.join(outputFilePath, diagnosticName)
+    try {
+      if (fs.statSync(outputFilePath).isDirectory()) {
+        outputFilePath = path.join(outputFilePath, diagnosticName)
+      }
+    } catch (error) {
+      // ignore
     }
 
     return outputFilePath

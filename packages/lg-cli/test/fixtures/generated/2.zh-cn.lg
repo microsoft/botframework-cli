@@ -1,4 +1,4 @@
-[进口](simple.lg)
+[import](1.lg)
 > Welcome Phrase template
 > LG runtime will pick a text value from the one-of collection list at random.
 # wPhrase
@@ -29,7 +29,7 @@
 - ELSEIF: ${count(alarms) == 2}
   - 你有${count(alarms)}警报${join(foreach(alarms, x, ShowAlarm(x)), ', ', ' and ')}
 - ELSE:
-  - 您没有任何警报
+  - 您没有任何报警
 
 # ShowAlarmsWithLgTemplate
 - IF: ${count(alarms) == 1}
@@ -37,7 +37,7 @@
 - ELSEIF: ${count(alarms) == 2}
   - 你有${count(alarms)}警报${join(foreach(alarms, x, template('ShowAlarm', x)), ', ', ' and ')}
 - ELSE:
-  - 您没有任何警报
+  - 您没有任何报警
 
 # ShowAlarmsWithDynamicLgTemplate(templateName)
 - IF: ${count(alarms) == 1}
@@ -45,4 +45,4 @@
 - ELSEIF: ${count(alarms) == 2}
   - 你有${count(alarms)}警报${join(foreach(alarms, x, template(templateName, x)), ', ', ' and ')}
 - ELSE:
-  - 您没有任何警报
+  - 您没有任何报警
