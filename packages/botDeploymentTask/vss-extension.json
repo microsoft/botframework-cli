@@ -3,7 +3,7 @@
      "id": "bot-deployment",
      "name": "Bot Deployment",
      "version": "4.8.0.81",
-     "publisher": "Southworks-Pipelines-Test",
+     "publisher": "Microsoft",
      "targets": [
          {
              "id": "Microsoft.VisualStudio.Services"

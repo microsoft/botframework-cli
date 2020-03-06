@@ -1,0 +1,31 @@
+{
+  "name": "@microsoft/bot-deployment-task",
+  "version": "1.0.0",
+  "description": "Deployment of a bot",
+  "main": "index.js",
+  "scripts": {
+    "build":"tsc -b",
+    "test": "",
+    "posttest": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/botframework-cli.git"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/microsoft/botframework-cli/issues"
+  },
+  "homepage": "https://github.com/microsoft/botframework-cli#readme",
+  "dependencies": {
+    "@types/dotenv": "^8.2.0",
+    "applicationinsights": "^1.7.0",
+    "azure-pipelines-task-lib": "^2.9.3",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.21",
+    "@types/q": "^1.5.2"
+  }
+}
