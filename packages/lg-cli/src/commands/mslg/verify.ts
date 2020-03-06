@@ -8,7 +8,7 @@
  */
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {LGParser} from 'botbuilder-lg'
+import {LGParser, DiagnosticSeverity} from 'botbuilder-lg'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 
@@ -40,19 +40,31 @@ export default class VerifyCommand extends Command {
     for (const filePath of lgFilePaths) {
       const diagnostics = LGParser.parseFile(filePath).allDiagnostics
       if (diagnostics.length > 0) {
-        const outputContent = diagnostics.map(u => u.toString()).join('\n')
         const outputFilePath = this.getOutputFile(filePath, flags.out)
         if (!outputFilePath) {
-          this.log(outputContent)
+          this.log(`Diagnostic messages of ${filePath}`)
+          for (const diagnostic of diagnostics) {
+            // eslint-disable-next-line max-depth
+            if (diagnostic.severity === DiagnosticSeverity.Error) {
+              this.error(diagnostic.toString())
+            } else if (diagnostic.severity === DiagnosticSeverity.Warning) {
+              this.warn(diagnostic.toString())
+            } else {
+              this.log(diagnostic.toString())
+            }
+          }
         } else {
+          let outputContent = `Diagnostic of file ${filePath}\n`
+          outputContent += diagnostics.map(u => u.toString()).join('\n')
           Helper.writeContentIntoFile(outputFilePath, outputContent, flags.force)
+          this.log(`Diagnostic messages of ${filePath} have been written into file ${outputFilePath}`)
         }
       }
     }
   }
 
-  private getOutputFile(filePath: string, out: string): string | undefined {
-    if (filePath === undefined || filePath === '') {
+  private getOutputFile(filePath: string, out: string|undefined): string | undefined {
+    if (filePath === undefined || filePath === '' || out === undefined) {
       return undefined
     }
     let outputFilePath = out

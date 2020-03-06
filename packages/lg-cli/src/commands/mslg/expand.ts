@@ -8,7 +8,7 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {MSLGTool, LGParser, LGFile, DiagnosticSeverity} from 'botbuilder-lg'
+import {LGParser, LGFile, DiagnosticSeverity} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
@@ -16,8 +16,6 @@ import * as readlineSync from 'readline-sync'
 
 export default class ExpandCommand extends Command {
   static description = 'Expand one or all templates in a .lg file or an inline expression.'
-
-  private lgTool = new MSLGTool()
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
@@ -62,15 +60,17 @@ export default class ExpandCommand extends Command {
       const expandContent = this.expandFile(lg, flags)
       const outputFilePath = this.getOutputFile(filePath, flags.out)
       if (!outputFilePath) {
+        this.log(`expand of file ${filePath}`)
         this.log(expandContent)
       } else {
         Helper.writeContentIntoFile(outputFilePath, expandContent, flags.force)
+        this.log(`expand result of ${filePath} have been written into file ${outputFilePath}`)
       }
     }
   }
 
-  private getOutputFile(filePath: string, out: string): string | undefined {
-    if (filePath === undefined || filePath === '') {
+  private getOutputFile(filePath: string, out: string|undefined): string | undefined {
+    if (filePath === undefined || filePath === '' || out === undefined) {
       return undefined
     }
     let outputFilePath = out
@@ -106,6 +106,10 @@ export default class ExpandCommand extends Command {
 
   private buildTemplateNameList(origintemplateNames: string[], flags: any): string[] {
     let templateNameList: string[] = []
+    if (!flags.template && !flags.all && !flags.expression) {
+      throw new CLIError('please use --template or --all or --expression to specific the template ot template')
+    }
+
     if (flags.template) {
       templateNameList.push(flags.template)
     }

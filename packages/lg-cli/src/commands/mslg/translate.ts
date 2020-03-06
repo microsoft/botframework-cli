@@ -9,7 +9,6 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper, TranslateLine, PARSERCONSTS, Block, TranslateOption, TranslateParts} from '../../utils'
-import {MSLGTool} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
@@ -18,8 +17,6 @@ import * as os from 'os'
 
 export default class TranslateCommand extends Command {
   static description = 'Translate .lg files to a target language by microsoft translation API.'
-
-  private lgTool = new MSLGTool()
 
   private readonly MAX_TRANSLATE_BATCH_SIZE = 25
 
@@ -73,18 +70,6 @@ export default class TranslateCommand extends Command {
   }
 
   private async translateLGFile(filePath: string, flags: any) {
-    if (!fs.existsSync(path.resolve(filePath))) {
-      throw new CLIError('unable to open file: ' + filePath)
-    }
-
-    const fileContent = txtfile.readSync(filePath)
-    if (!fileContent) {
-      throw new CLIError('unable to read file: ' + filePath)
-    }
-
-    const errors = this.lgTool.validateFile(fileContent, filePath)
-    this.log(errors.join(', '))
-
     let src_lang = this.DEFAULT_SOURCE_LANG
     if (flags.srclang) {
       src_lang = flags.srclang
@@ -103,16 +88,18 @@ export default class TranslateCommand extends Command {
         const result = await this.translateLGFileToSpecificLang(filePath, translateOption, translateParts)
         const outputFilePath = this.getOutputFile(filePath, tgt_lang, flags.out)
         if (!outputFilePath) {
+          this.log(`Translate result of file ${filePath} to ${tgt_lang}:`)
           this.log(result)
         } else {
           Helper.writeContentIntoFile(outputFilePath, result, flags.force)
+          this.log(`Translate result of file ${filePath} to ${tgt_lang} has been written to ${outputFilePath}`)
         }
       }
     }
   }
 
-  private getOutputFile(filePath: string, language: string, out: string): string | undefined {
-    if (filePath === undefined || filePath === '') {
+  private getOutputFile(filePath: string, language: string, out: string|undefined): string | undefined {
+    if (filePath === undefined || filePath === '' || out === undefined) {
       return undefined
     }
     let outputFilePath = out
