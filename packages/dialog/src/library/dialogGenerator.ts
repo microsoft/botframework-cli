@@ -5,9 +5,9 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
-import * as expressions from 'adaptive-expressions'
+import * as expressions from '@chrimc62/adaptive-expressions'
 import * as fs from 'fs-extra'
-import * as lg from 'botbuilder-lg'
+import * as lg from '@chrimc62/botbuilder-lg'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
 import { SubstitutionsEvaluator } from './substitutions'
