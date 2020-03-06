@@ -1,0 +1,104 @@
+{
+    "luis_schema_version": "6.0.0",
+    "intents": [
+      {
+        "name": "None",
+        "features": []
+      }
+    ],
+    "entities": [
+      {
+        "name": "address",
+        "children": [
+          {
+            "name": "street",
+            "children": [
+              {
+                "name": "stnumber",
+                "instanceOf": "number",
+                "children": [],
+                "features": []
+              },
+              {
+                "name": "stname",
+                "children": [],
+                "features": []
+              }
+            ],
+            "features": []
+          },
+          {
+            "name": "city",
+            "children": [],
+            "features": []
+          },
+          {
+            "name": "zipcode",
+            "instanceOf": "number",
+            "children": [],
+            "features": []
+          }
+        ],
+        "roles": [],
+        "features": []
+      }
+    ],
+    "hierarchicals": [],
+    "composites": [],
+    "closedLists": [],
+    "prebuiltEntities": [
+      {
+        "name": "number",
+        "roles": []
+      }
+    ],
+    "utterances": [
+      {
+        "text": "1234 1st street, bellevue 98002",
+        "intent": "None",
+        "entities": [
+          {
+            "entity": "stnumber",
+            "startPos": 0,
+            "endPos": 3
+          },
+          {
+            "entity": "street",
+            "startPos": 0,
+            "endPos": 14
+          },
+          {
+            "entity": "address",
+            "startPos": 0,
+            "endPos": 30
+          },
+          {
+            "entity": "stname",
+            "startPos": 5,
+            "endPos": 14
+          },
+          {
+            "entity": "city",
+            "startPos": 17,
+            "endPos": 24
+          },
+          {
+            "entity": "zipcode",
+            "startPos": 26,
+            "endPos": 30
+          }
+        ]
+      }
+    ],
+    "versionId": "0.1",
+    "name": "new schema test",
+    "desc": "",
+    "culture": "en-us",
+    "tokenizerVersion": "1.0.0",
+    "patternAnyEntities": [],
+    "regex_entities": [],
+    "phraselists": [],
+    "regex_features": [],
+    "patterns": [],
+    "settings": []
+  }
