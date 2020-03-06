@@ -58,8 +58,8 @@
     "semver": "^5.7.0",
     "tslib": "^1.10.0",
     "xml2js": "^0.4.19",
-    "@chrimc62/adaptive-expressions": "^4.1.6",
-    "@chrimc62/botbuilder-lg": "^4.1.6"
+    "@chrimc62/adaptive-expressions": "^4.1.16",
+    "@chrimc62/botbuilder-lg": "^4.1.16"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",
