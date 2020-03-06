@@ -30,11 +30,6 @@ jobs:
     variables:
       buildVersion: '4.9.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
-      publisherId: 'Microsoft'
-      extensionId: 'bot-deployment'
-      extensionName: 'Bot Deployment'
-      version: '4.8.0.$(Build.BuildId)'
-      # TelemetryInstrumentationKey: 'Define this in Azure'
 
     steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
@@ -84,47 +79,6 @@ jobs:
       inputs:
         artifactName: 'drop'
 
-    - powershell: |
-        #Set values in .env file.
-        
-        $file = "$(Build.SourcesDirectory)/packages/botDeploymentTask/botDeployment/.env";
-        echo "##vso[task.setvariable variable=KEY;]$(TelemetryInstrumentationKey)"
-        $content = Get-Content -Raw $file | ConvertFrom-StringData;
-        
-        $content.InstrumentationKey=$KEY;
-        
-        Clear-Content $file;
-        
-        foreach ($key in $content.keys) { Add-Content .env "$key=$($content.$key)" }
-      displayName: 'Set Environment Keys'
-
-    - task: ms-devlabs.vsts-developer-tools-build-tasks.tfx-installer-build-task.TfxInstaller@2
-      displayName: 'Install tfx-cli: v0.7.x'
-      inputs:
-        version: v0.7.x
-
-    - task: ms-devlabs.vsts-developer-tools-build-tasks.package-extension-build-task.PackageAzureDevOpsExtension@2
-      displayName: 'Package Extension: packages/botDeploymentTask'
-      inputs:
-        rootFolder: packages/botDeploymentTask
-        outputPath: '$(Build.ArtifactStagingDirectory)'
-        publisherId: '$(publisherId)'
-        extensionName: '$(extensionName)'
-        extensionVersion: '$(version)'
-        extensionVisibility: private
-        extensionPricing: free
-
-    - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishAzureDevOpsExtension@2
-      displayName: 'Publish Extension'
-      inputs:
-        connectedServiceName: MarketPlaceConnection
-        fileType: vsix
-        vsixFile: '$(Build.ArtifactStagingDirectory)/$(publisherId).$(extensionId)-$(version).vsix'
-        publisherId: '$(publisherId)'
-        updateTasksVersion: false
-        extensionVisibility: public
-        extensionPricing: free
-  
     - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
       displayName: 'Component Detection'
 
