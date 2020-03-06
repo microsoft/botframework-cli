@@ -42,7 +42,6 @@ export default class TranslateCommand extends Command {
     recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lg file(s)'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
-    collate: flags.boolean({char: 'c', description: 'If not set, same template name across multiple .lg files will throw exceptions.'}),
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
     translate_comments: flags.boolean({description: 'When set, machine translate comments found in .lg file'}),
     translate_link_text: flags.boolean({description: 'When set, machine translate link description in .lg file'}),
@@ -56,7 +55,6 @@ export default class TranslateCommand extends Command {
   // recurse √
   // out √
   // force √
-  // collate √
   // srclang √
   // translate_comments √
   // translate_link_text √
@@ -68,25 +66,13 @@ export default class TranslateCommand extends Command {
     }
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
+    Helper.checkInputAndOutput(lgFilePaths, flags.out)
     for (const filePath of lgFilePaths) {
       await this.translateLGFile(filePath, flags)
-    }
-
-    const collectResult = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
-    if (collectResult.filepath) {
-      this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
-    } else {
-      this.log('collect result:')
-      this.log(collectResult.content)
     }
   }
 
   private async translateLGFile(filePath: string, flags: any) {
-    let outFolder: string = process.cwd()
-    if (flags.out) {
-      outFolder = this.getOutputFolder(flags.out)
-    }
-
     if (!fs.existsSync(path.resolve(filePath))) {
       throw new CLIError('unable to open file: ' + filePath)
     }
@@ -114,33 +100,46 @@ export default class TranslateCommand extends Command {
       const tgt_lang = toLang.trim()
       if (tgt_lang !== '') {
         const translateOption = new TranslateOption(flags.translatekey, toLang, src_lang)
-        await this.translateLGFileToSpecificLang(filePath, outFolder, translateOption, translateParts)
+        const result = await this.translateLGFileToSpecificLang(filePath, translateOption, translateParts)
+        const outputFilePath = this.getOutputFile(filePath, tgt_lang, flags.out)
+        if (!outputFilePath) {
+          this.log(result)
+        } else {
+          Helper.writeContentIntoFile(outputFilePath, result, flags.force)
+        }
       }
     }
   }
 
-  private getOutputFolder(output: string): string {
-    let outFolder = output
-    if (path.isAbsolute(output)) {
-      outFolder = output
-    } else {
-      outFolder = path.resolve('', output)
+  private getOutputFile(filePath: string, language: string, out: string): string | undefined {
+    if (filePath === undefined || filePath === '') {
+      return undefined
+    }
+    let outputFilePath = out
+    const inputFileName = filePath.split('\\').pop()
+    if (!inputFileName) {
+      return undefined
+    }
+    const diagnosticName = inputFileName.replace('.lg', '') + '.' + language + '_.lg'
+
+    if (!path.isAbsolute(out)) {
+      outputFilePath = path.join(process.cwd(), out)
     }
 
-    if (!fs.existsSync(outFolder)) {
-      throw new CLIError('output folder ' + outFolder + ' does not exist')
+    outputFilePath = Helper.normalizePath(outputFilePath)
+
+    if (fs.statSync(outputFilePath).isDirectory()) {
+      outputFilePath = path.join(outputFilePath, diagnosticName)
     }
 
-    return outFolder
+    return outputFilePath
   }
 
   private async translateLGFileToSpecificLang(
     filePath: string,
-    outFolder: string,
     translateOption: TranslateOption,
     translateParts: TranslateParts
-  ) {
-    const fileName = path.basename(filePath)
+  ): Promise<string> {
     const fileContent = await txtfile.read(filePath)
     if (!fileContent) {
       throw new CLIError('unable to read file: ' + filePath)
@@ -149,24 +148,9 @@ export default class TranslateCommand extends Command {
 
     if (!parsedLocContent) {
       throw (new CLIError('Sorry, file : ' + filePath + ' had invalid content'))
-    } else {
-      // write out file
-      const loutFolder = path.join(outFolder, translateOption.to_lang)
-      try {
-        await fs.mkdir(loutFolder)
-      } catch (error) {
-        if (error.code !== 'EEXIST') {
-          throw (new CLIError('Unable to create folder - ' + error))
-        }
-      }
-      const outFilePath = path.join(loutFolder, fileName)
-      try {
-        await fs.writeFile(outFilePath, parsedLocContent, 'utf-8')
-        this.log(`file has writtern into ${outFilePath}`)
-      } catch (error) {
-        throw (new CLIError('Unable to write lg file - ' + outFilePath))
-      }
     }
+
+    return parsedLocContent
   }
 
   // eslint-disable-next-line no-warning-comments

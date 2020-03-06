@@ -7,8 +7,8 @@
  */
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
-import {Helper, ErrorType} from '../../utils'
-import {MSLGTool, LGParser, LGFile} from 'botbuilder-lg'
+import {Helper} from '../../utils'
+import {MSLGTool, LGParser, LGFile, DiagnosticSeverity} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
@@ -24,7 +24,6 @@ export default class ExpandCommand extends Command {
     recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lg file(s)'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
-    collate: flags.boolean({char: 'c', description: 'If not set, same template name across multiple .lg files will throw exceptions.'}),
     template: flags.string({description: 'Name of the template to expand. Template names with spaces must be enclosed in quotes.'}),
     expression: flags.string({description: ' Inline expression provided as a string to evaluate.'}),
     all: flags.boolean({description: 'Flag option to request that all templates in the .lg file be expanded.'}),
@@ -38,7 +37,6 @@ export default class ExpandCommand extends Command {
   // recurse √
   // out √
   // force √
-  // collate √
   // template √
   // expression √
   // all √
@@ -52,30 +50,49 @@ export default class ExpandCommand extends Command {
     }
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
+    Helper.checkInputAndOutput(lgFilePaths, flags.out)
     for (const filePath of lgFilePaths) {
-      this.expandFile(filePath, flags)
-    }
-
-    const collectResult = Helper.collect(this.lgTool, flags.out, flags.force, flags.collate)
-    if (collectResult.filepath) {
-      this.log(`Collated lg file is generated here: ${collectResult.filepath}.\n`)
-    } else {
-      this.log('collect result:')
-      this.log(collectResult.content)
+      let lg = LGParser.parseFile(filePath)
+      lg = this.parseExpressionWithLgfile(flags.expression, lg)
+      const errors = lg.diagnostics.filter(u => u.severity === DiagnosticSeverity.Error)
+      if (errors && errors.length > 0) {
+        const outputContent = errors.map(u => u.toString()).join('\n')
+        throw new CLIError(outputContent)
+      }
+      const expandContent = this.expandFile(lg, flags)
+      const outputFilePath = this.getOutputFile(filePath, flags.out)
+      if (!outputFilePath) {
+        this.log(expandContent)
+      } else {
+        Helper.writeContentIntoFile(outputFilePath, expandContent, flags.force)
+      }
     }
   }
 
-  private expandFile(filePath: string, flags: any) {
-    this.log(`${filePath} \n`)
-    let errors: string[] = []
-
-    errors = this.parseFile(filePath, flags.expression)
-
-    if (errors.filter(error => error.startsWith(ErrorType.Error)).length > 0) {
-      throw new CLIError('parsing lg file or inline expression failed.')
+  private getOutputFile(filePath: string, out: string): string | undefined {
+    if (filePath === undefined || filePath === '') {
+      return undefined
     }
-    const lg = LGParser.parseFile(filePath)
+    let outputFilePath = out
+    if (!path.isAbsolute(out)) {
+      outputFilePath = path.join(process.cwd(), out)
+    }
 
+    outputFilePath = Helper.normalizePath(outputFilePath)
+
+    if (fs.statSync(outputFilePath).isDirectory()) {
+      const inputFileName = filePath.split('\\').pop()
+      if (!inputFileName) {
+        return undefined
+      }
+      const diagnosticName = inputFileName.replace('.lg', '') + '_expand.lg'
+      outputFilePath = path.join(outputFilePath, diagnosticName)
+    }
+
+    return outputFilePath
+  }
+
+  private expandFile(lg: LGFile, flags: any): string {
     const originTemplates = lg.templates.map(u => u.name)
     const templateNameList = this.buildTemplateNameList(originTemplates, flags)
     const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput, flags.interactive)
@@ -84,15 +101,7 @@ export default class ExpandCommand extends Command {
       throw new CLIError('expanding templates or inline expression failed')
     }
 
-    let expandedTemplatesFile: string = this.generateExpandedTemplatesFile(expandedTemplates)
-
-    // ?
-    const fileName: string = flags.in
-    if (fileName === undefined) {
-      expandedTemplatesFile = expandedTemplatesFile.replace('# __temp__\n- ', '')
-    }
-
-    this.log(expandedTemplatesFile + '\n')
+    return this.generateExpandedTemplatesFile(expandedTemplates)
   }
 
   private buildTemplateNameList(origintemplateNames: string[], flags: any): string[] {
@@ -145,31 +154,12 @@ export default class ExpandCommand extends Command {
     return expandedTemplates
   }
 
-  private parseFile(filePath: string, inlineExpression: any = undefined): string[] {
-    let fileContent = txtfile.readSync(filePath)
-    if (!fileContent) {
-      throw new CLIError('unable to read file: ' + filePath)
+  private parseExpressionWithLgfile(inlineExpression: string|undefined, lgFile: LGFile): LGFile {
+    if (inlineExpression === undefined) {
+      return lgFile
     }
 
-    if (inlineExpression !== undefined) {
-      const fakeTemplateId = '__temp__'
-      const inlineStr = !inlineExpression.trim().startsWith('```') && inlineExpression.indexOf('\n') >= 0 ?
-        '```'.concat(inlineExpression).concat('```') : inlineExpression
-      fileContent += `\n# ${fakeTemplateId} \r\n - ${inlineStr}`
-    }
-
-    const errors: string[] = this.lgTool.validateFile(fileContent, 'inline content')
-    if (errors.length > 0) {
-      errors.forEach(error => {
-        if (error.startsWith(ErrorType.Error)) {
-          this.error(error + '\n')
-        } else {
-          this.warn(error + '\n')
-        }
-      })
-    }
-
-    return errors
+    return LGParser.parseTextWithRef(inlineExpression, lgFile)
   }
 
   private generateExpandedTemplatesFile(expandedTemplates: Map<string, string[]>): string {
@@ -190,15 +180,6 @@ export default class ExpandCommand extends Command {
       }
 
       result += '\n'
-    }
-
-    return result
-  }
-
-  private getTemplatesName(collatedTemplates: Map<string, any>): string[] {
-    const result: string[] = []
-    for (const template of collatedTemplates) {
-      result.push(template[0])
     }
 
     return result

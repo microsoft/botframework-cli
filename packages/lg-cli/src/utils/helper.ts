@@ -9,7 +9,6 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import {CLIError} from '@microsoft/bf-cli-command'
-import {MSLGTool} from 'botbuilder-lg'
 // eslint-disable-next-line node/no-extraneous-require
 const fetch = require('node-fetch')
 const NEWLINE = require('os').EOL
@@ -59,52 +58,56 @@ export class Helper {
     return results
   }
 
-  public static collect(tool: MSLGTool, out: string, force: boolean, collect: boolean): { content: string; filepath: string | undefined } {
-    if (tool.collationMessages.length > 0) {
-      tool.collationMessages.forEach(error => {
-        if (error.startsWith(ErrorType.Error)) {
-          throw new CLIError(`collating lg files failed with error : ${error}.\n`)
-        } else {
-          throw new CLIError(`collating lg files failed with warning : ${error}.\n`)
-        }
-      })
-    } else if (collect === undefined && tool.nameCollisions.length > 0) {
-      throw new CLIError('below template names are defined in multiple files: ' + tool.nameCollisions.toString())
-    } else {
-      const mergedLgFileContent = tool.collateTemplates()
-      if (mergedLgFileContent === undefined || mergedLgFileContent === '') {
-        throw new CLIError('generating collated lg file failed.')
-      }
-      if (out) {
-        const filePath = Helper.getCollectFileName(out)
-
-        if (fs.existsSync(filePath)) {
-          if (!force) {
-            throw new CLIError(`${filePath} exists`)
-          }
-          fs.removeSync(filePath)
-        }
-
-        fs.writeFileSync(filePath, mergedLgFileContent)
-        return {content: mergedLgFileContent, filepath: filePath}
-      }
-      return {content: mergedLgFileContent, filepath: undefined}
+  public static isPathDictionary(outPath: string): boolean {
+    if (outPath === undefined || outPath === '') {
+      return false
+    }
+    let outputFilePath = ''
+    if (!path.isAbsolute(outPath)) {
+      outputFilePath = path.join(process.cwd(), outPath)
     }
 
-    throw new CLIError('collating lg files failed')
+    outputFilePath = Helper.normalizePath(outputFilePath)
+
+    if (fs.statSync(outputFilePath).isDirectory()) {
+      return true
+    }
+
+    return false
   }
 
-  public static getCollectFileName(outOption: string): string {
-    let filePath = this.normalizePath(outOption)
+  public static tryParseFilePath(filePath: string): string | undefined {
+    if (filePath === undefined || filePath === '') {
+      return undefined
+    }
+
+    let outputFilePath = ''
     if (!path.isAbsolute(filePath)) {
-      return filePath
+      outputFilePath = path.join(process.cwd(), filePath)
     }
 
-    if (fs.statSync(filePath).isDirectory()) {
-      filePath = path.join(filePath, `collect.${this.get_guid()}.lg`)
+    outputFilePath = Helper.normalizePath(outputFilePath)
+    try {
+      if (fs.statSync(outputFilePath).isFile()) {
+        return outputFilePath
+      }
+    } catch (error) {
+      return undefined
     }
 
-    return filePath
+    return undefined
+  }
+
+  public static checkInputAndOutput(lgFiles: string[], out: string| undefined) {
+    if (lgFiles === undefined || lgFiles.length === 0) {
+      throw new Error('there is no lg file in the input folder/file.')
+    }
+
+    if (out) {
+      if (lgFiles.length > 1 && !this.isPathDictionary(out)) {
+        throw new Error('multiple inputs and single output is not allowed')
+      }
+    }
   }
 
   public static normalizePath(ambiguousPath: string): string {
@@ -154,6 +157,16 @@ export class Helper {
       const v = c === 'x' ? r : (r & 0x3 | 0x8)
       return v.toString(16)
     })
+  }
+
+  public static writeContentIntoFile(filePath: string, content: string, force = false) {
+    if (fs.existsSync(filePath)) {
+      if (!force) {
+        throw new Error(`${filePath} exists`)
+      }
+      fs.removeSync(filePath)
+    }
+    fs.writeFileSync(filePath, content)
   }
 }
 
