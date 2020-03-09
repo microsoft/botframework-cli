@@ -38,9 +38,7 @@ describe('luis:train:show', () => {
   .stdout()
   .command(['luis:train:show', '--appId', uuidv1(), '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
   .it('displays a list of application versions', ctx => {
-    expect(ctx.stdout).to.contain('Training status successfully output to console')
     expect(ctx.stdout).to.contain('99999')
     expect(ctx.stdout).to.contain('details')
   })
-
 })
