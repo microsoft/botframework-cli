@@ -86,22 +86,21 @@ export default class TranslateCommand extends Command {
     if (filePath === undefined || filePath === '' || out === undefined) {
       return undefined
     }
-    let outputFilePath =  Helper.normalizePath(path.resolve(out))
-    const inputFileName = filePath.split('\\').pop()
-    if (!inputFileName) {
-      return undefined
-    }
-    const diagnosticName = inputFileName.replace('.lg', '') + '.' + language + '.lg'
 
-    try {
-      if (fs.statSync(outputFilePath).isDirectory()) {
-        outputFilePath = path.join(outputFilePath, diagnosticName)
-      }
-    } catch (error) {
-      // ignore
+    const base = Helper.normalizePath(path.resolve(out))
+    const root = path.dirname(base)
+    if (!fs.existsSync(root)) {
+      throw new Error(`folder ${root} not exist`)
     }
 
-    return outputFilePath
+    const extension = path.extname(base)
+    if (extension) {
+      // file
+      return base
+    }
+
+    const newFileName = path.basename(filePath).replace('.lg', '') + '.' + language + '.lg'
+    return path.join(base, newFileName)
   }
 
   private async translateLGFileToSpecificLang(

@@ -66,22 +66,20 @@ export default class VerifyCommand extends Command {
       return undefined
     }
 
-    let outputFilePath = Helper.normalizePath(path.resolve(out))
-
-    try {
-      if (fs.statSync(outputFilePath).isDirectory()) {
-        const inputFileName = filePath.split('\\').pop()
-        if (!inputFileName) {
-          return undefined
-        }
-        // a.lg -> a.diagnostic.txt
-        const diagnosticName = inputFileName.replace('.lg', '') + '.diagnostic.txt'
-        outputFilePath = path.join(outputFilePath, diagnosticName)
-      }
-    } catch (error) {
-      // do nothing
+    const base = Helper.normalizePath(path.resolve(out))
+    const root = path.dirname(base)
+    if (!fs.existsSync(root)) {
+      throw new Error(`folder ${root} not exist`)
     }
 
-    return outputFilePath
+    const extension = path.extname(base)
+    if (extension) {
+      // file
+      return base
+    }
+
+    // a.lg -> a.diagnostic.txt
+    const diagnosticName = path.basename(filePath).replace('.lg', '') + '.diagnostic.txt'
+    return path.join(base, diagnosticName)
   }
 }

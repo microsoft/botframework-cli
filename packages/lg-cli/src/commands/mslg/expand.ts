@@ -85,18 +85,20 @@ export default class ExpandCommand extends Command {
       return undefined
     }
 
-    let outputFilePath =  Helper.normalizePath(path.resolve(out))
-
-    if (fs.statSync(outputFilePath).isDirectory()) {
-      const inputFileName = filePath.split('\\').pop()
-      if (!inputFileName) {
-        return undefined
-      }
-      const diagnosticName = inputFileName.replace('.lg', '') + '.expand.lg'
-      outputFilePath = path.join(outputFilePath, diagnosticName)
+    const base = Helper.normalizePath(path.resolve(out))
+    const root = path.dirname(base)
+    if (!fs.existsSync(root)) {
+      throw new Error(`folder ${root} not exist`)
     }
 
-    return outputFilePath
+    const extension = path.extname(base)
+    if (extension) {
+      // file
+      return base
+    }
+
+    const newFileName = path.basename(filePath).replace('.lg', '') + '.expand.lg'
+    return path.join(base, newFileName)
   }
 
   private buildTemplateNameList(origintemplateNames: string[], all: boolean|undefined, expression: string|undefined, template: string|undefined): string[] {

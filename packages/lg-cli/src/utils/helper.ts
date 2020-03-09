@@ -29,28 +29,26 @@ export class Helper {
   public static findLGFiles(input: string, recurse?: boolean): string[] {
     let results: string[] = []
     const lgExt = '.lg'
-    input = this.normalizePath(input)
-    if (!path.isAbsolute(input)) {
-      throw new CLIError('please input the absolute path.')
-    }
+
+    input = this.normalizePath(path.resolve(input))
 
     if (!fs.existsSync(input)) {
       throw new CLIError(`can not access to ${input}.`)
     }
 
-    const pathState = fs.statSync(input)
+    const pathState = fs.lstatSync(input)
 
-    if (pathState.isFile() && input.endsWith(lgExt)) {
+    if (pathState.isFile() && path.extname(input) === lgExt) {
       results.push(input)
     } else if (pathState.isDirectory()) {
       for (const dirItem of fs.readdirSync(input)) {
         const dirContent = path.resolve(input, dirItem)
         try {
-          const dirContentState = fs.statSync(dirContent)
+          const dirContentState = fs.lstatSync(dirContent)
           if (recurse && dirContentState.isDirectory()) {
             results = results.concat(this.findLGFiles(dirContent, recurse))
           }
-          if (dirContentState.isFile() && dirContent.endsWith(lgExt)) {
+          if (dirContentState.isFile() && path.extname(dirContent) === lgExt) {
             results.push(dirContent)
           }
         } catch (error) {
@@ -65,28 +63,6 @@ export class Helper {
   }
 
   /**
-   * judge if a path is directory
-   * @param {string} inputPath path
-   * @returns {boolean} is path is directory
-   */
-  public static isPathDirectory(inputPath: string): boolean {
-    if (inputPath === undefined || inputPath === '') {
-      return false
-    }
-    const outputFilePath =  Helper.normalizePath(path.resolve(inputPath))
-
-    try {
-      if (fs.statSync(outputFilePath).isDirectory()) {
-        return true
-      }
-    } catch (error) {
-      return false
-    }
-
-    return false
-  }
-
-  /**
  * it is invalid that input has multiple lg files and output is single file path
  * @param {string[]} lgFiles lg files
  * @param {string} out output
@@ -97,7 +73,7 @@ export class Helper {
     }
 
     if (out) {
-      if (lgFiles.length > 1 && !this.isPathDirectory(out)) {
+      if (lgFiles.length > 1 && path.extname(out)) {
         throw new Error('multiple inputs and single output is not allowed')
       }
     }
