@@ -20,12 +20,15 @@ const translatekey = 'edabe9fb17244f6a92ec617867e6d7cd'
 describe('mslg:translate lg file', async () => {
 
     after(async function(){
-        await fs.remove(generatedFolder)
+        //await fs.remove(generatedFolder)
         })
 
     before(async function(){
-        await fs.remove(generatedFolder)
-        await fs.mkdir(generatedFolder)
+        //await fs.remove(generatedFolder)
+        //await fs.mkdir(generatedFolder)
+        if (!await fs.exists(generatedFolder)) {
+            await fs.mkdir(generatedFolder)
+        }
     })
 
     // basic translate for fr
@@ -37,6 +40,7 @@ describe('mslg:translate lg file', async () => {
     '--translatekey', translatekey,
     '--in', path.join(__dirname, testcaseFolderPath, fileName),
     '--tgtlang', fr,
+    '-f',
     '--out', generatedFolder])
     .it('', async () => {
         await compareLgFiles(path.join(generatedFolderPath, '2.fr.lg'), path.join(verifiedFolderPath, '2.fr.lg'))
@@ -50,6 +54,7 @@ describe('mslg:translate lg file', async () => {
     '--translatekey', translatekey,
     '--in', path.join(__dirname, testcaseFolderPath, fileName),
     '--tgtlang', zhcn,
+    '-f',
     '--out', generatedFolder])
     .it('', async () => {
         await compareLgFiles(path.join(generatedFolderPath, '2.zh-cn.lg'), path.join(verifiedFolderPath, '2.zh-cn.lg'))
@@ -63,6 +68,7 @@ describe('mslg:translate lg file', async () => {
     '--in', path.join(__dirname, testcaseFolderPath, fileName),
     '--tgtlang', zhcn,
     '--out',  path.join(__dirname, generatedFolderPath, commentsName),
+    '-f',
     '--translate_comments'])
     .it('', async () => {
         await compareLgFiles( path.join(generatedFolderPath, commentsName), path.join(verifiedFolderPath, commentsName))
@@ -75,6 +81,7 @@ describe('mslg:translate lg file', async () => {
     '--translatekey', translatekey,
     '--in', path.join(__dirname, testcaseFolderPath, fileName),
     '--tgtlang', zhcn,
+    '-f',
     '--out',  path.join(__dirname, generatedFolderPath, linkName),
     '--translate_link_text'])
     .it('', async () => {

@@ -81,7 +81,7 @@ export default class VerifyCommand extends Command {
         if (!inputFileName) {
           return undefined
         }
-        const diagnosticName = inputFileName.replace('.lg', '') + '_diagnostic.txt'
+        const diagnosticName = inputFileName.replace('.lg', '') + '.diagnostic.txt'
         outputFilePath = path.join(outputFilePath, diagnosticName)
       }
     } catch (error) {

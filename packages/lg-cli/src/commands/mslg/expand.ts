@@ -91,7 +91,7 @@ export default class ExpandCommand extends Command {
       if (!inputFileName) {
         return undefined
       }
-      const diagnosticName = inputFileName.replace('.lg', '') + '_expand.lg'
+      const diagnosticName = inputFileName.replace('.lg', '') + '.expand.lg'
       outputFilePath = path.join(outputFilePath, diagnosticName)
     }
 
@@ -113,7 +113,8 @@ export default class ExpandCommand extends Command {
   private buildTemplateNameList(origintemplateNames: string[], flags: any): string[] {
     let templateNameList: string[] = []
     if (!flags.template && !flags.all && !flags.expression) {
-      throw new CLIError('please use --template or --all or --expression to specific the template ot template')
+      this.log(flags)
+      throw new CLIError('please use --template or --all or --expression to specific the template')
     }
 
     if (flags.all) {
@@ -212,12 +213,18 @@ export default class ExpandCommand extends Command {
     return result
   }
 
-  private getVariableValues(testFileName: string, expectedVariables: string[], userInputValues: Map<string, any>): Map<string, any> {
+  private getVariableValues(testinput: string, expectedVariables: string[], userInputValues: Map<string, any>): Map<string, any> {
     const result: Map<string, any> = new Map<string, any>()
     let variablesObj: any
-    if (testFileName !== undefined) {
-      const filePath: string = path.resolve(testFileName)
-      if (!fs.existsSync(filePath)) {
+    if (testinput !== undefined) {
+      let filePath: string = testinput
+      if (!path.isAbsolute(testinput)) {
+        filePath = path.join(process.cwd(), testinput)
+      }
+
+      filePath = Helper.normalizePath(filePath)
+
+      if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
         throw new CLIError('unable to open file: ' + filePath)
       }
 
