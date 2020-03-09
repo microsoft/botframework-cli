@@ -26,7 +26,7 @@ Based on the requirement, user needs to provide the testdata file and the LUIS c
 ### Prerequisites
 
 - LUIS model has been published to remote LUIS
-- LUIS subscriptionKey,  applicationId (trained model)
+- LUIS endpoint， subscriptionKey,  applicationId (trained model)
 - Testdata file
 
 ### Summary
@@ -69,7 +69,7 @@ Example:
 ```
 
 Command :
-luis:test -i <testdata.lu> -o <result.lu> -s <subscriptionKey> -a <luisAppId>
+luis:test -i <testdata.lu> -o <result.lu> -s <subscriptionKey> -a <luisAppId> --endpoint <endpoint>
 
 Input: testdata.lu
 
@@ -151,7 +151,7 @@ Scenario 5: User can test intent only
 ```
 Command:
 
-luis:test -i <LUISTest.lu> -o <result.lu> -s <subscriptionKey> -a <luisAppId> --intentonly
+luis:test -i <LUISTest.lu> -o <result.lu> -s <subscriptionKey> -a <luisAppId> --endpoint <endpoint> --intentonly
 
 Input:
 
