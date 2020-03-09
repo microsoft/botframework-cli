@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "datetime": {
         "type": "object",
-        "$entities": ["@{concat('datetime:', property)}", "datetime"],
+        "$entities": ["${concat('datetime:', property)}", "datetime"],
         "properties": {
             "type": {
                 "type": "string"

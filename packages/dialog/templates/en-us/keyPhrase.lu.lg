@@ -1,7 +1,7 @@
 # filename
-- @{builtinEntityFilename('keyPhraseEntity')}
+- ${builtinEntityFilename('keyPhraseEntity')}
 
 # template
-- @ prebuilt keyPhrase @{roles()}
+- @ prebuilt keyPhrase ${roles()}
 
 [generator.lg](../generator.lg)

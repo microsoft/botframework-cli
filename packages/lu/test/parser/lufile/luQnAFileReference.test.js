@@ -125,6 +125,48 @@ describe('Deep reference tests', function() {
             })
             .catch(err => done(err))
     })
+
+    it('Recursively resolve references', function(done) {
+        let luContent = `
+# intent1
+- [lu10](lu10#*)
+- [ref2](ref1#*)
+- [qna1](qna1#?)
+        `;
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
+            .then(res => {
+                assert.equal(res.LUISContent[0].LUISJsonStructure.utterances.length, 3);
+                assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[0].text, "result");
+                assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[1].text, "q1");
+                assert.equal(res.LUISContent[0].LUISJsonStructure.utterances[2].text, "q2");
+                done()
+            })
+            .catch(err => done(err))
+    })
+
+    it('failure to find ref throws', function(done) {
+        let luContent = `
+# foo
+- [tom](tom#*)`;
+        luMerger.Build([new luObj(luContent)], false, undefined, findLuFiles)
+            .then(res => done(res))
+            .catch(err => {
+                assert.isTrue(err.text.includes('Cannot find reference'))
+                done()
+            })
+    })
+
+    it('Circular references throws', function(done) {
+        let luContent = `
+# intent1
+- [refl1](refl1#*)`
+        luMerger.Build([new luObj(luContent, new luOptions('tloop', true))], false, undefined, findLuFiles)
+            .then(res => done(res))
+            .catch(err => {
+                assert.isTrue(err.text.includes('Loop detected'))
+                done()
+            })
+    })
 })
     
 const findLuFiles = async function(srcId, idsToFind){
@@ -204,6 +246,39 @@ $myListName1 : qna-alterations=
 - pattern {one}
 `, new luOptions(ask.filePath, false)));
                 break;
+            case 'refl1':
+                retPayload.push(new luObj(`
+# test
+- one
+
+# test2
+- [refl2](refl2#*)
+`, new luOptions(ask.filePath, false)));
+                retPayload.push(new luObj(`
+# all
+- two
+- [tloop](tloop#*)
+`, new luOptions(`refl2`, false)));
+            case 'lu10': 
+                retPayload.push(new luObj(`
+# intent-ref1
+- [ref1](ref1#*)
+`, new luOptions(ask.filePath, false)));
+                retPayload.push(new luObj(`
+# final
+- result
+`, new luOptions('ref1', false)))
+                retPayload.push(new luObj(`
+# ? q1
+\`\`\`
+answer1
+\`\`\`
+
+# ? q2
+\`\`\`
+answer2
+\`\`\`
+`, new luOptions(ask.filePath, false)));
         }
     })
     return retPayload;
