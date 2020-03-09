@@ -366,7 +366,7 @@ export class Builder {
 
     if (emptyIntents && emptyIntents.length > 0) {
       const filteredIntents = intents.filter((intent: any) => !emptyIntents.some((emptyIntent: any) => emptyIntent.name === intent.name))
-      this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when training and publishing`)
+      this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
       app.intents = filteredIntents
     }
   }

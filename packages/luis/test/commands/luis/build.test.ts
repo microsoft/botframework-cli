@@ -549,7 +549,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
       expect(ctx.stdout).to.contain('foo.en-us.lu.dialog loaded')
       expect(ctx.stdout).to.contain('foo.fr-fr.lu.dialog loaded')
 
-      expect(ctx.stdout).to.contain('[WARN]: empty intent(s) # emptyIntent are filtered when training and publishing')
+      expect(ctx.stdout).to.contain('[WARN]: empty intent(s) # emptyIntent are filtered when handling luis application')
 
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
