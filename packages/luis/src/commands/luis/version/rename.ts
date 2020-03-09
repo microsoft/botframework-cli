@@ -21,6 +21,7 @@ export default class LuisVersionRename extends Command {
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: '(required) Version to update (defaults to config:LUIS:versionId)'}),
     newVersionId: flags.string({description: '(required) New version id'}),
+    json: flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
@@ -45,7 +46,8 @@ export default class LuisVersionRename extends Command {
 
     try {
       await client.versions.update(appId, versionId, versionUpdateObject)
-      this.log('App version successfully renamed')
+      const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : 'App version successfully renamed'
+      this.log(output)
     } catch (err) {
       throw new CLIError(`Failed to rename app version: ${err}`)
     }

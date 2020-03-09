@@ -49,7 +49,6 @@ export default class LuisVersionList extends Command {
         this.log(`\nList successfully written to file: ${writtenFilePath}`)
       } else {
         await utils.writeToConsole(versionList)
-        this.log('\nList successfully output to console')
       }
     } catch (err) {
       throw new CLIError(`Failed to export versions list: ${err}`)
