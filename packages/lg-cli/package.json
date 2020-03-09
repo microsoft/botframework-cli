@@ -16,7 +16,8 @@
     "lodash": "^4.17.15",
     "tslib": "^1.10.0",
     "read-text-file": "^1.1.0",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "node-fetch": "^2.1.2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
