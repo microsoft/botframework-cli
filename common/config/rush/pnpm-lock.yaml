@@ -1,6 +1,8 @@
 dependencies:
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
+  '@chrimc62/adaptive-expressions': 4.1.20
+  '@chrimc62/botbuilder-lg': 4.1.20
   '@oclif/parser': 3.8.4
   '@rush-temp/bf-chatdown': 'file:projects/bf-chatdown.tgz'
   '@rush-temp/bf-cli-command': 'file:projects/bf-cli-command.tgz'
@@ -25,10 +27,9 @@ dependencies:
   '@types/xml2js': 0.4.5
   ajv: 6.10.2
   antlr4: 4.7.2
-  antlr4ts: 0.5.0-alpha.1
   applicationinsights: 1.6.0
   await-delay: 1.0.0
-  botframework-expressions: 4.7.0-preview
+  botbuilder-lg: 4.8.0-preview-109324
   botframework-schema: 4.7.0
   camelcase: 4.1.0
   chai: 4.2.0
@@ -71,6 +72,7 @@ dependencies:
   source-map-support: 0.5.16
   testdouble: 3.12.5
   ts-md5: 1.2.7
+  username: 4.1.0
   uuid: 3.3.3
   window-size: 1.1.1
   xml2js: 0.4.23
@@ -199,6 +201,44 @@ packages:
     dev: false
     resolution:
       integrity: sha512-cz5Ji23KCi4T+YIE/BolWosrJuSmoZeN1EFnRtBwF+KKLi8GG/Z2c2hOJJeCXPk4mwk4QFvTmwIodJowXgttRA==
+  /@chrimc62/adaptive-expressions/4.1.20:
+    dependencies:
+      '@microsoft/recognizers-text-data-types-timex-expression': 1.1.4
+      '@types/lru-cache': 5.1.0
+      '@types/moment-timezone': 0.5.12
+      '@types/xmldom': 0.1.29
+      antlr4ts: 0.5.0-alpha.1
+      jspath: 0.4.0
+      lodash: 4.17.15
+      lru-cache: 5.1.1
+      moment: 2.24.0
+      moment-timezone: 0.5.27
+    dev: false
+    resolution:
+      integrity: sha512-RrT5+CKSLTV7PTmWyMs1T7iLQfVwciE4tFh6qjAKXSJuzPaC9TFopajCZDPSN3aD1gkgP9jYfYeI/W3ZZmSg+g==
+  /@chrimc62/botbuilder-core/4.1.20:
+    dependencies:
+      '@chrimc62/botframework-schema': 4.1.20
+      assert: 1.5.0
+    dev: false
+    resolution:
+      integrity: sha512-l1PkiuK1Dyv/EiyDqcW65i8MFO4/BjMQTScDei6K41WUxP2ZvigQ2V75SQVTTQ3JO9v8fjQ6qT8PSpZ2tU+aOw==
+  /@chrimc62/botbuilder-lg/4.1.20:
+    dependencies:
+      '@chrimc62/adaptive-expressions': 4.1.20
+      '@chrimc62/botbuilder-core': 4.1.20
+      '@chrimc62/botframework-schema': 4.1.20
+      antlr4ts: 0.5.0-alpha.1
+      lodash: 4.17.15
+      path: 0.12.7
+      uuid: 3.3.3
+    dev: false
+    resolution:
+      integrity: sha512-0MAF7F4AHuG6Q5JJ2MuyPlYi8/J5jrVf/ez1j1nOebsW56R1vJOrW2ris/llvfqBX5KrZx8L4e/mvIsbRaw5tA==
+  /@chrimc62/botframework-schema/4.1.20:
+    dev: false
+    resolution:
+      integrity: sha512-4aUH1heowUTlq9j7I6vJI/koZv0KbmWoOUVV2wZSekjIpDXOlrzMhH3jarHny8nuVfb6ztNAL2sCd2cO7abH7A==
   /@christopheranderson/botbuilder-lg/4.7.0-a0-b6513caa:
     dependencies:
       '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
@@ -501,14 +541,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==
+  /@types/chai/4.2.10:
+    dev: false
+    resolution:
+      integrity: sha512-TlWWgb21+0LdkuFqEqfmy7NEgfB/7Jjux15fWQAh3P93gbmXuwTM/vxEdzW89APIcI2BgKR48yjeAkdeH+4qvQ==
   /@types/chai/4.2.7:
     dev: false
     resolution:
       integrity: sha512-luq8meHGYwvky0O7u0eQZdA7B4Wd9owUCqvbw2m3XCrCU8mplYOujMBbvyS547AxJkC+pGnd0Cm15eNxEUNU8g==
-  /@types/chai/4.2.9:
-    dev: false
-    resolution:
-      integrity: sha512-NeXgZj+MFL4izGqA4sapdYzkzQG+MtGra9vhQ58dnmDY++VgJaRUws+aLVV5zRJCYJl/8s9IjMmhiUw1WsKSmw==
   /@types/color-name/1.1.1:
     dev: false
     resolution:
@@ -590,10 +630,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-pMCcqU2zT4TjqYFrWtYHKal7Sl30Ims6ulZ4UFXxI4xbtQqK/qqKwkDoBFCfooRqqmRu9vY3xaJRwxSh673aYg==
-  /@types/node/10.17.15:
+  /@types/node/10.17.17:
     dev: false
     resolution:
-      integrity: sha512-daFGV9GSs6USfPgxceDA8nlSe48XrVCJfDeYm7eokxq/ye7iuOH87hKXgMtEAVLFapkczbZsx868PMDT1Y0a6A==
+      integrity: sha512-gpNnRnZP3VWzzj5k3qrpRC6Rk3H/uclhAVo1aIvwzK5p5cOrs9yEyQ8H/HBsBY0u5rrWxXEiVPQ0dEB6pkjE8Q==
   /@types/node/11.15.3:
     dev: false
     resolution:
@@ -666,16 +706,16 @@ packages:
         optional: true
     resolution:
       integrity: sha512-sneOJ3Hu0m5whJiVIxGBZZZMxMJ7c0LhAJzeMJgHo+n5wFs+/6rSR/gl7crkdR2kNwfOOSdzdc0gMvatG4dX2Q==
-  /@typescript-eslint/eslint-plugin/2.14.0_a79891239d75c939924dfda3682b41c4:
+  /@typescript-eslint/eslint-plugin/2.14.0_8683500ec61dd852f0b173c7d7b515b6:
     dependencies:
-      '@typescript-eslint/experimental-utils': 2.14.0_eslint@5.16.0+typescript@3.7.4
-      '@typescript-eslint/parser': 2.14.0_eslint@5.16.0+typescript@3.7.4
+      '@typescript-eslint/experimental-utils': 2.14.0_eslint@5.16.0+typescript@3.8.3
+      '@typescript-eslint/parser': 2.14.0_eslint@5.16.0+typescript@3.8.3
       eslint: 5.16.0
       eslint-utils: 1.4.3
       functional-red-black-tree: 1.0.1
       regexpp: 3.0.0
-      tsutils: 3.17.1_typescript@3.7.4
-      typescript: 3.7.4
+      tsutils: 3.17.1_typescript@3.8.3
+      typescript: 3.8.3
     dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -688,16 +728,16 @@ packages:
         optional: true
     resolution:
       integrity: sha512-sneOJ3Hu0m5whJiVIxGBZZZMxMJ7c0LhAJzeMJgHo+n5wFs+/6rSR/gl7crkdR2kNwfOOSdzdc0gMvatG4dX2Q==
-  /@typescript-eslint/eslint-plugin/2.14.0_f4d0183afca1505b6da15366f7968faf:
+  /@typescript-eslint/eslint-plugin/2.14.0_a79891239d75c939924dfda3682b41c4:
     dependencies:
-      '@typescript-eslint/experimental-utils': 2.14.0_eslint@5.16.0+typescript@3.7.5
-      '@typescript-eslint/parser': 2.14.0_eslint@5.16.0+typescript@3.7.5
+      '@typescript-eslint/experimental-utils': 2.14.0_eslint@5.16.0+typescript@3.7.4
+      '@typescript-eslint/parser': 2.14.0_eslint@5.16.0+typescript@3.7.4
       eslint: 5.16.0
       eslint-utils: 1.4.3
       functional-red-black-tree: 1.0.1
       regexpp: 3.0.0
-      tsutils: 3.17.1_typescript@3.7.5
-      typescript: 3.7.5
+      tsutils: 3.17.1_typescript@3.7.4
+      typescript: 3.7.4
     dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -739,10 +779,10 @@ packages:
       typescript: '*'
     resolution:
       integrity: sha512-KcyKS7G6IWnIgl3ZpyxyBCxhkBPV+0a5Jjy2g5HxlrbG2ZLQNFeneIBVXdaBCYOVjvGmGGFKom1kgiAY75SDeQ==
-  /@typescript-eslint/experimental-utils/2.14.0_eslint@5.16.0+typescript@3.7.5:
+  /@typescript-eslint/experimental-utils/2.14.0_eslint@5.16.0+typescript@3.8.3:
     dependencies:
       '@types/json-schema': 7.0.4
-      '@typescript-eslint/typescript-estree': 2.14.0_typescript@3.7.5
+      '@typescript-eslint/typescript-estree': 2.14.0_typescript@3.8.3
       eslint: 5.16.0
       eslint-scope: 5.0.0
     dev: false
@@ -790,14 +830,14 @@ packages:
         optional: true
     resolution:
       integrity: sha512-haS+8D35fUydIs+zdSf4BxpOartb/DjrZ2IxQ5sR8zyGfd77uT9ZJZYF8+I0WPhzqHmfafUBx8MYpcp8pfaoSA==
-  /@typescript-eslint/parser/2.14.0_eslint@5.16.0+typescript@3.7.5:
+  /@typescript-eslint/parser/2.14.0_eslint@5.16.0+typescript@3.8.3:
     dependencies:
       '@types/eslint-visitor-keys': 1.0.0
-      '@typescript-eslint/experimental-utils': 2.14.0_eslint@5.16.0+typescript@3.7.5
-      '@typescript-eslint/typescript-estree': 2.14.0_typescript@3.7.5
+      '@typescript-eslint/experimental-utils': 2.14.0_eslint@5.16.0+typescript@3.8.3
+      '@typescript-eslint/typescript-estree': 2.14.0_typescript@3.8.3
       eslint: 5.16.0
       eslint-visitor-keys: 1.1.0
-      typescript: 3.7.5
+      typescript: 3.8.3
     dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -848,7 +888,7 @@ packages:
         optional: true
     resolution:
       integrity: sha512-pnLpUcMNG7GfFFfNQbEX6f1aPa5fMnH2G9By+A1yovYI4VIOK2DzkaRuUlIkbagpAcrxQHLqovI1YWqEcXyRnA==
-  /@typescript-eslint/typescript-estree/2.14.0_typescript@3.7.5:
+  /@typescript-eslint/typescript-estree/2.14.0_typescript@3.8.3:
     dependencies:
       debug: 4.1.1
       eslint-visitor-keys: 1.1.0
@@ -856,8 +896,8 @@ packages:
       is-glob: 4.0.1
       lodash.unescape: 4.0.1
       semver: 6.3.0
-      tsutils: 3.17.1_typescript@3.7.5
-      typescript: 3.7.5
+      tsutils: 3.17.1_typescript@3.8.3
+      typescript: 3.8.3
     dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -1199,16 +1239,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-P5VpfDWnb1dAnapOfNm4tSO94ApE3EE/F7dARBEjrMpPfhaqY8uDhDOh+BUy9wYYXqNSBOpIdnVo5TAAmfi9Sg==
-  /botbuilder-lg/4.7.0-preview:
-    dependencies:
-      antlr4ts: 0.5.0-alpha.1
-      botbuilder-core: 4.7.0
-      botframework-expressions: 4.7.0-preview
-      lodash: 4.17.15
-      uuid: 3.3.3
-    dev: false
-    resolution:
-      integrity: sha512-36gjejivxsYHcKdM2a3HuhHcXYK6AD274tNtvewIpXghAFZ4z8fJO/U7Kz55xk3EGTwhViSjgwBdI7UHBLMKkQ==
   /botbuilder-lg/4.8.0-preview-109324:
     dependencies:
       adaptive-expressions: 4.8.0-preview-109324
@@ -2090,10 +2120,10 @@ packages:
       typescript: '*'
     resolution:
       integrity: sha512-BjXNJcH2F02MdaSFml9vJskviUFVkLHbTPGM5tinIt98H6klFNKP7/lQ+fB/Goc2wB45usEuuw6+l/fwAv9i7g==
-  /eslint-config-oclif-typescript/0.1.0_eslint@5.16.0+typescript@3.7.5:
+  /eslint-config-oclif-typescript/0.1.0_eslint@5.16.0+typescript@3.8.3:
     dependencies:
-      '@typescript-eslint/eslint-plugin': 2.14.0_f4d0183afca1505b6da15366f7968faf
-      '@typescript-eslint/parser': 2.14.0_eslint@5.16.0+typescript@3.7.5
+      '@typescript-eslint/eslint-plugin': 2.14.0_8683500ec61dd852f0b173c7d7b515b6
+      '@typescript-eslint/parser': 2.14.0_eslint@5.16.0+typescript@3.8.3
       eslint-config-oclif: 3.1.0_eslint@5.16.0
       eslint-config-xo-space: 0.20.0_eslint@5.16.0
       eslint-plugin-mocha: 5.3.0_eslint@5.16.0
@@ -2345,6 +2375,20 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-7XOMnz8Ynx1gGo/3hyV9loYNPWM94jG3+3T3Y8tsfSstFmETmENCMU/A/zj8Lyaj1lkgEepKepvd6240tBRvlw==
+  /execa/1.0.0:
+    dependencies:
+      cross-spawn: 6.0.5
+      get-stream: 4.1.0
+      is-stream: 1.1.0
+      npm-run-path: 2.0.2
+      p-finally: 1.0.0
+      signal-exit: 3.0.2
+      strip-eof: 1.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-adbxcyWV46qiHyvSp50TKt05tB4tK3HcmF7/nxfAdhnox83seTDbwnaqKO4sXRy7roHAIFqJP/Rw/AuEbX61LA==
   /expand-brackets/2.1.4:
     dependencies:
       debug: 2.6.9
@@ -2722,6 +2766,14 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-jpQ9E1jcN1VQVOy+LtsFqhdO3hQ=
+  /get-stream/4.1.0:
+    dependencies:
+      pump: 3.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-GMat4EJ5161kIy2HevLlr4luNjBgvmj413KaQA7jt4V8B4RDsfpHk7WQ9GVqfYyyx8OS/L66Kox+rJRNklLK7w==
   /get-stream/5.1.0:
     dependencies:
       pump: 3.0.0
@@ -3903,6 +3955,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-c3sIjNUow0+8swNwVpqoH4YCShKNFkMaw6oH1mNS2haDZQqkeZFlHS3dhoeEbKKmJB4vXpJucU6oH75aDYeE9g==
+  /map-age-cleaner/0.1.3:
+    dependencies:
+      p-defer: 1.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-bJzx6nMoP6PDLPBFmg7+xRKeFZvFboMrGlxmNj9ClvX53KrmvM5bXFXEWjbz4cz1AFn+jWJ9z/DJSz7hrs0w3w==
   /map-cache/0.2.2:
     dev: false
     engines:
@@ -3925,6 +3985,16 @@ packages:
     dev: false
     resolution:
       integrity: sha1-U6s41f48iJG6RlMp6iP6wFQBJvk=
+  /mem/4.3.0:
+    dependencies:
+      map-age-cleaner: 0.1.3
+      mimic-fn: 2.1.0
+      p-is-promise: 2.1.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-qX2bG48pTqYRVmDB37rn/6PT7LcR8T7oAX3bf99u1Tt1nzxYfxkgqDwUwolPlXweM0XzBOBFzSx4kfp7KP1s/w==
   /merge-descriptors/1.0.1:
     dev: false
     resolution:
@@ -3990,6 +4060,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-jf84uxzwiuiIVKiOLpfYk7N46TSy8ubTonmneY9vrpHNAnp0QBt2BxWV9dO3/j+BoVAb+a5G6YDPW3M5HOdMWQ==
+  /mimic-fn/2.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
   /mimic-response/1.0.1:
     dev: false
     engines:
@@ -4402,6 +4478,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-HNa1A8LvB1kie7cERyy21VNeHb2CWJJYqyyC2o3klWFfMGlFmWv2Z7sFgZH8ZiaYL95ydToKTFVXgMV/Os0bBQ==
+  /p-defer/1.0.0:
+    dev: false
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha1-n26xgvbJqozXQwBKfU+WsZaw+ww=
   /p-finally/1.0.0:
     dev: false
     engines:
@@ -4414,6 +4496,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-nJRWmJ6fZYgBewQ01WCXZ1w9oF4=
+  /p-is-promise/2.1.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-Y3W0wlRPK8ZMRbNq97l4M5otioeA5lm1z7bkNkxCka8HSPjR0xRWmpCmc9utiaLP9Jb1eD8BgeIxTW4AIF45Pg==
   /p-limit/2.2.2:
     dependencies:
       p-try: 2.2.0
@@ -5685,13 +5773,13 @@ packages:
       typescript: '>=2.0'
     resolution:
       integrity: sha512-izbVCRV68EasEPQ8MSIGBNK9dc/4sYJJKYA+IarMQct1RtEot6Xp0bXuClsbUSnKpg50ho+aOAx8en5c+y4OFw==
-  /ts-node/8.6.2_typescript@3.7.5:
+  /ts-node/8.6.2_typescript@3.8.3:
     dependencies:
       arg: 4.1.2
       diff: 4.0.1
       make-error: 1.3.5
       source-map-support: 0.5.16
-      typescript: 3.7.5
+      typescript: 3.8.3
       yn: 3.1.1
     dev: false
     engines:
@@ -5823,10 +5911,10 @@ packages:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
     resolution:
       integrity: sha512-kzeQ5B8H3w60nFY2g8cJIuH7JDpsALXySGtwGJ0p2LSjLgay3NdIpqq5SoOBe46bKDW2iq25irHCr8wjomUS2g==
-  /tsutils/3.17.1_typescript@3.7.5:
+  /tsutils/3.17.1_typescript@3.8.3:
     dependencies:
       tslib: 1.10.0
-      typescript: 3.7.5
+      typescript: 3.8.3
     dev: false
     engines:
       node: '>= 6'
@@ -5895,13 +5983,13 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-A25xv5XCtarLwXpcDNZzCGvW2D1S3/bACratYBx2sax8PefsFhlYmkQicKHvpYflFS8if4zne5zT5kpJ7pzuvw==
-  /typescript/3.7.5:
+  /typescript/3.8.3:
     dev: false
     engines:
       node: '>=4.2.0'
     hasBin: true
     resolution:
-      integrity: sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
+      integrity: sha512-MYlEfn5VrLNsgudQTVJeNaQFUAI7DkhnOjdpAp4T+ku1TfQClewlbSuTVHiA+8skNBgaf02TL/kLOvig4y3G8w==
   /uglify-js/3.7.3:
     dependencies:
       commander: 2.20.3
@@ -5979,6 +6067,15 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
+  /username/4.1.0:
+    dependencies:
+      execa: 1.0.0
+      mem: 4.3.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-sKh1KCsMfv8jPIC9VdeQhrNAgkl842jS/M74HQv7Byr0AMAwKZt8mLWX9DmtMeD8nQA3eKa10f5LbqlSVmokMg==
   /util-deprecate/1.0.2:
     dev: false
     resolution:
@@ -6353,20 +6450,19 @@ packages:
       '@oclif/errors': 1.2.2
       '@oclif/plugin-help': 2.2.3
       '@oclif/test': 1.2.5
-      '@types/chai': 4.2.9
+      '@types/chai': 4.2.10
       '@types/fs-extra': 8.0.1
       '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.15
+      '@types/node': 10.17.17
       '@types/node-fetch': 2.5.4
       '@types/readline-sync': 1.4.3
-      antlr4ts: 0.5.0-alpha.1
       botbuilder-lg: 4.8.0-preview-109324
       chai: 4.2.0
       delay: 4.3.0
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
-      eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.7.5
+      eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.8.3
       fs-extra: 8.1.0
       globby: 10.0.2
       lodash: 4.17.15
@@ -6375,13 +6471,13 @@ packages:
       read-text-file: 1.1.0
       readline-sync: 1.4.10
       rimraf: 2.7.1
-      ts-node: 8.6.2_typescript@3.7.5
+      ts-node: 8.6.2_typescript@3.8.3
       tslib: 1.10.0
-      typescript: 3.7.5
+      typescript: 3.8.3
     dev: false
     name: '@rush-temp/bf-cli-lg'
     resolution:
-      integrity: sha512-YnB1sTf5KAsgdn6UkVUOlcq5BvEUa3u63UnYtwFcy6okG5g6sQhkfDmMPd3PBvmAB8ootkqTLplmaoK/0rYXIg==
+      integrity: sha512-SUd3CE0skpRvdqYjQnqYF2W/YGh8djYDcAxfJ9IgMcLtxRCw5YwO7j86cyZ7yl3lxCmNuy1i2F/w2IoZBhC/sQ==
       tarball: 'file:projects/bf-cli-lg.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6415,6 +6511,8 @@ packages:
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
     dependencies:
+      '@chrimc62/adaptive-expressions': 4.1.20
+      '@chrimc62/botbuilder-lg': 4.1.20
       '@christopheranderson/botbuilder-lg': 4.7.0-a0-b6513caa
       '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
       '@oclif/command': 1.5.19
@@ -6431,8 +6529,9 @@ packages:
       '@types/node': 10.17.13
       '@types/semver': 6.2.0
       '@types/xml2js': 0.4.5
+      adaptive-expressions: 4.8.0-preview-109324
       ajv: 6.10.2
-      botbuilder-lg: 4.7.0-preview
+      botbuilder-lg: 4.8.0-preview-109324
       botframework-expressions: 4.7.0-preview
       chai: 4.2.0
       chalk: 2.4.2
@@ -6455,7 +6554,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-wLqkv6TapzOAmIExo+h14rfw7e2BinNmi30yDcV+01KndJSTH41dyhmdpD0jnvru7YMYRNaQoh8zpea6Y2/6dg==
+      integrity: sha512-XIqoaZ7BKqmrar8XKfSYSEX4RxbGfUtnXZFBFkg3qe1XDUrXBGw2zc0t8RoWOY2th2SIl9Xlm2sTN0X2iYoE+Q==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6564,11 +6663,12 @@ packages:
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
+      username: 4.1.0
       uuid: 3.3.3
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-+gVs1ztnVvU3Steh16j+g9IjLX2cMEUdnxzhpsmHd0YmUt+KkCzZ1OUp08J5gzpLdwH7XnLlJDS4qhRVPSJnyw==
+      integrity: sha512-xeOJkvoT6na1GX2Aq2c+2cA/o5McnDUjhSWXFVcs0yzhZvIwpLKff37Zo6sZEMO84H++F6qrA0g/NJMSLqBxXw==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6658,6 +6758,8 @@ registry: ''
 specifiers:
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
+  '@chrimc62/adaptive-expressions': ^4.1.6
+  '@chrimc62/botbuilder-lg': ^4.1.6
   '@oclif/parser': ~3.8.4
   '@rush-temp/bf-chatdown': 'file:./projects/bf-chatdown.tgz'
   '@rush-temp/bf-cli-command': 'file:./projects/bf-cli-command.tgz'
@@ -6682,10 +6784,9 @@ specifiers:
   '@types/xml2js': ^0.4.4
   ajv: ^6.9.1
   antlr4: ^4.7.2
-  antlr4ts: 0.5.0-alpha.1
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
-  botframework-expressions: ~4.7.0-preview
+  botbuilder-lg: ^4.8.0-preview-109324
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0
@@ -6728,6 +6829,7 @@ specifiers:
   source-map-support: ~0.5.16
   testdouble: ^3.11.0
   ts-md5: ^1.2.6
+  username: ^4.1.0
   uuid: ^3.3.3
   window-size: ^1.1.0
   xml2js: ^0.4.19

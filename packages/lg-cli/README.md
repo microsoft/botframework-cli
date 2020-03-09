@@ -27,9 +27,8 @@ This command will output all validation errors found across all provided content
 | -r, --recurse             | [Optional] Indicates if sub-folders need to be considered to file .lg file(s)                |
 | -o, --out=out             | [Optional] Output file or folder name. If not specified stdout will be used as output        |
 | -f, --force               | [Optional] If --out flag is provided with the path to an existing file, overwrites that file |
-| -c, --collate             | [Optional] If not set, same template name across multiple .lg files will throw exceptions.   |
 
-2. Translate
+1. Translate
 ```bash
 > bf lg:translate
 ```
@@ -41,14 +40,13 @@ Translate provided .lg content into one or more target languages.
 | -r, --recurse               | [Optional] Indicates if sub-folders need to be considered to file .lg file(s)                |
 | -o, --out=out               | [Optional] Output file or folder name. If not specified stdout will be used as output        |
 | -f, --force                 | [Optional] If --out flag is provided with the path to an existing file, overwrites that file |
-| -c, --collate               | [Optional] If not set, same template name across multiple .lg files will throw exceptions.   |
 | --srclang=srclang           | [Optional] Source lang code. Auto detect if missing.                                         |
 | --tgtlang=tgtlang           | [Required] Comma separated list of target languages.                                         |
 | --translate_comments        | [Optional] When set, machine translate comments found in .lg file                            |
 | --translate_link_text       | [Optional] When set, machine translate link description in .lg file                          |
 | --translatekey=translatekey | [Required] Machine translation endpoint key. [Translator Text API][10]                       |
 
-3. Expand
+1. Expand
 ```bash
 > bf lg:expand
 ```
@@ -60,7 +58,6 @@ Expand one or all templates in a .lg file or an inline expression.
 | -r, --recurse             | [Optional] Indicates if sub-folders need to be considered to file .lg file(s)                                                       |
 | -o, --out=out             | [Optional] Output file or folder name. If not specified stdout will be used as output                                               |
 | -f, --force               | [Optional] If --out flag is provided with the path to an existing file, overwrites that file                                        |
-| -c, --collate             | [Optional] If not set, same template name across multiple .lg files will throw exceptions.                                          |
 | --template=templateName   | [Optional] Name of the template to expand. Template names with spaces must be enclosed in quotes.                                   |
 | --expression=expression   | [Optional] Inline expression provided as a string to evaluate.                                                                      |
 | --all                     | [Optional] Flag option to request that all templates in the .lg file be expanded.                                                   |
