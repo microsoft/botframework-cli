@@ -42,7 +42,7 @@ export default class VerifyCommand extends Command {
       if (diagnostics.length > 0) {
         const outputFilePath = this.getOutputFile(filePath, flags.out)
         if (!outputFilePath) {
-          this.log(`Diagnostic messages of ${filePath}`)
+          this.log(`- ${filePath}`)
           for (const diagnostic of diagnostics) {
             // eslint-disable-next-line max-depth
             if (diagnostic.severity === DiagnosticSeverity.Error) {
@@ -54,11 +54,12 @@ export default class VerifyCommand extends Command {
             }
           }
         } else {
-          let outputContent = `Diagnostic of file ${filePath}\n`
-          outputContent += diagnostics.map(u => u.toString()).join('\n')
+          const outputContent = diagnostics.map(u => u.toString()).join('\n')
           Helper.writeContentIntoFile(outputFilePath, outputContent, flags.force)
           this.log(`Diagnostic messages of ${filePath} have been written into file ${outputFilePath}`)
         }
+      } else {
+        this.log(`- ${filePath} √`)
       }
     }
   }
@@ -74,13 +75,17 @@ export default class VerifyCommand extends Command {
 
     outputFilePath = Helper.normalizePath(outputFilePath)
 
-    if (fs.statSync(outputFilePath).isDirectory()) {
-      const inputFileName = filePath.split('\\').pop()
-      if (!inputFileName) {
-        return undefined
+    try {
+      if (fs.statSync(outputFilePath).isDirectory()) {
+        const inputFileName = filePath.split('\\').pop()
+        if (!inputFileName) {
+          return undefined
+        }
+        const diagnosticName = inputFileName.replace('.lg', '') + '_diagnostic.txt'
+        outputFilePath = path.join(outputFilePath, diagnosticName)
       }
-      const diagnosticName = inputFileName.replace('.lg', '') + '_diagnostic.txt'
-      outputFilePath = path.join(outputFilePath, diagnosticName)
+    } catch (error) {
+      // do nothing
     }
 
     return outputFilePath

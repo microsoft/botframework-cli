@@ -62,7 +62,7 @@ export class Helper {
     if (outPath === undefined || outPath === '') {
       return false
     }
-    let outputFilePath = ''
+    let outputFilePath = outPath
     if (!path.isAbsolute(outPath)) {
       outputFilePath = path.join(process.cwd(), outPath)
     }
@@ -77,28 +77,6 @@ export class Helper {
     }
 
     return false
-  }
-
-  public static tryParseFilePath(filePath: string): string | undefined {
-    if (filePath === undefined || filePath === '') {
-      return undefined
-    }
-
-    let outputFilePath = ''
-    if (!path.isAbsolute(filePath)) {
-      outputFilePath = path.join(process.cwd(), filePath)
-    }
-
-    outputFilePath = Helper.normalizePath(outputFilePath)
-    try {
-      if (fs.statSync(outputFilePath).isFile()) {
-        return outputFilePath
-      }
-    } catch (error) {
-      return undefined
-    }
-
-    return undefined
   }
 
   public static checkInputAndOutput(lgFiles: string[], out: string| undefined) {

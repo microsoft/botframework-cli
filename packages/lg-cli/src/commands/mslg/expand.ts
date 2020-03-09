@@ -17,6 +17,8 @@ import * as readlineSync from 'readline-sync'
 export default class ExpandCommand extends Command {
   static description = 'Expand one or all templates in a .lg file or an inline expression.'
 
+  private readonly TempTemplateName = '__temp__'
+
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
     recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lg file(s)'}),
@@ -52,19 +54,23 @@ export default class ExpandCommand extends Command {
     for (const filePath of lgFilePaths) {
       let lg = LGParser.parseFile(filePath)
       lg = this.parseExpressionWithLgfile(flags.expression, lg)
-      const errors = lg.diagnostics.filter(u => u.severity === DiagnosticSeverity.Error)
+      const errors = lg.allDiagnostics.filter(u => u.severity === DiagnosticSeverity.Error)
       if (errors && errors.length > 0) {
         const outputContent = errors.map(u => u.toString()).join('\n')
         throw new CLIError(outputContent)
       }
       const expandContent = this.expandFile(lg, flags)
-      const outputFilePath = this.getOutputFile(filePath, flags.out)
-      if (!outputFilePath) {
-        this.log(`expand of file ${filePath}`)
-        this.log(expandContent)
+      if (expandContent !== '') {
+        const outputFilePath = this.getOutputFile(filePath, flags.out)
+        if (!outputFilePath) {
+          this.log(`expand of file ${filePath}`)
+          this.log(expandContent)
+        } else {
+          Helper.writeContentIntoFile(outputFilePath, expandContent, flags.force)
+          this.log(`expand result of ${filePath} have been written into file ${outputFilePath}`)
+        }
       } else {
-        Helper.writeContentIntoFile(outputFilePath, expandContent, flags.force)
-        this.log(`expand result of ${filePath} have been written into file ${outputFilePath}`)
+        this.log(`no expand result of ${filePath}`)
       }
     }
   }
@@ -93,15 +99,15 @@ export default class ExpandCommand extends Command {
   }
 
   private expandFile(lg: LGFile, flags: any): string {
-    const originTemplates = lg.templates.map(u => u.name)
+    const originTemplates = lg.allTemplates.map(u => u.name)
     const templateNameList = this.buildTemplateNameList(originTemplates, flags)
     const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput, flags.interactive)
 
-    if (expandedTemplates === undefined || expandedTemplates.size === 0) {
-      throw new CLIError('expanding templates or inline expression failed')
+    if (expandedTemplates !== undefined && expandedTemplates.size >= 0) {
+      return this.generateExpandedTemplatesFile(expandedTemplates)
     }
 
-    return this.generateExpandedTemplatesFile(expandedTemplates)
+    return ''
   }
 
   private buildTemplateNameList(origintemplateNames: string[], flags: any): string[] {
@@ -110,19 +116,24 @@ export default class ExpandCommand extends Command {
       throw new CLIError('please use --template or --all or --expression to specific the template ot template')
     }
 
-    if (flags.template) {
-      templateNameList.push(flags.template)
-    }
-
     if (flags.all) {
-      templateNameList = [...new Set(templateNameList.concat(origintemplateNames))]
+      if (flags.expression) {
+        templateNameList = templateNameList.concat(origintemplateNames)
+      } else {
+        // remove __temp__ template
+        templateNameList = templateNameList.concat(origintemplateNames.filter(u => u !== this.TempTemplateName))
+      }
+    } else {
+      if (flags.template && origintemplateNames.includes(flags.template)) {
+        templateNameList.push(flags.template)
+      }
+
+      if (flags.expression) {
+        templateNameList.push(this.TempTemplateName)
+      }
     }
 
-    if (flags.expression) {
-      templateNameList.push('__temp__')
-    }
-
-    return templateNameList
+    return [...new Set(templateNameList)]
   }
 
   private expandTemplates(lg: LGFile, templateNameList: string[], testInput: string, interactive = false) {
@@ -130,6 +141,11 @@ export default class ExpandCommand extends Command {
     let variablesValue: Map<string, any>
     const userInputValues: Map<string, any> = new Map<string, any>()
     for (const templateName of templateNameList) {
+      if (lg.allTemplates.find(u => u.name === templateName) === undefined) {
+        this.log(`${templateName} does not exist in ${lg.id}, skip it.`)
+        continue
+      }
+
       const expectedVariables = lg.analyzeTemplate(templateName).Variables
       variablesValue = this.getVariableValues(testInput, expectedVariables, userInputValues)
       for (const variableValue of variablesValue) {
@@ -158,12 +174,19 @@ export default class ExpandCommand extends Command {
     return expandedTemplates
   }
 
-  private parseExpressionWithLgfile(inlineExpression: string|undefined, lgFile: LGFile): LGFile {
-    if (inlineExpression === undefined) {
+  private parseExpressionWithLgfile(inlineStr: string|undefined, lgFile: LGFile): LGFile {
+    if (inlineStr === undefined) {
       return lgFile
     }
 
-    return LGParser.parseTextWithRef(inlineExpression, lgFile)
+    const multiLineMark = '```'
+
+    inlineStr = !(inlineStr.trim().startsWith(multiLineMark) && inlineStr.includes('\n')) ?
+      `${multiLineMark}${inlineStr}${multiLineMark}` : inlineStr
+
+    const newContent = `#${this.TempTemplateName} \r\n - ${inlineStr}`
+
+    return LGParser.parseTextWithRef(newContent, lgFile)
   }
 
   private generateExpandedTemplatesFile(expandedTemplates: Map<string, string[]>): string {
