@@ -352,17 +352,17 @@ USAGE
   $ bf luis:test
 
 OPTIONS
-  -a, --appid=appid                       (required) LUIS application Id
-  -h, --help                              luis:convert help
-  -i, --in=in                             Source .lu file or LUIS application JSON model for testing
-  -o, --out=out                           Output file or folder name. If not specified stdout will be used as output
-  -s, --subscriptionKey=subscriptionKey   (required) LUIS cognitive services subscription key
-  --allowIntentsCount=allowIntentsCount   [default: 1] top-scoring intent or top n Intent with score to show in the result
-  --concurrency=concurrency               [default: 1] parallel utterance test number
-  --endpoint=endpoint                     (required) LUIS endpoint hostname, e.g. https://westus.api.cognitive.microsoft.com
-  --force                                 If --out flag is provided with the path to an existing file, overwrites that file
-  --intentOnly                            only test intent
-  --staging                               Presence of flag targets the staging app, if no flag passed defaults to production
+  -a, --appId=appId                      (required) LUIS application Id
+  -h, --help                             luis:test help
+  -i, --in=in                            Source .lu file or LUIS application JSON model for testing
+  -o, --out=out                          Output file or folder name. If not specified stdout will be used as output
+  -s, --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key
+  --allowIntentsCount=allowIntentsCount  [default: 1] Top-scoring intent or top n Intent with score to show in the result
+  --concurrency=concurrency              [default: 1] Parallel utterance test number(max:5)
+  --endpoint=endpoint                    (required) LUIS endpoint hostname, e.g. https://westus.api.cognitive.microsoft.com
+  --force                                If --out flag is provided with the path to an existing file, overwrites that file
+  --intentOnly                           Only test intent
+  --staging                              Presence of flag targets the staging app, if no flag passed defaults to production
 
 EXAMPLE
 
