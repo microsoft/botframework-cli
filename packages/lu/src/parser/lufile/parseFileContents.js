@@ -1800,7 +1800,11 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
+            
+            // avoid to throw invalid model info when meeting enableSections info which is handled in luParser.js
+            if (kvPair[1] === 'enableSections') continue
+
             if (kvPair.length === 4) {
                 if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
                     enableMergeIntents = false;

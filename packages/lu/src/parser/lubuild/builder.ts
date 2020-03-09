@@ -258,6 +258,9 @@ export class Builder {
       currentApp.name = `${botName}(${suffix})-${content.name}`
     }
 
+    // remove empty intents from current app to avoid fewLabels error when training
+    this.filterEmptyIntents(currentApp)
+
     return currentApp
   }
 
@@ -351,5 +354,20 @@ export class Builder {
     }
 
     return new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
+  }
+
+  filterEmptyIntents(app: any) {
+    const intents = app.intents
+    const utterances = app.utterances
+    const patterns = app.patterns
+
+    const emptyIntents = intents.filter((intent: any) => !utterances.some((utterance: any) => utterance.intent === intent.name)
+      && !patterns.some((pattern: any) => pattern.intent === intent.name))
+
+    if (emptyIntents && emptyIntents.length > 0) {
+      const filteredIntents = intents.filter((intent: any) => !emptyIntents.some((emptyIntent: any) => emptyIntent.name === intent.name))
+      this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
+      app.intents = filteredIntents
+    }
   }
 }
