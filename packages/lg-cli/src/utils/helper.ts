@@ -73,12 +73,8 @@ export class Helper {
     if (inputPath === undefined || inputPath === '') {
       return false
     }
-    let outputFilePath = inputPath
-    if (!path.isAbsolute(inputPath)) {
-      outputFilePath = path.join(process.cwd(), inputPath)
-    }
+    const outputFilePath =  Helper.normalizePath(path.resolve(inputPath))
 
-    outputFilePath = Helper.normalizePath(outputFilePath)
     try {
       if (fs.statSync(outputFilePath).isDirectory()) {
         return true

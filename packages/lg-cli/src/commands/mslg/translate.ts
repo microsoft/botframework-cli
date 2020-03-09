@@ -86,18 +86,12 @@ export default class TranslateCommand extends Command {
     if (filePath === undefined || filePath === '' || out === undefined) {
       return undefined
     }
-    let outputFilePath = out
+    let outputFilePath =  Helper.normalizePath(path.resolve(out))
     const inputFileName = filePath.split('\\').pop()
     if (!inputFileName) {
       return undefined
     }
     const diagnosticName = inputFileName.replace('.lg', '') + '.' + language + '.lg'
-
-    if (!path.isAbsolute(out)) {
-      outputFilePath = path.join(process.cwd(), out)
-    }
-
-    outputFilePath = Helper.normalizePath(outputFilePath)
 
     try {
       if (fs.statSync(outputFilePath).isDirectory()) {

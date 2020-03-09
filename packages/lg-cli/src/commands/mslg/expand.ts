@@ -84,12 +84,8 @@ export default class ExpandCommand extends Command {
     if (filePath === undefined || filePath === '' || out === undefined) {
       return undefined
     }
-    let outputFilePath = out
-    if (!path.isAbsolute(out)) {
-      outputFilePath = path.join(process.cwd(), out)
-    }
 
-    outputFilePath = Helper.normalizePath(outputFilePath)
+    let outputFilePath =  Helper.normalizePath(path.resolve(out))
 
     if (fs.statSync(outputFilePath).isDirectory()) {
       const inputFileName = filePath.split('\\').pop()

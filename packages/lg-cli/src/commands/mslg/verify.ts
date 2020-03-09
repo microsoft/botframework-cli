@@ -65,12 +65,8 @@ export default class VerifyCommand extends Command {
     if (filePath === undefined || filePath === '' || out === undefined) {
       return undefined
     }
-    let outputFilePath = out
-    if (!path.isAbsolute(out)) {
-      outputFilePath = path.join(process.cwd(), out)
-    }
 
-    outputFilePath = Helper.normalizePath(outputFilePath)
+    let outputFilePath = Helper.normalizePath(path.resolve(out))
 
     try {
       if (fs.statSync(outputFilePath).isDirectory()) {
