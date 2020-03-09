@@ -6,10 +6,13 @@
 @ list ${property}Entity =
 ${join(foreach(schema.properties[property].enum, enum, `\t- ${enum}:\n${synonyms(enum)}`), '\n')}
 
-${operations('${property}Entity', phrases(value))}
+${operations(`${property}Entity`, allSynonyms())}
 ```
 
 # synonyms(value)
 - ${join(foreach(phrases(value), phrase, concat('\t\t- ', phrase)), '\n')}
+
+# allSynonyms
+- ${flatten(foreach(schema.properties[property].enum, enum, phrases(enum)))}
 
 [generator.lg](../generator.lg)

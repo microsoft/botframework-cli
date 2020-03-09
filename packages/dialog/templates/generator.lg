@@ -26,8 +26,9 @@
 -```
 @composite AddToProperty = [${entity}]
 @composite RemoveFromProperty = [${entity}]
+
 # ${triggerIntent}
-${substitutions(`${locale}/library-operations.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}
+${substitutions(`library-operations.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}
 ```
 
 # list(values)
