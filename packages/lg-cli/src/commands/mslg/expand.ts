@@ -8,7 +8,7 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {LGParser, LGFile, DiagnosticSeverity} from 'botbuilder-lg'
+import {LGParser, LGFile, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
@@ -32,46 +32,51 @@ export default class ExpandCommand extends Command {
     help: flags.help({char: 'h', description: 'mslg:expand helper'}),
   }
 
-  // schedule
-  // in √
-  // recurse √
-  // out √
-  // force √
-  // template √
-  // expression √
-  // all √
-  // interactive √
-  // testInput √
-
   async run() {
     const {flags} = this.parse(ExpandCommand)
-    if (!flags.in) {
-      throw new CLIError('No input. Please set file path with --in')
-    }
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
+
     Helper.checkInputAndOutput(lgFilePaths, flags.out)
+
     for (const filePath of lgFilePaths) {
-      let lg = LGParser.parseFile(filePath)
-      lg = this.parseExpressionWithLgfile(flags.expression, lg)
-      const errors = lg.allDiagnostics.filter(u => u.severity === DiagnosticSeverity.Error)
-      if (errors && errors.length > 0) {
-        const outputContent = errors.map(u => u.toString()).join('\n')
-        throw new CLIError(outputContent)
+      const lg = this.parseExpressionWithLgfile(flags.expression, LGParser.parseFile(filePath))
+      this.checkDiagnostics(lg.allDiagnostics)
+
+      const originalTemplateNames = lg.allTemplates.map(u => u.name)
+      const templateNameList = this.buildTemplateNameList(originalTemplateNames, flags.all, flags.expression, flags.template)
+      const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput, flags.interactive)
+
+      this.handlerOutputContent(expandedTemplates, filePath, flags.out, flags.force)
+    }
+  }
+
+  private checkDiagnostics(diagnostics: Diagnostic[]) {
+    const errors = diagnostics.filter(u => u.severity === DiagnosticSeverity.Error)
+    if (errors && errors.length > 0) {
+      throw new CLIError(errors.map(u => u.toString()).join('\n'))
+    } else {
+      const warnings = diagnostics.filter(u => u.severity === DiagnosticSeverity.Warning)
+      if (warnings && warnings.length > 0) {
+        this.warn(warnings.map(u => u.toString()).join('\n'))
       }
-      const expandContent = this.expandFile(lg, flags)
-      if (expandContent !== '') {
-        const outputFilePath = this.getOutputFile(filePath, flags.out)
-        if (!outputFilePath) {
-          this.log(`expand of file ${filePath}`)
-          this.log(expandContent)
-        } else {
-          Helper.writeContentIntoFile(outputFilePath, expandContent, flags.force)
-          this.log(`expand result of ${filePath} have been written into file ${outputFilePath}`)
-        }
+    }
+  }
+
+  private handlerOutputContent(expandedTemplates: Map<string, string[]>, filePath: string, out: string|undefined, force: boolean|undefined) {
+    if (expandedTemplates !== undefined && expandedTemplates.size >= 0) {
+      const expandContent = this.generateExpandedTemplatesFile(expandedTemplates)
+
+      const outputFilePath = this.getOutputFile(filePath, out)
+      if (!outputFilePath) {
+        this.log(`expand of file ${filePath}`)
+        this.log(expandContent)
       } else {
-        this.log(`no expand result of ${filePath}`)
+        Helper.writeContentIntoFile(outputFilePath, expandContent, force)
+        this.log(`expand result of ${filePath} have been written into file ${outputFilePath}`)
       }
+    } else {
+      this.log(`no expand result of ${filePath}`)
     }
   }
 
@@ -98,38 +103,25 @@ export default class ExpandCommand extends Command {
     return outputFilePath
   }
 
-  private expandFile(lg: LGFile, flags: any): string {
-    const originTemplates = lg.allTemplates.map(u => u.name)
-    const templateNameList = this.buildTemplateNameList(originTemplates, flags)
-    const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput, flags.interactive)
-
-    if (expandedTemplates !== undefined && expandedTemplates.size >= 0) {
-      return this.generateExpandedTemplatesFile(expandedTemplates)
-    }
-
-    return ''
-  }
-
-  private buildTemplateNameList(origintemplateNames: string[], flags: any): string[] {
+  private buildTemplateNameList(origintemplateNames: string[], all: boolean|undefined, expression: string|undefined, template: string|undefined): string[] {
     let templateNameList: string[] = []
-    if (!flags.template && !flags.all && !flags.expression) {
-      this.log(flags)
+    if (!template && !all && !expression) {
       throw new CLIError('please use --template or --all or --expression to specific the template')
     }
 
-    if (flags.all) {
-      if (flags.expression) {
+    if (all) {
+      if (expression) {
         templateNameList = templateNameList.concat(origintemplateNames)
       } else {
         // remove __temp__ template
         templateNameList = templateNameList.concat(origintemplateNames.filter(u => u !== this.TempTemplateName))
       }
     } else {
-      if (flags.template && origintemplateNames.includes(flags.template)) {
-        templateNameList.push(flags.template)
+      if (template && origintemplateNames.includes(template)) {
+        templateNameList.push(template)
       }
 
-      if (flags.expression) {
+      if (expression) {
         templateNameList.push(this.TempTemplateName)
       }
     }

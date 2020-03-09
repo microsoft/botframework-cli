@@ -60,7 +60,7 @@
   },
   "repository": "microsoft/botframework-cli",
   "scripts": {
-    "mytest":"rush test -t @microsoft/bf-cli-lg",
+    "unittest":"rush test -t @microsoft/bf-cli-lg",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "postpack": "rimraf oclif.manifest.json",

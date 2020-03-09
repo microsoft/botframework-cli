@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 /**
  * @module @microsoft/bf-cli-lg
  */
@@ -13,7 +12,6 @@ import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as os from 'os'
-// eslint-disable-next-line node/no-extraneous-require
 
 export default class TranslateCommand extends Command {
   static description = 'Translate .lg files to a target language by microsoft translation API.'
@@ -45,22 +43,8 @@ export default class TranslateCommand extends Command {
     help: flags.help({char: 'h', description: 'mslg:translate helper'}),
   }
 
-  // schedule
-  // in √
-  // tgtlang √
-  // translatekey √
-  // recurse √
-  // out √
-  // force √
-  // srclang √
-  // translate_comments √
-  // translate_link_text √
-
   async run() {
     const {flags} = this.parse(TranslateCommand)
-    if (!flags.in) {
-      throw new CLIError('No input. Please set file path with --in')
-    }
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
     Helper.checkInputAndOutput(lgFilePaths, flags.out)
@@ -144,8 +128,7 @@ export default class TranslateCommand extends Command {
     return parsedLocContent
   }
 
-  // eslint-disable-next-line no-warning-comments
-  // TODO: this part should refactoring
+  // eslint-disable-next-line complexity
   private async parseAndTranslate(
     fileContent: string,
     translateOption: TranslateOption,

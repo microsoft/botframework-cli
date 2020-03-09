@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 /**
  * @module @microsoft/bf-cli-lg
  */
@@ -6,9 +5,9 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {Command, flags} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {LGParser, DiagnosticSeverity} from 'botbuilder-lg'
+import {LGParser, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 
@@ -23,17 +22,8 @@ export default class VerifyCommand extends Command {
     help: flags.help({char: 'h', description: 'mslg:parse helper'}),
   }
 
-  // schedule
-  // in √
-  // recurse √
-  // out √
-  // force √
-
   async run() {
     const {flags} = this.parse(VerifyCommand)
-    if (!flags.in) {
-      throw new CLIError('No input. Please set file path with --in')
-    }
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
     Helper.checkInputAndOutput(lgFilePaths, flags.out)
@@ -42,24 +32,31 @@ export default class VerifyCommand extends Command {
       if (diagnostics.length > 0) {
         const outputFilePath = this.getOutputFile(filePath, flags.out)
         if (!outputFilePath) {
-          this.log(`- ${filePath}`)
-          for (const diagnostic of diagnostics) {
-            // eslint-disable-next-line max-depth
-            if (diagnostic.severity === DiagnosticSeverity.Error) {
-              this.error(diagnostic.toString())
-            } else if (diagnostic.severity === DiagnosticSeverity.Warning) {
-              this.warn(diagnostic.toString())
-            } else {
-              this.log(diagnostic.toString())
-            }
-          }
+          this.terminalDiagnostics(diagnostics, filePath)
         } else {
-          const outputContent = diagnostics.map(u => u.toString()).join('\n')
-          Helper.writeContentIntoFile(outputFilePath, outputContent, flags.force)
-          this.log(`Diagnostic messages of ${filePath} have been written into file ${outputFilePath}`)
+          this.fileDiagnostics(diagnostics, filePath, outputFilePath, flags.force)
         }
       } else {
         this.log(`- ${filePath} √`)
+      }
+    }
+  }
+
+  private fileDiagnostics(diagnostics: Diagnostic[], filePath: string, outputPath: string, force: boolean|boolean) {
+    const outputContent = diagnostics.map(u => u.toString()).join('\n')
+    Helper.writeContentIntoFile(outputPath, outputContent, force)
+    this.log(`Diagnostic messages of ${filePath} have been written into file ${outputPath}`)
+  }
+
+  private terminalDiagnostics(diagnostics: Diagnostic[], filePath: string) {
+    this.log(`- ${filePath}`)
+    for (const diagnostic of diagnostics) {
+      if (diagnostic.severity === DiagnosticSeverity.Error) {
+        this.error(diagnostic.toString())
+      } else if (diagnostic.severity === DiagnosticSeverity.Warning) {
+        this.warn(diagnostic.toString())
+      } else {
+        this.log(diagnostic.toString())
       }
     }
   }
@@ -81,6 +78,7 @@ export default class VerifyCommand extends Command {
         if (!inputFileName) {
           return undefined
         }
+        // a.lg -> a.diagnostic.txt
         const diagnosticName = inputFileName.replace('.lg', '') + '.diagnostic.txt'
         outputFilePath = path.join(outputFilePath, diagnosticName)
       }
