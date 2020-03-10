@@ -172,7 +172,7 @@ export class LuBuildCore {
     equal = equal && this.isArrayEqual(appA.closedLists, appB.closedLists)
     equal = equal && this.isArrayEqual(appA.composites, appB.composites)
     equal = equal && this.isArrayEqual(appA.entities, appB.entities)
-    equal = equal && this.isArrayEqual(appA.model_features, appB.modelFeatures)
+    equal = equal && this.isArrayEqual(appA.model_features, appB.model_features)
     equal = equal && this.isArrayEqual(appA.patternAnyEntities, appB.patternAnyEntities)
     equal = equal && this.isArrayEqual(appA.patterns, appB.patterns)
     equal = equal && this.isArrayEqual(appA.prebuiltEntities, appB.prebuiltEntities)
