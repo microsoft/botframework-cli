@@ -21,7 +21,8 @@ export default class LuisVersionImport extends Command {
     versionId: flags.string({description: 'Version to export (defaults to config:LUIS:versionId)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'})
+    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'}),
+    json: flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
@@ -47,7 +48,8 @@ export default class LuisVersionImport extends Command {
 
     try {
       const response = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
-      this.log(`App version successfully imported as version ${response.body}.`)
+      const output = flags.json ? JSON.stringify({Status: 'Success', version: response.body}, null, 2) : `App version successfully imported as version ${response.body}.`
+      this.log(output)
     } catch (err) {
       throw new CLIError(`Failed to import app version: ${err}`)
     }

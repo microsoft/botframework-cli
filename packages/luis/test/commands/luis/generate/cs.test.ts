@@ -10,7 +10,7 @@ const compareSourceFiles = async function (file1: string, file2: string) {
   expect(result).to.be.equal(fixtureFile)
 }
 
-xdescribe('luis:generate:cs', () => {
+describe('luis:generate:cs', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, '../../../fixtures/generate/results'))
   })
@@ -139,5 +139,16 @@ xdescribe('luis:generate:cs', () => {
       `${path.join(__dirname, '../../../fixtures/generate/results/')}`])
     .it('Generates class with namespace correctly', async () => {
       await compareSourceFiles('../../../fixtures/generate/NameSpaceClass.cs', '../../../fixtures/generate/results/NameOfTheClass.cs')
+    })
+
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/SchemaV6.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/SchemaV6.cs')}`])
+    .it('Generates class based on luis schema v6 correctly', async () => {
+      await compareSourceFiles('../../../fixtures/generate/SchemaV6.cs', '../../../fixtures/generate/results/SchemaV6.cs')
     })
 })

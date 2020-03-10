@@ -20,6 +20,8 @@ export default class LuisApplicationDelete extends Command {
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    force: flags.boolean({description: 'Force delete with no confirmation'}),
+    json: flags.boolean({description: 'Display output as JSON'})
   }
 
   async run() {
@@ -38,7 +40,7 @@ export default class LuisApplicationDelete extends Command {
 
     const client = utils.getLUISClient(subscriptionKey, endpoint)
 
-    if (!flags.appId) {
+    if (flags.appId && !flags.force) {
       const deleteAppConfirmation = await cli.confirm(`Are you sure you would like to delete app with id: ${appId}? (Y/N)`)
       if (!deleteAppConfirmation) {
         return this.log('No action taken')
@@ -48,7 +50,8 @@ export default class LuisApplicationDelete extends Command {
     try {
       const result = await client.apps.deleteMethod(appId)
       if (result.code === 'Success') {
-        this.log('App successfully deleted.')
+        const output = flags.json ? JSON.stringify({Status: 'Success', id: flags.appId}, null, 2) : 'App successfully deleted.'
+        this.log(output)
       }
     } catch (err) {
       throw new CLIError(`Failed to delete app: ${err}`)

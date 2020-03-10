@@ -20,6 +20,7 @@ export default class LuisVersionDelete extends Command {
     versionId: flags.string({description: '(required) Version to delete'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    json: flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
@@ -41,7 +42,8 @@ export default class LuisVersionDelete extends Command {
 
     try {
       await client.versions.deleteMethod(appId, versionId)
-      this.log(`Successfully deleted version ${versionId}`)
+      const output = flags.json ? JSON.stringify({Status: 'Success', version: versionId}, null, 2) : `Successfully deleted version ${versionId}`
+      this.log(output)
     } catch (err) {
       throw new CLIError(`Failed to delete app version: ${err}`)
     }

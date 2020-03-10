@@ -38,7 +38,6 @@ export default class LuisTrainShow extends Command {
       const trainingStatus = await client.train.getStatus(appId, versionId)
       if (trainingStatus) {
         await utils.writeToConsole(trainingStatus)
-        this.log('\nTraining status successfully output to console')
       }
     } catch (err) {
       throw new CLIError(`Failed to retrieve training status: ${err}`)

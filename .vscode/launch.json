@@ -7,6 +7,24 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Public bf cli",
+            "program": "C:/Users/chrimc/AppData/Roaming/npm/node_modules/@microsoft/botframework-cli/bin/run",
+            "args": [
+                "dialog:generate",
+                "c:/tmp/sandwich/sandwich.schema",
+                "-o",
+                "${env:TEMP}/cli.out"
+            ],
+            "outFiles": [
+                "C:/Users/chrimc/AppData/Roaming/npm/node_modules/@microsoft/botframework-cli/node_modules/@microsoft/bf-dialog/lib"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Dialog Merge Tests",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",

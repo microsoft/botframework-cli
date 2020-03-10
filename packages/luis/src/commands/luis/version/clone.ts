@@ -21,6 +21,7 @@ export default class LuisVersionClone extends Command {
     targetVersionId: flags.string({description: '(required) Destination version to create'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: 'LUIS authoring (Ocp-Apim-subscription) key'}),
+    json: flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
@@ -42,7 +43,8 @@ export default class LuisVersionClone extends Command {
 
     try {
       const latestVersion = await client.versions.clone(appId, versionId, options)
-      this.log(`App successfully cloned. Latest version is now: ${latestVersion}`)
+      const output = flags.json ? JSON.stringify({Status: 'Success', version: latestVersion}, null, 2) : `App successfully cloned. Latest version is now: ${latestVersion}`
+      this.log(output)
     } catch (err) {
       throw new CLIError(`Failed to clone app: ${err}`)
     }

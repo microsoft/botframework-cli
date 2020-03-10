@@ -25,6 +25,7 @@ export default class LuisApplicationCreate extends Command {
     versionId: flags.string({description: '(required) LUIS version Id. (defaults to config:LUIS:versionId)'}),
     tokenizerVersion: flags.string({description: 'Version specifies how sentences are tokenized (optional). See also: https://aka.ms/luistokens'}),
     save: flags.boolean({description: 'Save configuration settings from imported app (appId & endpoint)'}),
+    json: flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
@@ -57,7 +58,10 @@ export default class LuisApplicationCreate extends Command {
 
     try {
       const response = await client.apps.add(applicationCreateObject, options)
-      this.log(`App successfully created with id ${response.body}.`)
+
+      const output: string = flags.json ? JSON.stringify({Status: 'App successfully created', id: response.body}, null, 2) : `App successfully created with id ${response.body}.`
+      this.log(output)
+
       if (save) {
         const config = {
           appId: response.body,
@@ -65,7 +69,7 @@ export default class LuisApplicationCreate extends Command {
           subscriptionKey
         }
         const saveConfigResponse = await this.saveImportedConfig(config, configDir)
-        if (saveConfigResponse) this.log('Config settings saved')
+        if (saveConfigResponse && !flags.json) this.log('Config settings saved')
       }
     } catch (err) {
       throw new CLIError(`Failed to create app: ${err}`)

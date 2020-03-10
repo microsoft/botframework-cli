@@ -36,7 +36,7 @@ const getUserConfig = async (configPath: string) => {
   if (fs.existsSync(path.join(configPath, 'config.json'))) {
     return fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
   }
-  return null
+  return {}
 }
 
 const createConfigFile = async (configPath: string) => {

@@ -6,7 +6,7 @@
 const Luis = require('./luis')
 const parseFileContents = require('./../lufile/parseFileContents').parseFile
 const build = require('./luisCollate').build
-
+const LU = require('./../lu/lu')
 class LuisBuilder {
 
     /**
@@ -15,7 +15,7 @@ class LuisBuilder {
      * @returns {Luis} new Luis instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async fromJson(luisJson) {
+    static fromJson(luisJson) {
         return new Luis(luisJson)
     }
 
@@ -25,7 +25,7 @@ class LuisBuilder {
      * @returns {Luis} new Luis instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async fromContent(luContent) {
+    static async fromContentAsync(luContent) {
         return await parseAndValidateLuFile(luContent)
     }
 
@@ -36,16 +36,16 @@ class LuisBuilder {
      * @returns {Luis} new Luis instance
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    static async fromLU(luArray, luSearchFn) {
+    static async fromLUAsync(luArray, luSearchFn) {
         if(!Array.isArray(luArray)){
-            return new Luis()
+            if (luArray instanceof LU)
+                luArray = new Array(luArray)
+            else 
+                luArray = new Array(new LU(luArray))
         }
-
-        if(luArray.length === 1){
-            return await parseAndValidateLuFile(luArray[0].content, false, luArray[0].language)
-        }
-
-        return build(luArray, false, '', luSearchFn)
+        let parsedContent = await build(luArray, false, '', luSearchFn)
+        parsedContent.validate()
+        return parsedContent
     }
 
 }

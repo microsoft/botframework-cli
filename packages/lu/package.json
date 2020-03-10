@@ -34,7 +34,7 @@
     ]
   },
   "dependencies": {
-    "@azure/cognitiveservices-luis-authoring": "3.0.1",
+    "@azure/cognitiveservices-luis-authoring": "4.0.0-preview.1",
     "@azure/ms-rest-azure-js": "2.0.1",
     "@oclif/command": "~1.5.19",
     "@oclif/errors": "~1.2.2",
@@ -45,6 +45,7 @@
     "delay": "^4.3.0",
     "fs-extra": "^8.1.0",
     "get-stdin": "^6.0.0",
+    "globby": "^10.0.1",
     "intercept-stdout": "^0.1.2",
     "lodash": "^4.17.15",
     "node-fetch": "^2.1.2",
@@ -59,7 +60,6 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.14.15",
     "chai": "^4.2.0",
-    "globby": "^10.0.1",
     "mocha": "^6.2.2",
     "nock": "^11.7.0",
     "nyc": "^14.1.1",

@@ -21,6 +21,7 @@ export default class LuisTrainRun extends Command {
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: '(required) Version to show training status (defaults to config:LUIS:versionId)'}),
     wait: flags.boolean({description: 'Wait until training complete and then display status'}),
+    json: flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
@@ -39,11 +40,16 @@ export default class LuisTrainRun extends Command {
       const trainingRequestStatus = await client.train.trainVersion(appId, versionId)
       if (trainingRequestStatus) {
         await utils.writeToConsole(trainingRequestStatus)
-        this.log('\nTraining request successfully issued')
+        const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : '\nTraining request successfully issued'
+        this.log(output)
       }
+
       if (wait) {
-        this.log('checking training status...')
-        return this.checkTrainingStatus(client, appId, versionId)
+        if (!flags.json) {
+          this.log('checking training status...')
+        }
+
+        return this.checkTrainingStatus(client, appId, versionId, flags.json)
       }
     } catch (err) {
       throw new CLIError(`Failed to issue training request: ${err}`)
@@ -55,7 +61,7 @@ export default class LuisTrainRun extends Command {
     return new Promise((resolve: any) => setTimeout(resolve, ms))
   }
 
-  async checkTrainingStatus(client: any, appId: string, versionId: string) {
+  async checkTrainingStatus(client: any, appId: string, versionId: string, jsonOutput: boolean) {
     try {
       const trainingStatusData = await client.train.getStatus(appId, versionId)
       const inProgress = trainingStatusData.filter((model: any) => {
@@ -65,7 +71,7 @@ export default class LuisTrainRun extends Command {
       })
       if (inProgress.length > 0) {
         await this.timeout(1000)
-        await this.checkTrainingStatus(client, appId, versionId)
+        await this.checkTrainingStatus(client, appId, versionId, jsonOutput)
       } else {
         let completionMssg = ''
         trainingStatusData.map((model: any) => {
@@ -73,7 +79,10 @@ export default class LuisTrainRun extends Command {
             completionMssg += `Training failed for model id ${model.modelId}. Failure reason: ${model.details.failureReason}\n`
           }
         })
-        this.log(`${completionMssg} Training is complete`)
+
+        completionMssg = completionMssg ? completionMssg : 'Success'
+        const output = jsonOutput ? JSON.stringify({Status: completionMssg}, null, 2) : `${completionMssg} Training is complete`
+        this.log(output)
       }
     } catch (err) {
       throw new CLIError(err)

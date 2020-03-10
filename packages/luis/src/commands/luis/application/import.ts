@@ -17,10 +17,12 @@ export default class LuisApplicationImport extends Command {
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    endpoint: flags.string({description: '(required) LUIS endpoint hostname'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config subscriptionKey)'}),
     name: flags.string({description: 'LUIS application name (optional)'}),
-    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDOUT if not specified'})
+    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'}),
+    save: flags.boolean({description: 'Save configuration settings from imported app (appId, subscriptionKey & endpoint)'}),
+    json: flags.boolean({description: 'Display output as JSON'})
   }
 
   async run() {
@@ -46,10 +48,39 @@ export default class LuisApplicationImport extends Command {
 
     try {
       const response = await client.apps.importMethod(JSON.parse(appJSON), options)
-      this.log(`App successfully imported with id ${response.body}.`)
+
+      const output: string = flags.json ? JSON.stringify({Status: 'Success', id: response.body}, null, 2) : `App successfully imported with id ${response.body}.`
+      this.log(output)
+
+      if (flags.save) {
+        const config = {
+          appId: response.body,
+          endpoint,
+          subscriptionKey
+        }
+        await this.saveImportedConfig(config, configDir)
+        if (!flags.json) {
+          this.log('Config settings saved')
+        }
+      }
     } catch (err) {
       throw new CLIError(`Failed to import app: ${err}`)
     }
+  }
+
+  async saveImportedConfig(configSettings: any, configDir: string) {
+    const configPrefix = 'luis__'
+    let userConfig = await utils.getUserConfig(configDir)
+    if (userConfig === null) {
+      await utils.createConfigFile(configDir)
+      userConfig = {}
+    }
+    // save config
+    const configLabels = Object.keys(configSettings)
+    configLabels.map(config => {
+      userConfig[`${configPrefix}${config}`] = configSettings[config]
+    })
+    await utils.writeUserConfig(userConfig, configDir)
   }
 
 }

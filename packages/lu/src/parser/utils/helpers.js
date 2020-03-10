@@ -170,18 +170,26 @@ const helpers = {
                     (finalLUISJSON.luis_schema_version === '6.0.0');
         if (v5DefFound) {
             finalLUISJSON.luis_schema_version = "6.0.0";
-            if (finalLUISJSON.model_features) {
-                finalLUISJSON.phraselists = finalLUISJSON.phraselists || [];
-                finalLUISJSON.model_features.forEach(item => {
-                    if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
-                    finalLUISJSON.phraselists.push(Object.assign({}, item))
-                });
+            if (finalLUISJSON.hasOwnProperty("model_features")) {
+                if (finalLUISJSON.model_features !== undefined) {
+                    finalLUISJSON.phraselists = finalLUISJSON.phraselists || [];
+                    finalLUISJSON.model_features.forEach(item => {
+                        if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
+                        finalLUISJSON.phraselists.push(Object.assign({}, item))
+                    });
+                }
                 delete finalLUISJSON.model_features;
             }
             (finalLUISJSON.composites || []).forEach(composite => {
                 let children = composite.children;
                 composite.children = [];
-                children.forEach(c => composite.children.push(typeof c === 'string' ? { name: c } : c));
+                children.forEach(c => {
+                    if (c.name === undefined) {
+                        composite.children.push({name : c})
+                    } else {
+                        composite.children.push(c)
+                    }
+                });
             })
         }
     }

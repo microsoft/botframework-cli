@@ -48,7 +48,6 @@ export default class LuisApplicationList extends Command {
         this.log(`\nList successfully written to file: ${writtenFilePath}`)
       } else {
         await utils.writeToConsole(appList)
-        this.log('\nList successfully output to console')
       }
     } catch (err) {
       throw new CLIError(`Failed to export application list: ${err}`)
