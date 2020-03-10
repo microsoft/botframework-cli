@@ -963,7 +963,7 @@ _See code: [@microsoft/bf-cli-plugins](https://github.com/microsoft/botframework
 
 ## `bf plugins:install PLUGIN`
 
-installs a plugin into the BF CLI
+Installs a plugin into the BF CLI
 
 ```
 USAGE
@@ -978,11 +978,11 @@ OPTIONS
   -v, --verbose
 
 DESCRIPTION
-  Can be installed from npm or a git url.
-     Installation of a user-installed plugin will override a core plugin.
-     e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' 
-  command will override the core plugin implementation. This is useful if a user needs to update core plugin 
-  functionality in the CLI without the need to patch and update the whole CLI.
+  Installation of a user-installed plugin will override a core plugin.
+  e.g. If you have a core plugin that has a 'hello' command, installing a user-installed plugin with a 'hello' command 
+  will override the core plugin implementation. 
+  This is useful if a user needs to update core plugin functionality in the CLI without the need to patch and update the 
+  whole CLI.
 
 ALIASES
   $ bf plugins:add
