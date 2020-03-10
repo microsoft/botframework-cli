@@ -2,6 +2,9 @@
 - ${builtinEntityFilename('ageEntity')}
 
 # template
-- @ prebuilt age ${roles()}
+- ```
+@ prebuilt age ${roles()}
+${propertyName()}
+```
 
 [generator.lg](../generator.lg)

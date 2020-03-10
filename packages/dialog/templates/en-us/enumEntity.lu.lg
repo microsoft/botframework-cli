@@ -5,7 +5,7 @@
 - ```
 @ list ${property}Entity =
 ${join(foreach(schema.properties[property].enum, enum, `\t- ${enum}:\n${synonyms(enum)}`), '\n')}
-
+${propertyName()}
 ${operations(`${property}Entity`, allSynonyms())}
 ```
 

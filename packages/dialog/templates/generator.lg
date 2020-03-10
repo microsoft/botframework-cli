@@ -31,6 +31,12 @@
 ${substitutions(`library-operations.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}
 ```
 
+# propertyName
+- ```
+@ list PROPERTYName=
+    - ${property}:
+```
+
 # list(values)
 - [${join(foreach(values, value, `"${value}"`), ', ')}]
 

@@ -2,6 +2,9 @@
 - ${builtinEntityFilename('keyPhraseEntity')}
 
 # template
-- @ prebuilt keyPhrase ${roles()}
+- ```
+@ prebuilt keyPhrase ${roles()}
+${propertyName()}
+```
 
 [generator.lg](../generator.lg)

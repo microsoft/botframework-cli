@@ -6,20 +6,12 @@
 {
     "$schema": "${appSchema}",
     "$kind": "Microsoft.LuisRecognizer",
-    "applicationId": "${lu()}",
-    "endpoint": "${endpoint()}",
-    "endpointKey": "${endpointKey()}",
+    "applicationId": "=settings.luis.\${prefix}_\${locale}_lu",
+    "endpoint": "=settings.luis.endpoint}",
+    "endpointKey": "=settings.luis.endpointKey",
     "predictionOptions": {
         "includeInstanceData": true
     }
 }
 ```
 
-# lu
-- =settings.luis.${prefix}_${locale}_lu
-
-# endpoint
-- =settings.luis.endpoint
-
-# endpointKey
-- =settings.luis.endpointKey

@@ -2,6 +2,9 @@
 - ${builtinEntityFilename('numberEntity')}
 
 # template
-- @ prebuilt number ${roles()}
+- ```
+@ prebuilt number ${roles()}
+${propertyName()}
+```
 
 [generator.lg](../generator.lg)

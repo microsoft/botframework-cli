@@ -2,6 +2,9 @@
 - ${entityLUFilename()}
 
 # template
-- @ ml ${property}Entity
+- ```
+@ ml ${property}Entity
+${propertyName()}
+```
 
 [generator.lg](../generator.lg)

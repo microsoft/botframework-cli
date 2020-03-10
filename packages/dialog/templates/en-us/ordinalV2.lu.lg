@@ -2,6 +2,9 @@
 - ${builtinEntityFilename('ordinalV2Entity')}
 
 # template
-- @ prebuilt ordinalV2 ${roles()}
+- ```
+@ prebuilt ordinalV2 ${roles()}
+${propertyName()}
+```
 
 [generator.lg](../generator.lg)

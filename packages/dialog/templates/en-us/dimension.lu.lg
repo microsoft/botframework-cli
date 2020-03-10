@@ -2,6 +2,9 @@
 - ${builtinEntityFilename('dimensionEntity')}
 
 # template
-- @ prebuilt dimension ${roles()}
+- ```
+@ prebuilt dimension ${roles()}
+${propertyName()}
+```
 
 [generator.lg](../generator.lg)

@@ -2,6 +2,9 @@
 - ${builtinEntityFilename('personNameEntity')}
 
 # template
-- @ prebuilt personName ${roles()}
+- ```
+@ prebuilt personName ${roles()}
+${propertyName()}
+```
 
 [generator.lg](../generator.lg)

@@ -24,6 +24,7 @@
         - no
         - negative
         - 0
+${propertyName()}
 ```
 
 [generator.lg](../generator.lg)
