@@ -1,1 +1,0 @@
-[Error] line 1:2 - line 1:11: Invalid template name. Template name should start with letter/number/_ and can only contains letter/number/_/./-. 

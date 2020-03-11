@@ -43,7 +43,7 @@ export default class VerifyCommand extends Command {
   }
 
   private fileDiagnostics(diagnostics: Diagnostic[], filePath: string, outputPath: string, force: boolean|boolean) {
-    const outputContent = diagnostics.map(u => u.toString()).join('\n')
+    const outputContent = diagnostics.map(u => u.source + ':' + u.toString()).join('\n')
     Helper.writeContentIntoFile(outputPath, outputContent, force)
     this.log(`Diagnostic messages of ${filePath} have been written into file ${outputPath}`)
   }
@@ -51,12 +51,13 @@ export default class VerifyCommand extends Command {
   private terminalDiagnostics(diagnostics: Diagnostic[], filePath: string) {
     this.log(`- ${filePath}`)
     for (const diagnostic of diagnostics) {
+      const message = diagnostic.source + ':' + diagnostic.toString()
       if (diagnostic.severity === DiagnosticSeverity.Error) {
-        this.error(diagnostic.toString())
+        this.error(message)
       } else if (diagnostic.severity === DiagnosticSeverity.Warning) {
-        this.warn(diagnostic.toString())
+        this.warn(message)
       } else {
-        this.log(diagnostic.toString())
+        this.log(message)
       }
     }
   }
@@ -78,6 +79,7 @@ export default class VerifyCommand extends Command {
       return base
     }
 
+    // folder
     // a.lg -> a.diagnostic.txt
     const diagnosticName = path.basename(filePath).replace('.lg', '') + '.diagnostic.txt'
     return path.join(base, diagnosticName)

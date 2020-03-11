@@ -23,7 +23,7 @@ describe('mslg:translate lg file', async () => {
 
   before(async function () {
     await fs.remove(generatedFolder)
-    await fs.mkdir(generatedFolder)
+    await fs.mkdirp(generatedFolder)
   })
 
   // basic translate for fr

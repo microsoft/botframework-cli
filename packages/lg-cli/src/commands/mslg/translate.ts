@@ -99,6 +99,8 @@ export default class TranslateCommand extends Command {
       return base
     }
 
+    // folder
+    // // a.lg -> a.en-us.lg
     const newFileName = path.basename(filePath).replace('.lg', '') + '.' + language + '.lg'
     return path.join(base, newFileName)
   }
@@ -136,15 +138,34 @@ export default class TranslateCommand extends Command {
     for (const currentLine of linesInFile) {
       lineCtr++
       if (inStructure) {
-        // structure mode
-        const equalIndex = currentLine.indexOf('=')
-        if (equalIndex > 0) {
-          this.addSegment(linesToTranslate, currentLine.substr(0, equalIndex + 1), false)
-          this.addSegmentWithExpression(linesToTranslate, currentLine.substr(equalIndex + 1))
-        } else {
+        if (currentLine.trim() === PARSERCONSTS.RIGHT_SQUARE_BRACKET) {
           this.addSegment(linesToTranslate, currentLine, false)
+          inStructure = false
+        } else {
+          // structure mode
+          const equalIndex = currentLine.indexOf('=')
+          if (equalIndex >= 0) {
+            this.addSegment(linesToTranslate, currentLine.substr(0, equalIndex + 1), false)
+            const valueString = currentLine.substr(equalIndex + 1)
+
+            // handle list value
+            const valueList = valueString.split('|')
+            // eslint-disable-next-line max-depth
+            for (let i = 0; i < valueList.length; i++) {
+              this.addSegmentWithExpression(linesToTranslate, valueList[i])
+              // eslint-disable-next-line max-depth
+              if (i < valueList.length - 1) {
+                this.addSegment(linesToTranslate, '|', false)
+              }
+            }
+          } else {
+            this.addSegment(linesToTranslate, currentLine, false)
+          }
         }
       } else if (inMultiLine) {
+        if (currentLine.trim().endsWith(PARSERCONSTS.MULTILINE)) {
+          inMultiLine = false
+        }
         // multiline
         this.addSegment(linesToTranslate, currentLine, false)
       } else if (this.ImportRegex.test(currentLine.trim())) {
@@ -172,15 +193,14 @@ export default class TranslateCommand extends Command {
           this.addSegment(linesToTranslate, currentLine, false)
         }
         // > abc -> translate abc
-      } else if ((inMultiLine && currentLine.trim().endsWith(PARSERCONSTS.MULTILINE)) ||  // meet abc ```, multi line end mark
-      // meet - ``` abc, start multi line
-      (!inMultiLine && currentLine.trim().startsWith(PARSERCONSTS.DASH) && currentLine.trim().substr(PARSERCONSTS.DASH.length).trim().startsWith(PARSERCONSTS.MULTILINE))) {
+      } else if (currentLine.trim().startsWith(PARSERCONSTS.DASH) && currentLine.trim().substr(PARSERCONSTS.DASH.length).trim().startsWith(PARSERCONSTS.MULTILINE)) {
+        // meet - ``` abc, start multi line
         this.addSegment(linesToTranslate, currentLine, false)
-        inMultiLine = !inMultiLine
-      }  else if ((!inStructure && currentLine.trim().startsWith(PARSERCONSTS.LEFT_SQUARE_BRACKET)) || // start structure
-      (inStructure && currentLine.trim() === PARSERCONSTS.RIGHT_SQUARE_BRACKET)) { // end structure
+        inMultiLine = true
+      }  else if (currentLine.trim().startsWith(PARSERCONSTS.LEFT_SQUARE_BRACKET)) {
+        // enter structure
         this.addSegment(linesToTranslate, currentLine, false)
-        inStructure = !inStructure
+        inStructure = true
       }  else if (currentLine.trim().startsWith(PARSERCONSTS.COMMENT)) {
         // comments. > abc
         if (translateParts.comments) {

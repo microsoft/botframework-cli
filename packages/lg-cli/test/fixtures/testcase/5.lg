@@ -1,6 +1,0 @@
-# template
-- ${welcome()} ${name}
-
-# welcome
-- hi
-- hello

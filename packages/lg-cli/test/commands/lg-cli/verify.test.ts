@@ -5,7 +5,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-import {test} from '@oclif/test'
+import {test, expect} from '@oclif/test'
 import {TestUtil} from './test-util'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -22,21 +22,50 @@ describe('mslg:verify lg file', async () => {
 
   before(async function () {
     await fs.remove(generatedFolder)
-    await fs.mkdir(generatedFolder)
+    await fs.mkdirp(generatedFolder)
   })
 
-  const fileName = '3.error.lg'
-  const outputFileName = '3.error.diagnostic.txt'
-
+  // simple lg
   test
   .command(['mslg:verify',
     '--in',
-    path.join(__dirname, testcaseFolderPath, fileName),
+    path.join(__dirname, testcaseFolderPath, '1.lg'),
     '--out',
     generatedFolder,
     '-r',
     '-f'])
   .it('', async () => {
-    await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, outputFileName))
+    const result =  await fs.pathExists(path.join(generatedFolderPath, '1.diagnostic.txt'))
+    expect(result).to.deep.equal(false)
+  })
+
+  // lg that has imports
+  test
+  .command(['mslg:verify',
+    '--in',
+    path.join(__dirname, testcaseFolderPath, '2.lg'),
+    '--out',
+    generatedFolder,
+    '-r',
+    '-f'])
+  .it('', async () => {
+    const result =  await fs.pathExists(path.join(generatedFolderPath, '2.diagnostic.txt'))
+    expect(result).to.deep.equal(false)
+  })
+
+  // error lg file
+  const errorFileName = '3.lg'
+  const errorOutputFileName = '3.diagnostic.txt'
+
+  test
+  .command(['mslg:verify',
+    '--in',
+    path.join(__dirname, testcaseFolderPath, errorFileName),
+    '--out',
+    generatedFolder,
+    '-r',
+    '-f'])
+  .it('', async () => {
+    await TestUtil.compareFiles(path.join(generatedFolderPath, errorOutputFileName), path.join(verifiedFolderPath, errorOutputFileName))
   })
 })

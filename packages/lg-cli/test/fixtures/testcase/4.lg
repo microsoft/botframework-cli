@@ -1,6 +1,4 @@
-# template
-- ${welcome()}
-
-# welcome
-- hi
-- hello
+[import](2.lg)
+# userName
+- jack
+- daniel

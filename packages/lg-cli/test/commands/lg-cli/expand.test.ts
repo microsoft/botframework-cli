@@ -22,7 +22,7 @@ describe('mslg:expand lg template', async () => {
 
   before(async function () {
     await fs.remove(generatedFolder)
-    await fs.mkdir(generatedFolder)
+    await fs.mkdirp(generatedFolder)
   })
 
   const inputFileName = '4.lg'
@@ -43,6 +43,7 @@ describe('mslg:expand lg template', async () => {
   })
 
   // test expand specific templates
+  const templateName = 'MultiLineTemplate'
   test
   .command(['mslg:expand',
     '--in',
@@ -50,7 +51,7 @@ describe('mslg:expand lg template', async () => {
     '--out',
     generatedFolder,
     '--template',
-    'template',
+    templateName,
     '-r',
     '-f'])
   .it('', async () => {
@@ -58,6 +59,8 @@ describe('mslg:expand lg template', async () => {
   })
 
   // test expand inline template
+  // eslint-disable-next-line no-template-curly-in-string
+  const inlineString = '${MultiLineTemplate()}'
   test
   .command(['mslg:expand',
     '--in',
@@ -65,30 +68,28 @@ describe('mslg:expand lg template', async () => {
     '--out',
     generatedFolder,
     '--expression',
-    // eslint-disable-next-line no-template-curly-in-string
-    '${welcome()}',
+    inlineString,
     '-r',
     '-f'])
   .it('', async () => {
     await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, '4.inline.expand.lg'))
   })
 
-  const testInputInputFileName = '5.lg'
-  const testInputOutputFileName = '5.expand.lg'
+  const testInputTemplate = 'TimeOfDayWithCondition'
   // test testInput
   test
   .command(['mslg:expand',
     '--in',
-    path.join(__dirname, testcaseFolderPath, testInputInputFileName),
+    path.join(__dirname, testcaseFolderPath, inputFileName),
     '--out',
     generatedFolder,
     '--template',
-    'template',
+    testInputTemplate,
     '--testInput',
     path.join(__dirname, testcaseFolderPath, 'data.json'),
     '-r',
     '-f'])
   .it('', async () => {
-    await TestUtil.compareFiles(path.join(generatedFolderPath, testInputOutputFileName), path.join(verifiedFolderPath, '5.testinput.expand.lg'))
+    await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, '4.testinput.expand.lg'))
   })
 })

@@ -97,6 +97,8 @@ export default class ExpandCommand extends Command {
       return base
     }
 
+    // folder
+    // a.lg -> a.expand.lg
     const newFileName = path.basename(filePath).replace('.lg', '') + '.expand.lg'
     return path.join(base, newFileName)
   }
@@ -186,11 +188,11 @@ export default class ExpandCommand extends Command {
       result += '# ' + template[0] + '\n'
       if (Array.isArray(template[1])) {
         for (const templateStr of template[1]) {
-          if (templateStr.trim().startsWith('[') && templateStr.trim().endsWith(']')) {
-            result += templateStr + '\n'
-            break
+          if (templateStr.includes('\n')) {
+            // multiline
+            result += '-```\n' + templateStr.trim() + '\n```\n'
           } else {
-            result += '- ' + templateStr + '\n'
+            result += '- ' + templateStr.trim() + '\n'
           }
         }
       } else {
