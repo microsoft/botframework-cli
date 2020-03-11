@@ -12,7 +12,13 @@ class Qna {
         this.id = options.id ? options.id : ''
         this.includeInCollate = options.includeInCollate !== undefined ? options.includeInCollate : true
         this.language = options.language ? options.language : ''
+        this.path = options.path ? options.path : ''
 
+        if (this.language !== '') {
+            this.name = this.id + '.' + this.language + '.qna'
+        } else {
+            this.name = this.id + '.qna'
+        }
     }
 
     async translate(translate_key, tgt_lang, translate_comments = false, translate_link_text = false){
