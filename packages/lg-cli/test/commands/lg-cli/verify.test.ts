@@ -55,17 +55,14 @@ describe('mslg:verify lg file', async () => {
 
   // error lg file
   const errorFileName = '3.lg'
-  const errorOutputFileName = '3.diagnostic.txt'
 
   test
   .command(['mslg:verify',
     '--in',
     path.join(__dirname, testcaseFolderPath, errorFileName),
-    '--out',
-    generatedFolder,
     '-r',
     '-f'])
   .it('', async () => {
-    await TestUtil.compareFiles(path.join(generatedFolderPath, errorOutputFileName), path.join(verifiedFolderPath, errorOutputFileName))
+    // show diagnostics in terminal
   })
 })
