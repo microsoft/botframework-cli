@@ -22,19 +22,20 @@
 # assignFilename(entity)
 - ${prefix}-${property}-assign-${entity}Entity.dialog
 
+# propertyName
+- ```
+@ list PROPERTYName
+    - ${property}:
+```
+
 # operations(entity, values)
 -```
 @composite AddToProperty = [${entity}]
 @composite RemoveFromProperty = [${entity}]
-
+@composite ClearProperty = [PROPERTYName]
+@composite ShowProperty = [PROPERTYName]
 # ${triggerIntent}
 ${substitutions(`library-operations.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}
-```
-
-# propertyName
-- ```
-@ list PROPERTYName=
-    - ${property}:
 ```
 
 # list(values)

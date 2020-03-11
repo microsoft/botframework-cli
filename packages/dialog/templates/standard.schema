@@ -62,7 +62,6 @@
         "library-ReadPropertyIntent.lu",
         "library-PROPERTYName.lu",
         "library-PROPERTYName.lg",
-        "library-operations.lu",
         "library-Missing.lg",
         "library-Assign.lg",
         "library-Choose.lg",
