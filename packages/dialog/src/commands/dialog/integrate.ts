@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+ 
 import { Command, flags } from '@microsoft/bf-cli-command';
 import { LGParser, SwitchCaseBodyContext } from 'botbuilder-lg';
 import * as fs from 'fs-extra';
@@ -39,6 +40,15 @@ export default class DialogIntegrate extends Command {
         await this.integrateAssets(flags.schemaName, flags.oldPath, flags.newPath, flags.mergedPath, flags.locale, flags.verbose)
     }
 
+    /**
+     * @description: Integrate two bot assets to generate one merged bot asset
+     * @param schemaName 
+     * @param oldPath
+     * @param newPath
+     * @param mergedPath
+     * @param locale
+     * @param verbose
+     */    
     async integrateAssets(schemaName: string, oldPath: string, newPath: string, mergedPath: string, locale: string, verbose: boolean): Promise<boolean> {
 
         this.schemaName = schemaName
@@ -60,6 +70,11 @@ export default class DialogIntegrate extends Command {
         return true
     }
 
+    /**
+     * @description: Merge lu files from two assets based on the new and old root lu files
+     * @param oldPropertySet
+     * @param newPropertySet
+     */
     async mergeLUFiles(oldPropertySet: Set<string>, newPropertySet: Set<string>): Promise<void> {
         if (this.verbose) {
             this.log(`merge lu files`)
@@ -123,6 +138,14 @@ export default class DialogIntegrate extends Command {
         fs.copyFileSync(ppath.join(this.newPath, 'luis', this.schemaName + "." + this.locale + ".lu.dialog"), ppath.join(this.mergedPath, 'luis', this.schemaName + "." + this.locale + ".lu.dialog"));
     }
 
+    /**
+     * @description: Merge individual lu files wihch have List Entity Section 
+     * @param oldPath
+     * @param newPath
+     * @param mergedPath
+     * @param filename
+     * @param locale 
+     */
     async changeEntityEnumLU(oldPath: string, newPath: string, mergedPath: string, filename: string, locale: string): Promise<void> {
         let text = await fs.readFile(ppath.join(newPath, locale, filename)
             , 'utf8')
@@ -216,6 +239,11 @@ export default class DialogIntegrate extends Command {
         }
     }
 
+    /**
+     * @description: Merge lg files of two assets based on the new and old root lg files
+     * @param oldPropertySet
+     * @param newPropertySet
+     */
     async mergeLGFiles(oldPropertySet: Set<string>, newPropertySet: Set<string>): Promise<void> {
         if (this.verbose) {
             this.log(`merge lg files`)
@@ -276,6 +304,14 @@ export default class DialogIntegrate extends Command {
         await fs.writeFile(ppath.join(this.mergedPath, this.locale, this.schemaName + "." + this.locale + ".lg"), library)
     }
 
+    /**
+     * @description: Merge individual lg files which have the template with SWITCH ENUM
+     * @param oldPath
+     * @param newPath
+     * @param mergedPath
+     * @param filename
+     * @param locale
+     */
     async changeEntityEnumLG(oldPath: string, newPath: string, mergedPath: string, filename: string, locale: string): Promise<void> {
         let oldText = await (await fs.readFile(ppath.join(oldPath, locale, filename)
             , 'utf8'))
@@ -330,6 +366,15 @@ export default class DialogIntegrate extends Command {
         }
     }
 
+    /**
+     * @description: Update old LG Templte which has SWITCH ENUM
+     * @param oldBody 
+     * @param oldStatements
+     * @param newStatements
+     * @param newEnumValueMap
+     * @param oldEnumEntitySet
+     * @param newSwitchStatements
+     */
     async parseLGTemplate(oldBody: any, oldStatements: string[], newStatements: string[], newEnumValueMap: Map<string, number>, oldEnumEntitySet: Set<string>, newSwitchStatements: string[]): Promise<{ startIndex: number, endIndex: number }> {
         let startIndex = 0
         let endIndex = 0
@@ -383,6 +428,11 @@ export default class DialogIntegrate extends Command {
         return { startIndex, endIndex }
     }
 
+    /**
+     * @description: Merge two .main.dialog files following the trigger ordering rule
+     * @param oldPropertySet
+     * @param newPropertySet
+     */
     async mergeDialogs(oldPropertySet: Set<string>, newPropertySet: Set<string>): Promise<void> {
         if (this.verbose) {
             this.log(`Read old and new main.dialog files`)
@@ -451,6 +501,12 @@ export default class DialogIntegrate extends Command {
         await fs.writeFile(ppath.join(this.mergedPath, this.schemaName + ".main.dialog"), JSON.stringify(oldObj))
     }
 
+    /**
+     * @description: Compare the filename pattern for .dialog file
+     * @param filename
+     * @param propertySet
+     * @param schemaName 
+     */
     async equalPatternDialog(filename: string, propertySet: Set<string>, schemaName: string): Promise<string> {
         for (let property of propertySet) {
             let pattern1 = schemaName + "-" + property + "-"
@@ -462,6 +518,13 @@ export default class DialogIntegrate extends Command {
         return ""
     }
 
+    
+    /**
+     * @description: Compare the filename pattern for .lu file
+     * @param filename
+     * @param propertySet
+     * @param schemaName 
+     */
     async equalPatternLU(filename: string, propertySet: Set<string>, schemaName: string): Promise<string> {
         for (let property of propertySet) {
             let pattern1 = schemaName + "-" + property + "-"
@@ -473,6 +536,13 @@ export default class DialogIntegrate extends Command {
         return ""
     }
 
+    
+    /**
+     * @description: Compare the filename pattern for .lg file
+     * @param filename
+     * @param propertySet
+     * @param schemaName 
+     */
     async equalPatternLG(filename: string, propertySet: Set<string>, schemaName: string): Promise<string> {
         for (let property of propertySet) {
             let pattern1 = schemaName + "-" + property + "."
@@ -484,6 +554,9 @@ export default class DialogIntegrate extends Command {
         return ""
     }
 
+    /**
+     * @description: Get the old property set and new property set from schema files
+     */
     async parseSchemas(): Promise<{ oldPropertySet: Set<string>, newPropertySet: Set<string> }> {
         if (this.verbose) {
             this.log(`Read old and new schemas`)

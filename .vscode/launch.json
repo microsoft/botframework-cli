@@ -168,6 +168,31 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Integrate",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:integrate",
+                "-s",
+                "sandwich",
+                "-o",
+                "${env:TEMP}/sandwich1",
+                "-n",
+                "${env:TEMP}/sandwich2",
+                "-m",
+                "${env:TEMP}/sandwich3",
+                "-l",
+                "en-us",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Generate Unit Test",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
