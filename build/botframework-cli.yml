@@ -28,7 +28,7 @@ pr:
 jobs:
   - job: CLI
     variables:
-      buildVersion: '4.8.0-RC1'
+      buildVersion: '4.8.0'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
 
     steps:
