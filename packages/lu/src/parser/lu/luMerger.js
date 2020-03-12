@@ -517,6 +517,7 @@ const parseLuFile = async function(luOb, log, luis_culture) {
     try {
         parsedContent = await parseFileContents.parseFile(luOb.content, log, luis_culture);
     } catch (err) {
+        err.text = `Invalid file ${luOb.id}: ${err.text}`
         throw(err);
     }
     if (!parsedContent) {
