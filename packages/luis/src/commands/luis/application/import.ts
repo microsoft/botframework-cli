@@ -4,6 +4,7 @@
  */
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import fetch from 'node-fetch'
 
 const utils = require('../../../utils/index')
 
@@ -41,15 +42,28 @@ export default class LuisApplicationImport extends Command {
     const appJSON = stdin ? stdin : await utils.getInputFromFile(inVal)
     if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
+    // const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     const options: any = {}
     if (name) options.appName = name
 
     try {
-      const response = await client.apps.importMethod(JSON.parse(appJSON), options)
+      // const response = await client.apps.importMethod(JSON.parse(appJSON), options)
 
-      const output: string = flags.json ? JSON.stringify({Status: 'Success', id: response.body}, null, 2) : `App successfully imported with id ${response.body}.`
+      name = name ? '?appName=' + name : ''
+      let url = endpoint + '/luis/authoring/v3.0-preview/apps/import' + name
+      const headers = {
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Key': subscriptionKey
+      }
+      const response = await fetch(url, {method: 'POST', headers, body: appJSON})
+      const messageData = await response.json()
+
+      if (messageData.error) {
+        throw new CLIError(messageData.error.message)
+      }
+
+      const output: string = flags.json ? JSON.stringify({Status: 'Success', id: messageData}, null, 2) : `App successfully imported with id ${messageData}.`
       this.log(output)
 
       if (flags.save) {
