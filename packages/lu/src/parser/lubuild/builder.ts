@@ -47,7 +47,11 @@ export class Builder {
         result = await LuisBuilderVerbose.build(luFiles, true, culture)
         fileContent = result.parseToLuContent()
       } catch (err) {
-        err.text = `Invalid LU file ${file}: ${err.text}`
+        if (err.source) {
+          err.text = `Invalid LU file ${err.source}: ${err.text}`
+        } else {
+          err.text = `Invalid LU file ${file}: ${err.text}`
+        }
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
