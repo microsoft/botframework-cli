@@ -4,7 +4,7 @@
  */
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-
+import fetch from 'node-fetch'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionImport extends Command {
@@ -44,11 +44,25 @@ export default class LuisVersionImport extends Command {
 
     if (versionId) options.versionId = versionId
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
+    // const client = utils.getLUISClient(subscriptionKey, endpoint)
 
     try {
-      const response = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
-      const output = flags.json ? JSON.stringify({Status: 'Success', version: response.body}, null, 2) : `App version successfully imported as version ${response.body}.`
+      // const response = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
+
+      versionId = versionId ? '?versionId=' + versionId : ''
+      let url = endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/import' + versionId
+      const headers = {
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Key': subscriptionKey
+      }
+      const response = await fetch(url, {method: 'POST', headers, body: appJSON})
+      const messageData = await response.json()
+
+      if (messageData.error) {
+        throw new CLIError(messageData.error.message)
+      }
+
+      const output = flags.json ? JSON.stringify({Status: 'Success', version: messageData}, null, 2) : `App version successfully imported as version ${messageData}.`
       this.log(output)
     } catch (err) {
       throw new CLIError(`Failed to import app version: ${err}`)
