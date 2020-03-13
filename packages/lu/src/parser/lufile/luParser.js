@@ -28,61 +28,64 @@ class LUParser {
         let content = text;
 
         let { fileContent, errors } = this.getFileContent(text);
-        if (errors.length > 0) {
-            return new LUResource(sections, content, errors);
+
+        try {
+            let modelInfoSections = this.extractModelInfoSections(fileContent);
+            modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(modelInfoSections);
+
+            let isSectionEnabled = this.isSectionEnabled(sections);
+
+            let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
+            nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
+            if (isSectionEnabled) {
+                sections = sections.concat(nestedIntentSections);
+            } else {
+                nestedIntentSections.forEach(section => {
+                    let emptyIntentSection = new SimpleIntentSection();
+                    emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
+                    emptyIntentSection.Name = section.Name;
+                    let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
+                    let error = BuildDiagnostic({
+                        message: errorMsg,
+                        context: emptyIntentSection.ParseTree,
+                        severity: DiagnosticSeverity.WARN
+                    })
+
+                    errors.push(error);
+                    sections.push(emptyIntentSection);
+
+                    section.SimpleIntentSections.forEach(subSection => {
+                        sections.push(subSection);
+                        errors = errors.concat(subSection.Errors);
+                    })
+                });
+            }
+
+            let simpleIntentSections = this.extractSimpleIntentSections(fileContent, content);
+            simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(simpleIntentSections);
+
+            let entitySections = this.extractEntitiesSections(fileContent);
+            entitySections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(entitySections);
+
+            let newEntitySections = this.extractNewEntitiesSections(fileContent);
+            newEntitySections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(newEntitySections);
+
+            let importSections = this.extractImportSections(fileContent);
+            importSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(importSections);
+
+            let qnaSections = this.extractQnaSections(fileContent);
+            qnaSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(qnaSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing lu or qna content: ${err.message}`
+            }))
         }
-
-        let modelInfoSections = this.extractModelInfoSections(fileContent);
-        modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(modelInfoSections);
-
-        let isSectionEnabled = this.isSectionEnabled(sections);
-
-        let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
-        nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
-        if (isSectionEnabled) {
-            sections = sections.concat(nestedIntentSections);
-        } else {
-            nestedIntentSections.forEach(section => {
-                let emptyIntentSection = new SimpleIntentSection();
-                emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
-                emptyIntentSection.Name = section.Name;
-                let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
-                let error = BuildDiagnostic({
-                    message: errorMsg,
-                    context: emptyIntentSection.ParseTree,
-                    severity: DiagnosticSeverity.WARN
-                })
-
-                errors.push(error);
-                sections.push(emptyIntentSection);
-
-                section.SimpleIntentSections.forEach(subSection => {
-                    sections.push(subSection);
-                    errors = errors.concat(subSection.Errors);
-                })
-            });
-        }
-
-        let simpleIntentSections = this.extractSimpleIntentSections(fileContent, content);
-        simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(simpleIntentSections);
-
-        let entitySections = this.extractEntitiesSections(fileContent);
-        entitySections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(entitySections);
-
-        let newEntitySections = this.extractNewEntitiesSections(fileContent);
-        newEntitySections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(newEntitySections);
-
-        let importSections = this.extractImportSections(fileContent);
-        importSections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(importSections);
-        
-        let qnaSections = this.extractQnaSections(fileContent);
-        qnaSections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(qnaSections);
 
         return new LUResource(sections, content, errors);
     }
