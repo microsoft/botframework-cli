@@ -26,11 +26,11 @@ export default class QnamakerBuild extends Command {
   static flags: any = {
     help: flags.help({char: 'h'}),
     in: flags.string({char: 'i', description: 'QnA file or folder'}),
-    subscriptionkey: flags.string({description: 'QnA maker subscription key', required: true}),
-    botName: flags.string({description: 'Bot name'}),
+    subscriptionkey: flags.string({char: 's', description: 'QnA maker subscription key', required: true}),
+    botName: flags.string({char: 'b', description: 'Bot name'}),
     region: flags.string({description: 'LUIS api endpoint region [westus|westeurope|australiaeast]', default: 'westus'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
-    defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us'}),
+    defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in useralias'}),
     dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
@@ -94,7 +94,7 @@ export default class QnamakerBuild extends Command {
 
         // load qna contents from qna files
         // load existing recognizers, multiRecogniers and settings or create default ones
-        const loadedResources = await builder.loadContents(files, flags.defaultCulture, flags.suffix, flags.region)
+        const loadedResources = await builder.loadContents(files, flags.suffix, flags.region, flags.defaultCulture)
         qnaContents = loadedResources.qnaContents
         recognizers = loadedResources.recognizers
         multiRecognizers = loadedResources.multiRecognizers
@@ -113,7 +113,7 @@ export default class QnamakerBuild extends Command {
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {
-          this.log(`No changes to the .dialog files in ${outputFolder}\n`)
+          this.log(`No changes to .dialog files in ${outputFolder}\n`)
         }
       } else {
         this.log('The published knowledge base ids:')

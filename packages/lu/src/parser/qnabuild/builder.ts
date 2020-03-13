@@ -27,17 +27,15 @@ export class Builder {
 
   async loadContents(
     files: string[],
-    culture: string,
     suffix: string,
-    region: string) {
+    region: string,
+    culture: string) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings = new Map<string, Settings>()
     let recognizers = new Map<string, Recognizer>()
     let qnaContents: Array<any> = []
 
     for (const file of files) {
-      let fileCulture: string
-      let fileName: string
       const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
 
       let fileContent = ''
@@ -51,16 +49,18 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
+      let fileCulture: string
+      let fileName: string
       let cultureFromPath = fileHelper.getCultureFromPath(file)
       if (cultureFromPath) {
         fileCulture = cultureFromPath
         let fileNameWithCulture = path.basename(file, path.extname(file))
         fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
       } else {
-        fileCulture = result.culture && result.culture !== 'en-us' ? result.culture : culture
+        fileCulture = culture
         fileName = path.basename(file, path.extname(file))
-      }
-
+      }  
+      
       const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.qna.dialog`)
       if (!multiRecognizers.has(fileName)) {
@@ -249,8 +249,7 @@ export class Builder {
 
   async initQnaFromContent(content: any, botName: string, suffix: string) {
     let currentQna = await JSON.parse(content.content)
-    const kbName = `${botName}(${suffix})-${content.name}`
-    currentQna.kb.name = kbName
+    if (!currentQna.kb.name) currentQna.kb.name = `${botName}(${suffix})-${content.name}`
 
     return {kb: currentQna.kb, alterations: currentQna.alterations}
   }
