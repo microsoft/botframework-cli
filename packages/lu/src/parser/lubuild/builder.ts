@@ -47,7 +47,11 @@ export class Builder {
         result = await LuisBuilderVerbose.build(luFiles, true, culture)
         fileContent = result.parseToLuContent()
       } catch (err) {
-        err.text = `Invalid LU file ${file}: ${err.text}`
+        if (err.source) {
+          err.text = `Invalid LU file ${err.source}: ${err.text}`
+        } else {
+          err.text = `Invalid LU file ${file}: ${err.text}`
+        }
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
@@ -309,7 +313,7 @@ export class Builder {
     this.handler(`Creating LUIS.ai application: ${currentApp.name} version:${currentApp.versionId}\n`)
     await delay(delayDuration)
     const response = await luBuildCore.importApplication(currentApp)
-    recognizer.setAppId(typeof response.body === 'string' ? response.body : response.body[Object.keys(response.body)[0]])
+    recognizer.setAppId(typeof response === 'string' ? response : response[Object.keys(response)[0]])
     return true
   }
 
