@@ -1,6 +1,8 @@
 const parse_multi_platform_luis_1 = require("./../luis/propertyHelper");
 const LuisGenBuilder = require('./../luis/luisGenBuilder')
+const exception = require('./../utils/exception');
 const Writer = require("./helpers/writer");
+const lodash = require("lodash")
 
 module.exports = {
     writeFromLuisJson: async function(luisJson, className, space, outPath) {
@@ -115,7 +117,7 @@ module.exports = {
                     writer.writeLine();
                 }
                 writer.writeLineIndented([
-                    `public class _Instance${composite.compositeName}`,
+                    `public class _Instance${lodash.upperFirst(composite.compositeName)}`,
                     '{'
                 ]);
                 writer.increaseIndentation();
@@ -127,7 +129,7 @@ module.exports = {
                 writer.decreaseIndentation();
                 writer.writeLineIndented([
                     '}',
-                    `public class ${composite.compositeName}Class`,
+                    `public class ${lodash.upperFirst(composite.compositeName)}Class`,
                     '{'
                 ]);
                 writer.increaseIndentation();
@@ -137,12 +139,12 @@ module.exports = {
                 });
                 writer.writeLineIndented([
                     '[JsonProperty("$instance")]',
-                    `public _Instance${composite.compositeName} _instance;`
+                    `public _Instance${lodash.upperFirst(composite.compositeName)} _instance;`
                 ]);
                 writer.decreaseIndentation();
                 writer.writeLineIndented([
                     '}',
-                    `public ${composite.compositeName}Class[] ${composite.compositeName};`
+                    `public ${lodash.upperFirst(composite.compositeName)}Class[] ${composite.compositeName};`
                 ]);
             });
         }
@@ -170,7 +172,18 @@ module.exports = {
             'public _Entities Entities;'
         ]);
     },
-    getEntityWithType: function(entityName, entityType = '') {
+    getEntityWithType: function(entityNameOrObject, entityType = '') {
+        if (typeof entityNameOrObject === 'object' && 'name' in entityNameOrObject){
+            if ('instanceOf' in entityNameOrObject){
+                entityType = entityNameOrObject.instanceOf
+                entityNameOrObject = entityNameOrObject.name
+            } else if (entityNameOrObject.compositeInstanceOf) {
+                let name = parse_multi_platform_luis_1.jsonPropertyName(entityNameOrObject.name)
+                return `public ${lodash.upperFirst(name)}Class[] ${name};`
+            } else {
+                throw (new exception("Invalid LuisGen object: cannot parse entity"))
+            }
+        }
         let result = '';
         switch (entityType) {
             case 'age':
@@ -205,7 +218,7 @@ module.exports = {
             default:
                 result = 'public string[]';
         }
-        return result + ` ${parse_multi_platform_luis_1.jsonPropertyName(entityName)};`;
+        return result + ` ${parse_multi_platform_luis_1.jsonPropertyName(entityNameOrObject)};`;
     },
     converter: function(className, writer) {
         writer.writeLine();

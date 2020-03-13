@@ -43,7 +43,6 @@ export default class LuisEndpointsList extends Command {
         this.log(`\nList successfully written to file: ${writtenFilePath}`)
       } else {
         await utils.writeToConsole(endpointsList)
-        this.log('\nList successfully output to console')
       }
     } catch (err) {
       throw new CLIError(`Failed to export endpoints list: ${err}`)

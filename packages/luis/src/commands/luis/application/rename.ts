@@ -21,6 +21,7 @@ export default class LuisApplicationRename extends Command {
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     name: flags.string({description: '(required) Name of LUIS application', required: true}),
     description: flags.string({description: 'Description of LUIS application'}),
+    json: flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
@@ -46,7 +47,8 @@ export default class LuisApplicationRename extends Command {
     try {
       const appUpdateStatus = await client.apps.update(appId, applicationUpdateObject)
       if (appUpdateStatus.code === 'Success') {
-        this.log('App successfully renamed')
+        const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : 'App successfully renamed'
+        this.log(output)
       }
     } catch (err) {
       throw new CLIError(`Failed to rename app: ${err}`)

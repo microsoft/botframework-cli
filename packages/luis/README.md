@@ -1,7 +1,7 @@
 @microsoft/bf-luis-cli
 ======================
 
-
+This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
@@ -13,6 +13,7 @@
 - [Using luis:build][4]
 
 <!-- toc -->
+* [Relevant docs](#relevant-docs)
 * [Commands](#commands)
 <!-- tocstop -->
 
@@ -28,10 +29,14 @@
 * [`bf luis:application:rename`](#bf-luisapplicationrename)
 * [`bf luis:application:show`](#bf-luisapplicationshow)
 * [`bf luis:build`](#bf-luisbuild)
+* [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:endpoints:list`](#bf-luisendpointslist)
 * [`bf luis:test`](#bf-luistest)
+* [`bf luis:generate:cs`](#bf-luisgeneratecs)
+* [`bf luis:generate:ts`](#bf-luisgeneratets)
 * [`bf luis:train:run`](#bf-luistrainrun)
 * [`bf luis:train:show`](#bf-luistrainshow)
+* [`bf luis:translate`](#bf-luistranslate)
 * [`bf luis:version:clone`](#bf-luisversionclone)
 * [`bf luis:version:delete`](#bf-luisversiondelete)
 * [`bf luis:version:export`](#bf-luisversionexport)
@@ -66,6 +71,7 @@ OPTIONS
   --culture=culture                    Specify culture language (default: en-us)
   --description=description            Description of LUIS application
   --endpoint=endpoint                  LUIS endpoint hostname
+  --json                               Display output as JSON
   --name=name                          (required) Name of LUIS application
   --save                               Save configuration settings from imported app (appId & endpoint)
 
@@ -98,6 +104,8 @@ OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
+  --force                            Force delete with no confirmation
+  --json                             Display output as JSON
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
@@ -120,15 +128,19 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
 
-  -i, --in=in                        (required) File path containing LUIS application contents, uses STDOUT if not
+  -i, --in=in                        (required) File path containing LUIS application contents, uses STDIN if not
                                      specified
 
-  --endpoint=endpoint                LUIS endpoint hostname
+  --endpoint=endpoint                (required) LUIS endpoint hostname
+
+  --json                             Display output as JSON
 
   --name=name                        LUIS application name (optional)
 
-  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
-                                     config:LUIS:subscriptionKey)
+  --save                             Save configuration settings from imported app (appId, subscriptionKey & endpoint)
+
+  --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default: config
+                                     subscriptionKey)
 
 EXAMPLE
 
@@ -249,6 +261,7 @@ OPTIONS
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --description=description          Description of LUIS application
   --endpoint=endpoint                LUIS endpoint hostname
+  --json                             Display output as JSON
   --name=name                        (required) (required) Name of LUIS application
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
@@ -285,7 +298,7 @@ EXAMPLE
 
 _See code: [src/commands/luis/application/show.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/show.ts)_
 
-## `bf-luisbuild`
+## `bf luis:build`
 
 Build lu files to train and publish luis applications
 
@@ -297,21 +310,61 @@ OPTIONS
   -f, --force                      If --dialog flag is provided, overwirtes relevant dialog file
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
-  -o, --out=out                    Output file or folder name. If not specified, current directory will be used as output
+
+  -o, --out=out                    Output file or folder name. If not specified, current directory will be used as
+                                   output
+
   --authoringKey=authoringKey      (required) LUIS authoring key
+
   --botName=botName                Bot name
+
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
+
   --dialog                         Write out .dialog files
-  --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set
+
+  --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
+                                   valid if --dialog is set
+
   --log                            write out log messages to console
+
   --luConfig=luConfig              Path to config for lu build
+
   --region=region                  [default: westus] LUIS authoring region [westus|westeurope|australiaeast]
-  --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in useralias
+
+  --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
+                                   current logged in useralias
 
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
 ```
+
+_See code: [src/commands/luis/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/build.ts)_
+
+## `bf luis:convert`
+
+Convert .lu file(s) to a LUIS application JSON model or vice versa
+
+```
+USAGE
+  $ bf luis:convert
+
+OPTIONS
+  -f, --force                    If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                     luis:convert help
+  -i, --in=in                    Source .lu file(s) or LUIS application JSON model
+  -o, --out=out                  Output file or folder name. If not specified stdout will be used as output
+  -r, --recurse                  Indicates if sub-folders need to be considered to file .lu file(s)
+  --culture=culture              Lang code for the LUIS application
+  --description=description      Text describing the LUIS applicaion
+  --log                          Enables log messages
+  --name=name                    Name of the LUIS application
+  --schemaversion=schemaversion  Schema version of the LUIS application
+  --sort                         When set, intent, utterances, entities are alphabetically sorted in .lu files
+  --versionid=versionid          Version ID of the LUIS application
+```
+
+_See code: [src/commands/luis/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/convert.ts)_
 
 ## `bf luis:endpoints:list`
 
@@ -371,6 +424,42 @@ EXAMPLE
 
 _See code: [src/commands/luis/test.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/test.ts)_
 
+## `bf luis:generate:cs`
+
+Generate:cs generates a strongly typed C# source code from an exported (json) LUIS model.
+
+```
+USAGE
+  $ bf luis:generate:cs
+
+OPTIONS
+  -f, --force            If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help             luis:generate:cs help
+  -i, --in=in            Path to the file containing the LUIS application JSON model
+  -o, --out=out          Output file or folder name. If not specified stdout will be used as output
+  --className=className  Name of the autogenerated class (can include namespace)
+```
+
+_See code: [src/commands/luis/generate/cs.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/generate/cs.ts)_
+
+## `bf luis:generate:ts`
+
+Generate:ts generates a strongly typed typescript source code from an exported (json) LUIS model.
+
+```
+USAGE
+  $ bf luis:generate:ts
+
+OPTIONS
+  -f, --force            If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help             luis:generate:ts help
+  -i, --in=in            Path to the file containing the LUIS application JSON model
+  -o, --out=out          Output file or folder name. If not specified stdout will be used as output
+  --className=className  Name of the autogenerated class
+```
+
+_See code: [src/commands/luis/generate/ts.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/generate/ts.ts)_
+
 ## `bf luis:train:run`
 
 Issues asynchronous training request for LUIS application
@@ -383,11 +472,14 @@ OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
+  --json                             Display output as JSON
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
   --versionId=versionId              (required) Version to show training status (defaults to config:LUIS:versionId)
+
+  --wait                             Wait until training complete and then display status
 
 EXAMPLE
 
@@ -423,6 +515,29 @@ EXAMPLE
 
 _See code: [src/commands/luis/train/show.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/train/show.ts)_
 
+## `bf luis:translate`
+
+Translate given LUIS application JSON model or lu file(s)
+
+```
+USAGE
+  $ bf luis:translate
+
+OPTIONS
+  -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                   luis:translate help
+  -i, --in=in                  Source .lu file(s) or LUIS application JSON model
+  -o, --out=out                Output folder name. If not specified stdout will be used as output
+  -r, --recurse                Indicates if sub-folders need to be considered to file .lu file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         When set, machine translate comments found in .lu file
+  --translate_link_text        When set, machine translate link description in .lu file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
+```
+
+_See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/translate.ts)_
+
 ## `bf luis:version:clone`
 
 Creates a new version equivalent to the current snapshot of the selected application version.
@@ -435,6 +550,7 @@ OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
+  --json                             Display output as JSON
   --subscriptionKey=subscriptionKey  LUIS authoring (Ocp-Apim-subscription) key
   --targetVersionId=targetVersionId  (required) Destination version to create
   --versionId=versionId              (required) Source version to clone (defaults to config:LUIS:versionId)
@@ -459,6 +575,7 @@ OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
+  --json                             Display output as JSON
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
@@ -525,6 +642,8 @@ OPTIONS
 
   --endpoint=endpoint                LUIS endpoint hostname
 
+  --json                             Display output as JSON
+
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
@@ -587,6 +706,7 @@ OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
+  --json                             Display output as JSON
   --newVersionId=newVersionId        (required) New version id
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:

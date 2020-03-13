@@ -6,10 +6,12 @@ const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('./../../../src/parser/lufile/parseFileContents').parseFile;
 const hClasses = require('./../../../src/parser/lufile/classes/hclasses');
-const luis = require('./../../../src/parser/luis/luis')
+const luisBuilder = require('./../../../src/parser/luis/luisBuilder')
 const collate = require('./../../../src/parser/luis/luisCollate').collate
 const LUFromLUISJson = require('./../../../src/parser/luis/luConverter')
+const lu = require('./../../../src/parser/lu/lu')
 const validateLUISModel = require('./../../../src/parser/luis/luisValidator')
+const bf627 = require('./../../fixtures/testcases/bf-627.json')
 
 describe('Composite entities in .lu files', function() {
     it('Parser throws an excption on invalid composite entity definition - incorrect square brackets', function(done){
@@ -569,5 +571,28 @@ $deviceTemperature:simple`;
           done()
         })
         .catch(err => done(err))
+    })
+
+    it('BF CLI #627 - nested ml entity indices is calculated correctly', async () => {
+      let luContent = `
+  ## Repros
+  - when I use the {@outer=same {@inner=text} twice in nested ML entity text}
+  
+  @ ml outer 
+      - @ ml inner`;
+        let parsedLUContent = await luisBuilder.fromLUAsync(new lu(luContent))
+        assert.deepEqual(parsedLUContent.utterances[0].entities.length, 2);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].entity, "inner");
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].startPos, 20);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].endPos, 23);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[1].entity, "outer");
+        assert.deepEqual(parsedLUContent.utterances[0].entities[1].startPos, 15);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[1].endPos, 54);
+    })
+
+    it('Nested entity references convert correctly back to LU', async () => {
+      let luisApp = luisBuilder.fromJson(bf627);
+      let luisAppInLu = luisApp.parseToLuContent()
+      assert.isTrue(luisAppInLu.includes(`- when I use the {@outer=same {@inner=text} twice in nested ML entity text}`))
     })
 });

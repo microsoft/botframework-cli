@@ -10,15 +10,23 @@ import {isEqual, differenceWith} from 'lodash'
 import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import * as path from 'path'
+import fetch from 'node-fetch'
+const retCode = require('./../utils/enums/CLI-errors')
+const exception = require('./../utils/exception')
 const Content = require('./../lu/lu')
 const LUOptions = require('./../lu/luOptions')
 
 export class LuBuildCore {
   private readonly client: any
+  private readonly subscriptionKey: string
+  private readonly endpoint: string
 
-  constructor(authoringKey: string, endpoint: string) {
+  constructor(subscriptionKey: string, endpoint: string) {
+    this.subscriptionKey = subscriptionKey
+    this.endpoint = endpoint
+
     // new luis api client
-    const creds = new CognitiveServicesCredentials(authoringKey)
+    const creds = new CognitiveServicesCredentials(subscriptionKey)
     this.client = new LUISAuthoringClient(creds, endpoint)
   }
 
@@ -35,9 +43,23 @@ export class LuBuildCore {
   }
 
   public async importApplication(currentApp: any): Promise<any> {
-    let response = await this.client.apps.importMethod(currentApp)
+    // let response = await this.client.apps.importMethod(currentApp)
 
-    return response
+    const name = `?appName=${currentApp.name}`
+    const url = this.endpoint + '/luis/authoring/v3.0-preview/apps/import' + name
+    const headers = {
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': this.subscriptionKey
+    }
+
+    const response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
+    const messageData = await response.json()
+
+    if (messageData.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
+    }
+
+    return messageData
   }
 
   public async exportApplication(appId: string, versionId: string) {
@@ -91,7 +113,23 @@ export class LuBuildCore {
   }
 
   public async importNewVersion(appId: string, app: any, options: any) {
-    await this.client.versions.importMethod(appId, app, options)
+    // await this.client.versions.importMethod(appId, app, options)
+
+    const versionId = `?versionId=${options.versionId}`
+    let url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/import' + versionId
+    const headers = {
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': this.subscriptionKey
+    }
+
+    const response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
+    const messageData = await response.json()
+
+    if (messageData.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
+    }
+
+    return messageData
   }
 
   public async listApplicationVersions(appId: string) {
@@ -172,7 +210,7 @@ export class LuBuildCore {
     equal = equal && this.isArrayEqual(appA.closedLists, appB.closedLists)
     equal = equal && this.isArrayEqual(appA.composites, appB.composites)
     equal = equal && this.isArrayEqual(appA.entities, appB.entities)
-    equal = equal && this.isArrayEqual(appA.model_features, appB.modelFeatures)
+    equal = equal && this.isArrayEqual(appA.model_features, appB.model_features)
     equal = equal && this.isArrayEqual(appA.patternAnyEntities, appB.patternAnyEntities)
     equal = equal && this.isArrayEqual(appA.patterns, appB.patterns)
     equal = equal && this.isArrayEqual(appA.prebuiltEntities, appB.prebuiltEntities)
