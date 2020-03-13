@@ -27,13 +27,19 @@ class LUParser {
         let sections = [];
         let content = text;
 
-        let { fileContent, errors } = this.getFileContent(text);
+        let {fileContent, errors} = this.getFileContent(text);
 
         try {
             let modelInfoSections = this.extractModelInfoSections(fileContent);
             modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
             sections = sections.concat(modelInfoSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing model information: ${err.message}`
+            }))
+        }
 
+        try {
             let isSectionEnabled = this.isSectionEnabled(sections);
 
             let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
@@ -61,29 +67,59 @@ class LUParser {
                     })
                 });
             }
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing nested intent section: ${err.message}`
+            }))
+        }
 
+        try {
             let simpleIntentSections = this.extractSimpleIntentSections(fileContent, content);
             simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
             sections = sections.concat(simpleIntentSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing simple intent section: ${err.message}`
+            }))
+        }
 
+        try {
             let entitySections = this.extractEntitiesSections(fileContent);
             entitySections.forEach(section => errors = errors.concat(section.Errors));
             sections = sections.concat(entitySections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing entities: ${err.message}`
+            }))
+        }
 
+        try {
             let newEntitySections = this.extractNewEntitiesSections(fileContent);
             newEntitySections.forEach(section => errors = errors.concat(section.Errors));
             sections = sections.concat(newEntitySections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing new entities: ${err.message}`
+            }))
+        }
 
+        try {
             let importSections = this.extractImportSections(fileContent);
             importSections.forEach(section => errors = errors.concat(section.Errors));
             sections = sections.concat(importSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing import section: ${err.message}`
+            }))
+        }
 
+        try {
             let qnaSections = this.extractQnaSections(fileContent);
             qnaSections.forEach(section => errors = errors.concat(section.Errors));
             sections = sections.concat(qnaSections);
         } catch (err) {
             errors.push(BuildDiagnostic({
-                message: `Error happened when parsing lu or qna content: ${err.message}`
+                message: `Error happened when parsing qna section: ${err.message}`
             }))
         }
 
