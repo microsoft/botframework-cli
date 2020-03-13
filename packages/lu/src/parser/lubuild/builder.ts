@@ -313,7 +313,7 @@ export class Builder {
     this.handler(`Creating LUIS.ai application: ${currentApp.name} version:${currentApp.versionId}\n`)
     await delay(delayDuration)
     const response = await luBuildCore.importApplication(currentApp)
-    recognizer.setAppId(typeof response.body === 'string' ? response.body : response.body[Object.keys(response.body)[0]])
+    recognizer.setAppId(typeof response === 'string' ? response : response[Object.keys(response)[0]])
     return true
   }
 
