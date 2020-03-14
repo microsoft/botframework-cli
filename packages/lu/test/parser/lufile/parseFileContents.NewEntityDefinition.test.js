@@ -3,6 +3,8 @@
  * Licensed under the MIT License.
  */
 const parseFile = require('../../../src/parser/lufile/parseFileContents');
+const luObj = require('./../../../src/parser/lu/lu');
+const luBuilder = require('./../../../src/parser/luis/luisBuilder');
 var chai = require('chai');
 var assert = chai.assert;
 describe('V2 Entity definitions using @ notation', function () {
@@ -1080,6 +1082,21 @@ describe('V2 Entity definitions using @ notation', function () {
                 .then(res => done(res))
                 .catch(err => done())
         });
+
+        it('BF CLI #653 - closed list definition', function(done){
+            let luFile = `
+            @ list blah=
+                - something:
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, "blah");
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists[0].canonicalForm, "something");
+                    done()
+                })
+                .catch(err => done(err))
+        })
     });
 
     describe('Pattern.Any entity definition', function(){
@@ -1111,6 +1128,25 @@ describe('V2 Entity definitions using @ notation', function () {
                     done();
                 })
                 .catch(err => done(err));
+        })
+    })
+
+    describe('multi-content', function(){
+        it('BF-CLI #652 - multi entity definition across docs is merged correctly', function(done){
+            let luContent1 = new luObj(`@ list blah=
+            - something:
+            
+            @ composite foo = [blah]
+            `);
+            let luContent2 = new luObj(`# utterances
+            - @{foo= something}`);
+            luBuilder.fromLUAsync([luContent1, luContent2])
+                .then(res => {
+                    assert.isTrue(res.entities.length === 0);
+                    assert.equal(res.composites[0].name, "foo");
+                    done()
+                })
+                .catch(err => done(err))
         })
     })
     
