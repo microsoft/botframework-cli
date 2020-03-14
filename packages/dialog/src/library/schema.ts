@@ -123,7 +123,7 @@ export class Schema {
                 let [entityName, _] = entity.split(':')
                 if (entityName === this.path + 'Entity') {
                     templates.push(`${type}-assign-${type}Entity.dialog`)
-                    if (type === 'enum') {
+                    if (type === 'enum' || type === 'enumArray') {
                         templates.push(`${type}Entity-choose.dialog`)
                     }
                 } else {

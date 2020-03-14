@@ -21,6 +21,6 @@
 ```
 
 # callAsk
-- @\{Ask${property}()}
+- $\{Ask${property}()}
 
 [generator.lg](generator.lg)

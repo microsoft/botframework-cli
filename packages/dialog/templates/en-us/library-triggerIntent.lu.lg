@@ -5,6 +5,7 @@
 -```
 # ${triggerIntent}
 ${join(foreach(where(entities, entity, !contains(schema.$expectedOnly, entity)), entity, entityPattern(entity)), '\n')}
+- {PROPERTYName}
 ```
 
 # entityPattern(entity)

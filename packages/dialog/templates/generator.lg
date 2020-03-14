@@ -36,8 +36,13 @@
 @composite ShowProperty = [PROPERTYName]
 # ${triggerIntent}
 ${substitutions(`library-operations.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}
+- ${property}
 ```
 
 # list(values)
 - [${join(foreach(values, value, `"${value}"`), ', ')}]
+
+# synonyms(value)
+- ${join(foreach(phrases(value), phrase, concat('\t\t- ', phrase)), '\n')}
+
 

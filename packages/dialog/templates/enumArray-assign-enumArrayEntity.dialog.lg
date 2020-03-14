@@ -23,6 +23,6 @@
 ```
 
 # callSetMessage
-- @\{setPropertyMessage('${property}', @${property}Entity)}
+- $\{setPropertyMessage('${property}', @${property}Entity)}
 
 [generator.lg](generator.lg)

@@ -27,16 +27,16 @@
 
 # case(option)
 -```
- - CASE: $\{'${option}'\} 
-  - ${phrase(option)}```
+  - CASE: $\{'${option}'\} 
+    - ${phrase(option)}```
 
 # cases
 - ${join(foreach(schema.properties[property].enum, enum, case(enum)), '')}
 
 # default
 -```
- - DEFAULT: 
-  - I don't understand $\{value\}
+  - DEFAULT: 
+    - I don't understand $\{value\}
 ```
 
 [generator.lg](../generator.lg)

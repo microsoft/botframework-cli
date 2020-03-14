@@ -7,12 +7,14 @@ ${NameTemplate()}
 ${ValueTemplate()}
 
 \[${prefix}-${property}Entity.${locale}.lg]
-\[library.lg]```
+\[library.lg]
+[library-Missing.lg]
+```
 
 # AskTemplate
 - ```
 # Ask${property}
-- @\{askEnumArray('${property}')\}```
+- $\{askEnumArray('${property}')\}```
 
 # NameTemplate
 -```
@@ -22,6 +24,6 @@ ${ValueTemplate()}
 # ValueTemplate
 - ```
 # ${property}(values)
-- @\{enumArrayValue('${property}', values)}```
+- $\{enumArrayValue('${property}', values)}```
 
 [generator.lg](../generator.lg)

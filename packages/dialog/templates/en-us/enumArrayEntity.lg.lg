@@ -2,24 +2,39 @@
 - ${entityLGFilename()}
 
 # template
-- ${propertyEntity()}\n${chooseEntity()}\n\[library.lg]
+- ```
+${propertyEntity()}
+${chooseEntity()}
+[library.lg]
+[library-Choose.lg]
+```
 
 # chooseEntity
-- # choose${property}Entity\n- @\{chooseEnumArrayEntity(${concat("'", property, "'")})\}\n
+- ```
+# choose${property}Entity
+- $\{chooseEnumArrayEntity(${concat("'", property, "'")})\}
+```
 
 # propertyEntity
 - ${join(createArray(namePlusSwitch(), cases(), default()), '\n')}\n
 
 # namePlusSwitch
-- # ${property}Entity(value) \n- SWITCH: @\{value\}
+-```
+# ${property}Entity(value) 
+- SWITCH: $\{value\}```
 
 # case(option)
-- - CASE: @\{'${option}'\} \n - ${phrase(option)}
+-```
+  - CASE: $\{'${option}'\} 
+    - ${phrase(option)}```
 
 # cases
-- ${join(foreach(schema.properties[property].items.enum, enum, case(enum)), '\n')}
+- ${join(foreach(schema.properties[property].items.enum, enum, case(enum)), '')}
 
 # default
-- - DEFAULT: \n - I don't understand @\{value\}
+- ```
+  - DEFAULT: 
+    - I don't understand $\{value\}
+```
 
 [generator.lg](../generator.lg)

@@ -9,9 +9,6 @@ ${propertyName()}
 ${operations(`${property}Entity`, allSynonyms())}
 ```
 
-# synonyms(value)
-- ${join(foreach(phrases(value), phrase, concat('\t\t- ', phrase)), '\n')}
-
 # allSynonyms
 - ${flatten(foreach(schema.properties[property].enum, enum, phrases(enum)))}
 

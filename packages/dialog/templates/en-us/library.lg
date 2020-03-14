@@ -29,12 +29,6 @@
 # possibleValues(property)
 - ${foreach(dialogClass.schema.properties[property].enum, enum, value(property, enum))}
 
-# chooseEnumArrayEntity(property)
-- ```
-${askHelp()}
-Please choose a value for ${name(property)} from \[${join(foreach(turn.dialogEvent.value.entity.value, val, enumEntityValue(property, val)), ', ')}\]
-``` 
-
 # cancel
 - Do you want to end the conversation? (yes/no)
 
