@@ -11,26 +11,17 @@ export async function test(
   options: {},
   luisObject: any,
   allowIntentsCount: number,
-  concurrency: number,
   intentOnly: boolean,
   resultLog: any[]) {
   // luis api TPS which means 5 concurrent transactions to luis api in 1 second
   // can set to other value if switched to a higher TPS(transaction per second) key
-  let luisApiTps = 5
-  concurrency = concurrency < 5 ? concurrency : 5
-
-  // time to delay for the concurrenccy number (need to delay 200 milliseconds for one query on average)
-  let minTime = concurrency * 1000 / luisApiTps
+  const concurrency = 5
+  const delayTime = 1000
 
   // here we do a while loop to make full use of luis tps capacity
   let index = 0
   while (index < luisObject.utterances.length) {
-    let subUtterances: any[] = []
-    let subIndex = 0
-    while (subIndex < concurrency && index + subIndex < luisObject.utterances.length) {
-      subUtterances.push(luisObject.utterances[index + subIndex])
-      subIndex++
-    }
+    const subUtterances = luisObject.utterances.slice(index, index + concurrency)
     await Promise.all(subUtterances.map(async (utterance: any) => {
       const predictionRequest: any = {}
       predictionRequest.query = utterance.text
@@ -58,8 +49,8 @@ export async function test(
       }
       utterance.predictedResult = result
     }))
-    await delay(minTime)
-    index += subIndex
+    await delay(delayTime)
+    index += concurrency
   }
 
   luisObject.intents.forEach((intent: any) => {
@@ -70,7 +61,7 @@ export async function test(
   luisObject.utterances.forEach((utterance: any) => {
     let intent = luisObject.intents.find((item: any) => item.name === utterance.intent)
     intent.count++
-    if (utterance.predictedResult.IntentPass && (utterance.predictedResult.EntityPass === undefined || utterance.predictedResult.EntityPass === true)) {
+    if (utterance.predictedResult.IntentPass && (utterance.predictedResult.EntityPass !== false)) {
       intent.passNumber++
     }
   })

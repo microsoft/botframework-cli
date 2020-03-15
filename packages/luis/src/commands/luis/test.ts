@@ -14,8 +14,8 @@ const exception = require('@microsoft/bf-lu').V2.Exception
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('@microsoft/bf-lu/lib/parser/luis/luisCollate')
 const Luis = require('@microsoft/bf-lu').V2.Luis
-
 import {hasContent} from './../../utils/luisinstanceutils'
+
 export default class LuisTest extends Command {
   static description = 'Test a .lu file or LUIS application JSON model against a published LUIS model'
 
@@ -23,12 +23,11 @@ export default class LuisTest extends Command {
     in: flags.string({char: 'i', description: 'Source .lu file or LUIS application JSON model for testing'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     subscriptionKey: flags.string({char: 's', description: 'LUIS cognitive services subscription key', required: true}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname, e.g. https://westus.api.cognitive.microsoft.com', required: true}),
+    endpoint: flags.string({description: 'LUIS endpoint hostname', default: 'https://westus.api.cognitive.microsoft.com'}),
     appId: flags.string({char: 'a', description: 'LUIS application Id', required: true}),
     intentOnly: flags.boolean({description: 'Only test intent', default: false}),
     staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production', default: false}),
     allowIntentsCount: flags.integer({description: 'Top-scoring intent or top n Intent with score to show in the result', default: 1}),
-    concurrency: flags.integer({description: 'Parallel utterance test number(max:5)', default: 1}),
     force: flags.boolean({description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     help: flags.help({char: 'h', description: 'luis:test help'})
   }
@@ -75,7 +74,6 @@ export default class LuisTest extends Command {
         options,
         luisObject,
         flags.allowIntentsCount,
-        flags.concurrency,
         flags.intentOnly,
         predictedResults)
 

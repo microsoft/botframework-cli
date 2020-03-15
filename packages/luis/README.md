@@ -411,8 +411,7 @@ OPTIONS
   -o, --out=out                          Output file or folder name. If not specified stdout will be used as output
   -s, --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key
   --allowIntentsCount=allowIntentsCount  [default: 1] Top-scoring intent or top n Intent with score to show in the result
-  --concurrency=concurrency              [default: 1] Parallel utterance test number(max:5)
-  --endpoint=endpoint                    (required) LUIS endpoint hostname, e.g. https://westus.api.cognitive.microsoft.com
+  --endpoint=endpoint                    [default: https://westus.api.cognitive.microsoft.com] LUIS endpoint hostname
   --force                                If --out flag is provided with the path to an existing file, overwrites that file
   --intentOnly                           Only test intent
   --staging                              Presence of flag targets the staging app, if no flag passed defaults to production

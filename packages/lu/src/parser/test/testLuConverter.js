@@ -22,10 +22,10 @@ const testLuConverter = function(luisJSON){
     // Parse Intents
     fileContent += parseIntentsToLu(luisObj, luisJSON)
     fileContent += parseEntitiesToLu(luisJSON)
-    fileContent += parseToLuPrebuiltEntities(luisJSON)
+    fileContent += parsePrebuiltEntitiesToLu(luisJSON)
     fileContent += handlePhraseLists(luisJSON.model_features);
     fileContent += handlePhraseLists(luisJSON.phraselists);
-    fileContent += parseToLuClosedLists(luisJSON)
+    fileContent += parseClosedListsToLu(luisJSON)
     fileContent += parseRegExEntitiesToLu(luisJSON)
     fileContent += parseCompositesToLu(luisJSON)
     fileContent += parsePatternAnyEntitiesToLu(luisJSON)
@@ -80,7 +80,7 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         if (utterance.predictedResult !== undefined)
         {
             // parse predicted result into the .lu content
-            if(utterance.predictedResult.predictedIntents!=undefined && utterance.predictedResult.predictedIntents.length > 0){
+            if(utterance.predictedResult.predictedIntents!==undefined && utterance.predictedResult.predictedIntents.length > 0){
                 for(let intent of utterance.predictedResult.predictedIntents){
                   intents.push(`${intent.intent}(${intent.score})`);
                 }
@@ -186,7 +186,7 @@ const parseEntitiesToLu =  function(luisJson){
     return fileContent
 }
 
-const parseToLuPrebuiltEntities = function(luisJson){
+const parsePrebuiltEntitiesToLu = function(luisJson){
     let fileContent = ''
     if(!luisJson.prebuiltEntities){
         return fileContent
@@ -201,7 +201,7 @@ const parseToLuPrebuiltEntities = function(luisJson){
     return fileContent
 }
 
-const parseToLuClosedLists = function(luisJson){
+const parseClosedListsToLu = function(luisJson){
     let fileContent = ''
     if(!luisJson.closedLists){
         return fileContent
