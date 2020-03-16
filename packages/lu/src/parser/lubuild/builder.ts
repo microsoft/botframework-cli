@@ -253,6 +253,32 @@ export class Builder {
     return writeDone
   }
 
+  async getActiveVersionIds(luContents: any[], recognizers: Map<string, Recognizer>, authoringKey: string, region: string, botName: string, suffix: string) {
+    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
+    const apps = await luBuildCore.getApplicationList()
+    for (const content of luContents) {
+      let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
+      let recognizer = recognizers.get(content.name) as Recognizer
+
+      // find if there is a matched name with current app under current authoring key
+      if (!recognizer.getAppId()) {
+        for (let app of apps) {
+          if (app.name === currentApp.name) {
+            recognizer.setAppId(app.id)
+            break
+          }
+        }
+      }
+
+      if (recognizer.getAppId() && recognizer.getAppId() !== '') {
+        const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
+        recognizer.versionId = appInfo.activeVersion
+      } else {
+        recognizer.versionId = ''
+      }
+    }
+  }
+
   async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
     let currentApp = await LuisBuilder.fromLUAsync([content])  // content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
