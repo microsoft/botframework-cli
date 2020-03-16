@@ -3,11 +3,12 @@
  * Licensed under the MIT License.
  */
 
- 
+
 import { Command, flags } from '@microsoft/bf-cli-command';
 import { LGParser, SwitchCaseBodyContext } from 'botbuilder-lg';
 import * as fs from 'fs-extra';
 import * as ppath from 'path';
+import * as os from 'os';
 import * as LuParser from '../../../../lu/src/parser/lufile/LuParser';
 import * as sectionOperator from '../../../../lu/src/parser/lufile/sectionOperator';
 import * as LUSectionTypes from '../../../../lu/src/parser/utils/enums/lusectiontypes';
@@ -48,7 +49,7 @@ export default class DialogIntegrate extends Command {
      * @param mergedPath
      * @param locale
      * @param verbose
-     */    
+     */
     async integrateAssets(schemaName: string, oldPath: string, newPath: string, mergedPath: string, locale: string, verbose: boolean): Promise<boolean> {
 
         this.schemaName = schemaName
@@ -128,8 +129,10 @@ export default class DialogIntegrate extends Command {
             }
         }
 
-        let library = resultRefs.join("\r\n")
-        library = ">>> Library\r\n" + library
+        let library = resultRefs.join(os.EOL)
+        if(oldText.startsWith('>>>')){
+        library = ">>> Library" + os.EOL + library
+        }
 
         // write merged root lu file
         await fs.writeFile(ppath.join(this.mergedPath, "luis", this.schemaName + "." + this.locale + ".lu"), library)
@@ -139,7 +142,7 @@ export default class DialogIntegrate extends Command {
     }
 
     /**
-     * @description: Merge individual lu files wihch have List Entity Section 
+     * @description: Merge individual lu files which have List Entity Section 
      * @param oldPath
      * @param newPath
      * @param mergedPath
@@ -225,9 +228,9 @@ export default class DialogIntegrate extends Command {
                     }
                 }
                 // update content 
-                let entityLUContent = resultStatements.join("\r\n")
+                let entityLUContent = resultStatements.join(os.EOL)
                 let entityLUName = "@ " + oldListEntitySection.Type + " " + oldListEntitySection.Name + " ="
-                let sectionBody = entityLUName + "\r\n" + entityLUContent
+                let sectionBody = entityLUName + os.EOL + entityLUContent
                 updatedLUResource = odlSectionOp.updateSection(oldListEntitySection.Id, sectionBody)
             }
         }
@@ -249,12 +252,13 @@ export default class DialogIntegrate extends Command {
             this.log(`merge lg files`)
         }
 
-        let refs = await (await fs.readFile(ppath.join(this.oldPath, this.locale, this.schemaName + "." + this.locale + ".lg"), 'utf8')).split("\n")
+        let refs = await (await fs.readFile(ppath.join(this.oldPath, this.locale, this.schemaName + "." + this.locale + ".lg"), 'utf8')).split(os.EOL)
 
         let resultRefs: string[] = []
         let oldRefSet = new Set<string>()
         for (let ref of refs) {
             if (ref == ">>> Library") {
+                resultRefs.push(ref)
                 continue
             }
             oldRefSet.add(ref)
@@ -282,7 +286,7 @@ export default class DialogIntegrate extends Command {
             }
         }
 
-        refs = await (await fs.readFile(ppath.join(this.newPath, this.locale, this.schemaName + "." + this.locale + ".lg"), 'utf8')).split("\n")
+        refs = await (await fs.readFile(ppath.join(this.newPath, this.locale, this.schemaName + "." + this.locale + ".lg"), 'utf8')).split(os.EOL)
 
         for (let ref of refs) {
             if (ref == ">>> Library") {
@@ -298,10 +302,10 @@ export default class DialogIntegrate extends Command {
             }
         }
 
-        let library = resultRefs.join("\r\n")
-        library = ">>> Library\r\n" + library
+        //let library = resultRefs.join(os.EOL)
+        //library = ">>> Library\r\n" + library
 
-        await fs.writeFile(ppath.join(this.mergedPath, this.locale, this.schemaName + "." + this.locale + ".lg"), library)
+        await fs.writeFile(ppath.join(this.mergedPath, this.locale, this.schemaName + "." + this.locale + ".lg"),  resultRefs.join(os.EOL))
     }
 
     /**
@@ -315,12 +319,12 @@ export default class DialogIntegrate extends Command {
     async changeEntityEnumLG(oldPath: string, newPath: string, mergedPath: string, filename: string, locale: string): Promise<void> {
         let oldText = await (await fs.readFile(ppath.join(oldPath, locale, filename)
             , 'utf8'))
-        let oldStatements = oldText.split("\n")
+        let oldStatements = oldText.split(os.EOL)
         let oldLGFile = LGParser.parseText(oldText)
 
         let newText = await (await fs.readFile(ppath.join(newPath, locale, filename)
             , 'utf8'))
-        let newStatements = newText.split("\n")
+        let newStatements = newText.split(os.EOL)
         let newLGFile = LGParser.parseText(newText)
 
         let mergedStatements: string[] = []
@@ -341,7 +345,7 @@ export default class DialogIntegrate extends Command {
                         for (let rule of newRules) {
                             let state = rule.switchCaseStat()
                             // get enumEntity and its following statements
-                            if (state.text.startsWith("-CASE:")) {
+                            if (state.text.startsWith("\s*-\s*CASE:")) {
                                 let enumEntity = state.text.replace("-CASE:@{'", "").replace("}'", "")
                                 let start = state.start.line
                                 newEnumValueMap.set(enumEntity, start)
@@ -360,7 +364,7 @@ export default class DialogIntegrate extends Command {
         }
 
         if (mergedStatements.length != 0) {
-            await fs.writeFile(ppath.join(mergedPath, locale, filename), mergedStatements.join("\r\n"))
+            await fs.writeFile(ppath.join(mergedPath, locale, filename), mergedStatements.join(os.EOL))
         } else {
             await fs.writeFile(ppath.join(mergedPath, locale, filename), oldText)
         }
@@ -381,33 +385,33 @@ export default class DialogIntegrate extends Command {
         let oldRules = oldBody.switchCaseTemplateBody().switchCaseRule()
         for (let rule of oldRules) {
             let state = rule.switchCaseStat()
-            if (state.text.startsWith("-SWITCH")) {
+            if (state.text.startsWith("\s*-\s*SWITCH")) {
                 startIndex = state.start.line - 1;
                 newSwitchStatements.push(oldStatements[startIndex])
                 let i = startIndex + 1
-                while (!oldStatements[i].match("CASE") && !oldStatements[i].match("DEFAULT")) {
+                while (!oldStatements[i].toLowerCase().match("case") && !oldStatements[i].toLowerCase().match("default")) {
                     newSwitchStatements.push(oldStatements[i])
                     i++
                 }
-            } else if (state.text.startsWith("-CASE")) {
+            } else if (state.text.startsWith("\s*-\s*CASE")) {
                 let enumEntity = state.text.replace("-CASE:@{'", "").replace("}'", "")
                 oldEnumEntitySet.add(enumEntity)
                 if (newEnumValueMap.has(enumEntity)) {
                     let k = state.start.line - 1
                     newSwitchStatements.push(oldStatements[k])
                     k++
-                    while (!oldStatements[k].match("CASE") && !oldStatements[k].match("DEFAULT")) {
+                    while (!oldStatements[k].toLowerCase().match("case") && !oldStatements[k].toLowerCase().match("default")) {
                         newSwitchStatements.push(oldStatements[k])
                         k++
                     }
                 }
-            } else if (state.text.startsWith("-DEFAULT")) {
+            } else if (state.text.startsWith("\s*-\s*DEFAULT")) {
                 for (var [key, value] of newEnumValueMap) {
                     if (!oldEnumEntitySet.has(key)) {
                         let k = value - 1
                         newSwitchStatements.push(newStatements[k])
                         k++
-                        while (!newStatements[k].match("CASE") && !newStatements[k].match("DEFAULT")) {
+                        while (!newStatements[k].toLowerCase().match("case") && !newStatements[k].toLowerCase().match("default")) {
                             newSwitchStatements.push(newStatements[k])
                             k++
                         }
@@ -518,7 +522,7 @@ export default class DialogIntegrate extends Command {
         return ""
     }
 
-    
+
     /**
      * @description: Compare the filename pattern for .lu file
      * @param filename
@@ -536,7 +540,7 @@ export default class DialogIntegrate extends Command {
         return ""
     }
 
-    
+
     /**
      * @description: Compare the filename pattern for .lg file
      * @param filename
@@ -578,7 +582,7 @@ export default class DialogIntegrate extends Command {
             newPropertySet.add(property)
         }
 
-        await fs.writeFile(ppath.join(this.mergedPath, this.schemaName + ".schema.dialog"), JSON.stringify(newObj))
+        await fs.copyFile(ppath.join(this.newPath, this.schemaName + ".schema.dialog"),ppath.join(this.mergedPath, this.schemaName + ".schema.dialog"))
 
         return { oldPropertySet, newPropertySet }
     }
