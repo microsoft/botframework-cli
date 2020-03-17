@@ -87,6 +87,15 @@ export class LuBuildCore {
 
     currentApp.name = existingApp.name
 
+    existingApp.model_features = existingApp.phraselists
+    delete existingApp.phraselists
+
+    existingApp.regex_features = existingApp.regex_features
+    delete existingApp.regex_features
+
+    existingApp.regex_entities = existingApp.regex_entities
+    delete existingApp.regex_entities
+
     return !this.isApplicationEqual(currentApp, existingApp)
   }
 
@@ -193,10 +202,10 @@ export class LuBuildCore {
     }
   }
 
-  private isApplicationEqual(appA: any, appB: any): boolean {
-    let appALu = (new Luis(JSON.stringify(appA))).parseToLuContent().toLowerCase()
-    let appBLu = (new Luis(JSON.stringify(appB))).parseToLuContent().toLowerCase()
-
+  private async isApplicationEqual(appA: any, appB: any) {
+    let appALu = (new Luis(appA)).parseToLuContent().toLowerCase()
+    let appBLu = (new Luis(appB)).parseToLuContent().toLowerCase()
+    
     return appALu === appBLu
   }
 }

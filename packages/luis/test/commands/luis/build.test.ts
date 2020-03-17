@@ -280,7 +280,7 @@ describe('luis:build not update application if no changes', () => {
     })
 })
 
-describe('luis:build write dialog assets successfully if --dialog set', () => {
+describe.only('luis:build write dialog assets successfully if --dialog set', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
@@ -319,7 +319,7 @@ describe('luis:build write dialog assets successfully if --dialog set', () => {
     })
 })
 
-describe('luis:build create multiple applications successfully when input is a folder', () => {
+describe.only('luis:build create multiple applications successfully when input is a folder', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -454,7 +454,7 @@ describe('luis:build create multiple applications successfully when input is a f
     })
 })
 
-describe('luis:build update dialog assets successfully when dialog assets exist', () => {
+describe.only('luis:build update dialog assets successfully when dialog assets exist', () => {
   const existingLuisApp_EN_US = require('./../../fixtures/testcases/lubuild/foo2/luis/test(development)-foo.en-us.lu.json')
   const existingLuisApp_FR_FR = require('./../../fixtures/testcases/lubuild/foo2/luis/test(development)-foo.fr-fr.lu.json')
   before(async function () {
@@ -569,7 +569,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
     })
 })
 
-describe('luis:build not update application if only cases of utterances or patterns are changed', () => {
+describe.only('luis:build not update application if only cases of utterances or patterns are changed', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/case-insensitive/luis/test(development)-case-insensitive.en-us.lu.json')
   before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
@@ -601,7 +601,7 @@ describe('luis:build not update application if only cases of utterances or patte
     })
 })
 
-describe('luis:build update application succeed with parameters set from luconfig', () => {
+describe.only('luis:build update application succeed with parameters set from luconfig', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/luconfig/luis/MyProject(development)-test.en-us.lu.json')
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))

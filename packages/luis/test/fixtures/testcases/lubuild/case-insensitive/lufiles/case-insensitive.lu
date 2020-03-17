@@ -16,7 +16,7 @@
 @ prebuilt personName
 
 > Phrase list
-@ phraselist profileDefinition(interchangeable) = 
+@ phraselist profileDefinition(interchangeable) enabledForAllModels = 
     - I'm 
     - My
     - I am
