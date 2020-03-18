@@ -71,7 +71,7 @@ export class LuBuildCore {
   public compareApplications(currentApp: any, existingApp: any) {
     currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture
-    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId > existingApp.versionId ? currentApp.versionId : existingApp.versionId;
+    currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId > existingApp.versionId ? currentApp.versionId : existingApp.versionId
     currentApp.name = existingApp.name
 
     let currentAppToCompare = JSON.parse(JSON.stringify(currentApp));
@@ -88,10 +88,12 @@ export class LuBuildCore {
       })
     })
 
+    // skip comparison of properties that LUIS API automatically added or updated
     currentAppToCompare.luis_schema_version = existingApp.luis_schema_version
     currentAppToCompare.tokenizerVersion = existingApp.tokenizerVersion
     currentAppToCompare.settings = existingApp.settings
 
+    // align the properties between local Luis json schema and remote one
     existingApp.model_features = existingApp.phraselists
     delete existingApp.phraselists
 
@@ -101,14 +103,17 @@ export class LuBuildCore {
     existingApp.regex_entities = existingApp.regexEntities
     delete existingApp.regexEntities
 
+    // skip none intent comparison if that is automatically added by LUIS server
     if (currentAppToCompare.intents && !currentAppToCompare.intents.some((x: any) => x.name === 'None')) {
       const existingNoneIntentIndex = existingApp.intents.findIndex((x: any) => x.name === 'None')
       if (existingNoneIntentIndex > -1) existingApp.intents.splice(existingNoneIntentIndex, 1)
     }
 
+    // sort properties so that they can be converted to exact same lu content when comparing
     this.sortApplication(currentAppToCompare)
     this.sortApplication(existingApp)
 
+    // compare lu contents converted from luis josn
     const isApplicationEqual = this.isApplicationEqual(currentAppToCompare, existingApp)
 
     return !isApplicationEqual
