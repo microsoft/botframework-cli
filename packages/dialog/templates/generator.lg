@@ -5,19 +5,19 @@
     -
 
 # propertyFilename
-- ${prefix}-${property}.${locale}.lg
+- ${locale}/${prefix}-${property}.${locale}.lg
 
 # entityLGFilename
-- ${prefix}-${property}Entity.${locale}.lg
+- ${locale}/${prefix}-${property}Entity.${locale}.lg
 
 # entityLUFilename
-- ${prefix}-${property}Entity.${locale}.lu
+- ${locale}/${prefix}-${property}Entity.${locale}.lu
 
 # missingFilename
 - ${prefix}-${property}-missing.dialog
 
 # builtinEntityFilename(prebuiltEntity)
-- ${prefix}-${property}-${prebuiltEntity}.${locale}.lu
+- ${locale}/${prefix}-${property}-${prebuiltEntity}.${locale}.lu
 
 # assignFilename(entity)
 - ${prefix}-${property}-assign-${entity}Entity.dialog
@@ -35,7 +35,7 @@
 @composite ClearProperty = [PROPERTYName]
 @composite ShowProperty = [PROPERTYName]
 # ${triggerIntent}
-${substitutions(`library-operations.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}
+${substitutions(`library-operations.${locale}.data`, json(`{"entity": ${list(values)}, "property": ["${property}"]}`), 3)}
 - ${property}
 ```
 
@@ -45,4 +45,15 @@ ${substitutions(`library-operations.data`, json(`{"entity": ${list(values)}, "pr
 # synonyms(value)
 - ${join(foreach(phrases(value), phrase, concat('\t\t- ', phrase)), '\n')}
 
+> Top-level template support
+# roleEntities(entity)
+- ${createArray(`${entity}:${property}`, entity)}
 
+# standardTemplates
+- ${createArray(`${type}Property.lg`, `${type}-missing.dialog`)}
+
+# library(name, ext)
+-\[${prefix}-${name}.${ext}](${prefix}-${name}.${ext})
+
+# localeLibrary(name, ext)
+-\[${prefix}-${name}.${locale}.${ext}](${prefix}-${name}.${locale}.${ext})

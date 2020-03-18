@@ -1,0 +1,10 @@
+# filename
+- ${builtinEntityFilename('keyPhraseEntity')}
+
+# template
+- ```
+@ prebuilt keyPhrase ${roles()}
+${propertyName()}
+```
+
+[generator.lg](generator.lg)

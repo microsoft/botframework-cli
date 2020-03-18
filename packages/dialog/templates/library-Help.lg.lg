@@ -1,0 +1,2 @@
+# templates
+-${createArray(`library-Help.${locale}.lg`)}

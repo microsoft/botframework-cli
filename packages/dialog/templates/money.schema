@@ -12,6 +12,6 @@
             }
         },
         "required": ["number", "units"],
-        "$templates": ["money.lu","objectProperty.lg", "string-missing.dialog","assign-moneyEntity.dialog"]
+        "$templates": ["moneyEntity.lu","objectProperty.lg", "string-missing.dialog","moneyEntity-assign.dialog"]
     }
 }

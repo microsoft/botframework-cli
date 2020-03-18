@@ -1,0 +1,2 @@
+# templates
+-${createArray('personNameEntity-assign-string.dialog')}

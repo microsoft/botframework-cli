@@ -1,0 +1,7 @@
+# entities
+- ${roleEntities('email')}
+
+# templates
+- ${standardTemplates()}
+
+[generator.lg](generator.lg)

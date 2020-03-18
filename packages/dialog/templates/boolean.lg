@@ -1,0 +1,7 @@
+# entities
+- ${roleEntities('boolean')}
+
+# templates
+- ${standardTemplates()}
+
+[generator.lg](generator.lg)

@@ -1,0 +1,15 @@
+# filename
+- ${entityLGFilename()}
+
+# template
+- ```
+# boolean(value)
+- SWITCH: \${value}
+- CASE: \${'true'}
+    - true  
+- CASE: \${'false'}
+    -  false
+- DEFAULT:
+    -  Unknown boolean value
+```    
+[generator.lg](generator.lg)

@@ -12,6 +12,6 @@
             }
         },
         "required": ["type", "location"],
-        "$templates": ["geographyV2.lu","objectProperty.lg", "string-missing.dialog","assign-geographyV2Entity.dialog"]
+        "$templates": ["geographyV2Entity.lu","objectProperty.lg", "string-missing.dialog","geographyV2Entity-assign.dialog"]
     }
 }

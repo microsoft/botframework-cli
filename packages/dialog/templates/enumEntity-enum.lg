@@ -1,0 +1,2 @@
+# templates
+- ${createArray(`enumEntity.${locale}.lg`, `enumEntity.lu`, 'enumEntity-choose.dialog', 'enumEntity-assign-enum.dialog')}

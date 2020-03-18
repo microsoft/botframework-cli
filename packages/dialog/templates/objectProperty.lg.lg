@@ -1,0 +1,25 @@
+# filename
+- ${propertyFilename()}
+
+# template
+- ```
+${AskTemplate()}
+${NameTemplate()}
+
+[library.lg]
+[library-Missing.lg]
+```
+
+# AskTemplate
+- ```
+# Ask${property}
+- $\{askString('${property}')\}
+```
+
+# NameTemplate
+- ```
+# ${property}Name
+- ${phrase(property, locale)}
+```
+
+[generator.lg](generator.lg)

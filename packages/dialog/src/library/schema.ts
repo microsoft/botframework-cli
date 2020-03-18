@@ -106,34 +106,6 @@ export class Schema {
         return ps.typeName(this.schema)
     }
 
-    // Return templates defined in schema or supply default templates based on type
-    templates(): string[] {
-        let templates = this.schema.$templates
-        if (!templates) {
-            let type = this.typeName()
-            templates = this.defaultTemplates(type)
-            /* TODO: I don't think I need this
-            let array = type.indexOf('Array')
-            if (array > 0) {
-                let baseType = type.substring(0, array)
-                templates = templates.concat(this.defaultTemplates(baseType))
-            }
-            */
-            for (let entity of this.schema.$entities) {
-                let [entityName, _] = entity.split(':')
-                if (entityName === this.path + 'Entity') {
-                    templates.push(`${type}-assign-${type}Entity.dialog`)
-                    if (type === 'enum' || type === 'enumArray') {
-                        templates.push(`${type}Entity-choose.dialog`)
-                    }
-                } else {
-                    templates.push(`${type}-assign-${entityName}.dialog`)
-                }
-            }
-        }
-        return templates
-    }
-
     triggerIntent(): string {
         return this.schema.$triggerIntent || this.name()
     }
@@ -159,10 +131,6 @@ export class Schema {
             }
         }
         return found
-    }
-
-    private defaultTemplates(type: string): string[] {
-        return [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + '-missing.dialog']
     }
 
     private addEntities(entities: Entity[]) {

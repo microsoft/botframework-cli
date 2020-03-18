@@ -1,0 +1,10 @@
+# filename
+- ${builtinEntityFilename('emailEntity')}
+
+# template
+- ```
+@ prebuilt email ${roles()}
+${propertyName()}
+```
+
+[generator.lg](generator.lg)
