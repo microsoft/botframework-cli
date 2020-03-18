@@ -8,7 +8,7 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {LGParser, LGFile, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
+import {TemplateParser, Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
@@ -40,7 +40,7 @@ export default class ExpandCommand extends Command {
     Helper.checkInputAndOutput(lgFilePaths, flags.out)
 
     for (const filePath of lgFilePaths) {
-      const lg = this.parseExpressionWithLgfile(flags.expression, LGParser.parseFile(filePath))
+      const lg = this.parseExpressionWithLgfile(flags.expression, Templates.parseFile(filePath))
       this.checkDiagnostics(lg.allDiagnostics)
 
       const originalTemplateNames = lg.allTemplates.map(u => u.name)
@@ -129,7 +129,7 @@ export default class ExpandCommand extends Command {
     return [...new Set(templateNameList)]
   }
 
-  private expandTemplates(lg: LGFile, templateNameList: string[], testInput: string, interactive = false) {
+  private expandTemplates(lg: Templates, templateNameList: string[], testInput: string, interactive = false) {
     const expandedTemplates: Map<string, string[]> = new Map<string, string[]>()
     let variablesValue: Map<string, any>
     const userInputValues: Map<string, any> = new Map<string, any>()
@@ -167,7 +167,7 @@ export default class ExpandCommand extends Command {
     return expandedTemplates
   }
 
-  private parseExpressionWithLgfile(inlineStr: string|undefined, lgFile: LGFile): LGFile {
+  private parseExpressionWithLgfile(inlineStr: string|undefined, lgFile: Templates): Templates {
     if (inlineStr === undefined) {
       return lgFile
     }
@@ -179,7 +179,7 @@ export default class ExpandCommand extends Command {
 
     const newContent = `#${this.TempTemplateName} \r\n - ${inlineStr}`
 
-    return LGParser.parseTextWithRef(newContent, lgFile)
+    return TemplateParser.parseTextWithRef(newContent, lgFile)
   }
 
   private generateExpandedTemplatesFile(expandedTemplates: Map<string, string[]>): string {

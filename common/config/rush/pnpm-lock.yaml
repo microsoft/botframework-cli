@@ -30,7 +30,7 @@ dependencies:
   antlr4: 4.7.2
   applicationinsights: 1.6.0
   await-delay: 1.0.0
-  botbuilder-lg: 4.8.0-preview-109324
+  botbuilder-lg: 4.8.0-preview
   botframework-schema: 4.7.0
   camelcase: 4.1.0
   chai: 4.2.0
@@ -925,6 +925,21 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-gac8OEcQ2Li1dxIEWGZzsp2BitJxwkwcOm0zHAJLcPJaVvm58FRnk6RkuLRpU1EujipU2ZFODv2P9DLMfnV8mw==
+  /adaptive-expressions/4.8.0-preview:
+    dependencies:
+      '@microsoft/recognizers-text-data-types-timex-expression': 1.1.4
+      '@types/lru-cache': 5.1.0
+      '@types/moment-timezone': 0.5.12
+      '@types/xmldom': 0.1.29
+      antlr4ts: 0.5.0-alpha.1
+      jspath: 0.4.0
+      lodash: 4.17.15
+      lru-cache: 5.1.1
+      moment: 2.24.0
+      moment-timezone: 0.5.27
+    dev: false
+    resolution:
+      integrity: sha512-YEHw/crxxv2WW05yZNPrV6RhFNFfeNrPUxLsALLpvR8YTZkIbHJ3EKNoyRaQipgrx6ZMJc7SnMIq9YgWrRXs/Q==
   /adaptive-expressions/4.8.0-preview-109324:
     dependencies:
       '@microsoft/recognizers-text-data-types-timex-expression': 1.1.4
@@ -1226,6 +1241,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Wukm9Ui5hLWQpjgZQUnGruN0yx+aC9HjIpCEDdcmsLOZ3hXN9YW9NqLbvzfjP43h8BywqFWQt+q3qSI/1aP86Q==
+  /botbuilder-core/4.8.0:
+    dependencies:
+      assert: 1.5.0
+      botframework-schema: 4.8.0
+    dev: false
+    resolution:
+      integrity: sha512-SaLwpHoDmarRMi9KeTBefzhAhCfyu7ImB/hxdYDHxJFIz2otcyp6WqiWQRD8SpfXeo6VUl/jKD3dm+2LHrwveg==
   /botbuilder-core/4.8.0-preview-109324:
     dependencies:
       assert: 1.5.0
@@ -1233,6 +1255,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-P5VpfDWnb1dAnapOfNm4tSO94ApE3EE/F7dARBEjrMpPfhaqY8uDhDOh+BUy9wYYXqNSBOpIdnVo5TAAmfi9Sg==
+  /botbuilder-lg/4.8.0-preview:
+    dependencies:
+      adaptive-expressions: 4.8.0-preview
+      antlr4ts: 0.5.0-alpha.1
+      botbuilder-core: 4.8.0
+      lodash: 4.17.15
+      path: 0.12.7
+      uuid: 3.3.3
+    dev: false
+    resolution:
+      integrity: sha512-E+qts8DxLTY9nSQfnTPKYFvnba26hdioRl9X0RqPXlXK9QT/PByzVb8ne7aJ9s1v9ueNuiX0bkbeZLgAEmw0Dw==
   /botbuilder-lg/4.8.0-preview-109324:
     dependencies:
       adaptive-expressions: 4.8.0-preview-109324
@@ -1262,6 +1295,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-xtmp9Jg3BO2G5THpiPAiFV9oNct/E44BE+J+/SViivNYaM9fLv9QiwNSIxCf1Dn/2X6mQEX5UyBk7Yr+uTq9yA==
+  /botframework-schema/4.8.0:
+    dev: false
+    resolution:
+      integrity: sha512-0BVrnk9ktDWVUJrjNveLDUPVVDaJh1+JEaOB+buj7kKBaBY2X6Vuq/Jl7UeLZtfkrtKcW4PIADFfGB/wJqFSFQ==
   /botframework-schema/4.8.0-preview-109324:
     dev: false
     resolution:
@@ -6451,7 +6488,7 @@ packages:
       '@types/node': 10.17.17
       '@types/node-fetch': 2.5.4
       '@types/readline-sync': 1.4.3
-      botbuilder-lg: 4.8.0-preview-109324
+      botbuilder-lg: 4.8.0-preview
       chai: 4.2.0
       delay: 4.3.0
       eslint: 5.16.0
@@ -6472,7 +6509,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-lg'
     resolution:
-      integrity: sha512-XKHgB7Z5k5QnoWovW25GZBcazmHzRKLrN6oe0Csl3htn1NMgnAw7LoCQgI7DWVBMPv61Gg8X2TjdCBoN4X53bA==
+      integrity: sha512-omFcOYUocNaZD53+y6IyKhBgv6ZaGO94RnO3xlQZ6H8RRtlFnME5I0AbRTVOy++xIo9/8HIrRNRQB6z6wja3uQ==
       tarball: 'file:projects/bf-cli-lg.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6782,7 +6819,7 @@ specifiers:
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
-  botbuilder-lg: ^4.8.0-preview-109324
+  botbuilder-lg: 4.8.0-preview
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0

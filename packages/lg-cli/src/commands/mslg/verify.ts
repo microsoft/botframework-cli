@@ -7,7 +7,7 @@
  */
 import {Command, flags} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {LGParser, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
+import {Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 
@@ -28,7 +28,7 @@ export default class VerifyCommand extends Command {
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
     Helper.checkInputAndOutput(lgFilePaths, flags.out)
     for (const filePath of lgFilePaths) {
-      const diagnostics = LGParser.parseFile(filePath).allDiagnostics
+      const diagnostics = Templates.parseFile(filePath).allDiagnostics
       if (diagnostics.length > 0) {
         const outputFilePath = this.getOutputFile(filePath, flags.out)
         if (!outputFilePath) {
