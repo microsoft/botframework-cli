@@ -2,9 +2,9 @@
   "name": "@microsoft/bot-deployment-task",
   "version": "1.0.0",
   "description": "Deployment of a bot",
-  "main": "index.js",
+  "main": "botDeployment/index.js",
   "scripts": {
-    "build":"tsc -b",
+    "build": "tsc -b",
     "test": "",
     "posttest": ""
   },
