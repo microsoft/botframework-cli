@@ -72,9 +72,12 @@ export class LuBuildCore {
     currentApp.desc = currentApp.desc && currentApp.desc !== '' && currentApp.desc !== existingApp.desc ? currentApp.desc : existingApp.desc
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== existingApp.culture ? currentApp.culture : existingApp.culture
     currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' && currentApp.versionId > existingApp.versionId ? currentApp.versionId : existingApp.versionId;
+    currentApp.name = existingApp.name
+
+    let currentAppToCompare = JSON.parse(JSON.stringify(currentApp));
 
     // convert list entities to remove synonyms word in list which is same with canonicalForm
-    (currentApp.closedLists || []).forEach((c: any) => {
+    (currentAppToCompare.closedLists || []).forEach((c: any) => {
       (c.subLists || []).forEach((s: any) => {
         if (s.list) {
           const foundIndex = s.list.indexOf(s.canonicalForm)
@@ -85,18 +88,30 @@ export class LuBuildCore {
       })
     })
 
-    currentApp.name = existingApp.name
+    currentAppToCompare.luis_schema_version = existingApp.luis_schema_version
+    currentAppToCompare.tokenizerVersion = existingApp.tokenizerVersion
+    currentAppToCompare.settings = existingApp.settings
 
     existingApp.model_features = existingApp.phraselists
     delete existingApp.phraselists
 
-    existingApp.regex_features = existingApp.regex_features
-    delete existingApp.regex_features
+    existingApp.regex_features = existingApp.regexFeatures
+    delete existingApp.regexFeatures
 
-    existingApp.regex_entities = existingApp.regex_entities
-    delete existingApp.regex_entities
+    existingApp.regex_entities = existingApp.regexEntities
+    delete existingApp.regexEntities
 
-    return !this.isApplicationEqual(currentApp, existingApp)
+    if (currentAppToCompare.intents && !currentAppToCompare.intents.some((x: any) => x.name === 'None')) {
+      const existingNoneIntentIndex = existingApp.intents.findIndex((x: any) => x.name === 'None')
+      if (existingNoneIntentIndex > -1) existingApp.intents.splice(existingNoneIntentIndex, 1)
+    }
+
+    this.sortApplication(currentAppToCompare)
+    this.sortApplication(existingApp)
+
+    const isApplicationEqual = this.isApplicationEqual(currentAppToCompare, existingApp)
+
+    return !isApplicationEqual
   }
 
   public updateVersion(currentApp: any, existingApp: any) {
@@ -202,10 +217,33 @@ export class LuBuildCore {
     }
   }
 
-  private async isApplicationEqual(appA: any, appB: any) {
+  private isApplicationEqual(appA: any, appB: any) {
     let appALu = (new Luis(appA)).parseToLuContent().toLowerCase()
     let appBLu = (new Luis(appB)).parseToLuContent().toLowerCase()
-    
+
     return appALu === appBLu
+  }
+
+  private sortApplication(app: any) {
+    this.sortProperty(app.intents, 'name')
+    this.sortProperty(app.closedLists, 'name')
+    this.sortProperty(app.composites, 'name')
+    this.sortProperty(app.entities, 'name')
+    this.sortProperty(app.model_features, 'name')
+    this.sortProperty(app.patternAnyEntities, 'name')
+    this.sortProperty(app.patterns, 'pattern')
+    this.sortProperty(app.prebuiltEntities, 'name')
+    this.sortProperty(app.regex_entities, 'name')
+    this.sortProperty(app.regex_features, 'name')
+    this.sortProperty(app.utterances, 'text')
+  }
+
+  private sortProperty(arrayToSort: any[], propertyToSort: string) {
+    (arrayToSort || []).sort((a: any, b: any) => {
+      const aValue = a[propertyToSort].toLowerCase()
+      const bValue = b[propertyToSort].toLowerCase()
+
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
+    })
   }
 }
