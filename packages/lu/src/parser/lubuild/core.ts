@@ -86,21 +86,10 @@ export class LuBuildCore {
     });
 
     (currentApp.entities || []).forEach((e: any) => {
-      if ((e.children === undefined || e.features === undefined) && existingApp.entities) {
+      if (e.children === undefined && existingApp.entities) {
         let matchedEntities = existingApp.entities.filter((x: any) => x.name === e.name)
-        if (matchedEntities && matchedEntities.length > 0) {
-          if (e.children === undefined && matchedEntities[0].children !== undefined) e.children = []
-
-          if (e.features === undefined && matchedEntities[0].features !== undefined) e.features = []
-        }
-      }
-    });
-
-    (currentApp.intents || []).forEach((i: any) => {
-      if (i.features === undefined && existingApp.intents) {
-        let matchedIntents = existingApp.intents.filter((x: any) => x.name === i.name)
-        if (matchedIntents && matchedIntents.length > 0) {
-          if (i.features === undefined && matchedIntents[0].features !== undefined) i.features = []
+        if (matchedEntities && matchedEntities.length > 0 && matchedEntities[0].children !== undefined) {
+          e.children = []
         }
       }
     })
