@@ -182,7 +182,7 @@ class LUParser {
 
         let simpleIntentSections = fileContext.paragraph()
             .map(x => x.simpleIntentSection())
-            .filter(x => x !== undefined && x !== null);
+            .filter(x => x && x.intentDefinition());
 
         let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x, content));
 
@@ -199,10 +199,17 @@ class LUParser {
         }
 
         let entitySections = fileContext.paragraph()
-            .map(x => x.entitySection())
-            .filter(x => x !== undefined && x !== null);
+            .map(x => x.simpleIntentSection())
+            .filter(x => x && !x.intentDefinition());
 
-        let entitySectionList = entitySections.map(x => new EntitySection(x));
+        let entitySectionList = [];
+        entitySections.forEach(x => {
+            if (x.entitySection) {
+                for (const entitySection of x.entitySection()) {
+                    entitySectionList.push(new EntitySection(entitySection));
+                }
+            }
+        })
 
         return entitySectionList;
     }
@@ -217,10 +224,17 @@ class LUParser {
         }
 
         let newEntitySections = fileContext.paragraph()
-            .map(x => x.newEntitySection())
-            .filter(x => x !== undefined && x !== null);
+            .map(x => x.simpleIntentSection())
+            .filter(x => x && !x.intentDefinition());
         
-        let newEntitySectionList = newEntitySections.map(x => new NewEntitySection(x));
+        let newEntitySectionList = [];
+        newEntitySections.forEach(x => {
+            if (x.newEntitySection) {
+                for (const newEntitySection of x.newEntitySection()) {
+                    newEntitySectionList.push(new NewEntitySection(newEntitySection));
+                }
+            }
+        })
 
         return newEntitySectionList;
     }
