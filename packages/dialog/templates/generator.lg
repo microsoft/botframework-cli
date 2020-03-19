@@ -1,3 +1,5 @@
+> This file contains templates to help with the generation process
+
 # roles
 - IF: ${role}
     - hasRole ${role}
@@ -9,6 +11,12 @@
 
 # entityLGFilename
 - ${locale}/${prefix}-${property}Entity.${locale}.lg
+
+# entityDisplay
+-```
+ # ${property}Entity(val)
+ - $\{val\}
+```
 
 # entityLUFilename
 - ${locale}/${prefix}-${property}Entity.${locale}.lu
@@ -49,8 +57,11 @@ ${substitutions(`library-operations.${locale}.data`, json(`{"entity": ${list(val
 # roleEntities(entity)
 - ${createArray(`${entity}:${property}`, entity)}
 
-# standardTemplates
+# propertyTemplates
 - ${createArray(`${type}Property.lg`, `${type}-missing.dialog`)}
+
+# entityTemplates
+- ${createArray(`${entity}Entity.lu`, `${entity}Entity.lg`, `${entity}Entity-assign-${type}.dialog`)}
 
 # importLG(name)
 -\[${prefix}-${name}.${locale}.lg](${prefix}-${name}.${locale}.lg)

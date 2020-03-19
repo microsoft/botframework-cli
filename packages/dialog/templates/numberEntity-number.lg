@@ -1,2 +1,4 @@
 # templates
-- ${createArray('numberEntity.lu', 'numberEntity.lg', 'numberEntity-assign-number.dialog')}
+- ${entityTemplates()}
+
+[generator.lg](generator.lg)

@@ -1,2 +1,4 @@
 # templates
-- ${createArray('personNameEntity.lu', 'personNameEntity-assign-string.dialog')}
+- ${entityTemplates()}
+
+[generator.lg](generator.lg)

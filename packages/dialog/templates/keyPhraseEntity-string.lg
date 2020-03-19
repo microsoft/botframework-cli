@@ -1,7 +1,4 @@
-# entities
-- ${roleEntities('keyphrase')}
-
 # templates
-- ${standardTemplates()}
+- ${entityTemplates()}
 
 [generator.lg](generator.lg)

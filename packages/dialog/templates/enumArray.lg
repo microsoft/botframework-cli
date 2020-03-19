@@ -2,6 +2,6 @@
 - ${createArray(`${property}Entity`)}
 
 # templates
-- ${standardTemplates()}
+- ${propertyTemplates()}
 
 [generator.lg](generator.lg)

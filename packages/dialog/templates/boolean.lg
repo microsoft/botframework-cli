@@ -2,6 +2,6 @@
 - ${roleEntities('boolean')}
 
 # templates
-- ${standardTemplates()}
+- ${propertyTemplates()}
 
 [generator.lg](generator.lg)

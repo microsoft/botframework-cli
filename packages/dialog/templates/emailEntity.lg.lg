@@ -2,9 +2,6 @@
 - ${entityLGFilename()}
 
 # template
--```
-# ${property}Entity(val)
-- $\{val\}
-```
+- ${entityDisplay()}
 
 [generator.lg](generator.lg)

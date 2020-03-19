@@ -237,6 +237,7 @@ async function processTemplates(
             } else if (!property.schema.$templates) {
                 for (let entity of entities) {
                     let [entityName, role] = entity.split(':')
+                    scope.entity = entityName
                     scope.role = role
                     if (entityName === `${scope.property}Entity`) {
                         entityName = `${scope.type}`

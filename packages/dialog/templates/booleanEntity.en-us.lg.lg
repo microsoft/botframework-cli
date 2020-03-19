@@ -1,5 +1,5 @@
 # filename
-- ${entityLGFilename()}
+- ${locale}/${prefix}-booleanEntity.${locale}.lg
 
 # template
 - ```
@@ -8,8 +8,8 @@
 - CASE: \${'true'}
     - true  
 - CASE: \${'false'}
-    -  false
+    - false
 - DEFAULT:
-    -  Unknown boolean value
+    - Unknown boolean value
 ```    
 [generator.lg](generator.lg)

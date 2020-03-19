@@ -12,8 +12,8 @@ ${importLG('library-Choose')}
 
 # chooseEntity
 -```
- # choose${property}Entity
- - $\{chooseEnumEntity(${concat("'", property, "'")})\}
+# choose${property}Entity
+- $\{chooseEnumEntity(${concat("'", property, "'")})\}
 ```
 
 # propertyEntity
@@ -21,8 +21,8 @@ ${importLG('library-Choose')}
 
 # namePlusSwitch
 -```
- # ${property}Entity(value) 
- - SWITCH: $\{value\}```
+# ${property}Entity(value) 
+- SWITCH: $\{value\}```
 
 # case(option)
 -```
