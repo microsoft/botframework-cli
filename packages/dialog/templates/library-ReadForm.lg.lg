@@ -1,2 +1,2 @@
 # templates
--${createArray(`library-ReadForm.${locale}.lg`)}
+- library-ReadForm.${locale}.lg

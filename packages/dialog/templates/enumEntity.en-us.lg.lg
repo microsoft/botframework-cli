@@ -6,8 +6,8 @@
  ${propertyEntity()}
  ${chooseEntity()}
  
- [library.lg]
- [library-Choose.lg]
+${importLG('library')}
+${importLG('library-Choose')}
 ```
 
 # chooseEntity

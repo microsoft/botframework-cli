@@ -1,2 +1,2 @@
 # templates
--${createArray('personNameEntity-assign-string.dialog')}
+- ${createArray('personNameEntity.lu', 'personNameEntity-assign-string.dialog')}

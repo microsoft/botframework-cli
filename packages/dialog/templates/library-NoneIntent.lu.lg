@@ -1,2 +1,2 @@
 # templates
--${createArray(`library-NoneIntent.${locale}.lu`)}
+- library-NoneIntent.${locale}.lu

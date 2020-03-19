@@ -60,6 +60,7 @@ dependencies:
   mime-types: 2.1.26
   minimist: 1.2.0
   nyc: 14.1.1
+  os: 0.1.1
   pascal-case: 2.0.1
   path: 0.12.7
   please-upgrade-node: 3.2.0
@@ -4282,6 +4283,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-u+Z0BseaqFxc/sdm/lc0VV36EnQ=
+  /os/0.1.1:
+    dev: false
+    resolution:
+      integrity: sha1-IIhF6J4ZOtTZcUdLk5R3NqVtE/M=
   /p-cancelable/0.4.1:
     dev: false
     engines:
@@ -6379,6 +6384,7 @@ packages:
       json-schema-ref-parser: 7.1.4
       mocha: 6.2.2
       nyc: 14.1.1
+      os: 0.1.1
       path: 0.12.7
       rimraf: 2.7.1
       seedrandom: 3.0.5
@@ -6391,7 +6397,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-ILi9yIYKqT4eaZJbTiuA4bjvrOh4HOkg2rgdcjC0fbkHWnCoRRGCSCGHsPa6D4DSEqmVAdWfDwevEG2a1G8kfQ==
+      integrity: sha512-XnhtgUToz4Z0aJe9wpOjOybqcwjv0/BCszRHQ9eIhMqG5ID+OSJuXzSa+D7FZ1gsVOtsKcWVD9b2O9uXL4v5ig==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6652,6 +6658,7 @@ specifiers:
   mime-types: ^2.1.18
   minimist: ^1.2.0
   nyc: ^14.1.1
+  os: ~0.1.1
   pascal-case: ^2.0.1
   path: ^0.12.7
   please-upgrade-node: ^3.0.1

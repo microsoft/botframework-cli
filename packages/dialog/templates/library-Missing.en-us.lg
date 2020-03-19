@@ -35,5 +35,5 @@ Enter a value for ${name(property)}: true or false
 # enumArrayValue(property, values)
 - ${join(foreach(values, value, template(property + 'Entity', value)), ',')}
 
-[library.lg]
-[library-Help.lg]
+[library.en-us.lg]
+[library-Help.en-us.lg]

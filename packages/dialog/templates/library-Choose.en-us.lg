@@ -16,5 +16,5 @@ Please choose a value for ${name(property)} from \[${join(foreach(turn.dialogEve
 # choosePropertyEntity(property)
 - "${property.entity.text}" as ${name(property.property)}
 
-[library.lg]
-[library-Help.lg]
+[library.en-us.lg]
+[library-Help.en-us.lg]

@@ -2,7 +2,5 @@
 - ${locale}/${prefix}.${locale}.lg
 
 # template
--``` 
- >>> Library
-${join(foreach(templates.lg, lg, concat('[', lg.fallbackName, '](', lg.fallbackName, ')')), '\n')}
-```
+- ${join(foreach(templates.lg, lg, concat('[', lg.fullName, '](', lg.fullName, ')')), '\n')}
+

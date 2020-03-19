@@ -1,2 +1,2 @@
 # templates
--${createArray(`library-HelpIntent.${locale}.lu`)}
+- library-HelpIntent.${locale}.lu

@@ -52,8 +52,5 @@ ${substitutions(`library-operations.${locale}.data`, json(`{"entity": ${list(val
 # standardTemplates
 - ${createArray(`${type}Property.lg`, `${type}-missing.dialog`)}
 
-# library(name, ext)
--\[${prefix}-${name}.${ext}](${prefix}-${name}.${ext})
-
-# localeLibrary(name, ext)
--\[${prefix}-${name}.${locale}.${ext}](${prefix}-${name}.${locale}.${ext})
+# importLG(name)
+-\[${prefix}-${name}.${locale}.lg](${prefix}-${name}.${locale}.lg)

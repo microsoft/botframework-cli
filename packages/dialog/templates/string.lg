@@ -2,6 +2,6 @@
 - ${roleEntities('string')}
 
 # templates
-- ${standardTemplates()}
+- ${flatten(createArray('stringEntity.lg', 'stringEntity.lu', standardTemplates()))}
 
 [generator.lg](generator.lg)

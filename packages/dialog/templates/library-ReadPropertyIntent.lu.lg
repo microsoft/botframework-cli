@@ -1,2 +1,2 @@
 # templates
--${createArray(`library-ReadPropertyIntent.${locale}.lu`)}
+- library-ReadPropertyIntent.${locale}.lu

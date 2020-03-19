@@ -6,9 +6,9 @@
 ${NameTemplate()}
 ${ValueTemplate()}
 
-\[${prefix}-${property}Entity.${locale}.lg]
-\[library.lg]
-[library-Missing.lg]
+${importLG(`${property}Entity`)}
+${importLG('library')}
+${importLG('library-Missing')}
 ```
 
 # AskTemplate

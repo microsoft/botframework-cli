@@ -1,2 +1,2 @@
 # templates
--${createArray(`library-CancelIntent.${locale}.lu`)}
+- library-CancelIntent.${locale}.lu

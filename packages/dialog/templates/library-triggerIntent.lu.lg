@@ -1,5 +1,5 @@
 # filename
-- ${locale}/${prefix}-${triggerIntent}.lu
+- ${locale}/${prefix}-trigger.en-us.lu
 
 # template
 -```

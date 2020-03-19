@@ -8,6 +8,7 @@ import * as s from './schema'
 import * as expressions from '@chrimc62/adaptive-expressions'
 import * as fs from 'fs-extra'
 import * as lg from '@chrimc62/botbuilder-lg'
+import * as os from 'os'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
 import { SubstitutionsEvaluator } from './substitutions'
@@ -68,6 +69,15 @@ async function findTemplate(name: string, templateDirs: string[]): Promise<Templ
         }
     }
     return template
+}
+
+// Add prefix to [] imports in constant .lg files
+const RefPattern = /^[ \t]*\[[^\]\n]*\][ \t]*$/gm
+function addPrefixToImports(template: string, scope: any): string {
+    return template.replace(RefPattern, (match: string) => {
+        let ref = match.substring(match.indexOf('[') + 1, match.indexOf(']'))
+        return `[${scope.prefix}-${ref}](${scope.prefix}-${ref})${os.EOL}`
+    })
 }
 
 function addPrefix(prefix: string, name: string): string {
@@ -133,6 +143,11 @@ async function processTemplate(
                             filename = `${scope.locale}/${filename}`
                         }
 
+                        // Add prefix to constant imports
+                        if (typeof template !== 'object') {
+                            template = addPrefixToImports(template, scope)
+                        }
+
                         outPath = ppath.join(outDir, filename)
                         let ref = addEntry(outPath, outDir, scope.templates)
                         if (ref) {
@@ -173,8 +188,11 @@ async function processTemplate(
                             }
                         }
                         if (template.templates.some(f => f.name === 'templates')) {
-                            let generated = template.evaluateTemplate('templates', scope) as any as string[]
-                            for (let generate of generated) {
+                            let generated = template.evaluateTemplate('templates', scope)
+                            if (!Array.isArray(generated)) {
+                                generated = [generated]
+                            }
+                            for (let generate of generated as any as string[]) {
                                 await processTemplate(generate, templateDirs, outDir, scope, force, feedback, false)
                             }
                         }
@@ -285,7 +303,6 @@ function expandStandard(dirs: string[]): string[] {
     }
     return expanded
 }
-
 
 /**
  * Iterate through the locale templates and generate per property/locale files.

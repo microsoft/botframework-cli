@@ -1,2 +1,2 @@
 # templates
--${createArray(`library-Help.${locale}.lg`)}
+- library-Help.${locale}.lg

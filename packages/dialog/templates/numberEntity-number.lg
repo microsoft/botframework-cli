@@ -1,2 +1,2 @@
 # templates
--${createArray('numberEntity-assign-number.dialog')}
+- ${createArray('numberEntity.lu', 'numberEntity.lg', 'numberEntity-assign-number.dialog')}

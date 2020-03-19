@@ -50,4 +50,4 @@
 # subFact(property, subproperty)
 - ${dialog[property][subproperty]}
 
-[library.lg]
+[library.en-us.lg]

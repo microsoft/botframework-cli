@@ -1,2 +1,2 @@
 # templates
--${createArray('utteranceEntity-assign-string.dialog')}
+- utteranceEntity-assign-string.dialog

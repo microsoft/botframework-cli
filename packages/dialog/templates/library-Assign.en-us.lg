@@ -3,6 +3,8 @@
 - ${number} is less than the minimum value ${dialogClass.schema.properties[property].minimum}.
 - ELSEIF: ${greater(number, dialogClass.schema.properties[property].maximum)}
 - ${number} is greater than the maximum value ${dialogClass.schema.properties[property].maximum}.
+- ELSE:
+-
 
 # unitsAlert(property)
 - IF: ${dialogClass.schema.properties[property].$units}
@@ -36,5 +38,5 @@
 # unexpectedPropertyChange(property, val, oldVal)
 - ${name(property)} is changed from ${value(property, oldVal)} to ${value(property, val)}.
 
-[library.lg]
-[library-ReadForm.lg]
+[library.en-us.lg]
+[library-ReadForm.en-us.lg]
