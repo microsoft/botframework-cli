@@ -1,0 +1,15 @@
+
+
+# Askproperty2
+- @{askString('property2')}
+
+
+# property2Name
+- property2
+
+
+# property2(val)
+- @{property2Entity(val)}
+[sandwich-property2Entity.lg](sandwich-property2Entity.lg)
+[sandwich-library.lg](sandwich-library.lg)
+[sandwich-library-Missing.lg](sandwich-library-Missing.lg)

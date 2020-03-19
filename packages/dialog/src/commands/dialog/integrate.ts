@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-
 import { Command, flags } from '@microsoft/bf-cli-command';
 import * as integ from '../../library/integration'
 
@@ -29,7 +28,16 @@ export default class DialogIntegrate extends Command {
     async run() {
         const { args, flags } = this.parse(DialogIntegrate)
         try {
-            await integ.integrateAssets(args.schema, flags.oldPath, flags.newPath, flags.mergedPath, flags.locale, flags.verbose)
+            await integ.integrateAssets(args.schema, flags.oldPath, flags.newPath, flags.mergedPath, flags.locale, (type, msg) => {
+                if (type === integ.FeedbackType.message
+                    || (type === integ.FeedbackType.info && flags.verbose)) {
+                    this.info(msg)
+                } else if (type === integ.FeedbackType.warning) {
+                    this.warning(msg)
+                } else if (type === integ.FeedbackType.error) {
+                    this.errorMsg(msg)
+                }
+            })
             return true;
         } catch (e) {
             this.thrownError(e)

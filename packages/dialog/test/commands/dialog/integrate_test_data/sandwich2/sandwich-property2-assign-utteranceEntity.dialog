@@ -1,0 +1,18 @@
+
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/sdk.schema",
+    "$kind": "Microsoft.OnAssignEntity",
+    "property": "property2",
+    "entity": "utterance",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "@{setPropertyMessage('property2', @utterance)}"
+        },
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$property2",
+            "value": "=@utterance"          
+        }
+    ]               
+}

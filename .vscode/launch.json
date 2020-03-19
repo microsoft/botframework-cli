@@ -176,7 +176,6 @@
             ],
             "args": [
                 "dialog:integrate",
-                "-s",
                 "sandwich",
                 "-o",
                 "${env:TEMP}/sandwich1",

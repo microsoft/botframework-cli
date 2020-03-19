@@ -1,0 +1,28 @@
+# BreadEntity(value) 
+- SWITCH: @{value}
+- CASE: @{'multiGrainWheat'} 
+ - multi grain wheat
+- CASE: @{'rye'} 
+ - rye
+- CASE: @{'wholeWheat'} 
+ - whole wheat
+- CASE: @{'blackWheat'} 
+ - black wheat
+- DEFAULT: 
+ - I don't understand @{value}
+
+# chooseBreadEntity
+- @{chooseEnumEntity('Bread')}
+
+# abc(value) 
+- SWITCH: @{value}
+- CASE: @{'c'} 
+ - cc
+- CASE: @{'b'} 
+ - bb
+- DEFAULT: 
+ - I don't understand @{value}
+
+[sandwich-library.lg](sandwich-library.lg)
+
+[sandwich-library-Choose.lg](sandwich-library-Choose.lg)

@@ -1,0 +1,19 @@
+
+@ list BreadEntity =
+	- multiGrainWheat :
+		- multi
+		- grain
+		- wheat
+		- multi grain
+		- grain wheat
+		- multi grain wheat
+	- rye :
+		- rye
+	- wholeWheat :
+		- whole
+		- wheat
+		- whole wheat
+	- blackWheat :
+		- black
+		- wheat
+		- black wheat
