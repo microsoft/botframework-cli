@@ -2,6 +2,8 @@
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 var LUFileParserListener = require('./LUFileParserListener').LUFileParserListener;
+var LUFileParserVisitor = require('./LUFileParserVisitor').LUFileParserVisitor;
+
 var grammarFileName = "LUFileParser.g4";
 
 
@@ -624,6 +626,14 @@ FileContext.prototype.exitRule = function(listener) {
 	}
 };
 
+FileContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitFile(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -718,6 +728,14 @@ ParagraphContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitParagraph(this);
 	}
+};
+
+ParagraphContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitParagraph(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -834,6 +852,14 @@ NewlineContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NewlineContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewline(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -916,6 +942,14 @@ NestedIntentSectionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NestedIntentSectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNestedIntentSection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -992,6 +1026,14 @@ NestedIntentNameLineContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNestedIntentNameLine(this);
 	}
+};
+
+NestedIntentNameLineContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNestedIntentNameLine(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1094,6 +1136,14 @@ NestedIntentNameContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNestedIntentName(this);
 	}
+};
+
+NestedIntentNameContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNestedIntentName(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1201,6 +1251,14 @@ NameIdentifierContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NameIdentifierContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNameIdentifier(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -1279,6 +1337,14 @@ NestedIntentBodyDefinitionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNestedIntentBodyDefinition(this);
 	}
+};
+
+NestedIntentBodyDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNestedIntentBodyDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1369,6 +1435,14 @@ SubIntentDefinitionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitSubIntentDefinition(this);
 	}
+};
+
+SubIntentDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitSubIntentDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1464,6 +1538,14 @@ SimpleIntentSectionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitSimpleIntentSection(this);
 	}
+};
+
+SimpleIntentSectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitSimpleIntentSection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1579,6 +1661,14 @@ IntentDefinitionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+IntentDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitIntentDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -1669,6 +1759,14 @@ IntentNameLineContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitIntentNameLine(this);
 	}
+};
+
+IntentNameLineContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitIntentNameLine(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1781,6 +1879,14 @@ IntentNameContext.prototype.exitRule = function(listener) {
 	}
 };
 
+IntentNameContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitIntentName(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -1876,6 +1982,14 @@ IntentBodyContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitIntentBody(this);
 	}
+};
+
+IntentBodyContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitIntentBody(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -1990,6 +2104,14 @@ NormalIntentBodyContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNormalIntentBody(this);
 	}
+};
+
+NormalIntentBodyContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNormalIntentBody(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -2142,6 +2264,14 @@ NormalIntentStringContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NormalIntentStringContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNormalIntentString(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -2253,6 +2383,14 @@ ErrorIntentStringContext.prototype.exitRule = function(listener) {
 	}
 };
 
+ErrorIntentStringContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitErrorIntentString(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -2335,6 +2473,14 @@ NewEntitySectionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NewEntitySectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntitySection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -2397,6 +2543,14 @@ NewEntityDefinitionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNewEntityDefinition(this);
 	}
+};
+
+NewEntityDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -2494,6 +2648,14 @@ NewEntityListbodyContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNewEntityListbody(this);
 	}
+};
+
+NewEntityListbodyContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityListbody(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -2631,6 +2793,14 @@ NewEntityLineContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNewEntityLine(this);
 	}
+};
+
+NewEntityLineContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityLine(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -2845,6 +3015,14 @@ NewCompositeDefinitionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NewCompositeDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewCompositeDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -2905,6 +3083,14 @@ NewRegexDefinitionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NewRegexDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewRegexDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -2963,6 +3149,14 @@ NewEntityTypeContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNewEntityType(this);
 	}
+};
+
+NewEntityTypeContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityType(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -3039,6 +3233,14 @@ NewEntityRolesContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNewEntityRoles(this);
 	}
+};
+
+NewEntityRolesContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityRoles(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -3134,6 +3336,14 @@ NewEntityUsesFeaturesContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitNewEntityUsesFeatures(this);
 	}
+};
+
+NewEntityUsesFeaturesContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityUsesFeatures(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -3253,6 +3463,14 @@ NewEntityRoleOrFeaturesContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NewEntityRoleOrFeaturesContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityRoleOrFeatures(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -3363,6 +3581,14 @@ NewEntityNameContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NewEntityNameContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityName(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -3423,6 +3649,14 @@ NewEntityNameWithWSContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NewEntityNameWithWSContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNewEntityNameWithWS(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -3481,6 +3715,14 @@ EntitySectionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitEntitySection(this);
 	}
+};
+
+EntitySectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitEntitySection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -3545,6 +3787,14 @@ EntityDefinitionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitEntityDefinition(this);
 	}
+};
+
+EntityDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitEntityDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -3637,6 +3887,14 @@ EntityLineContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitEntityLine(this);
 	}
+};
+
+EntityLineContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitEntityLine(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -3734,6 +3992,14 @@ EntityNameContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitEntityName(this);
 	}
+};
+
+EntityNameContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitEntityName(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -3866,6 +4132,14 @@ EntityTypeContext.prototype.exitRule = function(listener) {
 	}
 };
 
+EntityTypeContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitEntityType(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -3961,6 +4235,14 @@ CompositeEntityIdentifierContext.prototype.exitRule = function(listener) {
 	}
 };
 
+CompositeEntityIdentifierContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitCompositeEntityIdentifier(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -4019,6 +4301,14 @@ RegexEntityIdentifierContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitRegexEntityIdentifier(this);
 	}
+};
+
+RegexEntityIdentifierContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitRegexEntityIdentifier(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -4108,6 +4398,14 @@ EntityListBodyContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitEntityListBody(this);
 	}
+};
+
+EntityListBodyContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitEntityListBody(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -4247,6 +4545,14 @@ NormalItemStringContext.prototype.exitRule = function(listener) {
 	}
 };
 
+NormalItemStringContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitNormalItemString(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -4358,6 +4664,14 @@ ErrorItemStringContext.prototype.exitRule = function(listener) {
 	}
 };
 
+ErrorItemStringContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitErrorItemString(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -4440,6 +4754,14 @@ ImportSectionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+ImportSectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitImportSection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -4504,6 +4826,14 @@ ImportDefinitionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+ImportDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitImportDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -4564,6 +4894,14 @@ QnaSectionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitQnaSection(this);
 	}
+};
+
+QnaSectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitQnaSection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -4644,6 +4982,14 @@ QnaDefinitionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitQnaDefinition(this);
 	}
+};
+
+QnaDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitQnaDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -4746,6 +5092,14 @@ QnaSourceInfoContext.prototype.exitRule = function(listener) {
 	}
 };
 
+QnaSourceInfoContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitQnaSourceInfo(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -4827,6 +5181,14 @@ QnaIdMarkContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitQnaIdMark(this);
 	}
+};
+
+QnaIdMarkContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitQnaIdMark(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -4916,6 +5278,14 @@ QnaQuestionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+QnaQuestionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitQnaQuestion(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -4995,6 +5365,14 @@ QuestionTextContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitQuestionText(this);
 	}
+};
+
+QuestionTextContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitQuestionText(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -5105,6 +5483,14 @@ MoreQuestionsBodyContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitMoreQuestionsBody(this);
 	}
+};
+
+MoreQuestionsBodyContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitMoreQuestionsBody(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -5230,6 +5616,14 @@ MoreQuestionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+MoreQuestionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitMoreQuestion(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -5331,6 +5725,14 @@ ErrorQuestionStringContext.prototype.exitRule = function(listener) {
 	}
 };
 
+ErrorQuestionStringContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitErrorQuestionString(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -5415,6 +5817,14 @@ QnaAnswerBodyContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitQnaAnswerBody(this);
 	}
+};
+
+QnaAnswerBodyContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitQnaAnswerBody(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -5538,6 +5948,14 @@ FilterSectionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitFilterSection(this);
 	}
+};
+
+FilterSectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitFilterSection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -5674,6 +6092,14 @@ PromptSectionContext.prototype.exitRule = function(listener) {
 	}
 };
 
+PromptSectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitPromptSection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -5802,6 +6228,14 @@ FilterLineContext.prototype.exitRule = function(listener) {
 	}
 };
 
+FilterLineContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitFilterLine(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -5915,6 +6349,14 @@ ErrorFilterLineContext.prototype.exitRule = function(listener) {
 	}
 };
 
+ErrorFilterLineContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitErrorFilterLine(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -6009,6 +6451,14 @@ MultiLineAnswerContext.prototype.exitRule = function(listener) {
 	}
 };
 
+MultiLineAnswerContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitMultiLineAnswer(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
+};
+
 
 
 
@@ -6078,6 +6528,14 @@ ModelInfoSectionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitModelInfoSection(this);
 	}
+};
+
+ModelInfoSectionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitModelInfoSection(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
@@ -6150,6 +6608,14 @@ ModelInfoDefinitionContext.prototype.exitRule = function(listener) {
     if(listener instanceof LUFileParserListener ) {
         listener.exitModelInfoDefinition(this);
 	}
+};
+
+ModelInfoDefinitionContext.prototype.accept = function(visitor) {
+    if ( visitor instanceof LUFileParserVisitor ) {
+        return visitor.visitModelInfoDefinition(this);
+    } else {
+        return visitor.visitChildren(this);
+    }
 };
 
 
