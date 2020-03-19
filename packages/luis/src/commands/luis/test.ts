@@ -9,7 +9,7 @@ import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const testHelper = require('@microsoft/bf-lu/lib/parser/test/testhelper')
-const testLuConverter = require('@microsoft/bf-lu/lib/parser/test/testLuConverter')
+const luConverter = require('@microsoft/bf-lu/lib/parser/luis/luConverter')
 const exception = require('@microsoft/bf-lu').V2.Exception
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const LuisBuilder = require('@microsoft/bf-lu/lib/parser/luis/luisCollate')
@@ -77,7 +77,7 @@ export default class LuisTest extends Command {
         flags.intentOnly,
         predictedResults)
 
-      let result = testLuConverter(luisObject, flags)
+      let result = luConverter(luisObject, flags)
       let detailLog = `${JSON.stringify(predictedResults, null, 2)}`
       if (!result) {
         throw new CLIError('No LU content parsed!')

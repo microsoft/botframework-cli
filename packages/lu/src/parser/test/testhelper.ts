@@ -66,6 +66,7 @@ export async function test(
     }
   })
 
+  luisObject.test = true
   luisObject.count = 0
   luisObject.passNumber = 0
   luisObject.intents.forEach((intent: any) => {
