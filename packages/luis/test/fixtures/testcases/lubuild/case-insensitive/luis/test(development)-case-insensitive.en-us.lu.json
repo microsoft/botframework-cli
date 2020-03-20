@@ -1,26 +1,27 @@
 {
-  "luis_schema_version": "4.0.0",
-  "versionId": "0.2",
   "name": "test(development)-case-insensitive.en-us.lu",
+  "versionId": "0.2",
   "desc": "Model for test app, targetting development",
   "culture": "en-us",
-  "tokenizerVersion": "1.0.0",
   "intents": [
     {
-      "name": "GetUserProfile"
+      "name": "GetUserProfile",
+      "features": []
     },
     {
-      "name": "Greeting"
+      "name": "Greeting",
+      "features": []
     },
     {
-      "name": "Help"
+      "name": "Help",
+      "features": []
     },
     {
-      "name": "None"
+      "name": "None",
+      "features": []
     }
   ],
   "entities": [],
-  "composites": [],
   "closedLists": [
     {
       "name": "Cities",
@@ -43,14 +44,16 @@
       "roles": []
     }
   ],
+  "composites": [],
+  "hierarchicals": [],
   "patternAnyEntities": [
     {
       "name": "Item",
-      "roles": [],
-      "explicitList": []
+      "explicitList": [],
+      "roles": []
     }
   ],
-  "regex_entities": [
+  "regexEntities": [
     {
       "name": "zipCode",
       "regexPattern": "[0-9]{5}",
@@ -67,22 +70,15 @@
       "roles": []
     }
   ],
-  "model_features": [
-    {
-      "name": "profileDefinition",
-      "mode": true,
-      "words": "I'm,My,I am",
-      "activated": true
-    }
-  ],
-  "regex_features": [],
+  "regexFeatures": [],
+  "phraselists": [],
   "patterns": [
     {
-      "pattern": "please help {Item}",
+      "pattern": "help me with {Item}",
       "intent": "Help"
     },
     {
-      "pattern": "help me with {Item}",
+      "pattern": "please help {Item}",
       "intent": "Help"
     }
   ],
@@ -113,5 +109,7 @@
       "entities": []
     }
   ],
+  "luis_schema_version": "6.0.0",
+  "tokenizerVersion": "1.0.0",
   "settings": []
 }
