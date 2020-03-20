@@ -82,8 +82,8 @@ const parseUtterancesToLu = function(utterances, luisJSON){
     let fileContent = ''
     utterances.forEach(function(utterance) {
         let updatedText = utterance.text;
-        // Add test result if utterance has test result
-        if(utterance.predictedResult !== undefined){
+        // Add test result if in test mode and utterance has test result
+        if(luisJSON.test === true && utterance.predictedResult !== undefined){
             fileContent += parsePredictedResultToLu(utterance, luisJSON)
         }
         if(utterance.entities.length >= 0) {
@@ -468,7 +468,7 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
 const objectSortByStartPos = function (objectArray) {
     let ObjectByStartPos = objectArray.slice(0);
     ObjectByStartPos.sort(function(a,b) {
-        if (a.startPos == b.startPos)
+        if (a.startPos === b.startPos)
             return a.endPos - b.endPos; 
         return a.startPos - b.startPos;
     });
