@@ -1034,7 +1034,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
         for (const entity of entities) {
             if (entity.Type !== INTENTTYPE) {
                 entity.Name = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
-                let entityName = entity.Name;
+                let entityName = entity.Name.endsWith('=') ? entity.Name.slice(0, entity.Name.length - 1) : entity.Name;
                 let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
                 if (!entityType) {
                     let errorMsg = `No type definition found for entity "${entityName}". Supported types are ${Object.values(EntityTypeEnum).join(', ')}. Note: Type names are case sensitive.`;

@@ -170,4 +170,23 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[2].SimpleIntentSections[1].Entities[0].Type, 'simple');
         assert.equal(luresource.Sections[2].SimpleIntentSections[1].UtteranceAndEntitiesMap[0].utterance, 'check my deleted todo');
     });
+
+    it('update section test for invalid content', () => {
+
+        // missing '-' before utterance hello
+        let newFileConent = `# Greeting${NEWLINE}- hi${NEWLINE}hello`;
+
+        let sectionId = luresource.Sections[3].Id;
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[3].Id, newFileConent);
+        
+        assert.equal(luresource.Errors.length, 1);
+        assert.equal(luresource.Sections.length, 4);
+        assert.equal(luresource.Sections[3].Errors.length, 1);
+        assert.equal(luresource.Sections[3].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[3].Name, 'Greeting');
+        assert.equal(luresource.Sections[3].Id, sectionId);
+        assert.equal(luresource.Sections[3].UtteranceAndEntitiesMap.length, 1);
+        assert.equal(luresource.Sections[3].UtteranceAndEntitiesMap[0].utterance, 'hi');
+        assert.equal(luresource.Sections[3].Body, `- hi${NEWLINE}hello`);
+    });
 });
