@@ -10,8 +10,6 @@ paragraph
     : newline
     | nestedIntentSection
     | simpleIntentSection
-    | entitySection
-    | newEntitySection
     | importSection
     | qnaSection
     | modelInfoSection
@@ -49,7 +47,7 @@ subIntentDefinition
     ;
 
 simpleIntentSection
-    : intentDefinition (entitySection | newEntitySection)*
+    : (intentDefinition? (entitySection | newEntitySection)+) | intentDefinition
     ;
 
 intentDefinition
