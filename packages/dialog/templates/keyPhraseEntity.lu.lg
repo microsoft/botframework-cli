@@ -1,5 +1,5 @@
 # filename
-- ${builtinEntityFilename('keyPhraseEntity')}
+- ${builtinEntityFilename()}
 
 # template
 - ```

@@ -1,5 +1,5 @@
 # filename
-- ${builtinEntityFilename('dimensionEntity')}
+- ${builtinEntityFilename()}
 
 # template
 - ```

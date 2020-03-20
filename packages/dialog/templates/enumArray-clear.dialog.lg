@@ -1,17 +1,7 @@
 # filename
-- ${prefix}-${property}-clear.dialog
+- ${clearFilename()}
 
 # template
-- ```
-{
-    "$schema": "${appSchema}",
-    "$kind": "Microsoft.OnClearProperty",
-    "condition": "turn.dialogEvent.Value.Change.Slot == '${property}'",
-    "actions": [
-        {
-            "$kind": "Microsoft.DeleteProperty",
-            "property": "$${PROPERTY}"
-        }
-    ]
-}
-```
+- ${clearDialog()}
+
+[generator.lg](generator.lg)

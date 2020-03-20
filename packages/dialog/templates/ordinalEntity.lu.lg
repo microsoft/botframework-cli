@@ -1,5 +1,5 @@
 # filename
-- ${builtinEntityFilename('ordinalEntity')}
+- ${builtinEntityFilename()}
 
 # template
 - ```

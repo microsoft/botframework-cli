@@ -5,6 +5,7 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
+import * as crypto from 'crypto'
 import * as expressions from '@chrimc62/adaptive-expressions'
 import * as fs from 'fs-extra'
 import * as lg from '@chrimc62/botbuilder-lg'
@@ -27,18 +28,45 @@ function templatePath(name: string, dir: string): string {
     return ppath.join(dir, name)
 }
 
-export async function writeFile(path: string, val: any, force: boolean, feedback: Feedback) {
-    try {
-        if (force || !await fs.pathExists(path)) {
-            feedback(FeedbackType.info, `Generating ${path}`)
-            let dir = ppath.dirname(path)
-            await fs.ensureDir(dir)
-            await fs.writeFile(path, val)
-        } else {
-            feedback(FeedbackType.warning, `Skipping already existing ${path}`)
+function computeHash(val: string): string {
+    return crypto.createHash('md5').update(val).digest('hex')
+}
+
+const commentHash = ['.lg', '.lu', '.qna']
+const jsonHash = ['.dialog']
+function addHash(path: string, val: any): any {
+    let ext = ppath.extname(path)
+    if (commentHash.includes(ext)) {
+        if (!val.endsWith(os.EOL)) {
+            val += os.EOL
         }
+        val += `${os.EOL}> Generator: ${computeHash(val)}`
+    } else if (jsonHash.includes(ext)) {
+        let json = JSON.parse(val)
+        let jsonText = JSON.stringify(json, null, 2)
+        json.$Generator = computeHash(jsonText)
+        val = JSON.stringify(json, null, 2)
+    }
+    return val
+}
+
+async function writeFile(path: string, val: any, feedback: Feedback) {
+    try {
+        let dir = ppath.dirname(path)
+        await fs.ensureDir(dir)
+        val = addHash(path, val)
+        await fs.writeFile(path, val)
     } catch (e) {
         feedback(FeedbackType.error, e.message)
+    }
+}
+
+async function generateFile(path: string, val: any, force: boolean, feedback: Feedback) {
+    if (force || !await fs.pathExists(path)) {
+        feedback(FeedbackType.info, `Generating ${path}`)
+        await writeFile(path, val, feedback)
+    } else {
+        feedback(FeedbackType.warning, `Skipping already existing ${path}`)
     }
 }
 
@@ -169,9 +197,7 @@ async function processTemplate(
                                     result = existing
                                 }
 
-                                let dir = ppath.dirname(outPath)
-                                await fs.ensureDir(dir)
-                                await fs.writeFile(outPath, result)
+                                await writeFile(outPath, result, feedback)
                                 scope.templates[ppath.extname(outPath).substring(1)].push(ref)
 
                             } else {
@@ -386,7 +412,7 @@ export async function generate(
 
         // Write final schema
         let body = JSON.stringify(expanded, (key, val) => (key === '$templates' || key === '$requires') ? undefined : val, 4)
-        await writeFile(ppath.join(outDir, `${prefix}.schema.dialog`), body, force, feedback)
+        await generateFile(ppath.join(outDir, `${prefix}.schema.dialog`), body, force, feedback)
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }

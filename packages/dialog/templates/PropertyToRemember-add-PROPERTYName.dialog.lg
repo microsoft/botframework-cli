@@ -1,0 +1,17 @@
+# template
+- ```
+{
+    "$schema": "${appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "operator": "AddToProperty",
+    "property": "PropertyToRemember",
+    "entity": "PROPERTYName",
+    "actions": [
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$PropertyToRemember",
+            "value": "=@PROPERTYName"        
+        }
+    ]
+}
+```

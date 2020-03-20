@@ -1,5 +1,5 @@
 # filename
-- ${builtinEntityFilename('moneyEntity')}
+- ${builtinEntityFilename()}
 
 # template
 - ```

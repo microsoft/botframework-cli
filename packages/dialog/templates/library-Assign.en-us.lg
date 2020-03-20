@@ -38,5 +38,17 @@
 # unexpectedPropertyChange(property, val, oldVal)
 - ${name(property)} is changed from ${value(property, oldVal)} to ${value(property, val)}.
 
+# clearPropertyMessage(property)
+- ${name(property)} has been cleared.
+
+# removePropertyMessage(property, val)
+- IF: ${contains($expectedProperties, property) && $expectedOperation == 'RemoveFromProperty'}
+- 
+- ELSE:
+- ${removeUnexpectedPropertyMessage(property, val)}
+
+# removeUnexpectedPropertyMessage(property, val)
+- Removed ${value(property, val)} from ${name(property)}.
+
 [library.en-us.lg]
 [library-ReadForm.en-us.lg]

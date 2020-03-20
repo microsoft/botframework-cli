@@ -1,0 +1,26 @@
+# filename
+- ${addFilename()}
+
+# template
+- ```
+{
+    "$schema": "${appSchema}",
+    "$kind": "Microsoft.OnAssignEntity",
+    "operator": "AddToProperty",
+    "property": "${property}",
+    "entity": "${property}Entity",
+    "actions": [
+        {
+            "$kind": "Microsoft.SendActivity",
+            "activity": "$\{setPropertyMessage('${property}', @${property}Entity)}"
+        },    
+        {
+            "$kind": "Microsoft.SetProperty",
+            "property": "$${property}",
+            "value": "=@${property}Entity"
+        }
+    ]
+}
+```
+
+[generator.lg](generator.lg)

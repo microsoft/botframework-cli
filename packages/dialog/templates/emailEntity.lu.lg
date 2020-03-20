@@ -1,5 +1,5 @@
 # filename
-- ${builtinEntityFilename('emailEntity')}
+- ${builtinEntityFilename()}
 
 # template
 - ```
