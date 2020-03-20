@@ -8,6 +8,18 @@ This package is intended for Microsoft use only and should be consumed through @
 [![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-cli-plugins.svg)](https://npmjs.org/package/@microsoft/bf-cli-plugins)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-cli-plugins.svg)](https://github.com/https://github.com/microsoft//botframework-cli/blob/master/package.json)
 
+bf plugins command group allows you to extend the CLI with non core and preview commands. Only microsoft scoped plugins are allowed to be installed.
+
+# Available plugins
+
+[@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog)
+```
+npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
+
+bf plugins:install @microsoft/bf-dialog
+
+npm config set registry https://registry.npmjs.org/
+```
 <!-- toc -->
 * [Commands](#commands)
 <!-- tocstop -->
