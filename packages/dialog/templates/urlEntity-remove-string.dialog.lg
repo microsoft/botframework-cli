@@ -1,7 +1,7 @@
 # filename
-- ${removeFilename()}
+- ${removeFilename('url')}
 
 # template
-- ${removeDialog()}
+- ${removeDialog('url')}
 
 [generator.lg](generator.lg)

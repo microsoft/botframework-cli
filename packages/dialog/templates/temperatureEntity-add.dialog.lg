@@ -1,6 +1,5 @@
-
 # filename
-- ${addFilename()}
+- ${addFilename('temperature')}
 
 # template
 - ```

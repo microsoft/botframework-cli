@@ -24,14 +24,14 @@
 # missingFilename
 - ${prefix}-${property}-missing.dialog
 
-# builtinEntityFilename
-- ${locale}/${prefix}-${property}-${prebuiltEntity}.${locale}.lu
+# builtinEntityFilename(entity)
+- ${locale}/${prefix}-${property}-${entity}.${locale}.lu
 
-# addFilename
-- ${prefix}-${property}-add-${entity}Entity.dialog
+# addFilename(entity)
+- ${prefix}-${property}-add-${entity}.dialog
 
-# removeFilename
-- ${prefix}-${property}-remove-${entity}Entity.dialog
+# removeFilename(entity)
+- ${prefix}-${property}-remove-${entity}.dialog
 
 # clearFilename
 - ${prefix}-${property}-clear.dialog
@@ -39,7 +39,7 @@
 # showFilename
 - ${prefix}-${property}-show.dialog
 
-# addDialog
+# addDialog(entity)
 -```
 {
     "$schema": "${appSchema}",
@@ -61,7 +61,7 @@
 }
 ```
 
-# removeDialog
+# removeDialog(entity)
 -```
 {
     "$schema": "${appSchema}",

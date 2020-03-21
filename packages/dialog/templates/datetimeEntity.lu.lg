@@ -1,5 +1,5 @@
 # filename
-- ${builtinEntityFilename()}
+- ${builtinEntityFilename('datetimeV2')}
 
 # template
 - ```

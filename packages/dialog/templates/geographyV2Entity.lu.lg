@@ -1,5 +1,5 @@
 # filename
-- ${builtinEntityFilename()}
+- ${builtinEntityFilename('geographyV2')}
 
 # template
 - ```

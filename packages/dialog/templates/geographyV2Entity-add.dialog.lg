@@ -1,6 +1,5 @@
-
 # filename
-- ${addFilename()}
+- ${addFilename('geographyV2')}
 
 # template
 - ```
@@ -13,8 +12,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{setObjectPropertyMessage('${property}', concat(@geographyV2.type, ' ', @geographyV2.location))}
-"
+            "activity": "$\{setObjectPropertyMessage('${property}', concat(@geographyV2.type, ' ', @geographyV2.location))}"
         }, 
         {
             "$kind": "Microsoft.SetProperty",

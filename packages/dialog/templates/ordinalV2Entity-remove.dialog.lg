@@ -1,7 +1,7 @@
 # filename
-- ${removeFilename()}
+- ${removeFilename('ordinalV2')}
 
 # template
-- ${removeDialog()}
+- ${removeDialog('ordinalV2')}
 
 [generator.lg](generator.lg)

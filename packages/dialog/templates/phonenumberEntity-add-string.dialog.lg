@@ -1,8 +1,7 @@
-
 # filename
-- ${addFilename()}
+- ${addFilename('phonenumber')}
 
 # template
-- ${addDialog()}
+- ${addDialog('phonenumber')}
 
 [generator.lg](generator.lg)

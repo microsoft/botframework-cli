@@ -1,5 +1,5 @@
 # filename
-- ${addFilename()}
+- ${addFilename('money')}
 
 # template
 - ```

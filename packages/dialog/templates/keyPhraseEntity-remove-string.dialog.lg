@@ -1,7 +1,7 @@
 # filename
-- ${removeFilename()}
+- ${removeFilename('keyPhrase')}
 
 # template
-- ${removeDialog()}
+- ${removeDialog('keyPhrase')}
 
 [generator.lg](generator.lg)

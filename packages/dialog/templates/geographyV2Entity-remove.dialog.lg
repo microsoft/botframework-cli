@@ -1,7 +1,7 @@
 # filename
-- ${removeFilename()}
+- ${removeFilename('geographyV2')}
 
 # template
-- ${removeDialog()}
+- ${removeDialog('geographyV2')}
 
 [generator.lg](generator.lg)

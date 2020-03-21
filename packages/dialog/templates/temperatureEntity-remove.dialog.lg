@@ -1,7 +1,7 @@
 # filename
-- ${removeFilename()}
+- ${removeFilename('temperature')}
 
 # template
-- ${removeDialog()}
+- ${removeDialog('temperature')}
 
 [generator.lg](generator.lg)
