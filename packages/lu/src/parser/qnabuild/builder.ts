@@ -176,8 +176,10 @@ export class Builder {
         }
 
         // update alterations if there are
-        await qnaBuildCore.replaceAlt(currentAlt)
-
+        if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
+          await qnaBuildCore.replaceAlt(currentAlt)
+        }
+        
         // update multiLanguageRecognizer asset
         if (multiRecognizers && multiRecognizers.has(content.id)) {
           let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer

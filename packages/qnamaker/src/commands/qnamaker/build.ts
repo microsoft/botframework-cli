@@ -17,7 +17,7 @@ const Recognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/qnabuild/builder').Builder
 
 export default class QnamakerBuild extends Command {
-  static description = 'Build qna files to create and publish qnamaker knowledge bases'
+  static description = 'Build qna files to create and publish qnamaker knowledge bases or update alterations'
 
   static examples = [`
     $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} --dialog

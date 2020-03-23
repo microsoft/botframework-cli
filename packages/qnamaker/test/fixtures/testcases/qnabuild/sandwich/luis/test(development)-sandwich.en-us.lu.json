@@ -1,31 +1,34 @@
 {
-  "luis_schema_version": "4.0.0",
-  "versionId": "0.1",
   "name": "test(development)-sandwich.en-us.lu",
+  "versionId": "0.1",
   "desc": "Model for test app, targetting development",
   "culture": "en-us",
-  "tokenizerVersion": "1.0.0",
   "intents": [
     {
-      "name": "Cancel"
+      "name": "Cancel",
+      "features": []
     },
     {
-      "name": "Help"
+      "name": "Help",
+      "features": []
     },
     {
-      "name": "None"
+      "name": "None",
+      "features": []
     },
     {
-      "name": "sandwich"
+      "name": "sandwich",
+      "features": []
     }
   ],
   "entities": [
     {
       "name": "NameEntity",
+      "children": [],
+      "features": [],
       "roles": []
     }
   ],
-  "composites": [],
   "closedLists": [
     {
       "name": "BreadEntity",
@@ -218,8 +221,10 @@
       "roles": []
     }
   ],
+  "composites": [],
+  "hierarchicals": [],
   "patternAnyEntities": [],
-  "regex_entities": [],
+  "regexEntities": [],
   "prebuiltEntities": [
     {
       "name": "dimension",
@@ -236,31 +241,15 @@
       ]
     }
   ],
-  "model_features": [],
-  "regex_features": [],
+  "regexFeatures": [],
+  "phraselists": [],
   "patterns": [
-    {
-      "pattern": "{BreadEntity}",
-      "intent": "sandwich"
-    },
     {
       "pattern": "help with {PROPERTYName}",
       "intent": "Help"
     },
     {
-      "pattern": "{money}",
-      "intent": "sandwich"
-    },
-    {
-      "pattern": "{PROPERTYName}",
-      "intent": "sandwich"
-    },
-    {
-      "pattern": "{CheeseEntity}",
-      "intent": "sandwich"
-    },
-    {
-      "pattern": "{Confirmation}",
+      "pattern": "{NameEntity}",
       "intent": "sandwich"
     },
     {
@@ -268,7 +257,11 @@
       "intent": "sandwich"
     },
     {
-      "pattern": "{NameEntity}",
+      "pattern": "{Confirmation}",
+      "intent": "sandwich"
+    },
+    {
+      "pattern": "{PROPERTYName}",
       "intent": "sandwich"
     },
     {
@@ -276,12 +269,24 @@
       "intent": "sandwich"
     },
     {
-      "pattern": "{MeatEntity}",
+      "pattern": "help {PROPERTYName}",
+      "intent": "Help"
+    },
+    {
+      "pattern": "{BreadEntity}",
       "intent": "sandwich"
     },
     {
-      "pattern": "help {PROPERTYName}",
-      "intent": "Help"
+      "pattern": "{CheeseEntity}",
+      "intent": "sandwich"
+    },
+    {
+      "pattern": "{money}",
+      "intent": "sandwich"
+    },
+    {
+      "pattern": "{MeatEntity}",
+      "intent": "sandwich"
     }
   ],
   "utterances": [
@@ -341,5 +346,7 @@
       "entities": []
     }
   ],
+  "luis_schema_version": "6.0.0",
+  "tokenizerVersion": "1.0.0",
   "settings": []
 }
