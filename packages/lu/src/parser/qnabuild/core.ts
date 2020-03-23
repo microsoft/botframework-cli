@@ -87,6 +87,17 @@ export class QnaBuildCore {
     }
   }
 
+  public async replaceAlt(altJson: any) {
+    const response = await this.service.createRequest(`/alterations`, 'PUT', altJson)
+    const text = await response.text()
+    try {
+      return JSON.parse(text)
+    }
+    catch (e) {
+      return text
+    }
+  }
+
   public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
     : Array<any> {
     let contents = new Array<any>()

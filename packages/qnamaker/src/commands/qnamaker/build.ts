@@ -17,16 +17,16 @@ const Recognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/qnabuild/builder').Builder
 
 export default class QnamakerBuild extends Command {
-  static description = 'Build qna files to create and publish qnamaker knowledge bases'
+  static description = 'Build qna files to create and publish qnamaker knowledge bases or update alterations'
 
   static examples = [`
-    $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionkey {SUBSCRIPTION_KEY} --botName {BOT_NAME} --dialog
+    $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} --dialog
   `]
 
   static flags: any = {
     help: flags.help({char: 'h'}),
     in: flags.string({char: 'i', description: 'QnA file or folder'}),
-    subscriptionkey: flags.string({char: 's', description: 'QnA maker subscription key', required: true}),
+    subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key', required: true}),
     botName: flags.string({char: 'b', description: 'Bot name'}),
     region: flags.string({description: 'LUIS api endpoint region [westus|westeurope|australiaeast]', default: 'westus'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
@@ -103,7 +103,7 @@ export default class QnamakerBuild extends Command {
 
       // update or create and then publish qnamaker kb based on loaded resources
       if (flags.log) this.log('Handling qnamaker knowledge bases...')
-      const dialogContents = await builder.build(qnaContents, recognizers, flags.subscriptionkey, endpoint, flags.botName, flags.suffix, flags.fallbackLocale, multiRecognizers, settings)
+      const dialogContents = await builder.build(qnaContents, recognizers, flags.subscriptionKey, endpoint, flags.botName, flags.suffix, flags.fallbackLocale, multiRecognizers, settings)
 
       // write dialog assets based on config
       if (flags.dialog) {

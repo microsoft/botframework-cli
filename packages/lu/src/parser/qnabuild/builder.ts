@@ -140,6 +140,7 @@ export class Builder {
         // init current kb object from qna content
         const qnaObj = await this.initQnaFromContent(content, botName, suffix)
         let currentKB = qnaObj.kb
+        let currentAlt = qnaObj.alterations
         let culture = content.language as string
 
         // TODO: handle alterations
@@ -174,6 +175,11 @@ export class Builder {
           await this.publishKB(qnaBuildCore, recognizer, delayDuration)
         }
 
+        // update alterations if there are
+        if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
+          await qnaBuildCore.replaceAlt(currentAlt)
+        }
+        
         // update multiLanguageRecognizer asset
         if (multiRecognizers && multiRecognizers.has(content.id)) {
           let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
