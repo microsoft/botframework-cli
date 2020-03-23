@@ -183,10 +183,38 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // If utterances have this child, then all parents must be included in the label
     updateModelBasedOnNDepthEntities(parsedContent.LUISJsonStructure.utterances, parsedContent.LUISJsonStructure.entities);
 
+    // Update intent and entities with phrase lists if any
+    updateIntentAndEntityFeatures(parsedContent.LUISJsonStructure);
+
     helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
 
 }
 
+const updateIntentAndEntityFeatures = function(luisObj) {
+    let plForAll = luisObj.model_features.filter(item => item.enabledForAllModels == undefined || item.enabledForAllModels == true);
+    plForAll.forEach(pl => {
+        luisObj.intents.forEach(intent => {
+            if (intent.hasOwnProperty("features")) {
+                if (Array.isArray(intent.features) && intent.features.find(i => i.featureName == pl.name) === undefined) {
+                    intent.features.push(new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature));
+                }
+            } else {
+                intent.features = [new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature)];
+            }
+        })
+
+        luisObj.entities.forEach(entity => {
+            if (entity.hasOwnProperty("features")) {
+                if (Array.isArray(entity.features) && entity.features.find(e => e.featureName == pl.name) === undefined) {
+                    entity.features.push(new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature));
+                }
+            } else {
+                entity.features = [new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature)];
+            }
+            
+        })
+    })
+}
 /**
  * Helper to update final LUIS model based on labelled nDepth entities.
  * @param {Object []} utterances 
