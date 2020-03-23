@@ -281,10 +281,10 @@ const parsePatternAnyEntitiesToLu = function(luisJson){
     if(!luisJson.patternAnyEntities || luisJson.patternAnyEntities.length <= 0) {
         return fileContent;
     }
+    fileContent += '> # Pattern.Any entities' + NEWLINE + NEWLINE;
     luisJson.patternAnyEntities.forEach(patternAnyEntity => {
         // Add inherits information if any
         if (patternAnyEntity.inherits !== undefined) {
-            fileContent += '> # Pattern.Any entities' + NEWLINE + NEWLINE;
             // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
             fileContent += '> !# @patternAnyEntity.inherits = name : ' + patternAnyEntity.name;
             if (patternAnyEntity.inherits.domain_name !== undefined) {
@@ -294,12 +294,12 @@ const parsePatternAnyEntitiesToLu = function(luisJson){
                 fileContent += '; model_name : ' + patternAnyEntity.inherits.model_name;
             }
             fileContent += NEWLINE + NEWLINE;
-            // For back compat we will only write this if the pattern.any has inherits information.
-            fileContent += `@ patternany `;
-            fileContent += patternAnyEntity.name.includes(' ') ? `"${patternAnyEntity.name}"` : patternAnyEntity.name;
-            fileContent += addRolesAndFeatures(patternAnyEntity);
-            fileContent += NEWLINE;
         }
+        // For back compat we will only write this if the pattern.any has inherits information.
+        fileContent += `@ patternany `;
+        fileContent += patternAnyEntity.name.includes(' ') ? `"${patternAnyEntity.name}"` : patternAnyEntity.name;
+        fileContent += addRolesAndFeatures(patternAnyEntity);
+        fileContent += NEWLINE;
     })
     return fileContent;
 }
