@@ -32,6 +32,10 @@ function computeHash(val: string): string {
     return crypto.createHash('md5').update(val).digest('hex')
 }
 
+function computeJSONHash(json: any): string {
+    return computeHash(JSON.stringify(json, null, 2))
+}
+
 const commentHash = ['.lg', '.lu', '.qna']
 const jsonHash = ['.dialog']
 function addHash(path: string, val: any): any {
@@ -43,11 +47,35 @@ function addHash(path: string, val: any): any {
         val += `${os.EOL}> Generator: ${computeHash(val)}`
     } else if (jsonHash.includes(ext)) {
         let json = JSON.parse(val)
-        let jsonText = JSON.stringify(json, null, 2)
-        json.$Generator = computeHash(jsonText)
+        json.$Generator = computeJSONHash(json)
         val = JSON.stringify(json, null, 2)
     }
     return val
+}
+
+const GeneratorPattern = /\r?\n> Generator: (.*)/m
+export async function isUnchanged(path: string): Promise<boolean> {
+    let result = false
+    let ext = ppath.extname(path)
+    let file = await fs.readFile(path, 'utf8')
+    if (commentHash.includes(ext)) {
+        let match = file.match(GeneratorPattern)
+        if (match) {
+            let oldHash = match[1]
+            file = file.substring(0, match.index)
+            let hash = computeHash(file)
+            result = oldHash === hash
+        }
+    } else if (jsonHash.includes(ext)) {
+        let json = JSON.parse(file)
+        let oldHash = json.$Generator
+        if (oldHash) {
+            delete json.$Generator
+            let hash = computeJSONHash(json)
+            result = oldHash === hash
+        }
+    }
+    return result
 }
 
 async function writeFile(path: string, val: any, feedback: Feedback) {
