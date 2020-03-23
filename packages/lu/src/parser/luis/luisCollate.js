@@ -52,12 +52,26 @@ const collate = function(luisList) {
         buildPatternAny(blob, luisObject)
     }
     helpers.checkAndUpdateVersion(luisObject)
+    cleanupEntities(luisObject)
     return luisObject
 }
 
 module.exports = {
     collate, 
     build
+}
+
+const cleanupEntities = function(luisObject) {
+    let consolidatedList = [];
+    luisObject.composites.forEach(item => consolidatedList.push(item));
+    luisObject.closedLists.forEach(item => consolidatedList.push(item));
+    luisObject.regex_entities.forEach(item => consolidatedList.push(item));
+    luisObject.prebuiltEntities.forEach(item => consolidatedList.push(item));
+    let idxToRemove = [];
+    luisObject.entities.forEach((item, idx) => {
+        if (consolidatedList.find(e => e.name == item.name) !== undefined) idxToRemove.push(idx);
+    })
+    idxToRemove.sort((a, b) => a-b).forEach(idx => luisObject.entities.splice(idx, 1))
 }
 
 const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {

@@ -1,0 +1,82 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> Total passed: 2/2
+
+> # Intent definitions
+
+> Utterance passed in this intent: 2/2
+## AcceptEventEntry
+> PASS. Predicted intent: AcceptEventEntry(0.9916137)
+> PASS. Predicted entities: accept the event
+- accept the event
+> PASS. Predicted intent: AcceptEventEntry(0.9646782)
+> PASS. Predicted entities: accept the event on {@FromDate=feb.18} in {@Location=beijing}.
+- accept the event on {@FromDate=feb.18} in {@Location=beijing}.
+
+
+> # Entity definitions
+
+@ ml Duration
+
+@ ml FromDate
+
+@ ml FromTime hasRole OutLook
+
+@ ml Location
+
+@ ml MeetingRoom
+
+@ ml OrderReference hasRole Next
+
+@ ml PositionReference
+
+@ ml Subject hasRole Meals
+
+@ ml ToDate
+
+@ ml ToTime
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt ordinal
+
+@ prebuilt personName hasRoles Female,Male
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+@ list PossessivePronoun hasRole FirstPerson = 
+	- FirstPerson :
+		- my
+		- our
+		- my own
+		- our own
+	- SecondPerson :
+		- your
+		- your own
+	- ThirdPerson :
+		- his
+		- her
+		- their
+		- his own
+		- her own
+		- their own
+
+
+> # RegEx entities
+
+@ regex Email = /[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+/
+@ regex MeetingRoomKeywordsDesc = /((conf|conference|meeting)\s+)?(room|rm|office)/
+
+> # Composite entities
+
+@ composite FromDateTime = [FromDate, FromTime]
