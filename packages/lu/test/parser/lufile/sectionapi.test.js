@@ -171,7 +171,6 @@ describe('Section CRUD test', () => {
     });
 
     it('update section test for invalid content', () => {
-
         // missing '-' before utterance hello
         let newFileConent = `# Greeting${NEWLINE}> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2`;
 
@@ -187,5 +186,23 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap.length, 1);
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[0].utterance, 'hi');
         assert.equal(luresource.Sections[0].Body, `> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2${NEWLINE}${NEWLINE}`);
+    });
+
+    it('add section test for nested section content with comments', () => {
+        let simpleIntentBody1 = `- hello${NEWLINE}- hi${NEWLINE}> this is comment 1${NEWLINE}@${NEWLINE}> this is comment 2${NEWLINE}`
+        let simpleIntentBody2 = `- bye${NEWLINE}$${NEWLINE}> this is comment 3${NEWLINE}${NEWLINE}> this is comment 4${NEWLINE}`
+        let nestedIntentBody = `## greeting${NEWLINE}${simpleIntentBody1}${NEWLINE}## goodbye${NEWLINE}${simpleIntentBody2}`
+        let newFileConent = `# nestedIntentWithComments${NEWLINE}${nestedIntentBody}${NEWLINE}[xxx](b.lu)`
+
+        luresource = new SectionOperator(luresource).addSection(newFileConent);
+
+        assert.equal(luresource.Errors.length, 7);
+        assert.equal(luresource.Sections.length, 6);
+        assert.equal(luresource.Sections[4].Errors.length, 3);
+        assert.equal(luresource.Sections[4].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
+        assert.equal(luresource.Sections[4].Name, 'nestedIntentWithComments');
+        assert.equal(luresource.Sections[4].SimpleIntentSections[0].Body, simpleIntentBody1);
+        assert.equal(luresource.Sections[4].SimpleIntentSections[1].Body, simpleIntentBody2);
+        assert.equal(luresource.Sections[4].Body, nestedIntentBody);
     });
 });
