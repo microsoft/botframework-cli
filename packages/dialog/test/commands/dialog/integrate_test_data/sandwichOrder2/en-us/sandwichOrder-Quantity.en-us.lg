@@ -1,0 +1,15 @@
+
+
+# AskQuantity
+- ${askNumber('Quantity')}
+
+
+# QuantityName
+- quantity
+
+
+# Quantity(val)
+- ${QuantityEntity(val)}
+[sandwichOrder-QuantityEntity.lg](sandwichOrder-QuantityEntity.lg)
+[sandwichOrder-library.lg](sandwichOrder-library.lg)
+[sandwichOrder-library-Missing.lg](sandwichOrder-library-Missing.lg)

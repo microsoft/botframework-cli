@@ -1,0 +1,18 @@
+
+ 
+ # BreadEntity(value) 
+ - SWITCH: ${value}
+ - CASE: ${'multiGrainWheat'} 
+  - multi grain wheat
+ - CASE: ${'rye'} 
+  - rye
+ - CASE: ${'wholeWheat'} 
+  - whole wheat
+ - DEFAULT: 
+  - I don't understand ${value}
+
+ 
+ # chooseBreadEntity
+ - ${chooseEnumEntity('Bread')}
+[sandwichOrder-library.lg](sandwichOrder-library.lg)
+[sandwichOrder-library-Choose.lg](sandwichOrder-library-Choose.lg)

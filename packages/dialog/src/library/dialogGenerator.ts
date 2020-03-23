@@ -5,9 +5,9 @@
  */
 export * from './dialogGenerator'
 import * as s from './schema'
-import * as expressions from '@chrimc62/adaptive-expressions'
+import * as expressions from 'adaptive-expressions'
 import * as fs from 'fs-extra'
-import * as lg from '@chrimc62/botbuilder-lg'
+import * as lg from 'botbuilder-lg'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
 import { processSchemas } from './processSchemas'
@@ -40,18 +40,18 @@ export async function writeFile(path: string, val: any, force: boolean, feedback
     }
 }
 
-const expressionEngine = new expressions.ExpressionEngine((func: any) => {
+const expressionEngine = new expressions.ExpressionParser((func: any) => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
-        default: return expressions.ExpressionFunctions.lookup(func)
+        default: return expressions.Expression.lookup(func)
     }
 })
 
 // Given a template name we look for it or an .lg version of it in template dirs (or their locale sub dirs)
-type Template = lg.Evaluator | string | undefined
+type LGFile = lg.Templates | string | undefined
 
-async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<Template> {
+async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<LGFile> {
     let template
     for (let dir of templateDirs) {
         let loc = localePath(name, dir, locale)
@@ -62,7 +62,7 @@ async function findTemplate(name: string, templateDirs: string[], locale?: strin
             // LG Engine with name/names added functions
             loc = localePath(name + '.lg', dir, locale)
             if (await fs.pathExists(loc)) {
-                template = lg.LGParser.parseFile(loc, undefined, expressionEngine)
+                template = lg.Templates.parseFile(loc, undefined, expressionEngine)
             }
         }
     }
@@ -162,27 +162,27 @@ async function processTemplate(
         if (ref) {
             outPath = ppath.join(outDir, ref.relative)
         } else {
-            let template = await findTemplate(templateName, templateDirs, scope.locale)
-            if (template !== undefined) {
+            let lgfile = await findTemplate(templateName, templateDirs, scope.locale)
+            if (lgfile !== undefined) {
                 // NOTE: Ignore templates that are defined, but are empty
-                if (template) {
+                if (lgfile) {
                     let filename = addLocale(templateName, scope.locale, scope.prefix)
-                    if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
-                        filename = template.evaluateTemplate('filename', scope)
+                    if (typeof lgfile === 'object' && lgfile.toArray().some(f => f.name === 'filename')) {
+                        filename = lgfile.evaluate('filename', scope)
                     }
                     outPath = ppath.join(outDir, scope.locale, filename)
                     let ref = addEntry(outPath, outDir, scope.templates)
                     if (ref) {
                         if (force || !await fs.pathExists(outPath)) {
                             feedback(FeedbackType.info, `Generating ${outPath}`)
-                            let result = template
-                            if (typeof template === 'object') {
-                                result = template.evaluateTemplate('template', scope)
+                            let result = lgfile
+                            if (typeof lgfile === 'object') {
+                                result = lgfile.evaluate('template', scope)
                                 if (Array.isArray(result)) {
                                     result = result.join('\n')
                                 }
-                                if (template.templates.some(f => f.name === 'filename')) {
-                                    filename = template.evaluateTemplate('filename', scope)
+                                if (lgfile.toArray().some(f => f.name === 'filename')) {
+                                    filename = lgfile.evaluate('filename', scope)
                                 }
                             }
 

@@ -112,3 +112,26 @@ bf dialog:verify test/**/*.dialog
 ```
 
 _See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/verify.ts)_
+
+## `bf dialog:integrate [FILE]`
+
+The dialog:integrate command is used to merge two dialog assets. Each dialog asset includes all .dialog, .lu, .lg, and .qna files.
+
+```
+USAGE
+  $ bf dialog:integrate GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
+
+OPTIONS
+  -o, Path of the old dialog asset
+  -n, Path of the new dialog asset
+  -m, Output path of the merged dialog asset
+  -l. locale
+  --verbose   Show verbose output
+```
+
+Example:
+``` 
+bf dialog:integrate sandwich -o test/**/**/integrate_test_data/sandwich1 -n test/**/**/integrate_test_data/sandwich2 -m test/**/**/integrate_test_data/sandwich3 -l 'en-us'
+```
+
+_See code: [src/commands/dialog/integrate.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/integrate.ts)_

@@ -1,0 +1,7 @@
+
+# sandwichOrder
+- {number}
+- {dimension}
+- {BreadEntity}
+- {MeatEntity}
+- {money}
