@@ -157,7 +157,7 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[3].Body, `## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`);
         assert.equal(luresource.Sections[3].SimpleIntentSections.length, 2);
         assert.equal(luresource.Sections[3].SimpleIntentSections[0].Name, 'CheckUnreadTodo');
-        assert.equal(luresource.Sections[3].SimpleIntentSections[0].Body, `- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}`);
+        assert.equal(luresource.Sections[3].SimpleIntentSections[0].Body, `- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle`);
         assert.equal(luresource.Sections[3].SimpleIntentSections[0].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
         assert.equal(luresource.Sections[3].SimpleIntentSections[0].Entities[0].Name, 'todoTitle');
         assert.equal(luresource.Sections[3].SimpleIntentSections[0].Entities[0].Type, 'simple');
@@ -185,14 +185,14 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[0].Id, sectionId);
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap.length, 1);
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[0].utterance, 'hi');
-        assert.equal(luresource.Sections[0].Body, `> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2${NEWLINE}${NEWLINE}`);
+        assert.equal(luresource.Sections[0].Body, `> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2`);
     });
 
     it('add section test for nested section content with comments', () => {
-        let simpleIntentBody1 = `- hello${NEWLINE}- hi${NEWLINE}> this is comment 1${NEWLINE}@${NEWLINE}> this is comment 2${NEWLINE}`
+        let simpleIntentBody1 = `- hello${NEWLINE}- hi${NEWLINE}> this is comment 1${NEWLINE}@${NEWLINE}> this is comment 2`
         let simpleIntentBody2 = `- bye${NEWLINE}$${NEWLINE}> this is comment 3${NEWLINE}${NEWLINE}> this is comment 4${NEWLINE}`
-        let nestedIntentBody = `## greeting${NEWLINE}${simpleIntentBody1}${NEWLINE}## goodbye${NEWLINE}${simpleIntentBody2}`
-        let newFileConent = `# nestedIntentWithComments${NEWLINE}${nestedIntentBody}${NEWLINE}[xxx](b.lu)`
+        let nestedIntentBody = `## greeting${NEWLINE}${simpleIntentBody1}${NEWLINE}${NEWLINE}## goodbye${NEWLINE}${simpleIntentBody2}`
+        let newFileConent = `# nestedIntentWithComments${NEWLINE}${nestedIntentBody}${NEWLINE}${NEWLINE}[xxx](b.lu)`
 
         luresource = new SectionOperator(luresource).addSection(newFileConent);
 

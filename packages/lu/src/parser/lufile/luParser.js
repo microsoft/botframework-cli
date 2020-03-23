@@ -317,6 +317,7 @@ class LUParser {
                 }
 
                 const destList = originList.slice(startLine + 1, stopLine)
+                if (destList && destList.length > 0 && destList[destList.length - 1] === '') destList.pop()
                 section.Body = destList.join(NEWLINE)
 
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
