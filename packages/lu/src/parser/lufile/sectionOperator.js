@@ -14,7 +14,7 @@ class SectionOperator {
   // After CRUD, section Ids will keep same unless you change section name.
   addSection(sectionContent) {
     sectionContent = helpers.sanitizeNewLines(sectionContent);
-    const newContent = this.Luresource.Content !== '' ? `${this.Luresource.Content}${NEWLINE}${NEWLINE}${sectionContent}` : sectionContent;
+    const newContent = this.Luresource.Content !== '' ? `${this.Luresource.Content}${NEWLINE}${sectionContent}` : sectionContent;
 
     const result = luParser.parse(newContent);
     return result;
@@ -42,10 +42,6 @@ class SectionOperator {
     }
 
     var startLine = section.ParseTree.start.line - 1;
-    if (startLine > 0 && this.Luresource.Content && this.Luresource.Content.split(/\r?\n/)[startLine - 1] === '') {
-      startLine = startLine - 1;
-    }
-    
     var stopLine = section.ParseTree.stop.line - 1;
 
     var newContent = this.replaceRangeContent(this.Luresource.Content, startLine, stopLine, undefined);
