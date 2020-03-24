@@ -26,7 +26,10 @@ const luisToLuContent = function(luisJSON){
     fileContent += handlePhraseLists(luisJSON.model_features);
     fileContent += handlePhraseLists(luisJSON.phraselists);
     fileContent += parseToLuClosedLists(luisJSON)
-    fileContent += parseRegExEntitiesToLu(luisJSON)
+    fileContent += parseRegExEntitiesToLu(luisJSON.regex_entities)
+    // handle regexEntities in json returned from luis export api
+    // similar with regex_entities
+    fileContent += parseRegExEntitiesToLu(luisJSON.regexEntities)
     fileContent += parseCompositesToLu(luisJSON)
     fileContent += parsePatternAnyEntitiesToLu(luisJSON)
     return fileContent
@@ -238,13 +241,13 @@ const parseToLuClosedLists = function(luisJson){
     return fileContent
 }
 
-const parseRegExEntitiesToLu = function(luisJson){
+const parseRegExEntitiesToLu = function(regex_entities){
     let fileContent = ''
-    if(!luisJson.regex_entities) {
+    if(!regex_entities) {
         return fileContent
     }
     fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
-    luisJson.regex_entities.forEach(function(regExEntity) {
+    regex_entities.forEach(function(regExEntity) {
         fileContent += `@ regex `;
         fileContent += regExEntity.name.includes(' ') ? `"${regExEntity.name}"` : regExEntity.name;
         fileContent += addRolesAndFeatures(regExEntity);

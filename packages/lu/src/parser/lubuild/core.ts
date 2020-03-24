@@ -88,30 +88,16 @@ export class LuBuildCore {
       })
     })
 
-    // skip comparison of properties that LUIS API automatically added or updated
+    // skip comparisons of properties that LUIS API automatically added or updated
     currentAppToCompare.luis_schema_version = existingApp.luis_schema_version
     currentAppToCompare.tokenizerVersion = existingApp.tokenizerVersion
     currentAppToCompare.settings = existingApp.settings
-
-    // align the properties between local Luis json schema and remote one
-    existingApp.model_features = existingApp.phraselists
-    delete existingApp.phraselists
-
-    existingApp.regex_features = existingApp.regexFeatures
-    delete existingApp.regexFeatures
-
-    existingApp.regex_entities = existingApp.regexEntities
-    delete existingApp.regexEntities
 
     // skip none intent comparison if that is automatically added by LUIS server
     if (currentAppToCompare.intents && !currentAppToCompare.intents.some((x: any) => x.name === 'None')) {
       const existingNoneIntentIndex = existingApp.intents.findIndex((x: any) => x.name === 'None')
       if (existingNoneIntentIndex > -1) existingApp.intents.splice(existingNoneIntentIndex, 1)
     }
-
-    // sort properties so that they can be converted to exact same lu content when comparing
-    this.sortApplication(currentAppToCompare)
-    this.sortApplication(existingApp)
 
     // compare lu contents converted from luis josn
     const isApplicationEqual = this.isApplicationEqual(currentAppToCompare, existingApp)
@@ -223,32 +209,14 @@ export class LuBuildCore {
   }
 
   private isApplicationEqual(appA: any, appB: any) {
-    let appALu = (new Luis(appA)).parseToLuContent().toLowerCase()
-    let appBLu = (new Luis(appB)).parseToLuContent().toLowerCase()
+    let appALuis = new Luis(appA)
+    appALuis.sort()
+    let appALu = appALuis.parseToLuContent().toLowerCase()
+
+    let appBLuis = new Luis(appB)
+    appBLuis.sort()
+    let appBLu = appBLuis.parseToLuContent().toLowerCase()
 
     return appALu === appBLu
-  }
-
-  private sortApplication(app: any) {
-    this.sortProperty(app.intents, 'name')
-    this.sortProperty(app.closedLists, 'name')
-    this.sortProperty(app.composites, 'name')
-    this.sortProperty(app.entities, 'name')
-    this.sortProperty(app.model_features, 'name')
-    this.sortProperty(app.patternAnyEntities, 'name')
-    this.sortProperty(app.patterns, 'pattern')
-    this.sortProperty(app.prebuiltEntities, 'name')
-    this.sortProperty(app.regex_entities, 'name')
-    this.sortProperty(app.regex_features, 'name')
-    this.sortProperty(app.utterances, 'text')
-  }
-
-  private sortProperty(arrayToSort: any[], propertyToSort: string) {
-    (arrayToSort || []).sort((a: any, b: any) => {
-      const aValue = a[propertyToSort].toLowerCase()
-      const bValue = b[propertyToSort].toLowerCase()
-
-      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
-    })
   }
 }
