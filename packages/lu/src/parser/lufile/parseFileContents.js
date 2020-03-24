@@ -1034,7 +1034,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
         for (const entity of entities) {
             if (entity.Type !== INTENTTYPE) {
                 entity.Name = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
-                let entityName = entity.Name;
+                let entityName = entity.Name.endsWith('=') ? entity.Name.slice(0, entity.Name.length - 1) : entity.Name;
                 let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
                 if (!entityType) {
                     let errorMsg = `No type definition found for entity "${entityName}". Supported types are ${Object.values(EntityTypeEnum).join(', ')}. Note: Type names are case sensitive.`;
@@ -1800,7 +1800,11 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
+            
+            // avoid to throw invalid model info when meeting enableSections info which is handled in luParser.js
+            if (kvPair[1] === 'enableSections') continue
+
             if (kvPair.length === 4) {
                 if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
                     enableMergeIntents = false;

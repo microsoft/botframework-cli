@@ -56,9 +56,10 @@ describe('luis:build cli parameters test', () => {
   test
     .stdout()
     .stderr()
-    .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/bad3.lu')}`, '--botName', 'Contoso'])
+    .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_import_file.lu')}`, '--botName', 'Contoso'])
     .it('displays an error if error occurs in parsing lu content', ctx => {
       expect(ctx.stderr).to.contain('Invalid LU file')
+      expect(ctx.stderr).to.contain('bad3.lu')
       expect(ctx.stderr).to.contain('[ERROR] line 4:0 - line 4:16: Invalid intent body line, did you miss \'-\' at line begin')
     })
 })
@@ -548,6 +549,8 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
 
       expect(ctx.stdout).to.contain('foo.en-us.lu.dialog loaded')
       expect(ctx.stdout).to.contain('foo.fr-fr.lu.dialog loaded')
+
+      expect(ctx.stdout).to.contain('[WARN]: empty intent(s) # emptyIntent are filtered when handling luis application')
 
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')

@@ -60,7 +60,7 @@ export default class LuisTranslate extends Command {
           [key]: {},
         }
         for (const lu of translatedLuis) {
-          result[key][lu.language] = await LuisBuilder.fromLU([lu])
+          result[key][lu.language] = await LuisBuilder.fromLUAsync([lu])
         }
       }
 

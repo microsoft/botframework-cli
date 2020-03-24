@@ -42,7 +42,7 @@ describe('luis:application:delete', () => {
   .reply(200, {'code': 'Success'})
   )
   .stdout()
-  .command(['luis:application:delete', '--appId', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1()])
+  .command(['luis:application:delete', '--appId', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1(), '--force'])
   .it('deletes a luis app and displays a success message', ctx => {
     expect(ctx.stdout).to.contain('App successfully deleted')
   })
@@ -50,7 +50,7 @@ describe('luis:application:delete', () => {
   test
   .stdout()
   .stderr()
-  .command(['luis:application:delete', '--appId', uuidv1(), '--endpoint', 'undefined', '--subscriptionKey', uuidv1()])
+  .command(['luis:application:delete', '--appId', uuidv1(), '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--force'])
   .it('fails to delete an app and displays an error message if the endpoint is undefined', ctx => {
     expect(ctx.stderr).to.contain('Failed to delete app')
   })

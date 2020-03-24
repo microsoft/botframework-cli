@@ -7,9 +7,9 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 import {camelCase, kebabCase, upperFirst} from 'lodash'
 import * as path from 'path'
 const fs = require('fs-extra')
-const exception = require('./../../../../node_modules/@microsoft/bf-lu/lib/parser/utils/exception')
-const file = require('./../../../../node_modules/@microsoft/bf-lu/lib/utils/filehelper')
-const LuisToTsConverter = require('./../../../../node_modules/@microsoft/bf-lu/lib/parser/converters/luistotsconverter')
+const exception = require('@microsoft/bf-lu').V2.Exception
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
+const LuisToTsConverter = require('@microsoft/bf-lu/lib/parser/converters/luistotsconverter')
 
 export default class LuisGenerateTs extends Command {
   static description = 'Generate:ts generates a strongly typed typescript source code from an exported (json) LUIS model.'

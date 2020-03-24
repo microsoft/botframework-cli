@@ -160,10 +160,10 @@ To parse LU files, you can use the LUISBuilder class, which returns a LUIS class
 ```js
 const Luis = require('@microsoft/bf-lu').V2.Luis
 const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
-const luContent1 = `# Greeting
+const luContent = `# Greeting
 - hi`;
 
-const luisObject = await LUISBuilder.buildFromLUContent(luContent1)
+const luisObject = await LUISBuilder.fromContentAsync(luContent)
 
 // Parsed LUIS object
 console.log(JSON.stringify(luisObject, 2, null));
@@ -178,24 +178,11 @@ You can use the available validate() function to verify if the parsed LUIS objec
 const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
 const exception = require('@microsoft/bf-lu').V2.Exception
 const luContent = `# Greeting
-- hi {userName=bob}
-$userName:first=
--vishwac`;
+- hi`;
 
-async function parseContent() {
-    try {   
-        const luisObject = await LUISBuilder.buildFromLUContent(luContent)
-        luisObject.validate()
-    } catch (error) {
-        if (error instanceof exception) {
-        // do something specific to this exception
-        } else {
-            console.log(errObj.text);
-        }
-    }
-}
-
-parseContent();
+const luisObject = await LUISBuilder.fromLUAsync(luContent)
+luisObject.intents[0].name = "testIntent123456789012345678901234567890123"
+luisObject.validate()
 ```
 
 ## Generating lu content from LUIS JSON
@@ -214,7 +201,7 @@ const locale = 'en-us';
 async function parseContent() {
 
     try {   
-        const luisObject = await LUISBuilder.buildFromLUContent(luContent)
+        const luisObject = await LUISBuilder.fromContentAsync(luContent)
         luisObject.validate()
         const parsedLuisBackToLu = luisObject.parseToLuContent()
     } catch (error) {

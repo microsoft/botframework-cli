@@ -18,9 +18,7 @@
       "name": "1",
       "children": [
         {
-          "name": {
-            "name": "number"
-          }
+          "name": "number"
         }
       ],
       "roles": []

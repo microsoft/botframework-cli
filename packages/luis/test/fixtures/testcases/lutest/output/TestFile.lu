@@ -1,0 +1,140 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> Total passed: 17/17
+
+> # Intent definitions
+
+> Utterance passed in this intent: 6/6
+## AcceptEventEntry
+> PASS. Predicted intent: AcceptEventEntry(0.948831439)
+> PASS. Predicted entities: accept all meetings for {@Subject=christmas party} {@FromDate=next week}.
+- accept all meetings for {@Subject=christmas party} {@FromDate=next week}.
+> PASS. Predicted intent: AcceptEventEntry(0.9806283)
+> PASS. Predicted entities: accept an appointment
+- accept an appointment
+> PASS. Predicted intent: AcceptEventEntry(0.9898117)
+> PASS. Predicted entities: accept {@Meals=dinner}
+- accept {@Meals=dinner}
+> PASS. Predicted intent: AcceptEventEntry(0.9551928)
+> PASS. Predicted entities: accept my meeting at {@FromDateTime={@FromDate=tomorrow} {@FromTime=10am}}
+- accept my meeting at {@FromDateTime={@FromDate=tomorrow} {@FromTime=10am}}
+> PASS. Predicted intent: AcceptEventEntry(0.959497333)
+> PASS. Predicted entities: accept my meeting with {@Female=lucy}
+- accept my meeting with {@Female=lucy}
+> PASS. Predicted intent: AcceptEventEntry(0.981132746)
+> PASS. Predicted entities: accept my {@Next=next} meeting
+- accept my {@Next=next} meeting
+- ^i (want to|would like to|'d like to) (join|attend) the {@Subject}^
+
+
+> Utterance passed in this intent: 6/6
+## CreateCalendarEntry
+> PASS. Predicted intent: CreateCalendarEntry(0.999999762)
+> PASS. Predicted entities: book a meeting with huanx@abc.com
+- book a meeting with huanx@abc.com
+> PASS. Predicted intent: CreateCalendarEntry(0.993257463)
+> PASS. Predicted entities: create a calendar appointment at {@FromTime=3:30} {@FromDate=tomorrow} for {@Duration=half an hour}
+- create a calendar appointment at {@FromTime=3:30} {@FromDate=tomorrow} for {@Duration=half an hour}
+> PASS. Predicted intent: CreateCalendarEntry(0.9999999)
+> PASS. Predicted entities: create a event with eden roth at {@FromTime=4pm} {@FromDate=today} for {@Duration=30 mins}
+- create a event with eden roth at {@FromTime=4pm} {@FromDate=today} for {@Duration=30 mins}
+> PASS. Predicted intent: CreateCalendarEntry(0.9999998)
+> PASS. Predicted entities: create a meeting at 6 o'clock
+- create a meeting at 6 o'clock
+> PASS. Predicted intent: CreateCalendarEntry(0.99999994)
+> PASS. Predicted entities: create an appointment with doctor lu from {@FromTime=8:30 am} to {@ToTime=10:00 am} {@FromDate=tomorrow} {@FromTime=morning}
+- create an appointment with doctor lu from {@FromTime=8:30 am} to {@ToTime=10:00 am} {@FromDate=tomorrow} {@FromTime=morning}
+> PASS. Predicted intent: CreateCalendarEntry(0.972337842)
+> PASS. Predicted entities: create appointment for {@Duration=30 minutes}
+- create appointment for {@Duration=30 minutes}
+
+
+> Utterance passed in this intent: 2/2
+## FindCalendarEntry
+> PASS. Predicted intent: FindCalendarEntry(0.951522648)
+> PASS. Predicted entities: find a meeting subject {@Subject=daily meeting}
+- find a meeting subject {@Subject=daily meeting}
+> PASS. Predicted intent: FindCalendarEntry(0.959091961)
+> PASS. Predicted entities: find a meeting with subject {@Subject=weekly report}
+- find a meeting with subject {@Subject=weekly report}
+
+
+> Utterance passed in this intent: 3/3
+## None
+> PASS. Predicted intent: None(0.962541759)
+> PASS. Predicted entities: 1
+- 1
+> PASS. Predicted intent: None(0.9742338)
+> PASS. Predicted entities: i want them all
+- i want them all
+> PASS. Predicted intent: None(0.9528941)
+> PASS. Predicted entities: the {@PositionReference=third} one
+- the {@PositionReference=third} one
+
+
+> # Entity definitions
+
+@ ml Duration
+
+@ ml FromDate
+
+@ ml FromTime
+
+@ ml Location
+
+@ ml MeetingRoom
+
+@ ml OrderReference hasRole Next
+
+@ ml PositionReference
+
+@ ml Subject hasRole Meals
+
+@ ml ToDate
+
+@ ml ToTime
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt ordinal
+
+@ prebuilt personName hasRoles Female,Male
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+@ list PossessivePronoun hasRole FirstPerson = 
+	- FirstPerson :
+		- my
+		- our
+		- my own
+		- our own
+	- SecondPerson :
+		- your
+		- your own
+	- ThirdPerson :
+		- his
+		- her
+		- their
+		- his own
+		- her own
+		- their own
+
+
+> # RegEx entities
+
+@ regex Email hasRole OutLook = /[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+/
+@ regex MeetingRoomKeywordsDesc = /((conf|conference|meeting)\s+)?(room|rm|office)/
+
+> # Composite entities
+
+@ composite FromDateTime = [FromDate, FromTime]
