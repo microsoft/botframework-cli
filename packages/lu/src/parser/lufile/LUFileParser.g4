@@ -22,6 +22,10 @@ newline
     : WS* (NEWLINE | EOF)
     ;
 
+errorString
+    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
+    ;
+
 nestedIntentSection
     : nestedIntentNameLine nestedIntentBodyDefinition
     ;
@@ -67,16 +71,12 @@ intentBody
 	;
 
 normalIntentBody
-    : WS* ((normalIntentString newline) | errorIntentString)+
+    : WS* ((normalIntentString newline) | errorString)+
     ;
 
 normalIntentString
 	: WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
 	;
-
-errorIntentString
-    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
-    ;
 
 newEntitySection
     : newEntityDefinition
@@ -87,11 +87,11 @@ newEntityDefinition
     ;
 
 newEntityListbody
-    : ((normalItemString newline) | errorItemString)+
+    : ((normalItemString newline) | errorString)+
     ;
 
 newEntityLine
-    : WS* AT WS* newEntityType? WS* (newEntityName|newEntityNameWithWS) WS* newEntityRoles? WS* newEntityUsesFeatures? WS* EQUAL? WS* (newCompositeDefinition|newRegexDefinition)? newline
+    : WS* AT WS* newEntityType? WS* (newEntityName|newEntityNameWithWS)? WS* newEntityRoles? WS* newEntityUsesFeatures? WS* EQUAL? WS* (newCompositeDefinition|newRegexDefinition)? newline
     ;
 
 newCompositeDefinition
@@ -135,7 +135,7 @@ entityDefinition
     ;
     
 entityLine
-    : WS* DOLLAR entityName COLON_MARK entityType
+    : WS* DOLLAR (entityName COLON_MARK entityType)?
     ;
 
 entityName
@@ -155,15 +155,11 @@ regexEntityIdentifier
     ;
 
 entityListBody
-    : ((normalItemString newline) | errorItemString)+
+    : ((normalItemString newline) | errorString)+
     ;
 
 normalItemString
     : WS* DASH (WS|TEXT|EXPRESSION|ESCAPE_CHARACTER)*
-    ;
-
-errorItemString
-    : (WS|INVALID_TOKEN_DEFAULT_MODE)+
     ;
 
 importSection

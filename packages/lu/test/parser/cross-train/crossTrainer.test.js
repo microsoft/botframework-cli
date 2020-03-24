@@ -200,7 +200,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
 
     assert.equal(luResult.get('dia1.lu').Sections[0].ModelInfo, '> !# @app.name = my luis application')
     assert.equal(luResult.get('dia1.lu').Sections[3].Name, '_Interruption')
-    assert.equal(luResult.get('dia1.lu').Sections[3].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide`)
+    assert.equal(luResult.get('dia1.lu').Sections[3].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
     assert.equal(luResult.get('dia1.lu').Sections[4].Name, 'DeferToRecognizer_QnA_dia1')
     assert.equal(luResult.get('dia1.lu').Sections[4].Body, `- tell joke${NEWLINE}- tell me a joke`)
 
@@ -211,7 +211,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(qnaResult.get('dia1.qna').Sections[3].Questions.join(', '), 'I need a four star hotel, book a flight for me, book a train ticket for me, user guide')
 
     assert.equal(luResult.get('dia2.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('dia2.lu').Sections[2].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke`)
+    assert.equal(luResult.get('dia2.lu').Sections[2].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
     assert.equal(luResult.get('dia2.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia2')
     assert.equal(luResult.get('dia2.lu').Sections[3].Body, `- sing song${NEWLINE}- tell a joke`)
 
@@ -240,7 +240,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
 
 
     assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Body, `- guide de l'utilisateur`)
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Body, `- guide de l'utilisateur${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
     assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia1')
     assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Body, `- raconter la blague`)
 
