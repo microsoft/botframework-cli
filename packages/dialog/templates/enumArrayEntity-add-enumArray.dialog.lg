@@ -2,28 +2,6 @@
 - ${addFilename(`${property}Entity`)}
 
 # template
-- ```
-{
-    "$schema": "${appSchema}",
-    "$kind": "Microsoft.OnAssignEntity",
-    "operator": "AddToProperty",
-    "property": "${property}",
-    "entity": "${property}Entity",
-    "actions": [
-        {
-            "$kind": "Microsoft.SendActivity",
-            "activity": "${callSetMessage()}"
-        },    
-        {
-            "$kind": "Microsoft.SetProperty",
-            "property": "$${property}",
-            "value": "=@${property}Entity"
-        }
-    ]
-}
-```
-
-# callSetMessage
-- $\{setPropertyMessage('${property}', @${property}Entity)}
+- ${addArrayDialog(`${property}Entity`)}
 
 [generator.lg](generator.lg)

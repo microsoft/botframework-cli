@@ -2,6 +2,6 @@
 - ${removeFilename(`${property}Entity`)}
 
 # template
-- ${removeDialog(`${property}Entity`)}
+- ${removeArrayDialog(`${property}Entity`)}
 
 [generator.lg](generator.lg)

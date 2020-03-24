@@ -6,7 +6,7 @@
 {
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "operator": "AddToProperty",
+    "operation": "AddToProperty",
     "property": "${property}",
     "entity": "datetime",
     "actions": [

@@ -22,8 +22,11 @@
 - show {@ShowProperty=${property}}
 > Combinations
 - add {@AddToProperty=${entity}} and remove {@RemoveFromProperty=${entity}}
+- add {@AddToProperty=${entity}} remove {@RemoveFromProperty=${entity}}
+- add {@AddToProperty=${entity}}, remove {@RemoveFromProperty=${entity}}
 - add {@AddToProperty=${entity} and ${entity}} and remove {@RemoveFromProperty=${entity}}
 - add {@AddToProperty=${entity}, ${entity} and ${entity}} and remove {@RemoveFromProperty=${entity} and ${entity}}
+- add {@AddToProperty=${entity}, ${entity} and ${entity}} remove {@RemoveFromProperty=${entity} and ${entity}}
 - add {@AddToProperty=${entity}}, remove {@RemoveFromProperty=${entity}} and show {@ShowProperty=${property}}
 - remove {@RemoveFromProperty=${entity}} and add {@AddToProperty=${entity}}
 - remove {@RemoveFromProperty=${entity} and ${entity}} and add {@AddToProperty=${entity}}

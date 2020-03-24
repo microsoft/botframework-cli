@@ -3,7 +3,7 @@
 {
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "operator": "AddToProperty",
+    "operation": "AddToProperty",
     "property": "ChangePropertyConfirmation",
     "entity": "boolean",
     "actions": [
@@ -19,9 +19,7 @@
                 {
                     "$kind": "Microsoft.Ask",
                     "activity": "$\{template(concat('Ask',$PropertyToRemember))}",
-                    "expectedProperties": 
-                        "createArray($PropertyToRemember)"
-                    
+                    "expectedProperties": "createArray($PropertyToRemember)"
                 }
             ]
         }

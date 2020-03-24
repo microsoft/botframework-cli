@@ -33,7 +33,7 @@ Enter a value for ${name(property)}: true or false
 ```
 
 # enumArrayValue(property, values)
-- ${join(foreach(values, value, template(property + 'Entity', value)), ',')}
+- ${if(isArray(values), join(foreach(values, value, template(property + 'Entity', value)), ', '), template(property + 'Entity', values))}
 
 [library.en-us.lg]
 [library-Help.en-us.lg]

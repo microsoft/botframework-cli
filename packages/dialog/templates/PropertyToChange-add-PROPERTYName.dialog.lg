@@ -3,7 +3,7 @@
 {
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "operator": "AddToProperty",
+    "operation": "AddToProperty",
     "property": "PropertyToChange",
     "entity": "PROPERTYName",
     "actions": [

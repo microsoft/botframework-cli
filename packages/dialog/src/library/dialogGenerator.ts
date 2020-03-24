@@ -33,7 +33,7 @@ function computeHash(val: string): string {
 }
 
 function computeJSONHash(json: any): string {
-    return computeHash(JSON.stringify(json, null, 2))
+    return computeHash(JSON.stringify(json, null, 4))
 }
 
 const commentHash = ['.lg', '.lu', '.qna']
@@ -48,7 +48,7 @@ function addHash(path: string, val: any): any {
     } else if (jsonHash.includes(ext)) {
         let json = JSON.parse(val)
         json.$Generator = computeJSONHash(json)
-        val = JSON.stringify(json, null, 2)
+        val = JSON.stringify(json, null, 4)
     }
     return val
 }
