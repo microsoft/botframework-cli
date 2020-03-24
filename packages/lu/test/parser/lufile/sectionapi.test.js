@@ -99,34 +99,33 @@ describe('Section CRUD test', () => {
          @ simple emailSubject`;
 
         luresource = new SectionOperator(luresource).addSection(newFileConent);
-
         assert.equal(luresource.Errors.length, 1);
         assert.equal(luresource.Sections.length, 4);
-        assert.equal(luresource.Sections[0].Errors.length, 0);
-        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
-        assert.equal(luresource.Sections[0].Name, 'CheckEmail');
-        assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap.length, 0);
-        
         assert.equal(luresource.Sections[1].Errors.length, 0);
         assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
-        assert.equal(luresource.Sections[1].Name, 'CheckUnreadEmail');
-        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap.length, 2);
-        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[0].utterance, 'check my unread email');
-        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[1].utterance, 'show my unread emails');
-        assert.equal(luresource.Sections[1].Entities.length, 1);
-        assert.equal(luresource.Sections[1].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
-        assert.equal(luresource.Sections[1].Entities[0].Name, 'emailTitle');
-        assert.equal(luresource.Sections[1].Entities[0].Type, 'simple');
-
+        assert.equal(luresource.Sections[1].Name, 'CheckEmail');
+        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap.length, 0);
+        
         assert.equal(luresource.Sections[2].Errors.length, 0);
         assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
-        assert.equal(luresource.Sections[2].Name, 'CheckDeletedEmail');
+        assert.equal(luresource.Sections[2].Name, 'CheckUnreadEmail');
         assert.equal(luresource.Sections[2].UtteranceAndEntitiesMap.length, 2);
-        assert.equal(luresource.Sections[2].UtteranceAndEntitiesMap[0].utterance, 'check my deleted email');
-        assert.equal(luresource.Sections[2].UtteranceAndEntitiesMap[1].utterance, 'show my deleted emails');
+        assert.equal(luresource.Sections[2].UtteranceAndEntitiesMap[0].utterance, 'check my unread email');
+        assert.equal(luresource.Sections[2].UtteranceAndEntitiesMap[1].utterance, 'show my unread emails');
+        assert.equal(luresource.Sections[2].Entities.length, 1);
         assert.equal(luresource.Sections[2].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
-        assert.equal(luresource.Sections[2].Entities[0].Name, 'emailSubject');
+        assert.equal(luresource.Sections[2].Entities[0].Name, 'emailTitle');
         assert.equal(luresource.Sections[2].Entities[0].Type, 'simple');
+
+        assert.equal(luresource.Sections[3].Errors.length, 0);
+        assert.equal(luresource.Sections[3].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[3].Name, 'CheckDeletedEmail');
+        assert.equal(luresource.Sections[3].UtteranceAndEntitiesMap.length, 2);
+        assert.equal(luresource.Sections[3].UtteranceAndEntitiesMap[0].utterance, 'check my deleted email');
+        assert.equal(luresource.Sections[3].UtteranceAndEntitiesMap[1].utterance, 'show my deleted emails');
+        assert.equal(luresource.Sections[3].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
+        assert.equal(luresource.Sections[3].Entities[0].Name, 'emailSubject');
+        assert.equal(luresource.Sections[3].Entities[0].Type, 'simple');
     });
 
     it('add nestedIntentSection test with enableSections flag set', () => {
@@ -152,41 +151,58 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[1].SimpleIntentSections[1].Entities[0].Type, 'simple');
         assert.equal(luresource.Sections[1].SimpleIntentSections[1].UtteranceAndEntitiesMap[0].utterance, 'check my deleted email');
 
-        assert.equal(luresource.Sections[2].Errors.length, 0);
-        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
-        assert.equal(luresource.Sections[2].Name, 'CheckTodo');
-        assert.equal(luresource.Sections[2].Body, `## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`);
-        assert.equal(luresource.Sections[2].SimpleIntentSections.length, 2);
-        assert.equal(luresource.Sections[2].SimpleIntentSections[0].Name, 'CheckUnreadTodo');
-        assert.equal(luresource.Sections[2].SimpleIntentSections[0].Body, `- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle`);
-        assert.equal(luresource.Sections[2].SimpleIntentSections[0].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
-        assert.equal(luresource.Sections[2].SimpleIntentSections[0].Entities[0].Name, 'todoTitle');
-        assert.equal(luresource.Sections[2].SimpleIntentSections[0].Entities[0].Type, 'simple');
-        assert.equal(luresource.Sections[2].SimpleIntentSections[0].UtteranceAndEntitiesMap[1].utterance, 'show my unread todos');
+        assert.equal(luresource.Sections[3].Errors.length, 0);
+        assert.equal(luresource.Sections[3].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
+        assert.equal(luresource.Sections[3].Name, 'CheckTodo');
+        assert.equal(luresource.Sections[3].Body, `## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`);
+        assert.equal(luresource.Sections[3].SimpleIntentSections.length, 2);
+        assert.equal(luresource.Sections[3].SimpleIntentSections[0].Name, 'CheckUnreadTodo');
+        assert.equal(luresource.Sections[3].SimpleIntentSections[0].Body, `- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}`);
+        assert.equal(luresource.Sections[3].SimpleIntentSections[0].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
+        assert.equal(luresource.Sections[3].SimpleIntentSections[0].Entities[0].Name, 'todoTitle');
+        assert.equal(luresource.Sections[3].SimpleIntentSections[0].Entities[0].Type, 'simple');
+        assert.equal(luresource.Sections[3].SimpleIntentSections[0].UtteranceAndEntitiesMap[1].utterance, 'show my unread todos');
 
-        assert.equal(luresource.Sections[2].SimpleIntentSections[1].Name, 'CheckDeletedTodo');
-        assert.equal(luresource.Sections[2].SimpleIntentSections[1].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
-        assert.equal(luresource.Sections[2].SimpleIntentSections[1].Entities[0].Name, 'todoSubject');
-        assert.equal(luresource.Sections[2].SimpleIntentSections[1].Entities[0].Type, 'simple');
-        assert.equal(luresource.Sections[2].SimpleIntentSections[1].UtteranceAndEntitiesMap[0].utterance, 'check my deleted todo');
+        assert.equal(luresource.Sections[3].SimpleIntentSections[1].Name, 'CheckDeletedTodo');
+        assert.equal(luresource.Sections[3].SimpleIntentSections[1].Entities[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
+        assert.equal(luresource.Sections[3].SimpleIntentSections[1].Entities[0].Name, 'todoSubject');
+        assert.equal(luresource.Sections[3].SimpleIntentSections[1].Entities[0].Type, 'simple');
+        assert.equal(luresource.Sections[3].SimpleIntentSections[1].UtteranceAndEntitiesMap[0].utterance, 'check my deleted todo');
     });
 
     it('update section test for invalid content', () => {
-
         // missing '-' before utterance hello
-        let newFileConent = `# Greeting${NEWLINE}- hi${NEWLINE}hello`;
+        let newFileConent = `# Greeting${NEWLINE}> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2`;
 
-        let sectionId = luresource.Sections[3].Id;
-        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[3].Id, newFileConent);
+        let sectionId = luresource.Sections[0].Id;
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[0].Id, newFileConent);
         
-        assert.equal(luresource.Errors.length, 1);
+        assert.equal(luresource.Errors.length, 4);
         assert.equal(luresource.Sections.length, 4);
-        assert.equal(luresource.Sections[3].Errors.length, 1);
-        assert.equal(luresource.Sections[3].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
-        assert.equal(luresource.Sections[3].Name, 'Greeting');
-        assert.equal(luresource.Sections[3].Id, sectionId);
-        assert.equal(luresource.Sections[3].UtteranceAndEntitiesMap.length, 1);
-        assert.equal(luresource.Sections[3].UtteranceAndEntitiesMap[0].utterance, 'hi');
-        assert.equal(luresource.Sections[3].Body, `- hi${NEWLINE}hello`);
+        assert.equal(luresource.Sections[0].Errors.length, 4);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[0].Name, 'Greeting');
+        assert.equal(luresource.Sections[0].Id, sectionId);
+        assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap.length, 1);
+        assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[0].utterance, 'hi');
+        assert.equal(luresource.Sections[0].Body, `> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2`);
+    });
+
+    it('add section test for nested section content with comments', () => {
+        let simpleIntentBody1 = `- hello${NEWLINE}- hi${NEWLINE}> this is comment 1${NEWLINE}@${NEWLINE}> this is comment 2${NEWLINE}`
+        let simpleIntentBody2 = `- bye${NEWLINE}$${NEWLINE}> this is comment 3${NEWLINE}${NEWLINE}> this is comment 4${NEWLINE}${NEWLINE}`
+        let nestedIntentBody = `## greeting${NEWLINE}${simpleIntentBody1}${NEWLINE}## goodbye${NEWLINE}${simpleIntentBody2}`
+        let newFileConent = `# nestedIntentWithComments${NEWLINE}${nestedIntentBody}${NEWLINE}[xxx](b.lu)`
+
+        luresource = new SectionOperator(luresource).addSection(newFileConent);
+
+        assert.equal(luresource.Errors.length, 7);
+        assert.equal(luresource.Sections.length, 6);
+        assert.equal(luresource.Sections[4].Errors.length, 3);
+        assert.equal(luresource.Sections[4].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
+        assert.equal(luresource.Sections[4].Name, 'nestedIntentWithComments');
+        assert.equal(luresource.Sections[4].SimpleIntentSections[0].Body, simpleIntentBody1);
+        assert.equal(luresource.Sections[4].SimpleIntentSections[1].Body, simpleIntentBody2);
+        assert.equal(luresource.Sections[4].Body, nestedIntentBody);
     });
 });

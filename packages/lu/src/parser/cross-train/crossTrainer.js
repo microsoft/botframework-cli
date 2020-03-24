@@ -246,7 +246,7 @@ const mergeInterruptionIntent = function (fromUtterances, toResource, intentName
     // construct new content here
     const dedupUtterances = dedupFromUtterances.filter(u => !existingUtterances.includes(u))
     if (dedupUtterances && dedupUtterances.length > 0) {
-      let newFileContent = `> Source: cross training. Please do not edit these directly!${NEWLINE}# ${intentName}${NEWLINE}- `
+      let newFileContent = `${NEWLINE}> Source: cross training. Please do not edit these directly!${NEWLINE}# ${intentName}${NEWLINE}- `
       newFileContent += dedupUtterances.join(`${NEWLINE}- `)
 
       // add section here
@@ -383,7 +383,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
 
   // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
   if (questionsContent && questionsContent !== '' && utterances.length > 0) {
-    const questionsToUtterances = `${crossTrainingComments}${NEWLINE}# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
+    const questionsToUtterances = `${NEWLINE}${crossTrainingComments}${NEWLINE}# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
     trainedLuResource = new SectionOperator(trainedLuResource).addSection(questionsToUtterances)
   }
 
@@ -413,7 +413,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   if (qnaContents && qnaContents !== '') {
     const modelInfoSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.MODELINFOSECTION)
     const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
-    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
+    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(NEWLINE + qnaContents)
   }
 
   // remove utterances which are duplicated with local qna questions
@@ -424,7 +424,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
 
   // add utterances from lu file to corresponding qna file with question set to all utterances
   if (utterancesContent && utterancesContent !== '' && qnaSections.length > 0) {
-    const utterancesToQuestion = `${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    const utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 
