@@ -85,7 +85,7 @@ export default class QnamakerBuild extends Command {
 
         // get qna files from flags.in.
         if (flags.in && flags.in !== '') {
-          const qnaFiles = await file.getLuFiles(flags.in, true, fileExtEnum.QnAFile)
+          const qnaFiles: string[] = await file.getLuFiles(flags.in, true, fileExtEnum.QnAFile)
           files.push(...qnaFiles)
         }
 
