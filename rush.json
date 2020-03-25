@@ -46,6 +46,10 @@
     {
       "packageName": "@microsoft/botframework-cli",
       "projectFolder": "packages/cli"
+    },
+    {
+      "packageName": "@microsoft/bfcli-task",
+      "projectFolder": "packages/bfCliTask"
     }
   ]
 }
