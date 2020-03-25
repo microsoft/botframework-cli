@@ -193,27 +193,20 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 const updateIntentAndEntityFeatures = function(luisObj) {
     let plForAll = luisObj.model_features.filter(item => item.enabledForAllModels == undefined || item.enabledForAllModels == true);
     plForAll.forEach(pl => {
-        luisObj.intents.forEach(intent => {
-            if (intent.hasOwnProperty("features")) {
-                if (Array.isArray(intent.features) && intent.features.find(i => i.featureName == pl.name) === undefined) {
-                    intent.features.push(new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature));
-                }
-            } else {
-                intent.features = [new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature)];
-            }
-        })
-
-        luisObj.entities.forEach(entity => {
-            if (entity.hasOwnProperty("features")) {
-                if (Array.isArray(entity.features) && entity.features.find(e => e.featureName == pl.name) === undefined) {
-                    entity.features.push(new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature));
-                }
-            } else {
-                entity.features = [new helperClass.featureToModel(pl.name, featureProperties.phraseListFeature)];
-            }
-            
-        })
+        luisObj.intents.forEach(intent => updateFeaturesWithPL(intent, pl.name));
+        luisObj.entities.forEach(entity => updateFeaturesWithPL(entity, pl.name));
     })
+}
+
+const updateFeaturesWithPL = function(collection, plName) {
+    if (collection === null || collection === undefined) return;
+    if (collection.hasOwnProperty("features")) {
+        if (Array.isArray(collection.features) && collection.features.find(i => i.featureName == plName) === undefined) {
+            collection.features.push(new helperClass.featureToModel(plName, featureProperties.phraseListFeature));
+        }
+    } else {
+        collection.features = [new helperClass.featureToModel(plName, featureProperties.phraseListFeature)];
+    }
 }
 /**
  * Helper to update final LUIS model based on labelled nDepth entities.
