@@ -210,13 +210,37 @@ export class LuBuildCore {
 
   private isApplicationEqual(appA: any, appB: any) {
     let appALuis = new Luis(appA)
-    appALuis.sort()
+    this.sortLuis(appALuis)
     let appALu = appALuis.parseToLuContent().toLowerCase()
 
     let appBLuis = new Luis(appB)
-    appBLuis.sort()
+    this.sortLuis(appBLuis)
     let appBLu = appBLuis.parseToLuContent().toLowerCase()
 
     return appALu === appBLu
+  }
+
+  private sortLuis(app: any) {
+    this.sortProperty(app.intents, 'name')
+    this.sortProperty(app.closedLists, 'name')
+    this.sortProperty(app.composites, 'name')
+    this.sortProperty(app.entities, 'name')
+    this.sortProperty(app.model_features, 'name')
+    this.sortProperty(app.phraselists, 'name')
+    this.sortProperty(app.patternAnyEntities, 'name')
+    this.sortProperty(app.patterns, 'pattern')
+    this.sortProperty(app.prebuiltEntities, 'name')
+    this.sortProperty(app.regex_entities, 'name')
+    this.sortProperty(app.regexEntities, 'name')
+    this.sortProperty(app.utterances, 'text')
+  }
+
+  private sortProperty(arrayToSort: any[], propertyToSort: string) {
+    (arrayToSort || []).sort((a: any, b: any) => {
+      const aValue = a[propertyToSort].toLowerCase()
+      const bValue = b[propertyToSort].toLowerCase()
+
+      return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
+    })
   }
 }
