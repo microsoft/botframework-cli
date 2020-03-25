@@ -1,0 +1,69 @@
+{
+    "id": "ea18cfcb-9e65-46de-acfb-6398f379db71",
+    "name": "bf-cli-task",
+    "friendlyName": "BotFramework Task",
+    "description": "Wraps the BF CLI tooling",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Microsoft Corporation",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "version": {
+        "Major": 4,
+        "Minor": 8,
+        "Patch": 0,
+        "Release":14
+    },
+    "instanceNameFormat": "BotFramework Task",
+    "groups": [
+        {
+            "name": "azure",
+            "displayName": "Azure Details",
+            "isExpanded": true
+        },
+        {
+            "name": "commands",
+            "displayName": "Commands",
+            "isExpanded": true
+        }
+    ],
+    "inputs": [
+        {
+            "name": "azureSubscription",
+            "type": "connectedService:AzureRM",
+            "label": "Azure Subscription",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
+            "groupname": "azure"
+        },
+        {
+            "name": "bfCommand",
+            "type": "pickList",
+            "label": "Command",
+            "required": true,
+            "defaultValue": "LUIS",
+            "groupname": "commands",
+            "helpMarkDown": "Select the command to execute.",
+            "options": {
+                "LUIS" : "LUIS",
+                "QnaMaker" : "QnaMaker"
+            }       
+        },
+        {
+            "name": "applicationName",
+            "type": "string",
+            "label": "Application Name",
+            "required": true,
+            "groupname": "commands",
+            "helpMarkDown": "Enter a name for the LUIS application."    
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
