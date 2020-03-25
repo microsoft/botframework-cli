@@ -17,7 +17,7 @@ import * as integ from '../../../src/library/integration'
 describe('dialog:integrate', async () => {
     let output_dir = ppath.join(os.tmpdir(), 'sandwichOrder3')
     let schemaName = 'sandwichOrder'
-    let oldPath= 'test/commands/dialog/integrate_test_data/sandwichOrder1'
+    let oldPath = 'test/commands/dialog/integrate_test_data/sandwichOrder1'
     let newPath = 'test/commands/dialog/integrate_test_data/sandwichOrder2'
     let locale = 'en-us'
 
@@ -27,7 +27,7 @@ describe('dialog:integrate', async () => {
 
     it('integrate: Merge dialog files', async () => {
         try {
-            await integ.integrateAssets(schemaName, oldPath, newPath, output_dir, locale)
+            await integ.integrateAssets(schemaName, oldPath, newPath, output_dir, locale, (type, msg) => {console.log(`${type}: ${msg}`)})
 
             let resultDialog = `${output_dir}/sandwichOrder.main.dialog`
             let dialog = await fs.readFile(resultDialog)
@@ -37,10 +37,22 @@ describe('dialog:integrate', async () => {
         }
     })
 
+    it('integrate: Merge other files', async () => {
+        try {
+            await integ.integrateAssets(schemaName, oldPath, newPath, output_dir, locale, (type, msg) => {console.log(`${type}: ${msg}`)})
+
+            let resultOther = `${output_dir}/sandwichOrder-Bread.qna`
+            let other = await fs.readFile(resultOther)
+            assert.ok(other.toString().includes('old sandwich Bread'), 'Did not merge otehr files, e.g. .qna')
+        } catch (e) {
+            assert.fail(e.message)
+        }
+    })
+
     it('integrate: Merge lg files', async () => {
         try {
             await integ.integrateAssets(schemaName, oldPath, newPath, output_dir, locale)
-
+            
             let resultLG = `${output_dir}/${locale}/sandwichOrder-BreadEntity.en-us.lg`
             let lg = await fs.readFile(resultLG)
             assert.ok(lg.toString().includes('black'), 'Did not merge lg files')
@@ -61,15 +73,12 @@ describe('dialog:integrate', async () => {
         }
     })
 
-    it('integrate: Merge other files', async () => {
-        try {
-            await integ.integrateAssets(schemaName, oldPath, newPath, output_dir, locale)
-
-            let resultOther = `${output_dir}/sandwichOrder-Bread.qna`
-            let other = await fs.readFile(resultOther)
-            assert.ok(other.toString().includes('old sandwich Bread'), 'Did not merge otehr files, e.g. .qna')
-        } catch (e) {
-            assert.fail(e.message)
-        }
-    })
+    test
+        .stdout()
+        .stderr()
+        .command(['dialog:integrate', `${schemaName}`, '-o', `${oldPath}`, '-n', `${newPath}`, '-m', `${output_dir}`, '-l', `${locale}`])
+        .it('Detect success', ctx => {
+            expect(ctx.stderr)
+                .to.contain('Create output dir')
+        })
 })
