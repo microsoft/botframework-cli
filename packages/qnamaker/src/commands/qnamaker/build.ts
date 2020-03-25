@@ -17,7 +17,7 @@ const Recognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/qnabuild/builder').Builder
 
 export default class QnamakerBuild extends Command {
-  static description = 'Build qna files to create and publish qnamaker knowledge bases or update alterations'
+  static description = 'Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations'
 
   static examples = [`
     $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} --dialog
@@ -25,10 +25,10 @@ export default class QnamakerBuild extends Command {
 
   static flags: any = {
     help: flags.help({char: 'h'}),
-    in: flags.string({char: 'i', description: 'QnA file or folder'}),
+    in: flags.string({char: 'i', description: 'Source .qna file or folder'}),
     subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key', required: true}),
-    botName: flags.string({char: 'b', description: 'Bot name'}),
-    region: flags.string({description: 'LUIS api endpoint region [westus|westeurope|australiaeast]', default: 'westus'}),
+    botName: flags.string({char: 'b', description: 'Bot name', required: true}),
+    region: flags.string({description: 'QnA maker api endpoint region [westus|westeurope|australiaeast]', default: 'westus'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
@@ -46,10 +46,6 @@ export default class QnamakerBuild extends Command {
 
       if (!flags.stdin && !flags.in) {
         throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
-      }
-
-      if (!flags.botName) {
-        throw new CLIError('Missing bot name. Please pass bot name with --botName flag')
       }
 
       flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'

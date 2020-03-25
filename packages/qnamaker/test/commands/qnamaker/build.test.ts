@@ -18,7 +18,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stdout()
     .command(['qnamaker:build', '--help'])
     .it('should print the help contents when --help is passed as an argument', ctx => {
-      expect(ctx.stdout).to.contain('Build qna files to create and publish qnamaker knowledge bases or update alterations')
+      expect(ctx.stdout).to.contain('Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations')
     })
 
   test
@@ -42,7 +42,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stderr()
     .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag')
+      expect(ctx.stderr).to.contain('Missing required flag:\n -b, --botName BOTNAME Bot name')
     })
   
   test
