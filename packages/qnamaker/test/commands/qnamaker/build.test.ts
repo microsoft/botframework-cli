@@ -42,7 +42,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stderr()
     .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain('Missing required flag:\n -b, --botName BOTNAME Bot name')
+      expect(ctx.stderr).to.contain('Missing required flag:\n -b, --botName BOTNAME  Bot name')
     })
   
   test
