@@ -112,7 +112,7 @@ export class QnaBuildCore {
 
   public isKBEqual(kbA: any, kbB: any): boolean {
     const qnaListA = kbA.qnaList
-    const qnaListSourcesA = qnaListA.map((qna: any) => qna.source) 
+    const qnaListSourcesA = qnaListA.map((qna: any) => qna.source)
 
     const qnaDocumentsB = kbB.qnaDocuments || []
     const qnaListB = qnaDocumentsB.filter((qnaDoc: any) => qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => {
