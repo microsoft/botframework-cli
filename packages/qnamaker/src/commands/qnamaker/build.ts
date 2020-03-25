@@ -81,7 +81,7 @@ export default class QnamakerBuild extends Command {
       } else {
         if (flags.log) this.log('Loading files...\n')
 
-        let files = []
+        let files: string[] = []
 
         // get qna files from flags.in.
         if (flags.in && flags.in !== '') {
