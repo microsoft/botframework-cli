@@ -1,0 +1,76 @@
+#
+# Publish of BotFramework CLI Task in the Marketplace
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+
+pool:
+  name: Hosted Windows 2019 with VS2019
+
+trigger: none
+pr: none
+
+jobs:
+  - job: BotFramework_CLI_Task_Publish
+    variables:
+      buildVersion: '4.8.0-preview.$(Build.BuildId)'
+      _version: ${{coalesce(variables.version, variables.buildVersion)}}
+      publisherId: 'Southworks-Pipelines-Test'
+      extensionId: 'bf-cli-task'
+      extensionName: 'BotFramework Task'
+      version: '4.8.0.$(Build.BuildId)'
+
+    steps:
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with version number'
+      inputs:
+        tags: 'Version=$(_version)'
+      continueOnError: true
+      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], 'False'))
+
+    - task: NodeTool@0
+      displayName: 'Use Node 12.x'
+      inputs:
+        versionSpec: 12.x
+
+    - task: Npm@1
+      displayName: 'Install rush'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'install --global @microsoft/rush'
+
+    - script: 'rush update'
+      displayName: 'rush update'
+
+    - script: 'rush build -p 2 -t @microsoft/bfcli-task'
+      displayName: 'rush build'
+
+    - task: ms-devlabs.vsts-developer-tools-build-tasks.tfx-installer-build-task.TfxInstaller@2
+      displayName: 'Install tfx-cli: v0.7.x'
+      inputs:
+        version: v0.7.x
+
+    - task: ms-devlabs.vsts-developer-tools-build-tasks.package-extension-build-task.PackageAzureDevOpsExtension@2
+      displayName: 'Package Extension: packages/bfCliTask'
+      inputs:
+        rootFolder: packages/bfCliTask
+        outputPath: '$(Build.ArtifactStagingDirectory)'
+        publisherId: '$(publisherId)'
+        extensionName: '$(extensionName)'
+        extensionVersion: '$(version)'
+        extensionVisibility: private
+        extensionPricing: free
+
+    - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishAzureDevOpsExtension@2
+      displayName: 'Publish Extension'
+      inputs:
+        connectedServiceName: MarketPlaceConnection
+        fileType: vsix
+        vsixFile: '$(Build.ArtifactStagingDirectory)/$(publisherId).$(extensionId)-$(version).vsix'
+        publisherId: '$(publisherId)'
+        updateTasksVersion: false
+        extensionVisibility: public
+        extensionPricing: free
+
