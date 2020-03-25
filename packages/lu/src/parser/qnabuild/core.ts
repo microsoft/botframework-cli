@@ -4,15 +4,13 @@
  */
 
 import {Recognizer} from './recognizer'
-import { MultiLanguageRecognizer } from './multi-language-recognizer'
+import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
 import {isEqual, differenceWith} from 'lodash'
 import * as path from 'path'
 const Content = require('./../lu/qna')
 const LUOptions = require('./../lu/luOptions')
 const {ServiceBase} = require('./../utils/serviceBase')
-
-const customEditorial = 'custom editorial'
 
 export class QnaBuildCore {
   private readonly service: any
@@ -26,8 +24,7 @@ export class QnaBuildCore {
     const text = await response.text()
     try {
       return JSON.parse(text)
-    }
-    catch (e) {
+    } catch {
       return text
     }
   }
@@ -37,8 +34,7 @@ export class QnaBuildCore {
     const text = await response.text()
     try {
       return JSON.parse(text)
-    }
-    catch (e) {
+    } catch {
       return text
     }
   }
@@ -48,8 +44,7 @@ export class QnaBuildCore {
     const text = await response.text()
     try {
       return JSON.parse(text)
-    }
-    catch (e) {
+    } catch {
       return text
     }
   }
@@ -59,8 +54,7 @@ export class QnaBuildCore {
     const text = await response.text()
     try {
       return JSON.parse(text)
-    }
-    catch (e) {
+    } catch {
       return text
     }
   }
@@ -70,8 +64,7 @@ export class QnaBuildCore {
     const text = await response.text()
     try {
       return JSON.parse(text)
-    }
-    catch (e) {
+    } catch {
       return text
     }
   }
@@ -81,19 +74,17 @@ export class QnaBuildCore {
     const text = await response.text()
     try {
       return JSON.parse(text)
-    }
-    catch (e) {
+    } catch {
       return text
     }
   }
 
   public async replaceAlt(altJson: any) {
-    const response = await this.service.createRequest(`/alterations`, 'PUT', altJson)
+    const response = await this.service.createRequest('/alterations', 'PUT', altJson)
     const text = await response.text()
     try {
       return JSON.parse(text)
-    }
-    catch (e) {
+    } catch {
       return text
     }
   }
@@ -121,9 +112,10 @@ export class QnaBuildCore {
 
   public isKBEqual(kbA: any, kbB: any): boolean {
     const qnaListA = kbA.qnaList
+    const qnaListSourcesA = qnaListA.map((qna: any) => qna.source) 
 
     const qnaDocumentsB = kbB.qnaDocuments || []
-    const qnaListB = qnaDocumentsB.filter((qnaDoc: any) => qnaDoc.source === customEditorial).map((qna: any) => {
+    const qnaListB = qnaDocumentsB.filter((qnaDoc: any) => qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => {
       return {
         id: 0,
         answer: qna.answer,
@@ -138,10 +130,10 @@ export class QnaBuildCore {
     if (equal) {
       const qnaUrlsA = kbA.urls || []
       const qnaFilesA = kbA.files || []
-      const qnaUrlsAndFileNamesA = new Set(qnaUrlsA.concat(qnaFilesA.map((qnaFile: any) => qnaFile.fileName)))
-      const qnaUrlsAndFileNamesB = new Set(qnaDocumentsB.filter((qnaDoc: any) => qnaDoc.source !== customEditorial).map((qna: any) => qna.source))
+      const urlsAndFileNamesResA = new Set(qnaUrlsA.concat(qnaFilesA.map((qnaFile: any) => qnaFile.fileName)))
+      const otherResourcesB = new Set(qnaDocumentsB.filter((qnaDoc: any) => !qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => qna.source))
 
-      equal = this.isArrayEqual([...qnaUrlsAndFileNamesA], [...qnaUrlsAndFileNamesB])
+      equal = this.isArrayEqual([...urlsAndFileNamesResA], [...otherResourcesB])
     }
 
     return equal

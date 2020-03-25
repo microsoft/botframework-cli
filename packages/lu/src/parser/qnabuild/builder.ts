@@ -59,8 +59,8 @@ export class Builder {
       } else {
         fileCulture = culture
         fileName = path.basename(file, path.extname(file))
-      }  
-      
+      }
+
       const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.qna.dialog`)
       if (!multiRecognizers.has(fileName)) {
@@ -143,8 +143,6 @@ export class Builder {
         let currentAlt = qnaObj.alterations
         let culture = content.language as string
 
-        // TODO: handle alterations
-
         // get recognizer
         let recognizer = recognizers.get(content.name) as Recognizer
 
@@ -177,9 +175,10 @@ export class Builder {
 
         // update alterations if there are
         if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
+          this.handler(`${recognizer.getQnaPath()} replacing alterations...\n`)
           await qnaBuildCore.replaceAlt(currentAlt)
         }
-        
+
         // update multiLanguageRecognizer asset
         if (multiRecognizers && multiRecognizers.has(content.id)) {
           let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
@@ -301,7 +300,7 @@ export class Builder {
     await delay(delayDuration)
     const response = await qnaBuildCore.importKB(currentKB)
     const operationId = response.operationId
-    
+
     const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
     recognizer.setKBId(opResult.resourceLocation.split('/')[2])
     this.handler(`${recognizer.getQnaPath()} creating finished\n`)
@@ -311,7 +310,8 @@ export class Builder {
 
   async getKBOperationStatus(qnaBuildCore: QnaBuildCore, operationId: string, delayDuration: number) {
     let opResult
-    while (true) {
+    let isGetting = true
+    while (isGetting) {
       await delay(delayDuration)
       opResult = await qnaBuildCore.getOperationStatus(operationId)
 
@@ -319,8 +319,7 @@ export class Builder {
         throw new Error(JSON.stringify(opResult, null, 4))
       }
 
-      if (opResult.operationState === 'Succeeded')
-        break
+      if (opResult.operationState === 'Succeeded') isGetting = false
     }
 
     return opResult
@@ -343,6 +342,6 @@ export class Builder {
       }
     }
 
-    return new Content(settings.save(), path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath())
+    return new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
   }
 }
