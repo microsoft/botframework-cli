@@ -10,6 +10,7 @@ import { DataUtility } from "../../src/data/DataUtility";
 import { Utility } from "../../src/utility/Utility";
 
 import { UnitTestHelper } from "../utility/Utility.test";
+import { NgramSubwordFeaturizer } from "../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
 describe("Test Suite - data/DataUtility", () => {
     it("Test.0000 getDataFileTypeFromFilenameExtension", function() {
@@ -74,7 +75,7 @@ describe("Test Suite - data/DataUtility", () => {
                 const luQnaJsonStructure: string =
                     luData.getLuQnaJsonStructure();
                 Utility.debuggingLog(
-                    `luQnaJsonStructure-MicrosoftFaqForWindows=${JSON.stringify(luQnaJsonStructure)}`);
+                    `luQnaJsonStructure-MicrosoftFaqForWindows=${Utility.JSONstringify(luQnaJsonStructure)}`);
             });
     });
     it("Test.0102 LoadData", function() {
@@ -89,7 +90,7 @@ describe("Test Suite - data/DataUtility", () => {
                 const luQnaJsonStructure: string =
                     luData.getLuQnaJsonStructure();
                 Utility.debuggingLog(
-                    `luQnaJsonStructure-MicrosoftFaqForOffice=${JSON.stringify(luQnaJsonStructure)}`);
+                    `luQnaJsonStructure-MicrosoftFaqForOffice=${Utility.JSONstringify(luQnaJsonStructure)}`);
             });
     });
 });
