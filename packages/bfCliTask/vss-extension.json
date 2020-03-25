@@ -1,0 +1,44 @@
+{
+    "manifestVersion": 1,
+     "id": "bf-cli-task",
+     "name": "BotFramework Task",
+     "version": "4.8.0.14",
+     "publisher": "Southworks-Pipelines-Test",
+     "targets": [
+         {
+             "id": "Microsoft.VisualStudio.Services"
+         }
+     ],    
+    "description": "Wraps the BF CLI tooling",
+    "categories": [
+         "Azure Pipelines"
+     ],
+    "icons": {
+         "default": "images/icon.png"        
+     },
+     "content": {
+         "details": {
+             "path": "readme.md"
+         }
+     },
+    "files": [
+         {
+             "path": "src"
+         }
+     ],
+    "contributions": [
+         {
+             "id": "custom-bf-cli-task",
+             "type": "ms.vss-distributed-task.task",
+             "targets": [
+                 "ms.vss-distributed-task.tasks"
+             ],
+             "properties": {
+                 "name": "src"
+             }
+     }
+     ],
+     "galleryFlags": [
+         "Public"
+     ]
+}
