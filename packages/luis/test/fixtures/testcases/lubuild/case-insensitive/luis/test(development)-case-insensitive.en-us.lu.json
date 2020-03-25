@@ -6,19 +6,35 @@
   "intents": [
     {
       "name": "GetUserProfile",
-      "features": []
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
     },
     {
       "name": "Greeting",
-      "features": []
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
     },
     {
       "name": "Help",
-      "features": []
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
     },
     {
       "name": "None",
-      "features": []
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
     }
   ],
   "entities": [],
@@ -71,7 +87,15 @@
     }
   ],
   "regexFeatures": [],
-  "phraselists": [],
+  "phraselists": [
+    {
+      "activated": true,
+      "name": "profileDefinition",
+      "words": "I'm,My,I am",
+      "mode": true,
+      "enabledForAllModels": true
+    }
+  ],
   "patterns": [
     {
       "pattern": "help me with {Item}",

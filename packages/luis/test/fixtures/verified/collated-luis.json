@@ -19,6 +19,60 @@
       "name": "CommunicationPreference"
     },
     {
+      "name": "Greeting",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
+    },
+    {
+      "name": "Help",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
+    },
+    {
+      "name": "AskForUserName",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
+    },
+    {
+      "name": "CreateAlarm",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
+    },
+    {
+      "name": "DeleteAlarm",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
+    },
+    {
+      "name": "CommunicationPreference",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
+    },
+    {
       "name": "Buy chocolate"
     },
     {
@@ -94,20 +148,6 @@
     }
   ],
   "regex_entities": [],
-  "model_features": [
-    {
-      "name": "ChocolateType",
-      "words": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
-      "mode": false,
-      "activated": true
-    },
-    {
-      "name": "question",
-      "words": "are you,you are",
-      "mode": true,
-      "activated": true
-    }
-  ],
   "regex_features": [],
   "utterances": [
     {
@@ -394,9 +434,25 @@
       "roles": []
     }
   ],
-  "luis_schema_version": "3.2.0",
+  "luis_schema_version": "6.0.0",
   "versionId": "0.1",
   "name": "collated-luis",
   "desc": "",
-  "culture": "en-us"
+  "culture": "en-us",
+  "phraselists": [
+    {
+      "name": "ChocolateType",
+      "words": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
+      "mode": false,
+      "activated": true,
+      "enabledForAllModels": true
+    },
+    {
+      "name": "question",
+      "words": "are you,you are",
+      "mode": true,
+      "activated": true,
+      "enabledForAllModels": true
+    }
+  ]
 }
