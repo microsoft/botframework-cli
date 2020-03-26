@@ -7,6 +7,7 @@ import { Command, flags } from '@microsoft/bf-cli-command';
 import * as gen from '../../library/dialogGenerator'
 import * as integ from '../../library/integration'
 import * as fs from 'fs-extra';
+import { pathToFileURL } from 'url';
 
 export default class GenerateDialog extends Command {
     static description = '[PREVIEW] Generate localized .lu, .lg, .qna and .dialog assets to define a bot based on a schema using templates.'
@@ -33,15 +34,17 @@ export default class GenerateDialog extends Command {
 
     async run() {
         const { args, flags } = this.parse(GenerateDialog)
-        if(flags.integrate){
+        if(flags.integrate && fs.pathExists(flags.output)){
             let start = args.schema.lastIndexOf('/')
             let end = args.schema.lastIndexOf('.')
-            let schemaName = args.schema.slice(start, end)
+            let schemaName = args.schema.slice(start+1, end)
             let tempNewPath = 'D:/BOT/tempNew/'
             let tempOldPath = 'D:/BOT/tempOld/'
             try {
-                await  fs.copySync(flags.output, tempOldPath)
-                await fs.emptyDirSync(flags.output)
+                 fs.emptyDirSync(tempNewPath)
+                 fs.emptyDirSync(tempOldPath)
+                 fs.copySync(flags.output, tempOldPath)
+                 fs.emptyDirSync(flags.output)
                 await gen.generate(args.schema, flags.prefix, tempNewPath, flags.schema, flags.locale, flags.templates, flags.force,
                     (type, msg) => {
                         if (type === gen.FeedbackType.message

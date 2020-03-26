@@ -31,7 +31,7 @@
             "$entities": [
                 "utterance"
             ]
-        }
+        },
         "Price": {
             "$ref": "template:money.schema#/money"
         }
