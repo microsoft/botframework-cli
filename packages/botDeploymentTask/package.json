@@ -4,7 +4,7 @@
   "description": "Deployment of a bot",
   "main": "botDeployment/index.js",
   "scripts": {
-    "build": "tsc -b",
+    "build": "cd botDeployment && npm run build",
     "test": "",
     "posttest": ""
   },
@@ -17,16 +17,5 @@
   "bugs": {
     "url": "https://github.com/microsoft/botframework-cli/issues"
   },
-  "homepage": "https://github.com/microsoft/botframework-cli#readme",
-  "dependencies": {
-    "@types/dotenv": "^8.2.0",
-    "applicationinsights": "^1.7.0",
-    "azure-pipelines-task-lib": "^2.9.3",
-    "dotenv": "^8.2.0"
-  },
-  "devDependencies": {
-    "@types/node": "^12.12.21",
-    "@types/q": "^1.5.2",
-    "typescript": "^3.5.3"
-  }
+  "homepage": "https://github.com/microsoft/botframework-cli#readme"
 }

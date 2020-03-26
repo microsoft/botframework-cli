@@ -18,6 +18,7 @@ jobs:
       extensionName: 'Bot Deployment'
       version: '4.8.0.$(Build.BuildId)'
       # TelemetryInstrumentationKey: 'Define this in Azure'
+      # MarketplaceConnection: 'Define this in Azure'
 
     steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
@@ -78,7 +79,7 @@ jobs:
     - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishAzureDevOpsExtension@2
       displayName: 'Publish Extension'
       inputs:
-        connectedServiceName: MarketPlaceConnection
+        connectedServiceName: $(MarketplaceConnection)
         fileType: vsix
         vsixFile: '$(Build.ArtifactStagingDirectory)/$(publisherId).$(extensionId)-$(version).vsix'
         publisherId: '$(publisherId)'
