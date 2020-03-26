@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":14
+        "Release":26
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -24,7 +24,7 @@
             "isExpanded": true
         },
         {
-            "name": "commands",
+            "name": "command",
             "displayName": "Commands",
             "isExpanded": true
         }
@@ -40,25 +40,91 @@
             "groupname": "azure"
         },
         {
-            "name": "bfCommand",
+            "name": "luisCommand",
+            "type": "boolean",
+            "label": "LUIS",
+            "required": false,
+            "defaultValue": "true",
+            "helpMarkDown": "Check to execute a LUIS command.",
+            "groupname": "command" 
+        },
+        {
+            "name": "qnaMakerCommand",
+            "type": "boolean",
+            "label": "QnAMaker",
+            "required": false,
+            "defaultValue": "false",
+            "helpMarkDown": "Check to execute a QnAMaker command.",
+            "groupname": "command" 
+        },
+        {
+            "name": "luisSubCommand",
             "type": "pickList",
-            "label": "Command",
+            "label": "LUIS Commands",
             "required": true,
-            "defaultValue": "LUIS",
-            "groupname": "commands",
-            "helpMarkDown": "Select the command to execute.",
+            "defaultValue": "",
+            "groupname": "command",
+            "visibleRule": "luisCommand = TRUE",
+            "helpMarkDown": "Select the sub-command to execute.",
             "options": {
-                "LUIS" : "LUIS",
-                "QnaMaker" : "QnaMaker"
+                "ApplicationCreate" : "Application Create",
+                "LuisBuild" : "Luis Build"
             }       
         },
         {
-            "name": "applicationName",
+            "name": "luisApplicationName",
             "type": "string",
             "label": "Application Name",
             "required": true,
-            "groupname": "commands",
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate",
             "helpMarkDown": "Enter a name for the LUIS application."    
+        },
+        {
+            "name": "luisEndpoint",
+            "type": "string",
+            "label": "Endpoint",
+            "required": true,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "helpMarkDown": "Enter the LUIS endpoint hostname."    
+        },
+        {
+            "name": "luisSubscriptionKey",
+            "type": "string",
+            "label": "Subscription Key",
+            "required": true,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "helpMarkDown": "Enter the LUIS cognitive services subscription key."    
+        },
+        {
+            "name": "luisCulture",
+            "type": "string",
+            "label": "Culture",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "en-us",
+            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "helpMarkDown": "Enter the culture for the LUIS application (default: en-us)."
+        },
+        {
+            "name": "luisVersionId",
+            "type": "string",
+            "label": "Version Id",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "helpMarkDown": "Enter the version Id for the LUIS application."
+        },
+        {
+            "name": "luisAppDescription",
+            "type": "string",
+            "label": "Description",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "helpMarkDown": "Enter a description for the LUIS application."
         }
     ],
     "execution": {
