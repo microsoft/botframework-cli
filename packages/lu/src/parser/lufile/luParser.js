@@ -318,6 +318,8 @@ class LUParser {
 
                 const destList = originList.slice(startLine + 1, stopLine)
                 section.Body = destList.join(NEWLINE)
+                section.StartLine = startLine
+                section.StopLine = stopLine - 1
 
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
                     LUParser.extractIntentBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
