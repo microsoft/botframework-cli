@@ -4,6 +4,7 @@
  */
 
 import { getInput, getBoolInput } from "azure-pipelines-task-lib";
+import { existsSync } from "fs";
 
 export class InputValues {
 
@@ -15,16 +16,30 @@ export class InputValues {
     public luisCulture: string;
     public luisVersionId: string;
     public luisAppDescription: string;
+    public luisInputFile: string;
+    public luisBotName: string;
 
     constructor() {
         // LUIS inputs
         this.luisCommand = getBoolInput('luisCommand', false);
-        this.luisSubCommand = getInput('luisSubCommand', true) as string;
-        this.luisApplicationName = getInput('luisApplicationName', true) as string;
-        this.luisEndpoint = getInput('luisEndpoint', true) as string;
-        this.luisSubscriptionKey = getInput('luisSubscriptionKey', true) as string;
-        this.luisCulture = getInput('luisCulture', true) as string;
-        this.luisVersionId = getInput('luisVersionId', true) as string;
-        this.luisAppDescription = getInput('luisAppDescription', true) as string;
-    } 
+        this.luisSubCommand = getInput('luisSubCommand', false) as string;
+        this.luisApplicationName = getInput('luisApplicationName', false) as string;
+        this.luisEndpoint = getInput('luisEndpoint', false) as string;
+        this.luisSubscriptionKey = getInput('luisSubscriptionKey', false) as string;
+        this.luisCulture = getInput('luisCulture', false) as string;
+        this.luisVersionId = getInput('luisVersionId', false) as string;
+        this.luisAppDescription = getInput('luisAppDescription', false) as string;
+        this.luisInputFile = this.validatePath('luisInputFile');
+        this.luisBotName = getInput('luisBotName', false) as string;
+    }
+
+    private validatePath = (inputName: string): string => {
+        const path = getInput(inputName) as string;
+
+        if (!existsSync(path)) {
+            throw new Error(`The file or directory "${ path }" specified in "${ inputName }" does not exist.`);
+        }
+
+        return path;
+    }    
 }
