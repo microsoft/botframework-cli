@@ -1,22 +1,58 @@
 {
   "intents": [
     {
-      "name": "Greeting"
+      "name": "Greeting",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
     },
     {
-      "name": "Help"
+      "name": "Help",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
     },
     {
-      "name": "AskForUserName"
+      "name": "AskForUserName",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
     },
     {
-      "name": "CreateAlarm"
+      "name": "CreateAlarm",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
     },
     {
-      "name": "DeleteAlarm"
+      "name": "DeleteAlarm",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
     },
     {
-      "name": "CommunicationPreference"
+      "name": "CommunicationPreference",
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
     },
     {
       "name": "None"
@@ -25,7 +61,13 @@
   "entities": [
     {
       "name": "userName",
-      "roles": []
+      "roles": [],
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        }
+      ]
     }
   ],
   "composites": [],
@@ -65,14 +107,6 @@
     }
   ],
   "regex_entities": [],
-  "model_features": [
-    {
-      "name": "ChocolateType",
-      "words": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
-      "mode": false,
-      "activated": true
-    }
-  ],
   "regex_features": [],
   "utterances": [
     {
@@ -241,9 +275,18 @@
       "roles": []
     }
   ],
-  "luis_schema_version": "3.2.0",
+  "luis_schema_version": "6.0.0",
   "versionId": "0.1",
   "name": "12",
   "desc": "",
-  "culture": "en-us"
+  "culture": "en-us",
+  "phraselists": [
+    {
+      "name": "ChocolateType",
+      "words": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
+      "mode": false,
+      "activated": true,
+      "enabledForAllModels": true
+    }
+  ]
 }

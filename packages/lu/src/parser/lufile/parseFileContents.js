@@ -183,10 +183,31 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // If utterances have this child, then all parents must be included in the label
     updateModelBasedOnNDepthEntities(parsedContent.LUISJsonStructure.utterances, parsedContent.LUISJsonStructure.entities);
 
+    // Update intent and entities with phrase lists if any
+    updateIntentAndEntityFeatures(parsedContent.LUISJsonStructure);
+
     helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
 
 }
 
+const updateIntentAndEntityFeatures = function(luisObj) {
+    let plForAll = luisObj.model_features.filter(item => item.enabledForAllModels == undefined || item.enabledForAllModels == true);
+    plForAll.forEach(pl => {
+        luisObj.intents.forEach(intent => updateFeaturesWithPL(intent, pl.name));
+        luisObj.entities.forEach(entity => updateFeaturesWithPL(entity, pl.name));
+    })
+}
+
+const updateFeaturesWithPL = function(collection, plName) {
+    if (collection === null || collection === undefined) return;
+    if (collection.hasOwnProperty("features")) {
+        if (Array.isArray(collection.features) && collection.features.find(i => i.featureName == plName) === undefined) {
+            collection.features.push(new helperClass.featureToModel(plName, featureProperties.phraseListFeature));
+        }
+    } else {
+        collection.features = [new helperClass.featureToModel(plName, featureProperties.phraseListFeature)];
+    }
+}
 /**
  * Helper to update final LUIS model based on labelled nDepth entities.
  * @param {Object []} utterances 

@@ -209,7 +209,7 @@ describe('Model as feature definitions', function () {
                     .then(res => {
                         assert.equal(res.LUISJsonStructure.entities.length, 1);
                         assert.equal(res.LUISJsonStructure.entities[0].name, 'x1');
-                        assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
+                        assert.equal(res.LUISJsonStructure.entities[0].features.length, 2);
                         assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'city');
                         assert.equal(res.LUISJsonStructure.phraselists.length, 2);
                         assert.equal(res.LUISJsonStructure.phraselists[0].name, 'city');
@@ -286,7 +286,7 @@ describe('Model as feature definitions', function () {
                     .then(res => {
                         assert.equal(res.LUISJsonStructure.entities.length, 1);
                         assert.equal(res.LUISJsonStructure.entities[0].name, 'number');
-                        assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
+                        assert.equal(res.LUISJsonStructure.entities[0].features.length, 2);
                         assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'city');
                         assert.equal(res.LUISJsonStructure.entities[0].roles.length, 1);
                         assert.deepEqual(res.LUISJsonStructure.entities[0].roles, ['r1']);

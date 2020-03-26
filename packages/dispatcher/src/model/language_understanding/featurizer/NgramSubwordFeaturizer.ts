@@ -102,7 +102,7 @@ export class NgramSubwordFeaturizer {
         }
         if (labelId < 0) {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${this.labelMap}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
             }
         }
         return labelId;
@@ -261,7 +261,7 @@ export class NgramSubwordFeaturizer {
             labelArray[labelId] = true;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${this.labelMap}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
             }
         }
         return labelArray;
@@ -285,7 +285,7 @@ export class NgramSubwordFeaturizer {
             labelArray[labelId] = 1;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${this.labelMap}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
             }
         }
         return labelArray;

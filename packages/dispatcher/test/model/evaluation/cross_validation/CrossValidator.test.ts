@@ -61,15 +61,6 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
         assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
         const crossValidator: CrossValidator =
             new CrossValidator(
-                luData.getFeaturizerLabels(),
-                luData.getFeaturizerLabelMap(),
-                luData.getFeaturizer().getNumberLabels(),
-                luData.getFeaturizer().getNumberFeatures(),
-                luData.getIntents(),
-                luData.getUtterances(),
-                luData.getIntentLabelIndexArray(),
-                luData.getUtteranceFeatureIndexArrays(),
-                luData.getIntentInstanceIndexMapArray(),
                 numberOfCrossValidationFolds,
                 learnerParameterEpochs,
                 learnerParameterMiniBatchSize,
@@ -78,6 +69,16 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 learnerParameterLossEarlyStopRatio,
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
+        crossValidator.crossValidate(
+            luData.getFeaturizerLabels(),
+                luData.getFeaturizerLabelMap(),
+                luData.getFeaturizer().getNumberLabels(),
+                luData.getFeaturizer().getNumberFeatures(),
+                luData.getIntents(),
+                luData.getUtterances(),
+                luData.getIntentLabelIndexArray(),
+                luData.getUtteranceFeatureIndexArrays(),
+                luData.getIntentInstanceIndexMapArray());
         const crossValidationResult: {
             "confusionMatrixCrossValidation": ConfusionMatrix
             "thresholdReporterCrossValidation": ThresholdReporter,
@@ -134,15 +135,6 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
         assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
         const crossValidator: CrossValidator =
             new CrossValidator(
-                columnarData.getFeaturizerLabels(),
-                columnarData.getFeaturizerLabelMap(),
-                columnarData.getFeaturizer().getNumberLabels(),
-                columnarData.getFeaturizer().getNumberFeatures(),
-                columnarData.getIntents(),
-                columnarData.getUtterances(),
-                columnarData.getIntentLabelIndexArray(),
-                columnarData.getUtteranceFeatureIndexArrays(),
-                columnarData.getIntentInstanceIndexMapArray(),
                 numberOfCrossValidationFolds,
                 learnerParameterEpochs,
                 learnerParameterMiniBatchSize,
@@ -151,6 +143,16 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 learnerParameterLossEarlyStopRatio,
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
+        crossValidator.crossValidate(
+            columnarData.getFeaturizerLabels(),
+            columnarData.getFeaturizerLabelMap(),
+            columnarData.getFeaturizer().getNumberLabels(),
+            columnarData.getFeaturizer().getNumberFeatures(),
+            columnarData.getIntents(),
+            columnarData.getUtterances(),
+            columnarData.getIntentLabelIndexArray(),
+            columnarData.getUtteranceFeatureIndexArrays(),
+            columnarData.getIntentInstanceIndexMapArray());
         const crossValidationResult: {
             "confusionMatrixCrossValidation": ConfusionMatrix
             "thresholdReporterCrossValidation": ThresholdReporter,

@@ -35,7 +35,9 @@ describe('Section CRUD test', () => {
         let newFileConent = 
         `# CheckEmail
         - check my email
-        - show my emails`;
+        - show my emails
+        
+        > this is comment when adding simpleIntentSection`;
 
         luresource = new SectionOperator(luresource).addSection(newFileConent);
 
@@ -55,11 +57,12 @@ describe('Section CRUD test', () => {
         `# CheckEmail
         - check my email
         - show my emails
-        - check my mail box please`;
+        - check my mail box please
+        
+        > this is comment when updating simpleIntentSection`;
 
         let sectionId = luresource.Sections[1].Id;
         luresource = new SectionOperator(luresource).updateSection(luresource.Sections[1].Id, newFileConent);
-
         assert.equal(luresource.Errors.length, 0);
         assert.equal(luresource.Sections.length, 2);
         assert.equal(luresource.Sections[1].Errors.length, 0);
@@ -70,8 +73,9 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[0].utterance, 'check my email');
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[1].utterance, 'show my emails');
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[2].utterance, 'check my mail box please');
+        assert.isTrue(luresource.Sections[1].Body.includes('> this is comment when updating simpleIntentSection'));
+        assert.isFalse(luresource.Sections[1].Body.includes('> this is comment when adding simpleIntentSection'));
     });
-
 
     it('delete section test', () => {
         luresource = new SectionOperator(luresource).deleteSection(luresource.Sections[1].Id);
@@ -81,6 +85,8 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[0].Errors.length, 0);
         assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
         assert.equal(luresource.Sections[0].Name, 'Greeting');
+        assert.isFalse(luresource.Sections[0].Body.includes('> this is comment when adding simpleIntentSection'));
+        assert.isFalse(luresource.Sections[0].Body.includes('> this is comment when updating simpleIntentSection'));
     });
 
     it('add nestedIntentSection test with enableSections flag unset', () => {

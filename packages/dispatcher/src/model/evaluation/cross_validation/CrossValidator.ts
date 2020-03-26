@@ -29,15 +29,15 @@ export class CrossValidator extends AbstractBaseEvaluator {
     protected numberOfCrossValidationFolds: number =
         CrossValidator.defaultNumberOfCrossValidationFolds;
 
-    protected labels: string[] = [];
-    protected labelMap: { [id: string]: number; } = {};
-    protected numberLabels: number = -1;
-    protected numberFeatures: number = -1;
-    protected intents: string[] = [];
-    protected utterances: string[] = [];
-    protected labelIndexArray: number[] = [];
-    protected featureIndexArrays: number[][] = [];
-    protected labelInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
+    protected labelsCachedAfterCrossValidation: string[] = [];
+    protected labelMapCachedAfterCrossValidation: { [id: string]: number; } = {};
+    protected numberLabelsCachedAfterCrossValidation: number = -1;
+    protected numberFeaturesCachedAfterCrossValidation: number = -1;
+    protected intentsCachedAfterCrossValidation: string[] = [];
+    protected utterancesCachedAfterCrossValidation: string[] = [];
+    protected labelIndexArrayCachedAfterCrossValidation: number[] = [];
+    protected featureIndexArraysCachedAfterCrossValidation: number[][] = [];
+    protected labelInstanceIndexMapArrayCachedAfterCrossValidation: Map<string, number[]> = new Map<string, number[]>();
 
     protected learnerParameterEpochs: number =
         AppSoftmaxRegressionSparse.defaultEpochs;
@@ -54,7 +54,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
     protected learnerParameterToCalculateOverallLossAfterEpoch: boolean =
         true;
 
-    protected crossValidationResult: {
+    protected crossValidationResultCachedAfterCrossValidation: {
         "confusionMatrixCrossValidation": ConfusionMatrix
         "thresholdReporterCrossValidation": ThresholdReporter,
         "predictionLabels": string[],
@@ -71,15 +71,6 @@ export class CrossValidator extends AbstractBaseEvaluator {
             predictions: [] };
 
     constructor(
-        labels: string[],
-        labelMap: { [id: string]: number; },
-        numberLabels: number,
-        numberFeatures: number,
-        intents: string[],
-        utterances: string[],
-        labelIndexArray: number[],
-        featureIndexArrays: number[][],
-        labelInstanceIndexMapArray: Map<string, number[]>,
         numberOfCrossValidationFolds: number =
             CrossValidator.defaultNumberOfCrossValidationFolds,
         learnerParameterEpochs: number =
@@ -97,15 +88,6 @@ export class CrossValidator extends AbstractBaseEvaluator {
         learnerParameterToCalculateOverallLossAfterEpoch: boolean =
             true) {
         super();
-        this.labels = labels;
-        this.labelMap = labelMap;
-        this.numberLabels = numberLabels;
-        this.numberFeatures = numberFeatures;
-        this.intents = intents;
-        this.utterances = utterances;
-        this.labelIndexArray = labelIndexArray;
-        this.featureIndexArrays = featureIndexArrays;
-        this.labelInstanceIndexMapArray = labelInstanceIndexMapArray;
         this.numberOfCrossValidationFolds =
             numberOfCrossValidationFolds;
         this.learnerParameterEpochs =
@@ -122,23 +104,6 @@ export class CrossValidator extends AbstractBaseEvaluator {
             learnerParameterLearningRate;
         this.learnerParameterToCalculateOverallLossAfterEpoch =
             learnerParameterToCalculateOverallLossAfterEpoch;
-        this.crossValidationResult = this.crossValidate(
-            this.labels,
-            this.labelMap,
-            this.numberLabels,
-            this.numberFeatures,
-            this.intents,
-            this.utterances,
-            this.labelIndexArray,
-            this.featureIndexArrays,
-            labelInstanceIndexMapArray);
-        Utility.debuggingLog(
-            `this.crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
-            `${this.crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
-            `,this.crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
-            `${this.crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
-            `,this.crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
-            `${this.crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
     }
 
     public getCrossValidationResult(): {
@@ -149,7 +114,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } {
-        return this.crossValidationResult;
+        return this.crossValidationResultCachedAfterCrossValidation;
     }
 
     public getNumberOfCrossValidationFolds(): number {
@@ -173,15 +138,20 @@ export class CrossValidator extends AbstractBaseEvaluator {
     public generateEvaluationDataArraysReport(): IDictionaryStringIdGenericArrays<string> {
         const outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {};
         {
-            const predictionLabels: string[] = this.crossValidationResult.predictionLabels;
-            const predictionLabelIndexes: number[] = this.crossValidationResult.predictionLabelIndexes;
-            const groundTruthLabels: string[] = this.crossValidationResult.predictionLabels;
-            const groundTruthLabelIndexes: number[] = this.crossValidationResult.predictionLabelIndexes;
-            const predictions: number[][] = this.crossValidationResult.predictions;
+            const predictionLabels: string[] =
+                this.crossValidationResultCachedAfterCrossValidation.predictionLabels;
+            const predictionLabelIndexes: number[] =
+                this.crossValidationResultCachedAfterCrossValidation.predictionLabelIndexes;
+            const groundTruthLabels: string[] =
+                this.crossValidationResultCachedAfterCrossValidation.predictionLabels;
+            const groundTruthLabelIndexes: number[] =
+                this.crossValidationResultCachedAfterCrossValidation.predictionLabelIndexes;
+            const predictions: number[][] =
+                this.crossValidationResultCachedAfterCrossValidation.predictions;
             const outputEvaluationReportDataArraysScoreRecords: string[][] = [];
-            for (let index: number = 0; index < this.intents.length; index++) {
-                const intent: string = this.intents[index];
-                const utterance: string = this.utterances[index];
+            for (let index: number = 0; index < this.intentsCachedAfterCrossValidation.length; index++) {
+                const intent: string = this.intentsCachedAfterCrossValidation[index];
+                const utterance: string = this.utterancesCachedAfterCrossValidation[index];
                 const groundTruthLabel: string = groundTruthLabels[index];
                 const groundTruthLabelIndex: number = groundTruthLabelIndexes[index];
                 const predictionLabel: string = predictionLabels[index];
@@ -239,7 +209,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
     public generateEvaluationJsonReport(): IDictionaryStringIdGenericValue<any> {
         const outputEvaluationReport: IDictionaryStringIdGenericValue<any> = {};
         const confusionMatrixCrossValidation: ConfusionMatrix =
-            this.crossValidationResult.confusionMatrixCrossValidation;
+            this.crossValidationResultCachedAfterCrossValidation.confusionMatrixCrossValidation;
         const confusionMatrixMetricStructure: {
             "confusionMatrix": ConfusionMatrix,
             "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
@@ -247,14 +217,14 @@ export class CrossValidator extends AbstractBaseEvaluator {
             "macroAverageMetrics": { "averagePrecision": number,
                                      "averageRecall": number,
                                      "averageF1Score": number,
-                                     "totalMacroAverage": number },
+                                     "support": number },
             "microAverageMetrics": { "accuracy": number,
                                      "truePositives": number,
-                                     "totalMicroAverage": number },
+                                     "support": number },
             "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                     "weightedAverageRecall": number,
-                                     "weightedAverageF1Score": number,
-                                     "weightedTotalMacroAverage": number } } =
+                                             "weightedAverageRecall": number,
+                                             "weightedAverageF1Score": number,
+                                             "support": number } } =
             ConfusionMatrix.generateConfusionMatrixMetricStructure(
                 confusionMatrixCrossValidation);
         Utility.debuggingLog(
@@ -328,6 +298,16 @@ export class CrossValidator extends AbstractBaseEvaluator {
             `${featureIndexArrays.length}`);
         Utility.debuggingLog(`labelInstanceIndexMapArray.size=` +
             `${labelInstanceIndexMapArray.size}`);
+        // -------------------------------------------------------------------
+        this.labelsCachedAfterCrossValidation = labels;
+        this.labelMapCachedAfterCrossValidation = labelMap;
+        this.numberLabelsCachedAfterCrossValidation = numberLabels;
+        this.numberFeaturesCachedAfterCrossValidation = numberFeatures;
+        this.intentsCachedAfterCrossValidation = intents;
+        this.utterancesCachedAfterCrossValidation = utterances;
+        this.labelIndexArrayCachedAfterCrossValidation = labelIndexArray;
+        this.featureIndexArraysCachedAfterCrossValidation = featureIndexArrays;
+        this.labelInstanceIndexMapArrayCachedAfterCrossValidation = labelInstanceIndexMapArray;
         // -------------------------------------------------------------------
         const confusionMatrixCrossValidation =
             new ConfusionMatrix(labels, labelMap);
@@ -528,7 +508,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
             // ---------------------------------------------------------------
         }
         // -------------------------------------------------------------------
-        return {
+        this.crossValidationResultCachedAfterCrossValidation = {
             confusionMatrixCrossValidation,
             thresholdReporterCrossValidation,
             predictionLabels,
@@ -536,6 +516,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
             groundTruthLabels,
             groundTruthLabelIndexes,
             predictions };
+        return this.crossValidationResultCachedAfterCrossValidation;
         // -------------------------------------------------------------------
     }
 }
