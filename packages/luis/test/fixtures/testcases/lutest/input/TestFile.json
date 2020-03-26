@@ -1,0 +1,362 @@
+{
+  "intents": [
+    {
+      "name": "AcceptEventEntry"
+    },
+    {
+      "name": "CreateCalendarEntry"
+    },
+    {
+      "name": "FindCalendarEntry"
+    },
+    {
+      "name": "None"
+    }
+  ],
+  "entities": [
+    {
+      "name": "Duration",
+      "roles": []
+    },
+    {
+      "name": "FromDate",
+      "roles": []
+    },
+    {
+      "name": "FromTime",
+      "roles": []
+    },
+    {
+      "name": "Location",
+      "roles": []
+    },
+    {
+      "name": "MeetingRoom",
+      "roles": []
+    },
+    {
+      "name": "OrderReference",
+      "roles": [
+        "Next"
+      ]
+    },
+    {
+      "name": "PositionReference",
+      "roles": []
+    },
+    {
+      "name": "Subject",
+      "roles": [
+        "Meals"
+      ]
+    },
+    {
+      "name": "ToDate",
+      "roles": []
+    },
+    {
+      "name": "ToTime",
+      "roles": []
+    }
+  ],
+  "composites": [
+    {
+      "name": "FromDateTime",
+      "children": [
+        "FromDate",
+        "FromTime"
+      ],
+      "roles": []
+    }
+  ],
+  "closedLists": [
+    {
+      "name": "PossessivePronoun",
+      "subLists": [
+        {
+          "canonicalForm": "FirstPerson",
+          "list": [
+            "my",
+            "our",
+            "my own",
+            "our own"
+          ]
+        },
+        {
+          "canonicalForm": "SecondPerson",
+          "list": [
+            "your",
+            "your own"
+          ]
+        },
+        {
+          "canonicalForm": "ThirdPerson",
+          "list": [
+            "his",
+            "her",
+            "their",
+            "his own",
+            "her own",
+            "their own"
+          ]
+        }
+      ],
+      "roles": [
+        "FirstPerson"
+      ]
+    }
+  ],
+  "regex_entities": [
+    {
+      "name": "Email",
+      "regexPattern": "[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+",
+      "roles": [
+        "OutLook"
+      ]
+    },
+    {
+      "name": "MeetingRoomKeywordsDesc",
+      "regexPattern": "((conf|conference|meeting)\\s+)?(room|rm|office)",
+      "roles": []
+    }
+  ],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "accept all meetings for christmas party next week.",
+      "intent": "AcceptEventEntry",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 24,
+          "endPos": 38
+        },
+        {
+          "entity": "FromDate",
+          "startPos": 40,
+          "endPos": 48
+        }
+      ]
+    },
+    {
+      "text": "accept an appointment",
+      "intent": "AcceptEventEntry",
+      "entities": []
+    },
+    {
+      "text": "accept dinner",
+      "intent": "AcceptEventEntry",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 7,
+          "endPos": 12,
+          "role": "Meals"
+        }
+      ]
+    },
+    {
+      "text": "accept my meeting at tomorrow 10am",
+      "intent": "AcceptEventEntry",
+      "entities": [
+        {
+          "entity": "FromDate",
+          "startPos": 21,
+          "endPos": 28
+        },
+        {
+          "entity": "FromTime",
+          "startPos": 30,
+          "endPos": 33
+        },
+        {
+          "entity": "FromDateTime",
+          "startPos": 21,
+          "endPos": 33
+        }
+      ]
+    },
+    {
+      "text": "accept my meeting with lucy",
+      "intent": "AcceptEventEntry",
+      "entities": [
+        {
+          "entity": "personName",
+          "startPos": 23,
+          "endPos": 26,
+          "role": "Female"
+        }
+      ]
+    },
+    {
+      "text": "accept my next meeting",
+      "intent": "AcceptEventEntry",
+      "entities": [
+        {
+          "entity": "OrderReference",
+          "startPos": 10,
+          "endPos": 13,
+          "role": "Next"
+        }
+      ]
+    },
+    {
+      "text": "book a meeting with huanx@abc.com",
+      "intent": "CreateCalendarEntry",
+      "entities": []
+    },
+    {
+      "text": "create a calendar appointment at 3:30 tomorrow for half an hour",
+      "intent": "CreateCalendarEntry",
+      "entities": [
+        {
+          "entity": "FromTime",
+          "startPos": 33,
+          "endPos": 36
+        },
+        {
+          "entity": "FromDate",
+          "startPos": 38,
+          "endPos": 45
+        },
+        {
+          "entity": "Duration",
+          "startPos": 51,
+          "endPos": 62
+        }
+      ]
+    },
+    {
+      "text": "create a event with eden roth at 4pm today for 30 mins",
+      "intent": "CreateCalendarEntry",
+      "entities": [
+        {
+          "entity": "FromTime",
+          "startPos": 33,
+          "endPos": 35
+        },
+        {
+          "entity": "FromDate",
+          "startPos": 37,
+          "endPos": 41
+        },
+        {
+          "entity": "Duration",
+          "startPos": 47,
+          "endPos": 53
+        }
+      ]
+    },
+    {
+      "text": "create a meeting at 6 o'clock",
+      "intent": "CreateCalendarEntry",
+      "entities": []
+    },
+    {
+      "text": "create an appointment with doctor lu from 8:30 am to 10:00 am tomorrow morning",
+      "intent": "CreateCalendarEntry",
+      "entities": [
+        {
+          "entity": "FromTime",
+          "startPos": 42,
+          "endPos": 48
+        },
+        {
+          "entity": "ToTime",
+          "startPos": 53,
+          "endPos": 60
+        },
+        {
+          "entity": "FromDate",
+          "startPos": 62,
+          "endPos": 69
+        },
+        {
+          "entity": "FromTime",
+          "startPos": 71,
+          "endPos": 77
+        }
+      ]
+    },
+    {
+      "text": "create appointment for 30 minutes",
+      "intent": "CreateCalendarEntry",
+      "entities": [
+        {
+          "entity": "Duration",
+          "startPos": 23,
+          "endPos": 32
+        }
+      ]
+    },
+    {
+      "text": "find a meeting subject daily meeting",
+      "intent": "FindCalendarEntry",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 23,
+          "endPos": 35
+        }
+      ]
+    },
+    {
+      "text": "find a meeting with subject weekly report",
+      "intent": "FindCalendarEntry",
+      "entities": [
+        {
+          "entity": "Subject",
+          "startPos": 28,
+          "endPos": 40
+        }
+      ]
+    },
+    {
+      "text": "1",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "i want them all",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "the third one",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "PositionReference",
+          "startPos": 4,
+          "endPos": 8
+        }
+      ]
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "^i (want to|would like to|'d like to) (join|attend) the {Subject}^",
+      "intent": "AcceptEventEntry"
+    }
+  ],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [
+    {
+      "name": "ordinal",
+      "roles": []
+    },
+    {
+      "name": "personName",
+      "roles": [
+        "Female",
+        "Male"
+      ]
+    }
+  ],
+  "luis_schema_version": "3.2.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us"
+}

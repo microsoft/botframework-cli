@@ -183,10 +183,31 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     // If utterances have this child, then all parents must be included in the label
     updateModelBasedOnNDepthEntities(parsedContent.LUISJsonStructure.utterances, parsedContent.LUISJsonStructure.entities);
 
+    // Update intent and entities with phrase lists if any
+    updateIntentAndEntityFeatures(parsedContent.LUISJsonStructure);
+
     helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
 
 }
 
+const updateIntentAndEntityFeatures = function(luisObj) {
+    let plForAll = luisObj.model_features.filter(item => item.enabledForAllModels == undefined || item.enabledForAllModels == true);
+    plForAll.forEach(pl => {
+        luisObj.intents.forEach(intent => updateFeaturesWithPL(intent, pl.name));
+        luisObj.entities.forEach(entity => updateFeaturesWithPL(entity, pl.name));
+    })
+}
+
+const updateFeaturesWithPL = function(collection, plName) {
+    if (collection === null || collection === undefined) return;
+    if (collection.hasOwnProperty("features")) {
+        if (Array.isArray(collection.features) && collection.features.find(i => i.featureName == plName) === undefined) {
+            collection.features.push(new helperClass.featureToModel(plName, featureProperties.phraseListFeature));
+        }
+    } else {
+        collection.features = [new helperClass.featureToModel(plName, featureProperties.phraseListFeature)];
+    }
+}
 /**
  * Helper to update final LUIS model based on labelled nDepth entities.
  * @param {Object []} utterances 
@@ -1034,7 +1055,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
         for (const entity of entities) {
             if (entity.Type !== INTENTTYPE) {
                 entity.Name = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
-                let entityName = entity.Name;
+                let entityName = entity.Name.endsWith('=') ? entity.Name.slice(0, entity.Name.length - 1) : entity.Name;
                 let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
                 if (!entityType) {
                     let errorMsg = `No type definition found for entity "${entityName}". Supported types are ${Object.values(EntityTypeEnum).join(', ')}. Note: Type names are case sensitive.`;
@@ -1800,7 +1821,11 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
+            
+            // avoid to throw invalid model info when meeting enableSections info which is handled in luParser.js
+            if (kvPair[1] === 'enableSections') continue
+
             if (kvPair.length === 4) {
                 if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
                     enableMergeIntents = false;

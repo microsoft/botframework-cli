@@ -47,7 +47,11 @@ export class Builder {
         result = await LuisBuilderVerbose.build(luFiles, true, culture)
         fileContent = result.parseToLuContent()
       } catch (err) {
-        err.text = `Invalid LU file ${file}: ${err.text}`
+        if (err.source) {
+          err.text = `Invalid LU file ${err.source}: ${err.text}`
+        } else {
+          err.text = `Invalid LU file ${file}: ${err.text}`
+        }
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
@@ -249,6 +253,25 @@ export class Builder {
     return writeDone
   }
 
+  async getActiveVersionIds(appNames: string[], authoringKey: string, region: string) {
+    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
+    const apps = await luBuildCore.getApplicationList()
+    let appNameVersionMap = new Map<string, string>()
+    for (const appName of appNames) {
+      // find if there is a matched name with current app under current authoring key
+      appNameVersionMap.set(appName, '')
+      for (let app of apps) {
+        if (app.name === appName) {
+          const appInfo = await luBuildCore.getApplicationInfo(app.id)
+          appNameVersionMap.set(appName, appInfo.activeVersion)
+          break
+        }
+      }
+    }
+
+    return appNameVersionMap
+  }
+
   async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
     let currentApp = await LuisBuilder.fromLUAsync([content])  // content.parseToLuis(true, content.language)
     currentApp.culture = currentApp.culture && currentApp.culture !== '' && currentApp.culture !== 'en-us' ? currentApp.culture : content.language as string
@@ -257,6 +280,9 @@ export class Builder {
     if (currentApp.name === undefined || currentApp.name === '') {
       currentApp.name = `${botName}(${suffix})-${content.name}`
     }
+
+    // remove empty intents from current app to avoid fewLabels error when training
+    this.filterEmptyIntents(currentApp)
 
     return currentApp
   }
@@ -306,7 +332,7 @@ export class Builder {
     this.handler(`Creating LUIS.ai application: ${currentApp.name} version:${currentApp.versionId}\n`)
     await delay(delayDuration)
     const response = await luBuildCore.importApplication(currentApp)
-    recognizer.setAppId(typeof response.body === 'string' ? response.body : response.body[Object.keys(response.body)[0]])
+    recognizer.setAppId(typeof response === 'string' ? response : response[Object.keys(response)[0]])
     return true
   }
 
@@ -351,5 +377,20 @@ export class Builder {
     }
 
     return new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
+  }
+
+  filterEmptyIntents(app: any) {
+    const intents = app.intents
+    const utterances = app.utterances
+    const patterns = app.patterns
+
+    const emptyIntents = intents.filter((intent: any) => !utterances.some((utterance: any) => utterance.intent === intent.name)
+      && !patterns.some((pattern: any) => pattern.intent === intent.name))
+
+    if (emptyIntents && emptyIntents.length > 0) {
+      const filteredIntents = intents.filter((intent: any) => !emptyIntents.some((emptyIntent: any) => emptyIntent.name === intent.name))
+      this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
+      app.intents = filteredIntents
+    }
   }
 }

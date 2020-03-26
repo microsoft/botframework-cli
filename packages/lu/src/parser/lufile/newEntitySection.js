@@ -11,30 +11,34 @@ class NewEntitySection {
     constructor(parseTree) {
         this.ParseTree = parseTree;
         this.SectionType = LUSectionTypes.NEWENTITYSECTION;
+        this.Errors = []
         this.Name = this.ExtractName(parseTree);
         this.Type = this.ExtractType(parseTree);
         this.Roles = this.ExtractRoles(parseTree);
         this.Features = this.ExtractFeatures(parseTree);
         this.CompositeDefinition = this.ExtractCompositeDefinition(parseTree);
         this.RegexDefinition = this.ExtractRegexDefinition(parseTree);
-        const result = this.ExtractSynonymsOrPhraseList(parseTree);
-        this.ListBody = result.synonymsOrPhraseList;
-        this.Errors = result.errors;
+        this.ListBody = this.ExtractSynonymsOrPhraseList(parseTree);
         this.Id = `${this.SectionType}_${this.Name}`;
     }
 
     ExtractName(parseTree) {
         if (parseTree.newEntityDefinition().newEntityLine().newEntityName()) {
             return parseTree.newEntityDefinition().newEntityLine().newEntityName().getText().trim();
-        } else {
+        } else if (parseTree.newEntityDefinition().newEntityLine().newEntityNameWithWS()) {
             return parseTree.newEntityDefinition().newEntityLine().newEntityNameWithWS().getText().trim();
+        } else {
+            this.Errors.push(BuildDiagnostic({
+                message: "Invalid entity line, did you miss entity name after @",
+                context: parseTree.newEntityDefinition().newEntityLine()
+            }))
         }
     }
 
     ExtractType(parseTree) {
         if (parseTree.newEntityDefinition().newEntityLine().newEntityType()) {
             return parseTree.newEntityDefinition().newEntityLine().newEntityType().getText().trim();
-        } 
+        }
     }
 
     ExtractRoles(parseTree) {
@@ -63,12 +67,11 @@ class NewEntitySection {
 
     ExtractSynonymsOrPhraseList(parseTree) {
         let synonymsOrPhraseList = [];
-        let errors = [];
 
         if (parseTree.newEntityDefinition().newEntityListbody()) {
-            for (const errorItemStr of parseTree.newEntityDefinition().newEntityListbody().errorItemString()) {
+            for (const errorItemStr of parseTree.newEntityDefinition().newEntityListbody().errorString()) {
                 if (errorItemStr.getText().trim() !== '') {
-                    errors.push(BuildDiagnostic({
+                    this.Errors.push(BuildDiagnostic({
                     message: "Invalid list entity line, did you miss '-' at line begin",
                     context: errorItemStr
                 }))}
@@ -87,10 +90,10 @@ class NewEntitySection {
                 severity: DiagnosticSeverity.WARN
             })
 
-            errors.push(error);
+            this.Errors.push(error);
         }
 
-        return { synonymsOrPhraseList, errors };
+        return synonymsOrPhraseList;
     }
 }
 

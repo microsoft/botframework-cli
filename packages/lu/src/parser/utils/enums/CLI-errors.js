@@ -28,6 +28,7 @@ module.exports = {
         INVALID_URI:                21,
         INVALID_REGEX_ENTITY:       22,
         INVALID_COMPOSITE_ENTITY:   23,
+        LUIS_API_CALL_FAILED:       24,
         UNKNOWN_ERROR:              99,
         BOUNDARY_INTENTS:           501,
         BOUNDARY_PATTERNANYENTITY:  502,

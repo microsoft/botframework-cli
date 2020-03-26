@@ -1,6 +1,9 @@
 
 module.exports = {
     jsonPropertyName: function(property) {
+        if (typeof property === 'object') {
+            property = property.name
+        }
         property+= ''
         let name = property.split(':').slice(-1)[0];
         if (!name.startsWith('geographyV2') &&

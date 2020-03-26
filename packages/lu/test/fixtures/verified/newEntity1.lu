@@ -57,3 +57,6 @@
 
 @ composite c1 = [l1, l2]
 @ composite c2 hasRoles cr1,cr2 = [l1, l2]
+> # Pattern.Any entities
+
+@ patternany p1 hasRoles pr1,pr2

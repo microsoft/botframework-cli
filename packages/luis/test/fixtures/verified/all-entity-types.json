@@ -3,7 +3,17 @@
   "entities": [
     {
       "name": "userName",
-      "roles": []
+      "roles": [],
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "featureType": "phraselist"
+        },
+        {
+          "featureName": "question",
+          "featureType": "phraselist"
+        }
+      ]
     }
   ],
   "composites": [],
@@ -27,20 +37,6 @@
     }
   ],
   "regex_entities": [],
-  "model_features": [
-    {
-      "name": "ChocolateType",
-      "words": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
-      "mode": false,
-      "activated": true
-    },
-    {
-      "name": "question",
-      "words": "are you,you are",
-      "mode": true,
-      "activated": true
-    }
-  ],
   "regex_features": [],
   "utterances": [],
   "patterns": [],
@@ -91,9 +87,25 @@
       "roles": []
     }
   ],
-  "luis_schema_version": "3.2.0",
+  "luis_schema_version": "6.0.0",
   "versionId": "0.1",
   "name": "all-entity-types",
   "desc": "",
-  "culture": "en-us"
+  "culture": "en-us",
+  "phraselists": [
+    {
+      "name": "ChocolateType",
+      "words": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
+      "mode": false,
+      "activated": true,
+      "enabledForAllModels": true
+    },
+    {
+      "name": "question",
+      "words": "are you,you are",
+      "mode": true,
+      "activated": true,
+      "enabledForAllModels": true
+    }
+  ]
 }
