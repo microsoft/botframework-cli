@@ -347,9 +347,6 @@ async function mergeLGFiles(schemaName: string, oldPath: string, newPath: string
         }
     }
 
-    //let library = resultRefs.join(os.EOL)
-    //library = '>>> Library\r\n' + library
-
     await fs.writeFile(ppath.join(mergedPath, locale, schemaName + '.' + locale + '.lg'), resultRefs.join(os.EOL))
     feedback(FeedbackType.info, `generate ${schemaName}. ${locale}.lg`)
 }
@@ -365,11 +362,11 @@ async function mergeLGFiles(schemaName: string, oldPath: string, newPath: string
  */
 async function changeEntityEnumLG(oldPath: string, newPath: string, mergedPath: string, filename: string, locale: string, feedback: Feedback): Promise<void> {
     let oldText = await (await fs.readFile(ppath.join(oldPath, locale, filename), 'utf8'))
-    let oldStatements = oldText.split('\n')
+    let oldStatements = oldText.split(os.EOL)
     let oldTemplates = Templates.parseText(oldText)
 
     let newText = await (await fs.readFile(ppath.join(newPath, locale, filename), 'utf8'))
-    let newStatements = newText.split('\n')
+    let newStatements = newText.split(os.EOL)
     let newTemplates = Templates.parseText(newText)
 
     let mergedStatements: string[] = []
