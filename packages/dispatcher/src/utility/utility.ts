@@ -1874,8 +1874,8 @@ export class Utility {
         return path.extname(filename);
     }
     public static getFilenameWithoutExtension(filename: string): string {
-        const extension: string = Utility.getFileExtname(filename)
-        const filenameWithoutExtension: string = filename.substring(0, filename.length - extension.length)
+        const extension: string = Utility.getFileExtname(filename);
+        const filenameWithoutExtension: string = filename.substring(0, filename.length - extension.length);
         return filenameWithoutExtension;
     }
 
