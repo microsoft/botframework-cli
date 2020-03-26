@@ -44,8 +44,12 @@ export class Builder {
         result = await QnaBuilderVerbose.build(qnaFiles, true)
         fileContent = JSON.stringify(result)
       } catch (err) {
-        err.text = `Invalid QnA file ${file}: ${err.text}`
-        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
+        if (err.source) {
+          err.text = `Invalid QnA file ${err.source}: ${err.text}`
+        } else {
+          err.text = `Invalid QnA file ${file}: ${err.text}`
+        }
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
       this.handler(`${file} loaded\n`)
