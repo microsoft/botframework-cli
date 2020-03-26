@@ -1,6 +1,9 @@
 dependencies:
+  '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
+  '@chrimc62/adaptive-expressions': 4.1.20
+  '@chrimc62/botbuilder-lg': 4.1.20
   '@oclif/command': 1.5.19
   '@oclif/config': 1.13.3
   '@oclif/errors': 1.2.2
@@ -20,6 +23,7 @@ dependencies:
   '@types/argparse': 1.0.38
   '@types/lodash': 4.14.149
   '@types/lru-cache': 5.1.0
+  '@types/node-fetch': 2.5.5
   '@types/proxyquire': 1.3.28
   '@types/semver': 6.2.0
   '@types/supports-color': 5.3.0
@@ -28,8 +32,6 @@ dependencies:
   antlr4: 4.7.2
   applicationinsights: 1.6.0
   await-delay: 1.0.0
-  botbuilder-lg: 4.7.0-preview
-  botframework-expressions: 4.7.0-preview
   botframework-schema: 4.7.0
   camelcase: 4.1.0
   chai: 4.2.0
@@ -43,7 +45,7 @@ dependencies:
   eslint-config-oclif: 3.1.0_eslint@5.16.0
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0
   fancy-test: 1.4.4
-  fetch-mock: 7.7.3_node-fetch@2.6.0
+  fetch-mock: 7.7.3
   get-json: 1.0.1
   get-stdin: 6.0.0
   glob: 7.1.6
@@ -58,7 +60,6 @@ dependencies:
   mime-types: 2.1.25
   minimist: 1.2.0
   nock: 11.7.1
-  node-fetch: 2.6.0
   nyc: 14.1.1
   pascal-case: 2.0.1
   path: 0.12.7
@@ -77,13 +78,6 @@ dependencies:
   xml2js: 0.4.23
 lockfileVersion: 5.1
 packages:
-  /@azure/cognitiveservices-luis-authoring/3.0.1:
-    dependencies:
-      '@azure/ms-rest-js': 2.0.5
-      tslib: 1.10.0
-    dev: false
-    resolution:
-      integrity: sha512-GfRZbJPREWtSOQUy6iZzNw/7k/apnijgONgUN5XnGMmbNSdrLrxZFBSKGwr9jNGYmcaqF+opR28QJZw4KMnzgg==
   /@azure/cognitiveservices-luis-authoring/4.0.0-preview.1:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
@@ -200,6 +194,44 @@ packages:
     dev: false
     resolution:
       integrity: sha512-cz5Ji23KCi4T+YIE/BolWosrJuSmoZeN1EFnRtBwF+KKLi8GG/Z2c2hOJJeCXPk4mwk4QFvTmwIodJowXgttRA==
+  /@chrimc62/adaptive-expressions/4.1.20:
+    dependencies:
+      '@microsoft/recognizers-text-data-types-timex-expression': 1.1.4
+      '@types/lru-cache': 5.1.0
+      '@types/moment-timezone': 0.5.12
+      '@types/xmldom': 0.1.29
+      antlr4ts: 0.5.0-alpha.1
+      jspath: 0.4.0
+      lodash: 4.17.15
+      lru-cache: 5.1.1
+      moment: 2.24.0
+      moment-timezone: 0.5.27
+    dev: false
+    resolution:
+      integrity: sha512-RrT5+CKSLTV7PTmWyMs1T7iLQfVwciE4tFh6qjAKXSJuzPaC9TFopajCZDPSN3aD1gkgP9jYfYeI/W3ZZmSg+g==
+  /@chrimc62/botbuilder-core/4.1.20:
+    dependencies:
+      '@chrimc62/botframework-schema': 4.1.20
+      assert: 1.5.0
+    dev: false
+    resolution:
+      integrity: sha512-l1PkiuK1Dyv/EiyDqcW65i8MFO4/BjMQTScDei6K41WUxP2ZvigQ2V75SQVTTQ3JO9v8fjQ6qT8PSpZ2tU+aOw==
+  /@chrimc62/botbuilder-lg/4.1.20:
+    dependencies:
+      '@chrimc62/adaptive-expressions': 4.1.20
+      '@chrimc62/botbuilder-core': 4.1.20
+      '@chrimc62/botframework-schema': 4.1.20
+      antlr4ts: 0.5.0-alpha.1
+      lodash: 4.17.15
+      path: 0.12.7
+      uuid: 3.3.3
+    dev: false
+    resolution:
+      integrity: sha512-0MAF7F4AHuG6Q5JJ2MuyPlYi8/J5jrVf/ez1j1nOebsW56R1vJOrW2ris/llvfqBX5KrZx8L4e/mvIsbRaw5tA==
+  /@chrimc62/botframework-schema/4.1.20:
+    dev: false
+    resolution:
+      integrity: sha512-4aUH1heowUTlq9j7I6vJI/koZv0KbmWoOUVV2wZSekjIpDXOlrzMhH3jarHny8nuVfb6ztNAL2sCd2cO7abH7A==
   /@christopheranderson/botbuilder-lg/4.7.0-a0-b6513caa:
     dependencies:
       '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
@@ -572,6 +604,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-Oz6id++2qAOFuOlE1j0ouk1dzl3mmI1+qINPNBhi9nt/gVOz0G+13Ao6qjhdF0Ys+eOkhu6JnFmt38bR3H0POQ==
+  /@types/node-fetch/2.5.5:
+    dependencies:
+      '@types/node': 13.1.2
+      form-data: 3.0.0
+    dev: false
+    resolution:
+      integrity: sha512-IWwjsyYjGw+em3xTvWVQi5MgYKbRs0du57klfTaZkv/B24AEQ/p/IopNeqIYNy3EsfHOpg8ieQSDomPcsYMHpA==
   /@types/node/10.17.13:
     dev: false
     resolution:
@@ -2339,6 +2378,25 @@ packages:
     dev: false
     resolution:
       integrity: sha512-jmxqQ3Z/nXoeyDmWAzF9kH1aGZSis6e/SbfPmJpUnyZ0ogr6iscHQaml4wsEepEWSdtmpy+eVXmCRIMpxaXqOA==
+  /fetch-mock/7.7.3:
+    dependencies:
+      babel-polyfill: 6.26.0
+      core-js: 2.6.11
+      glob-to-regexp: 0.4.1
+      lodash.isequal: 4.5.0
+      path-to-regexp: 2.4.0
+      whatwg-url: 6.5.0
+    dev: false
+    engines:
+      node: '>=4.0.0'
+    peerDependencies:
+      node-fetch: '*'
+    peerDependenciesMeta:
+      node-fetch:
+        optional: true
+    requiresBuild: true
+    resolution:
+      integrity: sha512-I4OkK90JFQnjH8/n3HDtWxH/I6D1wrxoAM2ri+nb444jpuH3RTcgvXx2el+G20KO873W727/66T7QhOvFxNHPg==
   /fetch-mock/7.7.3_node-fetch@2.6.0:
     dependencies:
       babel-polyfill: 6.26.0
@@ -2488,6 +2546,16 @@ packages:
       node: '>= 0.12'
     resolution:
       integrity: sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==
+  /form-data/3.0.0:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.25
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-CKMFDglpbMi6PyN+brwB9Q/GOw0eAnsrEZDgcsH5Krhz5Od/haKHAX0NmQfha2zPPz0JpWzA7GJHGSnvCRLWsg==
   /fragment-cache/0.2.1:
     dependencies:
       map-cache: 0.2.2
@@ -6256,6 +6324,8 @@ packages:
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
     dependencies:
+      '@chrimc62/adaptive-expressions': 4.1.20
+      '@chrimc62/botbuilder-lg': 4.1.20
       '@christopheranderson/botbuilder-lg': 4.7.0-a0-b6513caa
       '@christopheranderson/botframework-expressions': 4.7.0-a0-b6513caa
       '@oclif/command': 1.5.19
@@ -6296,7 +6366,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-wLqkv6TapzOAmIExo+h14rfw7e2BinNmi30yDcV+01KndJSTH41dyhmdpD0jnvru7YMYRNaQoh8zpea6Y2/6dg==
+      integrity: sha512-XIqoaZ7BKqmrar8XKfSYSEX4RxbGfUtnXZFBFkg3qe1XDUrXBGw2zc0t8RoWOY2th2SIl9Xlm2sTN0X2iYoE+Q==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6330,7 +6400,7 @@ packages:
     version: 0.0.0
   'file:projects/bf-lu.tgz':
     dependencies:
-      '@azure/cognitiveservices-luis-authoring': 3.0.1
+      '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
       '@azure/ms-rest-azure-js': 2.0.1
       '@oclif/command': 1.5.19
       '@oclif/config': 1.13.3
@@ -6343,6 +6413,7 @@ packages:
       '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
       '@types/node': 10.17.13
+      '@types/node-fetch': 2.5.5
       antlr4: 4.7.2
       chai: 4.2.0
       chalk: 2.4.1
@@ -6368,7 +6439,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-PBpCq/DCETJx9lFj5I4wgQuvWuNHWLbiDjCacVMx7sa44WsMkXExsMQC5xe2BPqbsK4cp7yieiN9zrP+QsK+YA==
+      integrity: sha512-HRjTdvW39u4iioHgaIF81nGOer3pOmZIOI8GDU3gEJKJ8S/McHzQBaQY8eH+l1XgbiE/cJkRiWlZWNYH2VL1Dg==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6387,6 +6458,7 @@ packages:
       '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
       '@types/node': 10.17.13
+      '@types/node-fetch': 2.5.5
       '@types/rimraf': 2.0.3
       '@types/sinon': 7.5.1
       azure-cognitiveservices-luis-authoring: 2.1.1
@@ -6398,6 +6470,7 @@ packages:
       lodash: 4.17.15
       mocha: 6.2.2
       ms-rest: 2.5.3
+      node-fetch: 2.6.0
       nyc: 14.1.1
       rimraf: 3.0.0
       sinon: 7.5.0
@@ -6410,7 +6483,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-xeOJkvoT6na1GX2Aq2c+2cA/o5McnDUjhSWXFVcs0yzhZvIwpLKff37Zo6sZEMO84H++F6qrA0g/NJMSLqBxXw==
+      integrity: sha512-+a3baEHSiPkEERKZ9smUAZprX6iFIjazQCH5YcTuurdsvgX8EjPQWKPcI9O43ct85dK45lUqwwDoRBc3OC5zpw==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6493,13 +6566,16 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-tdK9IsNI0XIbPYUbb39kcaS3l8el5U3E6Cf15h4eeSZhQ2Jjq7ZQ7KkyPXyBvBbpDqzfiyLYwDUwXDNHowyaUQ==
+      integrity: sha512-f1nnz9F1/35azTyewl2g0huc4K6/HunKKoCR4XRB/4dF8WJhMyrjdypGFSNGtBaVhcunvkFo2y9FE0Wt0mwavA==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
 specifiers:
+  '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
+  '@chrimc62/adaptive-expressions': ^4.1.6
+  '@chrimc62/botbuilder-lg': ^4.1.6
   '@oclif/command': ~1.5.19
   '@oclif/config': ~1.13.3
   '@oclif/errors': ~1.2.2
@@ -6519,6 +6595,7 @@ specifiers:
   '@types/argparse': ^1.0.36
   '@types/lodash': ~4.14.146
   '@types/lru-cache': ^5.1.0
+  '@types/node-fetch': ~2.5.5
   '@types/proxyquire': ^1.3.28
   '@types/semver': ^6.0.1
   '@types/supports-color': ^5.3.0
@@ -6527,8 +6604,6 @@ specifiers:
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
-  botbuilder-lg: ~4.7.0-preview
-  botframework-expressions: ~4.7.0-preview
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0
@@ -6557,7 +6632,6 @@ specifiers:
   mime-types: ^2.1.18
   minimist: ^1.2.0
   nock: ^11.7.0
-  node-fetch: ^2.1.2
   nyc: ^14.1.1
   pascal-case: ^2.0.1
   path: ^0.12.7
