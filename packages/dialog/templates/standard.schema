@@ -74,12 +74,12 @@
         "locale.lg",
         "luis.lu",
         "library-BeginDialog.dialog",
+        "library-CancelIntent.dialog",
         "library-ChooseProperty.dialog",
         "library-HelpIntent.dialog",
         "library-NotUnderstood.dialog",
         "library-triggerIntent.dialog",
         "library-ReadPropertyIntent.dialog",
-        "library-CancelIntent.dialog",
         "main.dialog"     
     ]
 }

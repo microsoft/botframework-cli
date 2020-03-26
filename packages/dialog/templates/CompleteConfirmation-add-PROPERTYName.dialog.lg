@@ -8,8 +8,9 @@
     "entity": "PROPERTYName",
     "actions": [
         {
-            "$kind": "Microsoft.DeleteProperty",
-            "property": "dialog[@PROPERTYName]"                        
+            "$kind": "Microsoft.SetProperty",
+            "property": "$PropertyToChange",
+            "value": "=@PropertyName"
         }
     ]
 }

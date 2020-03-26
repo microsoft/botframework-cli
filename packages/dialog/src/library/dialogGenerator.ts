@@ -85,7 +85,7 @@ async function writeFile(path: string, val: any, feedback: Feedback) {
         val = addHash(path, val)
         await fs.writeFile(path, val)
     } catch (e) {
-        feedback(FeedbackType.error, e.message)
+        feedback(FeedbackType.error, `${e.message}${os.EOL}${val}`)
     }
 }
 
@@ -193,7 +193,11 @@ async function processTemplate(
                         // Constant file or .lg template so output
                         let filename = addPrefix(scope.prefix, templateName)
                         if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
-                            filename = template.evaluateTemplate('filename', scope) as any as string
+                            try {
+                                filename = template.evaluateTemplate('filename', scope) as any as string
+                            } catch (e) {
+                                throw new Error(`${templateName}: ${e.message}`)
+                            }
                         } else if (filename.includes(scope.locale)) {
                             // Move constant files into locale specific directories
                             filename = `${scope.locale}/${filename}`
