@@ -70,6 +70,15 @@ const createLuisApplication = (): void => {
     console.log('LUIS Application successfully created');      
 }
 
+const buildLuisApplication = (): void => {
+    console.log('Building LUIS Application...');
+
+    const command = `bf luis:build --in "${ input.luisInputFile }" --authoringKey "${ input.luisSubscriptionKey }" --botName "${ input.luisBotName }" `;
+   
+    execSync(command);
+    console.log('LUIS Application built successfully');      
+}
+
 const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
@@ -84,6 +93,9 @@ const run = (): void => {
         switch (input.luisSubCommand) {
             case 'ApplicationCreate':
                 createLuisApplication();
+                break;
+            case 'LuisBuild':
+                buildLuisApplication();
                 break;
             default:
                 console.log('No LUIS Command was selected.');

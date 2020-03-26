@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":26
+        "Release":29
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -61,7 +61,7 @@
             "name": "luisSubCommand",
             "type": "pickList",
             "label": "LUIS Commands",
-            "required": true,
+            "required": false,
             "defaultValue": "",
             "groupname": "command",
             "visibleRule": "luisCommand = TRUE",
@@ -75,7 +75,7 @@
             "name": "luisApplicationName",
             "type": "string",
             "label": "Application Name",
-            "required": true,
+            "required": false,
             "groupname": "command",
             "visibleRule": "luisSubCommand=ApplicationCreate",
             "helpMarkDown": "Enter a name for the LUIS application."    
@@ -84,7 +84,7 @@
             "name": "luisEndpoint",
             "type": "string",
             "label": "Endpoint",
-            "required": true,
+            "required": false,
             "groupname": "command",
             "visibleRule": "luisSubCommand=ApplicationCreate",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
@@ -93,9 +93,9 @@
             "name": "luisSubscriptionKey",
             "type": "string",
             "label": "Subscription Key",
-            "required": true,
+            "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisBuild",
             "helpMarkDown": "Enter the LUIS cognitive services subscription key."    
         },
         {
@@ -125,6 +125,24 @@
             "groupname": "command",
             "visibleRule": "luisSubCommand=ApplicationCreate",
             "helpMarkDown": "Enter a description for the LUIS application."
+        },
+        {
+            "name": "luisInputFile",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisBuild",
+            "helpMarkDown": "The path to the .lu file or folder"
+        },
+        {
+            "name": "luisBotName",
+            "type": "string",
+            "label": "Bot Name",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisBuild",
+            "helpMarkDown": "Enter the bot name."
         }
     ],
     "execution": {
