@@ -115,7 +115,7 @@ export class QnaBuildCore {
     const qnaListSourcesA = qnaListA.map((qna: any) => qna.source)
 
     const qnaDocumentsB = kbB.qnaDocuments || []
-    const qnaListB = qnaDocumentsB.filter((qnaDoc: any) => qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => {
+    const qnaListBToCompare = qnaDocumentsB.filter((qnaDoc: any) => qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => {
       return {
         id: 0,
         answer: qna.answer,
@@ -125,7 +125,17 @@ export class QnaBuildCore {
       }
     })
 
-    let equal = this.isArrayEqual(qnaListA, qnaListB)
+    const qnaListAToCompare = qnaListA.map((qna: any) => {
+      return {
+        id: 0,
+        answer: qna.answer,
+        source: qna.source,
+        questions: qna.questions,
+        metadata: qna.metadata
+      }
+    })
+
+    let equal = this.isArrayEqual(qnaListAToCompare, qnaListBToCompare)
 
     if (equal) {
       const qnaUrlsA = kbA.urls || []
