@@ -1,7 +1,13 @@
 {
   "intents": [
     {
-      "name": "ModifyOrder"
+      "name": "ModifyOrder",
+      "features": [
+        {
+          "featureName": "SideOrderDescriptor",
+          "featureType": "phraselist"
+        }
+      ]
     }
   ],
   "entities": [
@@ -72,6 +78,12 @@
               "featureType": "phraselist"
             }
           ]
+        }
+      ],
+      "features": [
+        {
+          "featureName": "SideOrderDescriptor",
+          "featureType": "phraselist"
         }
       ]
     }
@@ -713,10 +725,11 @@
       "roles": []
     }
   ],
-  "name": "MicrosoftPizza",
-  "versionId": "1.2 - As Constraints",
-  "culture": "en-us",
   "luis_schema_version": "6.0.0",
+  "versionId": "1.2 - As Constraints",
+  "name": "MicrosoftPizza",
+  "desc": "",
+  "culture": "en-us",
   "phraselists": [
     {
       "name": "SideOrderDescriptor",
@@ -725,6 +738,5 @@
       "activated": true,
       "enabledForAllModels": true
     }
-  ],
-  "desc": ""
+  ]
 }

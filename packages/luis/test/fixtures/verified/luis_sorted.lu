@@ -132,3 +132,6 @@
 
 @ composite deviceTemperature = [device, customDevice, temperature]
 @ composite units = [temperature]
+> # Pattern.Any entities
+
+@ patternany alarmTime

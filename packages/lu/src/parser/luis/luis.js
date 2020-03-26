@@ -48,6 +48,11 @@ const initialize = function(instance, LuisJSON) {
     for (let prop in instance) {
         instance[prop] = LuisJSON[prop];
     } 
+
+    // add regexEntities property that returned from luis export api
+    const regexEntities = 'regexEntities';
+    if (Object.keys(LuisJSON).includes(regexEntities)) instance[regexEntities] = LuisJSON[regexEntities];
+
     settingsAndTokenizerCheck(instance, LuisJSON) 
 }
 

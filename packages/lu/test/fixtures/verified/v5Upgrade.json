@@ -10,6 +10,12 @@
           "instanceOf": null,
           "children": []
         }
+      ],
+      "features": [
+        {
+          "featureName": "abc",
+          "featureType": "phraselist"
+        }
       ]
     }
   ],
