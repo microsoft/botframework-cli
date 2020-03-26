@@ -935,9 +935,9 @@ export class AppAutoActiveLearner {
         const args: any = parsedKnownArgs[0];
         const unknownArgs: any = parsedKnownArgs[1];
         Utility.debuggingLog(
-            `args=${JSON.stringify(args)}`);
+            `args=${Utility.JSONstringify(args)}`);
         Utility.debuggingLog(
-            `unknownArgs=${JSON.stringify(unknownArgs)}`);
+            `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
         const debugFlag: boolean = Utility.toBoolean(args.debug);
         Utility.toPrintDebuggingLogToConsole = debugFlag;
         // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -1058,6 +1058,8 @@ export class AppAutoActiveLearner {
         let utteranceFeatureIndexArrays: number[][] = [];
         const data: Data = await DataUtility.LoadData(
             filename,
+            null,
+            true,
             filetype,
             labelColumnIndex,
             textColumnIndex,
@@ -1071,6 +1073,8 @@ export class AppAutoActiveLearner {
             if (Utility.exists(bootstrapResamplingDistributionFilename)) {
                 const dataBootstrapResampling: Data = await DataUtility.LoadData(
                     bootstrapResamplingDistributionFilename,
+                    null,
+                    true,
                     filetype,
                     bootstrapResamplingDistributionFileLabelColumnIndex,
                     bootstrapResamplingDistributionFileTextColumnIndex,

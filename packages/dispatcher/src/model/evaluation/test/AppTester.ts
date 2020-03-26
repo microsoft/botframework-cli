@@ -108,9 +108,9 @@ export async function mainTester(): Promise<void> {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${JSON.stringify(args)}`);
+        `args=${Utility.JSONstringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${JSON.stringify(unknownArgs)}`);
+        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -137,7 +137,7 @@ export async function mainTester(): Promise<void> {
     }
     let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
     if (Utility.isEmptyString(outputReportFilenamePrefix)) {
-        outputReportFilenamePrefix = Utility.getFileBasename(filename);
+        outputReportFilenamePrefix = Utility.getFilenameWithoutExtension(filename);
         // Utility.debuggingThrow(
         //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
     }
@@ -162,6 +162,15 @@ export async function mainTester(): Promise<void> {
     Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
+    const tester: Tester =
+        new Tester(
+            modelFilename,
+            featurizerFilename);
+    const featurizer: NgramSubwordFeaturizer =
+        tester.getFeaturizer();
+    // Utility.debuggingLog(
+    //     `featurizer.getLabelMap()=${Utility.JSONstringify(featurizer.getLabelMap())}`);
+    // -----------------------------------------------------------------------
     let intentsUtterances: {
         "intents": string[],
         "utterances": string[] } = {
@@ -171,6 +180,8 @@ export async function mainTester(): Promise<void> {
     let utteranceFeatureIndexArrays: number[][] = [];
     const data: Data = await DataUtility.LoadData(
         filename,
+        featurizer,
+        false,
         filetype,
         labelColumnIndex,
         textColumnIndex,
@@ -179,19 +190,17 @@ export async function mainTester(): Promise<void> {
     intentLabelIndexArray = data.getIntentLabelIndexArray();
     utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
     // -----------------------------------------------------------------------
-    const tester: Tester =
-        new Tester(
-            modelFilename,
-            featurizerFilename,
-            intentsUtterances.intents,
-            intentsUtterances.utterances,
-            intentLabelIndexArray,
-            utteranceFeatureIndexArrays);
+    tester.test(
+        intentsUtterances.intents,
+        intentsUtterances.utterances,
+        intentLabelIndexArray,
+        utteranceFeatureIndexArrays);
     // -----------------------------------------------------------------------
     const evaluationJsonReportResult: {
         "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
         "outputFilenames": string[],
-        } = tester.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+        } = tester.generateEvaluationJsonReportToFiles(
+            outputReportFilenamePrefix);
     const evaluationDataArraysReportResult: {
         "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
         "outputFilenames": string[],

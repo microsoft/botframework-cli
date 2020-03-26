@@ -294,23 +294,23 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             "macroAverageMetrics": { "averagePrecision": number,
                                      "averageRecall": number,
                                      "averageF1Score": number,
-                                     "totalMacroAverage": number },
+                                     "support": number },
             "microAverageMetrics": { "accuracy": number,
                                      "truePositives": number,
-                                     "totalMicroAverage": number },
+                                     "support": number },
             "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                     "weightedAverageRecall": number,
-                                     "weightedAverageF1Score": number,
-                                     "weightedTotalMacroAverage": number } } =
+                                             "weightedAverageRecall": number,
+                                             "weightedAverageF1Score": number,
+                                             "support": number } } =
             ConfusionMatrix.generateConfusionMatrixMetricStructure(
                 confusionMatrix);
         const confusionMatrixMetrics: [number, number, number, number] =
             [ confusionMatrixMetricStructure.macroAverageMetrics.averagePrecision,
               confusionMatrixMetricStructure.macroAverageMetrics.averageRecall,
               confusionMatrixMetricStructure.macroAverageMetrics.averageF1Score,
-              confusionMatrixMetricStructure.macroAverageMetrics.totalMacroAverage ];
+              confusionMatrixMetricStructure.macroAverageMetrics.support ];
         Utility.debuggingLog(
-            `confusionMatrixMetricStructure=${JSON.stringify(confusionMatrixMetricStructure, null, 4)}`);
+            `confusionMatrixMetricStructure=${Utility.JSONstringify(confusionMatrixMetricStructure)}`);
         assert.ok(Utility.almostEqual(confusionMatrixMetrics[0], 0.3333333333333333),
             `confusionMatrixMetrics[0]=${confusionMatrixMetrics[0]}`);
         assert.ok(Utility.almostEqual(confusionMatrixMetrics[1], 0.3333333333333333),
