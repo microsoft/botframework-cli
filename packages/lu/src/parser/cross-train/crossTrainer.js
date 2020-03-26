@@ -409,11 +409,13 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     qnaSectionContents.push(qnaSectionContent)
   }
 
-  const qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
+  let qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
   if (qnaContents && qnaContents !== '') {
     const modelInfoSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.MODELINFOSECTION)
     const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
-    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(NEWLINE + qnaContents)
+    if (modelInforContent && modelInforContent !== '') qnaContents = NEWLINE + qnaContents
+
+    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
   }
 
   // remove utterances which are duplicated with local qna questions
