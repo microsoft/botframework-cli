@@ -305,7 +305,7 @@ async function mergeLGFiles(schemaName: string, oldPath: string, newPath: string
     let resultRefs: string[] = []
     let oldRefSet = new Set<string>()
     for (let ref of refs) {
-        if (ref.match('>>>')) {
+        if (!ref.startsWith('[')) {
             resultRefs.push(ref)
             continue
         }
@@ -335,7 +335,7 @@ async function mergeLGFiles(schemaName: string, oldPath: string, newPath: string
     refs = await (await fs.readFile(ppath.join(newPath, locale, schemaName + '.' + locale + '.lg'), 'utf8')).split('\n')
 
     for (let ref of refs) {
-        if (ref.match('>>>')) {
+        if (!ref.startsWith('[')) {
             continue
         }
         if (!oldRefSet.has(ref)) {

@@ -175,9 +175,10 @@
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwich.schema",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwichOrder.schema",
                 "-o",
-                "${env:TEMP}/sandwich.out",
+                "D:/BOT/sandwichOrder_TRY1",
+                "--integrate",
                 "--force",
                 "--verbose"
             ],
