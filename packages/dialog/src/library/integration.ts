@@ -436,6 +436,7 @@ async function changeEntityEnumLG(oldPath: string, newPath: string, mergedPath: 
         await fs.writeFile(ppath.join(mergedPath, locale, filename), mergedStatements.join(os.EOL))
         feedback(FeedbackType.info, `generate ${filename}`)
     } else {
+        await fs.writeFile(ppath.join(mergedPath, locale, filename), oldText)
         feedback(FeedbackType.info, `generate ${filename}`)
     }
 }
