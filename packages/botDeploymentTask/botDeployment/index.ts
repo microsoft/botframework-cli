@@ -17,7 +17,6 @@ const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
 const outputFileDirectLine = `${ rootPath }/DirectLineCreate.json`;
 const outputFileTeams = `${ rootPath }/TeamsCreate.json`;
 const taskType = taskLibrary.getVariable("Release.ReleaseId") ? "Release Task": "Build Task"
-
 const envFile = path.join(__dirname, '.env');
 let formattedParams = new Map<string, string>();  
 let botName:string = '';
@@ -25,6 +24,15 @@ let webAppName:string = '';
 let telemetryClient: AppInsights.TelemetryClient;
 
 dotenv.config({ path: envFile });
+
+const setUserAgent = (): void => {
+    const taskFile = path.join(__dirname, 'task.json')
+    const buffer = readFileSync(taskFile)
+    const fileContents  = buffer.toString('utf-8')
+    const sourceTask = JSON.parse(fileContents)
+
+    process.env['AZURE_HTTP_USER_AGENT'] = `Bot-Deployment-Task/${sourceTask.version.Major}.${sourceTask.version.Minor}.${sourceTask.version.Patch}`;
+}
 
 const appInsightInit = (): void => {
     AppInsights.setup(process.env.InstrumentationKey)
@@ -231,6 +239,8 @@ const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
     const startTime  = Date.now();
+    
+    setUserAgent();
     
     appInsightInit();
 
