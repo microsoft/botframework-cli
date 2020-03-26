@@ -44,7 +44,7 @@ export class Builder {
         result = await QnaBuilderVerbose.build(qnaFiles, true)
         fileContent = JSON.stringify(result)
       } catch (err) {
-        err.text = `Invalid LU file ${file}: ${err.text}`
+        err.text = `Invalid QnA file ${file}: ${err.text}`
         throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
@@ -132,7 +132,7 @@ export class Builder {
 
     // here we do a while loop to make full use of qna tps capacity
     while (qnaContents.length > 0) {
-      // get a number(set by luisApiTps) of contents for each loop
+      // get a number(set by qnaApiTps) of contents for each loop
       const subQnaContents = qnaContents.splice(0, qnaApiTps)
 
       // concurrently handle applications
@@ -285,8 +285,14 @@ export class Builder {
       await delay(delayDuration)
       const response = await qnaBuildCore.updateKB(recognizer.getKBId(), newKB)
       const operationId = response.operationId
-      await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
-      this.handler(`${recognizer.getQnaPath()} updating finished\n`)
+
+      try {
+        await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
+        this.handler(`${recognizer.getQnaPath()} updating finished\n`)
+      } catch (err) {
+        err.text = `Updating knowledge base failed: \n${err.text}`
+        throw err
+      }
 
       return true
     } else {
@@ -301,9 +307,14 @@ export class Builder {
     const response = await qnaBuildCore.importKB(currentKB)
     const operationId = response.operationId
 
-    const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
-    recognizer.setKBId(opResult.resourceLocation.split('/')[2])
-    this.handler(`${recognizer.getQnaPath()} creating finished\n`)
+    try {
+      const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
+      recognizer.setKBId(opResult.resourceLocation.split('/')[2])
+      this.handler(`${recognizer.getQnaPath()} creating finished\n`)
+    } catch (err) {
+      err.text = `Creating knowledge base failed: \n${err.text}`
+      throw err
+    }
 
     return true
   }
@@ -316,7 +327,7 @@ export class Builder {
       opResult = await qnaBuildCore.getOperationStatus(operationId)
 
       if (opResult.operationState === 'Failed') {
-        throw new Error(JSON.stringify(opResult, null, 4))
+        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, JSON.stringify(opResult, null, 4)))
       }
 
       if (opResult.operationState === 'Succeeded') isGetting = false
