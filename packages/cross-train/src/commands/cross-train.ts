@@ -7,7 +7,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
 const path = require('path')
-const helper  = require('./../utils/helper')
+const helper = require('./../utils/helper')
 
 export default class CrossTrain extends Command {
   static description = 'Lu and Qna cross train tool'

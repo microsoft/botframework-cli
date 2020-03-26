@@ -16,7 +16,7 @@ export async function generateConfig(inputFolder: string, rootDialogFile: string
 
   let rootDialogObject = JSON.parse(await getInputFromFile(rootDialogFile))
   rootDialogObject.path = rootDialogFile
-  rootDialogObject.isRoot = true  
+  rootDialogObject.isRoot = true
 
   let dialogObjects: any[] = []
   for (const dialogFile of dialogFiles) {
@@ -67,15 +67,15 @@ function createConfig(rootDialog: any, dialogs: any[], configPath: string) {
   }
 
   rootDialog.triggers.forEach((trigger: any) => {
-    if (trigger['$type'] && trigger['$type'] === 'Microsoft.OnIntent') {
-      const actions = trigger['actions'] || []
+    if (trigger.$type && trigger.$type === 'Microsoft.OnIntent') {
+      const actions = trigger.actions || []
       for (const action of actions) {
-        if (action['$type'] && action['$type'] === 'Microsoft.BeginDialog') {
+        if (action.$type && action.$type === 'Microsoft.BeginDialog') {
           const dialogName = action.dialog
           const target = dialogs.find(dialog => path.basename(dialog.path, dialogExt) === dialogName)
           if (target) {
             const relativePath = createPath(target.path, configPath)
-            if (!result[key]) result[key] = { triggers: {} }
+            if (!result[key]) result[key] = {triggers: {}}
             if (!result[key].triggers[trigger.intent]) {
               result[key].triggers[trigger.intent] = relativePath
             } else if (typeof result[key].triggers[trigger.intent] === 'string') {
@@ -84,7 +84,7 @@ function createConfig(rootDialog: any, dialogs: any[], configPath: string) {
               result[key].triggers[trigger.intent].push(relativePath)
             }
 
-            result = { ...result, ...createConfig(target, dialogs, configPath) }
+            result = {...result, ...createConfig(target, dialogs, configPath)}
           }
         }
       }
