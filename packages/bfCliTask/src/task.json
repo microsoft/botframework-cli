@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":29
+        "Release":34
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -68,7 +68,8 @@
             "helpMarkDown": "Select the sub-command to execute.",
             "options": {
                 "ApplicationCreate" : "Application Create",
-                "LuisBuild" : "Luis Build"
+                "LuisBuild" : "Luis Build",
+                "LuisTrainRun" : "Luis Train Run"
             }       
         },
         {
@@ -86,7 +87,7 @@
             "label": "Endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
         },
         {
@@ -95,7 +96,7 @@
             "label": "Subscription Key",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisBuild",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisBuild || luisSubCommand=LuisTrainRun",
             "helpMarkDown": "Enter the LUIS cognitive services subscription key."    
         },
         {
@@ -114,7 +115,7 @@
             "label": "Version Id",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun",
             "helpMarkDown": "Enter the version Id for the LUIS application."
         },
         {
@@ -143,6 +144,15 @@
             "groupname": "command",
             "visibleRule": "luisSubCommand=LuisBuild",
             "helpMarkDown": "Enter the bot name."
+        },
+        {
+            "name": "luisAppId",
+            "type": "string",
+            "label": "AppId",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTrainRun",
+            "helpMarkDown": "Enter the LUIS application id."
         }
     ],
     "execution": {

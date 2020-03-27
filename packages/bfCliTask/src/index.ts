@@ -11,6 +11,7 @@ import { readFileSync } from 'fs';
 
 const input = new InputValues();
 const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
+const outputFileLuisCreate = `${ rootPath }/LuisApplicationCreate.json`;
 
 const azureLogin = (helper: SubscriptionHelper): void => {
     const userName = helper.getServicePrincipalClientId();
@@ -55,8 +56,7 @@ const installBfCliTool = (): void => {
     
     console.log('Installing bf cli tool...');
     
-    execSync(command);
-    
+    execSync(command);    
     console.log('bf cli installed successfully');      
 }
 
@@ -64,10 +64,10 @@ const createLuisApplication = (): void => {
     console.log('Creating LUIS Application...');
 
     let command = `bf luis:application:create --name "${ input.luisApplicationName }" --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" `;
-    command += `--culture "${ input.luisCulture }" --description "${ input.luisAppDescription }" --versionId "${ input.luisVersionId }"`
+    command += `--culture "${ input.luisCulture }" --description "${ input.luisAppDescription }" --versionId "${ input.luisVersionId }" > ${ outputFileLuisCreate }`
     
-    execSync(command);
-    console.log('LUIS Application successfully created');      
+    execSync(command);    
+    console.log('LUIS Application successfully created');
 }
 
 const buildLuisApplication = (): void => {
@@ -77,6 +77,15 @@ const buildLuisApplication = (): void => {
    
     execSync(command);
     console.log('LUIS Application built successfully');      
+}
+
+const trainLuisApplication = (): void => {
+    console.log('Training LUIS Application...');
+
+    const command = `bf luis:train:run --appId "${ input.luisAppId }" --versionId "${ input.luisVersionId }" --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }"`;
+   
+    execSync(command);
+    console.log('LUIS Training request successfully issued');      
 }
 
 const run = (): void => {
@@ -96,6 +105,9 @@ const run = (): void => {
                 break;
             case 'LuisBuild':
                 buildLuisApplication();
+                break;
+            case 'LuisTrainRun':
+                trainLuisApplication();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
