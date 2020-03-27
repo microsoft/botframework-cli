@@ -30,6 +30,9 @@
 # possibleValues(property)
 - ${foreach(dialogClass.schema.properties[property].enum, enum, value(property, enum))}
 
+# possibleArrayValues(property)
+- ${foreach(dialogClass.schema.properties[property].items.enum, enum, value(property, enum))}
+
 # cancel
 - Do you want to end the conversation? (yes/no)
 

@@ -23,6 +23,8 @@ You can find out about a specific property by doing 'help <property>'.
 - Expect a number for ${name(property)}
 - ELSEIF: ${dialogClass.schema.properties[property].type == 'string'}
 - Enter any string for ${name(property)}
+- ELSEIF: ${dialogClass.schema.properties[property].type == 'array'}
+- ${name(property)} is a list from: \[${join(possibleArrayValues(property), ', ')}\]
 - ELSE:
 - No help available.
 
