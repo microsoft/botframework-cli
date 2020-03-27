@@ -4,12 +4,12 @@
  */
 
 // import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, flags} from '@microsoft/bf-cli-command';
 
-import * as path from 'path'
+import * as path from 'path';
 
 export default class OrchestratorTest extends Command {
-  static description = 'Run orchestrator test evaluation using given test file'
+  static description = 'Run orchestrator test evaluation using given test file';
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
@@ -21,14 +21,14 @@ export default class OrchestratorTest extends Command {
 
   static args = [{name: 'file'}]
 
-  async run() {
-    const {flags} = this.parse(OrchestratorTest)
+  async run(): Promise<number> {
+    const {flags} = this.parse(OrchestratorTest);
 
-    const input = flags.in || __dirname
-    const output = flags.out || __dirname
+    const input = flags.in || __dirname;
+    const output = flags.out || __dirname;
 
-    const args = `test -i ${input} -o ${output}`
-    this.log(`arguments -- ${args}`)
+    const args = `test -i ${input} -o ${output}`;
+    this.log(`arguments -- ${args}`);
 
     // TO-DO: figure out rush package dependency with regard to oclif folder structure
     // require("dotnet-3.1") statement works only for local package install
@@ -36,9 +36,10 @@ export default class OrchestratorTest extends Command {
     // require("dotnet-3.1")
 
     try {
-      require('child_process').execSync('dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args, {stdio: [0, 1, 2]})
+      require('child_process').execSync('dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args, {stdio: [0, 1, 2]});
     } catch (error) {
-      return 0
+      return 1;
     }
+    return 0;
   }
 }

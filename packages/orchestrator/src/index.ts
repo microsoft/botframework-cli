@@ -3,4 +3,4 @@
  * Licensed under the MIT License.
  */
 
-export default {}
+export default {};

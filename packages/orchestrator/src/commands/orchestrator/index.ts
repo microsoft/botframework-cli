@@ -3,16 +3,16 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, flags} from '@microsoft/bf-cli-command';
 
 export default class OrchestratorIndex extends Command {
-  static description = 'Display Orchestrator CLI available commands'
+  static description = 'Display Orchestrator CLI available commands';
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'Orchestrator command help'}),
   }
 
-  async run() {
-    this._help()
+  async run(): Promise<void> {
+    this._help();
   }
 }
