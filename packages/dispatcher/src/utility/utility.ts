@@ -988,6 +988,14 @@ export class Utility {
                     `, utterance=$${utterance}$` +
                     `, line=$${line}$`);
             }
+            if (Utility.isEmptyString(utterance)) {
+                Utility.debuggingThrow(
+                    `LINE - INDEX=${lineIndex}, utterance is empty` +
+                    `, lineColumns.length=${lineColumns.length}` +
+                    `, utterance=$${utterance}$` +
+                    `, utterance=$${utterance}$` +
+                    `, line=$${line}$`);
+            }
             // {
             //     Utility.debuggingLog(
             //         `LINE - INDEX=${lineIndex}` +
@@ -1384,7 +1392,7 @@ export class Utility {
                 Utility.debuggingThrow(
                     `lineColumns.length|${lineColumns.length}|!=4` +
                     `,line=$${line}$` +
-                    `,lineColumns=$${JSON.stringify(lineColumns)}$`);
+                    `,lineColumns=$${Utility.JSONstringify(lineColumns)}$`);
             }
             const id: string = lineColumns[0];
             const word: string  = lineColumns[1];
@@ -1609,29 +1617,39 @@ export class Utility {
         message: any): void {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: ${message}`;
-        throw new Error(JSON.stringify(logMessage));
+        throw new Error(Utility.JSONstringify(logMessage));
     }
 
     public static almostEqual(first: number, second: number): boolean {
-        return Utility.getAlmostEqualPercentage(first, second) < Utility.epsilon;
+        const almostEqualPercentage: number = Utility.getAlmostEqualPercentage(first, second);
+        const isAlmostEqual: boolean = almostEqualPercentage < Utility.epsilon;
+        return isAlmostEqual;
     }
     public static almostEqualRough(first: number, second: number): boolean {
-        return Utility.getAlmostEqualPercentage(first, second) < Utility.epsilonRough;
+        const almostEqualPercentage: number = Utility.getAlmostEqualPercentage(first, second);
+        const isAlmostEqual: boolean = almostEqualPercentage < Utility.epsilonRough;
+        return isAlmostEqual;
     }
     public static getAlmostEqualPercentage(first: number, second: number): number {
         if (second === 0) {
             return Math.abs(first);
         }
-        return Math.abs((first - second) / second);
+        const almostEqualPercentage: number = Math.abs((first - second) / second);
+        return almostEqualPercentage;
     }
     public static almostEqualAbsolute(first: number, second: number): boolean {
-        return Utility.getAlmostEqualAbsolute(first, second) < Utility.epsilon;
+        const almostEqualAbsolute: number = Utility.getAlmostEqualAbsolute(first, second);
+        const isAlmostEqualAbsolute: boolean = almostEqualAbsolute < Utility.epsilon;
+        return isAlmostEqualAbsolute;
     }
     public static almostEqualAbsoluteRough(first: number, second: number): boolean {
-        return Utility.getAlmostEqualAbsolute(first, second) < Utility.epsilonRough;
+        const almostEqualAbsolute: number = Utility.getAlmostEqualAbsolute(first, second);
+        const isAlmostEqualAbsolute: boolean = almostEqualAbsolute < Utility.epsilonRough;
+        return isAlmostEqualAbsolute;
     }
     public static getAlmostEqualAbsolute(first: number, second: number): number {
-        return Math.abs(first - second);
+        const almostEqualAbsolute: number = Math.abs(first - second);
+        return almostEqualAbsolute;
     }
 
     public static toBoolean(value: any): boolean {
@@ -1848,6 +1866,21 @@ export class Utility {
 
     public static getFileBasename(filename: string): string {
         return path.basename(filename);
+    }
+    public static getFileDirname(filename: string): string {
+        return path.dirname(filename);
+    }
+    public static getFileExtname(filename: string): string {
+        return path.extname(filename);
+    }
+    public static getFilenameWithoutExtension(filename: string): string {
+        const extension: string = Utility.getFileExtname(filename);
+        const filenameWithoutExtension: string = filename.substring(0, filename.length - extension.length);
+        return filenameWithoutExtension;
+    }
+
+    public static JSONstringify(input: any): string {
+        return JSON.stringify(input, null, 4);
     }
 
     protected static rngBurninIterations: number = 16384;

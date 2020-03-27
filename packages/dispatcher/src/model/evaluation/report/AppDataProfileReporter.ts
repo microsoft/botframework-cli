@@ -18,6 +18,7 @@ import { DataUtility } from "../../../data/DataUtility";
 import { Data } from "../../../data/Data";
 
 import { Utility } from "../../../utility/Utility";
+import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
 export function mainDataProfileReporter(): void {
     // -----------------------------------------------------------------------
@@ -84,9 +85,9 @@ export function mainDataProfileReporter(): void {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${JSON.stringify(args)}`);
+        `args=${Utility.JSONstringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${JSON.stringify(unknownArgs)}`);
+        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -108,7 +109,7 @@ export function mainDataProfileReporter(): void {
     // ---- NOTE-TODO-PLACEHOLDER ---- }
     let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
     if (Utility.isEmptyString(outputReportFilenamePrefix)) {
-        outputReportFilenamePrefix = Utility.getFileBasename(filename);
+        outputReportFilenamePrefix = Utility.getFilenameWithoutExtension(filename);
         // Utility.debuggingThrow(
         //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
     }
@@ -130,6 +131,8 @@ export function mainDataProfileReporter(): void {
     // -----------------------------------------------------------------------
     DataUtility.LoadData(
         filename,
+        null,
+        true,
         filetype,
         labelColumnIndex,
         textColumnIndex,
