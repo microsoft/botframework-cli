@@ -38,6 +38,12 @@
 # unexpectedPropertyChange(property, val, oldVal)
 - ${name(property)} is changed from ${value(property, oldVal)} to ${value(property, val)}.
 
+# setArrayPropertyMessage(property, val)
+- IF: ${contains($expectedProperties, property)}
+- 
+- ELSE:
+- Added ${value(property, val)} to ${name(property)}
+
 # clearPropertyMessage(property)
 - ${name(property)} has been cleared.
 
@@ -49,6 +55,21 @@
 
 # removeUnexpectedPropertyMessage(property, val)
 - Removed ${value(property, val)} from ${name(property)}.
+
+# removeArrayPropertyMessage(property, val)
+- IF: ${contains($expectedProperties, property) && $expectedOperation == 'RemoveFromProperty'}
+- 
+- ELSE:
+- ${removeUnexpectedArrayPropertyMessage(property, val)}
+
+# removeUnexpectedArrayPropertyMessage(property, val)
+- IF: ${contains(dialog[property], val)}
+- Removed ${value(property, val)} from ${name(property)} ${value(property, val)}
+- ELSE:
+- ${value(property, val)} is not in ${name(property)}
+
+# showPropertyMessage(property)
+- ${name(property)}: ${value(property, dialog[property])}
 
 [library.en-us.lg]
 [library-ReadForm.en-us.lg]

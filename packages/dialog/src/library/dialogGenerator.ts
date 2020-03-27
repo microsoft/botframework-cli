@@ -85,6 +85,11 @@ async function writeFile(path: string, val: any, feedback: Feedback) {
         val = addHash(path, val)
         await fs.writeFile(path, val)
     } catch (e) {
+        let match = /position ([0-9]+)/.exec(e.message)
+        if (match) {
+            let offset = Number(match[1])
+            val = `${val.substring(0, offset)}^^^${val.substring(offset)}`
+        }
         feedback(FeedbackType.error, `${e.message}${os.EOL}${val}`)
     }
 }

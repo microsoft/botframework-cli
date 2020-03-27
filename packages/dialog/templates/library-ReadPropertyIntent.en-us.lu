@@ -1,8 +1,9 @@
 # ReadProperty
-- what's my current selection of {PROPERTYName}
-- what's the current value of {PROPERTYName}
-- what's the value of {PROPERTYName}
-- value (of|for) {PROPERTYName}
-- the value (of|for) {PROPERTYName}
-- selection (of|for) {PROPERTYName}
-- current selection (of|for) {PROPERTYName}
+- show progress
+- display progress
+- what I have I entered so far
+- show form
+- display form
+- progress
+- show
+- display

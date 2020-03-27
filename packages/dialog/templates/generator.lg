@@ -59,11 +59,11 @@
         },
         {
             "$kind": "Microsoft.IfCondition",
-            "condition": "PropertyToChange == '${property}'",
+            "condition": "$PropertyToChange == '${property}'",
             "actions": [
                 {
                     "$kind":"Microsoft.DeleteProperty",
-                    "property": "PropertyToChange"
+                    "property": "$PropertyToChange"
                 }
             ]
         }
@@ -82,13 +82,23 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{setPropertyMessage('${property}', @${entity})}"
+            "activity": "$\{setArrayPropertyMessage('${property}', @${entity})}"
         },
         {
             "$kind": "Microsoft.EditArray",
             "changeType": "push",
             "itemsProperty": "$${property}",
             "value": "=@${entity}"
+        },
+        {
+            "$kind": "Microsoft.IfCondition",
+            "condition": "$PropertyToChange == '${property}'",
+            "actions": [
+                {
+                    "$kind":"Microsoft.DeleteProperty",
+                    "property": "$PropertyToChange"
+                }
+            ]
         }
     ]               
 }
@@ -133,12 +143,12 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{removePropertyMessage('${property}', @${entity})}"
+            "activity": "$\{removeArrayPropertyMessage('${property}', @${entity})}"
         },
         {
             "$kind": "Microsoft.EditArray",
             "changeType": "remove",
-            "itemsProperty": "=$${property}",
+            "itemsProperty": "$${property}",
             "value": "=@${entity}"
         }
     ]               
@@ -151,7 +161,8 @@
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
     "operation": "ClearProperty",
-    "property": "${property}",
+    "entity": "PROPERTYName",
+    "condition": "@PROPERTYName == '${property}'",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
@@ -170,16 +181,13 @@
 {
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "operation": "ClearProperty",
-    "property": "${property}",
+    "operation": "ShowProperty",
+    "entity": "PROPERTYName",
+    "condition": "@PROPERTYName == '${property}'",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{clearPropertyMessage('${property}')}"
-        },
-        {
-            "$kind": "Microsoft.DeleteProperty",
-            "property": "$${property}"
+            "activity": "$\{showPropertyMessage(@PROPERTYName)}"
         }
     ]               
 }

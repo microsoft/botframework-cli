@@ -35,7 +35,7 @@ ${importLG('library-Choose')}
 # default
 -```
   - DEFAULT: 
-    - I don't understand $\{value\}
+    - No value
 ```
 
 [generator.lg](generator.lg)

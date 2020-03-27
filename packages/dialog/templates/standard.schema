@@ -55,6 +55,7 @@
     "$operations": ["AddToProperty", "RemoveFromProperty", "ClearProperty", "ShowProperty"],
     "$defaultOperation": "AddToProperty",
     "$expectedOnly": ["boolean", "PROPERTYName", "utterance", "keyPhrase", "personName"],
+    "$entities": ["PROPERTYName"],
     "$templates": [
         "booleanEntity",
         "library-HelpIntent.lu",
