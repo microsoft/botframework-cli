@@ -57,7 +57,7 @@ jobs:
         
         Clear-Content $file;
         
-        foreach ($key in $content.keys) { Add-Content .env "$key=$($content.$key)" }
+        foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" }
       displayName: 'Set Environment Keys'
 
     - task: ms-devlabs.vsts-developer-tools-build-tasks.tfx-installer-build-task.TfxInstaller@2
