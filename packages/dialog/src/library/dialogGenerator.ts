@@ -8,8 +8,11 @@ import * as s from './schema'
 import * as expressions from 'adaptive-expressions'
 import * as fs from 'fs-extra'
 import * as lg from 'botbuilder-lg'
+import * as crypto from 'crypto'
+import * as os from 'os'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
+import { SubstitutionsEvaluator } from './substitutions'
 import { processSchemas } from './processSchemas'
 
 export enum FeedbackType {
@@ -21,22 +24,77 @@ export enum FeedbackType {
 
 export type Feedback = (type: FeedbackType, message: string) => void
 
-function localePath(name: string, dir: string, locale?: string): string {
-    return locale ? ppath.join(dir, locale, name) : ppath.join(dir, name)
+function templatePath(name: string, dir: string): string {
+    return ppath.join(dir, name)
 }
 
-export async function writeFile(path: string, val: any, force: boolean, feedback: Feedback) {
-    try {
-        if (force || !await fs.pathExists(path)) {
-            feedback(FeedbackType.info, `Generating ${path}`)
-            let dir = ppath.dirname(path)
-            await fs.ensureDir(dir)
-            await fs.writeFile(path, val)
-        } else {
-            feedback(FeedbackType.warning, `Skipping already existing ${path}`)
+function computeHash(val: string): string {
+    return crypto.createHash('md5').update(val).digest('hex')
+}
+
+function computeJSONHash(json: any): string {
+    return computeHash(JSON.stringify(json, null, 4))
+}
+
+const commentHash = ['.lg', '.lu', '.qna']
+const jsonHash = ['.dialog']
+function addHash(path: string, val: any): any {
+    let ext = ppath.extname(path)
+    if (commentHash.includes(ext)) {
+        if (!val.endsWith(os.EOL)) {
+            val += os.EOL
         }
+        val += `${os.EOL}> Generator: ${computeHash(val)}`
+    } else if (jsonHash.includes(ext)) {
+        let json = JSON.parse(val)
+        json.$Generator = computeJSONHash(json)
+        val = JSON.stringify(json, null, 4)
+    }
+    return val
+}
+
+const GeneratorPattern = /\r?\n> Generator: (.*)/m
+export async function isUnchanged(path: string): Promise<boolean> {
+    let result = false
+    let ext = ppath.extname(path)
+    let file = await fs.readFile(path, 'utf8')
+    if (commentHash.includes(ext)) {
+        let match = file.match(GeneratorPattern)
+        if (match) {
+            let oldHash = match[1]
+            file = file.substring(0, match.index)
+            let hash = computeHash(file)
+            result = oldHash === hash
+        }
+    } else if (jsonHash.includes(ext)) {
+        let json = JSON.parse(file)
+        let oldHash = json.$Generator
+        if (oldHash) {
+            delete json.$Generator
+            let hash = computeJSONHash(json)
+            result = oldHash === hash
+        }
+    }
+    return result
+}
+
+async function writeFile(path: string, val: any, feedback: Feedback) {
+    try {
+        let dir = ppath.dirname(path)
+        await fs.ensureDir(dir)
+        val = addHash(path, val)
+        await fs.writeFile(path, val)
     } catch (e) {
-        feedback(FeedbackType.error, e.message)
+        feedback(FeedbackType.error, `${e.message}${os.EOL}${val}`)
+    }
+}
+
+async function generateFile(path: string, val: any, force: boolean, feedback: Feedback) {
+    if (force || !await fs.pathExists(path)) {
+        feedback(FeedbackType.info, `Generating ${path}`)
+        await writeFile(path, val, feedback)
+    } else {
+        feedback(FeedbackType.warning, `Skipping already existing ${path}`)
     }
 }
 
@@ -44,6 +102,7 @@ const expressionEngine = new expressions.ExpressionParser((func: any) => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
+        case 'substitutions': return SubstitutionsEvaluator
         default: return expressions.Expression.lookup(func)
     }
 })
@@ -53,14 +112,15 @@ type LGFile = lg.Templates | string | undefined
 
 async function findTemplate(name: string, templateDirs: string[], locale?: string): Promise<LGFile> {
     let template
+
     for (let dir of templateDirs) {
-        let loc = localePath(name, dir, locale)
+        let loc = templatePath(name, dir)
         if (await fs.pathExists(loc)) {
-            // Simple template
+            // Direct file
             template = await fs.readFile(loc, 'utf8')
         } else {
-            // LG Engine with name/names added functions
-            loc = localePath(name + '.lg', dir, locale)
+            // LG file
+            loc = templatePath(name + '.lg', dir)
             if (await fs.pathExists(loc)) {
                 template = lg.Templates.parseFile(loc, undefined, expressionEngine)
             }
@@ -69,58 +129,17 @@ async function findTemplate(name: string, templateDirs: string[], locale?: strin
     return template
 }
 
-function addLocale(name: string, locale: string, prefix: string): string {
-    let result = `${prefix}-${name}`
-    if (locale) {
-        let base = `${prefix}-${ppath.basename(name, '.lg')}`
-        let extStart = base.indexOf('.')
-        let filename
-        if (extStart < 0) {
-            filename = `${base}.${locale}.lg`
-        } else {
-            filename = `${base.substring(0, extStart)}.${locale}${base.substring(extStart)}`
-        }
-        result = ppath.join(ppath.dirname(name), filename)
-    }
-    return result
+// Add prefix to [] imports in constant .lg files
+const RefPattern = /^[ \t]*\[[^\]\n]*\][ \t]*$/gm
+function addPrefixToImports(template: string, scope: any): string {
+    return template.replace(RefPattern, (match: string) => {
+        let ref = match.substring(match.indexOf('[') + 1, match.indexOf(']'))
+        return `[${scope.prefix}-${ref}](${scope.prefix}-${ref})${os.EOL}`
+    })
 }
 
-async function replaceAsync(str: string, re: RegExp, callback: (match: string) => Promise<string>): Promise<string> {
-    let parts: any[] = []
-    let i = 0
-    if (re.global) {
-        re.lastIndex = i
-    }
-    let match
-    while (match = re.exec(str)) {
-        // This probably needs to be awaited
-        parts.push(str.slice(i, match.index), callback(match[0]))
-        i = re.lastIndex
-        if (!re.global) {
-            break // for non-global regexes only take the first match
-        }
-        if (match[0].length === 0) {
-            re.lastIndex++
-        }
-    }
-    parts.push(str.slice(i))
-    const strings = await Promise.all(parts)
-    return strings.join('')
-}
-
-const RefPattern = /^\s*\[[^\]\n\r]*\]\s*$/gm
-const LocalePattern = /\.[^.]+\.lg$/
-async function processLibraryTemplates(template: string, outPath: string, templateDirs: string[], outDir: string, scope: any, force: boolean, feedback: Feedback): Promise<string> {
-    if (!template.startsWith('>>> Library')) {
-        return replaceAsync(template, RefPattern, async (match: string): Promise<string> => {
-            let replacement = await processTemplate(match.substring(match.indexOf('[') + 1, match.indexOf(']')), templateDirs, outDir, scope, force, feedback, false)
-            replacement = replacement.replace(LocalePattern, '.lg')
-            let local = ppath.relative(ppath.dirname(outPath), replacement)
-            return Promise.resolve(`\n[${ppath.basename(replacement)}](${local})`)
-        });
-    } else {
-        return Promise.resolve(template)
-    }
+function addPrefix(prefix: string, name: string): string {
+    return `${prefix}-${name}`
 }
 
 // Add entry to the .lg generation context and return it.  
@@ -145,6 +164,10 @@ function addEntry(fullPath: string, outDir: string, tracker: any): FileRef | und
 function existingRef(name: string, tracker: any): FileRef | undefined {
     let ext = ppath.extname(name).substring(1)
     let arr: FileRef[] = tracker[ext]
+    if (!arr) {
+        arr = []
+        tracker[ext] = arr
+    }
     return arr.find(ref => ref.fullName === name)
 }
 
@@ -157,111 +180,137 @@ async function processTemplate(
     feedback: Feedback,
     ignorable: boolean): Promise<string> {
     let outPath = ''
+    let oldDir = process.cwd()
     try {
         let ref = existingRef(templateName, scope.templates)
         if (ref) {
+            // Simple file already existed
             outPath = ppath.join(outDir, ref.relative)
         } else {
-            let lgfile = await findTemplate(templateName, templateDirs, scope.locale)
+            let lgfile = await findTemplate(templateName, templateDirs)
             if (lgfile !== undefined) {
-                // NOTE: Ignore templates that are defined, but are empty
+                // Ignore templates that are defined, but are empty
                 if (lgfile) {
-                    let filename = addLocale(templateName, scope.locale, scope.prefix)
-                    if (typeof lgfile === 'object' && lgfile.toArray().some(f => f.name === 'filename')) {
-                        filename = lgfile.evaluate('filename', scope)
+                    if (typeof lgfile !== 'object' || lgfile.toArray().some(f => f.name === 'template')) {
+                        // Constant file or .lg template so output
+                        let filename = addPrefix(scope.prefix, templateName)
+                        if (typeof lgfile === 'object' && lgfile.toArray().some(f => f.name === 'filename')) {
+                            try {
+                                filename = lgfile.evaluate('filename', scope) as any as string
+                            } catch (e) {
+                                throw new Error(`${templateName}: ${e.message}`)
+                            }
+                        } else if (filename.includes(scope.locale)) {
+                            // Move constant files into locale specific directories
+                            filename = `${scope.locale}/${filename}`
+                        }
+
+                        // Add prefix to constant imports
+                        if (typeof lgfile !== 'object') {
+                            lgfile = addPrefixToImports(lgfile, scope)
+                        }
+
+                        outPath = ppath.join(outDir, filename)
+                        let ref = addEntry(outPath, outDir, scope.templates)
+                        if (ref) {
+                            // This is a new file
+                            if (force || !await fs.pathExists(outPath)) {
+                                feedback(FeedbackType.info, `Generating ${outPath}`)
+                                let result = lgfile
+                                if (typeof lgfile === 'object') {
+                                    process.chdir(ppath.dirname(lgfile.toArray()[0].source))
+                                    result = lgfile.evaluate('template', scope) as any as string
+                                    if (Array.isArray(result)) {
+                                        result = result.join('\n')
+                                    }
+                                }
+
+                                // See if generated file has been overridden in templates
+                                let existing = await findTemplate(filename, templateDirs)
+                                if (existing) {
+                                    result = existing
+                                }
+
+                                await writeFile(outPath, result, feedback)
+                                scope.templates[ppath.extname(outPath).substring(1)].push(ref)
+
+                            } else {
+                                feedback(FeedbackType.warning, `Skipping already existing ${outPath}`)
+                            }
+                        }
                     }
-                    outPath = ppath.join(outDir, scope.locale, filename)
-                    let ref = addEntry(outPath, outDir, scope.templates)
-                    if (ref) {
-                        if (force || !await fs.pathExists(outPath)) {
-                            feedback(FeedbackType.info, `Generating ${outPath}`)
-                            let result = lgfile
-                            if (typeof lgfile === 'object') {
-                                result = lgfile.evaluate('template', scope)
-                                if (Array.isArray(result)) {
-                                    result = result.join('\n')
-                                }
-                                if (lgfile.toArray().some(f => f.name === 'filename')) {
-                                    filename = lgfile.evaluate('filename', scope)
-                                }
-                            }
 
-                            // See if generated file has been overridden in templates
-                            let existing = await findTemplate(filename, templateDirs, scope.locale)
-                            if (existing) {
-                                result = existing
+                    if (typeof lgfile === 'object') {
+                        if (lgfile.toArray().some(f => f.name === 'entities') && !scope.schema.properties[scope.property].$entities) {
+                            let entities = lgfile.evaluate('entities', scope) as any as string[]
+                            if (entities) {
+                                scope.schema.properties[scope.property].$entities = entities
                             }
-
-                            result = await processLibraryTemplates(result as string, outPath, templateDirs, outDir, scope, force, feedback)
-                            let dir = ppath.dirname(outPath)
-                            await fs.ensureDir(dir)
-                            await fs.writeFile(outPath, result)
-                            scope.templates[ppath.extname(outPath).substring(1)].push(ref)
-                        } else {
-                            feedback(FeedbackType.warning, `Skipping already existing ${outPath}`)
+                        }
+                        if (lgfile.toArray().some(f => f.name === 'templates')) {
+                            let generated = lgfile.evaluate('templates', scope)
+                            if (!Array.isArray(generated)) {
+                                generated = [generated]
+                            }
+                            for (let generate of generated as any as string[]) {
+                                await processTemplate(generate, templateDirs, outDir, scope, force, feedback, false)
+                            }
                         }
                     }
                 }
             } else if (!ignorable) {
-                feedback(FeedbackType.error, `Missing template ${templateName}` + (scope.locale ? ` in locale ${scope.locale}` : ''))
+                feedback(FeedbackType.error, `Missing template ${templateName}`)
             }
         }
     } catch (e) {
         feedback(FeedbackType.error, e.message)
+    } finally {
+        process.chdir(oldDir)
     }
     return outPath
 }
 
 async function processTemplates(
     schema: s.Schema,
-    extensions: string[],
     templateDirs: string[],
+    locales: string[],
     outDir: string,
     scope: any,
     force: boolean,
-    feedback: Feedback) {
-
-    scope.templates = {
-        lg: [],
-        lu: [],
-        qna: [],
-        json: [],
-        dialog: []
-    }
-
-    // Entities first--ok to ignore templates because they might be property specific
-    for (let entity of schema.allEntities()) {
-        let [entityName, role] = entity.name.split(':')
-        scope.entity = entityName
-        scope.role = role
-        scope.property = entity.property
-        for (let ext of ['.lu', '.lg', '.qna', '.dialog']) {
-            if (extensions.includes(ext)) {
-                await processTemplate(entityName + ext, templateDirs, outDir, scope, force, feedback, true)
+    feedback: Feedback): Promise<void> {
+    scope.templates = {}
+    for (let locale of locales) {
+        scope.locale = locale
+        for (let property of schema.schemaProperties()) {
+            scope.property = property.path
+            scope.type = property.typeName()
+            let templates = property.schema.$templates
+            if (!templates) {
+                templates = [scope.type]
+            }
+            for (let template of templates) {
+                await processTemplate(template, templateDirs, outDir, scope, force, feedback, false)
+            }
+            let entities = property.schema.$entities
+            if (!entities) {
+                feedback(FeedbackType.error, `${property.path} does not have $entities defined in schema or template.`)
+            } else if (!property.schema.$templates) {
+                for (let entity of entities) {
+                    let [entityName, role] = entity.split(':')
+                    scope.entity = entityName
+                    scope.role = role
+                    if (entityName === `${scope.property}Entity`) {
+                        entityName = `${scope.type}`
+                    }
+                    await processTemplate(`${entityName}Entity-${scope.type}`, templateDirs, outDir, scope, force, feedback, false)
+                }
             }
         }
-    }
-    scope.entity = undefined
-    scope.role = undefined
-    scope.property = undefined
 
-    // Process per property templates
-    for (let prop of schema.schemaProperties()) {
-        scope.property = prop.path
-
-        // Property templates
-        for (let templateName of prop.templates()) {
-            if (extensions.includes(ppath.extname(templateName))) {
-                await processTemplate(templateName, templateDirs, outDir, scope, force, feedback, false)
-            }
-        }
-    }
-    scope.property = undefined
-
-    // Process templates found at the top
-    if (schema.schema.$templates) {
-        for (let templateName of schema.schema.$templates) {
-            if (extensions.includes(ppath.extname(templateName))) {
+        // Process templates found at the top
+        if (schema.schema.$templates) {
+            scope.entities = schema.entityTypes()
+            for (let templateName of schema.schema.$templates) {
                 await processTemplate(templateName, templateDirs, outDir, scope, force, feedback, false)
             }
         }
@@ -282,7 +331,7 @@ function expandSchema(schema: any, scope: any, path: string, inProperties: boole
         for (let [key, val] of Object.entries(schema)) {
             let newPath = path
             if (inProperties) {
-                newPath += newPath === '' ? key : '.' + key;
+                newPath += newPath === '' ? key : '.' + key
             }
             let newVal = expandSchema(val, { ...scope, property: newPath }, newPath, key === 'properties', missingIsError, feedback)
             newSchema[key] = newVal
@@ -313,7 +362,7 @@ function expandStandard(dirs: string[]): string[] {
         }
         expanded.push(dir)
     }
-    return expanded;
+    return expanded
 }
 
 /**
@@ -380,27 +429,24 @@ export async function generate(
         await fs.ensureDir(outDir)
         let schema = await processSchemas(schemaPath, templateDirs, feedback)
         schema.schema = expandSchema(schema.schema, {}, '', false, false, feedback)
+
+        // Process templates
         let scope: any = {
             locales: allLocales,
             prefix: prefix || schema.name(),
             schema: schema.schema,
             properties: schema.schema.$public,
-            entities: schema.entityTypes(),
             triggerIntent: schema.triggerIntent(),
             appSchema: metaSchema
         }
-        for (let currentLoc of allLocales) {
-            await fs.ensureDir(ppath.join(outDir, currentLoc))
-            scope.locale = currentLoc
-            await processTemplates(schema, ['.lg', '.lu', '.qna'], templateDirs, outDir, scope, force, feedback)
-        }
-        scope.locale = ''
-        await processTemplates(schema, ['.dialog', '.json'], templateDirs, outDir, scope, force, feedback)
+        await processTemplates(schema, templateDirs, allLocales, outDir, scope, force, feedback)
 
         // Expand schema expressions
         let expanded = expandSchema(schema.schema, scope, '', false, true, feedback)
+
+        // Write final schema
         let body = JSON.stringify(expanded, (key, val) => (key === '$templates' || key === '$requires') ? undefined : val, 4)
-        await writeFile(ppath.join(outDir, `${prefix}.schema.dialog`), body, force, feedback)
+        await generateFile(ppath.join(outDir, `${prefix}.schema.dialog`), body, force, feedback)
     } catch (e) {
         feedback(FeedbackType.error, e.message)
     }

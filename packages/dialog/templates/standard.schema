@@ -9,7 +9,7 @@
             ],
             "$templates": [
                 "library-CancelIntent.dialog",
-                "CancelConfirmation-assign-boolean.dialog"
+                "CancelConfirmation-add-boolean.dialog"
             ]
         },
         "ChangePropertyConfirmation": {
@@ -18,7 +18,7 @@
                 "boolean"
             ],
             "$templates": [
-                "ChangePropertyConfirmation-assign-boolean.dialog"
+                "ChangePropertyConfirmation-add-boolean.dialog"
             ]
         },
         "CompleteConfirmation": {
@@ -28,20 +28,20 @@
             ],
             "$templates": [
                 "library-CompleteConfirmation.dialog",
-                "CompleteConfirmation-assign-boolean.dialog",
-                "CompleteConfirmation-assign-PROPERTYName.dialog"
+                "CompleteConfirmation-add-boolean.dialog",
+                "CompleteConfirmation-add-PROPERTYName.dialog"
             ]
         },
         "PropertyToChange": {
             "$ref": "#/definitions/PROPERTYName",
             "$templates": [
-                "PropertyToChange-assign-PROPERTYName.dialog"
+                "PropertyToChange-add-PROPERTYName.dialog"
             ]
         },
         "PropertyToRemember": {
             "$ref": "#/definitions/PROPERTYName",
             "$templates": [
-                "PropertyToRemember-assign-PROPERTYName.dialog"
+                "PropertyToRemember-add-PROPERTYName.dialog"
             ]
         }
     },
@@ -52,8 +52,11 @@
             "$entities": ["PROPERTYName"]
         }
     },
+    "$operations": ["AddToProperty", "RemoveFromProperty", "ClearProperty", "ShowProperty"],
+    "$defaultOperation": "AddToProperty",
     "$expectedOnly": ["boolean", "PROPERTYName", "utterance", "keyPhrase", "personName"],
     "$templates": [
+        "booleanEntity",
         "library-HelpIntent.lu",
         "library-CancelIntent.lu",
         "library-NoneIntent.lu",
@@ -71,12 +74,12 @@
         "locale.lg",
         "luis.lu",
         "library-BeginDialog.dialog",
+        "library-CancelIntent.dialog",
         "library-ChooseProperty.dialog",
         "library-HelpIntent.dialog",
         "library-NotUnderstood.dialog",
         "library-triggerIntent.dialog",
         "library-ReadPropertyIntent.dialog",
-        "library-CancelIntent.dialog",
         "main.dialog"     
     ]
 }

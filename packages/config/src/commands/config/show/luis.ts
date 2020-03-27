@@ -9,7 +9,7 @@ import {getConfigFile, Config} from '../../../utils/configfilehandler'
 export default class ConfigShowLuis extends Command {
   static description = 'Display LUIS settings'
 
-  static flags: any = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'config:show:luis help'})
   }
 

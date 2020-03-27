@@ -130,9 +130,10 @@ $deviceTemperature:simple`;
                     .then(res2 => {
                       try {
                         let luisList = [res1.LUISJsonStructure, res2.LUISJsonStructure]
-                        let finalConten = collate(luisList)
-                        assert.equal(finalConten.composites.length, 1)
-                        assert.equal(finalConten.composites[0].children.length, 2)
+                        let finalContent = collate(luisList)
+                        assert.equal(finalContent.composites.length, 1)
+                        assert.equal(finalContent.composites[0].children.length, 2)
+                        finalContent.composites[0].children.forEach(c => assert(c.name));
                         done()        
                       } catch (error) {
                         done(error)
