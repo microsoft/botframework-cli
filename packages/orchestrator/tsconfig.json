@@ -9,6 +9,7 @@
     "target": "es2017"
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts",
+    // ---- NOTE unit-test code does not need deployment ---- "test/**/*.test.ts"
   ]
 }

@@ -4,18 +4,18 @@
  */
 
 import {CLIError, utils} from '@microsoft/bf-cli-command'
-const path = require('path')
+import * as path from 'path'
 const fs = require('fs-extra')
 
 const configPrefix = 'orchestrator__'
 
 const filterConfig = (config: any, prefix: string) => {
   return Object.keys(config)
-    .filter((key: string) => key.startsWith(prefix))
-    .reduce((filteredConfig: any, key: string) => {
-      filteredConfig[key] = config[key]
-      return filteredConfig
-    }, {})
+  .filter((key: string) => key.startsWith(prefix))
+  .reduce((filteredConfig: any, key: string) => {
+    filteredConfig[key] = config[key]
+    return filteredConfig
+  }, {})
 }
 
 const getInputFromFile = async (path: string): Promise<string> => {
@@ -71,14 +71,14 @@ const processInputs = async (flags: any, flagLabels: string[], configDir: string
   config = config ? filterConfig(config, configPrefix) : config
   const input: any = {}
   flagLabels
-    .filter(flag => flag !== 'help')
-    .map((flag: string) => {
-      if (flag === 'in') {
-        // rename property since 'in' is a reserved keyword
-        input[`${flag}Val`] = flags[flag]
-      }
-      input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
-    })
+  .filter(flag => flag !== 'help')
+  .forEach((flag: string) => {
+    if (flag === 'in') {
+      // rename property since 'in' is a reserved keyword
+      input[`${flag}Val`] = flags[flag]
+    }
+    input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
+  })
   return input
 }
 
@@ -97,7 +97,7 @@ const writeToConsole = (outputContents: string) => {
 
 const writeToFile = async (outputLocation: string, content: any, force: boolean) => {
   const isDir = isDirectory(outputLocation)
-  let writeFile = isDir ? path.join(outputLocation, 'export.json') : outputLocation
+  const writeFile = isDir ? path.join(outputLocation, 'export.json') : outputLocation
   const validatedPath = utils.validatePath(writeFile, '', force)
   try {
     await fs.ensureFile(writeFile)

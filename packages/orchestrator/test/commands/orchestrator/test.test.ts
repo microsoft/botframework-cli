@@ -4,14 +4,14 @@ describe('orchestrator:test', () => {
   test
   .stdout()
   .command(['orchestrator:test'])
-  .it('runs hello', ctx => {
-    expect(ctx.stdout).to.contain('hello world')
+  .it('Test.0000 orchestrator:test', ctx => {
+    expect(ctx.stdout).to.contain('test')
   })
 
   test
   .stdout()
-  .command(['orchestrator:test', '--name', 'jeff'])
-  .it('runs hello --name jeff', ctx => {
-    expect(ctx.stdout).to.contain('hello jeff')
+  .command(['orchestrator:test', '--help'])
+  .it('Test.0001 orchestrator:test --help', ctx => {
+    expect(ctx.stdout).to.contain('help')
   })
 })
