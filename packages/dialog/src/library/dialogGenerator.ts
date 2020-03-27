@@ -187,16 +187,16 @@ async function processTemplate(
             // Simple file already existed
             outPath = ppath.join(outDir, ref.relative)
         } else {
-            let lgfile = await findTemplate(templateName, templateDirs)
-            if (lgfile !== undefined) {
+            let template = await findTemplate(templateName, templateDirs)
+            if (template !== undefined) {
                 // Ignore templates that are defined, but are empty
-                if (lgfile) {
-                    if (typeof lgfile !== 'object' || lgfile.toArray().some(f => f.name === 'template')) {
+                if (template) {
+                    if (typeof template !== 'object' || template.toArray().some(f => f.name === 'template')) {
                         // Constant file or .lg template so output
                         let filename = addPrefix(scope.prefix, templateName)
-                        if (typeof lgfile === 'object' && lgfile.toArray().some(f => f.name === 'filename')) {
+                        if (typeof template === 'object' && template.toArray().some(f => f.name === 'filename')) {
                             try {
-                                filename = lgfile.evaluate('filename', scope) as any as string
+                                filename = template.evaluate('filename', scope) as any as string
                             } catch (e) {
                                 throw new Error(`${templateName}: ${e.message}`)
                             }
@@ -206,8 +206,8 @@ async function processTemplate(
                         }
 
                         // Add prefix to constant imports
-                        if (typeof lgfile !== 'object') {
-                            lgfile = addPrefixToImports(lgfile, scope)
+                        if (typeof template !== 'object') {
+                            template = addPrefixToImports(template, scope)
                         }
 
                         outPath = ppath.join(outDir, filename)
@@ -216,10 +216,10 @@ async function processTemplate(
                             // This is a new file
                             if (force || !await fs.pathExists(outPath)) {
                                 feedback(FeedbackType.info, `Generating ${outPath}`)
-                                let result = lgfile
-                                if (typeof lgfile === 'object') {
-                                    process.chdir(ppath.dirname(lgfile.toArray()[0].source))
-                                    result = lgfile.evaluate('template', scope) as any as string
+                                let result = template
+                                if (typeof template === 'object') {
+                                    process.chdir(ppath.dirname(template.toArray()[0].source))
+                                    result = template.evaluate('template', scope) as any as string
                                     if (Array.isArray(result)) {
                                         result = result.join('\n')
                                     }
@@ -240,15 +240,15 @@ async function processTemplate(
                         }
                     }
 
-                    if (typeof lgfile === 'object') {
-                        if (lgfile.toArray().some(f => f.name === 'entities') && !scope.schema.properties[scope.property].$entities) {
-                            let entities = lgfile.evaluate('entities', scope) as any as string[]
+                    if (typeof template === 'object') {
+                        if (template.toArray().some(f => f.name === 'entities') && !scope.schema.properties[scope.property].$entities) {
+                            let entities = template.evaluate('entities', scope) as any as string[]
                             if (entities) {
                                 scope.schema.properties[scope.property].$entities = entities
                             }
                         }
-                        if (lgfile.toArray().some(f => f.name === 'templates')) {
-                            let generated = lgfile.evaluate('templates', scope)
+                        if (template.toArray().some(f => f.name === 'templates')) {
+                            let generated = template.evaluate('templates', scope)
                             if (!Array.isArray(generated)) {
                                 generated = [generated]
                             }
