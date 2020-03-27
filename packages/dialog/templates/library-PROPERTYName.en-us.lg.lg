@@ -7,11 +7,11 @@
 # namePlusSwitch
 -```
 # PROPERTYName(value) 
-- SWITCH: $\{value\}```
+- SWITCH: \${value\}```
 
 # case(option)
 -```
- - CASE: $\{'${option}'\} 
+ - CASE: \${'${option}'\} 
   - ${phrase(option)}```
 
 # cases
@@ -20,5 +20,5 @@
 # default
 -```
  - DEFAULT: 
-  - I don't understand $\{value\}
+  - I don't understand \${value\}
 ```

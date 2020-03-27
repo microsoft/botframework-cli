@@ -62,14 +62,14 @@
         "library-CancelIntent.lu",
         "library-NoneIntent.lu",
         "library-triggerIntent.lu",
-        "library-ReadPropertyIntent.lu",
+        "library-ShowFormIntent.lu",
         "library-PROPERTYName.lu",
         "library-PROPERTYName.lg",
         "library-Missing.lg",
         "library-Assign.lg",
         "library-Choose.lg",
         "library-Help.lg",
-        "library-ReadForm.lg",
+        "library-ShowForm.lg",
         "library.lg",
         "locale.lu",
         "locale.lg",
@@ -80,7 +80,7 @@
         "library-HelpIntent.dialog",
         "library-NotUnderstood.dialog",
         "library-triggerIntent.dialog",
-        "library-ReadPropertyIntent.dialog",
+        "library-ShowFormIntent.dialog",
         "main.dialog"     
     ]
 }

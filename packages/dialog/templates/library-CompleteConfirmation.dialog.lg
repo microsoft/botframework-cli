@@ -8,11 +8,11 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{readForm('${prefix}')}"
+            "activity": "\${showForm('${prefix}', publicProperties())}"
         },
         {
             "$kind": "Microsoft.Ask",
-            "activity": "$\{confirmChange()}",
+            "activity": "\${confirmChange()}",
             "expectedProperties": [
                 "CompleteConfirmation"
             ]

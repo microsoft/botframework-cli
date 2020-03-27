@@ -4,7 +4,8 @@
 # template
 - ```
 ${AskTemplate()}
-${NameTemplate()}
+${nameTemplate()}
+${ValueTemplate()}
 
 ${importLG('library')}
 ${importLG('library-Missing')}
@@ -13,13 +14,16 @@ ${importLG('library-Missing')}
 # AskTemplate
 - ```
 # Ask${property}
-- $\{askString('${property}')\}
+- \${askString('${property}')\}
 ```
 
-# NameTemplate
-- ```
-# ${property}Name
-- ${phrase(property, locale)}
+# ValueTemplate
+-```
+# ${property}(val)
+- IF: \${val}
+- \${join(foreach(indicesAndValues(val), entry, entry.value), ' ')}
+- ELSE:
+- no value
 ```
 
 [generator.lg](generator.lg)

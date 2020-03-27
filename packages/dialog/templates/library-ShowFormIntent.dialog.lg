@@ -3,12 +3,11 @@
 {
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnIntent",
-    "intent": "None",
-    "condition": "count(turn.recognizedentities) == 0",
+    "intent": "ShowForm",
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "\${notUnderstood()}"           
+            "activity": "\${showForm('${prefix}', dialogClass.schema.$public)}"           
         }
     ]
 }

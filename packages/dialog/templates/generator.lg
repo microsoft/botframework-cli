@@ -12,10 +12,27 @@
 # entityLGFilename
 - ${locale}/${prefix}-${property}Entity.${locale}.lg
 
+# nameTemplate
+-```
+# ${property}Name
+- ${phrase(property, locale)}```
+
+# valueTemplate
+-```
+# ${property}(val)
+ - IF: \${val}
+ - \${val\}
+ - ELSE:
+ - no value
+```
+
 # entityDisplay
 -```
- # ${property}Entity(val)
- - $\{val\}
+# ${property}Entity(val)
+ - IF: \${val}
+ - \${val\}
+ - ELSE:
+ - no value
 ```
 
 # entityLUFilename
@@ -50,7 +67,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{setPropertyMessage('${property}', @${entity})}"
+            "activity": "\${setPropertyMessage('${property}', @${entity})}"
         },
         {
             "$kind": "Microsoft.SetProperty",
@@ -82,7 +99,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{setArrayPropertyMessage('${property}', @${entity})}"
+            "activity": "\${setArrayPropertyMessage('${property}', @${entity})}"
         },
         {
             "$kind": "Microsoft.EditArray",
@@ -120,7 +137,7 @@
             "actions": [
                 {
                     "$kind": "Microsoft.SendActivity",
-                    "activity": "$\{removePropertyMessage('${property}', @${entity})}"
+                    "activity": "\${removePropertyMessage('${property}', @${entity})}"
                 },  
                 {
                     "$kind": "Microsoft.DeleteProperty",
@@ -143,7 +160,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{removeArrayPropertyMessage('${property}', @${entity})}"
+            "activity": "\${removeArrayPropertyMessage('${property}', @${entity})}"
         },
         {
             "$kind": "Microsoft.EditArray",
@@ -166,7 +183,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{clearPropertyMessage('${property}')}"
+            "activity": "\${clearPropertyMessage('${property}')}"
         },
         {
             "$kind": "Microsoft.DeleteProperty",
@@ -187,7 +204,7 @@
     "actions": [
         {
             "$kind": "Microsoft.SendActivity",
-            "activity": "$\{showPropertyMessage(@PROPERTYName)}"
+            "activity": "\${showPropertyMessage(@PROPERTYName)}"
         }
     ]               
 }
@@ -203,7 +220,7 @@
     "actions": [       
         {
             "$kind": "Microsoft.Ask",
-            "activity": "$\{Ask${property}()}",
+            "activity": "\${Ask${property}()}",
             "expectedProperties": [
                 "${property}"
             ]

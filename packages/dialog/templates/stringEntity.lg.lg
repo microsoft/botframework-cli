@@ -3,9 +3,6 @@
 
 >>> This is because of issues around ' and } in strings--see enumEntityDesired.lg for a test case
 # template
--```
-# ${property}Entity(val)
-- $\{val\}
-```
+- ${entityDisplay()}
 
 [generator.lg](generator.lg)

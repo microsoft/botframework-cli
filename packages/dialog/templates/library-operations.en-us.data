@@ -20,11 +20,11 @@
 - selection for {@ShowProperty=${property}}
 - display {@ShowProperty=${property}}
 - show {@ShowProperty=${property}}
-- value of {$ShowProperty=${property}}
-- value for {$ShowProperty=${property}}
-- {$ShowProperty=${property}} value
-- {$ShowProperty=${property}} values
-- {$ShowProperty=${property}} selection
+- value of {@ShowProperty=${property}}
+- value for {@ShowProperty=${property}}
+- {@ShowProperty=${property}} value
+- {@ShowProperty=${property}} values
+- {@ShowProperty=${property}} selection
 > Combinations
 - add {@AddToProperty=${entity}} and remove {@RemoveFromProperty=${entity}}
 - add {@AddToProperty=${entity}} remove {@RemoveFromProperty=${entity}}

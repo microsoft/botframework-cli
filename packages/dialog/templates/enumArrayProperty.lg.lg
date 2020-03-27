@@ -3,7 +3,7 @@
 
 # template
 - ```${AskTemplate()}
-${NameTemplate()}
+${nameTemplate()}
 ${ValueTemplate()}
 
 ${importLG(`${property}Entity`)}
@@ -14,16 +14,11 @@ ${importLG('library-Missing')}
 # AskTemplate
 - ```
 # Ask${property}
-- $\{askEnumArray('${property}')\}```
-
-# NameTemplate
--```
-# ${property}Name
-- ${phrase(property, locale)}```
+- \${askEnumArray('${property}')\}```
 
 # ValueTemplate
 - ```
 # ${property}(values)
-- $\{enumArrayValue('${property}', values)}```
+- \${enumArrayValue('${property}', values)}```
 
 [generator.lg](generator.lg)

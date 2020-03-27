@@ -12,7 +12,7 @@ ${importLG('library-Choose')}
 # chooseEntity
 - ```
 # choose${property}Entity
-- $\{chooseEnumArrayEntity(${concat("'", property, "'")})\}
+- \${chooseEnumArrayEntity(${concat("'", property, "'")})\}
 ```
 
 # propertyEntity
@@ -21,11 +21,11 @@ ${importLG('library-Choose')}
 # namePlusSwitch
 -```
 # ${property}Entity(value) 
-- SWITCH: $\{value\}```
+- SWITCH: \${value\}```
 
 # case(option)
 -```
-  - CASE: $\{'${option}'\} 
+  - CASE: \${'${option}'\} 
     - ${phrase(option)}```
 
 # cases
@@ -34,7 +34,7 @@ ${importLG('library-Choose')}
 # default
 - ```
   - DEFAULT: 
-    - No value
+    - no value
 ```
 
 [generator.lg](generator.lg)
