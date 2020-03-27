@@ -17,5 +17,9 @@
   "bugs": {
     "url": "https://github.com/microsoft/botframework-cli/issues"
   },
-  "homepage": "https://github.com/microsoft/botframework-cli#readme"
+  "homepage": "https://github.com/microsoft/botframework-cli#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
 }
