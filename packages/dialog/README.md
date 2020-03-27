@@ -13,6 +13,8 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf `](#bf-)
 * [`bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogmerge-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
 * [`bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogverify-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
+* [`bf dialog:integrate SCHEMA`]
+(#bf-dialogintegrate-schema)
 
 ## `bf `
 
@@ -59,6 +61,31 @@ OPTIONS
 ```
 
 _See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/src/commands/dialog/verify.ts)_
+
+## `bf dialog:integrate SCHEMA`
+
+The dialog:integrate command is used to merge two dialog assets. Each dialog asset includes all .dialog, .lu, .lg, and .qna files.
+
+```
+USAGE
+  $ bf dialog:integrate SCHEMA
+
+OPTIONS
+  -h, --help  show CLI help
+  -o, Path of the old dialog asset
+  -n, Path of the new dialog asset
+  -m, Output path of the merged dialog asset
+  -l, locale
+  --verbose  Show verbose output
+```
+
+Example:
+``` 
+bf dialog:integrate sandwich -o test/**/**/integrate_test_data/sandwich1 -n test/**/**/integrate_test_data/sandwich2 -m test/**/**/integrate_test_data/sandwich3 -l 'en-us'
+```
+
+_See code: [src/commands/dialog/integrate.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/integrate.ts)_
+
 <!-- commandsstop -->
 * [`bf dialog:merge [FILE]`](#bf-dialogmerge-file)
 * [`bf dialog:verify [FILE]`](#bf-dialogverify-file)
@@ -112,26 +139,3 @@ bf dialog:verify test/**/*.dialog
 ```
 
 _See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/verify.ts)_
-
-## `bf dialog:integrate [FILE]`
-
-The dialog:integrate command is used to merge two dialog assets. Each dialog asset includes all .dialog, .lu, .lg, and .qna files.
-
-```
-USAGE
-  $ bf dialog:integrate GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
-
-OPTIONS
-  -o, Path of the old dialog asset
-  -n, Path of the new dialog asset
-  -m, Output path of the merged dialog asset
-  -l. locale
-  --verbose   Show verbose output
-```
-
-Example:
-``` 
-bf dialog:integrate sandwich -o test/**/**/integrate_test_data/sandwich1 -n test/**/**/integrate_test_data/sandwich2 -m test/**/**/integrate_test_data/sandwich3 -l 'en-us'
-```
-
-_See code: [src/commands/dialog/integrate.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/integrate.ts)_

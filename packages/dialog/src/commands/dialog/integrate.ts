@@ -22,7 +22,7 @@ export default class DialogIntegrate extends Command {
     }
 
     static examples = [
-        '$ bf dialog:integrete aaa -o /bbb -n /ccc -m /ddd -l en-us'
+        '$ bf dialog:integrate aaa -o /bbb -n /ccc -m /ddd -l en-us'
     ]
 
     async run() {

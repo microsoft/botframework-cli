@@ -162,27 +162,27 @@ async function processTemplate(
         if (ref) {
             outPath = ppath.join(outDir, ref.relative)
         } else {
-            let lgfile = await findTemplate(templateName, templateDirs, scope.locale)
-            if (lgfile !== undefined) {
+            let template = await findTemplate(templateName, templateDirs, scope.locale)
+            if (template !== undefined) {
                 // NOTE: Ignore templates that are defined, but are empty
-                if (lgfile) {
+                if (template) {
                     let filename = addLocale(templateName, scope.locale, scope.prefix)
-                    if (typeof lgfile === 'object' && lgfile.toArray().some(f => f.name === 'filename')) {
-                        filename = lgfile.evaluate('filename', scope)
+                    if (typeof template === 'object' && template.toArray().some(f => f.name === 'filename')) {
+                        filename = template.evaluate('filename', scope)
                     }
                     outPath = ppath.join(outDir, scope.locale, filename)
                     let ref = addEntry(outPath, outDir, scope.templates)
                     if (ref) {
                         if (force || !await fs.pathExists(outPath)) {
                             feedback(FeedbackType.info, `Generating ${outPath}`)
-                            let result = lgfile
-                            if (typeof lgfile === 'object') {
-                                result = lgfile.evaluate('template', scope)
+                            let result = template
+                            if (typeof template === 'object') {
+                                result = template.evaluate('template', scope)
                                 if (Array.isArray(result)) {
                                     result = result.join('\n')
                                 }
-                                if (lgfile.toArray().some(f => f.name === 'filename')) {
-                                    filename = lgfile.evaluate('filename', scope)
+                                if (template.toArray().some(f => f.name === 'filename')) {
+                                    filename = template.evaluate('filename', scope)
                                 }
                             }
 
