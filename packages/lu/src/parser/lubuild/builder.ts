@@ -227,6 +227,8 @@ export class Builder {
         outPath = path.join(path.resolve(path.dirname(luconfig)), settingsContents[0].id)
       } else if (out) {
         outPath = path.join(path.resolve(out), settingsContents[0].id)
+      } else {
+        outPath = path.resolve(settingsContents[0].id)
       }
       writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
     }
@@ -235,6 +237,10 @@ export class Builder {
       for (const content of writeContents) {
         const outFilePath = path.join(path.resolve(out), path.basename(content.path))
         if (force || !fs.existsSync(outFilePath)) {
+          if (!fs.existsSync(path.dirname(outFilePath))) {
+            fs.mkdirSync(path.dirname(outFilePath))
+          }
+
           this.handler(`Writing to ${outFilePath}\n`)
           await fs.writeFile(outFilePath, content.content, 'utf-8')
           writeDone = true
@@ -243,6 +249,10 @@ export class Builder {
     } else {
       for (const content of writeContents) {
         if (force || !fs.existsSync(content.path)) {
+          if (!fs.existsSync(path.dirname(content.path))) {
+            fs.mkdirSync(path.dirname(content.path))
+          }
+
           this.handler(`Writing to ${content.path}\n`)
           await fs.writeFile(content.path, content.content, 'utf-8')
           writeDone = true
