@@ -19,6 +19,7 @@ export class InputValues {
     public luisInputFile: string;
     public luisBotName: string;
     public luisAppId: string;
+    public luisPublishStaging: boolean;
 
     constructor() {
         // LUIS inputs
@@ -33,6 +34,7 @@ export class InputValues {
         this.luisInputFile = this.validatePath('luisInputFile');
         this.luisBotName = getInput('luisBotName', false) as string;
         this.luisAppId = getInput('luisAppId', false) as string;
+        this.luisPublishStaging = getBoolInput('luisPublishStaging', false);
     }
 
     private validatePath = (inputName: string): string => {
