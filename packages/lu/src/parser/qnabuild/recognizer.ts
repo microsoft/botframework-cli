@@ -24,7 +24,7 @@ export class Recognizer {
   }
 
   readonly knowledgeBaseId: string | undefined
-  readonly endpoint: string | undefined
+  readonly hostname: string | undefined
   readonly endpointKey: string | undefined
 
   private kbId: string
@@ -33,7 +33,7 @@ export class Recognizer {
   constructor(private readonly qnaFile: string, targetFileName: string) {
     this.kbId = ''
     this.knowledgeBaseId = `=settings.qna.${targetFileName.split('.').join('_')}`
-    this.endpoint = '=settings.qna.hostname'
+    this.hostname = '=settings.qna.hostname'
     this.endpointKey = '=settings.qna.endpointKey'
   }
 
@@ -41,7 +41,7 @@ export class Recognizer {
     let output = {
       $type: 'Microsoft.QnAMakerRecognizer',
       knowledgeBaseId: this.knowledgeBaseId,
-      endpoint: this.endpoint,
+      hostname: this.hostname,
       endpointKey: this.endpointKey
     }
 
