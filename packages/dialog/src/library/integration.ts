@@ -10,6 +10,7 @@ import * as os from 'os';
 import * as LuParser from '../../../lu/src/parser/lufile/LuParser';
 import * as sectionOperator from '../../../lu/src/parser/lufile/sectionOperator';
 import * as LUSectionTypes from '../../../lu/src/parser/utils/enums/lusectiontypes';
+import * as crypto from 'crypto'
 
 export enum FeedbackType {
     message,
@@ -24,11 +25,11 @@ const GeneratorPattern = /\r?\n> Generator: (.*)/m
 const commentHash = ['.lg', '.lu', '.qna']
 const jsonHash = ['.dialog']
 
-async function isUnchanged(oldPath: string, newPath: string, fileName: string): Promise<boolean> {
+function isUnchanged(oldPath: string, newPath: string, fileName: string): boolean {
     let result = false
     let ext = ppath.extname(fileName)
-    let oldFile = await fs.readFile(ppath.join(oldPath, fileName), 'utf8')
-    let newFile = await fs.readFile(ppath.join(newPath, fileName), 'utf8')
+    let oldFile = fs.readFileSync(ppath.join(oldPath, fileName), 'utf8')
+    let newFile = fs.readFileSync(ppath.join(newPath, fileName), 'utf8')
 
     if (commentHash.includes(ext)) {
         let matchOld = oldFile.match(GeneratorPattern)
@@ -51,8 +52,46 @@ async function isUnchanged(oldPath: string, newPath: string, fileName: string): 
     return result
 }
 
+function computeHash(val: string): string {
+    return crypto.createHash('md5').update(val).digest('hex')
+}
+
+function computeJSONHash(json: any): string {
+    return computeHash(JSON.stringify(json, null, 4))
+}
+
+function addHash(path: string, val: any): any {
+    let ext = ppath.extname(path)
+    if (commentHash.includes(ext)) {
+        if(val.match(GeneratorPattern)){
+           val = val.replace(GeneratorPattern, "")
+        }
+        if (!val.endsWith(os.EOL)) {
+            val += os.EOL
+        }
+        val += `${os.EOL}> Generator: ${computeHash(val)}`
+    } else if (jsonHash.includes(ext)) {
+        let json = JSON.parse(val)
+        json.$Generator = computeJSONHash(json)
+        val = JSON.stringify(json, null, 4)
+    }
+    return val
+}
+
+async function writeFile(path: string, val: any, feedback: Feedback) {
+    try {
+        let dir = ppath.dirname(path)
+        await fs.ensureDir(dir)
+        val = addHash(path, val)
+        await fs.writeFile(path, val)
+    } catch (e) {
+        feedback(FeedbackType.error, `${e.message}${os.EOL}${val}`)
+    }
+}
+
+
 async function copySingleFile(sourcePath: string, destPath: string, fileName: string, feedback: Feedback): Promise<void> {
-    fs.copyFileSync(ppath.join(sourcePath, fileName), ppath.join(destPath, fileName))
+    fs.copyFile(ppath.join(sourcePath, fileName), ppath.join(destPath, fileName))
     feedback(FeedbackType.info, `copy ${fileName} from ${sourcePath}`)
 }
 
@@ -228,8 +267,8 @@ async function mergeLUFiles(schemaName: string, oldPath: string, newPath: string
     }
 
     // write merged root lu file
-    await fs.writeFile(ppath.join(mergedPath, 'luis', schemaName + '.' + locale + '.lu'), library)
-    feedback(FeedbackType.info, `generate ${schemaName}. ${locale}.lu`)
+    await writeFile(ppath.join(mergedPath, 'luis', schemaName + '.' + locale + '.lu'), library, feedback)
+    feedback(FeedbackType.info, `generate ${schemaName}.${locale}.lu`)
 
     // copy .lu.dialog file
     copySingleFile(ppath.join(newPath, 'luis'), ppath.join(mergedPath, 'luis'), schemaName + '.' + locale + '.lu.dialog', feedback)
@@ -329,10 +368,10 @@ async function changeEntityEnumLU(oldPath: string, newPath: string, mergedPath: 
         }
     }
     if (updatedLUResource == null) {
-        await fs.writeFile(ppath.join(mergedPath, locale, filename), oldLUResource.Content)
+        await writeFile(ppath.join(mergedPath, locale, filename), oldLUResource.Content, feedback)
         feedback(FeedbackType.info, `generate ${filename}`)
     } else {
-        await fs.writeFile(ppath.join(mergedPath, locale, filename), updatedLUResource.Content)
+        await writeFile(ppath.join(mergedPath, locale, filename), updatedLUResource.Content, feedback)
         feedback(FeedbackType.info, `generate ${filename}`)
     }
 }
@@ -375,7 +414,7 @@ async function mergeLGFiles(schemaName: string, oldPath: string, newPath: string
             if (newPropertySet.has(extractedProperty)) {
                 resultRefs.push(ref)
                 let refStr = ref.split('.lg')
-                let lgFile = refStr[0].replace('[', '') + '.' + locale + '.lg'
+                let lgFile = refStr[0].replace('[', '') + '.lg'
                 if (lgFile.match(extractedProperty + 'Entity')) {
                     if (isUnchanged(localeOldPath, localeNewPath, lgFile)) {
                         copySingleFile(localeOldPath, localeMergedPath, lgFile, feedback)
@@ -393,7 +432,7 @@ async function mergeLGFiles(schemaName: string, oldPath: string, newPath: string
         } else {
             resultRefs.push(ref)
             let refStr = ref.split('.lg')
-            let lgFile = refStr[0].replace('[', '') + '.' + locale + '.lg'
+            let lgFile = refStr[0].replace('[', '') + '.lg'
             if (newText.match(lgFile) && !isUnchanged(localeOldPath, localeNewPath, lgFile)) {
                 feedback(FeedbackType.info, `old and new ${lgFile} are changed`)
             } else {
@@ -409,13 +448,13 @@ async function mergeLGFiles(schemaName: string, oldPath: string, newPath: string
         if (!oldRefSet.has(ref)) {
             resultRefs.push(ref)
             let refStr = ref.split('.lg')
-            let lgFile = refStr[0].replace('[', '') + '.' + locale + '.lg'
+            let lgFile = refStr[0].replace('[', '') + '.lg'
             copySingleFile(localeNewPath, localeMergedPath, lgFile, feedback)
         }
     }
 
-    await fs.writeFile(ppath.join(mergedPath, locale, schemaName + '.' + locale + '.lg'), resultRefs.join(os.EOL))
-    feedback(FeedbackType.info, `generate ${schemaName}. ${locale}.lg`)
+    await writeFile(ppath.join(mergedPath, locale, schemaName + '.' + locale + '.lg'), resultRefs.join(os.EOL), feedback)
+    feedback(FeedbackType.info, `generate ${schemaName}.${locale}.lg`)
 }
 
 /**
@@ -492,10 +531,10 @@ async function changeEntityEnumLG(oldPath: string, newPath: string, mergedPath: 
         for (let arr of arrList) {
             mergedStatements = mergedStatements.concat(arr)
         }
-        await fs.writeFile(ppath.join(mergedPath, locale, filename), mergedStatements.join(os.EOL))
+        await writeFile(ppath.join(mergedPath, locale, filename), mergedStatements.join(os.EOL), feedback)
         feedback(FeedbackType.info, `generate ${filename}`)
     } else {
-        await fs.writeFile(ppath.join(mergedPath, locale, filename), oldText)
+        await writeFile(ppath.join(mergedPath, locale, filename), oldText, feedback)
         feedback(FeedbackType.info, `generate ${filename}`)
     }
 }
@@ -509,7 +548,7 @@ async function changeEntityEnumLG(oldPath: string, newPath: string, mergedPath: 
  * @param oldEnumEntitySet
  * @param newSwitchStatements
  */
-async function parseLGTemplate(oldBody: any, oldStatements: string[], newStatements: string[], newEnumValueMap: Map<string, number>, oldEnumEntitySet: Set<string>, newSwitchStatements: string[]): Promise<{ startIndex: number, endIndex: number }> {
+function parseLGTemplate(oldBody: any, oldStatements: string[], newStatements: string[], newEnumValueMap: Map<string, number>, oldEnumEntitySet: Set<string>, newSwitchStatements: string[]): { startIndex: number, endIndex: number } {
     let startIndex = 0
     let endIndex = 0
     let oldRules = oldBody.switchCaseTemplateBody().switchCaseRule()
@@ -626,17 +665,17 @@ async function mergeDialogs(schemaName: string, oldPath: string, newPath: string
 
     while (j < reducedOldTriggers.length) {
         mergedTriggers.push(reducedOldTriggers[j])
-        if(newTriggers.includes(reducedOldTriggers[j]) && !isUnchanged(oldPath, newPath, reducedOldTriggers[j] + '.dialog' ) ){
-            feedback(FeedbackType.info, `old and new ${ reducedOldTriggers[j]}.dialog are changed`)
-        }else{
-            copySingleFile(oldPath, mergedPath,  reducedOldTriggers[j] + '.dialog', feedback)
+        if (newTriggers.includes(reducedOldTriggers[j]) && !isUnchanged(oldPath, newPath, reducedOldTriggers[j] + '.dialog')) {
+            feedback(FeedbackType.info, `old and new ${reducedOldTriggers[j]}.dialog are changed`)
+        } else {
+            copySingleFile(oldPath, mergedPath, reducedOldTriggers[j] + '.dialog', feedback)
         }
         let index = newTriggers.indexOf(reducedOldTriggers[j])
         if (index != -1) {
             index++
             while (index < newTriggers.length && !reducedOldTriggerSet.has(newTriggers[index])) {
                 mergedTriggers.push(newTriggers[index])
-                copySingleFile(oldPath, mergedPath,  reducedOldTriggers[j] + '.dialog', feedback)
+                copySingleFile(newPath, mergedPath,newTriggers[index] + '.dialog', feedback)
                 index++
             }
         }
@@ -644,7 +683,7 @@ async function mergeDialogs(schemaName: string, oldPath: string, newPath: string
     }
 
     oldObj['triggers'] = mergedTriggers
-    await fs.writeFile(ppath.join(mergedPath, schemaName + '.main.dialog'), JSON.stringify(oldObj))
+    await writeFile(ppath.join(mergedPath, schemaName + '.main.dialog'), JSON.stringify(oldObj), feedback)
     feedback(FeedbackType.info, `generate ${schemaName}.main.dialog`)
 }
 
@@ -654,7 +693,7 @@ async function mergeDialogs(schemaName: string, oldPath: string, newPath: string
  * @param propertySet
  * @param schemaName 
  */
-async function equalPattern(filename: string, propertySet: Set<string>, schemaName: string): Promise<string | undefined> {
+function equalPattern(filename: string, propertySet: Set<string>, schemaName: string): string | undefined {
     for (let property of propertySet) {
         let pattern1 = schemaName + '-' + property + '-'
         let pattern2 = schemaName + '-' + property + 'Entity'
@@ -663,7 +702,6 @@ async function equalPattern(filename: string, propertySet: Set<string>, schemaNa
             return property
         }
     }
-
     return undefined
 }
 
@@ -693,6 +731,6 @@ async function parseSchemas(schemaName: string, oldPath: string, newPath: string
         newPropertySet.add(property)
     }
 
-    copySingleFile(newPath, mergedPath,  schemaName + '.schema.dialog', feedback)
+    copySingleFile(newPath, mergedPath, schemaName + '.schema.dialog', feedback)
     return { oldPropertySet, newPropertySet }
 }

@@ -205,10 +205,55 @@
             ],
             "args": [
                 "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwich.schema",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwichBuy.schema",
                 "-o",
-                "D:/BOT/sandwichOrder_lalala",
+                "D:/BOT/sandwichBuy2",
                 "--force",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Sandwich with Integrating",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:generate",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwichBuy.schema",
+                "-o",
+                "D:/BOT/sandwichBuy",
+                "--verbose",
+                "--integrate"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Integrate Assets",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:integrate",
+                "sandwichBuy",
+                "-o",
+                "D:/BOT/sandwichBuy1",
+                "-n",
+                "D:/BOT/sandwichBuy2",
+                "-m",
+                "D:/BOT/sandwichBuy3",
+                "-l",
+                "en-us",
                 "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart"
