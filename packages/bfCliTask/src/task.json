@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":34
+        "Release":35
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -36,8 +36,8 @@
             "label": "Azure Subscription",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
-            "groupname": "azure"
+            "groupname": "azure",
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment."
         },
         {
             "name": "luisCommand",
@@ -45,8 +45,8 @@
             "label": "LUIS",
             "required": false,
             "defaultValue": "true",
-            "helpMarkDown": "Check to execute a LUIS command.",
-            "groupname": "command" 
+            "groupname": "command",
+            "helpMarkDown": "Check to execute a LUIS command."
         },
         {
             "name": "qnaMakerCommand",
@@ -54,8 +54,8 @@
             "label": "QnAMaker",
             "required": false,
             "defaultValue": "false",
-            "helpMarkDown": "Check to execute a QnAMaker command.",
-            "groupname": "command" 
+            "groupname": "command",
+            "helpMarkDown": "Check to execute a QnAMaker command."
         },
         {
             "name": "luisSubCommand",
@@ -69,7 +69,8 @@
             "options": {
                 "ApplicationCreate" : "Application Create",
                 "LuisBuild" : "Luis Build",
-                "LuisTrainRun" : "Luis Train Run"
+                "LuisTrainRun" : "Luis Train Run",
+                "LuisPublish" : "Luis Publish"
             }       
         },
         {
@@ -87,7 +88,7 @@
             "label": "Endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
         },
         {
@@ -96,7 +97,7 @@
             "label": "Subscription Key",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisBuild || luisSubCommand=LuisTrainRun",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisBuild || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
             "helpMarkDown": "Enter the LUIS cognitive services subscription key."    
         },
         {
@@ -115,7 +116,7 @@
             "label": "Version Id",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
             "helpMarkDown": "Enter the version Id for the LUIS application."
         },
         {
@@ -151,8 +152,18 @@
             "label": "AppId",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=LuisTrainRun",
+            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
             "helpMarkDown": "Enter the LUIS application id."
+        },
+        {
+            "name": "luisPublishStaging",
+            "type": "boolean",
+            "label": "Production",
+            "required": false,
+            "defaultValue": "false",
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisPublish",
+            "helpMarkDown": "Check to publish the application version to Production slot."
         }
     ],
     "execution": {

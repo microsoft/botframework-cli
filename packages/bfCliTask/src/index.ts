@@ -38,35 +38,35 @@ const checkInstalledTool = (): boolean => {
         const version = buffer.toString('utf-8').trim();
 
         if (version.substr(0,27) === '@microsoft/botframework-cli') {
-            console.log('bf cli tool version: ' + version); 
+            console.log('bf cli tool version: ' + version);
             return true;
-        } 
+        }
         else {
-            console.log('bf cli tool not installed'); 
+            console.log('bf cli tool not installed');
             return false;
         }
     } catch {
-        console.log('bf cli tool not installed'); 
+        console.log('bf cli tool not installed');
         return false;
     }
 }
 
 const installBfCliTool = (): void => {
-    const command = `npm i -g @microsoft/botframework-cli`;  
-    
+    const command = `npm i -g @microsoft/botframework-cli`;
+
     console.log('Installing bf cli tool...');
-    
-    execSync(command);    
-    console.log('bf cli installed successfully');      
+
+    execSync(command);
+    console.log('bf cli successfully installed');
 }
 
 const createLuisApplication = (): void => {
     console.log('Creating LUIS Application...');
 
     let command = `bf luis:application:create --name "${ input.luisApplicationName }" --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" `;
-    command += `--culture "${ input.luisCulture }" --description "${ input.luisAppDescription }" --versionId "${ input.luisVersionId }" > ${ outputFileLuisCreate }`
-    
-    execSync(command);    
+    command += `--culture "${ input.luisCulture }" --description "${ input.luisAppDescription }" --versionId "${ input.luisVersionId }" > ${ outputFileLuisCreate }`;
+
+    execSync(command);
     console.log('LUIS Application successfully created');
 }
 
@@ -74,18 +74,28 @@ const buildLuisApplication = (): void => {
     console.log('Building LUIS Application...');
 
     const command = `bf luis:build --in "${ input.luisInputFile }" --authoringKey "${ input.luisSubscriptionKey }" --botName "${ input.luisBotName }" `;
-   
+
     execSync(command);
-    console.log('LUIS Application built successfully');      
+    console.log('LUIS Application successfully built');
 }
 
 const trainLuisApplication = (): void => {
     console.log('Training LUIS Application...');
 
     const command = `bf luis:train:run --appId "${ input.luisAppId }" --versionId "${ input.luisVersionId }" --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }"`;
-   
+
     execSync(command);
-    console.log('LUIS Training request successfully issued');      
+    console.log('LUIS Training request successfully issued');
+}
+
+const publishLuisApplication = (): void => {
+    console.log('Publishing LUIS Application...');
+
+    let command = `bf luis:application:publish --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" --versionId "${ input.luisVersionId }" --appId "${ input.luisAppId }"`;
+    command += input.luisPublishStaging? ` --staging` : '';
+
+    execSync(command);
+    console.log('LUIS Application successfully published');
 }
 
 const run = (): void => {
@@ -108,6 +118,9 @@ const run = (): void => {
                 break;
             case 'LuisTrainRun':
                 trainLuisApplication();
+                break;
+            case 'LuisPublish':
+                publishLuisApplication();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
