@@ -1,6 +1,6 @@
 {
     "$type": "Microsoft.QnAMakerRecognizer",
-    "knowledgeBaseId": "{settings.qna.sandwich2_en-us_qna}",
-    "endpoint": "{settings.qna.hostname}",
-    "endpointKey": "{settings.qna.endpointKey}"
+    "knowledgeBaseId": "=settings.qna.sandwich2_en-us_qna",
+    "endpoint": "=settings.qna.hostname",
+    "endpointKey": "=settings.qna.endpointKey"
 }

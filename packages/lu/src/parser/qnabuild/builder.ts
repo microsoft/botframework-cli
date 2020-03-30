@@ -81,7 +81,7 @@ export class Builder {
       if (!settings.has(fileFolder)) {
         let settingsContent = {}
         if (fs.existsSync(settingsPath)) {
-          settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).qnamaker
+          settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).qna
           this.handler(`${settingsPath} loaded\n`)
         }
 
@@ -195,7 +195,7 @@ export class Builder {
         // update settings asset
         if (settings && settings.has(path.dirname(content.path))) {
           let setting = settings.get(path.dirname(content.path)) as Settings
-          setting.qnamaker[content.name.split('.').join('_')] = recognizer.getKBId()
+          setting.qna[content.name.split('.').join('_')] = recognizer.getKBId()
         }
       }))
     }
@@ -351,9 +351,9 @@ export class Builder {
   mergeSettingsContent(settingsPath: string, contents: any[]) {
     let settings = new Settings(settingsPath, {})
     for (const content of contents) {
-      const qnaMakerKBsMap = JSON.parse(content.content).qnamaker
+      const qnaMakerKBsMap = JSON.parse(content.content).qna
       for (const kbName of Object.keys(qnaMakerKBsMap)) {
-        settings.qnamaker[kbName] = qnaMakerKBsMap[kbName]
+        settings.qna[kbName] = qnaMakerKBsMap[kbName]
       }
     }
 

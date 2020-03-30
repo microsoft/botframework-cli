@@ -12,7 +12,7 @@ export class Recognizer {
       let recognizer = new Recognizer(qnaFile, targetFileName)
       recognizer.dialogPath = dialogPath
       Object.assign(recognizer, existingRecognizer)
-      recognizer.setKBId(qnaSettings.qnamaker[path.basename(qnaFile).split('.').join('_')])
+      recognizer.setKBId(qnaSettings.qna[path.basename(qnaFile).split('.').join('_')])
 
       return recognizer
     }
@@ -32,9 +32,9 @@ export class Recognizer {
 
   constructor(private readonly qnaFile: string, targetFileName: string) {
     this.kbId = ''
-    this.knowledgeBaseId = `{settings.qna.${targetFileName.split('.').join('_')}}`
-    this.endpoint = '{settings.qna.hostname}'
-    this.endpointKey = '{settings.qna.endpointKey}'
+    this.knowledgeBaseId = `=settings.qna.${targetFileName.split('.').join('_')}`
+    this.endpoint = '=settings.qna.hostname'
+    this.endpointKey = '=settings.qna.endpointKey'
   }
 
   save(): string {

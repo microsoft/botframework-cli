@@ -252,7 +252,7 @@ export class Builder {
           if (!fs.existsSync(path.dirname(content.path))) {
             fs.mkdirSync(path.dirname(content.path))
           }
-          
+
           this.handler(`Writing to ${content.path}\n`)
           await fs.writeFile(content.path, content.content, 'utf-8')
           writeDone = true

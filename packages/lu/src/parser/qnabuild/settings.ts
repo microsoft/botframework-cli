@@ -4,17 +4,17 @@
  */
 
 export class Settings {
-  public qnamaker: any
+  public qna: any
   private readonly settingsPath: string
 
-  constructor(settingsPath: string, qnamaker: any) {
+  constructor(settingsPath: string, qna: any) {
     this.settingsPath = settingsPath
-    this.qnamaker = qnamaker
+    this.qna = qna
   }
 
   save(): string {
     let output = {
-      qnamaker: this.qnamaker
+      qna: this.qna
     }
 
     return JSON.stringify(output, null, 4)
