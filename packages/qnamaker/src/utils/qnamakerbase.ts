@@ -9,6 +9,8 @@ const path = require('path')
 const qnaconfig = require('./../../utils/qnaconfig')
 const srvMan = require('./../../utils/servicemanifest')
 const {ServiceBase} = require('./../../utils/api/serviceBase')
+const file = require('@microsoft/bf-lu/lib/utils/filehelper')
+
 
 export async function processInputs(flags: any, payload: any, configfile: string, stdin = '') {
   let result: Inputs = {}
@@ -22,7 +24,12 @@ export async function processInputs(flags: any, payload: any, configfile: string
     flags.in = stdin ? stdin : flags.in
     result.requestBody = await srvMan.validateArguments(serviceManifest, flags)
     if (stdin || flags.in) {
-      result.requestBody = stdin ? JSON.parse(stdin) : await getFileInput(flags.in)
+      result.requestBody = stdin ? JSON.parse(stdin) : await file.getContentFromFile(flags.in)
+      try {
+        result.requestBody = JSON.parse(result.requestBody)
+      } catch(ex) {
+        flags.qnaFormat = true
+      }
     }
     config.endpoint = flags.endpoint
     result.config = config

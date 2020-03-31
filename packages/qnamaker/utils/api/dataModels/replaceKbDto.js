@@ -22,7 +22,11 @@ ReplaceKbDTO.fromJSON = function(src) {
     if (Array.isArray(src)) {
         return src.map(ReplaceKbDTO.fromJSON);
     }
-    
+    try {
+        let isJson = JSON.parse(src);
+    } catch(err) {
+        return src;
+    }
     src.qnAList = QnADTO.fromJSON(src.qnAList) || QnADTO.fromJSON(src.qnaList) || undefined;
 
     const {qnAList /* QnADTO[] */} = src;

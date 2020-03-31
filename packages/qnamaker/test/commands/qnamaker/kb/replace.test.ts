@@ -10,6 +10,10 @@ describe('qnamaker:kb:replace', () => {
     nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
       .put('/knowledgebases/287ce749-012c-4eed-a39c-e4f8f06616cf')
       .reply(204)
+    
+    nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
+      .put('/knowledgebases/287ce749-012c-4eed-a39c-e4f8f06616cf?qnaformat=true')
+      .reply(204)
   })
 
   after(async function () {
@@ -20,6 +24,13 @@ describe('qnamaker:kb:replace', () => {
     .stdout()
     .command(['qnamaker:kb:replace', '--kbId', '287ce749-012c-4eed-a39c-e4f8f06616cf', '--in', `${path.join(__dirname, '../../../fixtures/replacekb.json')}`])
     .it('runs qnamaker:kb:replace --kbId xxxxxxxxxx --in replace.json', ctx => {
+      expect(ctx.stdout).to.equal('')
+    })
+
+  test
+    .stdout()
+    .command(['qnamaker:kb:replace', '--kbId', '287ce749-012c-4eed-a39c-e4f8f06616cf', '--in', `${path.join(__dirname, '../../../fixtures/replacekb.qna')}`])
+    .it('[qnaformat] runs qnamaker:kb:replace --kbId xxxxxxxxxx --in replace.qna', ctx => {
       expect(ctx.stdout).to.equal('')
     })
 
