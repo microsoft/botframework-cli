@@ -13,8 +13,7 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf `](#bf-)
 * [`bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogmerge-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
 * [`bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogverify-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
-* [`bf dialog:integrate SCHEMA`]
-(#bf-dialogintegrate-schema)
+* [`bf dialog:integrate SCHEMA`](#bf-dialogintegrate-schema)
 
 ## `bf `
 
