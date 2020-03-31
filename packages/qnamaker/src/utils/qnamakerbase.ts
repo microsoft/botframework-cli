@@ -24,7 +24,7 @@ export async function processInputs(flags: any, payload: any, configfile: string
     flags.in = stdin ? stdin : flags.in
     result.requestBody = await srvMan.validateArguments(serviceManifest, flags)
     if (stdin || flags.in) {
-      result.requestBody = stdin ? JSON.parse(stdin) : await file.getContentFromFile(flags.in)
+      result.requestBody = stdin || await file.getContentFromFile(flags.in)
       try {
         result.requestBody = JSON.parse(result.requestBody)
       } catch(ex) {
