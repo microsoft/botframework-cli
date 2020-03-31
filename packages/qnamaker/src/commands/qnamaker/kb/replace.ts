@@ -13,7 +13,7 @@ export default class QnamakerKbReplace extends Command {
   static description = 'Replace a knowledgebase contents with new contents'
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'File path to the ReplaceKbDTO object to send in the body of the request'}),
+    in: flags.string({char: 'i', description: 'File path to the ReplaceKbDTO object to send in the body of the request. Alternately this can be path to a .qna file'}),
     kbId: flags.string({description: 'Knowledgebase id. Overrides the knowledge base id present in the config'}),
     subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
     endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
