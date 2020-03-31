@@ -22,27 +22,21 @@
             "enum": [
                 "multiGrainWheat",
                 "rye",
-                "wholeWheat",
-                "black"
+                "white",
+                "wholeWheat"
             ]
         },
-        "Cheese": {
+        "Meat": {
             "type": "string",
             "enum": [
-                "american",
-                "cheddar",
-                "feta",
-                "gouda",
-                "pepper jack",
-                "provolone",
-                "swiss",
+                "bacon",
+                "chicken",
+                "ham",
+                "pulled pork",
+                "roast beef",
+                "salami",
+                "turkey",
                 "none"
-            ]
-        },
-        "Hobby": {
-            "type": "string",
-            "$entities": [
-                "utterance"
             ]
         },
         "Price": {
@@ -52,8 +46,7 @@
     "required": [
         "Name",
         "Bread",
-        "Cheese",
-        "Hobby",
+        "Meat",
         "Price"
     ],
     "$requires": [

@@ -207,7 +207,7 @@
                 "dialog:generate",
                 "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwichBuy.schema",
                 "-o",
-                "D:/BOT/sandwichBuy2",
+                "${env:TEMP}/sandwichBuy.out",
                 "--force",
                 "--verbose"
             ],
@@ -227,7 +227,7 @@
                 "dialog:generate",
                 "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwichBuy.schema",
                 "-o",
-                "D:/BOT/sandwichBuy",
+                "${env:TEMP}/sandwichBuy.out",
                 "--verbose",
                 "--integrate"
             ],
@@ -247,11 +247,11 @@
                 "dialog:integrate",
                 "sandwichBuy",
                 "-o",
-                "D:/BOT/sandwichBuy1",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/integrate_test_data/sandwichBuy1",
                 "-n",
-                "D:/BOT/sandwichBuy2",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/integrate_test_data/sandwichBuy2",
                 "-m",
-                "D:/BOT/sandwichBuy3",
+                "${workspaceFolder}/packages/dialog/test/commands/dialog/integrate_test_data/sandwichBuy3",
                 "-l",
                 "en-us",
                 "--verbose"

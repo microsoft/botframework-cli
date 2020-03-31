@@ -7,6 +7,7 @@ import { Command, flags } from '@microsoft/bf-cli-command';
 import * as gen from '../../library/dialogGenerator'
 import * as integ from '../../library/integration'
 import * as fs from 'fs-extra';
+import * as os from 'os';
 
 export default class GenerateDialog extends Command {
     static description = '[PREVIEW] Generate localized .lu, .lg, .qna and .dialog assets to define a bot based on a schema using templates.'
@@ -33,17 +34,17 @@ export default class GenerateDialog extends Command {
 
     async run() {
         const { args, flags } = this.parse(GenerateDialog)
-        if(flags.integrate && fs.pathExists(flags.output)){
+        if (flags.integrate && fs.pathExists(flags.output)) {
             let start = args.schema.lastIndexOf('/')
             let end = args.schema.lastIndexOf('.')
-            let schemaName = args.schema.slice(start+1, end)
-            let tempNewPath = 'D:/BOT/tempNew/'
-            let tempOldPath = 'D:/BOT/tempOld/'
+            let schemaName = args.schema.slice(start + 1, end)
+            let tempNewPath = `${os.tmpdir}/tempNew/`
+            let tempOldPath = `${os.tmpdir}/tempOld/`
             try {
-                 fs.emptyDirSync(tempNewPath)
-                 fs.emptyDirSync(tempOldPath)
-                 fs.copySync(flags.output, tempOldPath)
-                 fs.emptyDirSync(flags.output)
+                fs.emptyDirSync(tempNewPath)
+                fs.emptyDirSync(tempOldPath)
+                fs.copySync(flags.output, tempOldPath)
+                fs.emptyDirSync(flags.output)
                 await gen.generate(args.schema, flags.prefix, tempNewPath, flags.schema, flags.locale, flags.templates, flags.force,
                     (type, msg) => {
                         if (type === gen.FeedbackType.message
@@ -75,7 +76,7 @@ export default class GenerateDialog extends Command {
                 this.thrownError(e)
             }
 
-        }else{
+        } else {
             try {
                 await gen.generate(args.schema, flags.prefix, flags.output, flags.schema, flags.locale, flags.templates, flags.force,
                     (type, msg) => {
