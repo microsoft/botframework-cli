@@ -8,10 +8,8 @@ import * as path from 'path';
 import {Command, flags} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
 
-// tslint:disable-next-line: no-var-requires
-const parseFile = require("@microsoft/bf-lu").parser.parseFile;
-// tslint:disable-next-line: no-var-requires
-const constructMdFromLUIS = require("@microsoft/bf-lu").refresh.constructMdFromLUIS;
+const parseFile: any = require('@microsoft/bf-lu').parser.parseFile;
+const constructMdFromLUIS: any = require('@microsoft/bf-lu').refresh.constructMdFromLUIS;
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator example file from .lu/.qna files, which represent bot modules';
@@ -61,7 +59,7 @@ export default class OrchestratorCreate extends Command {
         const loggingMessage: string = `create.ts: command = ${command}`;
         const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
         this.log(loggingMessageCodified);
-        }
+      }
       require('child_process').execSync(command, {stdio: [0, 1, 2]});
     } catch (error) {
       return 1;

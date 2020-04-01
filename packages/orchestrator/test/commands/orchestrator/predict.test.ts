@@ -4,7 +4,7 @@ describe('orchestrator:predict', () => {
   test
   .stdout()
   .command(['orchestrator:predict'])
-  .it('Test.0000 orchestrator:predict', (ctx: any) => {
+  .it('Test.0000 orchestrator:predict', (_ctx: any) => {
     // expect(ctx.stdout).to.contain('predict');
   });
 

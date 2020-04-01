@@ -51,7 +51,7 @@ export default class OrchestratorPredict extends Command {
         const loggingMessage: string = `predict.ts: command = ${command}`;
         const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
         this.log(loggingMessageCodified);
-        }
+      }
       require('child_process').execSync(command, {stdio: [0, 1, 2]});
     } catch (error) {
       return 1;

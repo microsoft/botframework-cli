@@ -53,7 +53,7 @@ export default class OrchestratorTest extends Command {
         const loggingMessage: string = `test.ts: command = ${command}`;
         const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
         this.log(loggingMessageCodified);
-        }
+      }
       require('child_process').execSync(command, {stdio: [0, 1, 2]});
     } catch (error) {
       return 1;

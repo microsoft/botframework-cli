@@ -4,7 +4,7 @@ describe('orchestrator:test', () => {
   test
   .stdout()
   .command(['orchestrator:test'])
-  .it('Test.0000 orchestrator:test', (ctx: any) => {
+  .it('Test.0000 orchestrator:test', (_ctx: any) => {
     // expect(ctx.stdout).to.contain('test');
   });
 

@@ -4,7 +4,7 @@ describe('orchestrator:create', () => {
   test
   .stdout()
   .command(['orchestrator:create'])
-  .it('Test.0000 orchestrator:create', (ctx: any) => {
+  .it('Test.0000 orchestrator:create', (_ctx: any) => {
     // expect(ctx.stdout).to.contain('create');
   });
 

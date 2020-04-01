@@ -51,7 +51,7 @@ export default class OrchestratorEvaluate extends Command {
         const loggingMessage: string = `evaluate.ts: command = ${command}`;
         const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
         this.log(loggingMessageCodified);
-        }
+      }
       require('child_process').execSync(command, {stdio: [0, 1, 2]});
     } catch (error) {
       return 1;
