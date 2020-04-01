@@ -204,11 +204,11 @@ describe('luis:convert negative tests', () => {
 
 describe('luis:convert new entity format', () => {
     it('luis:convert with new entity format correctly produces a LU file', async () => {
-        assertToLu('./../../fixtures/testcases/newEntity1.json', './../../fixtures/verified/newEntity1.lu')
+        await assertToLu('./../../fixtures/testcases/newEntity1.json', './../../fixtures/verified/newEntity1.lu')
     })
   
     it('luis:convert with new entity format and single roles correctly produces a LU file', async () => {
-        assertToLu('./../../fixtures/testcases/newEntity1.json', './../../fixtures/verified/newEntity1.lu')
+        await assertToLu('./../../fixtures/testcases/newEntity1.json', './../../fixtures/verified/newEntity1.lu')
      })
 })
 

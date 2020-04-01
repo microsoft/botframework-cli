@@ -219,7 +219,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
                 parseFile.parseFile(luFile)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
-                                assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                                 done();
                         })
                         .catch((err) => done(err))
@@ -239,7 +239,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
                 parseFile.parseFile(luFile)
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
-                                assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                                 done();
                         })
                         .catch((err) => done(err))
@@ -261,7 +261,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                                 assert.equal(res.LUISJsonStructure.entities[0].name, 'product');
-                                assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                                 done();
                         })
                         .catch((err) => done(err))
@@ -285,7 +285,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                                 assert.equal(res.LUISJsonStructure.entities[0].name, 'type');
-                                assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                                 assert.equal(res.LUISJsonStructure.composites.length, 1);
                                 assert.equal(res.LUISJsonStructure.composites[0].name, 'product');
                                 done();
@@ -310,7 +310,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
             parseFile.parseFile(luFile) 
                     .then(res => {
                             
-                            assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                            assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                             assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
                             assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles.length, 1);
                             done();
@@ -337,7 +337,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
             parseFile.parseFile(luFile) 
                     .then(res => {
                             
-                            assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                            assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                             assert.equal(res.LUISJsonStructure.closedLists.length, 1);
                             assert.equal(res.LUISJsonStructure.closedLists[0].roles.length, 1);
                             done();
@@ -362,7 +362,7 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
             parseFile.parseFile(luFile) 
                     .then(res => {
                             
-                            assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                            assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                             assert.equal(res.LUISJsonStructure.regex_entities.length, 1);
                             assert.equal(res.LUISJsonStructure.regex_entities[0].roles.length, 1);
                             done();
@@ -393,8 +393,8 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                                 assert.equal(res.LUISJsonStructure.entities[0].name, 'product');
-                                assert.equal(res.LUISJsonStructure.model_features.length, 2);
-                                assert.equal(res.LUISJsonStructure.model_features[0].name, 'drinks');
+                                assert.equal(res.LUISJsonStructure.phraselists.length, 2);
+                                assert.equal(res.LUISJsonStructure.phraselists[0].name, 'drinks');
                                 done();
                         })
                         .catch((err) => done(err))
@@ -417,8 +417,8 @@ m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                                 assert.equal(res.LUISJsonStructure.entities[0].name, 'project');
-                                assert.equal(res.LUISJsonStructure.model_features.length, 1);
-                                assert.equal(res.LUISJsonStructure.model_features[0].name, 'project');
+                                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                                assert.equal(res.LUISJsonStructure.phraselists[0].name, 'project');
                                 assert.equal(res.LUISJsonStructure.utterances.length, 1);
                                 done();
                         })
@@ -916,8 +916,8 @@ describe('parseFile correctly parses utterances', function () {
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                                 assert.equal(res.LUISJsonStructure.entities[0].name, 'Item');
-                                assert.equal(res.LUISJsonStructure.model_features.length, 1);
-                                assert.equal(res.LUISJsonStructure.model_features[0].name, 'Item');
+                                assert.equal(res.LUISJsonStructure.phraselists.length, 1);
+                                assert.equal(res.LUISJsonStructure.phraselists[0].name, 'Item');
                                 done();
                         })
                         .catch(err => done(err))
