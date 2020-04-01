@@ -3,32 +3,42 @@
  * Licensed under the MIT License.
  */
 
-// import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
-import {Command, flags} from '@microsoft/bf-cli-command';
-
 import * as path from 'path';
 
+// import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+import {Command, flags} from '@microsoft/bf-cli-command';
+import {Utility} from '../../utils/utility';
+
 export default class OrchestratorPredict extends Command {
-  static description = 'Returns score of given utterance using previously created orchestrator examples';
+  static description: string = 'Returns score of given utterance using previously created orchestrator examples';
 
   static flags: flags.Input<any> = {
+    in: flags.string({char: 'i', description: 'The path to source label files from where orchestrator example file will be created from. Default to current working directory.'}),
+    out: flags.string({char: 'o', description: 'Path where generated orchestrator example file will be placed. Default to current working directory.'}),
+    debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({char: 'n', description: 'name to print'}),
-    // flag with no value (-f, --force)
-    force: flags.boolean({char: 'f'}),
+    // ---- NOTE ---- flag with a value (-n, --name=VALUE)
+    // name: flags.string({char: 'n', description: 'name to print'}),
+    // ---- NOTE ---- flag with no value (-f, --force)
+    // force: flags.boolean({char: 'f'}),
   }
 
-  static args = [{name: 'file'}]
-
   async run(): Promise<number> {
-    const {flags} = this.parse(OrchestratorPredict);
+    const {flags}: flags.Output = this.parse(OrchestratorPredict);
 
-    const input = flags.in || __dirname;
-    const output = flags.out || __dirname;
+    const input: string = flags.in;
+    const output: string = flags.out;
+    const debug: boolean = flags.debug;
 
-    const args = `predict -i ${input} -o ${output}`;
-    this.log(`arguments -- ${args}`);
+    let args: string = `predict --in ${input} --out ${output}`;
+    if (flags.debug) {
+      args += ' --debug';
+    }
+    if (debug) {
+      const loggingMessage: string = `predict.ts: arguments = ${args}`;
+      const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
+      this.log(loggingMessageCodified);
+    }
 
     // TO-DO: figure out rush package dependency with regard to oclif folder structure
     // require("dotnet-3.1") statement works only for local package install
@@ -36,7 +46,13 @@ export default class OrchestratorPredict extends Command {
     // require("dotnet-3.1")
 
     try {
-      require('child_process').execSync('dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args, {stdio: [0, 1, 2]});
+      const command: string = 'dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args;
+      if (debug) {
+        const loggingMessage: string = `predict.ts: command = ${command}`;
+        const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
+        this.log(loggingMessageCodified);
+      }
+      require('child_process').execSync(command, {stdio: [0, 1, 2]});
     } catch (error) {
       return 1;
     }

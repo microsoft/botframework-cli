@@ -8,6 +8,7 @@
     "strict": true,
     "target": "es2017",
     "sourceMap": true,
+    "allowJs": false,
     "traceResolution": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
