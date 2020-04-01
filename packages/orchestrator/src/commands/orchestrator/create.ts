@@ -8,13 +8,18 @@ import * as path from 'path';
 import {Command, flags} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
 
+// tslint:disable-next-line: no-var-requires
+const parseFile = require("@microsoft/bf-lu").parser.parseFile;
+// tslint:disable-next-line: no-var-requires
+const constructMdFromLUIS = require("@microsoft/bf-lu").refresh.constructMdFromLUIS;
+
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator example file from .lu/.qna files, which represent bot modules';
 
   static examples: Array<string> = [`
     $ bf orchestrator:create 
     $ bf orchestrator:create --in ./path/to/file/
-    $ bf orchestrator:create --in ./path/to/file/ -o ./path/to/output/`]
+    $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/`]
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'The path to source label files from where orchestrator example file will be created from. Default to current working directory.'}),
