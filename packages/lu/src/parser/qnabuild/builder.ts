@@ -150,11 +150,14 @@ export class Builder {
         // get recognizer
         let recognizer = recognizers.get(content.name) as Recognizer
 
+        let hostName = ''
+
         // find if there is a matched name with current kb under current authoring key
         if (!recognizer.getKBId()) {
           for (let kb of kbs) {
             if (kb.name === currentKB.name) {
               recognizer.setKBId(kb.id)
+              hostName = kb.hostName
               break
             }
           }
@@ -177,6 +180,8 @@ export class Builder {
           await this.publishKB(qnaBuildCore, recognizer, delayDuration)
         }
 
+        hostName = (await qnaBuildCore.getKB(recognizer.getKBId())).hostName
+
         // update alterations if there are
         if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
           this.handler(`${recognizer.getQnaPath()} replacing alterations...\n`)
@@ -196,6 +201,7 @@ export class Builder {
         if (settings && settings.has(path.dirname(content.path))) {
           let setting = settings.get(path.dirname(content.path)) as Settings
           setting.qna[content.name.split('.').join('_')] = recognizer.getKBId()
+          setting.qna['hostname'] = hostName
         }
       }))
     }

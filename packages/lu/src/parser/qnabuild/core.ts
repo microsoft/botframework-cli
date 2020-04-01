@@ -29,6 +29,16 @@ export class QnaBuildCore {
     }
   }
 
+  public async getKB(kbId: string) {
+    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'GET')
+    const text = await response.text()
+    try {
+      return JSON.parse(text)
+    } catch {
+      return text
+    }
+  }
+
   public async importKB(kbPayload: any) {
     const response = await this.service.createRequest('/knowledgebases/createasync', 'POST', kbPayload)
     const text = await response.text()
