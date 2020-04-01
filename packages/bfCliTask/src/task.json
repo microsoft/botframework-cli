@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":35
+        "Release":37
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -70,8 +70,18 @@
                 "ApplicationCreate" : "Application Create",
                 "LuisBuild" : "Luis Build",
                 "LuisTrainRun" : "Luis Train Run",
-                "LuisPublish" : "Luis Publish"
+                "LuisPublish" : "Luis Publish",
+                "LuisApplicationDelete" : "Application Delete"
             }       
+        },
+        {
+            "name": "luisSubscriptionKey",
+            "type": "string",
+            "label": "Subscription Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisCommand = TRUE",
+            "helpMarkDown": "Enter the LUIS cognitive services subscription key."    
         },
         {
             "name": "luisApplicationName",
@@ -88,17 +98,8 @@
             "label": "Endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
-        },
-        {
-            "name": "luisSubscriptionKey",
-            "type": "string",
-            "label": "Subscription Key",
-            "required": false,
-            "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisBuild || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
-            "helpMarkDown": "Enter the LUIS cognitive services subscription key."    
         },
         {
             "name": "luisCulture",
@@ -152,7 +153,7 @@
             "label": "AppId",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
+            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete",
             "helpMarkDown": "Enter the LUIS application id."
         },
         {
