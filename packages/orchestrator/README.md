@@ -15,8 +15,23 @@ Bot Orchestrator
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+* [Usage](#usage)
+* [Commands](#commands)
+<!-- tocstop -->
 # Usage
 <!-- usage -->
+```sh-session
+$ npm install -g @microsoft/bf-orchestrator
+$ oclif-example COMMAND
+running command...
+$ oclif-example (-v|--version|version)
+@microsoft/bf-orchestrator/1.0.0 win32-x64 node-v12.13.1
+$ oclif-example --help [COMMAND]
+USAGE
+  $ oclif-example COMMAND
+...
+```
+<!-- usagestop -->
 ```sh-session
 $ npm install -g @microsoft/bf-orchestrator
 $ oclif-example COMMAND
@@ -43,6 +58,117 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`oclif-example orchestrator`](#oclif-example-orchestrator)
+* [`oclif-example orchestrator:create`](#oclif-example-orchestratorcreate)
+* [`oclif-example orchestrator:evaluate [FILE]`](#oclif-example-orchestratorevaluate-file)
+* [`oclif-example orchestrator:finetune [FILE]`](#oclif-example-orchestratorfinetune-file)
+* [`oclif-example orchestrator:predict [FILE]`](#oclif-example-orchestratorpredict-file)
+* [`oclif-example orchestrator:test [FILE]`](#oclif-example-orchestratortest-file)
+
+## `oclif-example orchestrator`
+
+Display Orchestrator CLI available commands
+
+```
+USAGE
+  $ oclif-example orchestrator
+
+OPTIONS
+  -h, --help  Orchestrator command help
+```
+
+_See code: [src\commands\orchestrator\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\index.ts)_
+
+## `oclif-example orchestrator:create`
+
+Create orchestrator example file from .lu/.qna files, which represent bot modules
+
+```
+USAGE
+  $ oclif-example orchestrator:create
+
+OPTIONS
+  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file.
+  -h, --help     Orchestrator create command help
+
+  -i, --in=in    The path to .lu/.qna files from where orchestrator example file will be created from. Default to
+                 current working directory.
+
+  -o, --out=out  Path where generated orchestrator example file will be placed. Default to current working directory.
+
+EXAMPLE
+
+       $ bf orchestrator:create 
+       $ bf orchestrator:create --in ./path/to/file/
+       $ bf orchestrator:create --in ./path/to/file/ -o ./path/to/output/
+```
+
+_See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\create.ts)_
+
+## `oclif-example orchestrator:evaluate [FILE]`
+
+Create orchestrator evaluation report from .lu/.qna files
+
+```
+USAGE
+  $ oclif-example orchestrator:evaluate [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src\commands\orchestrator\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\evaluate.ts)_
+
+## `oclif-example orchestrator:finetune [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ oclif-example orchestrator:finetune [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src\commands\orchestrator\finetune.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\finetune.ts)_
+
+## `oclif-example orchestrator:predict [FILE]`
+
+Returns score of given utterance using previously created orchestrator examples
+
+```
+USAGE
+  $ oclif-example orchestrator:predict [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src\commands\orchestrator\predict.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\predict.ts)_
+
+## `oclif-example orchestrator:test [FILE]`
+
+Run orchestrator test evaluation using given test file
+
+```
+USAGE
+  $ oclif-example orchestrator:test [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\test.ts)_
+<!-- commandsstop -->
 * [`oclif-example `](#oclif-example-)
 * [`oclif-example create [FILE]`](#oclif-example-create-file)
 * [`oclif-example evaluate [FILE]`](#oclif-example-evaluate-file)
