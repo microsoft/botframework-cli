@@ -98,6 +98,15 @@ const publishLuisApplication = (): void => {
     console.log('LUIS Application successfully published');
 }
 
+const deleteLuisApplication = (): void => {
+    console.log('Deleting LUIS Application...');
+
+    let command = `bf luis:application:delete --appId "${ input.luisAppId }" --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" --force`;
+
+    execSync(command);
+    console.log('LUIS Application successfully deleted');
+}
+
 const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
@@ -121,6 +130,9 @@ const run = (): void => {
                 break;
             case 'LuisPublish':
                 publishLuisApplication();
+                break;
+            case 'LuisApplicationDelete':
+                deleteLuisApplication();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
