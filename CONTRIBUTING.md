@@ -196,7 +196,7 @@ Rush and pnpm are newer tools and not all that popular outside of Microsoft, why
         ...
       }   
     
-    5. At the root level(https://github.com/microsoft/botframework-cli) run 'npm run build' to bootstrap the packages
+    5. Update and build again
 
 ### Steps to create a new command
     1. Inside the plugin folder run 'npx oclif command <command-name>'. 

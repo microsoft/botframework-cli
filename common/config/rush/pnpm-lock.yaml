@@ -31,6 +31,7 @@ dependencies:
   ajv: 6.12.0
   antlr4: 4.8.0
   applicationinsights: 1.7.3
+  argparse: 1.0.10
   await-delay: 1.0.0
   botframework-schema: 4.7.2
   camelcase: 4.1.0
@@ -38,7 +39,6 @@ dependencies:
   cli-table3: 0.5.1
   clone: 2.1.2
   console-stream: 0.1.1
-  crypto: 1.0.1
   debug: 4.1.1
   deep-equal: 1.1.1
   delay: 4.3.0
@@ -6404,7 +6404,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-wLs9VHGkow86Qw2hRKdSQb6dSoOpKmlEoJIuJSuajyXkle+hW86NQoiuM2SRKvHGHGRZmTJiFLfSDVmq4dORPA==
+      integrity: sha512-XnhtgUToz4Z0aJe9wpOjOybqcwjv0/BCszRHQ9eIhMqG5ID+OSJuXzSa+D7FZ1gsVOtsKcWVD9b2O9uXL4v5ig==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6419,6 +6419,7 @@ packages:
       '@types/chai': 4.2.10
       '@types/mocha': 5.2.7
       '@types/node': 10.17.17
+      argparse: 1.0.10
       chai: 4.2.0
       globby: 10.0.2
       mocha: 5.2.0
@@ -6433,7 +6434,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-s4Ar6m12VKpS8u3yyNtXMaShnRZTOCUIFYwXTyXXmN4oX8mkbG0O4zLB47xP68mDHgAvtQ8BNVg42vzq/or0wg==
+      integrity: sha512-hg92Iz2+Bxg8zpmNG177Ot2ZpQj0Q4/cnx1gN5Y9swG6k0ri0Ngt4s4XkByRzY3LkOs3o3GB9W8qE6KMLEq4XA==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6636,6 +6637,7 @@ specifiers:
   ajv: ^6.9.1
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
+  argparse: ~1.0.10
   await-delay: ^1.0.0
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
@@ -6643,7 +6645,6 @@ specifiers:
   cli-table3: ^0.5.1
   clone: ^2.1.2
   console-stream: ^0.1.1
-  crypto: ~1.0.1
   debug: ^4.1.1
   deep-equal: ^1.0.1
   delay: ^4.3.0
