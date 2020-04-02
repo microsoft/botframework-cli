@@ -126,14 +126,14 @@
 {
     "$schema": "${appSchema}",
     "$kind": "Microsoft.OnAssignEntity",
-    "operator": "RemoveFromProperty",
+    "operation": "RemoveFromProperty",
     "property": "${property}",
     "entity": "${entity}",
     "actions": [
 
         {
             "$kind": "Microsoft.IfCondition",
-            "condition":"$${property} == $${entity}",
+            "condition":"$${property} == @${entity}",
             "actions": [
                 {
                     "$kind": "Microsoft.SendActivity",
