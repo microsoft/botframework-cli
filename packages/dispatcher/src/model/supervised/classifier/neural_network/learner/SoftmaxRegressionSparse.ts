@@ -168,11 +168,11 @@ export class SoftmaxRegressionSparse {
             const logLossVectorInGradientUpdate: number[] = new Array<number>();
             while (true) {
                 if (miniBatchIndexBegin >= numberInstances) {
-                    Utility.debuggingLog(
-                        `G-epoch=${epoch}/${epochs}` +
-                        `, numberInstances=${numberInstances}` +
-                        `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                        `, numberInstances=${numberInstances}`);
+                    // Utility.debuggingLog(
+                    //     `G-epoch=${epoch}/${epochs}` +
+                    //     `, numberInstances=${numberInstances}` +
+                    //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                    //     `, numberInstances=${numberInstances}`);
                     break;
                 }
                 // Utility.debuggingLog(

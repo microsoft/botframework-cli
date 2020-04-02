@@ -31,6 +31,7 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf luis:build`](#bf-luisbuild)
 * [`bf luis:convert`](#bf-luisconvert)
 * [`bf luis:endpoints:list`](#bf-luisendpointslist)
+* [`bf luis:test`](#bf-luistest)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
 * [`bf luis:train:run`](#bf-luistrainrun)
@@ -394,6 +395,33 @@ EXAMPLE
 ```
 
 _See code: [src/commands/luis/endpoints/list.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/endpoints/list.ts)_
+
+## `bf luis:test`
+
+Test a .lu file or LUIS application JSON model against a published LUIS model
+
+```
+USAGE
+  $ bf luis:test
+
+OPTIONS
+  -a, --appId=appId                      (required) LUIS application Id
+  -h, --help                             luis:test help
+  -i, --in=in                            Source .lu file or LUIS application JSON model for testing
+  -o, --out=out                          Output file or folder name. If not specified stdout will be used as output
+  -s, --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key
+  --allowIntentsCount=allowIntentsCount  [default: 1] Top-scoring intent or top n Intent with score to show in the result
+  --endpoint=endpoint                    [default: https://westus.api.cognitive.microsoft.com] LUIS endpoint hostname
+  --force                                If --out flag is provided with the path to an existing file, overwrites that file
+  --intentOnly                           Only test intent
+  --staging                              Presence of flag targets the staging app, if no flag passed defaults to production
+
+EXAMPLE
+
+       $ bf luis:test  -i {TESTDATA.lu} -o {RESULT.lu} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID}
+```
+
+_See code: [src/commands/luis/test.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/test.ts)_
 
 ## `bf luis:generate:cs`
 

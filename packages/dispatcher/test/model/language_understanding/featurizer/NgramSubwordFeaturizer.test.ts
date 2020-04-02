@@ -92,7 +92,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         const intentsUtterances: { "intents": string[], "utterances": string[] } =
             featurizer.getIntentsUtterances();
         Utility.debuggingLog(
-            `intentsUtterances=${JSON.stringify(intentsUtterances)}`);
+            `intentsUtterances=${Utility.JSONstringify(intentsUtterances)}`);
     });
 
     it("Test.0200 getLabels()", function() {

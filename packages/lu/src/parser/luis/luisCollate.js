@@ -52,6 +52,7 @@ const collate = function(luisList) {
         buildPatternAny(blob, luisObject)
     }
     helpers.checkAndUpdateVersion(luisObject)
+    cleanupEntities(luisObject)
     return luisObject
 }
 
@@ -60,8 +61,21 @@ module.exports = {
     build
 }
 
+const cleanupEntities = function(luisObject) {
+    let consolidatedList = [];
+    luisObject.composites.forEach(item => consolidatedList.push(item));
+    luisObject.closedLists.forEach(item => consolidatedList.push(item));
+    luisObject.regex_entities.forEach(item => consolidatedList.push(item));
+    luisObject.prebuiltEntities.forEach(item => consolidatedList.push(item));
+    let idxToRemove = [];
+    luisObject.entities.forEach((item, idx) => {
+        if (consolidatedList.find(e => e.name == item.name) !== undefined) idxToRemove.push(idx);
+    })
+    idxToRemove.sort((a, b) => a-b).forEach(idx => luisObject.entities.splice(idx, 1))
+}
+
 const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
-    if (blob[type].length === 0) { 
+    if (blob[type] === undefined || blob[type].length === 0) { 
         return
     }
     blob[type].forEach(function (blobItem) {
@@ -98,7 +112,7 @@ const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
  * @returns {void} Nothing
  */
 const mergeResults = function (blob, finalCollection, type) {
-    if (blob[type].length === 0) { 
+    if (blob[type] === undefined || blob[type].length === 0) { 
         return
     }
     blob[type].forEach(function (blobItem) {
@@ -147,7 +161,7 @@ const mergeResults = function (blob, finalCollection, type) {
  * @returns {void} nothing
  */
 const mergeResults_closedlists = function (blob, finalCollection, type) {
-    if (blob[type].length === 0) {
+    if (blob[type] === undefined || blob[type].length === 0) {
         return
     }
 
@@ -181,7 +195,7 @@ const mergeResults_closedlists = function (blob, finalCollection, type) {
 
 const buildRegex = function(blob, FinalLUISJSON){
     // do we have regex entities here?
-    if (blob.regex_entities.length === 0) {
+    if (blob.regex_entities === undefined || blob.regex_entities.length === 0) {
         return
     }
     blob.regex_entities.forEach(function (regexEntity) {
@@ -207,7 +221,7 @@ const buildRegex = function(blob, FinalLUISJSON){
 
 const buildPrebuiltEntities = function(blob, FinalLUISJSON){
     // do we have prebuiltEntities here?
-    if (blob.prebuiltEntities.length === 0) {
+    if (blob.prebuiltEntities === undefined || blob.prebuiltEntities.length === 0) {
         return
     }
     blob.prebuiltEntities.forEach(function (prebuiltEntity) {
@@ -232,7 +246,7 @@ const buildPrebuiltEntities = function(blob, FinalLUISJSON){
 
 const buildModelFeatures = function(blob, FinalLUISJSON){
     // do we have model_features?
-    if (blob.model_features.length === 0) {
+    if (blob.model_features === undefined || blob.model_features.length === 0) {
         return
     }
     blob.model_features.forEach(function (modelFeature) {
@@ -253,6 +267,7 @@ const buildModelFeatures = function(blob, FinalLUISJSON){
 }
 
 const buildComposites = function(blob, FinalLUISJSON){
+    if (blob.composites === undefined) return;
     // do we have composites? collate them correctly
     (blob.composites || []).forEach(composite => {
         let compositeInMaster = helpers.filterMatch(FinalLUISJSON.composites, 'name', composite.name);
@@ -276,6 +291,7 @@ const buildComposites = function(blob, FinalLUISJSON){
 }
 
 const buildPatternAny = function(blob, FinalLUISJSON){
+    if (blob.patternAnyEntities === undefined) return;
     // do we have pattern.any entities here? 
     (blob.patternAnyEntities || []).forEach(patternAny => {
         let paIdx = -1;

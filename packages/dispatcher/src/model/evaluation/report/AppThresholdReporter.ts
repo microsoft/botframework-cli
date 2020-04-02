@@ -57,9 +57,9 @@ export function mainThresholdReporter(): void {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${JSON.stringify(args)}`);
+        `args=${Utility.JSONstringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${JSON.stringify(unknownArgs)}`);
+        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -78,7 +78,7 @@ export function mainThresholdReporter(): void {
     }
     let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
     if (Utility.isEmptyString(outputReportFilenamePrefix)) {
-        outputReportFilenamePrefix = Utility.getFileBasename(scoreFilename);
+        outputReportFilenamePrefix = Utility.getFilenameWithoutExtension(scoreFilename);
         // Utility.debuggingThrow(
         //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
     }

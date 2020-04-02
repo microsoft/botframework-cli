@@ -2190,6 +2190,321 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
+    public static vectorSparseMapDenseArrayAssignRandomTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[]): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] = Utility.getRandomNumber();
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+
+    public static vectorSparseMapDenseArrayAssignConstantTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] = constant;
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayAddConstantTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] += constant;
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayMultiplyConstantTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] *= constant;
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArraySubtractConstantFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] -= constant;
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayDivideConstantFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] /= constant;
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+
+    public static vectorSparseMapDenseArrayAssignTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] = denseValueArray1[index];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayAddTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] += denseValueArray1[index];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayMultiplyTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] *= denseValueArray1[index];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArraySubtractFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] -= denseValueArray1[index];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayDivideFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] /= denseValueArray1[index];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+
+    public static vectorSparseMapDenseArrayAssignScaledTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] = (constant * denseValueArray1[index]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayAddScaledTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] += (constant * denseValueArray1[index]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayMultiplyScaledTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] *= (constant * denseValueArray1[index]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArraySubtractScaledFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] -= (constant * denseValueArray1[index]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorSparseMapDenseArrayDivideScaledFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (const index of sparseIndexArray0) {
+            denseValueArray0[index] /= (constant * denseValueArray1[index]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+
+    public static vectorIndependentSparseMapDenseArrayAssignTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] = denseValueArray1[index1];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArrayAddTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] += denseValueArray1[index1];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArrayMultiplyTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] *= denseValueArray1[index1];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArraySubtractFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] -= denseValueArray1[index1];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArrayDivideFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[]): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] /= denseValueArray1[index1];
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+
+    public static vectorIndependentSparseMapDenseArrayAssignScaledTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] = (constant * denseValueArray1[index1]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArrayAddScaledTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] += (constant * denseValueArray1[index1]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArrayMultiplyScaledTo(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] *= (constant * denseValueArray1[index1]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArraySubtractScaledFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] -= (constant * denseValueArray1[index1]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+    public static vectorIndependentSparseMapDenseArrayDivideScaledFrom(
+        sparseIndexArray0: number[],
+        sparseValueArray0: number[],
+        denseValueArray0: number[],
+        sparseIndexArray1: number[],
+        sparseValueArray1: number[],
+        denseValueArray1: number[],
+        constant: number): [number[], number[]] {
+        for (let i: number = 0; i < sparseIndexArray0.length; i++) {
+            const index0 = sparseIndexArray0[i];
+            const index1 = sparseIndexArray1[i];
+            denseValueArray0[index0] /= (constant * denseValueArray1[index1]);
+        }
+        return [sparseIndexArray0, denseValueArray0];
+    }
+
     public static tensor4dNewLikeWithRandomCells(
         tensor4d: number[][][][]): number[][][][] {
         return MathematicsHelper.tensor4dNewWithRandomCells(

@@ -137,8 +137,7 @@ $test:/hrf-[0-9]{6}/`;
 
     it('throws when duplicate regex entities with different patterns are found across lu files', function(done) {
         let luFile1 = `$test:/hrf-[0-9]{6}/`;
-        let luFile2 = `# test
-- this is a {test=one} utterance`;
+        let luFile2 = `$test:/bpg-[0-9]{5}/`;
         parseFile(luFile1, false) 
             .then(res1 => {
                 parseFile(luFile2, false)
