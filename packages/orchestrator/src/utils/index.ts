@@ -91,22 +91,13 @@ const validateRequiredProps: (configObj: any) => void = (configObj: any) => {
   });
 };
 
-const writeToConsole: (outputContents: string) => void = (outputContents: string) => {
-  const output: string = JSON.stringify(outputContents, null, 2);
-  process.stdout.write(output, 'utf-8');
-};
-
-const writeToFile: (outputLocation: string, content: any, force: boolean) => Promise<string> = async (outputLocation: string, content: any, force: boolean) => {
-  const isDir: boolean = isDirectory(outputLocation);
-  const writeFile: string = isDir ? path.join(outputLocation, 'export.json') : outputLocation;
-  const validatedPath: string = utils.validatePath(writeFile, '', force);
+const writeToFile: (filePath: string, content: string) => string = (filePath: string, content: string) => {
   try {
-    await fs.ensureFile(writeFile);
-    await fs.writeJson(validatedPath, content, {spaces: 2});
+    fs.writeFileSync(filePath, content);
   } catch (error) {
-    throw new CLIError(error);
+    throw new CLIError(error)
   }
-  return validatedPath;
+  return filePath
 };
 
 module.exports.createConfigFile = createConfigFile;
@@ -114,6 +105,6 @@ module.exports.getInputFromFile = getInputFromFile;
 module.exports.getUserConfig = getUserConfig;
 module.exports.processInputs = processInputs;
 module.exports.validateRequiredProps = validateRequiredProps;
-module.exports.writeToConsole = writeToConsole;
 module.exports.writeToFile = writeToFile;
 module.exports.writeUserConfig = writeUserConfig;
+module.exports.isDirectory = isDirectory;

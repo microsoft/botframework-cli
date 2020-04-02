@@ -4,12 +4,14 @@
  */
 
 import * as path from 'path';
+import * as fs from 'fs-extra';
 
-import {Command, flags} from '@microsoft/bf-cli-command';
+import {Command, flags, utils} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
 
-const parseFile: any = require('@microsoft/bf-lu').parser.parseFile;
-const constructMdFromLUIS: any = require('@microsoft/bf-lu').refresh.constructMdFromLUIS;
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
+const QnamakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
+const orchestratorUtils: any = require('../../utils/index')
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator example file from .lu/.qna files, which represent bot modules';
@@ -34,53 +36,39 @@ export default class OrchestratorCreate extends Command {
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorCreate);
 
-    const input: string = flags.in || __dirname;
-    const output: string = flags.out || __dirname;
+    const input: string = path.resolve(flags.in || __dirname);
+    const output: string = path.resolve(flags.out || __dirname);
     const debug: boolean = flags.debug;
 
-    let args: string = `create --in ${input} --out ${output}`;
+    let inputIsDirectory = orchestratorUtils.isDirectory(input);
+    let tsvFilePath = path.join(output, 'create.tsv');
+    let tsvContent = '';
+    let utterancesLabelsMap: any = {};
+
+    if (inputIsDirectory) {
+      await this.iterateInputFolder(input, utterancesLabelsMap);
+    }
+    
+    for(var utterance in utterancesLabelsMap) {
+      console.log(`Utterance: ${utterance}`);
+      
+      let labels = utterancesLabelsMap[utterance];
+      let line = labels.join() + '\t' + utterance + '\n';
+      console.log(line);
+      tsvContent += line;
+    }
+  
+    orchestratorUtils.writeToFile(tsvFilePath, tsvContent);
+
+    let args: string = `create --in ${tsvFilePath} --out ${output}`;
     if (flags.debug) {
       args += ' --debug';
     }
-    if (debug) {
-      const loggingMessage: string = `create.ts: arguments = ${args}`;
-      const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
-      this.log(loggingMessageCodified);
-    }
-
+    
     // TO-DO: figure out rush package dependency with regard to oclif folder structure
     // require("dotnet-3.1") statement works only for local package install
     // process.argv= [process.argv[0], process.argv[1], __dirname + '/netcoreapp3.1/OrchestratorCli.dll', ...process.argv.slice(2)]
     // require("dotnet-3.1")
-    this.log(`Input is ${input}`);
-
-    const qnamakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
-    const qna = require('@microsoft/bf-lu').V2.QNA;
- 
-    const content = `
-      # ? question1
-      \`\`\`
-      answer
-      \`\`\`
-      `;
-      
-    const test = async () => {
-        const parsedContent = await qnamakerBuilder.fromContent(content)
-        console.log(JSON.stringify(parsedContent,null, 2));
-    };
-    
-    test();
-
-    const Luis = require('@microsoft/bf-lu').V2.Luis
-    const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
-    const luContent = `# Greeting
-    - hi`;
-
-    const luisObject = await LUISBuilder.fromContentAsync(luContent)
-
-    // Parsed LUIS object
-    console.log(JSON.stringify(luisObject, null, 2));
-     
     try {
       const command: string = 'dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args;
       if (debug) {
@@ -93,5 +81,46 @@ export default class OrchestratorCreate extends Command {
       return 1;
     }
     return 0;
+    
+  }
+
+  async parseLuFile(luFile: string, examplesMap: any): Promise<void> {
+    const fileContents = await utils.readTextFile(luFile);
+    const luisObject = await LUISBuilder.fromContentAsync(fileContents);
+    await this.getIntentsUtterances(luisObject, examplesMap);
+  }
+
+  async iterateInputFolder(folderPath: string, examplesMap: any): Promise<void> {
+    fs.readdirSync(folderPath).map(async (item: any) => {
+      let currentItemPath = path.join(folderPath,item);
+      let isDirectory = fs.lstatSync(currentItemPath).isDirectory();
+      let ext = '';
+      
+      if (!isDirectory) {
+        let ext = path.extname(currentItemPath);
+        if (ext === '.lu' || ext === '.qna') {
+          await this.parseLuFile(currentItemPath, examplesMap);
+        }    
+      }
+      else {
+        await this.iterateInputFolder(currentItemPath, examplesMap);
+      }
+    })  
+  }
+
+  async getIntentsUtterances(luisObject:any, examplesMap: any): Promise<void> {
+
+    luisObject.utterances.forEach((e: any) => {
+      let label:string = e.intent.trim();
+      let utterance:string = e.text.trim();
+      let existingLabels = examplesMap[utterance];
+      if (existingLabels == null) {
+        examplesMap[utterance] = [label];
+      }
+      else {
+        existingLabels.push(label);
+        examplesMap[utterance] = existingLabels;
+      }   
+  });
   }
 }
