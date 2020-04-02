@@ -14,7 +14,7 @@ export class MultiLanguageRecognizer {
 
   save(): string {
     let output = {
-      $type: 'Microsoft.MultiLanguageRecognizer',
+      $kind: 'Microsoft.MultiLanguageRecognizer',
       recognizers: this.recognizers
     }
 
