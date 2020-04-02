@@ -33,7 +33,7 @@ dependencies:
   applicationinsights: 1.6.0
   await-delay: 1.0.0
   botbuilder-lg: 4.8.0-preview
-  botframework-schema: 4.7.0
+  botframework-schema: 4.8.0
   camelcase: 4.1.0
   chai: 4.2.0
   cli-table3: 0.5.1
@@ -6388,7 +6388,7 @@ packages:
       '@types/mocha': 5.2.7
       '@types/node': 10.17.13
       '@types/rimraf': 2.0.3
-      botframework-schema: 4.7.0
+      botframework-schema: 4.8.0
       chai: 4.2.0
       chalk: 2.4.1
       cli-table3: 0.5.1
@@ -6414,7 +6414,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-j1iiQeAmX7P9A+fEonEpyyqTrzI5l1uhddGWjTiKkOjTmtjhwAT1VPJfIjpUiHKKQpAXIPz8EjJIh7WdsaSUaQ==
+      integrity: sha512-+wHoUl80WPGegb13jxb5AFJwbkL/vvqf+BVU+hkoyf19XkZ3LsEkcZugamVBMGzXFL+kvaAGO0cknTYiN8l4RA==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -6804,7 +6804,7 @@ specifiers:
   applicationinsights: ^1.0.8
   await-delay: ^1.0.0
   botbuilder-lg: 4.8.0-preview
-  botframework-schema: ^4.5.1
+  botframework-schema: 4.8.0
   camelcase: ^4.1.0
   chai: ^4.2.0
   cli-table3: ^0.5.1
