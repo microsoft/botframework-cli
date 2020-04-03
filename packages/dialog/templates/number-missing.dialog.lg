@@ -2,22 +2,6 @@
 - ${missingFilename()}
 
 # template
-- ```
-{
-    "$schema": "${appSchema}",
-    "$kind": "Microsoft.OnEndOfActions",
-    "condition":"!$${property}",
-    "priority": "indexOf(dialog.requiredProperties, '${property}')",
-    "actions": [        
-        {
-            "$kind": "Microsoft.Ask",
-            "activity": "$\{Ask${property}()}",
-            "expectedProperties": [
-                "${property}"
-            ]
-        }
-    ]
-}
-```
+- ${missingDialog()}
 
 [generator.lg](generator.lg)

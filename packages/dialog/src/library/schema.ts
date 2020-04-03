@@ -10,6 +10,7 @@ import * as Validator from 'ajv'
 import * as os from 'os'
 import * as ppath from 'path'
 import * as ps from './processSchemas'
+import { stringify } from 'querystring'
 let allof: any = require('json-schema-merge-allof')
 let parser: any = require('json-schema-ref-parser')
 
@@ -103,26 +104,6 @@ export class Schema {
 
     typeName(): string {
         return ps.typeName(this.schema)
-    }
-
-    templates(): string[] {
-        let templates = this.schema.$templates
-        if (!templates) {
-            let type = this.typeName()
-            templates = [type + 'Entity.lu', type + 'Entity.lg', type + 'Property.lg', type + '-missing.dialog']
-            for (let entity of this.schema.$entities) {
-                let [entityName, _] = entity.split(':')
-                if (entityName === this.path + 'Entity') {
-                    templates.push(`${type}-assign-${type}Entity.dialog`)
-                    if (type === 'enum') {
-                        templates.push(`${type}Entity-choose.dialog`)
-                    }
-                } else {
-                    templates.push(`${type}-assign-${entityName}.dialog`)
-                }
-            }
-        }
-        return templates
     }
 
     triggerIntent(): string {
