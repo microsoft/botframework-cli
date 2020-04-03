@@ -28,6 +28,7 @@ export class AppSoftmaxRegressionSparse {
         testDatasetFilename: string,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         lineIndexToStart: number,
         epochs: number = AppSoftmaxRegressionSparse.defaultEpochs,
         miniBatchSize: number = AppSoftmaxRegressionSparse.defaultMiniBatchSize,
@@ -52,9 +53,10 @@ export class AppSoftmaxRegressionSparse {
                 trainDatasetFilename,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 lineIndexToStart);
-        const intentsUtterances: { "intents": string[], "utterances": string[] } =
-            featurizer.getIntentsUtterances();
+        const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
+            featurizer.getIntentsUtterancesWeights();
         const labels: string[] =
             featurizer.getLabels();
         const labelMap: { [id: string]: number; } =
@@ -75,8 +77,9 @@ export class AppSoftmaxRegressionSparse {
             l2Regularization,
             lossEarlyStopRatio);
         // -------------------------------------------------------------------
-        // const inputIntents: string[] = intentsUtterances.intents;
-        // const inputUtterances: string[] = intentsUtterances.utterances;
+        // const inputIntents: string[] = intentsUtterancesWeights.intents;
+        // const inputUtterances: string[] = intentsUtterancesWeights.utterances;
+        // const inputWeights: number[] = intentsUtterancesWeights.weights;
         // const numberInstances: number = inputIntents.length;
         {
             // ---------------------------------------------------------------
@@ -84,7 +87,7 @@ export class AppSoftmaxRegressionSparse {
                 // -----------------------------------------------------------
                 const intentUtteranceSparseIndexArrays =
                     featurizer.createIntentUtteranceSparseIndexArrays(
-                        intentsUtterances);
+                        intentsUtterancesWeights);
                 const intentLabelIndexArray: number[] =
                     intentUtteranceSparseIndexArrays.intentLabelIndexArray;
                 const utteranceFeatureIndexArrays: number[][] =
@@ -120,6 +123,7 @@ export class AppSoftmaxRegressionSparse {
             testDatasetFilename,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             lineIndexToStart);
         // -------------------------------------------------------------------
         const learner: SoftmaxRegressionSparse =
