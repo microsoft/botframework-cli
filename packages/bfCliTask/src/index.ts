@@ -101,10 +101,30 @@ const publishLuisApplication = (): void => {
 const deleteLuisApplication = (): void => {
     console.log('Deleting LUIS Application...');
 
-    let command = `bf luis:application:delete --appId "${ input.luisAppId }" --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" --force`;
+    const command = `bf luis:application:delete --appId "${ input.luisAppId }" --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" --force`;
 
     execSync(command);
     console.log('LUIS Application successfully deleted');
+}
+
+const importLuisApplication = (): void => {
+    console.log('Importing LUIS Application...');
+
+    let command = `bf luis:application:import --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" --name "${ input.luisApplicationName }" `
+    command += `--in "${ input.luisInputFile }" > ${ outputFileLuisCreate }`;
+
+    execSync(command);
+    console.log('LUIS Application successfully imported');
+}
+
+const renameLuisApplication = (): void => {
+    console.log('Renaming LUIS Application...');
+
+    let command = `bf luis:application:rename --endpoint "${ input.luisEndpoint }" --subscriptionKey "${ input.luisSubscriptionKey }" --appId "${ input.luisAppId }" `
+    command += `--name "${ input.luisApplicationName }" --description "${ input.luisAppDescription }"`;
+
+    execSync(command);
+    console.log('LUIS Application successfully renamed');
 }
 
 const run = (): void => {
@@ -133,6 +153,12 @@ const run = (): void => {
                 break;
             case 'LuisApplicationDelete':
                 deleteLuisApplication();
+                break;
+            case 'LuisApplicationImport':
+                importLuisApplication();
+                break;
+            case 'LuisApplicationRename':
+                renameLuisApplication();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
