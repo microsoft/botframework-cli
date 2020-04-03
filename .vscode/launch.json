@@ -95,11 +95,32 @@
                 "999999",
                 "--colors",
                 "-g",
-                "luis:.*"
+                ".*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outFiles": [
                 "./lib/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LU Tests",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/luis/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/lu",
+            "args": [
+                "test/",
+                "--timeout",
+                "999999",
+                "--colors",
+                "-g",
+                ".*"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/lu/lib/**"
             ]
         },
         {
@@ -178,7 +199,8 @@
             "program": "${workspaceFolder}/packages/lu/bin/run",
             "outputCapture": "std",
             "outFiles": [
-                "./packages/lu/lib/**"
+                "./packages/lu/lib/**",
+                "./pacakges/luis/lib/**"
             ],
             "args": [
                 "luis:build",

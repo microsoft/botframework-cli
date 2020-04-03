@@ -133,7 +133,6 @@ $deviceTemperature:simple`;
                         let finalContent = collate(luisList)
                         assert.equal(finalContent.composites.length, 1)
                         assert.equal(finalContent.composites[0].children.length, 2)
-                        finalContent.composites[0].children.forEach(c => assert(c.name));
                         done()        
                       } catch (error) {
                         done(error)
