@@ -363,6 +363,8 @@ function expandStandard(dirs: string[]): string[] {
     for (let dir of dirs) {
         if (dir === 'standard') {
             dir = ppath.join(__dirname, '../../templates')
+        } else {
+            dir = ppath.resolve(dir)
         }
         expanded.push(dir)
     }
