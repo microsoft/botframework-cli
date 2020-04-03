@@ -129,7 +129,7 @@ The net result is that to consume all of the language models in a dialog you sim
 
 ```json
 {
-    "$type":"Microsoft.AdaptiveDialog",
+    "$kind":"Microsoft.AdaptiveDialog",
     "recognizer": "Contoso.GetAddresss.lu"  <-- this will be the multilanguage model with all variations
 }
 ```
@@ -162,7 +162,7 @@ generates the following files
 
 ```jsonc
 {
-    "$type": "Microsoft.MultiLanguageRecognizer",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
         "fr-fr": "root.fr-fr.lu",
         "en-us": "root.en-us.lu",
@@ -174,7 +174,7 @@ generates the following files
 
 ```jsonc
 {
-    "$type": "Microsoft.LuisRecognizer",
+    "$kind": "Microsoft.LuisRecognizer",
     "applicationId": "=settings.luis.root_en-us_lu",
     "endpoint": "=settings.luis.endpoint",
     "endpointKey": "=settings.luis.endpointKey"

@@ -80,7 +80,7 @@ For each LU file:
 \<lufilename>_\<locale>.dialog
 ```json
 {
-    "$type": "Microsoft.LuisRecognizer",
+    "$kind": "Microsoft.LuisRecognizer",
     "applicationId": "=settings.luis.Main_en-us_lu",
     "endpoint": "=settings.luis.endpoint",
     "endpointKey": "=settings.luis.endpointKey"
@@ -90,7 +90,7 @@ For each LU file:
 \<lufilename>.lu.dialog
 ```json
 {
-    "$type": "Microsoft.MultiLanguageRecognizer",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
         "<locale>": "<lufilename>.<locale>.lu",
         "": "<lufilename>.<fallbacklocale>.lu"
