@@ -88,6 +88,14 @@ export function mainModelMetaDataProfileReporter(): void {
     // ---- NOTE-TODO-PLACEHOLDER ----     },
     // ---- NOTE-TODO-PLACEHOLDER ---- );
     // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
+    // ---- NOTE-TODO-PLACEHOLDER ----     ["-wi", "--weightColumnIndex"],
+    // ---- NOTE-TODO-PLACEHOLDER ----     {
+    // ---- NOTE-TODO-PLACEHOLDER ----         defaultValue: -1,
+    // ---- NOTE-TODO-PLACEHOLDER ----         help: "weight column index",
+    // ---- NOTE-TODO-PLACEHOLDER ----         required: false,
+    // ---- NOTE-TODO-PLACEHOLDER ----     },
+    // ---- NOTE-TODO-PLACEHOLDER ---- );
+    // ---- NOTE-TODO-PLACEHOLDER ---- parser.addArgument(
     // ---- NOTE-TODO-PLACEHOLDER ----     ["-ls", "--linesToSkip"],
     // ---- NOTE-TODO-PLACEHOLDER ----     {
     // ---- NOTE-TODO-PLACEHOLDER ----         defaultValue: 0,
@@ -135,6 +143,7 @@ export function mainModelMetaDataProfileReporter(): void {
     }
     // ---- NOTE-TODO-PLACEHOLDER ---- const labelColumnIndex: number = +args.labelColumnIndex;
     // ---- NOTE-TODO-PLACEHOLDER ---- const textColumnIndex: number = +args.textColumnIndex;
+    // ---- NOTE-TODO-PLACEHOLDER ---- const weightColumnIndex: number = +args.weightColumnIndex;
     // ---- NOTE-TODO-PLACEHOLDER ---- const linesToSkip: number = +args.linesToSkip;
     // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
     // ---- NOTE-TODO-PLACEHOLDER ----     `filename=${filename}`);
@@ -150,6 +159,8 @@ export function mainModelMetaDataProfileReporter(): void {
     // ---- NOTE-TODO-PLACEHOLDER ----     `labelColumnIndex=${labelColumnIndex}`);
     // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
     // ---- NOTE-TODO-PLACEHOLDER ----     `textColumnIndex=${textColumnIndex}`);
+    // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
+    // ---- NOTE-TODO-PLACEHOLDER ----     `weightColumnIndex=${weightColumnIndex}`);
     // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
     // ---- NOTE-TODO-PLACEHOLDER ----     `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
