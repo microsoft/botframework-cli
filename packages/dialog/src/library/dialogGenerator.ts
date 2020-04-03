@@ -103,7 +103,7 @@ async function generateFile(path: string, val: any, force: boolean, feedback: Fe
     }
 }
 
-const expressionEngine = new expressions.ExpressionParser((func: string) : any => {
+const expressionEngine = new expressions.ExpressionParser((func: string): any => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
