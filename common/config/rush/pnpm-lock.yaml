@@ -25,6 +25,7 @@ dependencies:
   ajv: 6.10.2
   antlr4: 4.7.2
   applicationinsights: 1.6.0
+  argparse: 1.0.10
   await-delay: 1.0.0
   botbuilder-lg: 4.7.0-preview
   botframework-expressions: 4.7.0-preview
@@ -42,7 +43,7 @@ dependencies:
   eslint-config-oclif: 3.1.0_eslint@5.16.0
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0
   fancy-test: 1.4.4
-  fetch-mock: 7.7.3_node-fetch@2.6.0
+  fetch-mock: 7.7.3
   get-json: 1.0.1
   get-stdin: 6.0.0
   glob: 7.1.6
@@ -57,7 +58,6 @@ dependencies:
   mime-types: 2.1.25
   minimist: 1.2.0
   nock: 11.7.1
-  node-fetch: 2.6.0
   nyc: 14.1.1
   pascal-case: 2.0.1
   path: 0.12.7
@@ -2458,6 +2458,25 @@ packages:
     dev: false
     resolution:
       integrity: sha512-jmxqQ3Z/nXoeyDmWAzF9kH1aGZSis6e/SbfPmJpUnyZ0ogr6iscHQaml4wsEepEWSdtmpy+eVXmCRIMpxaXqOA==
+  /fetch-mock/7.7.3:
+    dependencies:
+      babel-polyfill: 6.26.0
+      core-js: 2.6.11
+      glob-to-regexp: 0.4.1
+      lodash.isequal: 4.5.0
+      path-to-regexp: 2.4.0
+      whatwg-url: 6.5.0
+    dev: false
+    engines:
+      node: '>=4.0.0'
+    peerDependencies:
+      node-fetch: '*'
+    peerDependenciesMeta:
+      node-fetch:
+        optional: true
+    requiresBuild: true
+    resolution:
+      integrity: sha512-I4OkK90JFQnjH8/n3HDtWxH/I6D1wrxoAM2ri+nb444jpuH3RTcgvXx2el+G20KO873W727/66T7QhOvFxNHPg==
   /fetch-mock/7.7.3_node-fetch@2.6.0:
     dependencies:
       babel-polyfill: 6.26.0
@@ -6460,6 +6479,7 @@ packages:
       '@types/chai': 4.2.7
       '@types/mocha': 5.2.7
       '@types/node': 10.17.13
+      argparse: 1.0.10
       chai: 4.2.0
       globby: 10.0.1
       mocha: 5.2.0
@@ -6474,7 +6494,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-s4Ar6m12VKpS8u3yyNtXMaShnRZTOCUIFYwXTyXXmN4oX8mkbG0O4zLB47xP68mDHgAvtQ8BNVg42vzq/or0wg==
+      integrity: sha512-lDw+/gq9+exwt9hYoOnU+1FZRfc7A9LVuIaADoAwMyEweSR/sDFStRVbYLDutKXvWO00QgZ9CsvKIYibvicn0w==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6492,6 +6512,7 @@ packages:
       '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
       '@types/node': 10.17.13
+      '@types/node-fetch': 2.5.5
       antlr4: 4.7.2
       chai: 4.2.0
       chalk: 2.4.1
@@ -6517,7 +6538,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-PBpCq/DCETJx9lFj5I4wgQuvWuNHWLbiDjCacVMx7sa44WsMkXExsMQC5xe2BPqbsK4cp7yieiN9zrP+QsK+YA==
+      integrity: sha512-snCl2je5/Rg9EVKyk6MpZlfNsNg22sqg7CdL+rEYTK90dDiBNfJgO9qjq8MJ4j5kiq7hBaXoqdNgk7WECSh2wQ==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6547,6 +6568,7 @@ packages:
       lodash: 4.17.15
       mocha: 6.2.2
       ms-rest: 2.5.3
+      node-fetch: 2.6.0
       nyc: 14.1.1
       rimraf: 3.0.0
       sinon: 7.5.0
@@ -6559,7 +6581,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-xeOJkvoT6na1GX2Aq2c+2cA/o5McnDUjhSWXFVcs0yzhZvIwpLKff37Zo6sZEMO84H++F6qrA0g/NJMSLqBxXw==
+      integrity: sha512-ppITaEpW9HbLNLHsFKHFY0FZgP96l563PTBFoDJSBftJyp6VtQRsXZO0Z9nWzfjQ8scWhnfFl1IeZAZTK9MpzQ==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-orchestrator.tgz':
@@ -6702,6 +6724,7 @@ specifiers:
   ajv: ^6.9.1
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
+  argparse: ~1.0.10
   await-delay: ^1.0.0
   botbuilder-lg: ~4.7.0-preview
   botframework-expressions: ~4.7.0-preview
@@ -6734,7 +6757,6 @@ specifiers:
   mime-types: ^2.1.18
   minimist: ^1.2.0
   nock: ^11.7.0
-  node-fetch: ^2.1.2
   nyc: ^14.1.1
   pascal-case: ^2.0.1
   path: ^0.12.7
