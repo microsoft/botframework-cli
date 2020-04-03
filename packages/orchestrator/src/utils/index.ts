@@ -6,105 +6,155 @@
 import {CLIError, utils} from '@microsoft/bf-cli-command';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-// const fs = require('fs-extra');
+const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
+const QnamakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
 
-const configPrefix: string = 'orchestrator__';
-
-const filterConfig: (config: any, prefix: string) => any = (config: any, prefix: string) => {
-  return Object.keys(config)
-  .filter((key: string) => key.startsWith(prefix))
-  .reduce((filteredConfig: any, key: string) => {
-    filteredConfig[key] = config[key];
-    return filteredConfig;
-  }, {});
-};
-
-const getInputFromFile: (path: string) => Promise<string> = async (path: string): Promise<string> => {
-  if (path) {
+export class OrchestratorHelper {
+  public static isDirectory(path: string): boolean {
     try {
-      return await utils.readTextFile(path);
+      const stats: fs.Stats = fs.statSync(path);
+      return stats.isDirectory();
+    } catch {
+      return false;
+    }
+  }
+
+  public static readFile(filePath: string): string {
+    try {
+      const content = fs.readFileSync(filePath, {encoding:'utf8'}); 
+      return content;
     } catch (error) {
-      throw new CLIError(`Failed to read app JSON: ${error}`);
+      throw new CLIError(error)
     }
   }
-  return '';
-};
 
-const getUserConfig: (configPath: string) => Promise<any> = async (configPath: string) => {
-  if (fs.existsSync(path.join(configPath, 'config.json'))) {
-    return fs.readJSON(path.join(configPath, 'config.json'), {throws: false});
-  }
-  return null;
-};
-
-const createConfigFile: (configPath: string) => Promise<void> = async (configPath: string) => {
-  await fs.mkdirp(configPath);
-  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify({}, null, 2));
-};
-
-const writeUserConfig: (userconfig: any, configPath: string) => Promise<void> = async (userconfig: any, configPath: string) => {
-  await fs.mkdirp(configPath);
-  await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify(userconfig, null, 2));
-};
-
-const isDirectory: (path: string) => boolean = (path: string): boolean => {
-  try {
-    const stats: fs.Stats = fs.statSync(path);
-    return stats.isDirectory();
-  } catch {
-    return false;
-  }
-};
-
-const filterByAllowedConfigValues: (configObj: any, prefix: string) => any = (configObj: any, prefix: string) => {
-  const allowedConfigValues: string[] = [`${prefix}appId`, `${prefix}endpoint`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`];
-  const filtered: string[] = Object.keys(configObj)
-  .filter((key: string) => allowedConfigValues.includes(key))
-  .reduce((filteredConfigObj: any, key: string) => {
-    filteredConfigObj[key] = configObj[key];
-    return filteredConfigObj;
-  }, {});
-  return filtered;
-};
-
-const processInputs: (flags: any, flagLabels: string[], configDir: string) => Promise<any> = async (flags: any, flagLabels: string[], configDir: string) => {
-  let config: any = filterByAllowedConfigValues(await getUserConfig(configDir), configPrefix);
-  config = config ? filterConfig(config, configPrefix) : config;
-  const input: any = {};
-  flagLabels
-  .filter((flag: string) => flag !== 'help')
-  .forEach((flag: string) => {
-    if (flag === 'in') {
-      // rename property since 'in' is a reserved keyword
-      input[`${flag}Val`] = flags[flag];
+  public static writeToFile(filePath: string, content: string): string {
+    try {
+      fs.writeFileSync(filePath, content);
+      return filePath;
+    } catch (error) {
+      throw new CLIError(error)
     }
-    input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null);
-  });
-  return input;
-};
-
-const validateRequiredProps: (configObj: any) => void = (configObj: any) => {
-  Object.keys(configObj).forEach((key: string) => {
-    if (!configObj[key]) {
-      throw new CLIError(`Required input property '${key}' missing. Please pass it in as a flag or set it in the config file.`);
-    }
-  });
-};
-
-const writeToFile: (filePath: string, content: string) => string = (filePath: string, content: string) => {
-  try {
-    fs.writeFileSync(filePath, content);
-  } catch (error) {
-    throw new CLIError(error)
   }
-  return filePath
-};
 
-module.exports.createConfigFile = createConfigFile;
-module.exports.getInputFromFile = getInputFromFile;
-module.exports.getUserConfig = getUserConfig;
-module.exports.processInputs = processInputs;
-module.exports.validateRequiredProps = validateRequiredProps;
-module.exports.writeToFile = writeToFile;
-module.exports.writeUserConfig = writeUserConfig;
-module.exports.isDirectory = isDirectory;
+  public static deleteFile(filePath: string)  {
+    try {
+      fs.unlinkSync(filePath);
+    } catch {
+    }
+  }
+
+  public static async getTsvContent(filePath: string, hierarchical: boolean)  {
+    try {
+      const utterancesLabelsMap: any = {};
+      let tsvContent = '';
+
+      if (OrchestratorHelper.isDirectory(filePath)) {
+        await OrchestratorHelper.iterateInputFolder(filePath, utterancesLabelsMap, hierarchical);
+      }
+      else {
+        await OrchestratorHelper.processFile(filePath, path.basename(filePath), utterancesLabelsMap, hierarchical);
+      }
+
+      for(var utterance in utterancesLabelsMap) {
+        let labels = utterancesLabelsMap[utterance];
+        let line = labels.join() + '\t' + utterance + '\n';
+        tsvContent += line;
+      }  
+
+      return tsvContent;
+
+    } catch(error) {
+      throw new CLIError(error)
+    }
+  }
+
+  static async processFile(
+    filePath: string, 
+    fileName: string, 
+    utterancesLabelsMap: any,
+    hierarchical: boolean) {
+
+    let ext = path.extname(filePath);
+    if (ext === '.lu') {
+      console.log(`Processing ${filePath}...`);
+      await OrchestratorHelper.parseLuFile(filePath, hierarchical ? fileName.substr(0, fileName.length - 3) : '', utterancesLabelsMap);
+    }
+    else if (ext === '.qna') {
+      console.log(`Processing ${filePath}...`);
+      await OrchestratorHelper.parseQnaFile(filePath, fileName.substr(0, fileName.length - 4), utterancesLabelsMap);
+    }    
+    else if (ext === '.json') {
+      console.log(`Processing ${filePath}...`);
+      OrchestratorHelper.getIntentsUtterances(fs.readJsonSync(filePath), hierarchical ? fileName.substr(0, fileName.length - 5) : '', utterancesLabelsMap);
+    }
+  }
+
+  static async parseLuFile(luFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
+    let fileContents = OrchestratorHelper.readFile(luFile);
+    let luisObject = await LUISBuilder.fromContentAsync(fileContents);     
+    OrchestratorHelper.getIntentsUtterances(luisObject, hierarchicalLabel, utterancesLabelsMap);
+  }
+  
+  static async parseQnaFile(qnaFile: string, label: string, utterancesLabelsMap: any) {
+    let fileContents = OrchestratorHelper.readFile(qnaFile);
+    let qnaObject = await QnamakerBuilder.fromContentAsync(fileContents);     
+    OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utterancesLabelsMap);
+  }
+
+  static async iterateInputFolder(
+    folderPath: string, 
+    utterancesLabelsMap: any, 
+    hierarchical: boolean) {
+    const items = fs.readdirSync(folderPath);
+    for (const item of items) {
+      let currentItemPath = path.join(folderPath,item);
+      let isDirectory = fs.lstatSync(currentItemPath).isDirectory();
+      let ext = '';
+      
+      if (!isDirectory) {
+        await OrchestratorHelper.processFile(currentItemPath, item, utterancesLabelsMap, hierarchical);
+      }
+      else {
+        await OrchestratorHelper.iterateInputFolder(currentItemPath, utterancesLabelsMap, hierarchical);
+      }
+    };  
+  }
+  
+  static getIntentsUtterances(luisObject:any, hierarchicalLabel: string, utterancesLabelsMap: any) {
+    luisObject.utterances.forEach((e: any) => {
+      let label:string = e.intent.trim();
+      let utterance:string = e.text.trim();    
+      let existingLabels = utterancesLabelsMap[utterance];
+      if (existingLabels == null) {
+        if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
+          utterancesLabelsMap[utterance] = [label, hierarchicalLabel];
+        }
+        else {
+          utterancesLabelsMap[utterance] = [label];
+        }
+      }
+      else {
+        existingLabels.push(label);
+        utterancesLabelsMap[utterance] = existingLabels;
+      }   
+    });
+  }
+
+  static getQnaQuestionsAsUtterances(qnaObject: any, label: string, utterancesLabelsMap: any) {
+    qnaObject.kb.QnaList.forEach((e: any) => {
+      let questions = e.questions;
+      questions.forEach((q: string) => {
+        let utterance = q.trim();    
+        let existingLabels = utterancesLabelsMap[utterance];
+        if (existingLabels == null) {
+          utterancesLabelsMap[utterance] = [label];
+        }
+        else {
+          existingLabels.push(label);
+          utterancesLabelsMap[utterance] = existingLabels;
+        }
+      });
+    });
+  }
+}

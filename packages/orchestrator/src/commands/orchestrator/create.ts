@@ -4,14 +4,12 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
-
-import {Command, flags, utils} from '@microsoft/bf-cli-command';
+import {Command, CLIError, flags, utils} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
+import {OrchestratorHelper} from '../../utils/index';
 
-const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
-const QnamakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
-const orchestratorUtils: any = require('../../utils/index')
+const utterancesLabelsMap: any = {};
+let hierarchical: boolean = false;
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator example file from .lu/.qna files, which represent bot modules';
@@ -24,6 +22,7 @@ export default class OrchestratorCreate extends Command {
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'The path to source label files from where orchestrator example file will be created from. Default to current working directory.'}),
     out: flags.string({char: 'o', description: 'Path where generated orchestrator example file will be placed. Default to current working directory.'}),
+    hierarchical: flags.boolean({description: 'Add hierarchical labels based on lu/qna file name.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator create command help'}),
@@ -39,27 +38,22 @@ export default class OrchestratorCreate extends Command {
     const input: string = path.resolve(flags.in || __dirname);
     const output: string = path.resolve(flags.out || __dirname);
     const debug: boolean = flags.debug;
+    hierarchical = flags.hierarchical;
 
-    let inputIsDirectory = orchestratorUtils.isDirectory(input);
     let tsvFilePath = path.join(output, 'create.tsv');
     let tsvContent = '';
-    let utterancesLabelsMap: any = {};
-
-    if (inputIsDirectory) {
-      await this.iterateInputFolder(input, utterancesLabelsMap);
-    }
     
-    for(var utterance in utterancesLabelsMap) {
-      console.log(`Utterance: ${utterance}`);
-      
-      let labels = utterancesLabelsMap[utterance];
-      let line = labels.join() + '\t' + utterance + '\n';
-      console.log(line);
-      tsvContent += line;
+    OrchestratorHelper.deleteFile(tsvFilePath);
+    tsvContent = await OrchestratorHelper.getTsvContent(input, flags.hierarchical);
+    if (tsvContent.length == 0)
+    {
+      let errorMsg = 'Invalid input';
+      this.log(errorMsg);
+      throw new CLIError(errorMsg);
     }
-  
-    orchestratorUtils.writeToFile(tsvFilePath, tsvContent);
 
+    OrchestratorHelper.writeToFile(tsvFilePath, tsvContent);
+    
     let args: string = `create --in ${tsvFilePath} --out ${output}`;
     if (flags.debug) {
       args += ' --debug';
@@ -77,50 +71,11 @@ export default class OrchestratorCreate extends Command {
         this.log(loggingMessageCodified);
       }
       require('child_process').execSync(command, {stdio: [0, 1, 2]});
-    } catch (error) {
+    } 
+    catch (error) {
       return 1;
     }
+
     return 0;
-    
-  }
-
-  async parseLuFile(luFile: string, examplesMap: any): Promise<void> {
-    const fileContents = await utils.readTextFile(luFile);
-    const luisObject = await LUISBuilder.fromContentAsync(fileContents);
-    await this.getIntentsUtterances(luisObject, examplesMap);
-  }
-
-  async iterateInputFolder(folderPath: string, examplesMap: any): Promise<void> {
-    fs.readdirSync(folderPath).map(async (item: any) => {
-      let currentItemPath = path.join(folderPath,item);
-      let isDirectory = fs.lstatSync(currentItemPath).isDirectory();
-      let ext = '';
-      
-      if (!isDirectory) {
-        let ext = path.extname(currentItemPath);
-        if (ext === '.lu' || ext === '.qna') {
-          await this.parseLuFile(currentItemPath, examplesMap);
-        }    
-      }
-      else {
-        await this.iterateInputFolder(currentItemPath, examplesMap);
-      }
-    })  
-  }
-
-  async getIntentsUtterances(luisObject:any, examplesMap: any): Promise<void> {
-
-    luisObject.utterances.forEach((e: any) => {
-      let label:string = e.intent.trim();
-      let utterance:string = e.text.trim();
-      let existingLabels = examplesMap[utterance];
-      if (existingLabels == null) {
-        examplesMap[utterance] = [label];
-      }
-      else {
-        existingLabels.push(label);
-        examplesMap[utterance] = existingLabels;
-      }   
-  });
   }
 }
