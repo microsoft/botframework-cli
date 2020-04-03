@@ -36,7 +36,8 @@ export class EntityAnnotatedCorpusData extends Data {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> = entityAnnotatedCorpusData.luUtterances;
+            "text": string,
+            "weight": number }> = entityAnnotatedCorpusData.luUtterances;
         const lengthUtterancesArray: number =
             luUtterances.length;
         entityAnnotatedCorpusData.luUtterances = [];
@@ -51,7 +52,7 @@ export class EntityAnnotatedCorpusData extends Data {
             entityAnnotatedCorpusData.collectIntents(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
-        entityAnnotatedCorpusData.intentsUtterances.intents = entityAnnotatedCorpusData.luUtterances.map(
+        entityAnnotatedCorpusData.intentsUtterancesWeights.intents = entityAnnotatedCorpusData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -64,8 +65,9 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.intent as string);
-        entityAnnotatedCorpusData.intentsUtterances.utterances = entityAnnotatedCorpusData.luUtterances.map(
+                "text": string,
+                "weight": number }) => entry.intent as string);
+        entityAnnotatedCorpusData.intentsUtterancesWeights.utterances = entityAnnotatedCorpusData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -78,7 +80,23 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.text as string);
+                "text": string,
+                "weight": number }) => entry.text as string);
+        entityAnnotatedCorpusData.intentsUtterancesWeights.weights = entityAnnotatedCorpusData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string,
+                "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
@@ -114,7 +132,8 @@ export class EntityAnnotatedCorpusData extends Data {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> = entityAnnotatedCorpusData.luUtterances;
+            "text": string,
+            "weight": number }> = entityAnnotatedCorpusData.luUtterances;
         entityAnnotatedCorpusData.luUtterances = luUtterances.filter(
             (value: {
                 "entities": Array<{
@@ -128,7 +147,8 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string },
+                "text": string,
+                "weight": number },
              index: number,
              array: Array<{
                 "entities": Array<{
@@ -142,7 +162,8 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }>) => {
+                "text": string,
+                "weight": number }>) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
@@ -150,7 +171,7 @@ export class EntityAnnotatedCorpusData extends Data {
             entityAnnotatedCorpusData.collectIntents(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
-        entityAnnotatedCorpusData.intentsUtterances.intents = entityAnnotatedCorpusData.luUtterances.map(
+        entityAnnotatedCorpusData.intentsUtterancesWeights.intents = entityAnnotatedCorpusData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -163,8 +184,9 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.intent as string);
-        entityAnnotatedCorpusData.intentsUtterances.utterances = entityAnnotatedCorpusData.luUtterances.map(
+                "text": string,
+                "weight": number }) => entry.intent as string);
+        entityAnnotatedCorpusData.intentsUtterancesWeights.utterances = entityAnnotatedCorpusData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -177,7 +199,23 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.text as string);
+                "text": string,
+                "weight": number }) => entry.text as string);
+        entityAnnotatedCorpusData.intentsUtterancesWeights.weights = entityAnnotatedCorpusData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string,
+                "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
@@ -208,7 +246,7 @@ export class EntityAnnotatedCorpusData extends Data {
             entityAnnotatedCorpusData.collectIntents(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
-        entityAnnotatedCorpusData.intentsUtterances.intents = entityAnnotatedCorpusData.luUtterances.map(
+        entityAnnotatedCorpusData.intentsUtterancesWeights.intents = entityAnnotatedCorpusData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -221,8 +259,9 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.intent as string);
-        entityAnnotatedCorpusData.intentsUtterances.utterances = entityAnnotatedCorpusData.luUtterances.map(
+                "text": string,
+                "weight": number }) => entry.intent as string);
+        entityAnnotatedCorpusData.intentsUtterancesWeights.utterances = entityAnnotatedCorpusData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -235,7 +274,23 @@ export class EntityAnnotatedCorpusData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.text as string);
+                "text": string,
+                "weight": number }) => entry.text as string);
+        entityAnnotatedCorpusData.intentsUtterancesWeights.weights = entityAnnotatedCorpusData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string,
+                "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
@@ -259,6 +314,7 @@ export class EntityAnnotatedCorpusData extends Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
@@ -267,6 +323,7 @@ export class EntityAnnotatedCorpusData extends Data {
             existingData as EntityAnnotatedCorpusData,
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- labelColumnIndex,
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- weightColumnIndex,
             linesToSkip,
             samplingIndexArray,
             toResetFeaturizerLabelFeatureMaps);
@@ -276,6 +333,7 @@ export class EntityAnnotatedCorpusData extends Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
@@ -284,6 +342,7 @@ export class EntityAnnotatedCorpusData extends Data {
             existingData as EntityAnnotatedCorpusData,
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- labelColumnIndex,
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- weightColumnIndex,
             linesToSkip,
             filteringIndexSet,
             toResetFeaturizerLabelFeatureMaps);
@@ -306,7 +365,8 @@ export class EntityAnnotatedCorpusData extends Data {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> {
+            "text": string,
+            "weight": number }> {
         const entityAnnotatedCorpusTypes: {
             "ids": string[],
             "wordArrays": string[][],
@@ -331,7 +391,8 @@ export class EntityAnnotatedCorpusData extends Data {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> =
+            "text": string,
+            "weight": number }> =
             Utility.entityAnnotatedCorpusTypesToEntityAnnotatedCorpusUtterances(
                 entityAnnotatedCorpusTypes,
                 includePartOfSpeechTagTagAsEntities,

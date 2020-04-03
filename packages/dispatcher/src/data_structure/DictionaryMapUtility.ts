@@ -24,27 +24,68 @@ import { Utility } from "../utility/Utility";
 
 export class DictionaryMapUtility {
 
+    public static buildStringIdNumberValueDictionaryFromUniqueStringArrayFile(
+        filename: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": IDictionaryStringIdGenericValue<number> } {
+        const content: string = Utility.loadFile(filename);
+        return DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArrayContent(
+            content,
+            delimiter);
+    }
+    public static buildStringIdNumberValueDictionaryFromUniqueStringArrayContent(
+        content: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": IDictionaryStringIdGenericValue<number> } {
+        const stringArray: string[] = Utility.split(content, delimiter);
+        const stringMap: IDictionaryStringIdGenericValue<number> =
+            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
+        return { stringArray, stringMap };
+    }
     public static buildStringIdNumberValueDictionaryFromUniqueStringArray(
-        stringArray: string[]): IDictionaryStringIdGenericValue<number> {
+        inputStringArray: string[]): IDictionaryStringIdGenericValue<number> {
         const stringMap: IDictionaryStringIdGenericValue<number> = { };
-        for (let index: number = 0; index < stringArray.length; index++) {
-            stringMap[stringArray[index]] = index;
+        for (let index: number = 0; index < inputStringArray.length; index++) {
+            stringMap[inputStringArray[index]] = index;
         }
         return stringMap;
     }
+    public static buildStringIdNumberValueDictionaryFromStringArrayFile(
+        filename: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": IDictionaryStringIdGenericValue<number> } {
+        const content: string = Utility.loadFile(filename);
+        return DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArrayContent(
+            content,
+            delimiter);
+    }
+    public static buildStringIdNumberValueDictionaryFromStringArrayContent(
+        content: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": IDictionaryStringIdGenericValue<number> } {
+        const records: string[] = Utility.split(content, delimiter);
+        return DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArray(records);
+    }
     public static buildStringIdNumberValueDictionaryFromStringArray(
-        strings: string[]):
-        { "stringArray": string[], "stringMap": IDictionaryStringIdGenericValue<number> } {
-        const stringSet: Set<string> = new Set(strings);
+        inputStringArray: string[]): {
+            "stringArray": string[],
+            "stringMap": IDictionaryStringIdGenericValue<number> } {
+        const stringSet: Set<string> = new Set(inputStringArray);
         const stringArray: string[] = Array.from(stringSet.values());
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
     }
     public static buildStringIdNumberValueDictionaryFromStringArrays(
-        stringArrays: string[][]): { "stringArray": string[], "stringMap": IDictionaryStringIdGenericValue<number> } {
+        inputStringArrays: string[][]): {
+            "stringArray": string[],
+            "stringMap": IDictionaryStringIdGenericValue<number> } {
         const stringSet: Set<string> = new Set();
-        for (const elementStringArray of stringArrays) {
+        for (const elementStringArray of inputStringArrays) {
             for (const elementString of elementStringArray) {
                 stringSet.add(elementString);
             }
@@ -139,27 +180,68 @@ export class DictionaryMapUtility {
         }
     }
 
+    public static buildStringKeyNumberValueMapFromUniqueStringArrayFile(
+        filename: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": TMapStringKeyGenericValue<number> } {
+        const content: string = Utility.loadFile(filename);
+        return DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArrayContent(
+            content,
+            delimiter);
+    }
+    public static buildStringKeyNumberValueMapFromUniqueStringArrayContent(
+        content: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": TMapStringKeyGenericValue<number> } {
+        const stringArray: string[] = Utility.split(content, delimiter);
+        const stringMap: TMapStringKeyGenericValue<number> =
+            DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
+        return { stringArray, stringMap };
+    }
     public static buildStringKeyNumberValueMapFromUniqueStringArray(
-        stringArray: string[]): TMapStringKeyGenericValue<number> {
+        inputStringArray: string[]): TMapStringKeyGenericValue<number> {
         const stringMap: TMapStringKeyGenericValue<number> = DictionaryMapUtility.newTMapStringKeyGenericValue();
-        for (let index: number = 0; index < stringArray.length; index++) {
-            stringMap.set(stringArray[index], index);
+        for (let index: number = 0; index < inputStringArray.length; index++) {
+            stringMap.set(inputStringArray[index], index);
         }
         return stringMap;
     }
+    public static buildStringKeyNumberValueMapFromStringArrayFile(
+        filename: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": TMapStringKeyGenericValue<number> } {
+        const content: string = Utility.loadFile(filename);
+        return DictionaryMapUtility.buildStringKeyNumberValueMapFromStringArrayContent(
+            content,
+            delimiter);
+    }
+    public static buildStringKeyNumberValueMapFromStringArrayContent(
+        content: string,
+        delimiter: string = "\t"): {
+            "stringArray": string[],
+            "stringMap": TMapStringKeyGenericValue<number> } {
+        const records: string[] = Utility.split(content, delimiter);
+        return DictionaryMapUtility.buildStringKeyNumberValueMapFromStringArray(records);
+    }
     public static buildStringKeyNumberValueMapFromStringArray(
-        strings: string[]):
-        { "stringArray": string[], "stringMap": TMapStringKeyGenericValue<number> } {
-        const stringSet: Set<string> = new Set(strings);
+        inputStringArray: string[]): {
+            "stringArray": string[],
+            "stringMap": TMapStringKeyGenericValue<number> } {
+        const stringSet: Set<string> = new Set(inputStringArray);
         const stringArray: string[] = Array.from(stringSet.values());
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
     }
     public static buildStringKeyNumberValueMapFromStringArrays(
-        stringArrays: string[][]): { "stringArray": string[], "stringMap": TMapStringKeyGenericValue<number> } {
+        inputStringArrays: string[][]): {
+            "stringArray": string[],
+            "stringMap": TMapStringKeyGenericValue<number> } {
         const stringSet: Set<string> = new Set();
-        for (const elementStringArray of stringArrays) {
+        for (const elementStringArray of inputStringArrays) {
             for (const elementString of elementStringArray) {
                 stringSet.add(elementString);
             }

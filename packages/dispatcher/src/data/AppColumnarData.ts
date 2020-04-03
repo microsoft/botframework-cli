@@ -58,6 +58,14 @@ export function exampleFunctionData(): ColumnarData {
         },
     );
     parser.addArgument(
+        ["-wi", "--weightColumnIndex"],
+        {
+            defaultValue: -1,
+            help: "weight column index",
+            required: false,
+        },
+    );
+    parser.addArgument(
         ["-ls", "--linesToSkip"],
         {
             defaultValue: 0,
@@ -83,6 +91,7 @@ export function exampleFunctionData(): ColumnarData {
     // ---- NOTE-TODO-PLACEHOLDER ---- }
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
+    const weightColumnIndex: number = +args.weightColumnIndex;
     const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `filename=${filename}`);
@@ -94,6 +103,7 @@ export function exampleFunctionData(): ColumnarData {
         new NgramSubwordFeaturizer(),
         labelColumnIndex,
         textColumnIndex,
+        weightColumnIndex,
         linesToSkip,
         true);
     // ---- NOTE-TODO-PLACEHOLDER ---- columnarData.dumpLuLuisJsonStructureInLuFormat(

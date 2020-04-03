@@ -40,6 +40,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         "thresholdReporterTest": ThresholdReporter,
         "predictionLabels": string[],
         "predictionLabelIndexes": number[],
+        "instanceIndexes": number[],
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = {
@@ -47,6 +48,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             thresholdReporterTest: new ThresholdReporter("", "", null, null, [], {}),
             predictionLabels: [],
             predictionLabelIndexes: [],
+            instanceIndexes: [],
             groundTruthLabels: [],
             groundTruthLabelIndexes: [],
             predictions: [] };
@@ -62,6 +64,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         "thresholdReporterTest": ThresholdReporter,
         "predictionLabels": string[],
         "predictionLabelIndexes": number[],
+        "instanceIndexes": number[],
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } {
@@ -73,13 +76,15 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         {
             const predictionLabels: string[] = this.testResultCachedAfterTest.predictionLabels;
             const predictionLabelIndexes: number[] = this.testResultCachedAfterTest.predictionLabelIndexes;
-            const groundTruthLabels: string[] = this.testResultCachedAfterTest.predictionLabels;
-            const groundTruthLabelIndexes: number[] = this.testResultCachedAfterTest.predictionLabelIndexes;
+            const instanceIndexes: number[] = this.testResultCachedAfterTest.instanceIndexes;
+            const groundTruthLabels: string[] = this.testResultCachedAfterTest.groundTruthLabels;
+            const groundTruthLabelIndexes: number[] = this.testResultCachedAfterTest.groundTruthLabelIndexes;
             const predictions: number[][] = this.testResultCachedAfterTest.predictions;
             const outputEvaluationReportDataArraysScoreRecords: string[][] = [];
             for (let index: number = 0; index < this.intentsCachedAfterTest.length; index++) {
-                const intent: string = this.intentsCachedAfterTest[index];
-                const utterance: string = this.utterancesCachedAfterTest[index];
+                const instanceIndex: number = instanceIndexes[index];
+                const intent: string = this.intentsCachedAfterTest[instanceIndex];
+                const utterance: string = this.utterancesCachedAfterTest[instanceIndex];
                 const groundTruthLabel: string = groundTruthLabels[index];
                 const groundTruthLabelIndex: number = groundTruthLabelIndexes[index];
                 const predictionLabel: string = predictionLabels[index];
@@ -87,6 +92,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 const outputEvaluationReportDataArraysScoreRecord: string[] = [];
                 outputEvaluationReportDataArraysScoreRecord.push(intent);
                 outputEvaluationReportDataArraysScoreRecord.push(utterance);
+                outputEvaluationReportDataArraysScoreRecord.push(instanceIndex.toString());
                 outputEvaluationReportDataArraysScoreRecord.push(groundTruthLabel);
                 outputEvaluationReportDataArraysScoreRecord.push(groundTruthLabelIndex.toString());
                 outputEvaluationReportDataArraysScoreRecord.push(predictionLabel);
@@ -119,7 +125,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         }
         {
             let outputFilename: string =
-                `${outputReportFilenamePrefix}_TestScoreRecords.json`;
+                `${outputReportFilenamePrefix}_TestScoreRecords.txt`;
             outputFilename = Utility.storeDataArraysToTsvFile(
                 outputFilename,
                 outputEvaluationReportDataArrays.TestScoreRecords,
@@ -204,12 +210,14 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
     public test(
         intents: string[],
         utterances: string[],
+        weights: number[],
         labelIndexArray: number[],
         featureIndexArrays: number[][]): {
             "confusionMatrixTest": ConfusionMatrix,
             "thresholdReporterTest": ThresholdReporter,
             "predictionLabels": string[],
             "predictionLabelIndexes": number[],
+            "instanceIndexes": number[],
             "groundTruthLabels": string[],
             "groundTruthLabelIndexes": number[],
             "predictions": number[][] } {
@@ -245,6 +253,14 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 `utterances.length|${utterances.length}|!==` +
                 `numberInstances|${numberInstances}|`);
         }
+        const isWeightsArrayNotEmpty: boolean = !Utility.isEmptyNumberArray(weights);
+        if (isWeightsArrayNotEmpty) {
+            if (weights.length !== numberInstances) {
+                Utility.debuggingThrow(
+                    `weights.length|${weights.length}|!==` +
+                    `numberInstances|${numberInstances}|`);
+            }
+        }
         if (labelIndexArray.length !== numberInstances) {
             Utility.debuggingThrow(
                 `labelIndexArray.length|${labelIndexArray.length}|!==` +
@@ -261,6 +277,8 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             new Array<string>(numberInstances);
         const predictionLabelIndexes: number[] =
             new Array<number>(numberInstances);
+        const instanceIndexes: number[] =
+            new Array<number>(numberInstances);
         const groundTruthLabels: string[] =
             new Array<string>(numberInstances);
         const groundTruthLabelIndexes: number[] =
@@ -269,11 +287,16 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             // ---------------------------------------------------------------
             // const intent: string = intents[index];
             const utterance: string = utterances[index];
+            let weight: number = 1;
+            if (isWeightsArrayNotEmpty) {
+                weight = weights[index];
+            }
             const labelIndex: number = labelIndexArray[index];
             // const featureIndexArray: number[] = featureIndexArrays[index];
             const prediction: number[] = predictions[index];
             // ---------------------------------------------------------------
             const groundTruthLabel: string = labels[labelIndex];
+            instanceIndexes[index] = index;
             groundTruthLabels[index] = groundTruthLabel;
             groundTruthLabelIndexes[index] = labelIndex;
             // ---------------------------------------------------------------
@@ -289,12 +312,14 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 predictionLabel;
             confusionMatrixTest.addInstanceByLabelIndex(
                 labelIndex,
-                predictionLabelIndex);
+                predictionLabelIndex,
+                weight);
             thresholdReporterTest.addInstance(
                 prediction,
                 labelIndex,
                 utterance,
-                `${index}`);
+                `${index}`,
+                weight);
             // ---------------------------------------------------------------
         }
         // -------------------------------------------------------------------
@@ -303,6 +328,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             thresholdReporterTest,
             predictionLabels,
             predictionLabelIndexes,
+            instanceIndexes,
             groundTruthLabels,
             groundTruthLabelIndexes,
             predictions };

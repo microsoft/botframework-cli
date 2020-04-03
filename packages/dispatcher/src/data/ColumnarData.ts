@@ -15,6 +15,7 @@ export class ColumnarData extends Data {
         existingColumnarData: ColumnarData,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
@@ -25,6 +26,7 @@ export class ColumnarData extends Data {
                 existingColumnarData.getFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
@@ -40,7 +42,8 @@ export class ColumnarData extends Data {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> = columnarData.luUtterances;
+            "text": string,
+            "weight": number }> = columnarData.luUtterances;
         const lengthUtterancesArray: number =
             luUtterances.length;
         columnarData.luUtterances = [];
@@ -55,7 +58,7 @@ export class ColumnarData extends Data {
             columnarData.collectIntents(columnarData.luUtterances);
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
-        columnarData.intentsUtterances.intents = columnarData.luUtterances.map(
+        columnarData.intentsUtterancesWeights.intents = columnarData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -68,8 +71,9 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.intent as string);
-        columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
+                "text": string,
+                "weight": number }) => entry.intent as string);
+        columnarData.intentsUtterancesWeights.utterances = columnarData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -82,7 +86,23 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.text as string);
+                "text": string,
+                "weight": number }) => entry.text as string);
+        columnarData.intentsUtterancesWeights.weights = columnarData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string,
+                "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarData.resetFeaturizerLabelFeatureMaps();
@@ -97,6 +117,7 @@ export class ColumnarData extends Data {
         existingColumnarData: ColumnarData,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
@@ -107,6 +128,7 @@ export class ColumnarData extends Data {
                 existingColumnarData.getFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
@@ -122,7 +144,8 @@ export class ColumnarData extends Data {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> =
+            "text": string,
+            "weight": number }> =
             columnarData.luUtterances;
         columnarData.luUtterances = luUtterances.filter(
             (value: {
@@ -137,7 +160,8 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string },
+                "text": string,
+                "weight": number },
              index: number,
              array: Array<{
                 "entities": Array<{
@@ -151,7 +175,8 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }>) => {
+                "text": string,
+                "weight": number }>) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
@@ -159,7 +184,7 @@ export class ColumnarData extends Data {
             columnarData.collectIntents(columnarData.luUtterances);
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
-        columnarData.intentsUtterances.intents = columnarData.luUtterances.map(
+        columnarData.intentsUtterancesWeights.intents = columnarData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -172,8 +197,9 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.intent as string);
-        columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
+                "text": string,
+                "weight": number }) => entry.intent as string);
+        columnarData.intentsUtterancesWeights.utterances = columnarData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -186,7 +212,23 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.text as string);
+                "text": string,
+                "weight": number }) => entry.text as string);
+        columnarData.intentsUtterancesWeights.weights = columnarData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string,
+                "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarData.resetFeaturizerLabelFeatureMaps();
@@ -202,6 +244,7 @@ export class ColumnarData extends Data {
         featurizer: NgramSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
         // -------------------------------------------------------------------
@@ -210,6 +253,7 @@ export class ColumnarData extends Data {
                 featurizer,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 linesToSkip);
         columnarData.content =
             content;
@@ -221,7 +265,7 @@ export class ColumnarData extends Data {
             columnarData.collectIntents(columnarData.luUtterances);
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
-        columnarData.intentsUtterances.intents = columnarData.luUtterances.map(
+        columnarData.intentsUtterancesWeights.intents = columnarData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -234,8 +278,9 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.intent as string);
-        columnarData.intentsUtterances.utterances = columnarData.luUtterances.map(
+                "text": string,
+                "weight": number }) => entry.intent as string);
+        columnarData.intentsUtterancesWeights.utterances = columnarData.luUtterances.map(
             (entry: {
                 "entities": Array<{
                     "entity": string,
@@ -248,7 +293,23 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string }) => entry.text as string);
+                "text": string,
+                "weight": number }) => entry.text as string);
+        columnarData.intentsUtterancesWeights.weights = columnarData.luUtterances.map(
+            (entry: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string,
+                "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarData.resetFeaturizerLabelFeatureMaps();
@@ -261,16 +322,19 @@ export class ColumnarData extends Data {
 
     protected labelColumnIndex: number = 0;
     protected textColumnIndex: number = 1;
+    protected weightColumnIndex: number = -1;
     protected linesToSkip: number = 0;
 
     protected constructor(
         featurizer: NgramSubwordFeaturizer,
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
         linesToSkip: number = 0) {
         super(featurizer);
         this.labelColumnIndex = labelColumnIndex;
         this.textColumnIndex = textColumnIndex;
+        this.weightColumnIndex = weightColumnIndex;
         this.linesToSkip = linesToSkip;
     }
 
@@ -278,6 +342,7 @@ export class ColumnarData extends Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
@@ -285,6 +350,7 @@ export class ColumnarData extends Data {
             existingData as ColumnarData,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip,
             samplingIndexArray,
             toResetFeaturizerLabelFeatureMaps);
@@ -294,6 +360,7 @@ export class ColumnarData extends Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
@@ -301,6 +368,7 @@ export class ColumnarData extends Data {
             existingData as ColumnarData,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip,
             filteringIndexSet,
             toResetFeaturizerLabelFeatureMaps);
@@ -318,17 +386,20 @@ export class ColumnarData extends Data {
             "endPos": number,
             }>,
         "intent": string,
-        "text": string }> {
-        const intentsUtterances: { "intents": string[], "utterances": string[] } =
-            Utility.loadLabelTextColumnarContent(
+        "text": string,
+        "weight": number }> {
+        const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
+            Utility.loadLabelUtteranceColumnarContent(
                 content,               // ---- filename: string,
-                this.getLabelColumnIndex(), // ---- labelColumnIndex: number = 0,
-                this.getTextColumnIndex(),  // ---- textColumnIndex: number = 1,
+                this.getLabelColumnIndex(),  // ---- labelColumnIndex: number = 0,
+                this.getTextColumnIndex(),   // ---- textColumnIndex: number = 1,
+                this.getWeightColumnIndex(), // ---- weightColumnIndex: number = -1,
                 this.getLinesToSkip(), // ---- lineIndexToStart: number = 0,
                 "\t",                  // ---- columnDelimiter: string = "\t",
                 "\n",                  // ---- rowDelimiter: string = "\n",
+                "utf8",                // ---- encoding: string = "utf8",
                 -1,                    // ---- lineIndexToEnd: number = -1
-            );
+                );
         const luUtterances: Array<{
             "entities": Array<{
                 "entity": string,
@@ -341,12 +412,15 @@ export class ColumnarData extends Data {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> = [];
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+            "text": string,
+            "weight": number }> = [];
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         for (let i = 0; i < intents.length; i++) {
             const intent: string = intents[i];
             const text: string = utterances[i];
+            const weight: number = weights[i];
             const luUtterance: {
                 "entities": Array<{
                     "entity": string,
@@ -359,11 +433,13 @@ export class ColumnarData extends Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string } = {
+                "text": string,
+                "weight": number } = {
                     entities: [],
                     partOfSpeechTags: [],
                     intent,
                     text,
+                    weight,
             };
             luUtterances.push(luUtterance);
         }
@@ -388,6 +464,9 @@ export class ColumnarData extends Data {
     }
     public getTextColumnIndex(): number {
         return this.textColumnIndex;
+    }
+    public getWeightColumnIndex(): number {
+        return this.weightColumnIndex;
     }
     public getLinesToSkip(): number {
         return this.linesToSkip;
