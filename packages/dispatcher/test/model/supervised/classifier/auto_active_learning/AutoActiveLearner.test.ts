@@ -114,6 +114,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
         const columnarContent: string = ColumnarContentEmail;
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
+        const weightColumnIndex: number = 1;
         const linesToSkip: number = 1;
         const columnarData: ColumnarData =
             ColumnarData.createColumnarData(
@@ -121,6 +122,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 linesToSkip,
                 true);
         // -----------------------------------------------------------------------
@@ -217,6 +219,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
         //     columnarData,
         //     labelColumnIndex,
         //     textColumnIndex,
+        //     weightColumnIndex,
         //     linesToSkip,
         //     new Set<number>(aalSampledInstanceIndexArray));
     });

@@ -51,6 +51,7 @@ export class DataUtility {
         filetype: string = "",
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
         linesToSkip: number = 0): Promise<Data> {
         const content: string =
             Utility.loadFile(filename);
@@ -93,6 +94,7 @@ export class DataUtility {
                     featurizerNullable,
                     labelColumnIndex,
                     textColumnIndex,
+                    weightColumnIndex,
                     linesToSkip,
                     toResetFeaturizerLabelFeatureMaps);
             return columnarData;

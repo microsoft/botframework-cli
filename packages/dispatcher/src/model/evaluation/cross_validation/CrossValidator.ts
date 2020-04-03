@@ -59,6 +59,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
         "thresholdReporterCrossValidation": ThresholdReporter,
         "predictionLabels": string[],
         "predictionLabelIndexes": number[],
+        "instanceIndexes": number[],
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = {
@@ -66,6 +67,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
             thresholdReporterCrossValidation: new ThresholdReporter("", "", null, null, [], {}),
             predictionLabels: [],
             predictionLabelIndexes: [],
+            instanceIndexes: [],
             groundTruthLabels: [],
             groundTruthLabelIndexes: [],
             predictions: [] };
@@ -111,6 +113,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
         "thresholdReporterCrossValidation": ThresholdReporter,
         "predictionLabels": string[],
         "predictionLabelIndexes": number[],
+        "instanceIndexes": number[],
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } {
@@ -142,16 +145,19 @@ export class CrossValidator extends AbstractBaseEvaluator {
                 this.crossValidationResultCachedAfterCrossValidation.predictionLabels;
             const predictionLabelIndexes: number[] =
                 this.crossValidationResultCachedAfterCrossValidation.predictionLabelIndexes;
+            const instanceIndexes: number[] =
+                this.crossValidationResultCachedAfterCrossValidation.instanceIndexes;
             const groundTruthLabels: string[] =
-                this.crossValidationResultCachedAfterCrossValidation.predictionLabels;
+                this.crossValidationResultCachedAfterCrossValidation.groundTruthLabels;
             const groundTruthLabelIndexes: number[] =
-                this.crossValidationResultCachedAfterCrossValidation.predictionLabelIndexes;
+                this.crossValidationResultCachedAfterCrossValidation.groundTruthLabelIndexes;
             const predictions: number[][] =
                 this.crossValidationResultCachedAfterCrossValidation.predictions;
             const outputEvaluationReportDataArraysScoreRecords: string[][] = [];
             for (let index: number = 0; index < this.intentsCachedAfterCrossValidation.length; index++) {
-                const intent: string = this.intentsCachedAfterCrossValidation[index];
-                const utterance: string = this.utterancesCachedAfterCrossValidation[index];
+                const instanceIndex: number = instanceIndexes[index];
+                const intent: string = this.intentsCachedAfterCrossValidation[instanceIndex];
+                const utterance: string = this.utterancesCachedAfterCrossValidation[instanceIndex];
                 const groundTruthLabel: string = groundTruthLabels[index];
                 const groundTruthLabelIndex: number = groundTruthLabelIndexes[index];
                 const predictionLabel: string = predictionLabels[index];
@@ -159,6 +165,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
                 const outputEvaluationReportDataArraysScoreRecord: string[] = [];
                 outputEvaluationReportDataArraysScoreRecord.push(intent);
                 outputEvaluationReportDataArraysScoreRecord.push(utterance);
+                outputEvaluationReportDataArraysScoreRecord.push(instanceIndex.toString());
                 outputEvaluationReportDataArraysScoreRecord.push(groundTruthLabel);
                 outputEvaluationReportDataArraysScoreRecord.push(groundTruthLabelIndex.toString());
                 outputEvaluationReportDataArraysScoreRecord.push(predictionLabel);
@@ -190,9 +197,10 @@ export class CrossValidator extends AbstractBaseEvaluator {
             outputEvaluationReportDataArrays =
                 this.generateEvaluationDataArraysReport();
         }
+        const outputFilenames: string[] = [];
         {
             let outputFilename: string =
-                `${outputReportFilenamePrefix}_CrossValidationScoreRecords.json`;
+                `${outputReportFilenamePrefix}_CrossValidationScoreRecords.txt`;
             outputFilename = Utility.storeDataArraysToTsvFile(
                 outputFilename,
                 outputEvaluationReportDataArrays.CrossValidationScoreRecords,
@@ -200,10 +208,21 @@ export class CrossValidator extends AbstractBaseEvaluator {
                 columnDelimiter,
                 recordDelimiter,
                 encoding);
-            const outputFilenames: string[] =
-                [outputFilename];
-            return { outputEvaluationReportDataArrays, outputFilenames };
+            outputFilenames.push(outputFilename);
         }
+        {
+            let outputFilename: string =
+                `${outputReportFilenamePrefix}_CrossValidationScoreRecordsLabel.txt`;
+            outputFilename = Utility.storeDataArraysToTsvFile(
+                outputFilename,
+                [this.labelsCachedAfterCrossValidation],
+                [],
+                columnDelimiter,
+                recordDelimiter,
+                encoding);
+            outputFilenames.push(outputFilename);
+        }
+        return { outputEvaluationReportDataArrays, outputFilenames };
     }
 
     public generateEvaluationJsonReport(): IDictionaryStringIdGenericValue<any> {
@@ -288,6 +307,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
             "thresholdReporterCrossValidation": ThresholdReporter,
             "predictionLabels": string[],
             "predictionLabelIndexes": number[],
+            "instanceIndexes": number[],
             "groundTruthLabels": string[],
             "groundTruthLabelIndexes": number[],
             "predictions": number[][] } {
@@ -319,12 +339,17 @@ export class CrossValidator extends AbstractBaseEvaluator {
             [];
         const predictionLabelIndexes: number[] =
             [];
+        const instanceIndexes: number[] =
+            [];
         const groundTruthLabels: string[] =
             [];
         const groundTruthLabelIndexes: number[] =
             [];
         const numberOfCrossValidationFolds: number =
             this.getNumberOfCrossValidationFolds();
+        let numberAcrossFoldsPredictions: number = 0;
+        let numberAcrossFoldsPredictionLabelMatches: number = 0;
+        let numberAcrossFoldsPredictionLabelIndexMatches: number = 0;
         for (let fold: number = 0; fold < numberOfCrossValidationFolds; fold++) {
             // ---------------------------------------------------------------
             const learner: SoftmaxRegressionSparse =
@@ -332,6 +357,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
             // ---------------------------------------------------------------
             const cvLabelDenseIndexArrayForTraining: number[] = [];
             const cvFeatureSparseIndexArraysForTraining: number[][] = [];
+            const cvInstanceIndexDenseArrayForTesting: number[] = [];
             const cvLabelDenseArrayForTesting: string[] = [];
             const cvLabelDenseIndexArrayForTesting: number[] = [];
             const cvFeatureSparseIndexArraysForTesting: number[][] = [];
@@ -416,6 +442,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
                     }
                     const instanceFeatureIndexArray: number[] =
                         featureIndexArrays[instanceIndex];
+                    cvInstanceIndexDenseArrayForTesting.push(instanceIndex);
                     cvLabelDenseArrayForTesting.push(instanceLabel);
                     cvLabelDenseIndexArrayForTesting.push(instanceLabelIndex);
                     cvFeatureSparseIndexArraysForTesting.push(instanceFeatureIndexArray);
@@ -477,6 +504,9 @@ export class CrossValidator extends AbstractBaseEvaluator {
             }
             // ---------------------------------------------------------------
             for (let index = 0; index < cvLabelDenseIndexArrayForTesting.length; index++) {
+                const instanceIndex: number =
+                    cvInstanceIndexDenseArrayForTesting[index];
+                instanceIndexes.push(instanceIndex);
                 const groundTruthLabel: string =
                     cvLabelDenseArrayForTesting[index];
                 groundTruthLabels.push(groundTruthLabel);
@@ -503,9 +533,28 @@ export class CrossValidator extends AbstractBaseEvaluator {
                     prediction,
                     groundTruthLabelIndex,
                     "",
-                    `${index}`);
+                    `${index}`,
+                    1);
+                {
+                    numberAcrossFoldsPredictions++;
+                    if (predictionLabel === groundTruthLabel) {
+                        numberAcrossFoldsPredictionLabelMatches++;
+                    }
+                    if (predictionLabelIndex === groundTruthLabelIndex) {
+                        numberAcrossFoldsPredictionLabelIndexMatches++;
+                    }
+                }
             }
             // ---------------------------------------------------------------
+        }
+        // -------------------------------------------------------------------
+        {
+            Utility.debuggingLog(
+                `numberAcrossFoldsPredictions=${numberAcrossFoldsPredictions}` +
+                `,numberAcrossFoldsPredictionLabelMatches=${numberAcrossFoldsPredictionLabelMatches}` +
+                `,numberAcrossFoldsPredictionLabelIndexMatches=${numberAcrossFoldsPredictionLabelIndexMatches}` +
+                `,numberAcrossFoldsPredictionLabelMatchRatio=${numberAcrossFoldsPredictionLabelMatches / numberAcrossFoldsPredictions}` +
+                `,numberAcrossFoldsPredictionLabelIndexMatchRatio=${numberAcrossFoldsPredictionLabelIndexMatches / numberAcrossFoldsPredictions}`);
         }
         // -------------------------------------------------------------------
         this.crossValidationResultCachedAfterCrossValidation = {
@@ -513,6 +562,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
             thresholdReporterCrossValidation,
             predictionLabels,
             predictionLabelIndexes,
+            instanceIndexes,
             groundTruthLabels,
             groundTruthLabelIndexes,
             predictions };

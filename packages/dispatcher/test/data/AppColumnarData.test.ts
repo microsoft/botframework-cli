@@ -22,6 +22,8 @@ describe("Test Suite - data/AppColumnarData", () => {
         process.argv.push("0");
         process.argv.push("--textColumnIndex");
         process.argv.push("2");
+        process.argv.push("--weightColumnIndex");
+        process.argv.push("1");
         process.argv.push("--linesToSkip");
         process.argv.push("1");
         exampleFunctionData();
