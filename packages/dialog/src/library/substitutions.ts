@@ -3,7 +3,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-import * as expr from '@chrimc62/adaptive-expressions'
+import * as expr from 'adaptive-expressions'
 import * as fs from 'fs-extra'
 import * as os from 'os'
 import * as random from 'seedrandom'

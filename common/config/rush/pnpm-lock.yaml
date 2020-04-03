@@ -2,8 +2,6 @@ dependencies:
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
-  '@chrimc62/adaptive-expressions': 4.1.20
-  '@chrimc62/botbuilder-lg': 4.1.20
   '@oclif/command': 1.5.19
   '@oclif/config': 1.13.3
   '@oclif/errors': 1.2.2
@@ -28,11 +26,13 @@ dependencies:
   '@types/semver': 6.2.1
   '@types/supports-color': 5.3.0
   '@types/xml2js': 0.4.5
+  adaptive-expressions: 4.8.0-preview
   ajv: 6.12.0
   antlr4: 4.8.0
   applicationinsights: 1.7.3
   argparse: 1.0.10
   await-delay: 1.0.0
+  botbuilder-lg: 4.8.0-preview
   botframework-schema: 4.7.2
   camelcase: 4.1.0
   chai: 4.2.0
@@ -851,6 +851,21 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-gac8OEcQ2Li1dxIEWGZzsp2BitJxwkwcOm0zHAJLcPJaVvm58FRnk6RkuLRpU1EujipU2ZFODv2P9DLMfnV8mw==
+  /adaptive-expressions/4.8.0-preview:
+    dependencies:
+      '@microsoft/recognizers-text-data-types-timex-expression': 1.1.4
+      '@types/lru-cache': 5.1.0
+      '@types/moment-timezone': 0.5.12
+      '@types/xmldom': 0.1.29
+      antlr4ts: 0.5.0-alpha.1
+      jspath: 0.4.0
+      lodash: 4.17.15
+      lru-cache: 5.1.1
+      moment: 2.24.0
+      moment-timezone: 0.5.28
+    dev: false
+    resolution:
+      integrity: sha512-YEHw/crxxv2WW05yZNPrV6RhFNFfeNrPUxLsALLpvR8YTZkIbHJ3EKNoyRaQipgrx6ZMJc7SnMIq9YgWrRXs/Q==
   /agent-base/4.3.0:
     dependencies:
       es6-promisify: 5.0.0
@@ -1123,10 +1138,32 @@ packages:
     dev: false
     resolution:
       integrity: sha512-FL/TdvchukRCuWVxT0YMO/7+L5TNeNrVFvRU2IY63aUyv9mpt8splf2NEr6qXtPo5fya5a66YohQKvGNmLrWNA==
+  /botbuilder-core/4.8.0:
+    dependencies:
+      assert: 1.5.0
+      botframework-schema: 4.8.0
+    dev: false
+    resolution:
+      integrity: sha512-SaLwpHoDmarRMi9KeTBefzhAhCfyu7ImB/hxdYDHxJFIz2otcyp6WqiWQRD8SpfXeo6VUl/jKD3dm+2LHrwveg==
+  /botbuilder-lg/4.8.0-preview:
+    dependencies:
+      adaptive-expressions: 4.8.0-preview
+      antlr4ts: 0.5.0-alpha.1
+      botbuilder-core: 4.8.0
+      lodash: 4.17.15
+      path: 0.12.7
+      uuid: 3.4.0
+    dev: false
+    resolution:
+      integrity: sha512-E+qts8DxLTY9nSQfnTPKYFvnba26hdioRl9X0RqPXlXK9QT/PByzVb8ne7aJ9s1v9ueNuiX0bkbeZLgAEmw0Dw==
   /botframework-schema/4.7.2:
     dev: false
     resolution:
       integrity: sha512-rSTywVl5dYzL4FNoK86s9kFPNkRx5iYJi7MAWEaSrhUiDV3KEHX/5VEHLa00d4nzQxC/jI9BqfbqdffpO97KIA==
+  /botframework-schema/4.8.0:
+    dev: false
+    resolution:
+      integrity: sha512-0BVrnk9ktDWVUJrjNveLDUPVVDaJh1+JEaOB+buj7kKBaBY2X6Vuq/Jl7UeLZtfkrtKcW4PIADFfGB/wJqFSFQ==
   /brace-expansion/1.1.11:
     dependencies:
       balanced-match: 1.0.0
@@ -6379,7 +6416,9 @@ packages:
       '@types/seedrandom': 2.4.28
       '@types/semver': 6.2.1
       '@types/xml2js': 0.4.5
+      adaptive-expressions: 4.8.0-preview
       ajv: 6.12.0
+      botbuilder-lg: 4.8.0-preview
       chai: 4.2.0
       chalk: 2.4.2
       clone: 2.1.2
@@ -6404,7 +6443,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-XnhtgUToz4Z0aJe9wpOjOybqcwjv0/BCszRHQ9eIhMqG5ID+OSJuXzSa+D7FZ1gsVOtsKcWVD9b2O9uXL4v5ig==
+      integrity: sha512-l/JpOxhaKI+Te4Qhgmn6wnlbZrcMfMgWbIPPTvTr39KNHEmGGXxzfMk7sgkU1OgkrvgI/Nm42ZJsplasoshmeQ==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6608,8 +6647,6 @@ specifiers:
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
-  '@chrimc62/adaptive-expressions': ^4.1.16
-  '@chrimc62/botbuilder-lg': ^4.1.16
   '@oclif/command': ~1.5.19
   '@oclif/config': ~1.13.3
   '@oclif/errors': ~1.2.2
@@ -6634,11 +6671,13 @@ specifiers:
   '@types/semver': ^6.0.1
   '@types/supports-color': ^5.3.0
   '@types/xml2js': ^0.4.4
+  adaptive-expressions: ^4.8.0-preview
   ajv: ^6.9.1
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
   argparse: ~1.0.10
   await-delay: ^1.0.0
+  botbuilder-lg: ^4.8.0-preview
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0

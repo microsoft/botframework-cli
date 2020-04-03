@@ -6,9 +6,9 @@
 export * from './dialogGenerator'
 import * as s from './schema'
 import * as crypto from 'crypto'
-import * as expressions from '@chrimc62/adaptive-expressions'
+import * as expressions from 'adaptive-expressions'
 import * as fs from 'fs-extra'
-import * as lg from '@chrimc62/botbuilder-lg'
+import * as lg from 'botbuilder-lg'
 import * as os from 'os'
 import * as ppath from 'path'
 import * as ph from './generatePhrases'
@@ -103,16 +103,17 @@ async function generateFile(path: string, val: any, force: boolean, feedback: Fe
     }
 }
 
-const expressionEngine = new expressions.ExpressionEngine((func: any) => {
+const expressionEngine = new expressions.ExpressionParser((func: string) : any => {
     switch (func) {
         case 'phrase': return ph.PhraseEvaluator
         case 'phrases': return ph.PhrasesEvaluator
         case 'substitutions': return SubstitutionsEvaluator
-        default: return expressions.ExpressionFunctions.lookup(func)
+        default:
+            return expressions.ExpressionFunctions.standardFunctions.get(func)
     }
 })
 
-type Template = lg.LGFile | string | undefined
+type Template = lg.Templates | string | undefined
 
 async function findTemplate(name: string, templateDirs: string[]): Promise<Template> {
     let template: Template
@@ -125,7 +126,7 @@ async function findTemplate(name: string, templateDirs: string[]): Promise<Templ
             // LG file
             loc = templatePath(name + '.lg', dir)
             if (await fs.pathExists(loc)) {
-                template = lg.LGParser.parseFile(loc, undefined, expressionEngine)
+                template = lg.Templates.parseFile(loc, undefined, expressionEngine)
             }
         }
     }
@@ -194,12 +195,12 @@ async function processTemplate(
             if (template !== undefined) {
                 // Ignore templates that are defined, but are empty
                 if (template) {
-                    if (typeof template !== 'object' || template.templates.some(f => f.name === 'template')) {
+                    if (typeof template !== 'object' || template.allTemplates.some(f => f.name === 'template')) {
                         // Constant file or .lg template so output
                         let filename = addPrefix(scope.prefix, templateName)
-                        if (typeof template === 'object' && template.templates.some(f => f.name === 'filename')) {
+                        if (typeof template === 'object' && template.allTemplates.some(f => f.name === 'filename')) {
                             try {
-                                filename = template.evaluateTemplate('filename', scope) as any as string
+                                filename = template.evaluate('filename', scope) as string
                             } catch (e) {
                                 throw new Error(`${templateName}: ${e.message}`)
                             }
@@ -221,8 +222,8 @@ async function processTemplate(
                                 feedback(FeedbackType.info, `Generating ${outPath}`)
                                 let result = template
                                 if (typeof template === 'object') {
-                                    process.chdir(ppath.dirname(template.templates[0].source))
-                                    result = template.evaluateTemplate('template', scope) as any as string
+                                    process.chdir(ppath.dirname(template.allTemplates[0].source))
+                                    result = template.evaluate('template', scope) as string
                                     if (Array.isArray(result)) {
                                         result = result.join('\n')
                                     }
@@ -244,14 +245,14 @@ async function processTemplate(
                     }
 
                     if (typeof template === 'object') {
-                        if (template.templates.some(f => f.name === 'entities') && !scope.schema.properties[scope.property].$entities) {
-                            let entities = template.evaluateTemplate('entities', scope) as any as string[]
+                        if (template.allTemplates.some(f => f.name === 'entities') && !scope.schema.properties[scope.property].$entities) {
+                            let entities = template.evaluate('entities', scope) as string[]
                             if (entities) {
                                 scope.schema.properties[scope.property].$entities = entities
                             }
                         }
-                        if (template.templates.some(f => f.name === 'templates')) {
-                            let generated = template.evaluateTemplate('templates', scope)
+                        if (template.allTemplates.some(f => f.name === 'templates')) {
+                            let generated = template.evaluate('templates', scope)
                             if (!Array.isArray(generated)) {
                                 generated = [generated]
                             }
