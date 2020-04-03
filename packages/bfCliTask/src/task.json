@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":37
+        "Release":39
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -71,7 +71,9 @@
                 "LuisBuild" : "Luis Build",
                 "LuisTrainRun" : "Luis Train Run",
                 "LuisPublish" : "Luis Publish",
-                "LuisApplicationDelete" : "Application Delete"
+                "LuisApplicationDelete" : "Application Delete",
+                "LuisApplicationImport" : "Application Import",
+                "LuisApplicationRename" : "Application Rename"
             }       
         },
         {
@@ -89,7 +91,7 @@
             "label": "Application Name",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename",
             "helpMarkDown": "Enter a name for the LUIS application."    
         },
         {
@@ -98,7 +100,7 @@
             "label": "Endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
         },
         {
@@ -126,7 +128,7 @@
             "label": "Description",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationRename",
             "helpMarkDown": "Enter a description for the LUIS application."
         },
         {
@@ -135,7 +137,7 @@
             "label": "Input Files",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=LuisBuild",
+            "visibleRule": "luisSubCommand=LuisBuild || luisSubCommand=LuisApplicationImport",
             "helpMarkDown": "The path to the .lu file or folder"
         },
         {
@@ -153,7 +155,7 @@
             "label": "AppId",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete",
+            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename",
             "helpMarkDown": "Enter the LUIS application id."
         },
         {
