@@ -56,7 +56,7 @@ export class OrchestratorHelper {
         await OrchestratorHelper.processFile(filePath, path.basename(filePath), utterancesLabelsMap, hierarchical);
       }
 
-      for(var utterance in utterancesLabelsMap) {
+      for(const utterance in utterancesLabelsMap) {
         let labels = utterancesLabelsMap[utterance];
         let line = labels.join() + '\t' + utterance + '\n';
         tsvContent += line;
@@ -124,20 +124,14 @@ export class OrchestratorHelper {
   static getIntentsUtterances(luisObject:any, hierarchicalLabel: string, utterancesLabelsMap: any) {
     luisObject.utterances.forEach((e: any) => {
       let label:string = e.intent.trim();
-      let utterance:string = e.text.trim();    
-      let existingLabels = utterancesLabelsMap[utterance];
-      if (existingLabels == null) {
-        if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
-          utterancesLabelsMap[utterance] = [label, hierarchicalLabel];
-        }
-        else {
-          utterancesLabelsMap[utterance] = [label];
-        }
-      }
-      else {
-        existingLabels.push(label);
-        utterancesLabelsMap[utterance] = existingLabels;
-      }   
+      let utterance:string = e.text.trim();
+
+      OrchestratorHelper.addNewLabelUtterance(
+        utterance,
+        label,
+        hierarchicalLabel,
+        utterancesLabelsMap
+      );   
     });
   }
 
@@ -145,16 +139,50 @@ export class OrchestratorHelper {
     qnaObject.kb.QnaList.forEach((e: any) => {
       let questions = e.questions;
       questions.forEach((q: string) => {
-        let utterance = q.trim();    
-        let existingLabels = utterancesLabelsMap[utterance];
-        if (existingLabels == null) {
-          utterancesLabelsMap[utterance] = [label];
-        }
-        else {
-          existingLabels.push(label);
-          utterancesLabelsMap[utterance] = existingLabels;
-        }
+        OrchestratorHelper.addNewLabelUtterance(
+          q.trim(),
+          label,
+          '',
+          utterancesLabelsMap
+        );
       });
     });
+  }
+
+  static addNewLabelUtterance(
+    utterance: string, 
+    label: string,
+    hierarchicalLabel: string,
+    utterancesLabelsMap: any) {  
+    let existingLabels = utterancesLabelsMap[utterance];
+    if (existingLabels == null) {
+      if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
+        utterancesLabelsMap[utterance] = [label, hierarchicalLabel];
+      }
+      else {
+        utterancesLabelsMap[utterance] = [label];
+      }
+    }
+    else {
+      if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
+        OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels);
+      }
+      OrchestratorHelper.addUniqueLabel(label, existingLabels);
+      utterancesLabelsMap[utterance] = existingLabels;
+    }   
+  }
+
+  static addUniqueLabel(newLabel: string, labels: string[]) {
+    let labelExists = false;
+    for(const label of labels) {
+      if (label === newLabel) {
+        labelExists = true;
+        break;
+      }
+    }  
+
+    if (!labelExists) {
+      labels.push(newLabel);
+    }
   }
 }
