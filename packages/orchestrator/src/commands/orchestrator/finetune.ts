@@ -1,41 +1,96 @@
-import {Command, flags} from '@microsoft/bf-cli-command'
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import * as utils from '../../utils';
 import * as path from 'path';
 
 export default class OrchestratorFinetune extends Command {
-  static description = 'Finetune an Orchestrator model'
+  static description: string = 'Manage Orchestrator fine tuning.';
 
-  static examples = [`
-    $ bf orchestrator:finetune 
-    $ bf orchestrator:finetune --in ./path/to/file/
-    $ bf orchestrator:finetune --in ./path/to/file/ -o ./path/to/output/`]
+  // eslint-disable-next-line @typescript-eslint/typedef
+  static args=[
+    {
+      name: 'command', required: true, description:
+      // eslint-disable-next-line no-multi-str
+      'The "command" is the first mandatory argument.  This can be "status", "put" or "get".\n\
+              status - Status of the last finetune training job.\n\
+              put    - Put finetune training example data to improve orchestrator.\n\
+              get    - Get the model for completed finetune job.',
+    },
+  ]
+
+  static examples: string[] = [`
+    $ bf orchestrator:finetune status
+    $ bf orchestrator:finetune put --in ./path/to/file/
+    $ bf orchestrator:finetune get --out ./path/to/output/`]
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'The path to .lu/.qna files from where orchestrator example file will be created from. Default to current working directory.'}),
-    out: flags.string({char: 'o', description: 'Path where generated orchestrator example file will be placed. Default to current working directory.'}),
+    help: flags.help({char: 'h', description: 'Orchestrator finetune command help'}),
+    in: flags.string({char: 'i', description: 'If --push flag is provided, the path to .lu/.qna files from where orchestrator finetune example file will be created from. Default to current working directory.'}),
+    hierarchical: flags.boolean({description: 'Add hierarchical labels based on lu/qna file name.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
-    help: flags.help({char: 'h', description: 'Orchestrator create command help'}),
+    out: flags.string({char: 'o', description: 'If --get flag is provided, the path where the new orchestrator finetune job will be created. Default to current working directory.'}),
   }
 
   async run(): Promise<number> {
-    const {flags} = this.parse(OrchestratorFinetune);
+    // eslint-disable-next-line @typescript-eslint/typedef
+    const {args, flags} = this.parse(OrchestratorFinetune);
+    const input: string  = flags.in || __dirname;
+    const output: string = flags.out || __dirname;
+    const hierarchical: boolean = flags.hierachical || false;
 
-    const input = flags.in || __dirname;
-    const output = flags.out || __dirname;
+    let cli_args: string = `finetune ${args.command} `;
+    switch (args.command) {
+    case 'status': {
+      break;
+    }
+    case 'get': {
+      break;
+    }
+    case 'put': {
+      if (flags.in === undefined)  {
+        this.error('Missing 1 required arg:\nPlease use stdin or pass a file or folder location with --in flag.');
+        return 2;
+      }
+      const combinedFile: string = await this.writeOutputFile(input, hierarchical, output);
 
-    const args = `finetune -i ${input} -o ${output}`;
-    this.log(`arguments -- ${args}`);
+      cli_args += `--in ${combinedFile}`;
+      break;
+    }
+    default: {
+      this.error(`Command "${args.command}" unknown.\n${OrchestratorFinetune.args[0].description}`);
+      return 1;
+    }
+    }
 
-    // TO-DO: figure out rush package dependency with regard to oclif folder structure
-    // require("dotnet-3.1") statement works only for local package install
-    // process.argv= [process.argv[0], process.argv[1], __dirname + '/netcoreapp3.1/OrchestratorCli.dll', ...process.argv.slice(2)]
-    // require("dotnet-3.1")
-    this.log(`Input is ${input}`);
+    this.log(`Command -- ${path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll'])} ${cli_args}`);
 
     try {
-      require('child_process').execSync('dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args, {stdio: [0, 1, 2]});
+      require('child_process').execSync('dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + cli_args, {stdio: [0, 1, 2]});
     } catch (error) {
       return 1;
     }
     return 0;
+  }
+
+  private async writeOutputFile(input: string, hierachical: boolean, output: string): Promise<string> {
+    const tsvFilePath: string = path.join(output, 'create.tsv');
+    let tsvContent: string = '';
+    try {
+      utils.OrchestratorHelper.deleteFile(tsvFilePath);
+      tsvContent = await utils.OrchestratorHelper.getTsvContent(input, hierachical);
+      if (tsvContent.length === 0) {
+        const errorMsg: string  = 'Invalid input';
+        this.log(errorMsg);
+        throw new CLIError(errorMsg);
+      }
+      utils.OrchestratorHelper.writeToFile(tsvFilePath, tsvContent);
+    } catch (error) {
+      throw new CLIError('Unable to write file - ' + tsvFilePath + ' Error: ' + error.message);
+    }
+    return tsvFilePath;
   }
 }
