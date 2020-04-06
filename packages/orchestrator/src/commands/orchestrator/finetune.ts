@@ -2,7 +2,7 @@ import {Command, flags} from '@microsoft/bf-cli-command'
 import * as path from 'path';
 
 export default class OrchestratorFinetune extends Command {
-  static description = 'describe the command here'
+  static description = 'Finetune an Orchestrator model'
 
   static examples = [`
     $ bf orchestrator:finetune 

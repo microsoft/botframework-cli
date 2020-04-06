@@ -9,7 +9,7 @@ export default class OrchestratorIndex extends Command {
   static description: string = 'Display Orchestrator CLI available commands';
 
   static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'Orchestrator command help'}),
+    help: flags.help({char: 'h', description: 'Orchestrator commands help'}),
   }
 
   async run(): Promise<void> {
