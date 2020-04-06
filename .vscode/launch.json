@@ -7,6 +7,19 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Orchestrator",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/orchestrator/bin/run",
+            "args": [
+                "orchestrator:create",
+                "--in",
+                "D:/src/Orchestrator/OrchestratorCli/Data/calendar/CreateMeeting",
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Public bf cli",
             "program": "C:/Users/chrimc/AppData/Roaming/npm/node_modules/@microsoft/botframework-cli/bin/run",
             "args": [

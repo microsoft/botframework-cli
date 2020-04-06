@@ -1,362 +1,136 @@
-orchestrator
-============
+@microsoft/bf-orchestrator
+======================
 
-Bot Orchestrator
+This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/orchestrator.svg)](https://npmjs.org/package/orchestrator)
-[![Downloads/week](https://img.shields.io/npm/dw/orchestrator.svg)](https://npmjs.org/package/orchestrator)
-[![License](https://img.shields.io/npm/l/orchestrator.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @microsoft/bf-orchestrator
-$ oclif-example COMMAND
-running command...
-$ oclif-example (-v|--version|version)
-@microsoft/bf-orchestrator/1.0.0 win32-x64 node-v12.13.1
-$ oclif-example --help [COMMAND]
-USAGE
-  $ oclif-example COMMAND
-...
-```
-<!-- usagestop -->
-```sh-session
-$ npm install -g @microsoft/bf-orchestrator
-$ oclif-example COMMAND
-running command...
-$ oclif-example (-v|--version|version)
-@microsoft/bf-orchestrator/1.0.0 win32-x64 node-v12.16.1
-$ oclif-example --help [COMMAND]
-USAGE
-  $ oclif-example COMMAND
-...
-```
-<!-- usagestop -->
-```sh-session
-$ npm install -g orchestrator
-$ oclif-example COMMAND
-running command...
-$ oclif-example (-v|--version|version)
-orchestrator/1.0.0 win32-x64 node-v12.13.1
-$ oclif-example --help [COMMAND]
-USAGE
-  $ oclif-example COMMAND
-...
-```
-<!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example orchestrator`](#oclif-example-orchestrator)
-* [`oclif-example orchestrator:create`](#oclif-example-orchestratorcreate)
-* [`oclif-example orchestrator:evaluate [FILE]`](#oclif-example-orchestratorevaluate-file)
-* [`oclif-example orchestrator:finetune [FILE]`](#oclif-example-orchestratorfinetune-file)
-* [`oclif-example orchestrator:predict [FILE]`](#oclif-example-orchestratorpredict-file)
-* [`oclif-example orchestrator:test [FILE]`](#oclif-example-orchestratortest-file)
+* [`bf orchestrator`](#bf-orchestrator)
+* [`bf orchestrator:create`](#bf-orchestratorcreate)
+* [`bf orchestrator:evaluate`](#bf-orchestratorevaluate)
+* [`bf orchestrator:test`](#bf-orchestratortest)
+* [`bf orchestrator:predict`](#bf-orchestratorpredict)
+* [`bf orchestrator:finetune`](#bf-orchestratorfinetune)
 
-## `oclif-example orchestrator`
+## `bf orchestrator`
 
-Display Orchestrator CLI available commands
-
-```
-USAGE
-  $ oclif-example orchestrator
-
-OPTIONS
-  -h, --help  Orchestrator command help
-```
-
-_See code: [src\commands\orchestrator\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\index.ts)_
-
-## `oclif-example orchestrator:create`
-
-Create orchestrator example file from .lu/.qna files, which represent bot modules
+CLI to create encoded representation of utterances in lu files, evaluate and test training and test data and finetune an orchestrator model.
 
 ```
 USAGE
-  $ oclif-example orchestrator:create
+  $ bf orchestrator
 
 OPTIONS
-  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file.
-  -h, --help     Orchestrator create command help
+  -h, --help  Orchestrator commands help
+```
 
-  -i, --in=in    The path to .lu/.qna files from where orchestrator example file will be created from. Default to
-                 current working directory.
+_See code: [src/commands/orchestrator/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/orchestrator/src/commands/orchestrator/index.ts)_
 
-  -o, --out=out  Path where generated orchestrator example file will be placed. Default to current working directory.
+## `bf orchestrator:create`
 
+Creates a file with labels, utterances and embeddings (encoded representation of the utterances) given lu/qna files.  This file could then be used as Orchestrator model examples for bot runtime.
+
+```
+USAGE
+  $ bf orchestrator:create
+
+OPTIONS
+  -h, --help                           Show CLI help
+  --in                                 Input file or folder
+  --out                                Output folder
+  --hierarchical                       Add hierarchical labels, true by default
+ 
 EXAMPLE
 
-       $ bf orchestrator:create 
-       $ bf orchestrator:create --in ./path/to/file/
-       $ bf orchestrator:create --in ./path/to/file/ -o ./path/to/output/
+       $ bf orchestrator:create --in {input folder} --out {output folder}
+       $ bf orchestrator:create --in {input folder} --out {output folder} --hierarchical false
 ```
 
-_See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\create.ts)_
+_See code: [src/commands/orchestrator/create.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/orchestrator/src/commands/orchestrator/create.ts)_
 
-## `oclif-example orchestrator:evaluate [FILE]`
+## `bf orchestrator:evaluate`
 
 Create orchestrator evaluation report from .lu/.qna files
 
 ```
 USAGE
-  $ oclif-example orchestrator:evaluate [FILE]
+  $ bf orchestrator:evaluate
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help                         Show CLI help
+  -i, --in                           Input folder
+  -o, --out                          Output folder
+ 
+EXAMPLE
+
+       $ bf orchestrator:evaluate --in {input folder} --out {output folder}
 ```
 
-_See code: [src\commands\orchestrator\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\evaluate.ts)_
+_See code: [src/commands/orchestrator/evaluate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/orchestrator/src/commands/orchestrator/evaluate.ts)_
 
-## `oclif-example orchestrator:finetune [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example orchestrator:finetune [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\orchestrator\finetune.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\finetune.ts)_
-
-## `oclif-example orchestrator:predict [FILE]`
-
-Returns score of given utterance using previously created orchestrator examples
-
-```
-USAGE
-  $ oclif-example orchestrator:predict [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\orchestrator\predict.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\predict.ts)_
-
-## `oclif-example orchestrator:test [FILE]`
+## `bf orchestrator:test`
 
 Run orchestrator test evaluation using given test file
 
 ```
 USAGE
-  $ oclif-example orchestrator:test [FILE]
+  $ bf orchestrator:test
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help                         Show CLI help
+  -i, --in                           Input folder
+  -o, --out                          Output folder
+ 
+EXAMPLE
+
+       $ bf orchestrator:test --in {input folder} --out {output folder}
 ```
 
-_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\test.ts)_
-<!-- commandsstop -->
-* [`oclif-example `](#oclif-example-)
-* [`oclif-example create [FILE]`](#oclif-example-create-file)
-* [`oclif-example evaluate [FILE]`](#oclif-example-evaluate-file)
-* [`oclif-example orchestrator:create [FILE]`](#oclif-example-orchestratorcreate-file)
-* [`oclif-example predict [FILE]`](#oclif-example-predict-file)
-* [`oclif-example test [FILE]`](#oclif-example-test-file)
+_See code: [src/commands/orchestrator/test.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/orchestrator/src/commands/orchestrator/test.ts)_
 
-## `oclif-example `
+## `bf orchestrator:finetune`
 
-Display Orchestrator CLI available commands
+Manage Orchestrator fine tuning
 
 ```
 USAGE
-  $ oclif-example
+  $ bf orchestrator:finetune
 
 OPTIONS
-  -h, --help  Orchestrator command help
+  -h, --help                         Show CLI help
+  --command			     This can be "status", "put" or "get"
+  -i, --in                           Input folder
+  -o, --out                          Output folder
+ 
+EXAMPLE
+
+        $ bf orchestrator:finetune status
+        $ bf orchestrator:finetune put --in {input folder}
+        $ bf orchestrator:finetune get --out {output folder}
 ```
 
-_See code: [src\commands\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\index.ts)_
+_See code: [src/commands/orchestrator/finetune.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/orchestrator/src/commands/orchestrator/finetune.ts)_
 
-## `oclif-example create [FILE]`
-
-Create orchestrator example file from .lu/.qna files to be used for bot runtime
-
-```
-USAGE
-  $ oclif-example create [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\create.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\create.ts)_
-
-## `oclif-example evaluate [FILE]`
-
-Create orchestrator evaluation report from .lu/.qna files
-
-```
-USAGE
-  $ oclif-example evaluate [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\evaluate.ts)_
-
-## `oclif-example orchestrator:create [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example orchestrator:create [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\create.ts)_
-
-## `oclif-example predict [FILE]`
+## `bf orchestrator:predict`
 
 Returns score of given utterance using previously created orchestrator examples
 
 ```
 USAGE
-  $ oclif-example predict [FILE]
+  $ bf orchestrator:predict
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
+  -h, --help                         Show CLI help
+  -i, --in                           Path to source label files
+  -o, --out                          Output folder
 
-_See code: [src\commands\predict.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\predict.ts)_
-
-## `oclif-example test [FILE]`
-
-Run orchestrator test evaluation using given test file
-
-```
-USAGE
-  $ oclif-example test [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\test.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\test.ts)_
-<!-- commandsstop -->
-* [`oclif-example evaluate [FILE]`](#oclif-example-evaluate-file)
-* [`oclif-example generate [FILE]`](#oclif-example-generate-file)
-* [`oclif-example hello [FILE]`](#oclif-example-hello-file)
-* [`oclif-example predict [FILE]`](#oclif-example-predict-file)
-* [`oclif-example test [FILE]`](#oclif-example-test-file)
-
-## `oclif-example evaluate [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example evaluate [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\evaluate.ts)_
-
-## `oclif-example generate [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example generate [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\generate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\generate.ts)_
-
-## `oclif-example hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
 
 EXAMPLE
-  $ oclif-example hello
-  hello world from ./src/hello.ts!
+
+       $ bf orchestrator:predict --in {input folder} --out {output folder}
 ```
 
-_See code: [src\commands\hello.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\hello.ts)_
-
-## `oclif-example predict [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example predict [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\predict.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\predict.ts)_
-
-## `oclif-example test [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ oclif-example test [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\test.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\test.ts)_
-<!-- commandsstop -->
+_See code: [src/commands/orchestrator/predict.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/orchestrator/src/commands/orchestrator/predict.ts)_
