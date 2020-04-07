@@ -212,6 +212,7 @@ export async function mainCrossValidatorWithLuContent(
  * @param columnarContent - content of a TSV columnar file in string form as input.
  * @param labelColumnIndex - label/intent column index.
  * @param textColumnIndex - text/utterace column index.
+ * @param weightColumnIndex - weight column index.
  * @param linesToSkip - number of header lines skipped before processing each line as an instance record.
  * @param numberOfCrossValidationFolds - number of cross validation (CV) folds.
  * @param learnerParameterEpochs - CV Softmax Regression Learner parameter - number of epochs
@@ -226,6 +227,7 @@ export function mainCrossValidatorWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
+    weightColumnIndex: number,
     linesToSkip: number,
     numberOfCrossValidationFolds: number =
         CrossValidator.defaultNumberOfCrossValidationFolds,
@@ -250,6 +252,7 @@ export function mainCrossValidatorWithColumnarContent(
             new NgramSubwordFeaturizer(),
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip,
             true);
     // -----------------------------------------------------------------------
@@ -440,8 +443,16 @@ export async function mainCrossValidator(): Promise<{
     parser.addArgument(
         ["-ti", "--textColumnIndex"],
         {
-            defaultValue: 0,
+            defaultValue: 1,
             help: "text/utterance column index",
+            required: false,
+        },
+    );
+    parser.addArgument(
+        ["-wi", "--weightColumnIndex"],
+        {
+            defaultValue: -1,
+            help: "weight column index",
             required: false,
         },
     );
@@ -521,11 +532,14 @@ export async function mainCrossValidator(): Promise<{
     // -----------------------------------------------------------------------
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
+    const weightColumnIndex: number = +args.weightColumnIndex;
     const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `labelColumnIndex=${labelColumnIndex}`);
     Utility.debuggingLog(
         `textColumnIndex=${textColumnIndex}`);
+    Utility.debuggingLog(
+        `weightColumnIndex=${weightColumnIndex}`);
     Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
@@ -536,6 +550,7 @@ export async function mainCrossValidator(): Promise<{
         filetype,
         labelColumnIndex,
         textColumnIndex,
+        weightColumnIndex,
         linesToSkip);
     // -----------------------------------------------------------------------
     const crossValidator: CrossValidator =

@@ -30,7 +30,7 @@ export class LuData extends Data {
         const luLuisJsonStructure: any =
             luData.getLuLuisJsonStructure();
         const utterancesArray: any[] =
-            luData.retrieveLuUtterances(luLuisJsonStructure);
+            luData.retrieveLuisLuUtterances(luLuisJsonStructure);
         const lengthUtterancesArray: number =
             utterancesArray.length;
         luLuisJsonStructure.utterances = [];
@@ -40,17 +40,24 @@ export class LuData extends Data {
             }
             luLuisJsonStructure.utterances.push(utterancesArray[index]);
         }
+        // ---- NOTE-FOR-REFERENCE ---- luLuisJsonStructure.utterances = utterancesArray.filter(
+        // ---- NOTE-FOR-REFERENCE ----     (value: any, index: number, array: any[]) => {
+        // ---- NOTE-FOR-REFERENCE ----         return (samplingIndexArray.has(index));
+        // ---- NOTE-FOR-REFERENCE ----     });
         // -------------------------------------------------------------------
-        luData.luUtterances = luData.retrieveLuUtterances(luLuisJsonStructure);
+        luData.luUtterances =
+            luData.retrieveLuUtterances(luLuisJsonStructure);
         // -------------------------------------------------------------------
         luData.intentInstanceIndexMapArray =
             luData.collectIntents(luData.luUtterances);
         luData.entityTypeInstanceIndexMapArray =
             luData.collectEntityTypes(luData.luUtterances);
-        luData.intentsUtterances.intents = luData.luUtterances.map(
+        luData.intentsUtterancesWeights.intents = luData.luUtterances.map(
             (entry: any) => entry.intent as string);
-        luData.intentsUtterances.utterances = luData.luUtterances.map(
+        luData.intentsUtterancesWeights.utterances = luData.luUtterances.map(
             (entry: any) => entry.text as string);
+        luData.intentsUtterancesWeights.weights = luData.luUtterances.map(
+            (entry: any) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             luData.resetFeaturizerLabelFeatureMaps();
@@ -75,22 +82,34 @@ export class LuData extends Data {
         const luLuisJsonStructure: any =
             luData.getLuLuisJsonStructure();
         const utterancesArray: any[] =
-            luData.retrieveLuUtterances(luLuisJsonStructure);
-        luLuisJsonStructure.utterances = utterancesArray.filter(
-            (value: any, index: number, array: any[]) => {
-                return (filteringIndexSet.has(index));
-            });
+            luData.retrieveLuisLuUtterances(luLuisJsonStructure);
+        const lengthUtterancesArray: number =
+            utterancesArray.length;
+        luLuisJsonStructure.utterances = [];
+        for (const index of filteringIndexSet) {
+            if ((index < 0) || (index > lengthUtterancesArray)) {
+                Utility.debuggingThrow(`(index|${index}|<0)||(index|${index}|>lengthUtterancesArray|${lengthUtterancesArray}|)`);
+            }
+            luLuisJsonStructure.utterances.push(utterancesArray[index]);
+        }
+        // ---- NOTE-FOR-REFERENCE ---- luLuisJsonStructure.utterances = utterancesArray.filter(
+        // ---- NOTE-FOR-REFERENCE ----     (value: any, index: number, array: any[]) => {
+        // ---- NOTE-FOR-REFERENCE ----         return (filteringIndexSet.has(index));
+        // ---- NOTE-FOR-REFERENCE ----     });
         // -------------------------------------------------------------------
-        luData.luUtterances = luData.retrieveLuUtterances(luLuisJsonStructure);
+        luData.luUtterances =
+            luData.retrieveLuUtterances(luLuisJsonStructure);
         // -------------------------------------------------------------------
         luData.intentInstanceIndexMapArray =
             luData.collectIntents(luData.luUtterances);
         luData.entityTypeInstanceIndexMapArray =
             luData.collectEntityTypes(luData.luUtterances);
-        luData.intentsUtterances.intents = luData.luUtterances.map(
+        luData.intentsUtterancesWeights.intents = luData.luUtterances.map(
             (entry: any) => entry.intent as string);
-        luData.intentsUtterances.utterances = luData.luUtterances.map(
+        luData.intentsUtterancesWeights.utterances = luData.luUtterances.map(
             (entry: any) => entry.text as string);
+        luData.intentsUtterancesWeights.weights = luData.luUtterances.map(
+            (entry: any) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             luData.resetFeaturizerLabelFeatureMaps();
@@ -114,16 +133,22 @@ export class LuData extends Data {
         luData.luObject =
             await parseFile(content);
         // -------------------------------------------------------------------
-        luData.luUtterances = luData.retrieveLuUtterances(luData.getLuLuisJsonStructure());
+        const luLuisJsonStructure: any =
+            luData.getLuLuisJsonStructure();
+        // -------------------------------------------------------------------
+        luData.luUtterances =
+            luData.retrieveLuUtterances(luLuisJsonStructure);
         // -------------------------------------------------------------------
         luData.intentInstanceIndexMapArray =
             luData.collectIntents(luData.luUtterances);
         luData.entityTypeInstanceIndexMapArray =
             luData.collectEntityTypes(luData.luUtterances);
-        luData.intentsUtterances.intents = luData.luUtterances.map(
+        luData.intentsUtterancesWeights.intents = luData.luUtterances.map(
             (entry: any) => entry.intent as string);
-        luData.intentsUtterances.utterances = luData.luUtterances.map(
+        luData.intentsUtterancesWeights.utterances = luData.luUtterances.map(
             (entry: any) => entry.text as string);
+        luData.intentsUtterancesWeights.weights = luData.luUtterances.map(
+            (entry: any) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             luData.resetFeaturizerLabelFeatureMaps();
@@ -145,6 +170,7 @@ export class LuData extends Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
@@ -152,6 +178,7 @@ export class LuData extends Data {
             existingData as LuData,
             // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
             // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- weightColumnIndex,
             // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
             samplingIndexArray,
             toResetFeaturizerLabelFeatureMaps);
@@ -161,6 +188,7 @@ export class LuData extends Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
@@ -168,13 +196,72 @@ export class LuData extends Data {
             existingData as LuData,
             // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
             // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
+            // ---- NOTE-NO-NEED-FOR-LuData ---- weightColumnIndex,
             // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
             filteringIndexSet,
             toResetFeaturizerLabelFeatureMaps);
     }
 
-    public retrieveLuUtterances(luLuisJsonStructure: any): any[] { // ---- NOTE: a shallow copy
+    public retrieveLuisLuUtterances(luLuisJsonStructure: any): any[] { // ---- NOTE: a shallow copy
         return (luLuisJsonStructure.utterances as any[]);
+    }
+    public retrieveLuUtterances(luLuisJsonStructure: any): Array<{
+        "entities": Array<{
+            "entity": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "partOfSpeechTags": Array<{
+            "partOfSpeechTag": string,
+            "startPos": number,
+            "endPos": number,
+            }>,
+        "intent": string,
+        "text": string,
+        "weight": number }> {
+        const weight: number = 1;
+        const utterancesArray: any[] =
+            this.retrieveLuisLuUtterances(luLuisJsonStructure);
+        const luUtterances: Array<{
+            "entities": Array<{
+                "entity": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "partOfSpeechTags": Array<{
+                "partOfSpeechTag": string,
+                "startPos": number,
+                "endPos": number,
+                }>,
+            "intent": string,
+            "text": string,
+            "weight": number }> = [];
+        utterancesArray.forEach(
+            (entry: any) => {
+                const entities: Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }> = entry.entities;
+                const partOfSpeechTags: Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }> = [];
+                const intent: string =
+                    entry.intent;
+                const text: string =
+                    entry.text;
+                luUtterances.push({
+                    entities,
+                    partOfSpeechTags,
+                    intent,
+                    text,
+                    weight,
+                });
+            });
+        return luUtterances;
+        // ---- NOTE-FOR-REFERENCE ---- return (luLuisJsonStructure.utterances as any[]);
     }
 
     public getLuObject(): any {

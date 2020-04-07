@@ -30,6 +30,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
                 "resources/data/Columnar/Email.tsv",
                 0,
                 2,
+                1,
                 1);
         const l1Regularization: number = AppSoftmaxRegressionSparse.defaultL1Regularization;
         const l2Regularization: number = AppSoftmaxRegressionSparse.defaultL2Regularization;
@@ -51,6 +52,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
             "resources/data/Columnar/EmailTest.tsv",
             0,
             2,
+            1,
             1);
     });
 
@@ -63,6 +65,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
                 "resources/data/Columnar/Email.tsv",
                 0,
                 2,
+                1,
                 1);
         const l1Regularization: number = AppSoftmaxRegressionSparse.defaultL1Regularization;
         const l2Regularization: number = AppSoftmaxRegressionSparse.defaultL2Regularization;
@@ -84,6 +87,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
             "resources/data/Columnar/EmailTest.tsv",
             0,
             2,
+            1,
             1);
     });
 
@@ -95,6 +99,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
             "resources/data/Columnar/Email.tsv",
             0,
             2,
+            1,
             1);
     });
 
@@ -105,6 +110,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
             "resources/data/Columnar/EmailTest.tsv",
             0,
             2,
+            1,
             1);
     });
 });

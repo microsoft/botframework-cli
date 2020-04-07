@@ -19,11 +19,13 @@ describe("Test Suite - utility/app_utility", () => {
         const filename: string = "resources/data/Columnar/Email.tsv";
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
+        const weightColumnIndex: number = 1;
         const linesToSkip: number = 1;
         exampleFunctionUtilityWithFilename(
             filename,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip);
     });
     it("Test.0001 exampleFunctionUtility()", function() {
@@ -40,6 +42,8 @@ describe("Test Suite - utility/app_utility", () => {
         process.argv.push("0");
         process.argv.push("--textColumnIndex");
         process.argv.push("2");
+        process.argv.push("--weightColumnIndex");
+        process.argv.push("1");
         process.argv.push("--linesToSkip");
         process.argv.push("1");
         exampleFunctionUtility();
