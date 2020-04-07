@@ -47,31 +47,31 @@ export class OrchestratorHelper {
   public static async getTsvContent(filePath: string, hierarchical: boolean)  {
     try {
       const utterancesLabelsMap: any = {};
-      let tsvContent = '';
+      let tsvContent: string = '';
 
+      console.log('Processing: filepath:' + filePath);
       if (OrchestratorHelper.isDirectory(filePath)) {
         await OrchestratorHelper.iterateInputFolder(filePath, utterancesLabelsMap, hierarchical);
-      }
-      else {
+      } else {
         await OrchestratorHelper.processFile(filePath, path.basename(filePath), utterancesLabelsMap, hierarchical);
       }
 
-      for(const utterance in utterancesLabelsMap) {
-        let labels = utterancesLabelsMap[utterance];
-        let line = labels.join() + '\t' + utterance + '\n';
+      // eslint-disable-next-line guard-for-in
+      for (const utterance in utterancesLabelsMap) {
+        const labels: any = utterancesLabelsMap[utterance];
+        const line: string = labels.join() + '\t' + utterance + '\n';
         tsvContent += line;
-      }  
+      }
 
       return tsvContent;
-
-    } catch(error) {
-      throw new CLIError(error)
+    } catch (error) {
+      throw new CLIError(error);
     }
   }
 
   static async processFile(
-    filePath: string, 
-    fileName: string, 
+    filePath: string,
+    fileName: string,
     utterancesLabelsMap: any,
     hierarchical: boolean) {
 
@@ -88,6 +88,9 @@ export class OrchestratorHelper {
       console.log(`Processing ${filePath}...`);
       OrchestratorHelper.getIntentsUtterances(fs.readJsonSync(filePath), hierarchical ? fileName.substr(0, fileName.length - 5) : '', utterancesLabelsMap);
     }
+    else {
+      throw new CLIError("Invalid extension - lu, qna and json files are supported.");
+    }
   }
 
   static async parseLuFile(luFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
@@ -103,36 +106,43 @@ export class OrchestratorHelper {
   }
 
   static async iterateInputFolder(
-    folderPath: string, 
-    utterancesLabelsMap: any, 
+    folderPath: string,
+    utterancesLabelsMap: any,
     hierarchical: boolean) {
-    const items = fs.readdirSync(folderPath);
+    const supportedFileFormats: string[] = ['.lu', '.json', '.qna'];
+    const items: string[] = fs.readdirSync(folderPath);
     for (const item of items) {
-      let currentItemPath = path.join(folderPath,item);
-      let isDirectory = fs.lstatSync(currentItemPath).isDirectory();
-      let ext = '';
-      
-      if (!isDirectory) {
-        await OrchestratorHelper.processFile(currentItemPath, item, utterancesLabelsMap, hierarchical);
-      }
-      else {
-        await OrchestratorHelper.iterateInputFolder(currentItemPath, utterancesLabelsMap, hierarchical);
-      }
-    };  
-  }
-  
-  static getIntentsUtterances(luisObject:any, hierarchicalLabel: string, utterancesLabelsMap: any) {
-    luisObject.utterances.forEach((e: any) => {
-      let label:string = e.intent.trim();
-      let utterance:string = e.text.trim();
+      const currentItemPath: string = path.join(folderPath, item);
+      const isDirectory: boolean = fs.lstatSync(currentItemPath).isDirectory();
 
-      OrchestratorHelper.addNewLabelUtterance(
-        utterance,
-        label,
-        hierarchicalLabel,
-        utterancesLabelsMap
-      );   
-    });
+      if (isDirectory) {
+        // eslint-disable-next-line no-await-in-loop
+        await OrchestratorHelper.iterateInputFolder(currentItemPath, utterancesLabelsMap, hierarchical);
+      } else {
+        const ext: string = path.extname(item);
+        if (supportedFileFormats.indexOf(ext) > -1) {
+          // eslint-disable-next-line no-await-in-loop
+          await OrchestratorHelper.processFile(currentItemPath, item, utterancesLabelsMap, hierarchical);
+        }
+      }
+    }
+  }
+
+  static getIntentsUtterances(luisObject: any, hierarchicalLabel: string, utterancesLabelsMap: any) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (luisObject.hasOwnProperty('utterances')) {
+      luisObject.utterances.forEach((e: any) => {
+        let label: string = e.intent.trim();
+        let utterance: string = e.text.trim();
+
+        OrchestratorHelper.addNewLabelUtterance(
+          utterance,
+          label,
+          hierarchicalLabel,
+          utterancesLabelsMap
+        );
+      });
+    }
   }
 
   static getQnaQuestionsAsUtterances(qnaObject: any, label: string, utterancesLabelsMap: any) {

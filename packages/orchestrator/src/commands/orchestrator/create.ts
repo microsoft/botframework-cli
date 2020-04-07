@@ -42,20 +42,19 @@ export default class OrchestratorCreate extends Command {
     const debug: boolean = flags.debug;
     hierarchical = flags.hierarchical;
 
-    let tsvFilePath = path.join(output, 'create.tsv');
-    let tsvContent = '';
-    
+    const tsvFilePath: string = path.join(output, 'create.tsv');
+    let tsvContent: string = '';
+
     OrchestratorHelper.deleteFile(tsvFilePath);
     tsvContent = await OrchestratorHelper.getTsvContent(input, flags.hierarchical);
-    if (tsvContent.length == 0)
-    {
-      let errorMsg = 'Invalid input';
+    if (tsvContent.length === 0) {
+      const errorMsg: string = 'Invalid input';
       this.log(errorMsg);
       throw new CLIError(errorMsg);
     }
 
     OrchestratorHelper.writeToFile(tsvFilePath, tsvContent);
-    
+
     let args: string = `create --in ${tsvFilePath} --out ${output}`;
     if (flags.debug) {
       args += ' --debug';
