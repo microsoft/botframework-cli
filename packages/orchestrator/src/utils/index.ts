@@ -44,7 +44,7 @@ export class OrchestratorHelper {
     }
   }
 
-  public static async getTsvContent(filePath: string, hierarchical: boolean)  {
+  public static async getTsvContent(filePath: string, hierarchical: boolean = false)  {
     try {
       const utterancesLabelsMap: any = {};
       let tsvContent = '';
@@ -78,15 +78,34 @@ export class OrchestratorHelper {
     let ext = path.extname(filePath);
     if (ext === '.lu') {
       console.log(`Processing ${filePath}...`);
-      await OrchestratorHelper.parseLuFile(filePath, hierarchical ? fileName.substr(0, fileName.length - 3) : '', utterancesLabelsMap);
+      await OrchestratorHelper.parseLuFile(
+        filePath, 
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical), 
+        utterancesLabelsMap);
     }
     else if (ext === '.qna') {
       console.log(`Processing ${filePath}...`);
-      await OrchestratorHelper.parseQnaFile(filePath, fileName.substr(0, fileName.length - 4), utterancesLabelsMap);
+      await OrchestratorHelper.parseQnaFile(
+        filePath, 
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utterancesLabelsMap);
     }    
     else if (ext === '.json') {
       console.log(`Processing ${filePath}...`);
-      OrchestratorHelper.getIntentsUtterances(fs.readJsonSync(filePath), hierarchical ? fileName.substr(0, fileName.length - 5) : '', utterancesLabelsMap);
+      OrchestratorHelper.getIntentsUtterances(
+        fs.readJsonSync(filePath), 
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical), 
+        utterancesLabelsMap);
+    }
+    else if (ext === '.tsv') {
+      console.log(`Processing ${filePath}...`);
+      OrchestratorHelper.tryParseQnATsvFile(
+        filePath, 
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utterancesLabelsMap);
+    }
+    else {
+      console.log(`${filePath} is not supported`);
     }
   }
 
@@ -96,6 +115,26 @@ export class OrchestratorHelper {
     OrchestratorHelper.getIntentsUtterances(luisObject, hierarchicalLabel, utterancesLabelsMap);
   }
   
+  static tryParseQnATsvFile(tsvFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
+    let lines = OrchestratorHelper.readFile(tsvFile).split('\n');
+    if (lines.length == 0 || !lines[0].startsWith('Question\tAnswer')) {
+      return;
+    }
+    lines.forEach((line: string) => {
+      let items = line.split('\t');
+      if (items.length == 0) {
+        return;
+      }
+
+      items.forEach((item: string) => {
+        let items = line.split('\t');
+        if (items.length == 0) {
+          return;
+        }
+      });
+    });
+  }
+
   static async parseQnaFile(qnaFile: string, label: string, utterancesLabelsMap: any) {
     let fileContents = OrchestratorHelper.readFile(qnaFile);
     let qnaObject = await QnamakerBuilder.fromContentAsync(fileContents);     
@@ -147,6 +186,10 @@ export class OrchestratorHelper {
         );
       });
     });
+  }
+
+  static getLabelFromFileName(fileName: string, ext: string, hierarchical: boolean) {
+    return hierarchical ? fileName.substr(0, fileName.length - ext.length) : '';
   }
 
   static addNewLabelUtterance(
