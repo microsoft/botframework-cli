@@ -14,6 +14,8 @@
                 "orchestrator:create",
                 "--in",
                 "D:/src/Orchestrator/OrchestratorCli/Data/calendar/CreateMeeting",
+                "--model",
+                "D:/src/Orchestrator/nlr"
             ],
             "internalConsoleOptions": "openOnSessionStart",
         },

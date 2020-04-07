@@ -33,6 +33,7 @@ export default class OrchestratorFinetune extends Command {
     hierarchical: flags.boolean({description: 'Add hierarchical labels based on lu/qna file name.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     out: flags.string({char: 'o', description: 'If --get flag is provided, the path where the new orchestrator finetune job will be created. Default to current working directory.'}),
+    model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
   }
 
   async run(): Promise<number> {
@@ -41,6 +42,10 @@ export default class OrchestratorFinetune extends Command {
     const input: string  = flags.in || __dirname;
     const output: string = flags.out || __dirname;
     const hierarchical: boolean = flags.hierachical || false;
+    let nlrPath: string = flags.model;
+    if (nlrPath) {
+      nlrPath = path.resolve(nlrPath);
+    }
 
     let cli_args: string = `finetune ${args.command} `;
     switch (args.command) {
@@ -64,6 +69,10 @@ export default class OrchestratorFinetune extends Command {
       this.error(`Command "${args.command}" unknown.\n${OrchestratorFinetune.args[0].description}`);
       return 1;
     }
+    }
+
+    if (nlrPath) {
+      cli_args += ` --model ${nlrPath}`;
     }
 
     this.log(`Command -- ${path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll'])} ${cli_args}`);

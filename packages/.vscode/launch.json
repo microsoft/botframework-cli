@@ -1,0 +1,21 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Orchestrator",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "d:/src/botframework-cli/packages/orchestrator/bin/run",
+            "args": [
+                "orchestrator:create",
+                "--in",
+                "D:/src/Orchestrator/OrchestratorCli/Data/calendar/CreateMeeting",
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+        }
+    ]
+}

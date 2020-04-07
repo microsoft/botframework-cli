@@ -15,6 +15,7 @@ export default class OrchestratorEvaluate extends Command {
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'The path to source label files from where orchestrator example file will be created from. Default to current working directory.'}),
     out: flags.string({char: 'o', description: 'Path where generated orchestrator example file will be placed. Default to current working directory.'}),
+    model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
     // ---- NOTE ---- flag with a value (-n, --name=VALUE)
@@ -28,12 +29,20 @@ export default class OrchestratorEvaluate extends Command {
 
     const input: string = flags.in || __dirname;
     const output: string = flags.out || __dirname;
+    let nlrPath: string = flags.model;
+    if (nlrPath) {
+      nlrPath = path.resolve(nlrPath);
+    }
     const debug: boolean = flags.debug;
 
     let args: string = `evaluate --in ${input} --out ${output}`;
     if (flags.debug) {
       args += ' --debug';
     }
+    if (nlrPath) {
+      args += ` --model ${nlrPath}`;
+    }
+    
     if (debug) {
       const loggingMessage: string = `evaluate.ts: arguments = ${args}`;
       const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
