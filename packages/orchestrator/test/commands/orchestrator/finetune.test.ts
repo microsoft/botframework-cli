@@ -1,7 +1,6 @@
 import {expect, test} from '@oclif/test';
 const path = require('path')
 const fs = require('fs-extra')
-const uuidv1 = require('uuid/v1')
 
 const compareFiles = async function (file1: string, file2: string) {
   let result = await fs.readFile(path.join(__dirname, file1))
