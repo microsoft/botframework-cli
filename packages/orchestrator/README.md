@@ -17,7 +17,7 @@ This package is intended for Microsoft use only and should be consumed through @
 
 ## `bf orchestrator`
 
-CLI to create encoded representation of utterances in lu files, evaluate and test training and test data and finetune an orchestrator model.
+CLI to create encoded representation of utterances in lu or tsv files, evaluate and test training and test data and finetune an orchestrator model.
 
 ```
 USAGE
@@ -31,7 +31,7 @@ _See code: [src/commands/orchestrator/index.ts](https://github.com/microsoft/bot
 
 ## `bf orchestrator:create`
 
-Creates a file with labels, utterances and embeddings (encoded representation of the utterances) given lu/qna files.  This file could then be used as Orchestrator model examples for bot runtime.
+Creates a file with labels, utterances and embeddings (encoded representation of the utterances) given lu/qna/tsv files.  This file could then be used as Orchestrator model examples for bot runtime.
 
 ```
 USAGE
@@ -70,10 +70,10 @@ EXAMPLE
 
 NOTES:
 
-  An input .txt/.tsv file should have at least 2 columns delemited by TAB, where the first column
+  An input .txt/.tsv file should have at least 2 TAB-delimited columns, where the first column
   is for intents and second utterances.
   The input file is loaded into Orchestrator, where utterances are processed and featurized
-  each into an embedding vector. The evaluation process is LOOCV (leave-one-out cross validation https://en.wikipedia.org/wiki/Cross-validation_(statistics)). I.e., the evaluation process
+  each into an embedding vector. The evaluation process is LOOCV (leave-one-out cross validation, see https://en.wikipedia.org/wiki/Cross-validation_(statistics)). I.e., the evaluation process
   iterates through every input utterance, find the closest examples for it in terms of
   semantic embedding, and compare their intent labels whether they match or not.
 
@@ -87,7 +87,8 @@ NOTES:
       Prediction Score
       Number of prediction scores
       Sesies of scores for every intent label
-    > orchestrator_loocv_score_labels.txt: a single TAB-delimited line for intent labels.
+    > orchestrator_loocv_score_labels.txt: a single TAB-delimited line listing intent labels.
+      The labels are listed as the same order of their scores in 'orchestrator_loocv_scores.txt'
 
 ```
 
@@ -95,7 +96,7 @@ _See code: [src/commands/orchestrator/evaluate.ts](https://github.com/microsoft/
 
 ## `bf orchestrator:test`
 
-Run orchestrator test evaluation using a given source .lu/.txt/.tsv file against a test file.
+Run orchestrator test evaluation using a given source .lu/.txt/.tsv/.blu file against a test .lu/.txt/.tsv file.
 
 ```
 USAGE
@@ -114,8 +115,9 @@ EXAMPLE
 
 NOTES:
 
-  The 'test' command is similar to 'evaluate', but against an independent test fie instead.
-  The 'test' process and output files are also simialr to those of the 'evaluate' command:
+  The 'test' command is similar to 'evaluate', but against an independent test fie of intent and
+  utterances instead.
+  The 'test' process and output files are also simialr to those produced by the 'evaluate' command:
     > orchestrator_test_evaluation.txt: evaluation report for each intent label and overall.
     > orchestrator_test_scores.txt: score output in TSV format, where the columns are:
       Labeled Intent
@@ -125,7 +127,8 @@ NOTES:
       Prediction Score
       Number of prediction scores
       Sesies of scores for every intent label
-    > orchestrator_test_score_labels.txt: a single TAB-delimited line for intent labels.
+    > orchestrator_test_score_labels.txt: a single TAB-delimited line listing intent labels.
+      The labels are listed as the same order of their scores in 'orchestrator_test_scores.txt'
 
 _See code: [src/commands/orchestrator/test.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/orchestrator/src/commands/orchestrator/test.ts)_
 
@@ -154,7 +157,7 @@ _See code: [src/commands/orchestrator/finetune.ts](https://github.com/microsoft/
 
 ## `bf orchestrator:predict`
 
-Interactive evaluating an input utterance given a source .lu/.txt/.tsv file
+User can interactively test an input utterance given a source .lu/.txt/.tsv/.blu file
 
 ```
 USAGE
