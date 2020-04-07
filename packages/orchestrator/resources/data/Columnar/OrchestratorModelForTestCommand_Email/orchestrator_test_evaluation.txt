@@ -1,0 +1,31 @@
+
+train  test     F1  Precision  Recall  MicroAccuracy  TP  TN  FP  FN  label          
+   15    75  0.958      1.000   0.920          0.920  69   0   0   6  [OVERALL]      
+    5     5  1.000      1.000   1.000          1.000   5  70   0   0  AddFlag        
+    5     5  1.000      1.000   1.000          1.000   5  70   0   0  ConfirmMessages
+    5     5  1.000      1.000   1.000          1.000   5  70   0   0  Delete         
+    5     5  1.000      1.000   1.000          1.000   5  70   0   0  Forward        
+    5     5  1.000      1.000   1.000          1.000   5  70   0   0  ReadAloud      
+    5     5  1.000      1.000   1.000          1.000   5  70   0   0  SearchMessages 
+    5     5  0.909      0.833   1.000          0.987   5  69   1   0  QueryLastText  
+    5     5  0.909      0.833   1.000          0.987   5  69   1   0  Reply          
+    5     5  0.909      0.833   1.000          0.987   5  69   1   0  SendEmail      
+    5     5  0.909      0.833   1.000          0.987   5  69   1   0  ShowPrevious   
+    5     5  0.889      1.000   0.800          0.987   4  70   0   1  AddMore        
+    5     5  0.889      1.000   0.800          0.987   4  70   0   1  CancelMessages 
+    5     5  0.800      0.800   0.800          0.973   4  69   1   1  CheckMessages  
+    5     5  0.800      0.800   0.800          0.973   4  69   1   1  ShowNext       
+    5     5  0.750      1.000   0.600          0.973   3  70   0   2  None           
+
+
+Evaluation methodology:
+
+Overall:
+	If the top 1 predicted label is in the labels list for the example then TP++ otherwise FP++
+
+Per label (multi-label prediction for N labels in a test sample):
+	TP++ for all labels in the top N predicted labels that are also in the test example labels
+	FP++ for all labels in the top N predicted labels that are not in the test example labels
+	TN++ for all labls that are not in top N predicted labels and are not in the test example labels
+	FN++ for all labls that are not in top N predicted labels but are in the test example labels
+

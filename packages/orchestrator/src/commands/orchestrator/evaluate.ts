@@ -5,7 +5,6 @@
 
 import * as path from 'path';
 
-// import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 import {Command, flags} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
 
@@ -18,10 +17,6 @@ export default class OrchestratorEvaluate extends Command {
     model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
-    // ---- NOTE ---- flag with a value (-n, --name=VALUE)
-    // name: flags.string({char: 'n', description: 'name to print'}),
-    // ---- NOTE ---- flag with no value (-f, --force)
-    // force: flags.boolean({char: 'f'}),
   }
 
   async run(): Promise<number> {
@@ -42,7 +37,7 @@ export default class OrchestratorEvaluate extends Command {
     if (nlrPath) {
       args += ` --model ${nlrPath}`;
     }
-    
+
     if (debug) {
       const loggingMessage: string = `evaluate.ts: arguments = ${args}`;
       const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
