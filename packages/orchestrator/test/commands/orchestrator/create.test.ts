@@ -2,11 +2,10 @@ import {expect, test} from '@oclif/test';
 
 describe('orchestrator:create', () => {
   test
-  .stdout()
   .stderr()
   .command(['orchestrator:create'])
   .it('Test.0000 orchestrator:create', (ctx: any) => {
-    expect(ctx.stdout).to.contain('create');
+    expect(ctx.stderr).to.contain('Invalid input');
   });
 
   test
