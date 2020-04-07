@@ -20,6 +20,6 @@ describe('orchestrator:create', () => {
   .stderr()
   .command(['orchestrator:create', '--in', 'resources/data/Columnar/Email.txt', '--out', 'resources/data/Columnar/OrchestratorModel_Email'])
   .it('Test.0002 orchestrator:create Email.txt', (ctx: any) => {
-    expect(ctx.stderr).to.contain('Invalid extension - lu, qna and json files are supported.');
+    expect(ctx.stderr).to.contain('has invalid extension - lu, qna, json and tsv files are supported.');
   });
 });
