@@ -112,8 +112,8 @@ export default class QnamakerBuild extends Command {
           this.log(`No changes to .dialog files in ${outputFolder}\n`)
         }
       } else {
-        this.log('The published knowledge base ids:')
-        this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).qnamaker)
+        this.log('The published knowledge base setting:')
+        this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).qna)
       }
     } catch (error) {
       if (error instanceof exception) {

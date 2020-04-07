@@ -39,10 +39,18 @@ export class Builder {
       const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
 
       let fileContent = ''
+      let jsonContent
       let result
       try {
         result = await QnaBuilderVerbose.build(qnaFiles, true)
-        fileContent = JSON.stringify(result)
+
+        // json content parsed from qna content
+        // this is mainly used in create and update api
+        jsonContent = JSON.stringify(result)
+
+        // construct qna content without file and url references
+        // this is mainly used in replace api
+        fileContent = result.parseToQnAContent()
       } catch (err) {
         if (err.source) {
           err.text = `Invalid QnA file ${err.source}: ${err.text}`
@@ -88,7 +96,8 @@ export class Builder {
         settings.set(fileFolder, new Settings(settingsPath, settingsContent))
       }
 
-      const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
+      const content = new Content(jsonContent, new LUOptions(fileName, true, fileCulture, file))
+      content.textContent = fileContent
       qnaContents.push(content)
 
       const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
@@ -169,10 +178,10 @@ export class Builder {
         // otherwise create a new kb
         if (recognizer.getKBId() && recognizer.getKBId() !== '') {
           // To see if need update the model
-          needPublish = await this.updateKB(currentKB, qnaBuildCore, recognizer, delayDuration)
+          needPublish = await this.updateKB(currentKB, content.textContent, qnaBuildCore, recognizer, delayDuration)
         } else {
           // create a new kb
-          needPublish = await this.createKB(currentKB, qnaBuildCore, recognizer, delayDuration)
+          needPublish = await this.createKB(currentKB, content.textContent, qnaBuildCore, recognizer, currentKB.name, delayDuration)
         }
 
         if (needPublish) {
@@ -180,7 +189,7 @@ export class Builder {
           await this.publishKB(qnaBuildCore, recognizer, delayDuration)
         }
 
-        hostName = (await qnaBuildCore.getKB(recognizer.getKBId())).hostName
+        if (hostName === '') hostName = (await qnaBuildCore.getKB(recognizer.getKBId())).hostName
 
         // update alterations if there are
         if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
@@ -269,35 +278,31 @@ export class Builder {
     return {kb: currentQna.kb, alterations: currentQna.alterations}
   }
 
-  async updateKB(currentKB: any, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, delayDuration: number) {
+  async updateKB(currentKB: any, qnaContent: string, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, delayDuration: number) {
     await delay(delayDuration)
     const existingKB = await qnaBuildCore.exportKB(recognizer.getKBId(), 'Prod')
-    const existingIds = (existingKB.qnaDocuments || []).map((document: any) => document.id)
 
     // compare models
     const isKBEqual = qnaBuildCore.isKBEqual(currentKB, existingKB)
     if (!isKBEqual) {
-      const newKB = {
-        delete: {
-          ids: existingIds
-        },
-        add: {
-          qnaList: currentKB.qnaList,
-          urls: currentKB.urls,
-          files: currentKB.files
-        },
-        update: {
-          urls: currentKB.urls,
-        }
-      }
-
-      this.handler(`${recognizer.getQnaPath()} updating to new version...\n`)
-      await delay(delayDuration)
-      const response = await qnaBuildCore.updateKB(recognizer.getKBId(), newKB)
-      const operationId = response.operationId
-
       try {
-        await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
+        this.handler(`${recognizer.getQnaPath()} updating to new version...\n`)
+        await delay(delayDuration)
+        await qnaBuildCore.replaceKB(recognizer.getKBId(), qnaContent)
+        if (currentKB.urls.length > 0 || currentKB.files.length > 0) {
+          const urlsAndFiles = {
+            add: {
+              urls: currentKB.urls,
+              files: currentKB.files
+            }
+          }
+
+          await delay(delayDuration)
+          const response = await qnaBuildCore.updateKB(recognizer.getKBId(), urlsAndFiles)
+          const operationId = response.operationId
+          await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
+        }
+
         this.handler(`${recognizer.getQnaPath()} updating finished\n`)
       } catch (err) {
         err.text = `Updating knowledge base failed: \n${err.text}`
@@ -311,15 +316,37 @@ export class Builder {
     }
   }
 
-  async createKB(currentKB: any, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, delayDuration: number) {
-    this.handler(`${recognizer.getQnaPath()} creating qnamaker KB: ${currentKB.name}...\n`)
+  async createKB(currentKB: any, qnaContent: string, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, kbName: string, delayDuration: number) {
+    this.handler(`${recognizer.getQnaPath()} creating qnamaker KB: ${kbName}...\n`)
     await delay(delayDuration)
-    const response = await qnaBuildCore.importKB(currentKB)
-    const operationId = response.operationId
+    const emptyKBJson = {
+      name: kbName,
+      qnaList: [],
+      urls: [],
+      files: []
+    }
+    let response = await qnaBuildCore.importKB(emptyKBJson)
+    let operationId = response.operationId
 
     try {
       const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
       recognizer.setKBId(opResult.resourceLocation.split('/')[2])
+      await delay(delayDuration)
+      await qnaBuildCore.replaceKB(recognizer.getKBId(), qnaContent)
+      if (currentKB.urls.length > 0 || currentKB.files.length > 0) {
+        const urlsAndFiles = {
+          add: {
+            urls: currentKB.urls,
+            files: currentKB.files
+          }
+        }
+
+        await delay(delayDuration)
+        response = await qnaBuildCore.updateKB(recognizer.getKBId(), urlsAndFiles)
+        operationId = response.operationId
+        await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
+      }
+
       this.handler(`${recognizer.getQnaPath()} creating finished\n`)
     } catch (err) {
       err.text = `Creating knowledge base failed: \n${err.text}`

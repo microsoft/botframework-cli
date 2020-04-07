@@ -11,6 +11,7 @@ import * as path from 'path'
 const Content = require('./../lu/qna')
 const LUOptions = require('./../lu/luOptions')
 const {ServiceBase} = require('./../utils/serviceBase')
+const NEWLINE = require('os').EOL;
 
 export class QnaBuildCore {
   private readonly service: any
@@ -79,6 +80,16 @@ export class QnaBuildCore {
     }
   }
 
+  public async replaceKB(kbId: string, replaceKb: any) {
+    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PUT', replaceKb)
+    const text = await response.text()
+    try {
+      return JSON.parse(text)
+    } catch {
+      return text
+    }
+  }
+
   public async publishKB(kbId: string) {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'POST')
     const text = await response.text()
@@ -123,29 +134,31 @@ export class QnaBuildCore {
   public isKBEqual(kbA: any, kbB: any): boolean {
     const qnaListA = kbA.qnaList
     const qnaListSourcesA = qnaListA.map((qna: any) => qna.source)
-
+    
     const qnaDocumentsB = kbB.qnaDocuments || []
     const qnaListBToCompare = qnaDocumentsB.filter((qnaDoc: any) => qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => {
       return {
-        id: 0,
+        id: qna.id,
         answer: qna.answer,
         source: qna.source,
         questions: qna.questions,
-        metadata: qna.metadata
+        metadata: qna.metadata,
+        context: qna.context
       }
     })
 
     const qnaListAToCompare = qnaListA.map((qna: any) => {
       return {
-        id: 0,
+        id: qna.id,
         answer: qna.answer,
         source: qna.source,
         questions: qna.questions,
-        metadata: qna.metadata
+        metadata: qna.metadata,
+        context: qna.context
       }
     })
 
-    let equal = this.isArrayEqual(qnaListAToCompare, qnaListBToCompare)
+    let equal = this.isQnaListEqual(qnaListAToCompare, qnaListBToCompare)
 
     if (equal) {
       const qnaUrlsA = kbA.urls || []
@@ -159,21 +172,56 @@ export class QnaBuildCore {
     return equal
   }
 
-  // compare object arrays
+  private isQnaListEqual(qnaListA: any, qnaListB: any) {
+    let kbAQnA = this.parseToQnAContent(qnaListA).toLowerCase()
+    let kbBQnA = this.parseToQnAContent(qnaListB).toLowerCase()
+    
+    return kbAQnA === kbBQnA
+  }
+
+  private parseToQnAContent(qnaList: any) {
+    let fileContent = ''
+    qnaList.forEach((qnaItem: any) => {
+      fileContent += `<a id = "0"></a>` + NEWLINE + NEWLINE
+      fileContent += '> !# @qna.pair.source = ' + qnaItem.source + NEWLINE + NEWLINE
+      fileContent += '## ? ' + qnaItem.questions[0] + NEWLINE
+      qnaItem.questions.splice(0, 1)
+      qnaItem.questions.forEach((question: any) => {
+        fileContent += '- ' + question + NEWLINE
+      })
+      fileContent += NEWLINE;
+      if (qnaItem.metadata && qnaItem.metadata.length > 0) {
+        fileContent += '**Filters:**' + NEWLINE
+        qnaItem.metadata.forEach((filter: any) => {
+          fileContent += '- ' + filter.name + ' = ' + filter.value + NEWLINE
+        })
+        fileContent += NEWLINE
+      }
+      fileContent += '```markdown' + NEWLINE
+      fileContent += qnaItem.answer + NEWLINE
+      fileContent += '```' + NEWLINE
+      if (qnaItem.context && qnaItem.context.prompts && qnaItem.context.prompts.length !== 0) {
+        fileContent += NEWLINE + '**Prompts:**' + NEWLINE
+        qnaItem.context.prompts.forEach((prompt: any) => {
+          fileContent += `- [${prompt.displayText}]`
+          // See if the linked prompt is context only and if so, add the decoration.
+          let promptQnA = qnaList.find((item: any) => item.id == prompt.qnaId)
+          if (promptQnA) {
+            fileContent += promptQnA.context.isContextOnly === true ? ` \`context-only\`` : ''
+          }
+          fileContent += NEWLINE
+        })
+      }
+      fileContent += NEWLINE
+    })
+
+    return fileContent
+  }
+
+  // compare arrays
   private isArrayEqual(x: any, y: any) {
-    let xObj = []
-    let yObj = []
-
-    if (x && x.length > 0) {
-      xObj = JSON.parse(JSON.stringify(x).toLowerCase().replace(/ {2}/g, ' ').replace(/\\r\\n/g, '\\n'))
-    }
-
-    if (y && y.length > 0) {
-      yObj = JSON.parse(JSON.stringify(y).toLowerCase().replace(/ {2}/g, ' ').replace(/\\r\\n/g, '\\n'))
-    }
-
-    if (xObj.length !== yObj.length) return false
-    if (differenceWith(xObj, yObj, isEqual).length > 0) return false
+    if (x.length !== y.length) return false
+    if (differenceWith(x, y, isEqual).length > 0) return false
 
     return true
   }

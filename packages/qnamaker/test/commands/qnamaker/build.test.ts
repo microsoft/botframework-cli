@@ -62,7 +62,8 @@ describe('qnamaker:build create a new knowledge base successfully', () => {
         knowledgebases:
           [{
             name: 'test.en-us.qna',
-            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
       })
 
@@ -80,8 +81,19 @@ describe('qnamaker:build create a new knowledge base successfully', () => {
       })
 
     nock('https://westus.api.cognitive.microsoft.com')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
+
+    nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('knowledgebases'))
       .reply(204)
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        hostName: 'https://myqnamakerbot.azurewebsites.net'
+      })
 
     nock('https://westus.api.cognitive.microsoft.com')
       .put(uri => uri.includes('alterations'))
@@ -109,7 +121,8 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
         knowledgebases:
           [{
             name: 'test(development)-sandwich2.en-us.qna',
-            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
       })
 
@@ -126,16 +139,8 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
       })
 
     nock('https://westus.api.cognitive.microsoft.com')
-      .patch(uri => uri.includes('knowledgebases'))
-      .reply(202, {
-        operationId: 'f8c64e2a-aaaa-3a09-8f78-39d7adc76ec5'
-      })
-
-    nock('https://westus.api.cognitive.microsoft.com')
-      .get(uri => uri.includes('operations'))
-      .reply(200, {
-        operationState: 'Succeeded'
-      })
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
 
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('knowledgebases'))
@@ -145,7 +150,7 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
-    .it('should update a knowledge when qa list changed', ctx => {
+    .it('should update a knowledge base when qa list changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('updating to new version')
       expect(ctx.stdout).to.contain('updating finished')
@@ -161,7 +166,8 @@ describe('qnamaker:build update knowledge base succeed when file and url added',
         knowledgebases:
           [{
             name: 'test(development)-sandwich3.en-us.qna',
-            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
       })
 
@@ -176,6 +182,10 @@ describe('qnamaker:build update knowledge base succeed when file and url added',
           metadata: []
         }]
       })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
 
     nock('https://westus.api.cognitive.microsoft.com')
       .patch(uri => uri.includes('knowledgebases'))
@@ -197,7 +207,7 @@ describe('qnamaker:build update knowledge base succeed when file and url added',
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich3.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
-    .it('should update a knowledge when qa list changed', ctx => {
+    .it('should update a knowledge base when qa list changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('updating to new version')
       expect(ctx.stdout).to.contain('updating finished')
@@ -213,7 +223,8 @@ describe('qnamaker:build not update knowledge if no changes', () => {
         knowledgebases:
           [{
             name: 'test(development)-sandwich2.en-us.qna',
-            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
       })
 
@@ -249,7 +260,8 @@ describe('qnamaker:build write dialog assets successfully if --dialog set', () =
         knowledgebases:
           [{
             name: 'test(development)-sandwich2.en-us.qna',
-            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
       })
 
@@ -288,7 +300,8 @@ describe('qnamaker:build not update knowledge base if only cases are changed', (
         knowledgebases:
           [{
             name: 'test(development)-sandwich2.en-us.qna',
-            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
       })
 
@@ -311,5 +324,128 @@ describe('qnamaker:build not update knowledge base if only cases are changed', (
     .it('should not update a knowledge base when only cases changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('no changes')
+    })
+})
+
+describe('qnamaker:build create a new knowledge base with multiturn qna and references successfully', () => {
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test.en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('createasync'))
+      .reply(202, {
+        operationId: 'f8c64e2a-aaaa-3a09-8f78-39d7adc76ec5'
+      })
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('operations'))
+      .reply(200, {
+        operationState: 'Succeeded',
+        resourceLocation: 'a/b/f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .patch(uri => uri.includes('knowledgebases'))
+      .reply(202, {
+        operationId: 'f8c64e2a-aaaa-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('operations'))
+      .reply(200, {
+        operationState: 'Succeeded'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('knowledgebases'))
+      .reply(204)
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        hostName: 'https://myqnamakerbot.azurewebsites.net'
+      })
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn-with-references.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .it('should create a new knowledge base with multiturn qna and references successfully', ctx => {
+      expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
+      expect(ctx.stdout).to.contain('creating qnamaker KB: test(development)-multiturn-with-references.en-us.qna...')
+      expect(ctx.stdout).to.contain('creating finished')
+      expect(ctx.stdout).to.contain('publishing...')
+      expect(ctx.stdout).to.contain('publishing finished')
+    })
+})
+
+describe('qnamaker:build update knowledge base with multiturn and references successfully when qa changed', () => {
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development)-multiturn-with-references.en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        qnaDocuments: [{
+          id: 1,
+          source: 'custom editorial',
+          questions: ['how many sandwich types do you have'],
+          answer: '25 types',
+          metadata: []
+        }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .patch(uri => uri.includes('knowledgebases'))
+      .reply(202, {
+        operationId: 'f8c64e2a-aaaa-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('operations'))
+      .reply(200, {
+        operationState: 'Succeeded'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('knowledgebases'))
+      .reply(204)
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn-with-references.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .it('should update a knowledge base with multiturn and references when qa list changed', ctx => {
+      expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
+      expect(ctx.stdout).to.contain('updating to new version')
+      expect(ctx.stdout).to.contain('updating finished')
+      expect(ctx.stdout).to.contain('publishing...')
     })
 })

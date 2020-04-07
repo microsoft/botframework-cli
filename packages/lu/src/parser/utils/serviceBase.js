@@ -49,9 +49,17 @@ class ServiceBase {
    * @returns {Promise<Response>} The promise representing the request
    */
   createRequest(relativeEndpoint, method, data) {
-    const URL = this.rootEndpoint + relativeEndpoint
-    const body = data ? JSON.stringify(data) : undefined
-
+    let URL = this.rootEndpoint + relativeEndpoint
+    let body
+    if (typeof data === 'string') {
+      URL += URL.includes('?') ? '&qnaformat=true' : '?qnaformat=true'
+      this.headers['Content-Type'] = 'application/text'
+      body = data
+    } else if (typeof data === 'object') {
+      this.headers['Content-Type'] = 'application/json'
+      body = JSON.stringify(data)
+    }
+    
     return fetch(URL, {headers: this.headers, method, body})
   }
 
