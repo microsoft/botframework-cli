@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, utils} from '@microsoft/bf-cli-command';
+import {CLIError} from '@microsoft/bf-cli-command';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
