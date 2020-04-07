@@ -98,17 +98,13 @@ export class OrchestratorHelper {
         utterancesLabelsMap);
     }
     else if (ext === '.tsv') {
-      console.log(`Processing ${filePath}...`);
       OrchestratorHelper.tryParseQnATsvFile(
         filePath, 
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utterancesLabelsMap);
     }
     else {
-      console.log(`${filePath} is not supported`);
-    }
-    else {
-      throw new CLIError("Invalid extension - lu, qna and json files are supported.");
+      throw new CLIError(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
     }
   }
 
@@ -118,24 +114,28 @@ export class OrchestratorHelper {
     OrchestratorHelper.getIntentsUtterances(luisObject, hierarchicalLabel, utterancesLabelsMap);
   }
   
-  static tryParseQnATsvFile(tsvFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
+  static tryParseQnATsvFile(tsvFile: string, label: string, utterancesLabelsMap: any) {
     let lines = OrchestratorHelper.readFile(tsvFile).split('\n');
-    if (lines.length == 0 || !lines[0].startsWith('Question\tAnswer')) {
+    if (lines.length == 0 || !OrchestratorHelper.isQnATsvHeader(lines[0])) {
       return;
     }
+    lines.shift();
     lines.forEach((line: string) => {
       let items = line.split('\t');
       if (items.length == 0) {
         return;
       }
-
-      items.forEach((item: string) => {
-        let items = line.split('\t');
-        if (items.length == 0) {
-          return;
-        }
-      });
+      OrchestratorHelper.addNewLabelUtterance(
+        items[0].trim(),
+        label,
+        '',
+        utterancesLabelsMap
+      );
     });
+  }
+
+  static isQnATsvHeader(header: string) {
+    return header.indexOf('Question') > 0 && header.indexOf('Answer') > 0;
   }
 
   static async parseQnaFile(qnaFile: string, label: string, utterancesLabelsMap: any) {
@@ -148,7 +148,7 @@ export class OrchestratorHelper {
     folderPath: string,
     utterancesLabelsMap: any,
     hierarchical: boolean) {
-    const supportedFileFormats: string[] = ['.lu', '.json', '.qna'];
+    const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv'];
     const items: string[] = fs.readdirSync(folderPath);
     for (const item of items) {
       const currentItemPath: string = path.join(folderPath, item);
@@ -208,20 +208,20 @@ export class OrchestratorHelper {
     hierarchicalLabel: string,
     utterancesLabelsMap: any) {  
     let existingLabels = utterancesLabelsMap[utterance];
-    if (existingLabels == null) {
+    if (existingLabels) {
+      if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
+        OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels);
+      }
+      OrchestratorHelper.addUniqueLabel(label, existingLabels);
+      utterancesLabelsMap[utterance] = existingLabels;
+    }
+    else {
       if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
         utterancesLabelsMap[utterance] = [label, hierarchicalLabel];
       }
       else {
         utterancesLabelsMap[utterance] = [label];
       }
-    }
-    else {
-      if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
-        OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels);
-      }
-      OrchestratorHelper.addUniqueLabel(label, existingLabels);
-      utterancesLabelsMap[utterance] = existingLabels;
     }   
   }
 

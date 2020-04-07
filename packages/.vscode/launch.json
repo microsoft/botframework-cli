@@ -13,7 +13,12 @@
             "args": [
                 "orchestrator:create",
                 "--in",
-                "D:/src/Orchestrator/OrchestratorCli/Data/calendar/CreateMeeting",
+                "D:/src/Orchestrator/Samples/DispatchBot/CognitiveModels",          
+                "--out",
+                "D:/src/Orchestrator/Samples/DispatchBot/CognitiveModels",
+                "--model",
+                "D:/src/Orchestrator/nlr",
+                "--hierarchical"
             ],
             "internalConsoleOptions": "openOnSessionStart",
         }
