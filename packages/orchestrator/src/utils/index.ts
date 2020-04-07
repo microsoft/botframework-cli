@@ -210,12 +210,14 @@ export class OrchestratorHelper {
       if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
         OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels);
       }
-      OrchestratorHelper.addUniqueLabel(label, existingLabels);
+      else {
+        OrchestratorHelper.addUniqueLabel(label, existingLabels);
+      }
       utterancesLabelsMap[utterance] = existingLabels;
     }
     else {
       if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
-        utterancesLabelsMap[utterance] = [label, hierarchicalLabel];
+        utterancesLabelsMap[utterance] = [hierarchicalLabel];
       }
       else {
         utterancesLabelsMap[utterance] = [label];
