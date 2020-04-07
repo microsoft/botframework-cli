@@ -53,7 +53,7 @@ _See code: [src/commands/orchestrator/create.ts](https://github.com/microsoft/bo
 
 ## `bf orchestrator:evaluate`
 
-Create orchestrator evaluation report files from a .lu/.txt/.tsv input file.
+Create orchestrator evaluation report files from a .txt/.tsv input file.
 
 ```
 USAGE

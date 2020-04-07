@@ -12,7 +12,7 @@ export class Utility {
 
   public static writeToConsole(outputContents: string) {
     const output: string = JSON.stringify(outputContents, null, 2);
-    process.stdout.write(output);
+    process.stdout.write(`${output}\n`);
   }
 
   public static debuggingLog(
