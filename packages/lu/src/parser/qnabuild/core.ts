@@ -11,7 +11,7 @@ import * as path from 'path'
 const Content = require('./../lu/qna')
 const LUOptions = require('./../lu/luOptions')
 const {ServiceBase} = require('./../utils/serviceBase')
-const NEWLINE = require('os').EOL;
+const NEWLINE = require('os').EOL
 
 export class QnaBuildCore {
   private readonly service: any
@@ -134,7 +134,7 @@ export class QnaBuildCore {
   public isKBEqual(kbA: any, kbB: any): boolean {
     const qnaListA = kbA.qnaList
     const qnaListSourcesA = qnaListA.map((qna: any) => qna.source)
-    
+
     const qnaDocumentsB = kbB.qnaDocuments || []
     const qnaListBToCompare = qnaDocumentsB.filter((qnaDoc: any) => qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => {
       return {
@@ -175,21 +175,21 @@ export class QnaBuildCore {
   private isQnaListEqual(qnaListA: any, qnaListB: any) {
     let kbAQnA = this.parseToQnAContent(qnaListA).toLowerCase()
     let kbBQnA = this.parseToQnAContent(qnaListB).toLowerCase()
-    
+
     return kbAQnA === kbBQnA
   }
 
   private parseToQnAContent(qnaList: any) {
     let fileContent = ''
     qnaList.forEach((qnaItem: any) => {
-      fileContent += `<a id = "0"></a>` + NEWLINE + NEWLINE
+      fileContent += '<a id = "0"></a>' + NEWLINE + NEWLINE
       fileContent += '> !# @qna.pair.source = ' + qnaItem.source + NEWLINE + NEWLINE
       fileContent += '## ? ' + qnaItem.questions[0] + NEWLINE
       qnaItem.questions.splice(0, 1)
       qnaItem.questions.forEach((question: any) => {
         fileContent += '- ' + question + NEWLINE
       })
-      fileContent += NEWLINE;
+      fileContent += NEWLINE
       if (qnaItem.metadata && qnaItem.metadata.length > 0) {
         fileContent += '**Filters:**' + NEWLINE
         qnaItem.metadata.forEach((filter: any) => {
@@ -205,9 +205,9 @@ export class QnaBuildCore {
         qnaItem.context.prompts.forEach((prompt: any) => {
           fileContent += `- [${prompt.displayText}]`
           // See if the linked prompt is context only and if so, add the decoration.
-          let promptQnA = qnaList.find((item: any) => item.id == prompt.qnaId)
+          let promptQnA = qnaList.find((item: any) => item.id === prompt.qnaId)
           if (promptQnA) {
-            fileContent += promptQnA.context.isContextOnly === true ? ` \`context-only\`` : ''
+            fileContent += promptQnA.context.isContextOnly === true ? ' \`context-only\`' : ''
           }
           fileContent += NEWLINE
         })

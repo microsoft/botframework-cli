@@ -210,7 +210,7 @@ export class Builder {
         if (settings && settings.has(path.dirname(content.path))) {
           let setting = settings.get(path.dirname(content.path)) as Settings
           setting.qna[content.name.split('.').join('_')] = recognizer.getKBId()
-          setting.qna['hostname'] = hostName
+          setting.qna.hostname = hostName
         }
       }))
     }

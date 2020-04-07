@@ -40,7 +40,7 @@ export default class QnamakerBuild extends Command {
 
   async run() {
     try {
-      const {flags} = this.parse(QnamakerBuild)
+      const {flags}: any = this.parse(QnamakerBuild)
 
       flags.stdin = await this.readStdin()
 
