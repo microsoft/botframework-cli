@@ -5,6 +5,10 @@
 
 import { AppAutoActiveLearner } from "./model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
 
+import { mainConfusionMatrix } from "./mathematics/confusion_matrix/AppConfusionMatrix";
+import { mainConfusionMatrixFunction } from "./mathematics/confusion_matrix/AppConfusionMatrix";
+import { ConfusionMatrix } from "./mathematics/confusion_matrix/ConfusionMatrix";
+
 import { mainCrossValidatorWithColumnarContent } from "./model/evaluation/cross_validation/AppCrossValidator";
 import { mainCrossValidatorWithLuContent } from "./model/evaluation/cross_validation/AppCrossValidator";
 import { mainCrossValidator } from "./model/evaluation/cross_validation/AppCrossValidator";
@@ -17,6 +21,9 @@ import { mainThresholdReporter } from "./model/evaluation/report/AppThresholdRep
 
 export default {
     AppAutoActiveLearner,
+    mainConfusionMatrix,
+    mainConfusionMatrixFunction,
+    ConfusionMatrix,
     mainCrossValidator,
     mainCrossValidatorWithLuContent,
     mainCrossValidatorWithColumnarContent,

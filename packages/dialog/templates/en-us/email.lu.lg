@@ -1,7 +1,0 @@
-# filename
-- ${builtinEntityFilename('emailEntity')}
-
-# template
-- @ prebuilt email ${roles()}
-
-[generator.lg](../generator.lg)

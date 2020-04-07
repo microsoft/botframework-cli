@@ -53,7 +53,7 @@ export abstract class AbstractBaseEvaluator {
         }
         return Utility.dumpFile(
             outputReportFilename,
-            JSON.stringify(outputReportContent, undefined, 4),
+            Utility.JSONstringify(outputReportContent),
             encoding);
     }
     public dumpEvaluationDirectReportToFile(
