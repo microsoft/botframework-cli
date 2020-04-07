@@ -1,7 +1,0 @@
-# filename
-- ${removeFilename('boolean')}
-
-# template
-- ${removeDialog('boolean')}
-
-[generator.lg](generator.lg)
