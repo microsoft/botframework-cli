@@ -18,10 +18,6 @@ export default class OrchestratorPredict extends Command {
     model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
-    // ---- NOTE ---- flag with a value (-n, --name=VALUE)
-    // name: flags.string({char: 'n', description: 'name to print'}),
-    // ---- NOTE ---- flag with no value (-f, --force)
-    // force: flags.boolean({char: 'f'}),
   }
 
   async run(): Promise<number> {
@@ -34,7 +30,7 @@ export default class OrchestratorPredict extends Command {
     if (nlrPath) {
       nlrPath = path.resolve(nlrPath);
     }
-    
+
     let args: string = `predict --in ${input} --out ${output}`;
     if (flags.debug) {
       args += ' --debug';
@@ -42,17 +38,12 @@ export default class OrchestratorPredict extends Command {
     if (nlrPath) {
       args += ` --model ${nlrPath}`;
     }
-    
+
     if (debug) {
       const loggingMessage: string = `predict.ts: arguments = ${args}`;
       const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
       this.log(loggingMessageCodified);
     }
-
-    // TO-DO: figure out rush package dependency with regard to oclif folder structure
-    // require("dotnet-3.1") statement works only for local package install
-    // process.argv= [process.argv[0], process.argv[1], __dirname + '/netcoreapp3.1/OrchestratorCli.dll', ...process.argv.slice(2)]
-    // require("dotnet-3.1")
 
     try {
       const command: string = 'dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args;

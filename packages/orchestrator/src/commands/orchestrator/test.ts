@@ -19,10 +19,6 @@ export default class OrchestratorTest extends Command {
     model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
-    // ---- NOTE ---- flag with a value (-n, --name=VALUE)
-    // name: flags.string({char: 'n', description: 'name to print'}),
-    // ---- NOTE ---- flag with no value (-f, --force)
-    // force: flags.boolean({char: 'f'}),
   }
 
   async run(): Promise<number> {
@@ -44,7 +40,7 @@ export default class OrchestratorTest extends Command {
     if (nlrPath) {
       args += ` --model ${nlrPath}`;
     }
-    
+
     if (debug) {
       const loggingMessage: string = `test.ts: arguments = ${args}`;
       const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);

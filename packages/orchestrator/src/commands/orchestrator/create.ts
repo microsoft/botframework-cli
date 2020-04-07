@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import {Command, CLIError, flags, utils} from '@microsoft/bf-cli-command';
+import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
 import {OrchestratorHelper} from '../../utils/index';
 
@@ -27,7 +27,7 @@ export default class OrchestratorCreate extends Command {
     hierarchical: flags.boolean({description: 'Add hierarchical labels based on lu/qna file name.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h', description: 'Orchestrator create command help'})
+    help: flags.help({char: 'h', description: 'Orchestrator create command help'}),
   }
 
   async run(): Promise<number> {
@@ -42,20 +42,19 @@ export default class OrchestratorCreate extends Command {
     const debug: boolean = flags.debug;
     hierarchical = flags.hierarchical;
 
-    let tsvFilePath = path.join(output, 'create.tsv');
-    let tsvContent = '';
-    
+    const tsvFilePath: string = path.join(output, 'create.tsv');
+    let tsvContent: string = '';
+
     OrchestratorHelper.deleteFile(tsvFilePath);
     tsvContent = await OrchestratorHelper.getTsvContent(input, flags.hierarchical);
-    if (tsvContent.length == 0)
-    {
-      let errorMsg = 'Invalid input';
+    if (tsvContent.length === 0) {
+      const errorMsg: string = 'Invalid input';
       this.log(errorMsg);
       throw new CLIError(errorMsg);
     }
 
     OrchestratorHelper.writeToFile(tsvFilePath, tsvContent);
-    
+
     let args: string = `create --in ${tsvFilePath} --out ${output}`;
     if (flags.debug) {
       args += ' --debug';
@@ -63,7 +62,7 @@ export default class OrchestratorCreate extends Command {
     if (nlrPath) {
       args += ` --model ${nlrPath}`;
     }
-    
+
     // TO-DO: figure out rush package dependency with regard to oclif folder structure
     // require("dotnet-3.1") statement works only for local package install
     // process.argv= [process.argv[0], process.argv[1], __dirname + '/netcoreapp3.1/OrchestratorCli.dll', ...process.argv.slice(2)]
@@ -76,8 +75,7 @@ export default class OrchestratorCreate extends Command {
         this.log(loggingMessageCodified);
       }
       require('child_process').execSync(command, {stdio: [0, 1, 2]});
-    } 
-    catch (error) {
+    } catch (error) {
       return 1;
     }
 

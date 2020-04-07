@@ -2,10 +2,10 @@ import {expect, test} from '@oclif/test';
 
 describe('orchestrator:create', () => {
   test
-  .stdout()
+  .stderr()
   .command(['orchestrator:create'])
-  .it('Test.0000 orchestrator:create', (_ctx: any) => {
-    // expect(ctx.stdout).to.contain('create');
+  .it('Test.0000 orchestrator:create', (ctx: any) => {
+    expect(ctx.stderr).to.contain('Invalid input');
   });
 
   test
@@ -17,8 +17,9 @@ describe('orchestrator:create', () => {
 
   test
   .stdout()
-  .command(['orchestrator:create', '--debug', '--in=resources/data/Columnar/Email.txt', '--out=resources/data/Columnar/OrchestratorModel_Email'])
+  .stderr()
+  .command(['orchestrator:create', '--in', 'resources/data/Columnar/Email.txt', '--out', 'resources/data/Columnar/OrchestratorModel_Email'])
   .it('Test.0002 orchestrator:create Email.txt', (ctx: any) => {
-    expect(ctx.stdout).to.contain('Email');
+    expect(ctx.stderr).to.contain('Invalid extension - lu, qna and json files are supported.');
   });
 });

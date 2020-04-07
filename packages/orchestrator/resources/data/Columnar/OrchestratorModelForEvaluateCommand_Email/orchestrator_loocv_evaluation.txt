@@ -1,0 +1,31 @@
+
+train  test     F1  Precision  Recall  MicroAccuracy   TP   TN  FP  FN  label          
+   15   601  0.940      1.000   0.887          0.887  533    0   0  68  [OVERALL]      
+    6     6  1.000      1.000   1.000          1.000    6  595   0   0  None           
+   65    65  0.992      1.000   0.985          0.998   64  536   0   1  AddMore        
+   32    32  0.970      0.941   1.000          0.997   32  567   2   0  Forward        
+   31    31  0.954      0.912   1.000          0.995   31  567   3   0  AddFlag        
+   46    46  0.921      0.953   0.891          0.988   41  553   2   5  CancelMessages 
+   31    31  0.915      0.964   0.871          0.992   27  569   1   4  Reply          
+  100   100  0.913      0.937   0.890          0.972   89  495   6  11  SendEmail      
+   26    26  0.906      0.889   0.923          0.992   24  572   3   2  Delete         
+   32    32  0.892      0.879   0.906          0.988   29  565   4   3  QueryLastText  
+   49    49  0.867      0.951   0.796          0.980   39  550   2  10  SearchMessages 
+   80    80  0.861      0.835   0.887          0.962   71  507  14   9  ReadAloud      
+   45    45  0.851      0.816   0.889          0.977   40  547   9   5  CheckMessages  
+   16    16  0.688      0.688   0.688          0.983   11  580   5   5  ShowPrevious   
+   21    21  0.667      0.593   0.762          0.973   16  569  11   5  ConfirmMessages
+   21    21  0.650      0.684   0.619          0.977   13  574   6   8  ShowNext       
+
+
+Evaluation methodology:
+
+Overall:
+	If the top 1 predicted label is in the labels list for the example then TP++ otherwise FP++
+
+Per label (multi-label prediction for N labels in a test sample):
+	TP++ for all labels in the top N predicted labels that are also in the test example labels
+	FP++ for all labels in the top N predicted labels that are not in the test example labels
+	TN++ for all labls that are not in top N predicted labels and are not in the test example labels
+	FN++ for all labls that are not in top N predicted labels but are in the test example labels
+
