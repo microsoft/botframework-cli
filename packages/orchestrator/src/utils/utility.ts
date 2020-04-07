@@ -10,6 +10,11 @@ export class Utility {
     return JSON.stringify(input, null, 4);
   }
 
+  public static writeToConsole(outputContents: string) {
+    const output: string = JSON.stringify(outputContents, null, 2);
+    process.stdout.write(output);
+  }
+
   public static debuggingLog(
     message: any): string {
     const dateTimeString: string = (new Date()).toISOString();

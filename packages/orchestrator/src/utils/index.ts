@@ -6,8 +6,10 @@
 import {CLIError} from '@microsoft/bf-cli-command';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import {Utility} from './utility';
 const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
 const QnamakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
+const QnamakerMaker = require('@microsoft/bf-lu').V2.QnamakerMaker;
 
 export class OrchestratorHelper {
   public static isDirectory(path: string): boolean {
@@ -21,10 +23,10 @@ export class OrchestratorHelper {
 
   public static readFile(filePath: string): string {
     try {
-      const content = fs.readFileSync(filePath, {encoding:'utf8'}); 
+      const content: string = fs.readFileSync(filePath, {encoding: 'utf8'});
       return content;
     } catch (error) {
-      throw new CLIError(error)
+      throw new CLIError(error);
     }
   }
 
@@ -33,7 +35,7 @@ export class OrchestratorHelper {
       fs.writeFileSync(filePath, content);
       return filePath;
     } catch (error) {
-      throw new CLIError(error)
+      throw new CLIError(error);
     }
   }
 
@@ -49,7 +51,7 @@ export class OrchestratorHelper {
       const utterancesLabelsMap: any = {};
       let tsvContent: string = '';
 
-      console.log('Processing: filepath:' + filePath);
+      Utility.writeToConsole('Processing: filepath:' + filePath);
       if (OrchestratorHelper.isDirectory(filePath)) {
         await OrchestratorHelper.iterateInputFolder(filePath, utterancesLabelsMap, hierarchical);
       } else {
@@ -74,55 +76,50 @@ export class OrchestratorHelper {
     fileName: string,
     utterancesLabelsMap: any,
     hierarchical: boolean) {
-
-    let ext = path.extname(filePath);
+    const ext: string = path.extname(filePath);
     if (ext === '.lu') {
-      console.log(`Processing ${filePath}...`);
+      Utility.writeToConsole(`Processing ${filePath}...`);
       await OrchestratorHelper.parseLuFile(
-        filePath, 
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical), 
+        filePath,
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utterancesLabelsMap);
-    }
-    else if (ext === '.qna') {
-      console.log(`Processing ${filePath}...`);
+    } else if (ext === '.qna') {
+      Utility.writeToConsole(`Processing ${filePath}...`);
       await OrchestratorHelper.parseQnaFile(
-        filePath, 
+        filePath,
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utterancesLabelsMap);
-    }    
-    else if (ext === '.json') {
-      console.log(`Processing ${filePath}...`);
+    } else if (ext === '.json') {
+      Utility.writeToConsole(`Processing ${filePath}...\n`);
       OrchestratorHelper.getIntentsUtterances(
-        fs.readJsonSync(filePath), 
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical), 
-        utterancesLabelsMap);
-    }
-    else if (ext === '.tsv') {
-      OrchestratorHelper.tryParseQnATsvFile(
-        filePath, 
+        fs.readJsonSync(filePath),
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utterancesLabelsMap);
-    }
-    else {
+    } else if (ext === '.tsv') {
+      OrchestratorHelper.tryParseQnATsvFile(
+        filePath,
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utterancesLabelsMap);
+    } else {
       throw new CLIError(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
     }
   }
 
   static async parseLuFile(luFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
-    let fileContents = OrchestratorHelper.readFile(luFile);
-    let luisObject = await LUISBuilder.fromContentAsync(fileContents);     
+    const fileContents: string = OrchestratorHelper.readFile(luFile);
+    const luisObject: any = await LUISBuilder.fromContentAsync(fileContents);
     OrchestratorHelper.getIntentsUtterances(luisObject, hierarchicalLabel, utterancesLabelsMap);
   }
-  
+
   static tryParseQnATsvFile(tsvFile: string, label: string, utterancesLabelsMap: any) {
-    let lines = OrchestratorHelper.readFile(tsvFile).split('\n');
-    if (lines.length == 0 || !OrchestratorHelper.isQnATsvHeader(lines[0])) {
+    const lines: string[] = OrchestratorHelper.readFile(tsvFile).split('\n');
+    if (lines.length === 0 || !OrchestratorHelper.isQnATsvHeader(lines[0])) {
       return;
     }
     lines.shift();
     lines.forEach((line: string) => {
-      let items = line.split('\t');
-      if (items.length == 0) {
+      const items: string[] = line.split('\t');
+      if (items.length === 0) {
         return;
       }
       OrchestratorHelper.addNewLabelUtterance(
@@ -139,8 +136,8 @@ export class OrchestratorHelper {
   }
 
   static async parseQnaFile(qnaFile: string, label: string, utterancesLabelsMap: any) {
-    let fileContents = OrchestratorHelper.readFile(qnaFile);
-    let qnaObject = await QnamakerBuilder.fromContentAsync(fileContents);     
+    const fileContents: string = OrchestratorHelper.readFile(qnaFile);
+    const qnaObject: any = await QnamakerBuilder.fromContent(fileContents);
     OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utterancesLabelsMap);
   }
 
@@ -171,8 +168,8 @@ export class OrchestratorHelper {
     // eslint-disable-next-line no-prototype-builtins
     if (luisObject.hasOwnProperty('utterances')) {
       luisObject.utterances.forEach((e: any) => {
-        let label: string = e.intent.trim();
-        let utterance: string = e.text.trim();
+        const label: string = e.intent.trim();
+        const utterance: string = e.text.trim();
 
         OrchestratorHelper.addNewLabelUtterance(
           utterance,
@@ -185,8 +182,9 @@ export class OrchestratorHelper {
   }
 
   static getQnaQuestionsAsUtterances(qnaObject: any, label: string, utterancesLabelsMap: any) {
-    qnaObject.kb.QnaList.forEach((e: any) => {
-      let questions = e.questions;
+
+    qnaObject.kb.qnaList.forEach((e: any) => {
+      const questions: string[] = e.questions;
       questions.forEach((q: string) => {
         OrchestratorHelper.addNewLabelUtterance(
           q.trim(),
@@ -203,10 +201,10 @@ export class OrchestratorHelper {
   }
 
   static addNewLabelUtterance(
-    utterance: string, 
+    utterance: string,
     label: string,
     hierarchicalLabel: string,
-    utterancesLabelsMap: any) {  
+    utterancesLabelsMap: any) {
     let existingLabels = utterancesLabelsMap[utterance];
     if (existingLabels) {
       if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
@@ -222,7 +220,7 @@ export class OrchestratorHelper {
       else {
         utterancesLabelsMap[utterance] = [label];
       }
-    }   
+    }
   }
 
   static addUniqueLabel(newLabel: string, labels: string[]) {
