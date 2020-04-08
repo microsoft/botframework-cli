@@ -1477,16 +1477,18 @@ describe("Test Suite - utility/Utility", () => {
         const filename: string = "resources/data/Columnar/Email.tsv";
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
+        const weightColumnIndex: number = 1;
         const lineIndexToStart: number = 1;
         const columnDelimiter: string = "\t";
         const rowDelimiter: string = "\n";
         const encoding: string = "utf8";
         const lineIndexToEnd: number = -1;
-        const result: { "intents": string[], "utterances": string[] } =
+        const result: { "intents": string[], "texts": string[], "weights": number[] } =
             Utility.loadLabelTextColumnarFile(
                 filename,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 lineIndexToStart,
                 columnDelimiter,
                 rowDelimiter,
@@ -1494,12 +1496,12 @@ describe("Test Suite - utility/Utility", () => {
                 lineIndexToEnd);
         const intents: string[] =
             result.intents;
-        const utterances: string[] =
-            result.utterances;
+        const texts: string[] =
+            result.texts;
         assert.ok(intents.length === 601,
             `intents.length=${intents.length}`);
-        assert.ok(utterances.length === 601,
-            `utterances.length=${utterances.length}`);
+        assert.ok(texts.length === 601,
+            `utterances.length=${texts.length}`);
     });
     it("Test.1001 loadLabelTextColumnarContent()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -1511,27 +1513,33 @@ describe("Test Suite - utility/Utility", () => {
             Utility.loadFile(filename);
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
+        const weightColumnIndex: number = 1;
         const lineIndexToStart: number = 1;
         const columnDelimiter: string = "\t";
         const rowDelimiter: string = "\n";
         const lineIndexToEnd: number = -1;
-        const result: { "intents": string[], "utterances": string[] } =
+        const result: { "intents": string[], "texts": string[], "weights": number[] } =
             Utility.loadLabelTextColumnarContent(
                 fileContent,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 lineIndexToStart,
                 columnDelimiter,
                 rowDelimiter,
                 lineIndexToEnd);
         const intents: string[] =
             result.intents;
-        const utterances: string[] =
-            result.utterances;
+        const texts: string[] =
+            result.texts;
+        const weights: number[] =
+            result.weights;
         assert.ok(intents.length === 601,
             `intents.length=${intents.length}`);
-        assert.ok(utterances.length === 601,
-            `utterances.length=${utterances.length}`);
+        assert.ok(texts.length === 601,
+            `texts.length=${texts.length}`);
+        assert.ok(weights.length === 601,
+            `weights.length=${weights.length}`);
     });
 
     it("Test.1100 loadEntityAnnotatedCorpusFile()", function() {

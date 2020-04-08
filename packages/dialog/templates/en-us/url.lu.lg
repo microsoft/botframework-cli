@@ -1,7 +1,0 @@
-# filename
-- ${builtinEntityFilename('urlEntity')}
-
-# template
-- @ prebuilt url ${roles()}
-
-[generator.lg](../generator.lg)

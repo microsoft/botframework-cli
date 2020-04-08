@@ -25,14 +25,16 @@ export abstract class Data {
             "endPos": number,
             }>,
         "intent": string,
-        "text": string }> = [];
+        "text": string,
+        "weight": number }> = [];
     protected intentInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
     protected entityTypeInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
 
-    protected intentsUtterances: {
+    protected intentsUtterancesWeights: {
         "intents": string[],
-        "utterances": string[] } =
-        { intents: [], utterances: [] };
+        "utterances": string[],
+        "weights": number[] } =
+        { intents: [], utterances: [], weights: [] };
     protected intentUtteranceSparseIndexArrays: {
         "intentLabelIndexArray": number[],
         "utteranceFeatureIndexArrays": number[][] } =
@@ -52,6 +54,7 @@ export abstract class Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data>;
@@ -60,6 +63,7 @@ export abstract class Data {
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data>;
@@ -76,7 +80,8 @@ export abstract class Data {
             "endPos": number,
             }>,
         "intent": string,
-        "text": string }>): Map<string, number[]> {
+        "text": string,
+        "weight": number }>): Map<string, number[]> {
         const entityTypeInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
         luUtterances.forEach(
             (element: {
@@ -91,25 +96,26 @@ export abstract class Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string },
+                "text": string,
+                "weight": number },
              index: number) => {
-            const entities: Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }> = element.entities;
-            entities.forEach((entityElement: {
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }) => {
-                const entityType: string = entityElement.entity as string;
-                if (entityType) {
-                    Utility.addKeyValueToNumberMapArray(
-                        entityTypeInstanceIndexMapArray,
-                        entityType,
-                        index);
-                }
+                const entities: Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }> = element.entities;
+                entities.forEach((entityElement: {
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }) => {
+                    const entityType: string = entityElement.entity as string;
+                    if (entityType) {
+                        Utility.addKeyValueToNumberMapArray(
+                            entityTypeInstanceIndexMapArray,
+                            entityType,
+                            index);
+                    }
             });
         });
         return entityTypeInstanceIndexMapArray;
@@ -126,27 +132,31 @@ export abstract class Data {
             "endPos": number,
             }>,
         "intent": string,
-        "text": string }>): Map<string, number[]> {
+        "text": string,
+        "weight": number }>): Map<string, number[]> {
         const intentInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
-        luUtterances.forEach((element: {
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string }, index: number) => {
-            const intent: string = element.intent as string;
-            if (intent) {
-                Utility.addKeyValueToNumberMapArray(
-                    intentInstanceIndexMapArray,
-                    intent,
-                    index);
+        luUtterances.forEach(
+            (element: {
+                "entities": Array<{
+                    "entity": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "partOfSpeechTags": Array<{
+                    "partOfSpeechTag": string,
+                    "startPos": number,
+                    "endPos": number,
+                    }>,
+                "intent": string,
+                "text": string,
+                "weight": number },
+             index: number) => {
+                const intent: string = element.intent as string;
+                if (intent) {
+                    Utility.addKeyValueToNumberMapArray(
+                        intentInstanceIndexMapArray,
+                        intent,
+                        index);
             }
         });
         return intentInstanceIndexMapArray;
@@ -181,7 +191,8 @@ export abstract class Data {
             "endPos": number,
             }>,
         "intent": string,
-        "text": string }> {
+        "text": string,
+        "weight": number }> {
         return this.luUtterances;
     }
     public getIntentInstanceIndexMapArray(): Map<string, number[]> {
@@ -233,16 +244,20 @@ export abstract class Data {
         return this.getEntityTypeInstanceIndexMapArray().size;
     }
 
-    public getIntentsUtterances(): {
+    public getIntentsUtterancesWeights(): {
         "intents": string[],
-        "utterances": string[] } {
-        return this.intentsUtterances;
+        "utterances": string[],
+        "weights": number[] } {
+        return this.intentsUtterancesWeights;
     }
     public getIntents(): string[] {
-        return this.intentsUtterances.intents;
+        return this.intentsUtterancesWeights.intents;
     }
     public getUtterances(): string[] {
-        return this.intentsUtterances.utterances;
+        return this.intentsUtterancesWeights.utterances;
+    }
+    public getWeights(): number[] {
+        return this.intentsUtterancesWeights.weights;
     }
 
     public getIntentUtteranceSparseIndexArrays(): {
@@ -259,12 +274,12 @@ export abstract class Data {
 
     public resetFeaturizerLabelFeatureMaps(): void {
         this.getFeaturizer().resetLabelFeatureMaps(
-            this.getIntentsUtterances());
+            this.getIntentsUtterancesWeights());
     }
     public featurizeIntentsUtterances(): void {
         this.intentUtteranceSparseIndexArrays =
             this.getFeaturizer().createIntentUtteranceSparseIndexArrays(
-                this.getIntentsUtterances());
+                this.getIntentsUtterancesWeights());
     }
     public featurize(inputUtterance: string): string[] {
         return this.getFeaturizer().featurize(inputUtterance);
@@ -307,7 +322,8 @@ export abstract class Data {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string } =
+                "text": string,
+                "weight": number } =
                 this.luUtterances[luUtteranceIndex];
             const intent: string =
                 luUtterance.intent as string;
@@ -376,7 +392,8 @@ export abstract class Data {
                         "endPos": number,
                         }>,
                     "intent": string,
-                    "text": string } = this.luUtterances[luUtteranceIndex];
+                    "text": string,
+                    "weight": number } = this.luUtterances[luUtteranceIndex];
                 let hasNewUtteranceFoundForCoveringAllIntentEntityLabels: boolean = false;
                 if (toEnsureEachIntentHasOneUtteranceLabel) {
                     if (intentSet.size < numberIntents) {

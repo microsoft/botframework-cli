@@ -91,8 +91,16 @@ export async function mainTester(): Promise<void> {
     parser.addArgument(
         ["-ti", "--textColumnIndex"],
         {
-            defaultValue: 0,
+            defaultValue: 1,
             help: "text/utterance column index",
+            required: false,
+        },
+    );
+    parser.addArgument(
+        ["-wi", "--weightColumnIndex"],
+        {
+            defaultValue: -1,
+            help: "weight column index",
             required: false,
         },
     );
@@ -154,11 +162,14 @@ export async function mainTester(): Promise<void> {
     // -----------------------------------------------------------------------
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
+    const weightColumnIndex: number = +args.weightColumnIndex;
     const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `labelColumnIndex=${labelColumnIndex}`);
     Utility.debuggingLog(
         `textColumnIndex=${textColumnIndex}`);
+    Utility.debuggingLog(
+        `weightColumnIndex=${weightColumnIndex}`);
     Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
@@ -171,11 +182,13 @@ export async function mainTester(): Promise<void> {
     // Utility.debuggingLog(
     //     `featurizer.getLabelMap()=${Utility.JSONstringify(featurizer.getLabelMap())}`);
     // -----------------------------------------------------------------------
-    let intentsUtterances: {
+    let intentsUtterancesWeights: {
         "intents": string[],
-        "utterances": string[] } = {
+        "utterances": string[],
+        "weights": number[] } = {
             intents: [],
-            utterances: [] };
+            utterances: [],
+            weights: [] };
     let intentLabelIndexArray: number[] = [];
     let utteranceFeatureIndexArrays: number[][] = [];
     const data: Data = await DataUtility.LoadData(
@@ -185,14 +198,16 @@ export async function mainTester(): Promise<void> {
         filetype,
         labelColumnIndex,
         textColumnIndex,
+        weightColumnIndex,
         linesToSkip);
-    intentsUtterances = data.getIntentsUtterances();
+    intentsUtterancesWeights = data.getIntentsUtterancesWeights();
     intentLabelIndexArray = data.getIntentLabelIndexArray();
     utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
     // -----------------------------------------------------------------------
     tester.test(
-        intentsUtterances.intents,
-        intentsUtterances.utterances,
+        intentsUtterancesWeights.intents,
+        intentsUtterancesWeights.utterances,
+        intentsUtterancesWeights.weights,
         intentLabelIndexArray,
         utteranceFeatureIndexArrays);
     // -----------------------------------------------------------------------

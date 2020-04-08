@@ -46,6 +46,7 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
             0,
             2,
             1,
+            1,
             5,
             10,
             100,
@@ -54,7 +55,7 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
             32);
     });
 
-    it("Test.0200 mainCrossValidator()", async function() {
+    it("Test.0200 mainCrossValidator() - Email.tsv", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string =
@@ -69,6 +70,8 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
         process.argv.push("0");
         process.argv.push("--textColumnIndex");
         process.argv.push("2");
+        process.argv.push("--weightColumnIndex");
+        process.argv.push("1");
         process.argv.push("--linesToSkip");
         process.argv.push("1");
         const mainCrossValidatorResult: {
@@ -91,7 +94,7 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
             }
         }
     });
-    it("Test.0201 mainCrossValidator()", async function() {
+    it("Test.0201 mainCrossValidator() - Email.lu", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string =

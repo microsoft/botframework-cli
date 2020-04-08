@@ -25,6 +25,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
     protected instanceGroudTruthLabelIds: number[] = [];
     protected instanceFeatureTexts: string[] = [];
     protected instanceIdentifiers: string[] = [];
+    protected instanceWeights: number[] = [];
 
     protected targetLabelBatchesToReport: string[][] = [];
     protected numberOfLabelsPerBatch: number = 8;
@@ -154,11 +155,13 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
         instancePredictedScoreArray: number[],
         instanceGroudTruthLabelId: number,
         instanceFeatureText: string,
-        instanceIdentifier: string): void {
+        instanceIdentifier: string,
+        instanceWeight: number): void {
         this.instancePredictedScoreArrays.push(instancePredictedScoreArray);
         this.instanceGroudTruthLabelIds.push(instanceGroudTruthLabelId);
         this.instanceFeatureTexts.push(instanceFeatureText);
         this.instanceIdentifiers.push(instanceIdentifier);
+        this.instanceWeights.push(instanceWeight);
     }
 
     public reportToDataArrays(): string[][] {
@@ -341,6 +344,9 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
         if (Utility.isEmptyStringArray(this.instanceIdentifiers)) {
             Utility.debuggingThrow("'this.instanceIdentifiers' array is empty");
         }
+        if (Utility.isEmptyNumberArray(this.instanceWeights)) {
+            Utility.debuggingThrow("'this.instanceWeights' array is empty");
+        }
         const numberInstances: number = this.getNumberInstances();
         if (this.instanceGroudTruthLabelIds.length !== numberInstances) {
             Utility.debuggingThrow(
@@ -354,38 +360,52 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
             Utility.debuggingThrow(
                 `this.instanceIdentifiers.length|${this.instanceIdentifiers.length}|!==numberInstances|${numberInstances}|`);
         }
+        if (this.instanceWeights.length !== numberInstances) {
+            Utility.debuggingThrow(
+                `this.instanceWeights.length|${this.instanceWeights.length}|!==numberInstances|${numberInstances}|`);
+        }
     }
 
     public loadScoreFileAndPopulate(
         scoreFilename: string,
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
-        scoreColumnBeginIndex: number = 2,
-        // numberOfScoreColumns: number = 0,
         weightColumnIndex: number = -1,
+        scoreColumnBeginIndex: number = 2,
+        identifierColumnIndex: number = -1,
+        predictedLabelColumnIndex: number = -1,
+        revisedTextColumnIndex: number = -1,
         lineIndexToStart: number = 0): void {
         const scoreDataStructure: {
-            "intents": string[],
-            "utterances": string[],
+            "labels": string[],
+            "texts": string[],
             "weights": number[],
-            "scoreArrays": number[][] } =
-            Utility.loadLabelTextScoreContent(
+            "identifiers": string[],
+            "scoreArrays": number[][],
+            "predictedLabels": string[],
+            "revisedTexts": string[] } =
+            Utility.loadLabelTextScoreFile(
                 scoreFilename,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 scoreColumnBeginIndex,
                 this.getNumberLabels(),
-                weightColumnIndex,
+                identifierColumnIndex,
+                predictedLabelColumnIndex,
+                revisedTextColumnIndex,
                 lineIndexToStart);
         const labelMap: { [id: string]: number; } =
             this.getLabelMap();
-        const numberInstances: number = scoreDataStructure.intents.length;
+        const numberInstances: number = scoreDataStructure.labels.length;
         for (let i = 0; i < numberInstances; i++) {
-            const label: string = scoreDataStructure.intents[i];
-            const text: string = scoreDataStructure.utterances[i];
+            const label: string = scoreDataStructure.labels[i];
+            const text: string = scoreDataStructure.texts[i];
+            const identifier: string = scoreDataStructure.identifiers[i];
             const scoreArray: number[] = scoreDataStructure.scoreArrays[i];
             const labelId: number = labelMap[label];
-            this.addInstance(scoreArray, labelId, text, i.toString());
+            const weight: number = scoreDataStructure.weights[i];
+            this.addInstance(scoreArray, labelId, text, identifier, weight);
         }
     }
 }
