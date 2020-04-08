@@ -73,6 +73,6 @@ export class QnAMakerCommand {
         let command = `bf qnamaker:kb:delete --kbId ${ this.deleteKbId } --subscriptionKey ${ this.qnaKey } --force`;
         
         execSync(command);
-        console.log('QnA knoledge base succesfully deleted');
+        console.log('QnA knolewdge base succesfully deleted');
     }
 }
