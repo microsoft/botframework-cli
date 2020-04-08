@@ -46,10 +46,36 @@ export class OrchestratorHelper {
     }
   }
 
+  public static createDteContent(utterancesLabelsMap: any) {
+    const labelUtteranceMap: { [label: string]: string} = {};
+    // eslint-disable-next-line guard-for-in
+    for (const utterance in utterancesLabelsMap) {
+      const labels: any = utterancesLabelsMap[utterance];
+      labels.forEach((label: string) => {
+        if (label in labelUtteranceMap) {
+          labelUtteranceMap[label] = labelUtteranceMap[label] + '|' + utterance;
+        } else {
+          labelUtteranceMap[label] = utterance;
+        }
+      });
+    }
+    let key: number = 0;
+    let tsvContent: string = '';
+    // eslint-disable-next-line guard-for-in
+    for (const label in labelUtteranceMap) {
+      const utterances: string = labelUtteranceMap[label];
+      const line: string = key + '\t' + label + '\t' + utterances + '\n';
+      tsvContent += line;
+      key += 1;
+    }
+
+    return tsvContent;
+  }
+
   public static async getTsvContent(
-    filePath: string, 
-    hierarchical: boolean = false, 
-    oneLinePerLabelUtterance : boolean = false)  {
+    filePath: string,
+    hierarchical: boolean = false,
+    outputDteFormat: boolean = false)  {
     try {
       const utterancesLabelsMap: any = {};
       let tsvContent: string = '';
@@ -60,19 +86,15 @@ export class OrchestratorHelper {
         await OrchestratorHelper.processFile(filePath, path.basename(filePath), utterancesLabelsMap, hierarchical);
       }
 
-      // eslint-disable-next-line guard-for-in
-      for (const utterance in utterancesLabelsMap) {
-        const labels: any = utterancesLabelsMap[utterance];
-        let line = '';
-        if (oneLinePerLabelUtterance) {
-          labels.forEach((label: string) => {
-            line = label + '\t' + utterance + '\n';
-          });
+      if (outputDteFormat) {
+        tsvContent = OrchestratorHelper.createDteContent(utterancesLabelsMap);
+      } else {
+        // eslint-disable-next-line guard-for-in
+        for (const utterance in utterancesLabelsMap) {
+          const labels: any = utterancesLabelsMap[utterance];
+          const line: string = labels.join() + '\t' + utterance + '\n';
+          tsvContent += line;
         }
-        else {
-          line = labels.join() + '\t' + utterance + '\n';
-        }
-        tsvContent += line;
       }
 
       return tsvContent;
