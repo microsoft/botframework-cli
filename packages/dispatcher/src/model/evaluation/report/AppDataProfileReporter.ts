@@ -74,6 +74,14 @@ export function mainDataProfileReporter(): void {
         },
     );
     parser.addArgument(
+        ["-wi", "--weightColumnIndex"],
+        {
+            defaultValue: -1,
+            help: "weight column index",
+            required: false,
+        },
+    );
+    parser.addArgument(
         ["-ls", "--linesToSkip"],
         {
             defaultValue: 0,
@@ -115,6 +123,7 @@ export function mainDataProfileReporter(): void {
     }
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
+    const weightColumnIndex: number = +args.weightColumnIndex;
     const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `filename=${filename}`);
@@ -127,6 +136,8 @@ export function mainDataProfileReporter(): void {
     Utility.debuggingLog(
         `textColumnIndex=${textColumnIndex}`);
     Utility.debuggingLog(
+        `weightColumnIndex=${weightColumnIndex}`);
+    Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
     DataUtility.LoadData(
@@ -136,15 +147,16 @@ export function mainDataProfileReporter(): void {
         filetype,
         labelColumnIndex,
         textColumnIndex,
+        weightColumnIndex,
         linesToSkip).then((data) => {
             // ---------------------------------------------------------------
-            const thresholdReporter: DataProfileReporter =
+            const dataProfileReporter: DataProfileReporter =
                 new DataProfileReporter(data);
             // ---------------------------------------------------------------
             const evaluationDataArraysReportResult: {
                 "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
                 "outputFilenames": string[],
-                } = thresholdReporter.generateEvaluationDataArraysReportToFiles(
+                } = dataProfileReporter.generateEvaluationDataArraysReportToFiles(
                     outputReportFilenamePrefix);
             // ---------------------------------------------------------------
         });

@@ -311,7 +311,7 @@ export class ConfusionMatrix {
         if (!(label in this.getLabelMap())) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
-                    `label=${label}, not int the label map=${this.getLabelMap()}`);
+                    `label=${label}, not int the label map=${Utility.JSONstringify(this.getLabelMap())}`);
             }
             return false;
         }

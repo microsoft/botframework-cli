@@ -1,7 +1,0 @@
-# filename
-- ${builtinEntityFilename('ordinalEntity')}
-
-# template
-- @ prebuilt ordinal ${roles()}
-
-[generator.lg](../generator.lg)

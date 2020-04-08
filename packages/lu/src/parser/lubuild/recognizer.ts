@@ -41,7 +41,7 @@ export class Recognizer {
 
   save(): string {
     let output = {
-      $type: 'Microsoft.LuisRecognizer',
+      $kind: 'Microsoft.LuisRecognizer',
       applicationId: this.applicationId,
       endpoint: this.endpoint,
       endpointKey: this.endpointKey

@@ -28,7 +28,7 @@ import { Utility } from "../../../../src/utility/Utility";
 import { UnitTestHelper } from "../../../utility/Utility.test";
 
 describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async () => {
-    it("Test.0000 crossValidate()", async function() {
+    it("Test.0000 crossValidate() - LuContentEmail", async function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const luContent: string = LuContentEmail;
@@ -96,12 +96,13 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
             `,crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
             `${crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
     });
-    it("Test.0001 crossValidate()", function() {
+    it("Test.0001 crossValidate() - ColumnarContentEmail", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const columnarContent: string = ColumnarContentEmail;
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
+        const weightColumnIndex: number = 1;
         const linesToSkip: number = 1;
         const numberOfCrossValidationFolds: number =
             CrossValidator.defaultNumberOfCrossValidationFolds;
@@ -125,6 +126,7 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 linesToSkip,
                 true);
         const intentLabelIndexArray: number[] =
