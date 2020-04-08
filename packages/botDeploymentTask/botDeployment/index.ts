@@ -8,22 +8,15 @@ import { execSync } from "child_process";
 import { SubscriptionHelper } from './subscriptionHelper';
 import { InputValues } from './inputValues';
 import { lstatSync, readFileSync } from 'fs';
-import * as AppInsights from 'applicationinsights';
-import * as dotenv from 'dotenv';
 import * as path from 'path';
 
 const input = new InputValues();
 const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
 const outputFileDirectLine = `${ rootPath }/DirectLineCreate.json`;
 const outputFileTeams = `${ rootPath }/TeamsCreate.json`;
-const taskType = taskLibrary.getVariable("Release.ReleaseId") ? "Release Task": "Build Task"
-const envFile = path.join(__dirname, '.env');
 let formattedParams = new Map<string, string>();  
 let botName:string = '';
 let webAppName:string = '';
-let telemetryClient: AppInsights.TelemetryClient;
-
-dotenv.config({ path: envFile });
 
 const setUserAgent = (): void => {
     const taskFile = path.join(__dirname, 'task.json')
@@ -33,25 +26,6 @@ const setUserAgent = (): void => {
 
     process.env['AZURE_HTTP_USER_AGENT'] = `Bot-Deployment-Task/${sourceTask.version.Major}.${sourceTask.version.Minor}.${sourceTask.version.Patch}`;
 }
-
-const appInsightInit = (): void => {
-    AppInsights.setup(process.env.InstrumentationKey)
-      // turn off extra instrumentation
-      .setAutoCollectConsole(false)
-      .setAutoCollectDependencies(false)
-      .setAutoCollectExceptions(false)
-      .setAutoCollectPerformance(false)
-      .setAutoCollectRequests(false)
-      .setAutoDependencyCorrelation(false)
-      .start();
-
-    telemetryClient = AppInsights.defaultClient;
-    telemetryClient.commonProperties = {
-        collection: taskLibrary.getVariable("system.collectionId") as string, 
-        projectId: taskLibrary.getVariable("system.teamProjectId") as string
-    };
-    telemetryClient.config.disableAppInsights = !input.telemetry;
-  }
 
 const azureLogin = (helper: SubscriptionHelper): void => {
     const userName = helper.getServicePrincipalClientId();
@@ -238,11 +212,8 @@ const teamsConnection = (): void => {
 const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
-    const startTime  = Date.now();
     
     setUserAgent();
-    
-    appInsightInit();
 
     azureLogin(helper);
 
@@ -261,43 +232,17 @@ const run = (): void => {
         
         if (input.directLineChannel) {
             directLineConnection();
-            telemetryClient.trackEvent({ name: "DirectLineConnection" });  
-        }
-
-        if (input.slackChannel) {
-            telemetryClient.trackEvent({ name: "SlackConnection" });  
         }
 
         if (input.teamsChannel) {
             teamsConnection();
-            telemetryClient.trackEvent({ name: "MSTeamsConnection" });  
         }
 
-        if (input.webexChannel) {
-            telemetryClient.trackEvent({ name: "WebexConnection" });  
-        }
-
-        if (input.facebookChannel) {
-            telemetryClient.trackEvent({ name: "FacebookConnection" });  
-        }
-
-        if (input.twilioChannel) {
-            telemetryClient.trackEvent({ name: "TwilioConnection" });  
-        }
-
-        let duration = Date.now() - startTime;
-        telemetryClient.trackRequest({ name: "Task Execution", url: taskType, duration: duration, success: true, resultCode: "OK" });
         taskLibrary.setResult(taskLibrary.TaskResult.Succeeded, "Ok", true);
     }
     catch (error) {
-        let duration = Date.now() - startTime;
-        telemetryClient.trackException({ exception: error });   
-        telemetryClient.trackRequest({ name: "Task Execution", url: taskType, duration: duration, success: false, resultCode: "Error" });
         taskLibrary.setResult(taskLibrary.TaskResult.Failed, error.message, true);
     } 
-    finally {
-        telemetryClient.flush();
-    }
 }
 
 run();

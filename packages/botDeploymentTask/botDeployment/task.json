@@ -294,15 +294,6 @@
             "helpMarkDown": "Provide the Twilio authorization token for the account.",
             "groupname": "channels",
             "visibleRule": "twilioChannel = TRUE"
-        },
-        {
-            "name": "telemetry",
-            "type": "boolean",
-            "label": "Enable telemetry",
-            "required": false,
-            "defaultValue": true,
-            "helpMarkDown": "Send anonymous usage Telemetry.",
-            "groupname": "advanced"
         }
     ],
     "dataSourceBindings": [

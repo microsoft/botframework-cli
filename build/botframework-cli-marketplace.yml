@@ -17,7 +17,6 @@ jobs:
       extensionId: 'bot-deployment'
       extensionName: 'Bot Deployment'
       version: '4.8.0.$(Build.BuildId)'
-      # TelemetryInstrumentationKey: 'Define this in Azure'
       # MarketplaceConnection: 'Define this in Azure'
 
     steps:
@@ -45,20 +44,6 @@ jobs:
 
     - script: 'rush build -p 2 -t @microsoft/bot-deployment-task'
       displayName: 'rush build'
-
-    - powershell: |
-        #Set values in .env file.
-        
-        $file = "$(Build.SourcesDirectory)/packages/botDeploymentTask/botDeployment/.env";
-        echo "##vso[task.setvariable variable=KEY;]$(TelemetryInstrumentationKey)"
-        $content = Get-Content -Raw $file | ConvertFrom-StringData;
-        
-        $content.InstrumentationKey=$KEY;
-        
-        Clear-Content $file;
-        
-        foreach ($key in $content.keys) { Add-Content $file "$key=$($content.$key)" }
-      displayName: 'Set Environment Keys'
 
     - task: ms-devlabs.vsts-developer-tools-build-tasks.tfx-installer-build-task.TfxInstaller@2
       displayName: 'Install tfx-cli: v0.7.x'

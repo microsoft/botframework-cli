@@ -34,7 +34,6 @@ export class InputValues {
     public twilioNumber?: string = '';
     public twilioAccountSid?: string = '';
     public twilioAuthToken?: string = '';
-    public telemetry?: boolean;
 
     constructor() {
         this.scope = getInput('scope', true) as string;
@@ -76,7 +75,6 @@ export class InputValues {
         }
 
         this.validationMode = getBoolInput('validationMode', false);
-        this.telemetry = getBoolInput('telemetry', true);
     }
 
     private validatePath = (inputName: string): string => {
