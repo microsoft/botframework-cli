@@ -1,7 +1,0 @@
-# filename
-- ${removeFilename('percentage')}
-
-# template
-- ${removeDialog('percentage')}
-
-[generator.lg](generator.lg)

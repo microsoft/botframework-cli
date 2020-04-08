@@ -1,7 +1,0 @@
-# filename
-- ${addFilename('utterance')}
-
-# template
-- ${addDialog('utterance')}
-
-[generator.lg](generator.lg)
