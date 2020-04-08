@@ -90,7 +90,7 @@ export default class OrchestratorFinetune extends Command {
     let tsvContent: string = '';
     try {
       utils.OrchestratorHelper.deleteFile(tsvFilePath);
-      tsvContent = await utils.OrchestratorHelper.getTsvContent(input, hierachical);
+      tsvContent = await utils.OrchestratorHelper.getTsvContent(input, hierachical, true);
       if (tsvContent.length === 0) {
         const errorMsg: string  = 'Invalid input';
         this.log(errorMsg);

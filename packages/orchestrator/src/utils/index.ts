@@ -46,12 +46,14 @@ export class OrchestratorHelper {
     }
   }
 
-  public static async getTsvContent(filePath: string, hierarchical: boolean = false)  {
+  public static async getTsvContent(
+    filePath: string, 
+    hierarchical: boolean = false, 
+    oneLinePerLabelUtterance : boolean = false)  {
     try {
       const utterancesLabelsMap: any = {};
       let tsvContent: string = '';
 
-      Utility.writeToConsole('Processing: filepath:' + filePath);
       if (OrchestratorHelper.isDirectory(filePath)) {
         await OrchestratorHelper.iterateInputFolder(filePath, utterancesLabelsMap, hierarchical);
       } else {
@@ -61,7 +63,15 @@ export class OrchestratorHelper {
       // eslint-disable-next-line guard-for-in
       for (const utterance in utterancesLabelsMap) {
         const labels: any = utterancesLabelsMap[utterance];
-        const line: string = labels.join() + '\t' + utterance + '\n';
+        let line = '';
+        if (oneLinePerLabelUtterance) {
+          labels.forEach((label: string) => {
+            line = label + '\t' + utterance + '\n';
+          });
+        }
+        else {
+          line = labels.join() + '\t' + utterance + '\n';
+        }
         tsvContent += line;
       }
 
@@ -164,7 +174,10 @@ export class OrchestratorHelper {
     }
   }
 
-  static getIntentsUtterances(luisObject: any, hierarchicalLabel: string, utterancesLabelsMap: any) {
+  static getIntentsUtterances(
+    luisObject: any, 
+    hierarchicalLabel: string, 
+    utterancesLabelsMap: any) {
     // eslint-disable-next-line no-prototype-builtins
     if (luisObject.hasOwnProperty('utterances')) {
       luisObject.utterances.forEach((e: any) => {
