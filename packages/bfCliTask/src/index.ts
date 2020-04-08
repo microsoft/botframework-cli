@@ -7,6 +7,7 @@ import taskLibrary = require('azure-pipelines-task-lib/task');
 import { execSync } from "child_process";
 import { SubscriptionHelper } from './subscriptionHelper';
 import { LuisCommand } from './luisCommand';
+import { QnAMakerCommand } from './qnaMakerCommand';
 import { readFileSync } from 'fs';
 
 const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
@@ -62,6 +63,7 @@ const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
     const luisCommand = taskLibrary.getBoolInput('luisCommand', false);
+    const qnaCommand = taskLibrary.getBoolInput('qnaMakerCommand', false);
 
     azureLogin(helper);
 
@@ -72,6 +74,11 @@ const run = (): void => {
     if (luisCommand) {
         const luis = new LuisCommand();
         luis.executeSubCommand();
+    }
+
+    if (qnaCommand) {
+        const qna = new QnAMakerCommand();
+        qna.executeSubCommand();
     }
 }
 

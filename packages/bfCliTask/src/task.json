@@ -167,6 +167,67 @@
             "groupname": "command",
             "visibleRule": "luisSubCommand=LuisPublish",
             "helpMarkDown": "Check to publish the application version to Production slot."
+        },
+        {
+            "name": "qnaMakerSubCommand",
+            "type": "pickList",
+            "label": "QnA Maker Commands",
+            "required": false,
+            "defaultValue": "",
+            "groupname": "command",
+            "visibleRule": "qnaMakerCommand = TRUE",
+            "helpMarkDown": "Select the sub-command to execute.",
+            "options": {
+                "CreateKB" : "Create and publish Knowledge Base",
+                "DeleteKB" : "Delete a Knowledge Base"
+            }
+        },
+        {
+            "name": "qnaKey",
+            "type": "string",
+            "label": "QnA Subscription Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerCommand = TRUE",
+            "helpMarkDown": "Enter you QnAMaker found on the Cognitive Services Azure portal page under 'access keys'"   
+        },
+        {
+            "name": "kbName",
+            "type": "string",
+            "label": "Knowledge base name",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=CreateKB",
+            "helpMarkDown": "Enter a name for your knowledge base"   
+        },
+        {
+            "name": "kbFileLocation",
+            "type": "filepath",
+            "label": "Knowledge base file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=CreateKB",
+            "helpMarkDown": "Enter the location of your knowledge base file"   
+        },
+        {
+            "name": "publishNewKB",
+            "type": "boolean",
+            "label": "Publish knowledge base",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=CreateKB",
+            "helpMarkDown": "Check to publish this knowledge base after the creation."
+            
+        },
+        {
+            "name": "deleteKbId",
+            "type": "string",
+            "label": "Knowledge base ID",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerCommand = TRUE",
+            "helpMarkDown": "Enter the ID of the knowledge base you want to delete."
         }
     ],
     "execution": {
