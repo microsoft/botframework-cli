@@ -1,7 +1,0 @@
-# filename
-- ${addFilename('email')}
-
-# template
-- ${addDialog('email')}
-
-[generator.lg](generator.lg)
