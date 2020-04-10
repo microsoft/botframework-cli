@@ -131,9 +131,21 @@ export class OrchestratorHelper {
         filePath,
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utterancesLabelsMap);
+    } else if (ext === '.blu') {
+      OrchestratorHelper.parseBluFile(
+        filePath,
+        utterancesLabelsMap);
     } else {
       throw new CLIError(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
     }
+  }
+
+  static async parseBluFile(bluFile: string, utterancesLabelsMap: any) {
+    const lines: string[] = OrchestratorHelper.readFile(bluFile).split('\n');
+    if (lines.length === 0) {
+      return;
+    }
+    OrchestratorHelper.tryParseLabelUtteranceTsv(lines, utterancesLabelsMap, true);
   }
 
   static async parseLuFile(luFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
@@ -152,8 +164,8 @@ export class OrchestratorHelper {
     }
   }
 
-  static tryParseLabelUtteranceTsv(lines: string[], utterancesLabelsMap: any): boolean {
-    if (OrchestratorHelper.hasLabelUtteranceHeader(lines[0])) {
+  static tryParseLabelUtteranceTsv(lines: string[], utterancesLabelsMap: any, bluFormat: boolean = false): boolean {
+    if (!bluFormat && OrchestratorHelper.hasLabelUtteranceHeader(lines[0])) {
       lines.shift();
     }
     lines.forEach((line: string) => {
@@ -162,7 +174,7 @@ export class OrchestratorHelper {
         return;
       }
       let labels: string = items[0] ? items[0] : '';
-      const utteranceIdx: number = items.length === 3 ? 2 : 1;
+      const utteranceIdx: number = (items.length === 3 && !bluFormat) ? 2 : 1;
       let utterance: string = items[utteranceIdx] ? items[utteranceIdx] : '';
       labels = labels.trim();
       utterance = utterance.trim();
@@ -216,7 +228,7 @@ export class OrchestratorHelper {
     folderPath: string,
     utterancesLabelsMap: any,
     hierarchical: boolean) {
-    const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv', '.txt'];
+    const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv', '.txt', '.blu'];
     const items: string[] = fs.readdirSync(folderPath);
     for (const item of items) {
       const currentItemPath: string = path.join(folderPath, item);
