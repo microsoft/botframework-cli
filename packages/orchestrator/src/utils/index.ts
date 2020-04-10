@@ -7,9 +7,8 @@ import {CLIError} from '@microsoft/bf-cli-command';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import {Utility} from './utility';
-const LUISBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
-const QnamakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
-const QnamakerMaker = require('@microsoft/bf-lu').V2.QnamakerMaker;
+const LuisBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
+const QnaMakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
 
 export class OrchestratorHelper {
   public static isDirectory(path: string): boolean {
@@ -127,8 +126,8 @@ export class OrchestratorHelper {
         fs.readJsonSync(filePath),
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utterancesLabelsMap);
-    } else if (ext === '.tsv') {
-      OrchestratorHelper.tryParseQnATsvFile(
+    } else if (ext === '.tsv' || ext === '.txt') {
+      OrchestratorHelper.parseTsvFile(
         filePath,
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utterancesLabelsMap);
@@ -139,19 +138,52 @@ export class OrchestratorHelper {
 
   static async parseLuFile(luFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
     const fileContents: string = OrchestratorHelper.readFile(luFile);
-    const luisObject: any = await LUISBuilder.fromContentAsync(fileContents);
+    const luisObject: any = await LuisBuilder.fromContentAsync(fileContents);
     OrchestratorHelper.getIntentsUtterances(luisObject, hierarchicalLabel, utterancesLabelsMap);
   }
 
-  static tryParseQnATsvFile(tsvFile: string, label: string, utterancesLabelsMap: any) {
+  static async parseTsvFile(tsvFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
     const lines: string[] = OrchestratorHelper.readFile(tsvFile).split('\n');
-    if (lines.length === 0 || !OrchestratorHelper.isQnATsvHeader(lines[0])) {
+    if (lines.length === 0) {
       return;
+    }
+    if (!OrchestratorHelper.tryParseQnATsvFile(lines, hierarchicalLabel, utterancesLabelsMap)) {
+      OrchestratorHelper.tryParseLabelUtteranceTsv(lines, utterancesLabelsMap);
+    }
+  }
+
+  static tryParseLabelUtteranceTsv(lines: string[], utterancesLabelsMap: any): boolean {
+    if (OrchestratorHelper.hasLabelUtteranceHeader(lines[0])) {
+      lines.shift();
+    }
+    lines.forEach((line: string) => {
+      const items: string[] = line.split('\t');
+      if (items.length < 2) {
+        return;
+      }
+      let labels: string = items[0] ? items[0] : '';
+      const utteranceIdx: number = items.length === 3 ? 2 : 1;
+      let utterance: string = items[utteranceIdx] ? items[utteranceIdx] : '';
+      labels = labels.trim();
+      utterance = utterance.trim();
+      OrchestratorHelper.addNewLabelUtterance(
+        utterance,
+        labels,
+        '',
+        utterancesLabelsMap
+      );
+    });
+    return true;
+  }
+
+  static tryParseQnATsvFile(lines: string[], label: string, utterancesLabelsMap: any): boolean {
+    if (!OrchestratorHelper.isQnATsvHeader(lines[0])) {
+      return false;
     }
     lines.shift();
     lines.forEach((line: string) => {
       const items: string[] = line.split('\t');
-      if (items.length === 0) {
+      if (items.length < 2) {
         return;
       }
       OrchestratorHelper.addNewLabelUtterance(
@@ -161,15 +193,22 @@ export class OrchestratorHelper {
         utterancesLabelsMap
       );
     });
+
+    return true;
   }
 
-  static isQnATsvHeader(header: string) {
-    return header.indexOf('Question') > 0 && header.indexOf('Answer') > 0;
+  static isQnATsvHeader(header: string): boolean {
+    return header.indexOf('Question') >= 0 && header.indexOf('Answer') > 0;
+  }
+
+  static hasLabelUtteranceHeader(header: string): boolean {
+    return header.indexOf('Label') >= 0 &&
+      (header.indexOf('Text') > 0 || header.indexOf('Utterance') > 0);
   }
 
   static async parseQnaFile(qnaFile: string, label: string, utterancesLabelsMap: any) {
     const fileContents: string = OrchestratorHelper.readFile(qnaFile);
-    const qnaObject: any = await QnamakerBuilder.fromContent(fileContents);
+    const qnaObject: any = await QnaMakerBuilder.fromContent(fileContents);
     OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utterancesLabelsMap);
   }
 
@@ -177,7 +216,7 @@ export class OrchestratorHelper {
     folderPath: string,
     utterancesLabelsMap: any,
     hierarchical: boolean) {
-    const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv'];
+    const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv', '.txt'];
     const items: string[] = fs.readdirSync(folderPath);
     for (const item of items) {
       const currentItemPath: string = path.join(folderPath, item);
@@ -240,9 +279,9 @@ export class OrchestratorHelper {
     label: string,
     hierarchicalLabel: string,
     utterancesLabelsMap: any) {
-    let existingLabels = utterancesLabelsMap[utterance];
+    const existingLabels: string[] = utterancesLabelsMap[utterance];
     if (existingLabels) {
-      if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
+      if (hierarchicalLabel && hierarchicalLabel.length > 0) {
         OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels);
       }
       else {
@@ -250,19 +289,17 @@ export class OrchestratorHelper {
       }
       utterancesLabelsMap[utterance] = existingLabels;
     }
+    else if (hierarchicalLabel && hierarchicalLabel.length > 0) {
+      utterancesLabelsMap[utterance] = [hierarchicalLabel];
+    }
     else {
-      if (hierarchicalLabel != null && hierarchicalLabel.length > 0) {
-        utterancesLabelsMap[utterance] = [hierarchicalLabel];
-      }
-      else {
-        utterancesLabelsMap[utterance] = [label];
-      }
+      utterancesLabelsMap[utterance] = [label];
     }
   }
 
   static addUniqueLabel(newLabel: string, labels: string[]) {
-    let labelExists = false;
-    for(const label of labels) {
+    let labelExists: boolean = false;
+    for (const label of labels) {
       if (label === newLabel) {
         labelExists = true;
         break;
