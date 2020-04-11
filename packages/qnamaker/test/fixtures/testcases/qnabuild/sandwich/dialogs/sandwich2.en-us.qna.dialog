@@ -1,5 +1,5 @@
 {
-    "$type": "Microsoft.QnAMakerRecognizer",
+    "$kind": "Microsoft.QnAMakerRecognizer",
     "id": "QnA_sandwich2",
     "knowledgeBaseId": "=settings.qna.sandwich2_en-us_qna",
     "hostname": "=settings.qna.hostname",

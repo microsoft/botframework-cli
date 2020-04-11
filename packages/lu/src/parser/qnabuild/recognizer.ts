@@ -41,7 +41,7 @@ export class Recognizer {
 
   save(): string {
     let output = {
-      $type: 'Microsoft.QnAMakerRecognizer',
+      $kind: 'Microsoft.QnAMakerRecognizer',
       id: this.id,
       knowledgeBaseId: this.knowledgeBaseId,
       hostname: this.hostname,
