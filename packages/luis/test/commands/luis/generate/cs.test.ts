@@ -151,4 +151,15 @@ describe('luis:generate:cs', () => {
     .it('Generates class based on luis schema v6 correctly', async () => {
       await compareSourceFiles('../../../fixtures/generate/SchemaV6.cs', '../../../fixtures/generate/results/SchemaV6.cs')
     })
+
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/V6AnyEntityAsInstanceOf.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')}`])
+    .it('Generates class based on V6 with entity instanceOf referencing a closedList', async () => {
+      await compareSourceFiles('../../../fixtures/generate/V6AnyEntityAsInstanceOf.cs', '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')
+    })
 })
