@@ -91,8 +91,16 @@ export async function mainTester(): Promise<void> {
     parser.addArgument(
         ["-ti", "--textColumnIndex"],
         {
-            defaultValue: 0,
+            defaultValue: 1,
             help: "text/utterance column index",
+            required: false,
+        },
+    );
+    parser.addArgument(
+        ["-wi", "--weightColumnIndex"],
+        {
+            defaultValue: -1,
+            help: "weight column index",
             required: false,
         },
     );
@@ -108,9 +116,9 @@ export async function mainTester(): Promise<void> {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${JSON.stringify(args)}`);
+        `args=${Utility.JSONstringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${JSON.stringify(unknownArgs)}`);
+        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -137,7 +145,7 @@ export async function mainTester(): Promise<void> {
     }
     let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
     if (Utility.isEmptyString(outputReportFilenamePrefix)) {
-        outputReportFilenamePrefix = Utility.getFileBasename(filename);
+        outputReportFilenamePrefix = Utility.getFilenameWithoutExtension(filename);
         // Utility.debuggingThrow(
         //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
     }
@@ -154,44 +162,60 @@ export async function mainTester(): Promise<void> {
     // -----------------------------------------------------------------------
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
+    const weightColumnIndex: number = +args.weightColumnIndex;
     const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `labelColumnIndex=${labelColumnIndex}`);
     Utility.debuggingLog(
         `textColumnIndex=${textColumnIndex}`);
     Utility.debuggingLog(
+        `weightColumnIndex=${weightColumnIndex}`);
+    Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
-    // -----------------------------------------------------------------------
-    let intentsUtterances: {
-        "intents": string[],
-        "utterances": string[] } = {
-            intents: [],
-            utterances: [] };
-    let intentLabelIndexArray: number[] = [];
-    let utteranceFeatureIndexArrays: number[][] = [];
-    const data: Data = await DataUtility.LoadData(
-        filename,
-        filetype,
-        labelColumnIndex,
-        textColumnIndex,
-        linesToSkip);
-    intentsUtterances = data.getIntentsUtterances();
-    intentLabelIndexArray = data.getIntentLabelIndexArray();
-    utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
     // -----------------------------------------------------------------------
     const tester: Tester =
         new Tester(
             modelFilename,
-            featurizerFilename,
-            intentsUtterances.intents,
-            intentsUtterances.utterances,
-            intentLabelIndexArray,
-            utteranceFeatureIndexArrays);
+            featurizerFilename);
+    const featurizer: NgramSubwordFeaturizer =
+        tester.getFeaturizer();
+    // Utility.debuggingLog(
+    //     `featurizer.getLabelMap()=${Utility.JSONstringify(featurizer.getLabelMap())}`);
+    // -----------------------------------------------------------------------
+    let intentsUtterancesWeights: {
+        "intents": string[],
+        "utterances": string[],
+        "weights": number[] } = {
+            intents: [],
+            utterances: [],
+            weights: [] };
+    let intentLabelIndexArray: number[] = [];
+    let utteranceFeatureIndexArrays: number[][] = [];
+    const data: Data = await DataUtility.LoadData(
+        filename,
+        featurizer,
+        false,
+        filetype,
+        labelColumnIndex,
+        textColumnIndex,
+        weightColumnIndex,
+        linesToSkip);
+    intentsUtterancesWeights = data.getIntentsUtterancesWeights();
+    intentLabelIndexArray = data.getIntentLabelIndexArray();
+    utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
+    // -----------------------------------------------------------------------
+    tester.test(
+        intentsUtterancesWeights.intents,
+        intentsUtterancesWeights.utterances,
+        intentsUtterancesWeights.weights,
+        intentLabelIndexArray,
+        utteranceFeatureIndexArrays);
     // -----------------------------------------------------------------------
     const evaluationJsonReportResult: {
         "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
         "outputFilenames": string[],
-        } = tester.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+        } = tester.generateEvaluationJsonReportToFiles(
+            outputReportFilenamePrefix);
     const evaluationDataArraysReportResult: {
         "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
         "outputFilenames": string[],

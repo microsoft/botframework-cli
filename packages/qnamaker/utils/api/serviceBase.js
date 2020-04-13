@@ -88,7 +88,14 @@ class ServiceBase {
                 URL += !isNaN(+skip) ? `&take=${~~take}` : `take=${~~take}`;
             }
         }
-        const body = dataModel ? JSON.stringify(dataModel) : undefined;
+        let body = undefined;
+        if (params.qnaFormat !== undefined && params.qnaFormat === true) {
+            URL += URL.includes(`?`) ? `&qnaformat=true` : `?qnaformat=true`
+            headers["Content-Type"] = `application/text`;
+            body = dataModel ? dataModel : undefined;
+        } else if (dataModel) {
+            body = JSON.stringify(dataModel)
+        }
         if (params.debug) {
             console.log(`${method.toUpperCase()} ${URL}`);
             if (headers)

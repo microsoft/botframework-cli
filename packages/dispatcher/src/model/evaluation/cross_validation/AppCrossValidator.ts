@@ -14,9 +14,11 @@ import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictio
 
 import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
+import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
+
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
-import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
+import { ThresholdReporter } from "../report/ThresholdReporter";
 
 import { ColumnarData } from "../../../data/ColumnarData";
 import { LuData } from "../../../data/LuData";
@@ -76,15 +78,6 @@ export function mainCrossValidatorWithData(
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
         new CrossValidator(
-            data.getFeaturizerLabels(),
-            data.getFeaturizerLabelMap(),
-            data.getFeaturizer().getNumberLabels(),
-            data.getFeaturizer().getNumberFeatures(),
-            intents,
-            utterances,
-            intentLabelIndexArray,
-            utteranceFeatureIndexArrays,
-            data.getIntentInstanceIndexMapArray(),
             numberOfCrossValidationFolds,
             learnerParameterEpochs,
             learnerParameterMiniBatchSize,
@@ -93,6 +86,30 @@ export function mainCrossValidatorWithData(
             learnerParameterLossEarlyStopRatio,
             learnerParameterLearningRate,
             learnerParameterToCalculateOverallLossAfterEpoch);
+    const crossValidationResult: {
+        "confusionMatrixCrossValidation": ConfusionMatrix,
+        "thresholdReporterCrossValidation": ThresholdReporter,
+        "predictionLabels": string[],
+        "predictionLabelIndexes": number[],
+        "groundTruthLabels": string[],
+        "groundTruthLabelIndexes": number[],
+        "predictions": number[][] } = crossValidator.crossValidate(
+        data.getFeaturizerLabels(),
+            data.getFeaturizerLabelMap(),
+            data.getFeaturizer().getNumberLabels(),
+            data.getFeaturizer().getNumberFeatures(),
+            intents,
+            utterances,
+            intentLabelIndexArray,
+            utteranceFeatureIndexArrays,
+            data.getIntentInstanceIndexMapArray());
+    Utility.debuggingLog(
+        `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+        `,crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
+        `,crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
     return crossValidator;
     // -----------------------------------------------------------------------
 }
@@ -152,15 +169,6 @@ export async function mainCrossValidatorWithLuContent(
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
         new CrossValidator(
-            luData.getFeaturizerLabels(),
-            luData.getFeaturizerLabelMap(),
-            luData.getFeaturizer().getNumberLabels(),
-            luData.getFeaturizer().getNumberFeatures(),
-            intents,
-            utterances,
-            intentLabelIndexArray,
-            utteranceFeatureIndexArrays,
-            luData.getIntentInstanceIndexMapArray(),
             numberOfCrossValidationFolds,
             learnerParameterEpochs,
             learnerParameterMiniBatchSize,
@@ -169,6 +177,30 @@ export async function mainCrossValidatorWithLuContent(
             learnerParameterLossEarlyStopRatio,
             learnerParameterLearningRate,
             learnerParameterToCalculateOverallLossAfterEpoch);
+    const crossValidationResult: {
+        "confusionMatrixCrossValidation": ConfusionMatrix,
+        "thresholdReporterCrossValidation": ThresholdReporter,
+        "predictionLabels": string[],
+        "predictionLabelIndexes": number[],
+        "groundTruthLabels": string[],
+        "groundTruthLabelIndexes": number[],
+        "predictions": number[][] } = crossValidator.crossValidate(
+            luData.getFeaturizerLabels(),
+            luData.getFeaturizerLabelMap(),
+            luData.getFeaturizer().getNumberLabels(),
+            luData.getFeaturizer().getNumberFeatures(),
+            intents,
+            utterances,
+            intentLabelIndexArray,
+            utteranceFeatureIndexArrays,
+            luData.getIntentInstanceIndexMapArray());
+    Utility.debuggingLog(
+        `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+        `,crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
+        `,crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
     return crossValidator;
     // -----------------------------------------------------------------------
 }
@@ -180,6 +212,7 @@ export async function mainCrossValidatorWithLuContent(
  * @param columnarContent - content of a TSV columnar file in string form as input.
  * @param labelColumnIndex - label/intent column index.
  * @param textColumnIndex - text/utterace column index.
+ * @param weightColumnIndex - weight column index.
  * @param linesToSkip - number of header lines skipped before processing each line as an instance record.
  * @param numberOfCrossValidationFolds - number of cross validation (CV) folds.
  * @param learnerParameterEpochs - CV Softmax Regression Learner parameter - number of epochs
@@ -194,6 +227,7 @@ export function mainCrossValidatorWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
+    weightColumnIndex: number,
     linesToSkip: number,
     numberOfCrossValidationFolds: number =
         CrossValidator.defaultNumberOfCrossValidationFolds,
@@ -218,6 +252,7 @@ export function mainCrossValidatorWithColumnarContent(
             new NgramSubwordFeaturizer(),
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip,
             true);
     // -----------------------------------------------------------------------
@@ -237,15 +272,6 @@ export function mainCrossValidatorWithColumnarContent(
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
         new CrossValidator(
-            columnarData.getFeaturizerLabels(),
-            columnarData.getFeaturizerLabelMap(),
-            columnarData.getFeaturizer().getNumberLabels(),
-            columnarData.getFeaturizer().getNumberFeatures(),
-            intents,
-            utterances,
-            intentLabelIndexArray,
-            utteranceFeatureIndexArrays,
-            columnarData.getIntentInstanceIndexMapArray(),
             numberOfCrossValidationFolds,
             learnerParameterEpochs,
             learnerParameterMiniBatchSize,
@@ -254,6 +280,30 @@ export function mainCrossValidatorWithColumnarContent(
             learnerParameterLossEarlyStopRatio,
             learnerParameterLearningRate,
             learnerParameterToCalculateOverallLossAfterEpoch);
+    const crossValidationResult: {
+        "confusionMatrixCrossValidation": ConfusionMatrix,
+        "thresholdReporterCrossValidation": ThresholdReporter,
+        "predictionLabels": string[],
+        "predictionLabelIndexes": number[],
+        "groundTruthLabels": string[],
+        "groundTruthLabelIndexes": number[],
+        "predictions": number[][] } = crossValidator.crossValidate(
+            columnarData.getFeaturizerLabels(),
+            columnarData.getFeaturizerLabelMap(),
+            columnarData.getFeaturizer().getNumberLabels(),
+            columnarData.getFeaturizer().getNumberFeatures(),
+            intents,
+            utterances,
+            intentLabelIndexArray,
+            utteranceFeatureIndexArrays,
+            columnarData.getIntentInstanceIndexMapArray());
+    Utility.debuggingLog(
+        `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+        `,crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
+        `,crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getWeightedMacroAverageMetrics()}`);
     return crossValidator;
     // -----------------------------------------------------------------------
 }
@@ -393,8 +443,16 @@ export async function mainCrossValidator(): Promise<{
     parser.addArgument(
         ["-ti", "--textColumnIndex"],
         {
-            defaultValue: 0,
+            defaultValue: 1,
             help: "text/utterance column index",
+            required: false,
+        },
+    );
+    parser.addArgument(
+        ["-wi", "--weightColumnIndex"],
+        {
+            defaultValue: -1,
+            help: "weight column index",
             required: false,
         },
     );
@@ -410,9 +468,9 @@ export async function mainCrossValidator(): Promise<{
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${JSON.stringify(args)}`);
+        `args=${Utility.JSONstringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${JSON.stringify(unknownArgs)}`);
+        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -427,7 +485,7 @@ export async function mainCrossValidator(): Promise<{
         args.filetype;
     let outputReportFilenamePrefix: string = args.outputReportFilenamePrefix;
     if (Utility.isEmptyString(outputReportFilenamePrefix)) {
-        outputReportFilenamePrefix = Utility.getFileBasename(filename);
+        outputReportFilenamePrefix = Utility.getFilenameWithoutExtension(filename);
         // Utility.debuggingThrow(
         //     `The output file ${outputReportFilenamePrefix} is empty! process.cwd()=${process.cwd()}`);
     }
@@ -474,19 +532,25 @@ export async function mainCrossValidator(): Promise<{
     // -----------------------------------------------------------------------
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
+    const weightColumnIndex: number = +args.weightColumnIndex;
     const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
         `labelColumnIndex=${labelColumnIndex}`);
     Utility.debuggingLog(
         `textColumnIndex=${textColumnIndex}`);
     Utility.debuggingLog(
+        `weightColumnIndex=${weightColumnIndex}`);
+    Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
     const data: Data = await DataUtility.LoadData(
         filename,
+        null,
+        true,
         filetype,
         labelColumnIndex,
         textColumnIndex,
+        weightColumnIndex,
         linesToSkip);
     // -----------------------------------------------------------------------
     const crossValidator: CrossValidator =
@@ -504,11 +568,13 @@ export async function mainCrossValidator(): Promise<{
     const evaluationJsonReportResult: {
         "outputEvaluationReportJson": IDictionaryStringIdGenericValue<any>,
         "outputFilenames": string[],
-        } = crossValidator.generateEvaluationJsonReportToFiles(outputReportFilenamePrefix);
+        } = crossValidator.generateEvaluationJsonReportToFiles(
+            outputReportFilenamePrefix);
     const evaluationDataArraysReportResult: {
         "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,
         "outputFilenames": string[],
-        } = crossValidator.generateEvaluationDataArraysReportToFiles(outputReportFilenamePrefix);
+        } = crossValidator.generateEvaluationDataArraysReportToFiles(
+            outputReportFilenamePrefix);
     // -----------------------------------------------------------------------
     const dateTimeEndInString: string = (new Date()).toISOString();
     // -----------------------------------------------------------------------

@@ -9,7 +9,7 @@ import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfileh
 export default class ConfigSetQnamaker extends Command {
   static description = 'Set the QnAMaker config data'
 
-  static flags: any = {
+  static flags: flags.Input<any> = {
     kbId: flags.string({description: 'QnAMaker kbId to be set'}),
     subscriptionKey: flags.string({description: 'QnAMaker subscriptionkey to be set'}),
     hostname: flags.string({description: 'QnAMaker hostname to be set'}),

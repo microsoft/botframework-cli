@@ -30,16 +30,17 @@ import { Utility } from "../../../utility/Utility";
 
 export class Tester extends AbstractBaseModelFeaturizerEvaluator {
 
-    protected intents: string[] = [];
-    protected utterances: string[] = [];
-    protected labelIndexArray: number[] = [];
-    protected featureIndexArrays: number[][] = [];
+    protected intentsCachedAfterTest: string[] = [];
+    protected utterancesCachedAfterTest: string[] = [];
+    protected labelIndexArrayCachedAfterTest: number[] = [];
+    protected featureIndexArraysCachedAfterTest: number[][] = [];
 
-    protected testResult: {
+    protected testResultCachedAfterTest: {
         "confusionMatrixTest": ConfusionMatrix
         "thresholdReporterTest": ThresholdReporter,
         "predictionLabels": string[],
         "predictionLabelIndexes": number[],
+        "instanceIndexes": number[],
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = {
@@ -47,27 +48,15 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             thresholdReporterTest: new ThresholdReporter("", "", null, null, [], {}),
             predictionLabels: [],
             predictionLabelIndexes: [],
+            instanceIndexes: [],
             groundTruthLabels: [],
             groundTruthLabelIndexes: [],
             predictions: [] };
 
     public constructor(
         modelFilename: string,
-        featurizerFilename: string,
-        intents: string[],
-        utterances: string[],
-        labelIndexArray: number[],
-        featureIndexArrays: number[][]) {
+        featurizerFilename: string) {
         super(modelFilename, featurizerFilename, null, null, [], {});
-        this.intents = intents;
-        this.utterances = utterances;
-        this.labelIndexArray = labelIndexArray;
-        this.featureIndexArrays = featureIndexArrays;
-        this.testResult = this.test(
-            this.intents,
-            this.utterances,
-            this.labelIndexArray,
-            this.featureIndexArrays);
     }
 
     public getTestResult(): {
@@ -75,24 +64,27 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         "thresholdReporterTest": ThresholdReporter,
         "predictionLabels": string[],
         "predictionLabelIndexes": number[],
+        "instanceIndexes": number[],
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } {
-        return this.testResult;
+        return this.testResultCachedAfterTest;
     }
 
     public generateEvaluationDataArraysReport(): IDictionaryStringIdGenericArrays<string> {
         const outputEvaluationReportDataArrays: IDictionaryStringIdGenericArrays<string> = {};
         {
-            const predictionLabels: string[] = this.testResult.predictionLabels;
-            const predictionLabelIndexes: number[] = this.testResult.predictionLabelIndexes;
-            const groundTruthLabels: string[] = this.testResult.predictionLabels;
-            const groundTruthLabelIndexes: number[] = this.testResult.predictionLabelIndexes;
-            const predictions: number[][] = this.testResult.predictions;
+            const predictionLabels: string[] = this.testResultCachedAfterTest.predictionLabels;
+            const predictionLabelIndexes: number[] = this.testResultCachedAfterTest.predictionLabelIndexes;
+            const instanceIndexes: number[] = this.testResultCachedAfterTest.instanceIndexes;
+            const groundTruthLabels: string[] = this.testResultCachedAfterTest.groundTruthLabels;
+            const groundTruthLabelIndexes: number[] = this.testResultCachedAfterTest.groundTruthLabelIndexes;
+            const predictions: number[][] = this.testResultCachedAfterTest.predictions;
             const outputEvaluationReportDataArraysScoreRecords: string[][] = [];
-            for (let index: number = 0; index < this.intents.length; index++) {
-                const intent: string = this.intents[index];
-                const utterance: string = this.utterances[index];
+            for (let index: number = 0; index < this.intentsCachedAfterTest.length; index++) {
+                const instanceIndex: number = instanceIndexes[index];
+                const intent: string = this.intentsCachedAfterTest[instanceIndex];
+                const utterance: string = this.utterancesCachedAfterTest[instanceIndex];
                 const groundTruthLabel: string = groundTruthLabels[index];
                 const groundTruthLabelIndex: number = groundTruthLabelIndexes[index];
                 const predictionLabel: string = predictionLabels[index];
@@ -100,6 +92,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 const outputEvaluationReportDataArraysScoreRecord: string[] = [];
                 outputEvaluationReportDataArraysScoreRecord.push(intent);
                 outputEvaluationReportDataArraysScoreRecord.push(utterance);
+                outputEvaluationReportDataArraysScoreRecord.push(instanceIndex.toString());
                 outputEvaluationReportDataArraysScoreRecord.push(groundTruthLabel);
                 outputEvaluationReportDataArraysScoreRecord.push(groundTruthLabelIndex.toString());
                 outputEvaluationReportDataArraysScoreRecord.push(predictionLabel);
@@ -132,7 +125,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         }
         {
             let outputFilename: string =
-                `${outputReportFilenamePrefix}_TestScoreRecords.json`;
+                `${outputReportFilenamePrefix}_TestScoreRecords.txt`;
             outputFilename = Utility.storeDataArraysToTsvFile(
                 outputFilename,
                 outputEvaluationReportDataArrays.TestScoreRecords,
@@ -149,7 +142,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
     public generateEvaluationJsonReport(): IDictionaryStringIdGenericValue<any> {
         const outputEvaluationReport: IDictionaryStringIdGenericValue<any> = {};
         const confusionMatrixTest: ConfusionMatrix =
-            this.testResult.confusionMatrixTest;
+            this.testResultCachedAfterTest.confusionMatrixTest;
         const confusionMatrixMetricStructure: {
             "confusionMatrix": ConfusionMatrix,
             "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
@@ -157,14 +150,14 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             "macroAverageMetrics": { "averagePrecision": number,
                                      "averageRecall": number,
                                      "averageF1Score": number,
-                                     "totalMacroAverage": number },
+                                     "support": number },
             "microAverageMetrics": { "accuracy": number,
                                      "truePositives": number,
-                                     "totalMicroAverage": number },
+                                     "support": number },
             "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                     "weightedAverageRecall": number,
-                                     "weightedAverageF1Score": number,
-                                     "weightedTotalMacroAverage": number } } =
+                                             "weightedAverageRecall": number,
+                                             "weightedAverageF1Score": number,
+                                             "support": number } } =
             ConfusionMatrix.generateConfusionMatrixMetricStructure(
                 confusionMatrixTest);
         Utility.debuggingLog(
@@ -217,15 +210,22 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
     public test(
         intents: string[],
         utterances: string[],
+        weights: number[],
         labelIndexArray: number[],
         featureIndexArrays: number[][]): {
             "confusionMatrixTest": ConfusionMatrix,
             "thresholdReporterTest": ThresholdReporter,
             "predictionLabels": string[],
             "predictionLabelIndexes": number[],
+            "instanceIndexes": number[],
             "groundTruthLabels": string[],
             "groundTruthLabelIndexes": number[],
             "predictions": number[][] } {
+        // -------------------------------------------------------------------
+        this.intentsCachedAfterTest = intents;
+        this.utterancesCachedAfterTest = utterances;
+        this.labelIndexArrayCachedAfterTest = labelIndexArray;
+        this.featureIndexArraysCachedAfterTest = featureIndexArrays;
         // -------------------------------------------------------------------
         const model: SoftmaxRegressionSparse =
             this.getModel();
@@ -253,6 +253,14 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 `utterances.length|${utterances.length}|!==` +
                 `numberInstances|${numberInstances}|`);
         }
+        const isWeightsArrayNotEmpty: boolean = !Utility.isEmptyNumberArray(weights);
+        if (isWeightsArrayNotEmpty) {
+            if (weights.length !== numberInstances) {
+                Utility.debuggingThrow(
+                    `weights.length|${weights.length}|!==` +
+                    `numberInstances|${numberInstances}|`);
+            }
+        }
         if (labelIndexArray.length !== numberInstances) {
             Utility.debuggingThrow(
                 `labelIndexArray.length|${labelIndexArray.length}|!==` +
@@ -269,6 +277,8 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             new Array<string>(numberInstances);
         const predictionLabelIndexes: number[] =
             new Array<number>(numberInstances);
+        const instanceIndexes: number[] =
+            new Array<number>(numberInstances);
         const groundTruthLabels: string[] =
             new Array<string>(numberInstances);
         const groundTruthLabelIndexes: number[] =
@@ -277,11 +287,16 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             // ---------------------------------------------------------------
             // const intent: string = intents[index];
             const utterance: string = utterances[index];
+            let weight: number = 1;
+            if (isWeightsArrayNotEmpty) {
+                weight = weights[index];
+            }
             const labelIndex: number = labelIndexArray[index];
             // const featureIndexArray: number[] = featureIndexArrays[index];
             const prediction: number[] = predictions[index];
             // ---------------------------------------------------------------
             const groundTruthLabel: string = labels[labelIndex];
+            instanceIndexes[index] = index;
             groundTruthLabels[index] = groundTruthLabel;
             groundTruthLabelIndexes[index] = labelIndex;
             // ---------------------------------------------------------------
@@ -297,23 +312,27 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 predictionLabel;
             confusionMatrixTest.addInstanceByLabelIndex(
                 labelIndex,
-                predictionLabelIndex);
+                predictionLabelIndex,
+                weight);
             thresholdReporterTest.addInstance(
                 prediction,
                 labelIndex,
                 utterance,
-                `${index}`);
+                `${index}`,
+                weight);
             // ---------------------------------------------------------------
         }
         // -------------------------------------------------------------------
-        return {
+        this.testResultCachedAfterTest = {
             confusionMatrixTest,
             thresholdReporterTest,
             predictionLabels,
             predictionLabelIndexes,
+            instanceIndexes,
             groundTruthLabels,
             groundTruthLabelIndexes,
             predictions };
+        return this.testResultCachedAfterTest;
         // -------------------------------------------------------------------
     }
 }

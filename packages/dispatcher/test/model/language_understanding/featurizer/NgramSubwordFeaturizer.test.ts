@@ -39,6 +39,7 @@ function getNgramSubwordFeaturizerForUnitTests(
         0,
         2,
         1,
+        1,
         true);
     return featurizer;
 }
@@ -65,6 +66,7 @@ function getHashingNgramSubwordFeaturizerForUnitTests(
         0,
         2,
         1,
+        1,
         true);
     return featurizer;
 }
@@ -84,15 +86,15 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         Utility.debuggingLog("hashing code = " + Utility.getPositiveStringHashCode(input));
     });
 
-    it("Test.0100 getIntentsUtterances()", function() {
+    it("Test.0100 getIntentsUtterancesWeights()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
-        const intentsUtterances: { "intents": string[], "utterances": string[] } =
-            featurizer.getIntentsUtterances();
+        const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
+            featurizer.getIntentsUtterancesWeights();
         Utility.debuggingLog(
-            `intentsUtterances=${JSON.stringify(intentsUtterances)}`);
+            `intentsUtterancesWeights=${Utility.JSONstringify(intentsUtterancesWeights)}`);
     });
 
     it("Test.0200 getLabels()", function() {
@@ -341,7 +343,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArray": number[],
             "utteranceFeatureIndexArrays": number[][],
             } = featurizer.createIntentUtteranceSparseIndexArrays(
-            featurizer.getIntentsUtterances());
+            featurizer.getIntentsUtterancesWeights());
         Utility.debuggingLog(
             `intentUtteranceSparseIndexArrays=${intentUtteranceSparseIndexArrays}`);
         const intentLabelIndexArray: number[] =
@@ -383,15 +385,16 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
-        const intentsUtterances: {
+        const intentsUtterancesWeights: {
             "intents": string[],
             "utterances": string[],
-            } = featurizer.getIntentsUtterances();
+            "weights": number[],
+            } = featurizer.getIntentsUtterancesWeights();
         const intentUtteranceMiniBatchingSparseIndexArrays: {
             "intentLabelIndexArray": number[],
             "utteranceFeatureIndexArrays": number[][],
             } = featurizer.createIntentUtteranceMiniBatchingSparseIndexArrays(
-                intentsUtterances, 0, 2);
+                intentsUtterancesWeights, 0, 2);
         Utility.debuggingLog(
             `intentUtteranceMiniBatchingSparseIndexArrays=${intentUtteranceMiniBatchingSparseIndexArrays}`);
         const intentLabelIndexArray: number[] =
@@ -460,7 +463,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArray": number[],
             "utteranceFeatureIndexArrays": number[][],
         } = featurizer.createIntentUtteranceHashingSparseIndexArrays(
-            featurizer.getIntentsUtterances());
+            featurizer.getIntentsUtterancesWeights());
         Utility.debuggingLog(
             `intentUtteranceSparseIndexArrays=${intentUtteranceSparseIndexArrays}`);
         const intentLabelIndexArray: number[] =
@@ -605,7 +608,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArrays": boolean[][],
             "utteranceFeatureIndexArrays": boolean[][],
         } = featurizer.createIntentUtteranceOneHotEncoderBooleanArrays(
-            featurizer.getIntentsUtterances());
+            featurizer.getIntentsUtterancesWeights());
         Utility.debuggingLog(
             `intentUtteranceOneHotEncoderBooleanArrays=${intentUtteranceOneHotEncoderBooleanArrays}`);
         const intentLabelIndexArrays: boolean[][] =
@@ -634,7 +637,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArrays": number[][],
             "utteranceFeatureIndexArrays": number[][],
         } = featurizer.createIntentUtteranceOneHotEncoderNumberArrays(
-            featurizer.getIntentsUtterances());
+            featurizer.getIntentsUtterancesWeights());
         Utility.debuggingLog(
             `intentUtteranceOneHotEncoderBooleanArrays=${intentUtteranceOneHotEncoderBooleanArrays}`);
         const intentLabelIndexArrays: number[][] =
@@ -699,7 +702,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArrays": boolean[][],
             "utteranceFeatureIndexArrays": boolean[][],
         } = featurizer.createIntentUtteranceMiniBatchingOneHotEncoderBooleanArrays(
-            featurizer.getIntentsUtterances(), 0, 2);
+            featurizer.getIntentsUtterancesWeights(), 0, 2);
         Utility.debuggingLog(
             `intentUtteranceOneHotEncoderBooleanArrays=${intentUtteranceOneHotEncoderBooleanArrays}`);
         const intentLabelIndexArrays: boolean[][] =
@@ -728,7 +731,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArrays": number[][],
             "utteranceFeatureIndexArrays": number[][],
         } = featurizer.createIntentUtteranceMiniBatchingOneHotEncoderNumberArrays(
-            featurizer.getIntentsUtterances(), 0, 2);
+            featurizer.getIntentsUtterancesWeights(), 0, 2);
         Utility.debuggingLog(
             `intentUtteranceOneHotEncoderBooleanArrays=${intentUtteranceOneHotEncoderBooleanArrays}`);
         const intentLabelIndexArrays: number[][] =
@@ -840,7 +843,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArrays": boolean[][],
             "utteranceFeatureIndexArrays": boolean[][],
         } = featurizer.createIntentUtteranceHashingOneHotEncoderBooleanArrays(
-            featurizer.getIntentsUtterances());
+            featurizer.getIntentsUtterancesWeights());
         Utility.debuggingLog(
             `intentUtteranceOneHotEncoderBooleanArrays=${intentUtteranceOneHotEncoderBooleanArrays}`);
         const intentLabelIndexArrays: boolean[][] =
@@ -869,7 +872,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             "intentLabelIndexArrays": number[][],
             "utteranceFeatureIndexArrays": number[][],
         } = featurizer.createIntentUtteranceHashingOneHotEncoderNumberArrays(
-            featurizer.getIntentsUtterances());
+            featurizer.getIntentsUtterancesWeights());
         Utility.debuggingLog(
             `intentUtteranceOneHotEncoderBooleanArrays=${intentUtteranceOneHotEncoderBooleanArrays}`);
         const intentLabelIndexArrays: number[][] =
@@ -953,6 +956,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             0,
             2,
             1,
+            1,
             true);
     });
 
@@ -979,6 +983,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             featurizer,
             0,
             2,
+            1,
             1,
             true);
         const serializedJsonString: string = featurizer.serializeToJsonString(undefined, 4);
@@ -1009,6 +1014,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             featurizer,
             0,
             2,
+            1,
             1,
             true);
         const serializedJsonString: string = featurizer.serializeToJsonString(undefined, 4);

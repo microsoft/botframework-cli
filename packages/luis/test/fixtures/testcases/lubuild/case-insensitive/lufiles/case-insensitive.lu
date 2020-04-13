@@ -15,6 +15,12 @@
 @ prebuilt age
 @ prebuilt personName
 
+> Phrase list
+@ phraselist profileDefinition(interchangeable) = 
+    - I'm 
+    - My
+    - I am
+
 > Define a list entity for user city
 @ list Cities = 
     - seattle :

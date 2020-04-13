@@ -19,14 +19,14 @@ export class ConfusionMatrix {
             "macroAverageMetrics": { "averagePrecision": number,
                                      "averageRecall": number,
                                      "averageF1Score": number,
-                                     "totalMacroAverage": number },
+                                     "support": number },
             "microAverageMetrics": { "accuracy": number,
                                      "truePositives": number,
-                                     "totalMicroAverage": number },
+                                     "support": number },
             "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                     "weightedAverageRecall": number,
-                                     "weightedAverageF1Score": number,
-                                     "weightedTotalMacroAverage": number } } {
+                                             "weightedAverageRecall": number,
+                                             "weightedAverageF1Score": number,
+                                             "support": number } } {
         const crossValidationBinaryConfusionMatrix: BinaryConfusionMatrix[] =
             confusionMatrix.getBinaryConfusionMatrices();
         const labelMap: { [id: string]: number; } =
@@ -45,14 +45,18 @@ export class ConfusionMatrix {
             microAverageMetricArray[0];
         const truePositives: number =
             microAverageMetricArray[1];
-        const totalMicroAverage: number =
+        const supportMicroAverage: number =
             microAverageMetricArray[2];
         const microAverageMetrics: {
             "accuracy": number,
             "truePositives": number,
-            "totalMicroAverage": number } = { accuracy,
-            truePositives,
-            totalMicroAverage };
+            "support": number } = {
+            // tslint:disable-next-line: object-literal-key-quotes
+            "accuracy": accuracy,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "truePositives": truePositives,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "support": supportMicroAverage };
         const macroAverageMetricArray: [number, number, number, number] =
             confusionMatrix.getMacroAverageMetrics();
         const averagePrecision: number =
@@ -61,16 +65,21 @@ export class ConfusionMatrix {
             macroAverageMetricArray[1];
         const averageF1Score: number =
             macroAverageMetricArray[2];
-        const totalMacroAverage: number =
+        const supportMacroAverage: number =
             macroAverageMetricArray[3];
         const macroAverageMetrics: {
             "averagePrecision": number,
             "averageRecall": number,
             "averageF1Score": number,
-            "totalMacroAverage": number } = { averagePrecision,
-            averageRecall,
-            averageF1Score,
-            totalMacroAverage };
+            "support": number } = {
+            // tslint:disable-next-line: object-literal-key-quotes
+            "averagePrecision": averagePrecision,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "averageRecall": averageRecall,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "averageF1Score": averageF1Score,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "support": supportMacroAverage };
         const weightedMacroAverageMetricArray: [number, number, number, number] =
             confusionMatrix.getWeightedMacroAverageMetrics();
         const weightedAveragePrecision: number =
@@ -79,16 +88,21 @@ export class ConfusionMatrix {
             weightedMacroAverageMetricArray[1];
         const weightedAverageF1Score: number =
             weightedMacroAverageMetricArray[2];
-        const weightedTotalMacroAverage: number =
+        const supportWeightedMacroAverage: number =
             weightedMacroAverageMetricArray[3];
         const weightedMacroAverageMetrics: {
             "weightedAveragePrecision": number,
             "weightedAverageRecall": number,
             "weightedAverageF1Score": number,
-            "weightedTotalMacroAverage": number } = { weightedAveragePrecision,
-            weightedAverageRecall,
-            weightedAverageF1Score,
-            weightedTotalMacroAverage };
+            "support": number } = {
+            // tslint:disable-next-line: object-literal-key-quotes
+            "weightedAveragePrecision": weightedAveragePrecision,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "weightedAverageRecall": weightedAverageRecall,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "weightedAverageF1Score": weightedAverageF1Score,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "support": supportWeightedMacroAverage };
         const confusionMatrixMetricStructure: {
             "confusionMatrix": ConfusionMatrix,
             "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
@@ -96,14 +110,14 @@ export class ConfusionMatrix {
             "macroAverageMetrics": { "averagePrecision": number,
                                      "averageRecall": number,
                                      "averageF1Score": number,
-                                     "totalMacroAverage": number },
+                                     "support": number },
             "microAverageMetrics": { "accuracy": number,
                                      "truePositives": number,
-                                     "totalMicroAverage": number },
+                                     "support": number },
             "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                     "weightedAverageRecall": number,
-                                     "weightedAverageF1Score": number,
-                                     "weightedTotalMacroAverage": number } } = {
+                                             "weightedAverageRecall": number,
+                                             "weightedAverageF1Score": number,
+                                             "support": number } } = {
             confusionMatrix,
             labelBinaryConfusionMatrixDerivedMetricMap,
             labelBinaryConfusionMatrixMetricMap,
@@ -297,7 +311,7 @@ export class ConfusionMatrix {
         if (!(label in this.getLabelMap())) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
-                    `label=${label}, not int the label map=${this.getLabelMap()}`);
+                    `label=${label}, not int the label map=${Utility.JSONstringify(this.getLabelMap())}`);
             }
             return false;
         }

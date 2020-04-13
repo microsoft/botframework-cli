@@ -39,6 +39,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
         new ThresholdReporter("", "", null, null, [], {});
     protected predictionLabels: string[] = [];
     protected predictionLabelIndexes: number[] = [];
+    protected instanceIndexes: number[] = [];
     protected groundTruthLabels: string[] = [];
     protected groundTruthLabelIndexes: number[] = [];
     protected predictions: number[][] = [];
@@ -60,6 +61,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
         "thresholdReporterPrediction": ThresholdReporter,
         "predictionLabels": string[],
         "predictionLabelIndexes": number[],
+        "instanceIndexes": number[],
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } {
@@ -68,6 +70,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             thresholdReporterPrediction: this.thresholdReporterPrediction,
             predictionLabels: this.predictionLabels,
             predictionLabelIndexes: this.predictionLabelIndexes,
+            instanceIndexes: this.instanceIndexes,
             groundTruthLabels: this.groundTruthLabels,
             groundTruthLabelIndexes: this.groundTruthLabelIndexes,
             predictions: this.predictions,
@@ -81,6 +84,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             "thresholdReporterPrediction": ThresholdReporter,
             "predictionLabels": string[],
             "predictionLabelIndexes": number[],
+            "instanceIndexes": number[],
             "groundTruthLabels": string[],
             "groundTruthLabelIndexes": number[],
             "predictions": number[][] } =
@@ -88,13 +92,15 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
         {
             const predictionLabels: string[] = predictionResult.predictionLabels;
             const predictionLabelIndexes: number[] = predictionResult.predictionLabelIndexes;
+            const instanceIndexes: number[] = predictionResult.instanceIndexes;
             const groundTruthLabels: string[] = predictionResult.predictionLabels;
             const groundTruthLabelIndexes: number[] = predictionResult.predictionLabelIndexes;
             const predictions: number[][] = predictionResult.predictions;
             const outputEvaluationReportDataArraysScoreRecords: string[][] = [];
             for (let index: number = 0; index < this.intents.length; index++) {
-                const intent: string = this.intents[index];
-                const utterance: string = this.utterances[index];
+                const instanceIndex: number = instanceIndexes[index];
+                const intent: string = this.intents[instanceIndex];
+                const utterance: string = this.utterances[instanceIndex];
                 const groundTruthLabel: string = groundTruthLabels[index];
                 const groundTruthLabelIndex: number = groundTruthLabelIndexes[index];
                 const predictionLabel: string = predictionLabels[index];
@@ -134,7 +140,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
         }
         {
             let outputFilename: string =
-                `${outputReportFilenamePrefix}_PredictionScoreRecords.json`;
+                `${outputReportFilenamePrefix}_PredictionScoreRecords.txt`;
             outputFilename = Utility.storeDataArraysToTsvFile(
                 outputFilename,
                 outputEvaluationReportDataArrays.PredictionScoreRecords,
@@ -155,6 +161,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             "thresholdReporterPrediction": ThresholdReporter,
             "predictionLabels": string[],
             "predictionLabelIndexes": number[],
+            "instanceIndexes": number[],
             "groundTruthLabels": string[],
             "groundTruthLabelIndexes": number[],
             "predictions": number[][] } =
@@ -168,14 +175,14 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             "macroAverageMetrics": { "averagePrecision": number,
                                      "averageRecall": number,
                                      "averageF1Score": number,
-                                     "totalMacroAverage": number },
+                                     "support": number },
             "microAverageMetrics": { "accuracy": number,
                                      "truePositives": number,
-                                     "totalMicroAverage": number },
+                                     "support": number },
             "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                     "weightedAverageRecall": number,
-                                     "weightedAverageF1Score": number,
-                                     "weightedTotalMacroAverage": number } } =
+                                             "weightedAverageRecall": number,
+                                             "weightedAverageF1Score": number,
+                                             "support": number } } =
             ConfusionMatrix.generateConfusionMatrixMetricStructure(
                 confusionMatrixPrediction);
         Utility.debuggingLog(
@@ -232,6 +239,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             "thresholdReporterPrediction": ThresholdReporter,
             "predictionLabels": string[],
             "predictionLabelIndexes": number[],
+            "instanceIndexes": number[],
             "groundTruthLabels": string[],
             "groundTruthLabelIndexes": number[],
             "predictions": number[][] } {
@@ -278,7 +286,8 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
                         prediction,
                         groundTruthLabelIndex,
                         utterance,
-                        `${this.thresholdReporterPrediction.getNumberInstances()}`);
+                        `${this.thresholdReporterPrediction.getNumberInstances()}`,
+                        1);
                     }
             }
             const predictionLabel: string = labels[predictionLabelIndex];
@@ -289,6 +298,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             // ---------------------------------------------------------------
             this.predictionLabels.push(predictionLabel);
             this.predictionLabelIndexes.push(predictionLabelIndex);
+            this.instanceIndexes.push(this.instanceIndexes.length);
             this.groundTruthLabels.push(groundTruthLabel);
             this.groundTruthLabelIndexes.push(groundTruthLabelIndex);
             this.predictions.push(prediction);

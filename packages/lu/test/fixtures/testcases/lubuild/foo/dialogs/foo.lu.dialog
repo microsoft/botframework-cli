@@ -1,5 +1,5 @@
 {
-    "$type": "Microsoft.MultiLanguageRecognizer",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
         "fr-fr": "foo.fr-fr.lu",
         "en-us": "foo.en-us.lu",

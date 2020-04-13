@@ -13,11 +13,13 @@ export function exampleFunctionUtilityWithFilename(
     filename: string,
     labelColumnIndex: number,
     textColumnIndex: number,
+    weightColumnIndex: number,
     linesToSkip: number): void {
     // -----------------------------------------------------------------------
     Utility.debuggingLog(`filename=${filename}`);
     Utility.debuggingLog(`labelColumnIndex=${labelColumnIndex}`);
     Utility.debuggingLog(`textColumnIndex=${textColumnIndex}`);
+    Utility.debuggingLog(`weightColumnIndex=${weightColumnIndex}`);
     Utility.debuggingLog(`linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
     const labels: string[] = [ "label0", "label1", "label2" ];
@@ -27,20 +29,22 @@ export function exampleFunctionUtilityWithFilename(
     labelMap.label2 = 2;
     DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(labels, labelMap);
     // -----------------------------------------------------------------------
-    const intentsUtterances: { "intents": string[], "utterances": string[] } =
+    const intentsUtterancesWeights: { "intents": string[], "texts": string[], "weights": number[] } =
         Utility.loadLabelTextColumnarFile(
-            filename,         // ---- filename: string,
-            labelColumnIndex, // ---- labelColumnIndex: number = 0,
-            textColumnIndex,  // ---- textColumnIndex: number = 1,
-            linesToSkip,     // ---- lineIndexToStart: number = 0,
-            "\t",             // ---- columnDelimiter: string = "\t",
-            "\n",             // ---- rowDelimiter: string = "\n",
-            "utf8",           // ---- encoding: string = "utf8",
-            -1,               // ---- lineIndexToEnd: number = -1
+            filename,          // ---- filename: string,
+            labelColumnIndex,  // ---- labelColumnIndex: number = 0,
+            textColumnIndex,   // ---- textColumnIndex: number = 1,
+            weightColumnIndex, // ---- weightColumnIndex: number = -1,
+            linesToSkip,       // ---- lineIndexToStart: number = 0,
+            "\t",              // ---- columnDelimiter: string = "\t",
+            "\n",              // ---- rowDelimiter: string = "\n",
+            "utf8",            // ---- encoding: string = "utf8",
+            -1,                // ---- lineIndexToEnd: number = -1
         );
-    const intents: string[] = intentsUtterances.intents;
-    const utterances: string[] = intentsUtterances.utterances;
-    Utility.debuggingLog(`intents.length=${intents.length}, utterances.length=${utterances.length}`);
+    const intents: string[] = intentsUtterancesWeights.intents;
+    const texts: string[] = intentsUtterancesWeights.texts;
+    const weights: number[] = intentsUtterancesWeights.weights;
+    Utility.debuggingLog(`intents.length=${intents.length}, texts.length=${texts.length}`);
     // -----------------------------------------------------------------------
     const filenameMd5: string = Utility.getStringMd5Hash(filename) as string;
     Utility.debuggingLog(`filenameMd5=${filenameMd5}`);
@@ -87,6 +91,14 @@ export function exampleFunctionUtility(): void {
         },
     );
     parser.addArgument(
+        ["-wi", "--weightColumnIndex"],
+        {
+            defaultValue: -1,
+            help: "weight column index",
+            required: false,
+        },
+    );
+    parser.addArgument(
         ["-ls", "--linesToSkip"],
         {
             defaultValue: 0,
@@ -98,9 +110,9 @@ export function exampleFunctionUtility(): void {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${JSON.stringify(args)}`);
+        `args=${Utility.JSONstringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${JSON.stringify(unknownArgs)}`);
+        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -108,11 +120,13 @@ export function exampleFunctionUtility(): void {
     const filename: string = args.filename;
     const labelColumnIndex: number = +args.labelColumnIndex;
     const textColumnIndex: number = +args.textColumnIndex;
+    const weightColumnIndex: number = +args.weightColumnIndex;
     const linesToSkip: number = +args.linesToSkip;
     exampleFunctionUtilityWithFilename(
         filename,
         labelColumnIndex,
         textColumnIndex,
+        weightColumnIndex,
         linesToSkip);
     // -----------------------------------------------------------------------
 }
