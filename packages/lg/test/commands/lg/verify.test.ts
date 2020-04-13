@@ -6,7 +6,6 @@
  * Licensed under the MIT License.
  */
 import {test, expect} from '@oclif/test'
-import {TestUtil} from './test-util'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
