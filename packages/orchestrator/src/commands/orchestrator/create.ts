@@ -6,10 +6,7 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
-import {OrchestratorHelper} from '../../utils/index';
-
-const utterancesLabelsMap: any = {};
-let hierarchical: boolean = false;
+import {OrchestratorHelper} from '../../utils';
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator example file from .lu/.qna files, which represent bot modules';
@@ -40,7 +37,6 @@ export default class OrchestratorCreate extends Command {
       nlrPath = path.resolve(nlrPath);
     }
     const debug: boolean = flags.debug;
-    hierarchical = flags.hierarchical;
 
     const tsvFilePath: string = path.join(output, 'create.tsv');
     let tsvContent: string = '';
