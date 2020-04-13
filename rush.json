@@ -33,7 +33,7 @@
     },
     {
       "packageName": "@microsoft/bf-cli-lg",
-      "projectFolder": "packages/lg-cli"
+      "projectFolder": "packages/lg"
     },
     {
       "packageName": "@microsoft/bf-luis-cli",

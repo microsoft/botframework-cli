@@ -14,7 +14,7 @@ const  testcaseFolderPath = './../../fixtures/testcase'
 const  generatedFolderPath = './../../fixtures/generated'
 const  verifiedFolderPath = './../../fixtures/verified'
 const  generatedFolder = path.join(__dirname, generatedFolderPath)
-const translatekey = 'edabe9fb17244f6a92ec617867e6d7cd'
+const translatekey = '11111111111111111111111111111111'
 
 describe('mslg:translate lg file', async () => {
   after(async function () {
