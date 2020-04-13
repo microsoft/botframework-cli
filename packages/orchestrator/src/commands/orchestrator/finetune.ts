@@ -6,6 +6,7 @@
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import * as utils from '../../utils';
 import * as path from 'path';
+import { setFlagsFromString } from 'v8';
 
 export default class OrchestratorFinetune extends Command {
   static description: string = 'Manage Orchestrator fine tuning.';
@@ -53,11 +54,16 @@ export default class OrchestratorFinetune extends Command {
       break;
     }
     case 'get': {
+      if (flags.out === undefined) {
+        this.warn('No output directory directory given. Using current nlr path.');
+      } else {
+        cli_args += `--out ${output}`;
+      }
       break;
     }
     case 'put': {
       if (flags.in === undefined)  {
-        this.error('Missing 1 required arg:\nPlease use stdin or pass a file or folder location with --in flag.');
+        this.error('Missing 1 required arg:\nPlease pass a file or folder location with --in flag.');
         return 2;
       }
       const combinedFile: string = await this.writeOutputFile(input, hierarchical, output);
