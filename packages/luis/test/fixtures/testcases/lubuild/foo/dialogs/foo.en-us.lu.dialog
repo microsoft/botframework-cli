@@ -2,5 +2,9 @@
     "$kind": "Microsoft.LuisRecognizer",
     "applicationId": "=settings.luis.foo_en-us_lu",
     "endpoint": "=settings.luis.endpoint",
-    "endpointKey": "=settings.luis.endpointKey"
+    "endpointKey": "=settings.luis.endpointKey",
+    "predictionOptions": {
+        "includeAllIntents": "=coalesce(settings.luis.preditionOptions.includeAllIntents, false)",
+        "includeInstanceData": "=coalesce(settings.luis.preditionOptions.includeInstanceData, false)"
+    }
 }

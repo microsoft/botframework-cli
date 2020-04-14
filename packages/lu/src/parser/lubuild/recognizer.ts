@@ -27,6 +27,7 @@ export class Recognizer {
   readonly applicationId: string | undefined
   readonly endpoint: string | undefined
   readonly endpointKey: string | undefined
+  readonly predictionOptions: any
 
   private appId: string
   private dialogPath: string | undefined
@@ -36,6 +37,10 @@ export class Recognizer {
     this.applicationId = `=settings.luis.${targetFileName.split('.').join('_')}`
     this.endpoint = '=settings.luis.endpoint'
     this.endpointKey = '=settings.luis.endpointKey'
+    this.predictionOptions = {
+      includeAllIntents: '=coalesce(settings.luis.preditionOptions.includeAllIntents, false)',
+      includeInstanceData: '=coalesce(settings.luis.preditionOptions.includeInstanceData, false)'
+    }
     this.versionId = '0.1'
   }
 
@@ -44,7 +49,8 @@ export class Recognizer {
       $kind: 'Microsoft.LuisRecognizer',
       applicationId: this.applicationId,
       endpoint: this.endpoint,
-      endpointKey: this.endpointKey
+      endpointKey: this.endpointKey,
+      predictionOptions: this.predictionOptions
     }
 
     return JSON.stringify(output, null, 4)
