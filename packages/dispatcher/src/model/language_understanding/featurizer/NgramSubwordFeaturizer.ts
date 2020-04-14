@@ -18,8 +18,11 @@ export class NgramSubwordFeaturizer {
     protected toRemoveEmptyElements: boolean = true;
     protected splitDelimiter: string = " ";
 
-    protected intentsUtterances:
-        { "intents": string[], "utterances": string[] } = { intents: [], utterances: [] };
+    protected intentsUtterancesWeights:
+        { "intents": string[], "utterances": string[], "weights": number[] } = {
+            intents: [],
+            utterances: [],
+            weights: [] };
 
     protected labels: string[] = [];
     protected labelMap: { [id: string]: number; } = {};
@@ -44,8 +47,8 @@ export class NgramSubwordFeaturizer {
         this.numberHashingFeaturesSetting = numberHashingFeaturesSetting;
     }
 
-    public getIntentsUtterances(): { "intents": string[], "utterances": string[] } {
-        return this.intentsUtterances;
+    public getIntentsUtterancesWeights(): { "intents": string[], "utterances": string[], "weights": number[] } {
+        return this.intentsUtterancesWeights;
     }
 
     public getLabels(): string[] {
@@ -102,7 +105,7 @@ export class NgramSubwordFeaturizer {
         }
         if (labelId < 0) {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${this.labelMap}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
             }
         }
         return labelId;
@@ -154,10 +157,11 @@ export class NgramSubwordFeaturizer {
     }
 
     public createIntentUtteranceSparseIndexArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] }):
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] }):
         { "intentLabelIndexArray": number[], "utteranceFeatureIndexArrays": number[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArray: number[] =
             intents.map((intent) => this.getLabelIndex(intent), this);
         const utteranceFeatureIndexArrays: number[][] =
@@ -192,12 +196,13 @@ export class NgramSubwordFeaturizer {
     }
 
     public createIntentUtteranceMiniBatchingSparseIndexArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] },
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] },
         miniBatchIndexBegin: number = 0,
         miniBatchIndexEnd: number = 0):
         { "intentLabelIndexArray": number[], "utteranceFeatureIndexArrays": number[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArray: number[] = intents
             .slice(miniBatchIndexBegin, miniBatchIndexEnd)
             .map((intent) => this.getLabelIndex(intent), this);
@@ -231,10 +236,11 @@ export class NgramSubwordFeaturizer {
     }
 
     public createIntentUtteranceHashingSparseIndexArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] }):
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] }):
         { "intentLabelIndexArray": number[], "utteranceFeatureIndexArrays": number[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArray: number[] =
             intents.map((intent) => this.getLabelIndex(intent), this);
         const utteranceFeatureIndexArrays: number[][] =
@@ -261,7 +267,7 @@ export class NgramSubwordFeaturizer {
             labelArray[labelId] = true;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${this.labelMap}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
             }
         }
         return labelArray;
@@ -285,7 +291,7 @@ export class NgramSubwordFeaturizer {
             labelArray[labelId] = 1;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${this.labelMap}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
             }
         }
         return labelArray;
@@ -350,10 +356,11 @@ export class NgramSubwordFeaturizer {
     }
 
     public createIntentUtteranceOneHotEncoderBooleanArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] }):
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] }):
         { "intentLabelIndexArrays": boolean[][], "utteranceFeatureIndexArrays": boolean[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArrays: boolean[][] =
             intents.map((intent) => this.createLabelOneHotEncoderBooleanArray(intent), this);
         const utteranceFeatureIndexArrays: boolean[][] =
@@ -361,10 +368,11 @@ export class NgramSubwordFeaturizer {
         return { intentLabelIndexArrays, utteranceFeatureIndexArrays };
     }
     public createIntentUtteranceOneHotEncoderNumberArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] }):
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] }):
         { "intentLabelIndexArrays": number[][], "utteranceFeatureIndexArrays": number[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArrays: number[][] =
             intents.map((intent) => this.createLabelOneHotEncoderNumberArray(intent), this);
         const utteranceFeatureIndexArrays: number[][] =
@@ -422,12 +430,13 @@ export class NgramSubwordFeaturizer {
     }
 
     public createIntentUtteranceMiniBatchingOneHotEncoderBooleanArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] },
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] },
         miniBatchIndexBegin: number = 0,
         miniBatchIndexEnd: number = 0):
         { "intentLabelIndexArrays": boolean[][], "utteranceFeatureIndexArrays": boolean[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArrays: boolean[][] = intents
             .slice(miniBatchIndexBegin, miniBatchIndexEnd)
             .map((intent) => this.createLabelOneHotEncoderBooleanArray(intent), this);
@@ -437,12 +446,13 @@ export class NgramSubwordFeaturizer {
         return { intentLabelIndexArrays, utteranceFeatureIndexArrays };
     }
     public createIntentUtteranceMiniBatchingOneHotEncoderNumberArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] },
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] },
         miniBatchIndexBegin: number = 0,
         miniBatchIndexEnd: number = 0):
         { "intentLabelIndexArrays": number[][], "utteranceFeatureIndexArrays": number[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArrays: number[][] = intents
             .slice(miniBatchIndexBegin, miniBatchIndexEnd)
             .map((intent) => this.createLabelOneHotEncoderNumberArray(intent), this);
@@ -493,10 +503,11 @@ export class NgramSubwordFeaturizer {
     }
 
     public createIntentUtteranceHashingOneHotEncoderBooleanArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] }):
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] }):
         { "intentLabelIndexArrays": boolean[][], "utteranceFeatureIndexArrays": boolean[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArrays: boolean[][] =
             intents.map((intent) => this.createLabelOneHotEncoderBooleanArray(intent), this);
         const utteranceFeatureIndexArrays: boolean[][] =
@@ -504,10 +515,11 @@ export class NgramSubwordFeaturizer {
         return { intentLabelIndexArrays, utteranceFeatureIndexArrays };
     }
     public createIntentUtteranceHashingOneHotEncoderNumberArrays(
-        intentsUtterances: { "intents": string[], "utterances": string[] }):
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] }):
         { "intentLabelIndexArrays": number[][], "utteranceFeatureIndexArrays": number[][] } {
-        const intents: string[] = intentsUtterances.intents;
-        const utterances: string[] = intentsUtterances.utterances;
+        const intents: string[] = intentsUtterancesWeights.intents;
+        const utterances: string[] = intentsUtterancesWeights.utterances;
+        const weights: number[] = intentsUtterancesWeights.weights;
         const intentLabelIndexArrays: number[][] =
             intents.map((intent) => this.createLabelOneHotEncoderNumberArray(intent), this);
         const utteranceFeatureIndexArrays: number[][] =
@@ -530,6 +542,10 @@ export class NgramSubwordFeaturizer {
     }
 
     public split(input: string): string[] {
+        return this.splitRaw(
+            input).map((x: string) => x.trim());
+    }
+    public splitRaw(input: string): string[] {
         return Utility.splitByPunctuation(
             input,
             this.splitDelimiter,
@@ -550,13 +566,13 @@ export class NgramSubwordFeaturizer {
     }
 
     public resetLabelFeatureMaps(
-        intentsUtterances: { "intents": string[], "utterances": string[] }): void {
+        intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] }): void {
         // -------------------------------------------------------------------
-        this.intentsUtterances =
-            intentsUtterances;
+        this.intentsUtterancesWeights =
+            intentsUtterancesWeights;
         // -------------------------------------------------------------------
         const intents: string[] =
-            intentsUtterances.intents;
+            intentsUtterancesWeights.intents;
         const intentLabels: { "stringArray": string[], "stringMap": { [id: string]: number; } } =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArray(intents);
         this.labels =
@@ -565,7 +581,7 @@ export class NgramSubwordFeaturizer {
             intentLabels.stringMap;
         // -------------------------------------------------------------------
         const utterances: string[] =
-            intentsUtterances.utterances;
+            intentsUtterancesWeights.utterances;
         const featureArray: string[][] =
             utterances.map((text) => this.featurize(text));
         // ---- NOTE-FOR-REFERENCE ---- let featureArrayFlattened: string[] =
@@ -626,7 +642,7 @@ export class NgramSubwordFeaturizer {
         this.toRemovePunctuations = deserialized.toRemovePunctuations;
         this.toRemoveEmptyElements = deserialized.toRemoveEmptyElements;
         this.splitDelimiter = deserialized.splitDelimiter;
-        this.intentsUtterances = deserialized.intentsUtterances;
+        this.intentsUtterancesWeights = deserialized.intentsUtterancesWeights;
         this.labels = deserialized.labels;
         this.labelMap = deserialized.labelMap;
         this.features = deserialized.features;

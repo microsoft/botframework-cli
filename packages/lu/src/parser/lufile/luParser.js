@@ -14,6 +14,7 @@ const LUErrorListener = require('./luErrorListener');
 const SectionType = require('./../utils/enums/lusectiontypes');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const NEWLINE = require('os').EOL;
 
 class LUParser {
     /**
@@ -123,6 +124,8 @@ class LUParser {
             }))
         }
 
+        this.extractIntentBody(sections, content)
+
         return new LUResource(sections, content, errors);
     }
 
@@ -182,7 +185,7 @@ class LUParser {
 
         let simpleIntentSections = fileContext.paragraph()
             .map(x => x.simpleIntentSection())
-            .filter(x => x !== undefined && x !== null);
+            .filter(x => x && x.intentDefinition());
 
         let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x, content));
 
@@ -199,10 +202,17 @@ class LUParser {
         }
 
         let entitySections = fileContext.paragraph()
-            .map(x => x.entitySection())
-            .filter(x => x !== undefined && x !== null);
+            .map(x => x.simpleIntentSection())
+            .filter(x => x && !x.intentDefinition());
 
-        let entitySectionList = entitySections.map(x => new EntitySection(x));
+        let entitySectionList = [];
+        entitySections.forEach(x => {
+            if (x.entitySection) {
+                for (const entitySection of x.entitySection()) {
+                    entitySectionList.push(new EntitySection(entitySection));
+                }
+            }
+        })
 
         return entitySectionList;
     }
@@ -217,10 +227,17 @@ class LUParser {
         }
 
         let newEntitySections = fileContext.paragraph()
-            .map(x => x.newEntitySection())
-            .filter(x => x !== undefined && x !== null);
+            .map(x => x.simpleIntentSection())
+            .filter(x => x && !x.intentDefinition());
         
-        let newEntitySectionList = newEntitySections.map(x => new NewEntitySection(x));
+        let newEntitySectionList = [];
+        newEntitySections.forEach(x => {
+            if (x.newEntitySection) {
+                for (const newEntitySection of x.newEntitySection()) {
+                    newEntitySectionList.push(new NewEntitySection(newEntitySection));
+                }
+            }
+        })
 
         return newEntitySectionList;
     }
@@ -277,6 +294,38 @@ class LUParser {
         let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
 
         return modelInfoSectionList;
+    }
+
+    /**
+     * @param {any[]} sections
+     * @param {string} content
+     */
+    static extractIntentBody(sections, content) {
+        sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
+        const originList = content.split(/\r?\n/)
+        sections.forEach(function (section, index) {
+            if (section.SectionType === SectionType.SIMPLEINTENTSECTION || section.SectionType === SectionType.NESTEDINTENTSECTION) {
+                const startLine = section.ParseTree.start.line - 1
+                let stopLine
+                if (index + 1 < sections.length) {
+                    stopLine = sections[index + 1].ParseTree.start.line - 1
+                    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine >= stopLine || originList.Length <= stopLine) {
+                        throw new Error("index out of range.")
+                    }
+                } else {
+                    stopLine = originList.length
+                }
+
+                const destList = originList.slice(startLine + 1, stopLine)
+                section.Body = destList.join(NEWLINE)
+                section.StartLine = startLine
+                section.StopLine = stopLine - 1
+
+                if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
+                    LUParser.extractIntentBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
+                }
+            }
+        })
     }
 
     static isSectionEnabled(sections) {

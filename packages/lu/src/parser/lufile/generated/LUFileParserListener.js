@@ -1,4 +1,4 @@
-// Generated from LUFileParser.g4 by ANTLR 4.7.1
+// Generated from ../LUFileParser.g4 by ANTLR 4.7.2
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -35,6 +35,15 @@ LUFileParserListener.prototype.enterNewline = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#newline.
 LUFileParserListener.prototype.exitNewline = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#errorString.
+LUFileParserListener.prototype.enterErrorString = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#errorString.
+LUFileParserListener.prototype.exitErrorString = function(ctx) {
 };
 
 
@@ -152,15 +161,6 @@ LUFileParserListener.prototype.enterNormalIntentString = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#normalIntentString.
 LUFileParserListener.prototype.exitNormalIntentString = function(ctx) {
-};
-
-
-// Enter a parse tree produced by LUFileParser#errorIntentString.
-LUFileParserListener.prototype.enterErrorIntentString = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#errorIntentString.
-LUFileParserListener.prototype.exitErrorIntentString = function(ctx) {
 };
 
 
@@ -350,15 +350,6 @@ LUFileParserListener.prototype.enterNormalItemString = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#normalItemString.
 LUFileParserListener.prototype.exitNormalItemString = function(ctx) {
-};
-
-
-// Enter a parse tree produced by LUFileParser#errorItemString.
-LUFileParserListener.prototype.enterErrorItemString = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#errorItemString.
-LUFileParserListener.prototype.exitErrorItemString = function(ctx) {
 };
 
 

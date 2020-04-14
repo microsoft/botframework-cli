@@ -1,7 +1,0 @@
-# filename
-- ${builtinEntityFilename('temperatureEntity')}
-
-# template
-- @ prebuilt temperature ${roles()}
-
-[generator.lg](../generator.lg)

@@ -3,6 +3,9 @@
  * Licensed under the MIT License.
  */
 
+import { isNull } from "util";
+import { isUndefined } from "util";
+
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
 import { EntityAnnotatedCorpusData } from "./EntityAnnotatedCorpusData";
@@ -43,49 +46,57 @@ export class DataUtility {
     }
     public static async LoadData(
         filename: string,
+        featurizerNullable: NgramSubwordFeaturizer|null = null,
+        toResetFeaturizerLabelFeatureMaps: boolean = true,
         filetype: string = "",
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
         linesToSkip: number = 0): Promise<Data> {
         const content: string =
             Utility.loadFile(filename);
         if (Utility.isEmptyString(filetype)) {
             filetype = DataUtility.getDataFileTypeFromFilenameExtension(filename);
         }
+        if (isNull(featurizerNullable) || (isUndefined(featurizerNullable))) {
+            featurizerNullable = new NgramSubwordFeaturizer();
+            toResetFeaturizerLabelFeatureMaps = true;
+        }
         if (filetype === DataUtility.DATA_FORMAT_TYPE_LU) {
             const luData: LuData =
                 await LuData.createLuData(
                     content,
-                    new NgramSubwordFeaturizer(),
-                    true);
+                    featurizerNullable,
+                    toResetFeaturizerLabelFeatureMaps);
             return luData;
         }
         if (filetype === DataUtility.DATA_FORMAT_TYPE_QUESTION_AND_ANSWER) {
             const luData: LuData =
                 await LuData.createLuData(
                     content,
-                    new NgramSubwordFeaturizer(),
-                    true);
+                    featurizerNullable,
+                    toResetFeaturizerLabelFeatureMaps);
             return luData;
         }
         if (filetype === DataUtility.DATA_FORMAT_TYPE_ENTITY_ANNOTATED_CORPUS) {
             const entityAnnotatedCorpusData: EntityAnnotatedCorpusData =
                 EntityAnnotatedCorpusData.createEntityAnnotatedCorpusData(
                     content,
-                    new NgramSubwordFeaturizer(),
+                    featurizerNullable,
                     linesToSkip,
-                    true);
+                    toResetFeaturizerLabelFeatureMaps);
             return entityAnnotatedCorpusData;
         }
         {
             const columnarData: ColumnarData =
-            ColumnarData.createColumnarData(
-                content,
-                new NgramSubwordFeaturizer(),
-                labelColumnIndex,
-                textColumnIndex,
-                linesToSkip,
-                true);
+                ColumnarData.createColumnarData(
+                    content,
+                    featurizerNullable,
+                    labelColumnIndex,
+                    textColumnIndex,
+                    weightColumnIndex,
+                    linesToSkip,
+                    toResetFeaturizerLabelFeatureMaps);
             return columnarData;
         }
     }

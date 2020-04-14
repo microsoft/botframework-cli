@@ -14,7 +14,7 @@ class SectionOperator {
   // After CRUD, section Ids will keep same unless you change section name.
   addSection(sectionContent) {
     sectionContent = helpers.sanitizeNewLines(sectionContent);
-    const newContent = this.Luresource.Content !== '' ? `${this.Luresource.Content}${NEWLINE}${NEWLINE}${sectionContent}` : sectionContent;
+    const newContent = this.Luresource.Content !== '' ? `${this.Luresource.Content}${NEWLINE}${sectionContent}` : sectionContent;
 
     const result = luParser.parse(newContent);
     return result;
@@ -27,8 +27,8 @@ class SectionOperator {
       return this.Luresource;
     }
 
-    var startLine = section.ParseTree.start.line - 1;
-    var stopLine = section.ParseTree.stop.line - 1;
+    var startLine = section.StartLine;
+    var stopLine = section.StopLine;
 
     var newContent = this.replaceRangeContent(this.Luresource.Content, startLine, stopLine, sectionContent);
 
@@ -41,8 +41,8 @@ class SectionOperator {
       return this;
     }
 
-    var startLine = section.ParseTree.start.line - 1;
-    var stopLine = section.ParseTree.stop.line - 1;
+    var startLine = section.StartLine;
+    var stopLine = section.StopLine;
 
     var newContent = this.replaceRangeContent(this.Luresource.Content, startLine, stopLine, undefined);
 
@@ -57,7 +57,7 @@ class SectionOperator {
 
     const originList = originString.split(/\r?\n/);
     let destList = [];
-    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.Length <= stopLine) {
+    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.length <= stopLine) {
       throw new Error("index out of range.");
     }
 

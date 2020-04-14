@@ -1,0 +1,69 @@
+> # Intent definitions
+
+## AcceptEventEntry
+- accept the event
+- accept the event on {FromDate=feb.18} in {Location=beijing}.
+
+> # Entity definitions
+
+$Duration:simple
+
+$FromDate:simple
+
+$FromTime:simple Roles=OutLook
+
+$Location:simple
+
+$MeetingRoom:simple
+
+$OrderReference:simple Roles=Next
+
+$PositionReference:simple
+
+$Subject:simple Roles=Meals
+
+$ToDate:simple
+
+$ToTime:simple
+
+
+> # PREBUILT Entity definitions
+
+$PREBUILT:ordinal
+
+$PREBUILT:personName Roles=Female, Male
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+$PossessivePronoun:FirstPerson= Roles=FirstPerson
+- my
+- our
+- my own
+- our own
+
+$PossessivePronoun:SecondPerson= Roles=FirstPerson
+- your
+- your own
+
+$PossessivePronoun:ThirdPerson= Roles=FirstPerson
+- his
+- her
+- their
+- his own
+- her own
+- their own
+
+
+
+> # RegEx entities
+
+$Email:/[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+/
+$MeetingRoomKeywordsDesc:/((conf|conference|meeting)\s+)?(room|rm|office)/
+
+> # Composite entities
+
+$FromDateTime:[FromDate, FromTime]

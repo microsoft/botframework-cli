@@ -26,7 +26,10 @@ const luisToLuContent = function(luisJSON){
     fileContent += handlePhraseLists(luisJSON.model_features);
     fileContent += handlePhraseLists(luisJSON.phraselists);
     fileContent += parseToLuClosedLists(luisJSON)
-    fileContent += parseRegExEntitiesToLu(luisJSON)
+    fileContent += parseRegExEntitiesToLu(luisJSON.regex_entities)
+    // handle regexEntities in json returned from luis export api
+    // similar with regex_entities
+    fileContent += parseRegExEntitiesToLu(luisJSON.regexEntities)
     fileContent += parseCompositesToLu(luisJSON)
     fileContent += parsePatternAnyEntitiesToLu(luisJSON)
     return fileContent
@@ -36,6 +39,10 @@ const parseIntentsToLu = function(luisObj, luisJSON){
     let fileContent = ''
     fileContent += NEWLINE;
     fileContent += addAppMetaData(luisJSON);
+    // Add test result if in test mode
+    if (luisJSON.test === true) {
+        fileContent += `> Total passed: ${luisJSON.passNumber}/${luisJSON.count}` + NEWLINE + NEWLINE
+    }
     fileContent += '> # Intent definitions' + NEWLINE + NEWLINE;
     
     if(luisObj.intents.length <= 0) {
@@ -54,6 +61,10 @@ const parseIntentsToLu = function(luisObj, luisJSON){
                 fileContent += '; model_name : ' + intent.intent.inherits.model_name;
             }
             fileContent += NEWLINE + NEWLINE;
+        }
+        // Add test result if in test mode
+        if (luisJSON.test === true) {
+            fileContent += `> Utterance passed in this intent: ${intent.intent.passNumber}/${intent.intent.count}` + NEWLINE
         }
         fileContent += '## ' + intent.intent.name + NEWLINE;
         fileContent += parseUtterancesToLu(intent.utterances, luisJSON)
@@ -74,6 +85,10 @@ const parseUtterancesToLu = function(utterances, luisJSON){
     let fileContent = ''
     utterances.forEach(function(utterance) {
         let updatedText = utterance.text;
+        // Add test result if in test mode and utterance has test result
+        if(luisJSON.test === true && utterance.predictedResult !== undefined){
+            fileContent += parsePredictedResultToLu(utterance, luisJSON)
+        }
         if(utterance.entities.length >= 0) {
             // update utterance for each entity
             let text = utterance.text;
@@ -102,6 +117,52 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
     }); 
     return fileContent  
+}
+
+const parsePredictedResultToLu =  function(utterance, luisJSON){
+    let fileContent = ''
+    let updatedText = utterance.text;
+    let intents = []
+    // parse predicted result into the .lu content
+    if(utterance.predictedResult.predictedIntents!==undefined && utterance.predictedResult.predictedIntents.length > 0){
+        for(let intent of utterance.predictedResult.predictedIntents){
+            intents.push(`${intent.intent}(${intent.score})`);
+        }
+    }
+    let passText = utterance.predictedResult.IntentPass? "> PASS." : "> FAIL.";
+    fileContent += passText + " Predicted intent: " + intents.join(', ')  + NEWLINE;
+
+    if(utterance.predictedResult.predictedEntities!==undefined) {
+        if (utterance.predictedResult.predictedEntities.length > 0){
+            // update utterance for each entity
+            let text = utterance.text;
+            let sortedEntitiesList = objectSortByStartPos(utterance.predictedResult.predictedEntities);
+            let tokenizedText = text.split('');
+            let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
+            nonCompositesInUtterance.forEach(entity => {
+                if (entity.role !== undefined) {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                } else {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+                }
+                tokenizedText[parseInt(entity.endPos)] += `}`;
+            })
+            let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
+            compositeEntitiesInUtterance.forEach(entity => {
+                if (entity.role !== undefined) {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
+                } else {
+                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
+                }
+                tokenizedText[parseInt(entity.endPos)] += `}`;
+            })
+            updatedText = tokenizedText.join(''); 
+        }
+        let passText = utterance.predictedResult.EntityPass ? "> PASS." : "> FAIL.";
+        if(updatedText) fileContent +=  passText + ' Predicted entities: ' + updatedText + NEWLINE;
+        updatedText = utterance.text;
+    }
+    return fileContent
 }
 
 const parseEntitiesToLu =  function(luisJson){
@@ -180,13 +241,13 @@ const parseToLuClosedLists = function(luisJson){
     return fileContent
 }
 
-const parseRegExEntitiesToLu = function(luisJson){
+const parseRegExEntitiesToLu = function(regex_entities){
     let fileContent = ''
-    if(!luisJson.regex_entities) {
+    if(!regex_entities) {
         return fileContent
     }
     fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
-    luisJson.regex_entities.forEach(function(regExEntity) {
+    regex_entities.forEach(function(regExEntity) {
         fileContent += `@ regex `;
         fileContent += regExEntity.name.includes(' ') ? `"${regExEntity.name}"` : regExEntity.name;
         fileContent += addRolesAndFeatures(regExEntity);
@@ -223,10 +284,10 @@ const parsePatternAnyEntitiesToLu = function(luisJson){
     if(!luisJson.patternAnyEntities || luisJson.patternAnyEntities.length <= 0) {
         return fileContent;
     }
+    fileContent += '> # Pattern.Any entities' + NEWLINE + NEWLINE;
     luisJson.patternAnyEntities.forEach(patternAnyEntity => {
         // Add inherits information if any
         if (patternAnyEntity.inherits !== undefined) {
-            fileContent += '> # Pattern.Any entities' + NEWLINE + NEWLINE;
             // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
             fileContent += '> !# @patternAnyEntity.inherits = name : ' + patternAnyEntity.name;
             if (patternAnyEntity.inherits.domain_name !== undefined) {
@@ -236,12 +297,12 @@ const parsePatternAnyEntitiesToLu = function(luisJson){
                 fileContent += '; model_name : ' + patternAnyEntity.inherits.model_name;
             }
             fileContent += NEWLINE + NEWLINE;
-            // For back compat we will only write this if the pattern.any has inherits information.
-            fileContent += `@ patternany `;
-            fileContent += patternAnyEntity.name.includes(' ') ? `"${patternAnyEntity.name}"` : patternAnyEntity.name;
-            fileContent += addRolesAndFeatures(patternAnyEntity);
-            fileContent += NEWLINE;
         }
+        // For back compat we will only write this if the pattern.any has inherits information.
+        fileContent += `@ patternany `;
+        fileContent += patternAnyEntity.name.includes(' ') ? `"${patternAnyEntity.name}"` : patternAnyEntity.name;
+        fileContent += addRolesAndFeatures(patternAnyEntity);
+        fileContent += NEWLINE;
     })
     return fileContent;
 }
@@ -410,6 +471,8 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
 const objectSortByStartPos = function (objectArray) {
     let ObjectByStartPos = objectArray.slice(0);
     ObjectByStartPos.sort(function(a,b) {
+        if (a.startPos === b.startPos)
+            return a.endPos - b.endPos; 
         return a.startPos - b.startPos;
     });
     return ObjectByStartPos;

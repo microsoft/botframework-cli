@@ -1,0 +1,95 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> Total passed: 5/5
+
+> # Intent definitions
+
+> Utterance passed in this intent: 4/4
+## AcceptEventEntry
+> PASS. Predicted intent: AcceptEventEntry(0.9898117)
+> PASS. Predicted entities: accept {@Meals=dinner}
+- accept {@Meals=dinner}
+> PASS. Predicted intent: AcceptEventEntry(0.959497333)
+> PASS. Predicted entities: accept my meeting with {@Female=lucy}
+- accept my meeting with {@Female=lucy}
+> PASS. Predicted intent: AcceptEventEntry(0.981132746)
+> PASS. Predicted entities: accept my {@Next=next} meeting
+- accept my {@Next=next} meeting
+> PASS. Predicted intent: AcceptEventEntry(0.9642574)
+> PASS. Predicted entities: accept the appointment sent by {@Male=lucas}
+- accept the appointment sent by {@Male=lucas}
+
+
+> Utterance passed in this intent: 1/1
+## CreateCalendarEntry
+> PASS. Predicted intent: CreateCalendarEntry(0.99999994)
+> PASS. Predicted entities: create a meeting with {@OutLook=tom34@outlook.com}
+- create a meeting with {@OutLook=tom34@outlook.com}
+
+
+> # Entity definitions
+
+@ ml Duration
+
+@ ml FromDate
+
+@ ml FromTime
+
+@ ml Location
+
+@ ml MeetingRoom
+
+@ ml OrderReference hasRole Next
+
+@ ml PositionReference
+
+@ ml Subject hasRole Meals
+
+@ ml ToDate
+
+@ ml ToTime
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt ordinal
+
+@ prebuilt personName hasRoles Female,Male
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+@ list PossessivePronoun hasRole FirstPerson = 
+	- FirstPerson :
+		- my
+		- our
+		- my own
+		- our own
+	- SecondPerson :
+		- your
+		- your own
+	- ThirdPerson :
+		- his
+		- her
+		- their
+		- his own
+		- her own
+		- their own
+
+
+> # RegEx entities
+
+@ regex Email hasRole OutLook = /[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+/
+@ regex MeetingRoomKeywordsDesc = /((conf|conference|meeting)\s+)?(room|rm|office)/
+
+> # Composite entities
+
+@ composite FromDateTime = [FromDate, FromTime]

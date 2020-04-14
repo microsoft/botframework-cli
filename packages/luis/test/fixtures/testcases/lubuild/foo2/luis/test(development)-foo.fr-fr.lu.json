@@ -1,26 +1,27 @@
 {
-  "luis_schema_version": "4.0.0",
-  "versionId": "0.1",
   "name": "test(development)-foo.fr-fr.lu",
+  "versionId": "0.1",
   "desc": "Model for test app, targetting development",
   "culture": "fr-fr",
-  "tokenizerVersion": "1.0.0",
   "intents": [
     {
-      "name": "None"
+      "name": "None",
+      "features": []
     },
     {
-      "name": "YoCarlos"
+      "name": "YoCarlos",
+      "features": []
     }
   ],
   "entities": [],
-  "composites": [],
   "closedLists": [],
+  "composites": [],
+  "hierarchicals": [],
   "patternAnyEntities": [],
-  "regex_entities": [],
+  "regexEntities": [],
   "prebuiltEntities": [],
-  "model_features": [],
-  "regex_features": [],
+  "regexFeatures": [],
+  "phraselists": [],
   "patterns": [],
   "utterances": [
     {
@@ -29,5 +30,12 @@
       "entities": []
     }
   ],
-  "settings": []
+  "luis_schema_version": "6.0.0",
+  "tokenizerVersion": "1.0.0",
+  "settings": [
+    {
+      "name": "NormalizeDiacritics",
+      "value": "true"
+    }
+  ]
 }

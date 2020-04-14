@@ -95,10 +95,10 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
 
     const destLuFileToIntent = triggerRules[fileId]
     for (const destLuFile of Object.keys(destLuFileToIntent)) {
-      if (!fileIdsFromInput.includes(destLuFile)) continue
+      if (destLuFile !== '' && !fileIdsFromInput.includes(destLuFile)) continue
 
       const triggerIntentName = destLuFileToIntent[destLuFile]
-      if (!intents.some(i => i.Name === triggerIntentName)) {
+      if (triggerIntentName !== '' && !intents.some(i => i.Name === triggerIntentName)) {
         throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`))
       }
 
@@ -144,7 +144,7 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
   mergeBrothersInterruption(rootResource, result, intentName)
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
-    if (childResource.visited === undefined) {
+    if (childResource && childResource.visited === undefined) {
       const rootQnaFileId = rootResource.id.replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
       const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
       const newChildResource = mergeFatherInterruptionToChild(rootResource, rootQnaResource, childResource, intentName)
@@ -161,7 +161,8 @@ const mergeBrothersInterruption = function (resource, result, intentName) {
     let triggerIntent = child.intent
     const brotherSections = resource.content.Sections.filter(s => s.Name !== triggerIntent
       && s.Name !== intentName
-      && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION))
+      && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
+      && children.some(brotherChild => brotherChild.intent === s.Name))
 
     let brotherUtterances = []
     brotherSections.forEach(s => {
@@ -177,8 +178,10 @@ const mergeBrothersInterruption = function (resource, result, intentName) {
     let targetResource = result.get(child.target)
 
     // Merge direct brother's utterances
-    targetResource = mergeInterruptionIntent(brotherUtterances, targetResource, intentName)
-    result.set(targetResource.id, targetResource)
+    if (targetResource) {
+      targetResource = mergeInterruptionIntent(brotherUtterances, targetResource, intentName)
+      result.set(targetResource.id, targetResource)
+    }
   }
 }
 
@@ -246,7 +249,7 @@ const mergeInterruptionIntent = function (fromUtterances, toResource, intentName
     // construct new content here
     const dedupUtterances = dedupFromUtterances.filter(u => !existingUtterances.includes(u))
     if (dedupUtterances && dedupUtterances.length > 0) {
-      let newFileContent = `> Source: cross training. Please do not edit these directly!${NEWLINE}# ${intentName}${NEWLINE}- `
+      let newFileContent = `${NEWLINE}> Source: cross training. Please do not edit these directly!${NEWLINE}# ${intentName}${NEWLINE}- `
       newFileContent += dedupUtterances.join(`${NEWLINE}- `)
 
       // add section here
@@ -383,7 +386,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
 
   // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
   if (questionsContent && questionsContent !== '' && utterances.length > 0) {
-    const questionsToUtterances = `${crossTrainingComments}${NEWLINE}# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
+    const questionsToUtterances = `${NEWLINE}${crossTrainingComments}${NEWLINE}# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
     trainedLuResource = new SectionOperator(trainedLuResource).addSection(questionsToUtterances)
   }
 
@@ -413,7 +416,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   if (qnaContents && qnaContents !== '') {
     const modelInfoSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.MODELINFOSECTION)
     const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
-    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
+    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(NEWLINE + qnaContents)
   }
 
   // remove utterances which are duplicated with local qna questions
@@ -424,7 +427,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
 
   // add utterances from lu file to corresponding qna file with question set to all utterances
   if (utterancesContent && utterancesContent !== '' && qnaSections.length > 0) {
-    const utterancesToQuestion = `${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    const utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 

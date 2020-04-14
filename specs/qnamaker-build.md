@@ -72,7 +72,7 @@ For each QnA file:
 \<QNAfilename>_\<locale>.dialog
 ```jsonc
 {
-    "$type": "Microsoft.QnAMakerRecognizer",
+    "$kind": "Microsoft.QnAMakerRecognizer",
     "KnowledgeBaseId": "{settings.qna.<dialogName>_<localeName>_qna}",
     // endpoint here is fetched from the KB itself.
     "endpoint": "{settings.qna.hostname}",
@@ -83,7 +83,7 @@ For each QnA file:
 \<qnafilename>.qna.dialog
 ```json
 {
-    "$type": "Microsoft.MultiLanguageRecognizer",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
     "recognizers": {
         "<locale>": "<qnafilename>.<locale>.lu",
         "": "<qnafilename>.<fallbacklocale>.lu"

@@ -227,6 +227,8 @@ export class Builder {
         outPath = path.join(path.resolve(path.dirname(luconfig)), settingsContents[0].id)
       } else if (out) {
         outPath = path.join(path.resolve(out), settingsContents[0].id)
+      } else {
+        outPath = path.resolve(settingsContents[0].id)
       }
       writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
     }
@@ -235,6 +237,10 @@ export class Builder {
       for (const content of writeContents) {
         const outFilePath = path.join(path.resolve(out), path.basename(content.path))
         if (force || !fs.existsSync(outFilePath)) {
+          if (!fs.existsSync(path.dirname(outFilePath))) {
+            fs.mkdirSync(path.dirname(outFilePath))
+          }
+
           this.handler(`Writing to ${outFilePath}\n`)
           await fs.writeFile(outFilePath, content.content, 'utf-8')
           writeDone = true
@@ -243,6 +249,10 @@ export class Builder {
     } else {
       for (const content of writeContents) {
         if (force || !fs.existsSync(content.path)) {
+          if (!fs.existsSync(path.dirname(content.path))) {
+            fs.mkdirSync(path.dirname(content.path))
+          }
+
           this.handler(`Writing to ${content.path}\n`)
           await fs.writeFile(content.path, content.content, 'utf-8')
           writeDone = true
@@ -251,6 +261,25 @@ export class Builder {
     }
 
     return writeDone
+  }
+
+  async getActiveVersionIds(appNames: string[], authoringKey: string, region: string) {
+    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
+    const apps = await luBuildCore.getApplicationList()
+    let appNameVersionMap = new Map<string, string>()
+    for (const appName of appNames) {
+      // find if there is a matched name with current app under current authoring key
+      appNameVersionMap.set(appName, '')
+      for (let app of apps) {
+        if (app.name === appName) {
+          const appInfo = await luBuildCore.getApplicationInfo(app.id)
+          appNameVersionMap.set(appName, appInfo.activeVersion)
+          break
+        }
+      }
+    }
+
+    return appNameVersionMap
   }
 
   async initApplicationFromLuContent(content: any, botName: string, suffix: string) {
@@ -295,6 +324,7 @@ export class Builder {
         for (const versionObj of versionObjs) {
           if (versionObj.version !== newVersionId) {
             this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
+            await delay(delayDuration)
             await luBuildCore.deleteVersion(recognizer.getAppId(), versionObj.version)
           }
         }

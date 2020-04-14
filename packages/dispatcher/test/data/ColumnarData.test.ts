@@ -626,6 +626,7 @@ export function exampleFunctionDataWithColumnarContent(
     columnarContent: string,
     labelColumnIndex: number,
     textColumnIndex: number,
+    weightColumnIndex: number,
     linesToSkip: number): ColumnarData {
     // -----------------------------------------------------------------------
     const columnarData: ColumnarData = ColumnarData.createColumnarData(
@@ -633,6 +634,7 @@ export function exampleFunctionDataWithColumnarContent(
         new NgramSubwordFeaturizer(),
         labelColumnIndex,
         textColumnIndex,
+        weightColumnIndex,
         linesToSkip,
         true);
     const luUtterances: Array<{
@@ -647,7 +649,8 @@ export function exampleFunctionDataWithColumnarContent(
             "endPos": number,
             }>,
         "intent": string,
-        "text": string }> = columnarData.getLuUtterances();
+        "text": string,
+        "weight": number }> = columnarData.getLuUtterances();
     // Utility.debuggingLog(`luUtterances=` +
     //     `${Utility.getJsonStringified(luUtterances)}`);
     assert.ok(luUtterances, `luUtterances=${luUtterances}`);
@@ -795,6 +798,7 @@ describe("Test Suite - data/ColumnarData/ColumnarData - Email", () => {
             ColumnarContentEmail,
             0,
             2,
+            1,
             1);
     });
 });

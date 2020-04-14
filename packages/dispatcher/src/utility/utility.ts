@@ -309,20 +309,20 @@ export class Utility {
     }
 
     public static mapToJsonSerialization<K, V>(map: Map<K, V>): string {
-        return JSON.stringify([...map]);
+        return Utility.JSONstringify([...map]);
     }
     public static jsonSerializationToMap<K, V>(jsonString: string): Map<K, V> {
         const jsonParsedObject: any = JSON.parse(jsonString);
         return new Map<K, V>(jsonParsedObject);
     }
     public static setToJsonSerialization<T>(set: Set<T>): string {
-        return JSON.stringify([...set]);
+        return Utility.JSONstringify([...set]);
     }
     public static jsonSerializationToSet<T>(jsonString: string): Set<T> {
         return new Set<T>(JSON.parse(jsonString));
     }
     public static arrayToJsonSerialization<T>(set: T[]): string {
-        return JSON.stringify([...set]);
+        return Utility.JSONstringify([...set]);
     }
     public static jsonSerializationToArray<T>(jsonString: string): T[] {
         return new Array<T>(JSON.parse(jsonString));
@@ -388,13 +388,13 @@ export class Utility {
     }
 
     public static stringMapSetToJson<V>(stringMapSet: Map<string, Set<V>>): string {
-        return JSON.stringify(Utility.stringMapSetToObject<V>(stringMapSet));
+        return Utility.JSONstringify(Utility.stringMapSetToObject<V>(stringMapSet));
     }
     public static jsonToStringMapSet<V>(jsonString: string): Map<string, Set<V>> {
         return Utility.objectToStringMapSet<V>(JSON.parse(jsonString));
     }
     public static stringMapArrayToJson<V>(stringMapArray: Map<string, V[]>): string {
-        return JSON.stringify(Utility.stringMapArrayToObject<V>(stringMapArray));
+        return Utility.JSONstringify(Utility.stringMapArrayToObject<V>(stringMapArray));
     }
     public static jsonToStringMapArray<V>(jsonString: string): Map<string, V[]> {
         return Utility.objectToStringMapArray<V>(JSON.parse(jsonString));
@@ -791,18 +791,24 @@ export class Utility {
         filename: string,
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
         scoreColumnBeginIndex: number = 2,
         numberOfScoreColumns: number = -1,
-        weightColumnIndex: number = -1,
+        identifierColumnIndex: number = -1,
+        predictedLabelColumnIndex: number = -1,
+        revisedTextColumnIndex: number = -1,
         lineIndexToStart: number = 0,
         columnDelimiter: string = "\t",
         rowDelimiter: string = "\n",
         encoding: string = "utf8",
         lineIndexToEnd: number = -1): {
-            "intents": string[],
-            "utterances": string[],
+            "labels": string[],
+            "texts": string[],
             "weights": number[],
-            "scoreArrays": number[][] } {
+            "identifiers": string[],
+            "scoreArrays": number[][],
+            "predictedLabels": string[],
+            "revisedTexts": string[] } {
         if (encoding == null) {
             encoding = "utf8";
         }
@@ -813,9 +819,12 @@ export class Utility {
             fileContent,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             scoreColumnBeginIndex,
             numberOfScoreColumns,
-            weightColumnIndex,
+            identifierColumnIndex,
+            predictedLabelColumnIndex,
+            revisedTextColumnIndex,
             lineIndexToStart,
             columnDelimiter,
             rowDelimiter,
@@ -825,17 +834,23 @@ export class Utility {
         fileContent: string,
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
         scoreColumnBeginIndex: number = 2,
         numberOfScoreColumns: number = 0,
-        weightColumnIndex: number = -1,
+        identifierColumnIndex: number = -1,
+        predictedLabelColumnIndex: number = -1,
+        revisedTextColumnIndex: number = -1,
         lineIndexToStart: number = 0,
         columnDelimiter: string = "\t",
         rowDelimiter: string = "\n",
         lineIndexToEnd: number = -1): {
-            "intents": string[],
-            "utterances": string[],
+            "labels": string[],
+            "texts": string[],
             "weights": number[],
-            "scoreArrays": number[][] } {
+            "identifiers": string[],
+            "scoreArrays": number[][],
+            "predictedLabels": string[],
+            "revisedTexts": string[] } {
         if (labelColumnIndex < 0) {
             labelColumnIndex = 0;
         }
@@ -854,11 +869,14 @@ export class Utility {
         if (rowDelimiter == null) {
             rowDelimiter = "\n";
         }
-        const intents: string[] = [];
-        const utterances: string[] = [];
+        const labels: string[] = [];
+        const texts: string[] = [];
         const weights: number[] = [];
+        const identifiers: string[] = [];
         const scoreArrays: number[][] = [];
-        const fileLines: string[] = fileContent.split(rowDelimiter);
+        const predictedLabels: string[] = [];
+        const revisedTexts: string[] = [];
+        const fileLines: string[] = Utility.split(fileContent, rowDelimiter);
         for (let lineIndex = lineIndexToStart;
             (lineIndex < fileLines.length) && ((lineIndexToEnd < 0) || (lineIndex < lineIndexToEnd));
             lineIndex++) {
@@ -867,17 +885,17 @@ export class Utility {
             if (Utility.isEmptyString(line)) {
                 continue;
             }
-            const lineColumns: string[] = line.split(columnDelimiter);
+            const lineColumns: string[] = Utility.split(line, columnDelimiter);
             // ---------------------------------------------------------------
-            const intent: string = lineColumns[labelColumnIndex];
+            const label: string = lineColumns[labelColumnIndex];
             // ---------------------------------------------------------------
-            const utterance: string = lineColumns[textColumnIndex];
-            if (Utility.isEmptyString(intent)) {
+            const text: string = lineColumns[textColumnIndex];
+            if (Utility.isEmptyString(label)) {
                 Utility.debuggingThrow(
-                    `LINE - INDEX=${lineIndex}, intent is empty` +
+                    `LINE - INDEX=${lineIndex}, label is empty` +
                     `, lineColumns.length=${lineColumns.length}` +
-                    `, intent=$${intent}$` +
-                    `, utterance=$${utterance}$` +
+                    `, label=$${label}$` +
+                    `, text=$${text}$` +
                     `, line=$${line}$`);
             }
             // ---------------------------------------------------------------
@@ -886,12 +904,27 @@ export class Utility {
                 weight = +lineColumns[weightColumnIndex];
             }
             // ---------------------------------------------------------------
+            let identifier: string = lineIndex.toString();
+            if (identifierColumnIndex >= 0) {
+                identifier = lineColumns[identifierColumnIndex];
+            }
+            let predictedLabel: string = "";
+            if (predictedLabelColumnIndex >= 0) {
+                predictedLabel = lineColumns[predictedLabelColumnIndex];
+            }
+            let revisedText: string = "";
+            if (revisedTextColumnIndex >= 0) {
+                revisedText = lineColumns[revisedTextColumnIndex];
+            }
+            // ---------------------------------------------------------------
             if (numberOfScoreColumns <= 0) {
                 numberOfScoreColumns = lineColumns.length - scoreColumnBeginIndex;
             }
             if ((numberOfScoreColumns <= 0) || (numberOfScoreColumns > (lineColumns.length - scoreColumnBeginIndex))) {
                 Utility.debuggingThrow(
-                    `(numberOfScoreColumns<=0)||(numberOfScoreColumns|${numberOfScoreColumns}|>lineColumns.length|${lineColumns.length}|))`);
+                    `(numberOfScoreColumns<=0)||(numberOfScoreColumns|${numberOfScoreColumns}|>lineColumns.length|${lineColumns.length}|))` +
+                    `,scoreColumnBeginIndex=${scoreColumnBeginIndex}` +
+                    `,line=${line}`);
             }
             const scoreArray: number[] = [];
             let scoreIndex = scoreColumnBeginIndex;
@@ -904,30 +937,64 @@ export class Utility {
             //     Utility.debuggingLog(
             //         `LINE - INDEX=${lineIndex}` +
             //         `, lineColumns.length=${lineColumns.length}` +
-            //         `, intent=$${intent}$` +
-            //         `, utterance=$${utterance}$` +
+            //         `, label=$${label}$` +
+            //         `, text=$${text}$` +
             //         `, line=$${line}$`);
             //
             // }
             // ---------------------------------------------------------------
-            intents.push(intent);
-            utterances.push(utterance);
+            labels.push(label);
+            texts.push(text);
             weights.push(weight);
+            identifiers.push(identifier);
             scoreArrays.push(scoreArray);
+            predictedLabels.push(predictedLabel);
+            revisedTexts.push(revisedText);
             // ---------------------------------------------------------------
         }
-        return { intents, utterances, weights, scoreArrays };
+        return { labels, texts, weights, identifiers, scoreArrays, predictedLabels, revisedTexts };
     }
 
-    public static loadLabelTextColumnarFile(
+    public static loadLabelUtteranceColumnarFile(
         filename: string,
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
         lineIndexToStart: number = 0,
         columnDelimiter: string = "\t",
         rowDelimiter: string = "\n",
         encoding: string = "utf8",
-        lineIndexToEnd: number = -1): { "intents": string[], "utterances": string[] } {
+        lineIndexToEnd: number = -1): { "intents": string[], "utterances": string[], "weights": number[] } {
+            const intentsTextsWeights: { "intents": string[], "texts": string[], "weights": number[] } =
+            Utility.loadLabelTextColumnarFile(
+                filename,
+                labelColumnIndex,
+                textColumnIndex,
+                weightColumnIndex,
+                lineIndexToStart,
+                columnDelimiter,
+                rowDelimiter,
+                encoding,
+                lineIndexToEnd);
+            const intents: string[] = intentsTextsWeights.intents;
+            const utterances: string[] = intentsTextsWeights.texts;
+            const weights: number[] = intentsTextsWeights.weights;
+            const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } = {
+                intents,
+                utterances,
+                weights };
+            return intentsUtterancesWeights;
+    }
+    public static loadLabelTextColumnarFile(
+        filename: string,
+        labelColumnIndex: number = 0,
+        textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
+        lineIndexToStart: number = 0,
+        columnDelimiter: string = "\t",
+        rowDelimiter: string = "\n",
+        encoding: string = "utf8",
+        lineIndexToEnd: number = -1): { "intents": string[], "texts": string[], "weights": number[] } {
         if (encoding == null) {
             encoding = "utf8";
         }
@@ -938,20 +1005,51 @@ export class Utility {
             fileContent,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             lineIndexToStart,
             columnDelimiter,
             rowDelimiter,
             lineIndexToEnd);
     }
+    public static loadLabelUtteranceColumnarContent(
+        fileContent: string,
+        labelColumnIndex: number = 0,
+        textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
+        lineIndexToStart: number = 0,
+        columnDelimiter: string = "\t",
+        rowDelimiter: string = "\n",
+        encoding: string = "utf8",
+        lineIndexToEnd: number = -1): { "intents": string[], "utterances": string[], "weights": number[] } {
+            const intentsTextsWeights: { "intents": string[], "texts": string[], "weights": number[] } =
+            Utility.loadLabelTextColumnarContent(
+                fileContent,
+                labelColumnIndex,
+                textColumnIndex,
+                weightColumnIndex,
+                lineIndexToStart,
+                columnDelimiter,
+                rowDelimiter,
+                lineIndexToEnd);
+            const intents: string[] = intentsTextsWeights.intents;
+            const utterances: string[] = intentsTextsWeights.texts;
+            const weights: number[] = intentsTextsWeights.weights;
+            const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } = {
+                intents,
+                utterances,
+                weights };
+            return intentsUtterancesWeights;
+    }
     public static loadLabelTextColumnarContent(
         fileContent: string,
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
+        weightColumnIndex: number = -1,
         lineIndexToStart: number = 0,
         columnDelimiter: string = "\t",
         rowDelimiter: string = "\n",
         lineIndexToEnd: number = -1):
-        { "intents": string[], "utterances": string[] } {
+        { "intents": string[], "texts": string[], "weights": number[] } {
         if (labelColumnIndex < 0) {
             labelColumnIndex = 0;
         }
@@ -968,8 +1066,9 @@ export class Utility {
             rowDelimiter = "\n";
         }
         const intents: string[] = [];
-        const utterances: string[] = [];
-        const fileLines: string[] = fileContent.split(rowDelimiter);
+        const texts: string[] = [];
+        const weights: number[] = [];
+        const fileLines: string[] = Utility.split(fileContent, rowDelimiter);
         for (let lineIndex = lineIndexToStart;
             (lineIndex < fileLines.length) && ((lineIndexToEnd < 0) || (lineIndex < lineIndexToEnd));
             lineIndex++) {
@@ -977,15 +1076,29 @@ export class Utility {
             if (Utility.isEmptyString(line)) {
                 continue;
             }
-            const lineColumns: string[] = line.split(columnDelimiter);
+            const lineColumns: string[] = Utility.split(line, columnDelimiter);
             const intent: string = lineColumns[labelColumnIndex];
-            const utterance: string = lineColumns[textColumnIndex];
+            const text: string = lineColumns[textColumnIndex];
+            let weight: number = 1;
+            if (weightColumnIndex >= 0) {
+                weight = +lineColumns[weightColumnIndex];
+            }
             if (Utility.isEmptyString(intent)) {
                 Utility.debuggingThrow(
                     `LINE - INDEX=${lineIndex}, intent is empty` +
                     `, lineColumns.length=${lineColumns.length}` +
                     `, intent=$${intent}$` +
-                    `, utterance=$${utterance}$` +
+                    `, text=$${text}$` +
+                    `, weight=$${weight}$` +
+                    `, line=$${line}$`);
+            }
+            if (Utility.isEmptyString(text)) {
+                Utility.debuggingThrow(
+                    `LINE - INDEX=${lineIndex}, text is empty` +
+                    `, lineColumns.length=${lineColumns.length}` +
+                    `, intent=$${intent}$` +
+                    `, text=$${text}$` +
+                    `, weight=$${weight}$` +
                     `, line=$${line}$`);
             }
             // {
@@ -993,14 +1106,16 @@ export class Utility {
             //         `LINE - INDEX=${lineIndex}` +
             //         `, lineColumns.length=${lineColumns.length}` +
             //         `, intent=$${intent}$` +
-            //         `, utterance=$${utterance}$` +
+            //         `, text=$${text}$` +
+            //         `, weight=$${weight}$` +
             //         `, line=$${line}$`);
             //
             // }
             intents.push(intent);
-            utterances.push(utterance);
+            texts.push(text);
+            weights.push(weight);
         }
-        return { intents, utterances };
+        return { intents, texts, weights };
     }
 
     public static storeDataArraysToTsvFile(
@@ -1047,7 +1162,8 @@ export class Utility {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }>,
+            "text": string,
+            "weight": number }>,
         utteranceReconstructionDelimiter: string = " ",
         defaultEntityTag: string = "O",
         defaultPartOfSpeechTag: string = "",
@@ -1074,7 +1190,8 @@ export class Utility {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string } = luUtterances[index];
+                "text": string,
+                "weight": number } = luUtterances[index];
             const text: string = luUtterance.text;
             const intent: string = luUtterance.intent;
             const entities: Array<{
@@ -1167,7 +1284,8 @@ export class Utility {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> {
+            "text": string,
+            "weight": number }> {
         if (Utility.isEmptyString(utteranceReconstructionDelimiter)) {
             utteranceReconstructionDelimiter = " ";
         }
@@ -1204,6 +1322,7 @@ export class Utility {
             Utility.debuggingThrow(
                 `entityTagArrays.length|${entityTagArrays.length}|!==numberInstances|${numberInstances}|`);
         }
+        const weight: number = 1;
         const luUtterances: Array<{
             "entities": Array<{
                 "entity": string,
@@ -1216,7 +1335,8 @@ export class Utility {
                 "endPos": number,
                 }>,
             "intent": string,
-            "text": string }> = [];
+            "text": string,
+            "weight": number }> = [];
         for (let index: number = 0; index < numberInstances; index++) {
             let intent = "";
             const id: string = ids[index];
@@ -1305,11 +1425,13 @@ export class Utility {
                     "endPos": number,
                     }>,
                 "intent": string,
-                "text": string } = {
+                "text": string,
+                "weight": number } = {
                 entities,
                 partOfSpeechTags,
                 intent,
                 text,
+                weight,
             };
             luUtterances.push(luUtterance);
         }
@@ -1368,7 +1490,7 @@ export class Utility {
         let currentPartOfSpeechTagArray: string[] = [];
         let currentTagArray: string[] = [];
         let isFirst: boolean = true;
-        const fileLines: string[] = fileContent.split(rowDelimiter);
+        const fileLines: string[] = Utility.split(fileContent, rowDelimiter);
         for (let lineIndex = lineIndexToStart;
             (lineIndex < fileLines.length) && ((lineIndexToEnd < 0) || (lineIndex < lineIndexToEnd));
             lineIndex++) {
@@ -1384,7 +1506,7 @@ export class Utility {
                 Utility.debuggingThrow(
                     `lineColumns.length|${lineColumns.length}|!=4` +
                     `,line=$${line}$` +
-                    `,lineColumns=$${JSON.stringify(lineColumns)}$`);
+                    `,lineColumns=$${Utility.JSONstringify(lineColumns)}$`);
             }
             const id: string = lineColumns[0];
             const word: string  = lineColumns[1];
@@ -1454,7 +1576,7 @@ export class Utility {
 
     public static stringToLineArray(
         stringContent: string): string[] {
-        const lineArray: string[] = stringContent.split("\n");
+        const lineArray: string[] = Utility.split(stringContent, "\n");
         const lineTrimedArray: string[] = lineArray.map((x) => x.trim());
         return lineTrimedArray;
     }
@@ -1514,7 +1636,7 @@ export class Utility {
     }
 
     public static getObjectMd5Hash(objectValue: object): string|Int32Array {
-        return Utility.getStringMd5Hash(JSON.stringify(objectValue));
+        return Utility.getStringMd5Hash(Utility.JSONstringify(objectValue));
     }
     public static getStringMd5Hash(feature: string): string | Int32Array {
         return md5.Md5.hashStr(feature);
@@ -1524,7 +1646,7 @@ export class Utility {
         return Math.abs(Utility.getObjectHashCode(objectValue));
     }
     public static getObjectHashCode(objectValue: object): number {
-        return Utility.getStringHashCode(JSON.stringify(objectValue).toString());
+        return Utility.getStringHashCode(Utility.JSONstringify(objectValue).toString());
     }
     public static getPositiveStringHashCode(feature: string): number {
         return Math.abs(Utility.getStringHashCode(feature));
@@ -1596,42 +1718,53 @@ export class Utility {
     }
 
     public static debuggingLog(
-        message: any): void {
+        message: any): string {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] LOG-MESSAGE: ${message}`;
         if (Utility.toPrintDebuggingLogToConsole) {
             // tslint:disable-next-line:no-console
             console.log(logMessage);
         }
+        return logMessage;
     }
 
     public static debuggingThrow(
         message: any): void {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: ${message}`;
-        throw new Error(JSON.stringify(logMessage));
+        throw new Error(Utility.JSONstringify(logMessage));
     }
 
     public static almostEqual(first: number, second: number): boolean {
-        return Utility.getAlmostEqualPercentage(first, second) < Utility.epsilon;
+        const almostEqualPercentage: number = Utility.getAlmostEqualPercentage(first, second);
+        const isAlmostEqual: boolean = almostEqualPercentage < Utility.epsilon;
+        return isAlmostEqual;
     }
     public static almostEqualRough(first: number, second: number): boolean {
-        return Utility.getAlmostEqualPercentage(first, second) < Utility.epsilonRough;
+        const almostEqualPercentage: number = Utility.getAlmostEqualPercentage(first, second);
+        const isAlmostEqual: boolean = almostEqualPercentage < Utility.epsilonRough;
+        return isAlmostEqual;
     }
     public static getAlmostEqualPercentage(first: number, second: number): number {
         if (second === 0) {
             return Math.abs(first);
         }
-        return Math.abs((first - second) / second);
+        const almostEqualPercentage: number = Math.abs((first - second) / second);
+        return almostEqualPercentage;
     }
     public static almostEqualAbsolute(first: number, second: number): boolean {
-        return Utility.getAlmostEqualAbsolute(first, second) < Utility.epsilon;
+        const almostEqualAbsolute: number = Utility.getAlmostEqualAbsolute(first, second);
+        const isAlmostEqualAbsolute: boolean = almostEqualAbsolute < Utility.epsilon;
+        return isAlmostEqualAbsolute;
     }
     public static almostEqualAbsoluteRough(first: number, second: number): boolean {
-        return Utility.getAlmostEqualAbsolute(first, second) < Utility.epsilonRough;
+        const almostEqualAbsolute: number = Utility.getAlmostEqualAbsolute(first, second);
+        const isAlmostEqualAbsolute: boolean = almostEqualAbsolute < Utility.epsilonRough;
+        return isAlmostEqualAbsolute;
     }
     public static getAlmostEqualAbsolute(first: number, second: number): number {
-        return Math.abs(first - second);
+        const almostEqualAbsolute: number = Math.abs(first - second);
+        return almostEqualAbsolute;
     }
 
     public static toBoolean(value: any): boolean {
@@ -1682,7 +1815,7 @@ export class Utility {
         for (let i = 0; i < numberDelimiters; i++) {
             input = input.replace(delimiters[i], replacementDelimiters[i]);
         }
-        let result: string[] = input.split(splitDelimiter);
+        let result: string[] = Utility.split(input, splitDelimiter);
         if (toRemoveEmptyElements) {
             result = result.filter((element: string) => {
                 return (element && (element !== ""));
@@ -1848,6 +1981,28 @@ export class Utility {
 
     public static getFileBasename(filename: string): string {
         return path.basename(filename);
+    }
+    public static getFileDirname(filename: string): string {
+        return path.dirname(filename);
+    }
+    public static getFileExtname(filename: string): string {
+        return path.extname(filename);
+    }
+    public static getFilenameWithoutExtension(filename: string): string {
+        const extension: string = Utility.getFileExtname(filename);
+        const filenameWithoutExtension: string = filename.substring(0, filename.length - extension.length);
+        return filenameWithoutExtension;
+    }
+
+    public static JSONstringify(input: any): string {
+        return JSON.stringify(input, null, 4);
+    }
+
+    public static split(input: string, delimiter: string): string[] {
+        return Utility.splitRaw(input, delimiter).map((x: string) => x.trim());
+    }
+    public static splitRaw(input: string, delimiter: string): string[] {
+        return input.split(delimiter);
     }
 
     protected static rngBurninIterations: number = 16384;
