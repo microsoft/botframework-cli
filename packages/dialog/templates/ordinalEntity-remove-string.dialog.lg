@@ -1,7 +1,0 @@
-# filename
-- ${removeFilename('ordinal')}
-
-# template
-- ${removeDialog('ordinal')}
-
-[generator.lg](generator.lg)

@@ -202,7 +202,8 @@
                 "--dialog",
                 "--suffix",
                 "${env:USERNAME}",
-                "--out", "."
+                "--out",
+                "."
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${env:TEMP}/sandwich.out/luis"
@@ -230,46 +231,6 @@
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet/tests/Microsoft.Bot.Builder.Dialogs.Adaptive.Tests/tests/LUISRecognizerTests"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Generate Sandwich",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwich.schema",
-                "-o",
-                "${env:TEMP}/sandwich.out",
-                "--force",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Generate Unit Test",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/unittests.schema",
-                "-o",
-                "${env:TEMP}/unittests.out",
-                "--force",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }
