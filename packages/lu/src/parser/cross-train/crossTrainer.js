@@ -95,10 +95,10 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
 
     const destLuFileToIntent = triggerRules[fileId]
     for (const destLuFile of Object.keys(destLuFileToIntent)) {
-      if (!fileIdsFromInput.includes(destLuFile)) continue
+      if (destLuFile !== '' && !fileIdsFromInput.includes(destLuFile)) continue
 
       const triggerIntentName = destLuFileToIntent[destLuFile]
-      if (!intents.some(i => i.Name === triggerIntentName)) {
+      if (triggerIntentName !== '' && !intents.some(i => i.Name === triggerIntentName)) {
         throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`))
       }
 
@@ -144,7 +144,7 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
   mergeBrothersInterruption(rootResource, result, intentName)
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
-    if (childResource.visited === undefined) {
+    if (childResource && childResource.visited === undefined) {
       const rootQnaFileId = rootResource.id.replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
       const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
       const newChildResource = mergeFatherInterruptionToChild(rootResource, rootQnaResource, childResource, intentName)
@@ -161,7 +161,8 @@ const mergeBrothersInterruption = function (resource, result, intentName) {
     let triggerIntent = child.intent
     const brotherSections = resource.content.Sections.filter(s => s.Name !== triggerIntent
       && s.Name !== intentName
-      && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION))
+      && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
+      && children.some(brotherChild => brotherChild.intent === s.Name))
 
     let brotherUtterances = []
     brotherSections.forEach(s => {
@@ -177,8 +178,10 @@ const mergeBrothersInterruption = function (resource, result, intentName) {
     let targetResource = result.get(child.target)
 
     // Merge direct brother's utterances
-    targetResource = mergeInterruptionIntent(brotherUtterances, targetResource, intentName)
-    result.set(targetResource.id, targetResource)
+    if (targetResource) {
+      targetResource = mergeInterruptionIntent(brotherUtterances, targetResource, intentName)
+      result.set(targetResource.id, targetResource)
+    }
   }
 }
 
