@@ -5,6 +5,10 @@
     "endpointKey": "=settings.luis.endpointKey",
     "predictionOptions": {
         "includeAllIntents": "=coalesce(settings.luis.preditionOptions.includeAllIntents, false)",
-        "includeInstanceData": "=coalesce(settings.luis.preditionOptions.includeInstanceData, false)"
+        "includeInstanceData": "=coalesce(settings.luis.preditionOptions.includeInstanceData, false)",
+        "log": "=coalesce(settings.luis.preditionOptions.log, false)",
+        "preferExternalEntities": "=coalesce(settings.luis.preditionOptions.preferExternalEntities, false)",
+        "slot": "=coalesce(settings.luis.preditionOptions.slot, '')",
+        "version": "=coalesce(settings.luis.preditionOptions.version, '')"
     }
 }
