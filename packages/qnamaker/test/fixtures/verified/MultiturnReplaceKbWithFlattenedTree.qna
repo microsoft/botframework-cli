@@ -1,8 +1,8 @@
 > # QnA pairs
 
-<a id = "1"></a>
-
 > !# @qna.pair.source = Editorial
+
+<a id = "1"></a>
 
 ## ? ques1
 
@@ -15,9 +15,9 @@ ans1
 - [p2](#3) `context-only`
 - [p3](#4)
 
-<a id = "2"></a>
-
 > !# @qna.pair.source = Editorial
+
+<a id = "2"></a>
 
 ## ? p1
 
@@ -25,9 +25,9 @@ ans1
 ap1
 ```
 
-<a id = "3"></a>
-
 > !# @qna.pair.source = Editorial
+
+<a id = "3"></a>
 
 ## ? p2
 
@@ -35,9 +35,9 @@ ap1
 ap2
 ```
 
-<a id = "4"></a>
-
 > !# @qna.pair.source = Editorial
+
+<a id = "4"></a>
 
 ## ? p3
 
@@ -45,9 +45,9 @@ ap2
 ap3
 ```
 
-<a id = "5"></a>
-
 > !# @qna.pair.source = Editorial
+
+<a id = "5"></a>
 
 ## ? qew
 
