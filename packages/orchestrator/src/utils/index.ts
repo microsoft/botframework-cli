@@ -220,8 +220,24 @@ export class OrchestratorHelper {
 
   static async parseQnaFile(qnaFile: string, label: string, utterancesLabelsMap: any) {
     const fileContents: string = OrchestratorHelper.readFile(qnaFile);
-    const qnaObject: any = await QnaMakerBuilder.fromContent(fileContents);
-    OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utterancesLabelsMap);
+    const lines: string[] = fileContents.split('\n');
+    if (lines.length === 0) {
+      return;
+    }
+
+    const newlines: string[] = [];
+    lines.forEach((line: string) => {
+      if (line.indexOf('> !# @qna.pair.source =') < 0) {
+        newlines.push(line);
+      }
+    });
+
+    const qnaObject: any = await QnaMakerBuilder.fromContent(newlines.join('\n'));
+    if (qnaObject) {
+      OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utterancesLabelsMap);
+    } else {
+      throw new CLIError(`Failed parsing qna file ${qnaFile}`);
+    }
   }
 
   static async iterateInputFolder(
