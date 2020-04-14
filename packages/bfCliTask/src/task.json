@@ -179,7 +179,8 @@
             "helpMarkDown": "Select the sub-command to execute.",
             "options": {
                 "CreateKB" : "Create and publish Knowledge Base",
-                "DeleteKB" : "Delete a Knowledge Base"
+                "DeleteKB" : "Delete a Knowledge Base",
+                "PublishKB" : "Publish a Knowledge Base"
             }
         },
         {
@@ -226,8 +227,17 @@
             "label": "Knowledge base ID",
             "required": false,
             "groupname": "command",
-            "visibleRule": "qnaMakerCommand = TRUE",
+            "visibleRule": "qnaMakerSubCommand=DeleteKB",
             "helpMarkDown": "Enter the ID of the knowledge base you want to delete."
+        },
+        {
+            "name": "publishKbId",
+            "type": "string",
+            "label": "Knowledge base ID",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=PublishKB",
+            "helpMarkDown": "Enter the ID of the knowledge base you want to publish."
         }
     ],
     "execution": {

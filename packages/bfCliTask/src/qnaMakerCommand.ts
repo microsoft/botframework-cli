@@ -36,6 +36,9 @@ export class QnAMakerCommand {
             case 'DeleteKB':
                 this.deleteKnowledgeBase();
                 break;
+            case 'PublishKB':
+                this.publishKnowledgeBase();
+                break;
             default:
                 console.log('No QnA Maker command was selected')
         }
