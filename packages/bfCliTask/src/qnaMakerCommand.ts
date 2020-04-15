@@ -8,28 +8,20 @@ import { execSync } from 'child_process';
 
 export class QnAMakerCommand {
 
-    public qnaMakerCommand: boolean;
-    public qnaMakerSubCommand: string;
-    public qnaKey: string;
-    public kbName: string;
-    public kbFileLocation: string;
-    public publishNewKB: boolean;
-    public publishKbId: string;
-    public deleteKbId: string;
-    public replaceKbId: string;
-    public kbReplaceFileLocation: string;
+    private qnaMakerSubCommand: string;
+    private qnaKey: string;
+    private kbName: string;
+    private kbDTOFileLocation: string;
+    private publishNewKB: boolean;
+    private kbId: string;
 
     constructor() {
-        this.qnaMakerCommand = taskLibrary.getBoolInput('qnaMakerCommand', false);
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
         this.qnaKey = taskLibrary.getInput('qnaKey', false) as string;
         this.kbName = taskLibrary.getInput('kbName', false) as string;
-        this.kbFileLocation = taskLibrary.getInput('kbFileLocation', false) as string;
+        this.kbDTOFileLocation = taskLibrary.getInput('kbDTOFileLocation', false) as string;
         this.publishNewKB = taskLibrary.getBoolInput('publishNewKB', false);
-        this.publishKbId = taskLibrary.getInput('publishKbId', false) as string;
-        this.deleteKbId = taskLibrary.getInput('deleteKbId', false) as string;
-        this.replaceKbId = taskLibrary.getInput('replaceKbId', false) as string;
-        this.kbReplaceFileLocation = taskLibrary.getInput('kbReplaceFileLocation', false) as string;
+        this.kbId = taskLibrary.getInput('kbId', false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -46,6 +38,9 @@ export class QnAMakerCommand {
             case 'ReplaceKB':
                 this.replaceKnowledgeBase();
                 break;
+            case 'UpdateKB':
+                this.updateKnowledgeBase();
+                break;
             default:
                 console.log('No QnA Maker command was selected')
         }
@@ -54,7 +49,7 @@ export class QnAMakerCommand {
     private publishKnowledgeBase = (newKbId?: string): void => {
         console.log('Publishing QnA knowledgebase');
     
-        let command = `bf qnamaker:kb:publish --kbId ${ newKbId? newKbId: this.publishKbId } --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:kb:publish --kbId ${ newKbId? newKbId: this.kbId } --subscriptionKey ${ this.qnaKey }`;
     
         execSync(command);
         console.log('QnA knowledgebase succesfully published');
@@ -63,7 +58,7 @@ export class QnAMakerCommand {
     private createKnowledgeBase = (): void => {
         console.log('Creating QnA knowledgebase');
     
-        let command = `bf qnamaker:kb:create --in ${ this.kbFileLocation } --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:kb:create --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey }`;
         if (this.kbName) {
             command += ` --name ${ this.kbName }`;
         }
@@ -80,7 +75,7 @@ export class QnAMakerCommand {
     private deleteKnowledgeBase = (): void => {
         console.log('Deleting QnA knowledgebase');
 
-        let command = `bf qnamaker:kb:delete --kbId ${ this.deleteKbId } --subscriptionKey ${ this.qnaKey } --force`;
+        let command = `bf qnamaker:kb:delete --kbId ${ this.kbId } --subscriptionKey ${ this.qnaKey } --force`;
 
         execSync(command);
         console.log('QnA knolewdgebase succesfully deleted');
@@ -89,9 +84,18 @@ export class QnAMakerCommand {
     private replaceKnowledgeBase = (): void => {
         console.log('Replacing QnA knowledgebase');
 
-        let command = `bf qnamaker:kb:replace --kbId ${ this.replaceKbId } --in ${ this.kbReplaceFileLocation } --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:kb:replace --kbId ${ this.kbId } --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey }`;
 
         execSync(command);
         console.log('QnA knowledgebase succesfully replaced');
+    }
+
+    private updateKnowledgeBase = (): void => {
+        console.log('Updating QnA knowledgebase');
+
+        let command = `bf qnamaker:kb:update --kbId ${ this.kbId } --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey } --wait`;
+
+        execSync(command);
+        console.log('QnA knowledgebase succesfully updated');
     }
 }
