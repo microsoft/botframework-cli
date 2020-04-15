@@ -39,10 +39,10 @@ export class Recognizer {
     this.endpointKey = '=settings.luis.endpointKey'
     this.predictionOptions = {
       includeAllIntents: '=coalesce(settings.luis.preditionOptions.includeAllIntents, false)',
-      includeInstanceData: '=coalesce(settings.luis.preditionOptions.includeInstanceData, false)',
-      log: '=coalesce(settings.luis.preditionOptions.log, false)',
-      preferExternalEntities: '=coalesce(settings.luis.preditionOptions.preferExternalEntities, false)',
-      slot: "=coalesce(settings.luis.preditionOptions.slot, '')",
+      includeInstanceData: '=coalesce(settings.luis.preditionOptions.includeInstanceData, true)',
+      log: '=coalesce(settings.luis.preditionOptions.log, true)',
+      preferExternalEntities: '=coalesce(settings.luis.preditionOptions.preferExternalEntities, true)',
+      slot: "=coalesce(settings.luis.preditionOptions.slot, 'production')",
       version: "=coalesce(settings.luis.preditionOptions.version, '')"
     }
     this.versionId = '0.1'
