@@ -178,9 +178,10 @@
             "visibleRule": "qnaMakerCommand = TRUE",
             "helpMarkDown": "Select the sub-command to execute.",
             "options": {
-                "CreateKB" : "Create and publish Knowledge Base",
-                "DeleteKB" : "Delete a Knowledge Base",
-                "PublishKB" : "Publish a Knowledge Base"
+                "CreateKB" : "Creates a new knowledgebase",
+                "DeleteKB" : "Deletes a knowledgebase by ID",
+                "PublishKB" : "Publish all unpublished in the knowledgebase",
+                "ReplaceKB" : "Replace a knowledgebase contents with new contents"
             }
         },
         {
@@ -195,49 +196,67 @@
         {
             "name": "kbName",
             "type": "string",
-            "label": "Knowledge base name",
+            "label": "Knowledgebase name",
             "required": false,
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=CreateKB",
-            "helpMarkDown": "Enter a name for your knowledge base"   
+            "helpMarkDown": "Enter a name for your knowledgebase"   
         },
         {
             "name": "kbFileLocation",
             "type": "filepath",
-            "label": "Knowledge base file location",
+            "label": "Knowledgebase file location",
             "required": false,
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=CreateKB",
-            "helpMarkDown": "Enter the location of your knowledge base file"   
+            "helpMarkDown": "Enter the location of your knowledgebase file"   
         },
         {
             "name": "publishNewKB",
             "type": "boolean",
-            "label": "Publish knowledge base",
+            "label": "Publish knowledgebase",
             "required": false,
             "groupname": "command",
             "defaultValue": "false",
             "visibleRule": "qnaMakerSubCommand=CreateKB",
-            "helpMarkDown": "Check to publish this knowledge base after the creation."
+            "helpMarkDown": "Check to publish this knowledgebase after the creation."
             
         },
         {
             "name": "deleteKbId",
             "type": "string",
-            "label": "Knowledge base ID",
+            "label": "Knowledgebase ID to delete",
             "required": false,
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=DeleteKB",
-            "helpMarkDown": "Enter the ID of the knowledge base you want to delete."
+            "helpMarkDown": "Enter the ID of the knowledgebase you want to delete."
         },
         {
             "name": "publishKbId",
             "type": "string",
-            "label": "Knowledge base ID",
+            "label": "Knowledgebase ID to publish",
             "required": false,
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=PublishKB",
-            "helpMarkDown": "Enter the ID of the knowledge base you want to publish."
+            "helpMarkDown": "Enter the ID of the knowledgebase you want to publish."
+        },
+        {
+            "name": "replaceKbId",
+            "type": "string",
+            "label": "Knowledgebase ID to replace",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=ReplaceKB",
+            "helpMarkDown": "Enter the ID of the knowledgebase you want to replace"
+        },
+        {
+            "name": "kbReplaceFileLocation",
+            "type": "filepath",
+            "label": "Knowledgebase file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=ReplaceKB",
+            "helpMarkDown": "Enter the location of your knowledgebase file"   
         }
     ],
     "execution": {
