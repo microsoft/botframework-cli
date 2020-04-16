@@ -45,11 +45,13 @@ jobs:
       displayName: 'rush test'
       workingDirectory: packages/orchestrator
       continueOnError: true
+      enabled: false
       
     - script: 'rush posttest'
       displayName: 'rush posttest'
       workingDirectory: packages/orchestrator
       continueOnError: true
+      enabled: false
 
     - script: 'node ../../common/scripts/version-and-pack.js --version $(_version)'
       displayName: 'Version and Pack'
