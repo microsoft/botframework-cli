@@ -482,4 +482,62 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Name, '_Interruption')
     assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me${NEWLINE}- cancel`)
   })
+
+  it('luis:cross training can get expected result when multi trigger intents point to same lu file', () => {
+    let luContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - I want to travel to Seattle
+                    
+        # dia2_trigger
+        - book a hotel for me
+        
+        # dia3_trigger
+        - cancel`,
+      id: './main/main.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# bookTicket
+        - book a flight for me
+        - book a train ticket for me
+        
+        # hotelLevel
+        - I prefer 4 stars hotel`,
+      id: './dia1/dia1.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# cancelTask
+        - cancel that task`,
+      id: './dia2/dia2.lu'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [
+        './main/main.lu'
+      ],
+      triggerRules: {
+        './main/main.lu': {
+          './dia1/dia1.lu': ['dia1_trigger', 'dia2_trigger'],
+          './dia2/dia2.lu': ['dia3_trigger', '']
+        }
+      },
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const luResult = trainedResult.luResult
+
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[2].Name, '_Interruption')
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[2].Body, `- cancel`)
+
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me`)
+  })
 })

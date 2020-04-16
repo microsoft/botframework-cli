@@ -93,19 +93,30 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
       }
     }
 
-    const destLuFileToIntent = triggerRules[fileId]
-    for (const destLuFile of Object.keys(destLuFileToIntent)) {
+    const destLuFileToIntents = triggerRules[fileId]
+    for (const destLuFile of Object.keys(destLuFileToIntents)) {
       if (destLuFile !== '' && !fileIdsFromInput.includes(destLuFile)) continue
 
-      const triggerIntentName = destLuFileToIntent[destLuFile]
-      if (triggerIntentName !== '' && !intents.some(i => i.Name === triggerIntentName)) {
-        throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`))
+      let triggerIntentNames = destLuFileToIntents[destLuFile]
+      if (typeof triggerIntentNames === 'string') triggerIntentNames = [triggerIntentNames]
+      
+      if (triggerIntentNames.length > 0) {
+        triggerIntentNames.forEach(triggerIntentName => {
+          if (triggerIntentName !== '' && !intents.some(i => i.Name === triggerIntentName)) {
+            throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentNames}' is not found in lu file: ${fileId}`))
+          } else {
+            resource.children.push({
+              target: destLuFile,
+              intent: triggerIntentName
+            })
+          }
+        })
+      } else {
+        resource.children.push({
+          target: destLuFile,
+          intent: ''
+        })
       }
-
-      resource.children.push({
-        target: destLuFile,
-        intent: triggerIntentName
-      })
     }
 
     resources.push(resource)
@@ -158,11 +169,16 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
 const mergeBrothersInterruption = function (resource, result, intentName) {
   let children = resource.children
   for (const child of children) {
-    let triggerIntent = child.intent
+    const triggerIntent = child.intent
+    const destLuFile = child.target
+    let intentsWithSameTarget = []
+    if (destLuFile !== '') intentsWithSameTarget = children.filter(c => c.target === destLuFile && c.intent !== '').map(x => x.intent)
+
     const brotherSections = resource.content.Sections.filter(s => s.Name !== triggerIntent
       && s.Name !== intentName
       && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
-      && children.some(brotherChild => brotherChild.intent === s.Name))
+      && children.some(brotherChild => brotherChild.intent === s.Name)
+      && !intentsWithSameTarget.some(intent => intent === s.Name))
 
     let brotherUtterances = []
     brotherSections.forEach(s => {
