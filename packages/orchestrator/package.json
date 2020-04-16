@@ -6,9 +6,7 @@
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
     "@microsoft/bf-cli-command": "~4.8.0",
-    "@microsoft/bf-cli-plugins": "~4.8.0",
     "@microsoft/bf-lu": "~4.8.0",
-    "@microsoft/bf-dispatcher": "~4.8.0",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.14.0",
     "@oclif/errors": "~1.2.2",
