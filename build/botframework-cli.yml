@@ -85,3 +85,10 @@ jobs:
     - script: 'rush report:coverage'
       displayName: 'rush report:coverage'
       enabled: false
+
+    - powershell: |
+       pushd ..
+       Get-ChildItem -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace except node-modules (takes 21 seconds)'
+      continueOnError: true
+      condition: succeededOrFailed()
