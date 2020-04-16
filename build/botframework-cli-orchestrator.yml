@@ -74,6 +74,7 @@ jobs:
 
     - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
       displayName: 'Component Detection'
+      enabled: false
 
     - script: 'rush report:coverage'
       displayName: 'rush report:coverage'
@@ -91,3 +92,4 @@ jobs:
       displayName: 'Dir workspace'
       continueOnError: true
       condition: succeededOrFailed()
+      enabled: false
