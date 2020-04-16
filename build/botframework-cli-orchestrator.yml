@@ -39,23 +39,19 @@ jobs:
 
     - script: 'rush build -p 2'
       displayName: 'rush build'
-      inputs:
-        workingDir: packages/orchestrator
+      workingDirectory: packages/orchestrator
 
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
-      inputs:
-        workingDir: packages/orchestrator
+      workingDirectory: packages/orchestrator
       
     - script: 'rush posttest'
       displayName: 'rush posttest'
-      inputs:
-        workingDir: packages/orchestrator
+      workingDirectory: packages/orchestrator
 
     - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
       displayName: 'Version and Pack'
-      inputs:
-        workingDir: packages/orchestrator
+      workingDirectory: packages/orchestrator
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
