@@ -39,29 +39,24 @@ jobs:
 
     - script: 'rush build -p 2'
       displayName: 'rush build'
-      workingDirectory: packages/orchestrator
 
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
-      workingDirectory: packages/orchestrator
       continueOnError: true
       enabled: false
       
     - script: 'rush posttest'
       displayName: 'rush posttest'
-      workingDirectory: packages/orchestrator
       continueOnError: true
       enabled: false
 
-    - script: 'node ../../common/scripts/version-and-pack.js --version $(_version)'
+    - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
       displayName: 'Version and Pack'
-      workingDirectory: packages/orchestrator
       continueOnError: true
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
       inputs:
-        workingDir: packages/orchestrator
         SourceFolder: ./.output
         Contents: '**/*.tgz'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
