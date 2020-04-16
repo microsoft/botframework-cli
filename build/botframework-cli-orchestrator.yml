@@ -51,7 +51,7 @@ jobs:
       workingDirectory: packages/orchestrator
       continueOnError: true
 
-    - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
+    - script: 'node ../../common/scripts/version-and-pack.js --version $(_version)'
       displayName: 'Version and Pack'
       workingDirectory: packages/orchestrator
       continueOnError: true
