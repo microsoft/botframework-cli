@@ -83,6 +83,14 @@ jobs:
       continueOnError: true
       condition: succeededOrFailed()
 
+    - powershell: |
+       pushd ..
+       Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace except node-modules ErrorAction Continue'
+      errorActionPreference: continue
+      continueOnError: true
+      condition: succeededOrFailed()
+
     - script: 'dir .. -s'
       displayName: 'Dir workspace'
       continueOnError: true
