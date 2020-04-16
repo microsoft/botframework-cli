@@ -83,6 +83,7 @@ jobs:
        pushd ..
        Get-ChildItem -Exclude common\temp\node_modules -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
       displayName: 'Dir workspace except node-modules (takes 21 seconds)'
+      errorActionPreference: continue
       continueOnError: true
       condition: succeededOrFailed()
 
