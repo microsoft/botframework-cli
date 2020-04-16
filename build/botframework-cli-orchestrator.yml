@@ -82,3 +82,8 @@ jobs:
       displayName: 'Dir workspace except node-modules (takes 21 seconds)'
       continueOnError: true
       condition: succeededOrFailed()
+
+    - script: 'dir .. -s'
+      displayName: 'Dir workspace'
+      continueOnError: true
+      condition: succeededOrFailed()
