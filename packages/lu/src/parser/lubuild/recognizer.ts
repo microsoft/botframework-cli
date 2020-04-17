@@ -12,7 +12,7 @@ export class Recognizer {
       let recognizer = new Recognizer(luFile, targetFileName)
       recognizer.dialogPath = dialogPath
       Object.assign(recognizer, existingRecognizer)
-      recognizer.setAppId(luisSettings.luis[path.basename(luFile).split('.').join('_')])
+      recognizer.setAppId(luisSettings.luis[path.basename(luFile).replace(/\.|-/g,  '_')])
 
       return recognizer
     }
@@ -33,7 +33,8 @@ export class Recognizer {
 
   constructor(private readonly luFile: string, targetFileName: string) {
     this.appId = ''
-    this.applicationId = `=settings.luis.${targetFileName.split('.').join('_')}`
+    // . is part of hierarchy and - is treated as subtraction by expressions so turn them into _
+    this.applicationId = `=settings.luis.${targetFileName.replace(/\.|-/g, '_')}`
     this.endpoint = '=settings.luis.endpoint'
     this.endpointKey = '=settings.luis.endpointKey'
     this.versionId = '0.1'

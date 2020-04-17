@@ -158,8 +158,7 @@
                 "../libraries/**/*.schema",
                 "-o",
                 "sdk.schema",
-                "--verbose",
-                "-u"
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet/schemas"
@@ -177,20 +176,12 @@
             ],
             "args": [
                 "luis:build",
-                "--in",
-                ".",
                 "--authoringKey",
                 "${env:LUIS_AUTHORING_KEY}",
-                "--botName",
-                "sandwich",
-                "--dialog",
-                "--suffix",
-                "${env:USERNAME}",
-                "--out",
-                "."
+                "--luConfig", "luconfig.json"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/sandwich.out/luis"
+            "cwd": "${env:TEMP}/sandwich.out/"
         },
         {
             "type": "node",

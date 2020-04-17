@@ -106,8 +106,8 @@ Example for user **vishwac** targeting authoring region **westus**
 ```json
 {
     "luis": {
-        "RootDialog_en-us_lu": "66976439-3197-4937-88bb-7b95aea2f462",
-        "TodoPhraseList_en-us_lu": "5e8d3f95-619a-4fbb-b6f6-6fad3050e286"
+        "RootDialog_en_us_lu": "66976439-3197-4937-88bb-7b95aea2f462",
+        "TodoPhraseList_en_us_lu": "5e8d3f95-619a-4fbb-b6f6-6fad3050e286"
     }
 }
 ```
@@ -148,13 +148,13 @@ generates the following files
 {
     "luis": {
         // LUIS application IDs for every application created/ updated
-        "root_en-us_lu": "c571f17e-7f10-4211-a21e-17ebb1f7f89b",
-        "root_fr-fr_lu": "d71ae2fe-d3e0-49e6-80a3-68a22fa666dc",
-        "add_en-us_lu": "f3674ea3-0ae5-4c06-af57-49d76fb86fba",
-        "add_es-es_lu": "53dc2dd2-8435-47ac-a080-b26249a57c6c",
-        "add_fr-fr_lu": "06f7ba22-41dd-4df0-b0f8-17608afa2aec",
-        "del_en-us_lu": "ecb34067-7917-45a5-821f-b0aace36df68",
-        "del_it-it_lu": "5299ca26-ec4f-4270-9221-196fcf834f84"
+        "root_en_us_lu": "c571f17e-7f10-4211-a21e-17ebb1f7f89b",
+        "root_fr_fr_lu": "d71ae2fe-d3e0-49e6-80a3-68a22fa666dc",
+        "add_en_us_lu": "f3674ea3-0ae5-4c06-af57-49d76fb86fba",
+        "add_es_es_lu": "53dc2dd2-8435-47ac-a080-b26249a57c6c",
+        "add_fr_fr_lu": "06f7ba22-41dd-4df0-b0f8-17608afa2aec",
+        "del_en_us_lu": "ecb34067-7917-45a5-821f-b0aace36df68",
+        "del_it_it_lu": "5299ca26-ec4f-4270-9221-196fcf834f84"
     }
 }
 ```
@@ -175,7 +175,7 @@ generates the following files
 ```jsonc
 {
     "$kind": "Microsoft.LuisRecognizer",
-    "applicationId": "=settings.luis.root_en-us_lu",
+    "applicationId": "=settings.luis.root_en_us_lu",
     "endpoint": "=settings.luis.endpoint",
     "endpointKey": "=settings.luis.endpointKey"
 }

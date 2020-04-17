@@ -81,7 +81,7 @@ For each LU file:
 ```json
 {
     "$kind": "Microsoft.LuisRecognizer",
-    "applicationId": "=settings.luis.Main_en-us_lu",
+    "applicationId": "=settings.luis.Main_en_us_lu",
     "endpoint": "=settings.luis.endpoint",
     "endpointKey": "=settings.luis.endpointKey"
 }
