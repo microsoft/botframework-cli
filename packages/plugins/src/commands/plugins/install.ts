@@ -25,8 +25,9 @@ This is useful if a user needs to update core plugin functionality in the CLI wi
 
   static aliases = ['plugins:add']
 
+  config: any
   plugins = new Plugins(this.config)
-
+  
   // In this case we want these operations to happen
   // sequentially so the `no-await-in-loop` rule is ugnored
   /* eslint-disable no-await-in-loop */
