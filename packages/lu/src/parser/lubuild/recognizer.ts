@@ -33,7 +33,7 @@ export class Recognizer {
 
   constructor(private readonly luFile: string, targetFileName: string) {
     this.appId = ''
-    this.applicationId = `=settings.luis.${targetFileName.split('.').join('_')}`.replace(/-/g, '_')
+    this.applicationId = `=settings.luis.${targetFileName.split('.').join('_').replace(/-/g, '_')}`
     this.endpoint = '=settings.luis.endpoint'
     this.endpointKey = '=settings.luis.endpointKey'
     this.versionId = '0.1'
