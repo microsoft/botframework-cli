@@ -119,9 +119,9 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
           intent: triggerIntent
         })
       }
-
-      resources.push(resource)
     }
+
+    resources.push(resource)
   }
 
   return resources
