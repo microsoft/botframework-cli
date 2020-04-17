@@ -122,9 +122,9 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
 
       resources.push(resource)
     }
-
-    return resources
   }
+
+  return resources
 }
 
 /**
