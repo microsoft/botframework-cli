@@ -40,9 +40,9 @@ const buildVersion6 = function(luisApp) {
     let result = new LuisGen()
     try {
         result.intents = processIntents(luisApp.intents);
-        [result.entities, result.composites] = extractEntitiesV6(luisApp.entities);
-        result.prebuiltEntities = extractEntities(luisApp.prebuiltEntities, true);
         result.closedLists = extractEntities(luisApp.closedLists);
+        [result.entities, result.composites] = extractEntitiesV6(luisApp.entities, result.closedLists);
+        result.prebuiltEntities = extractEntities(luisApp.prebuiltEntities, true);
         result.regex_entities = extractEntities(luisApp.regex_entities);
         result.patternAnyEntities = extractEntities(luisApp.patternAnyEntities);
     } catch (err) {
@@ -99,13 +99,19 @@ const extractEntities = function(entities, builtIn = false) {
     return result;
 }
 
-const extractEntitiesV6 = function(entities) {
+const extractEntitiesV6 = function(entities, closedLists) {
     // This method provides a simplified topological sort to
     // solve potential instanceOf dependecies in the v6 entities
 
     const simpleEntitiesResult = [];
     const compositeEntitiesResult = [];
     const simpleEntitiesWithType = {};
+
+    // Add 'closedList' entities as valid types for instanceOf
+    closedLists.forEach(listEntity => {
+        simpleEntitiesWithType[listEntity] = 'list'
+    });
+
     const resolveEntityType = function(entityName) {
         const entityStack = [];
         let entityType = simpleEntitiesWithType[entityName];

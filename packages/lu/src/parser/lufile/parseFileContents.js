@@ -437,9 +437,8 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
     // We are only interested in extracting features and setting things up here.
     (featuresToProcess || []).forEach(section => {
         if (section.Type === INTENTTYPE) {
-            // verify intent exists
-            if (!section.Features || section.Roles) {
-                // Intents can only have features and nothing else.
+            // Intents can only have features and nothing else.
+            if (section.Roles) {    
                 let errorMsg = `Intents can only have usesFeature and nothing else. Invalid definition for "${section.Name}".`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
@@ -447,6 +446,8 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                 })
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
+            if (!section.Features) return;
+            // verify intent exists
             section.Name = section.Name.replace(/[\'\"]/g, "");
             let intentExists = parsedContent.LUISJsonStructure.intents.find(item => item.name === section.Name);
             if (intentExists !== undefined) {
