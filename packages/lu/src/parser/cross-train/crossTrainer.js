@@ -93,36 +93,38 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
       }
     }
 
-    const destLuFileToIntents = triggerRules[fileId]
-    for (const destLuFile of Object.keys(destLuFileToIntents)) {
-      if (destLuFile !== '' && !fileIdsFromInput.includes(destLuFile)) continue
+    const intentToDestLuFiles = triggerRules[fileId]
+    for (const triggerIntent of Object.keys(intentToDestLuFiles)) {
+      if (triggerIntent !== '' && !intents.some(i => i.Name === triggerIntent)) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntent}' is not found in lu file: ${fileId}`))
+      }
 
-      let triggerIntentNames = destLuFileToIntents[destLuFile]
-      if (typeof triggerIntentNames === 'string') triggerIntentNames = [triggerIntentNames]
-      
-      if (triggerIntentNames.length > 0) {
-        triggerIntentNames.forEach(triggerIntentName => {
-          if (triggerIntentName !== '' && !intents.some(i => i.Name === triggerIntentName)) {
-            throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentNames}' is not found in lu file: ${fileId}`))
+      let destLuFiles = intentToDestLuFiles[triggerIntent]
+      if (typeof destLuFiles === 'string') destLuFiles = [destLuFiles]
+
+      if (destLuFiles.length > 0) {
+        destLuFiles.forEach(destLuFile => {
+          if (destLuFile !== '' && !fileIdsFromInput.includes(destLuFile)) {
+            throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, lu file '${destLuFile}' is not found`))
           } else {
             resource.children.push({
               target: destLuFile,
-              intent: triggerIntentName
+              intent: triggerIntent
             })
           }
         })
       } else {
         resource.children.push({
-          target: destLuFile,
-          intent: ''
+          target: '',
+          intent: triggerIntent
         })
       }
+
+      resources.push(resource)
     }
 
-    resources.push(resource)
+    return resources
   }
-
-  return resources
 }
 
 /**

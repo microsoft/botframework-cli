@@ -170,15 +170,15 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         'main.lu': {
-          'dia1.lu': 'dia1_trigger',
-          'dia2.lu': 'dia2_trigger'
+          'dia1_trigger': 'dia1.lu',
+          'dia2_trigger': 'dia2.lu'
         },
         'dia2.lu': {
-          'dia3.lu': 'dia3_trigger',
-          'dia4.lu': 'dia4_trigger'
+          'dia3_trigger': 'dia3.lu',
+          'dia4_trigger': 'dia4.lu'
         },
         'main.fr-fr.lu': {
-          'dia1.fr-fr.lu': 'dia1_trigger'
+          'dia1_trigger': 'dia1.fr-fr.lu'
         }
       },
       intentName: '_Interruption',
@@ -284,8 +284,8 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         './main/main.lu': {
-          './dia1/dia1.lu': 'dia1_trigger',
-          './dia2/dia2.lu': 'dia2_trigger'
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia2/dia2.lu'
         }
       },
       intentName: '_Interruption',
@@ -339,9 +339,8 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         './main/main.lu': {
-          './dia1/dia1.lu': 'dia1_trigger',
-          './dia2/dia2.lu': 'dia1_trigger',
-          './dia3/dia3.lu': 'dia2_trigger'
+          'dia1_trigger': ['./dia1/dia1.lu', './dia2/dia2.lu'],
+          'dia2_trigger': './dia3/dia3.lu'
         }
       },
       intentName: '_Interruption',
@@ -398,8 +397,8 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         './main/main.lu': {
-          './dia1/dia1.lu': 'dia1_trigger',
-          './dia2/dia2.lu': 'dia2_trigger'
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia2/dia2.lu'
         }
       },
       intentName: '_Interruption',
@@ -460,10 +459,10 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         './main/main.lu': {
-          './dia1/dia1.lu': 'dia1_trigger',
-          './dia2/dia2.lu': 'dia2_trigger',
-          '': 'dia3_trigger',
-          './dia3/dia3.lu': ''
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia2/dia2.lu',
+          'dia3_trigger': '',
+          '': './dia3/dia3.lu'
         }
       },
       intentName: '_Interruption',
@@ -523,8 +522,10 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         './main/main.lu': {
-          './dia1/dia1.lu': ['dia1_trigger', 'dia2_trigger'],
-          './dia2/dia2.lu': ['dia3_trigger', '']
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia1/dia1.lu',
+          'dia3_trigger': './dia2/dia2.lu',
+          '': './dia2/dia2.lu'
         }
       },
       intentName: '_Interruption',
