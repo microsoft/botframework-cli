@@ -31,6 +31,14 @@ jobs:
         artifactName: drop
         downloadPath: '$(System.ArtifactsDirectory)/orchestrator'
 
+    - powershell: |
+       pushd ..
+       Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace 1 except node-modules (takes 3 minutes)'
+      errorActionPreference: continue
+      continueOnError: true
+      condition: succeededOrFailed()
+
     - task: CopyFiles@2
       displayName: 'Copy Orchestrator artifacts to packages/orchestrator/lib/commands/orchestrator/netcoreapp3.1'
       inputs:
@@ -43,7 +51,7 @@ jobs:
     - powershell: |
        pushd ..
        Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
-      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      displayName: 'Dir workspace 2 except node-modules (takes 3 minutes)'
       errorActionPreference: continue
       continueOnError: true
       condition: succeededOrFailed()
@@ -63,7 +71,7 @@ jobs:
     - powershell: |
        pushd ..
        Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
-      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      displayName: 'Dir workspace 3 except node-modules (takes 3 minutes)'
       errorActionPreference: continue
       continueOnError: true
       condition: succeededOrFailed()
@@ -74,7 +82,7 @@ jobs:
     - powershell: |
        pushd ..
        Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
-      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      displayName: 'Dir workspace 4 except node-modules (takes 3 minutes)'
       errorActionPreference: continue
       continueOnError: true
       condition: succeededOrFailed()
@@ -85,7 +93,7 @@ jobs:
     - powershell: |
        pushd ..
        Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
-      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      displayName: 'Dir workspace 5 except node-modules (takes 3 minutes)'
       errorActionPreference: continue
       continueOnError: true
       condition: succeededOrFailed()
@@ -115,7 +123,7 @@ jobs:
     - powershell: |
        pushd ..
        Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
-      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      displayName: 'Dir workspace 6 except node-modules (takes 3 minutes)'
       errorActionPreference: continue
       continueOnError: true
       condition: succeededOrFailed()
