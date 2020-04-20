@@ -189,7 +189,7 @@ export class Builder {
           await this.publishKB(qnaBuildCore, recognizer, delayDuration)
         }
 
-        if (hostName === '') hostName = (await qnaBuildCore.getKB(recognizer.getKBId())).hostName
+        if (hostName === '') hostName = (await qnaBuildCore.getKB(recognizer.getKBId())).hostName + '/qnamaker'
 
         // update alterations if there are
         if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
