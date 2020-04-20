@@ -32,11 +32,11 @@ jobs:
         downloadPath: '$(System.ArtifactsDirectory)/orchestrator'
 
     - task: CopyFiles@2
-      displayName: 'Copy Orchestrator artifacts to packages/orchestrator/src/commands/orchestrator/netcoreapp3.1'
+      displayName: 'Copy Orchestrator artifacts to packages/orchestrator/lib/commands/orchestrator/netcoreapp3.1'
       inputs:
         SourceFolder: '$(System.ArtifactsDirectory)/orchestrator'
         Contents: '**\lib\**'
-        TargetFolder: '$(Build.SourcesDirectory)/packages/orchestrator/src/commands/orchestrator/netcoreapp3.1'
+        TargetFolder: '$(Build.SourcesDirectory)/packages/orchestrator/lib/commands/orchestrator/netcoreapp3.1'
         flattenFolders: true
       condition: succeededOrFailed()
 
