@@ -11,7 +11,7 @@ pool:
 jobs:
   - job: CLI
     variables:
-      buildVersion: '4.9.0-preview-$(Build.BuildId)'
+      buildVersion: '4.9.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
 
     steps:
