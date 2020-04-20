@@ -22,6 +22,24 @@ jobs:
       continueOnError: true
       condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], 'False'))
 
+    - task: DownloadBuildArtifacts@0
+      displayName: 'Download Build Artifacts from Orchestrator-.NET-Desktop-signed'
+      inputs:
+        buildType: specific
+        project: '6d527033-e720-40e2-8e39-c804959c6dcd'
+        pipeline: 928
+        artifactName: drop
+        downloadPath: '$(System.ArtifactsDirectory)/desktop'
+
+    - task: CopyFiles@2
+      displayName: 'Copy signed files to $(build.artifactstagingdirectory)\publish'
+      inputs:
+        SourceFolder: '$(System.ArtifactsDirectory)/desktop'
+        Contents: '**\lib\**'
+        TargetFolder: '$(Build.SourcesDirectory)/packages/orchestrator/src/commands/orchestrator/netcoreapp3.1'
+        flattenFolders: true
+      condition: succeededOrFailed()
+
     - task: NodeTool@0
       displayName: 'Use Node 12.x'
       inputs:
