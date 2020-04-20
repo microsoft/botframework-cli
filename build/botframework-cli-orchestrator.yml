@@ -40,6 +40,14 @@ jobs:
         flattenFolders: true
       condition: succeededOrFailed()
 
+    - powershell: |
+       pushd ..
+       Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      errorActionPreference: continue
+      continueOnError: true
+      condition: succeededOrFailed()
+
     - task: NodeTool@0
       displayName: 'Use Node 12.x'
       inputs:
@@ -52,11 +60,35 @@ jobs:
         verbose: false
         customCommand: 'install --global @microsoft/rush'
 
+    - powershell: |
+       pushd ..
+       Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      errorActionPreference: continue
+      continueOnError: true
+      condition: succeededOrFailed()
+
     - script: 'rush update'
       displayName: 'rush update'
 
+    - powershell: |
+       pushd ..
+       Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      errorActionPreference: continue
+      continueOnError: true
+      condition: succeededOrFailed()
+
     - script: 'rush build -p 2'
       displayName: 'rush build'
+
+    - powershell: |
+       pushd ..
+       Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      errorActionPreference: continue
+      continueOnError: true
+      condition: succeededOrFailed()
 
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
@@ -79,6 +111,14 @@ jobs:
         Contents: '**/*.tgz'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         flattenFolders: true
+
+    - powershell: |
+       pushd ..
+       Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
+      displayName: 'Dir workspace except node-modules (takes 3 minutes)'
+      errorActionPreference: continue
+      continueOnError: true
+      condition: succeededOrFailed()
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
