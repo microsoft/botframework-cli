@@ -4,7 +4,7 @@
 > !# @app.desc = test
 > !# @app.versionId = 0.1
 > !# @app.culture = en-us
-> !# @app.luis_schema_version = 6.0.0
+> !# @app.luis_schema_version = 7.0.0
 > !# @app.tokenizerVersion = 1.0.0
 
 
@@ -21,10 +21,10 @@
 > # Entity definitions
 
 @ ml address
-    - @ number doorNumber
+    - @ ml doorNumber
     - @ ml streetName
-    - @ geographyV2 city
-    - @ zipRegex zipcode
+    - @ ml city
+    - @ ml zipcode
 
 
 

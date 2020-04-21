@@ -9,6 +9,7 @@ const exception = require('./exception');
 const NEWLINE = require('os').EOL;
 const ANY_NEWLINE = /\r\n|\r|\n/g;
 const url = require('url');
+const hClasses = require('../lufile/classes/hclasses');
 const helpers = {
 
     /**
@@ -163,36 +164,70 @@ const helpers = {
         if (!finalLUISJSON) {
             return
         }
-        let v5DefFound = false;
-        v5DefFound = (finalLUISJSON.entities || []).find(i => i.children || i.features) ||
-                    (finalLUISJSON.intents || []).find(i => i.features) || 
-                    (finalLUISJSON.composites || []).find(i => i.features) || 
-                    (finalLUISJSON.luis_schema_version === '6.0.0');
-        if (v5DefFound) {
-            finalLUISJSON.luis_schema_version = "6.0.0";
-            if (finalLUISJSON.hasOwnProperty("model_features")) {
-                if (finalLUISJSON.model_features !== undefined) {
-                    finalLUISJSON.phraselists = finalLUISJSON.phraselists || [];
-                    finalLUISJSON.model_features.forEach(item => {
-                        if (item.enabledForAllModels === undefined) item.enabledForAllModels = true
-                        finalLUISJSON.phraselists.push(Object.assign({}, item))
-                    });
-                }
-                delete finalLUISJSON.model_features;
-            }
-            (finalLUISJSON.composites || []).forEach(composite => {
-                let children = composite.children;
-                composite.children = [];
-                children.forEach(c => {
-                    if (c.name === undefined) {
-                        composite.children.push({name : c})
-                    } else {
-                        composite.children.push(c)
-                    }
+        updateToV7(finalLUISJSON);
+    }
+};
+
+module.exports = helpers;
+
+const updateToV7 = function(finalLUISJSON) {
+    let v7DefFound = false;
+    v7DefFound = (finalLUISJSON.entities || []).find(i => i.children || i.features) ||
+        (finalLUISJSON.intents || []).find(i => i.features) ||
+        (finalLUISJSON.composites || []).find(i => i.features) ||
+        (finalLUISJSON.luis_schema_version === '6.0.0' || 
+        (finalLUISJSON.luis_schema_version === '7.0.0'));
+    if (v7DefFound) {
+        finalLUISJSON.luis_schema_version = "7.0.0";
+        if (finalLUISJSON.hasOwnProperty("model_features")) {
+            if (finalLUISJSON.model_features !== undefined) {
+                finalLUISJSON.phraselists = finalLUISJSON.phraselists || [];
+                finalLUISJSON.model_features.forEach(item => {
+                    if (item.enabledForAllModels === undefined)
+                        item.enabledForAllModels = true;
+                    finalLUISJSON.phraselists.push(Object.assign({}, item));
                 });
-            })
+            }
+            delete finalLUISJSON.model_features;
         }
+        (finalLUISJSON.composites || []).forEach(composite => {
+            let children = composite.children;
+            composite.children = [];
+            children.forEach(c => {
+                if (c.name === undefined) {
+                    composite.children.push({ name: c });
+                }
+                else {
+                    composite.children.push(c);
+                }
+            });
+        });
+        (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
     }
 }
 
-module.exports = helpers;
+const transformAllEntityConstraintsToFeatures = function(entitiesCollection) {
+    if (!entitiesCollection.children || entitiesCollection.children.length === 0) return;
+    (entitiesCollection.features || []).forEach(feature => {
+        delete feature.modelType;
+        if (feature.isRequired === undefined) feature.isRequired = false;
+    })
+    entitiesCollection.children.forEach(child => {
+        if (child.hasOwnProperty("instanceOf")) {
+            if (child.hasOwnProperty("features") && Array.isArray(child.features)) {
+                let featureFound = (child.features || []).find(i => i.modelName == child.instanceOf);
+                if (featureFound !== undefined) {
+                    featureFound.isRequired = true;
+                } else {
+                    child.features.push(new hClasses.entityFeature(child.instanceOf, true))
+                }
+            } else {
+                if (child.instanceOf !== "") child.features = [new hClasses.entityFeature(child.instanceOf, true)]
+            }
+        }
+        delete child.instanceOf;
+        if (child.children && child.children.length !== 0) {
+            child.children.forEach(child2 => transformAllEntityConstraintsToFeatures(child2));
+        }
+    })
+}

@@ -7,6 +7,18 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "luis:convert",
+            "program": "${workspaceFolder}/packages/luis/bin/run",
+            "args":[
+                "luis:convert",
+                "--in",
+                "C:\\repos\\botframework-cli\\packages\\lu\\test\\fixtures\\verified\\nDepthEntityInUtterance.json"
+            ],
+            "preLaunchTask": "tsc: build - packages/luis/tsconfig.json"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Public bf cli",
             "program": "C:/Users/chrimc/AppData/Roaming/npm/node_modules/@microsoft/botframework-cli/bin/run",
             "args": [

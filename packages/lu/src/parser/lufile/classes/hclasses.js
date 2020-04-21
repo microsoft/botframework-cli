@@ -137,6 +137,12 @@ const readerObj = {
             this.features = features ? features : '';
             this.context = context ? context : '';
         }
+    },
+    entityFeature: class {
+        constructor(name, isRequired) {
+            this.modelName = name ? name : '';
+            this.isRequired = isRequired ? isRequired : false;
+        }
     }
 };
 
