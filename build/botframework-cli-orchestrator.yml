@@ -42,10 +42,10 @@ jobs:
     - task: CopyFiles@2
       displayName: 'Copy Orchestrator artifacts to packages/orchestrator/lib/commands/orchestrator/netcoreapp3.1'
       inputs:
-        SourceFolder: '$(System.ArtifactsDirectory)/orchestrator'
-        Contents: '**\lib\**'
-        TargetFolder: '$(Build.SourcesDirectory)/packages/orchestrator/lib/commands/orchestrator/netcoreapp3.1'
-        flattenFolders: true
+        SourceFolder: '$(System.ArtifactsDirectory)/orchestrator/drop'
+        Contents: '**'
+        TargetFolder: '$(Build.SourcesDirectory)/packages/orchestrator/lib/commands/orchestrator'
+        flattenFolders: false
       condition: succeededOrFailed()
 
     - powershell: |
