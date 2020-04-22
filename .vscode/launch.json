@@ -12,7 +12,8 @@
             "args":[
                 "luis:convert",
                 "--in",
-                "C:\\repos\\botframework-cli\\packages\\lu\\test\\fixtures\\verified\\nDepthEntityInUtterance.json"
+                //"C:\\repos\\botframework-cli\\packages\\lu\\test\\fixtures\\verified\\nDepthEntityInUtterance.json"
+                "c:\\users\\vkannan\\Desktop\\test.lu"
             ],
             "preLaunchTask": "tsc: build - packages/luis/tsconfig.json"
         },

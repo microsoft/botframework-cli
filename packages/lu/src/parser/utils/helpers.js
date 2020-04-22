@@ -203,31 +203,44 @@ const updateToV7 = function(finalLUISJSON) {
             });
         });
         (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
+        (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
     }
 }
 
 const transformAllEntityConstraintsToFeatures = function(entitiesCollection) {
-    if (!entitiesCollection.children || entitiesCollection.children.length === 0) return;
-    (entitiesCollection.features || []).forEach(feature => {
-        delete feature.modelType;
-        if (feature.isRequired === undefined) feature.isRequired = false;
-    })
+    addIsRequiredProperty(entitiesCollection);
+    if (!entitiesCollection.children || entitiesCollection.children.length === 0)
+        return;    
     entitiesCollection.children.forEach(child => {
+        addIsRequiredProperty(child);
         if (child.hasOwnProperty("instanceOf")) {
             if (child.hasOwnProperty("features") && Array.isArray(child.features)) {
                 let featureFound = (child.features || []).find(i => i.modelName == child.instanceOf);
                 if (featureFound !== undefined) {
-                    featureFound.isRequired = true;
-                } else {
-                    child.features.push(new hClasses.entityFeature(child.instanceOf, true))
+                    if (featureFound.featureType === undefined)
+                        featureFound.isRequired = true;
                 }
-            } else {
-                if (child.instanceOf !== "") child.features = [new hClasses.entityFeature(child.instanceOf, true)]
+                else {
+                    child.features.push(new hClasses.entityFeature(child.instanceOf, true));
+                }
+            }
+            else {
+                if (child.instanceOf !== "" && child.instanceOf !== null)
+                    child.features = [new hClasses.entityFeature(child.instanceOf, true)];
             }
         }
         delete child.instanceOf;
         if (child.children && child.children.length !== 0) {
-            child.children.forEach(child2 => transformAllEntityConstraintsToFeatures(child2));
+            transformAllEntityConstraintsToFeatures(child.children);
         }
-    })
-}
+    });
+};
+
+const addIsRequiredProperty = function (entitiesCollection) {
+    (entitiesCollection.features || []).forEach(feature => {
+        if (feature.isRequired === undefined)
+            feature.isRequired = false;
+        delete feature.featureType;
+        delete feature.modelType;
+    });
+};

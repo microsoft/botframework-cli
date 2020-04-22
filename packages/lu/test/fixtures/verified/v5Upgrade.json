@@ -7,7 +7,6 @@
       "children": [
         {
           "name": "xyz",
-          "instanceOf": null,
           "children": []
         }
       ],
