@@ -14,9 +14,11 @@ const fileHelper = require('./../../utils/filehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
-const QnaBuilderVerbose = require('./../qna/qnamaker/kbCollate')
+const qnaBuilderVerbose = require('./../qna/qnamaker/kbCollate')
+const qnaMakerBuilder = require('./../qna/qnamaker/qnaMakerBuilder')
 const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/qna')
+const KB = require('./../qna/qnamaker/kb')
 
 export class Builder {
   private readonly handler: (input: string) => any
@@ -39,17 +41,11 @@ export class Builder {
       const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
 
       let fileContent = ''
-      let jsonContent
       let result
       try {
-        result = await QnaBuilderVerbose.build(qnaFiles, true)
-
-        // json content parsed from qna content
-        // this is mainly used in create and update api
-        jsonContent = JSON.stringify(result)
+        result = await qnaBuilderVerbose.build(qnaFiles, true)
 
         // construct qna content without file and url references
-        // this is mainly used in replace api
         fileContent = result.parseToQnAContent()
       } catch (err) {
         if (err.source) {
@@ -96,8 +92,7 @@ export class Builder {
         settings.set(fileFolder, new Settings(settingsPath, settingsContent))
       }
 
-      const content = new Content(jsonContent, new LUOptions(fileName, true, fileCulture, file))
-      content.textContent = fileContent
+      const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
       qnaContents.push(content)
 
       const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
@@ -178,10 +173,10 @@ export class Builder {
         // otherwise create a new kb
         if (recognizer.getKBId() && recognizer.getKBId() !== '') {
           // To see if need update the model
-          needPublish = await this.updateKB(currentKB, content.textContent, qnaBuildCore, recognizer, delayDuration)
+          needPublish = await this.updateKB(currentKB, content.content, qnaBuildCore, recognizer, delayDuration)
         } else {
           // create a new kb
-          needPublish = await this.createKB(content.textContent, qnaBuildCore, recognizer, currentKB.name, delayDuration)
+          needPublish = await this.createKB(content.content, qnaBuildCore, recognizer, currentKB.name, delayDuration)
         }
 
         if (needPublish) {
@@ -236,6 +231,75 @@ export class Builder {
     return dialogContents
   }
 
+  async importUrlReference(
+    url: string,
+    subscriptionkey: string,
+    endpoint: string,
+    kbName: string) {
+    const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
+    const kbs = (await qnaBuildCore.getKBList()).knowledgebases
+
+    let kbId = ''
+    // find if there is a matched name with current kb under current authoring key
+    for (let kb of kbs) {
+      if (kb.name === kbName) {
+        kbId = kb.id
+        break
+      }
+    }
+
+    // compare models to update the model if a match found
+    // otherwise create a new kb
+    if (kbId !== '') {
+      // To see if need update the model
+      await this.updateUrlKB(qnaBuildCore, url, kbId)
+    } else {
+      // create a new kb
+      kbId = await this.createUrlKB(qnaBuildCore, url, kbName)
+    }
+
+    const kbJson = await qnaBuildCore.exportKB(kbId, 'Prod')
+    const kb = new KB(kbJson)
+    const kbToLuContent = kb.parseToLuContent()
+
+    return kbToLuContent
+  }
+
+  async importFileReference(
+    fileName: string,
+    fileUri: string,
+    subscriptionkey: string,
+    endpoint: string,
+    kbName: string) {
+    const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
+    const kbs = (await qnaBuildCore.getKBList()).knowledgebases
+
+    let kbId = ''
+    // find if there is a matched name with current kb under current authoring key
+    for (let kb of kbs) {
+      if (kb.name === kbName) {
+        kbId = kb.id
+        break
+      }
+    }
+
+    // compare models to update the model if a match found
+    // otherwise create a new kb
+    if (kbId !== '') {
+      // To see if need update the model
+      await this.updateFileKB(qnaBuildCore, fileName, fileUri, kbId)
+    } else {
+      // create a new kb
+      kbId = await this.createFileKB(qnaBuildCore, fileName, fileUri, kbName)
+    }
+
+    const kbJson = await qnaBuildCore.exportKB(kbId, 'Prod')
+    const kb = new KB(kbJson)
+    const kbToLuContent = kb.parseToLuContent()
+
+    return kbToLuContent
+  }
+
   async writeDialogAssets(contents: any[], force: boolean, out: string) {
     let writeDone = false
 
@@ -272,7 +336,7 @@ export class Builder {
   }
 
   async initQnaFromContent(content: any, botName: string, suffix: string) {
-    let currentQna = await JSON.parse(content.content)
+    let currentQna = await qnaMakerBuilder.fromContent(content.content)
     if (!currentQna.kb.name) currentQna.kb.name = `${botName}(${suffix})-${content.name}`
 
     return {kb: currentQna.kb, alterations: currentQna.alterations}
@@ -328,6 +392,80 @@ export class Builder {
     }
 
     return true
+  }
+
+  async updateUrlKB(qnaBuildCore: QnaBuildCore, url: string, kbId: string) {
+    await qnaBuildCore.replaceKB(kbId, {
+      qnaList: [],
+      urls: [],
+      files: []
+    })
+
+    const updateConfig = {
+      add: {
+        urls: [url]
+      }
+    }
+
+    const response = await qnaBuildCore.updateKB(kbId, updateConfig)
+    const operationId = response.operationId
+    await this.getKBOperationStatus(qnaBuildCore, operationId, 1000)
+  }
+
+  async createUrlKB(qnaBuildCore: QnaBuildCore, url: string, kbName: string) {
+    const kbJson = {
+      name: kbName,
+      qnaList: [],
+      urls: [url],
+      files: []
+    }
+
+    let response = await qnaBuildCore.importKB(kbJson)
+    let operationId = response.operationId
+    const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, 1000)
+    const kbId = opResult.resourceLocation.split('/')[2]
+
+    return kbId
+  }
+
+  async updateFileKB(qnaBuildCore: QnaBuildCore, fileName: string, fileUri: string, kbId: string) {
+    await qnaBuildCore.replaceKB(kbId, {
+      qnaList: [],
+      urls: [],
+      files: []
+    })
+
+    let updateConfig = {
+      add: {
+        files: [{
+          fileName,
+          fileUri
+        }]
+      }
+    }
+
+    const response = await qnaBuildCore.updateKB(kbId, updateConfig)
+    const operationId = response.operationId
+    await this.getKBOperationStatus(qnaBuildCore, operationId, 1000)
+  }
+
+  async createFileKB(qnaBuildCore: QnaBuildCore, fileName: string, fileUri: string, kbName: string) {
+    let kbJson = {
+      name: kbName,
+      qnaList: [],
+      urls: [],
+      files: [{
+        fileName,
+        fileUri
+      }]
+    }
+
+    let response = await qnaBuildCore.importKB(kbJson)
+    let operationId = response.operationId
+    const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, 1000)
+    const kbId = opResult.resourceLocation.split('/')[2]
+
+    return kbId
   }
 
   async getKBOperationStatus(qnaBuildCore: QnaBuildCore, operationId: string, delayDuration: number) {
