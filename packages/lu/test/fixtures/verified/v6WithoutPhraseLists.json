@@ -11,23 +11,37 @@
       "children": [
         {
           "name": "doorNumber",
-          "instanceOf": "number",
-          "children": []
+          "children": [],
+          "features": [
+            {
+              "modelName": "number",
+              "isRequired": true
+            }
+          ]
         },
         {
           "name": "streetName",
-          "instanceOf": null,
           "children": []
         },
         {
           "name": "city",
-          "instanceOf": "geographyV2",
-          "children": []
+          "children": [],
+          "features": [
+            {
+              "modelName": "geographyV2",
+              "isRequired": true
+            }
+          ]
         },
         {
           "name": "zipcode",
-          "instanceOf": "zipRegex",
-          "children": []
+          "children": [],
+          "features": [
+            {
+              "modelName": "zipRegex",
+              "isRequired": true
+            }
+          ]
         }
       ]
     }

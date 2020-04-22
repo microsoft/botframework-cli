@@ -21,10 +21,10 @@
 > # Entity definitions
 
 @ ml address
-    - @ ml doorNumber
+    - @ number doorNumber
     - @ ml streetName
-    - @ ml city
-    - @ ml zipcode
+    - @ geographyV2 city
+    - @ zipRegex zipcode
 
 
 

@@ -13,7 +13,8 @@
                 "luis:convert",
                 "--in",
                 //"C:\\repos\\botframework-cli\\packages\\lu\\test\\fixtures\\verified\\nDepthEntityInUtterance.json"
-                "c:\\users\\vkannan\\Desktop\\test.lu"
+                //"/Users/vishwacsenakannan/Desktop/test.lu"
+                "/Users/vishwacsenakannan/repos/botframework-cli/packages/lu/test/fixtures/examples/newEntityWithFeatures.lu"
             ],
             "preLaunchTask": "tsc: build - packages/luis/tsconfig.json"
         },

@@ -207,40 +207,35 @@ const updateToV7 = function(finalLUISJSON) {
     }
 }
 
-const transformAllEntityConstraintsToFeatures = function(entitiesCollection) {
-    addIsRequiredProperty(entitiesCollection);
-    if (!entitiesCollection.children || entitiesCollection.children.length === 0)
-        return;    
-    entitiesCollection.children.forEach(child => {
-        addIsRequiredProperty(child);
-        if (child.hasOwnProperty("instanceOf")) {
-            if (child.hasOwnProperty("features") && Array.isArray(child.features)) {
-                let featureFound = (child.features || []).find(i => i.modelName == child.instanceOf);
-                if (featureFound !== undefined) {
-                    if (featureFound.featureType === undefined)
-                        featureFound.isRequired = true;
-                }
-                else {
-                    child.features.push(new hClasses.entityFeature(child.instanceOf, true));
-                }
+const transformAllEntityConstraintsToFeatures = function(entity) {
+    addIsRequiredProperty(entity);
+    if (entity.hasOwnProperty("instanceOf") && entity.instanceOf !== null) {
+        if (entity.hasOwnProperty("features") && Array.isArray(entity.features)) {
+            let featureFound = (entity.features || []).find(i => i.modelName == entity.instanceOf);
+            if (featureFound !== undefined) {
+                if (featureFound.featureType === undefined)
+                    featureFound.isRequired = true;
             }
             else {
-                if (child.instanceOf !== "" && child.instanceOf !== null)
-                    child.features = [new hClasses.entityFeature(child.instanceOf, true)];
+                entity.features.push(new hClasses.entityFeature(entity.instanceOf, true));
             }
         }
-        delete child.instanceOf;
-        if (child.children && child.children.length !== 0) {
-            transformAllEntityConstraintsToFeatures(child.children);
+        else {
+            if (entity.instanceOf !== "" && entity.instanceOf !== null)
+            entity.features = [new hClasses.entityFeature(entity.instanceOf, true)];
         }
-    });
+    }
+    delete entity.instanceOf;
+    if (!entity.children || entity.children.length === 0)
+        return;
+    entity.children.forEach(c => transformAllEntityConstraintsToFeatures(c));
 };
 
-const addIsRequiredProperty = function (entitiesCollection) {
-    (entitiesCollection.features || []).forEach(feature => {
+const addIsRequiredProperty = function(item) {
+    (item.features || []).forEach(feature => {
         if (feature.isRequired === undefined)
             feature.isRequired = false;
         delete feature.featureType;
         delete feature.modelType;
     });
-};
+}

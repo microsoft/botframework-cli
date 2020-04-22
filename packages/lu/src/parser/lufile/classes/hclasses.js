@@ -143,6 +143,12 @@ const readerObj = {
             this.modelName = name ? name : '';
             this.isRequired = isRequired ? isRequired : false;
         }
+    },
+    plFeature: class {
+        constructor(name, isRequired) {
+            this.featureName = name ? name : '';
+            this.isRequired = isRequired ? isRequired : false;
+        }
     }
 };
 

@@ -13,7 +13,7 @@
       "features": [
         {
           "featureName": "abc",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     }

@@ -8,11 +8,11 @@
       "features": [
         {
           "modelName": "userProfile",
-          "modelType": "Entity Extractor"
+          "isRequired": false
         },
         {
           "featureName": "profileDefinition",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     }
@@ -24,54 +24,78 @@
       "children": [
         {
           "name": "userName",
-          "instanceOf": null,
           "children": [
             {
               "name": "firstName",
-              "instanceOf": "personName",
-              "children": []
+              "children": [],
+              "features": [
+                {
+                  "modelName": "personName",
+                  "isRequired": true
+                }
+              ]
             },
             {
               "name": "lastName",
-              "instanceOf": "personName",
-              "children": []
+              "children": [],
+              "features": [
+                {
+                  "modelName": "personName",
+                  "isRequired": true
+                }
+              ]
             }
           ],
           "features": [
             {
               "modelName": "personName",
-              "modelType": "Prebuilt Entity Extractor"
+              "isRequired": false
             }
           ]
         },
         {
           "name": "userAge",
-          "instanceOf": "age",
-          "children": []
+          "children": [],
+          "features": [
+            {
+              "modelName": "age",
+              "isRequired": true
+            }
+          ]
         },
         {
           "name": "userCity",
-          "instanceOf": "cities",
-          "children": []
+          "children": [],
+          "features": [
+            {
+              "modelName": "cities",
+              "isRequired": true
+            }
+          ]
         },
         {
           "name": "userZipCode",
-          "instanceOf": "zipCode",
-          "children": []
+          "children": [],
+          "features": [
+            {
+              "modelName": "zipCode",
+              "isRequired": true
+            }
+          ]
         }
       ],
       "features": [
         {
           "modelName": "personName",
-          "modelType": "Prebuilt Entity Extractor"
+          "isRequired": false
         },
         {
           "modelName": "cities",
-          "modelType": "Closed List Entity Extractor"
+          "isRequired": false
         },
         {
           "modelName": "zipCode",
-          "modelType": "Regex Entity Extractor"
+          "isRequired": false
         }
       ]
     }

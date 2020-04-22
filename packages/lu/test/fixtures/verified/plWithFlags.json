@@ -5,7 +5,7 @@
       "features": [
         {
           "featureName": "city",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     }
