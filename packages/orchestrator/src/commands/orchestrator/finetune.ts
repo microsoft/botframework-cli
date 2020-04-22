@@ -6,7 +6,8 @@
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import * as utils from '../../utils';
 import * as path from 'path';
-import { setFlagsFromString } from 'v8';
+import * as fs from 'fs';
+import ErrnoException = NodeJS.ErrnoException;
 
 export default class OrchestratorFinetune extends Command {
   static description: string = 'Manage Orchestrator fine tuning.';
@@ -25,13 +26,15 @@ export default class OrchestratorFinetune extends Command {
 
   static examples: string[] = [`
     $ bf orchestrator:finetune status
-    $ bf orchestrator:finetune put --in ./path/to/file/
-    $ bf orchestrator:finetune get --out ./path/to/output/`]
+    $ bf orchestrator:finetune put --in ./path/to/file/ [--nlrversion <model version> | --logformat <logformat>]
+    $ bf orchestrator:finetune get [--out ./path/to/output/]`]
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'Orchestrator finetune command help'}),
-    in: flags.string({char: 'i', description: 'If --push flag is provided, the path to .lu/.qna files from where orchestrator finetune example file will be created from. Default to current working directory.'}),
+    in: flags.string({char: 'i', description: 'If --input is provided, the path to .lu/.qna files from where orchestrator finetune example file will be created from. Default to current working directory.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
+    logformat: flags.string({char: 'l', description: '(Optional) If --logformat is provided, overrides the log file formats (Supported: labelText, dteData).'}),
+    nlrversion: flags.string({char: 'n', description: '(Optional) If --nlrversion is provided, overrides the nlr version (Supported: 4.8.0, 4.8.0-multilingual).'}),
     out: flags.string({char: 'o', description: 'If --get flag is provided, the path where the new orchestrator finetune job will be created. Default to current working directory.'}),
     model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
     debug: flags.boolean({char: 'd'}),
@@ -50,6 +53,7 @@ export default class OrchestratorFinetune extends Command {
     let cli_args: string = `finetune ${args.command} `;
     switch (args.command) {
     case 'status': {
+      // Do nothing!
       break;
     }
     case 'get': {
@@ -65,9 +69,20 @@ export default class OrchestratorFinetune extends Command {
         this.error('Missing 1 required arg:\nPlease pass a file or folder location with --in flag.');
         return 2;
       }
-      const combinedFile: string = await this.writeOutputFile(input, output);
 
-      cli_args += `--in ${combinedFile}`;
+      // Validate log format
+      let logformat: string = await this.getLogFormat(flags.logformat, input);
+      let uploadFile: string;
+      if (logformat === '') {
+        uploadFile = await this.writeOutputFile(input, output);
+        logformat = 'dteData';
+      } else {
+        uploadFile = input;
+      }
+      // Validate nlr version
+      const nlrversion: string = await this.getNlrVersion(flags.nlrversion);
+
+      cli_args += `--in ${uploadFile} --logformat ${logformat} --nlrversion ${nlrversion}`;
       break;
     }
     default: {
@@ -90,6 +105,48 @@ export default class OrchestratorFinetune extends Command {
       return 1;
     }
     return 0;
+  }
+
+  private async getLogFormat(logFormat: string, inputFile: string): Promise<string> {
+    const validFormats: {[lowercaseformat: string]: string} = {
+      dtedata: 'dteData',
+      labeltext: 'labelText',
+    };
+    if (!logFormat) {
+      return ''; // Assume it's a standard format.
+    }
+    fs.access(inputFile, fs.constants.R_OK, (err: NodeJS.ErrnoException | null) => {
+      if (err) {
+        throw new CLIError('Unable to read file - ' + inputFile + ' Error: ' + err);
+      }
+    });
+    if (logFormat.toLowerCase() in validFormats) {
+      return validFormats[logFormat.toLowerCase()];
+    }
+    if (logFormat) {
+      throw new CLIError('Invalid log format provided.  Must be dteData or labelText');
+    }
+    return '';
+  }
+
+  private async getNlrVersion(nlrVersion: string): Promise<string> {
+    const validVersions: string[] =
+    [
+      '4.8.0',
+      '4.8.0-multilingual',
+    ];
+
+    if (!nlrVersion) {
+      return '4.8.0';
+    }
+    const lower: string = nlrVersion.toLowerCase();
+    if (validVersions.includes(lower)) {
+      return lower;
+    }
+    if (nlrVersion) {
+      throw new CLIError('Invalid nlr version provided.  Must be 4.8.0 or 4.8.0-multilingual');
+    }
+    return '4.8.0';
   }
 
   private async writeOutputFile(input: string, output: string): Promise<string> {
