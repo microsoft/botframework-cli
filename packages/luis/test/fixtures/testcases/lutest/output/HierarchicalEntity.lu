@@ -3,7 +3,7 @@
 > !# @app.name = MicrosoftPizza
 > !# @app.versionId = 1.2 - As Constraints
 > !# @app.culture = en-us
-> !# @app.luis_schema_version = 6.0.0
+> !# @app.luis_schema_version = 7.0.0
 
 
 > Total passed: 3/3

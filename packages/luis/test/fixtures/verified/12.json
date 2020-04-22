@@ -5,7 +5,7 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     },
@@ -14,7 +14,7 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     },
@@ -23,7 +23,7 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     },
@@ -32,7 +32,7 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     },
@@ -41,7 +41,7 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     },
@@ -50,7 +50,7 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     },
@@ -65,7 +65,7 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     }

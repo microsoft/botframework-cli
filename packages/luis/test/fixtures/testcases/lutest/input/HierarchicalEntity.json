@@ -5,7 +5,7 @@
       "features": [
         {
           "featureName": "SideOrderDescriptor",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     }
@@ -17,46 +17,73 @@
       "children": [
         {
           "name": "FullPizzaWithModifiers",
-          "instanceOf": null,
           "children": [
             {
               "name": "PizzaType",
-              "instanceOf": null,
               "children": []
             },
             {
               "name": "Size",
-              "instanceOf": "SizeList",
-              "children": []
+              "children": [],
+              "features": [
+                {
+                  "modelName": "SizeList",
+                  "isRequired": true
+                }
+              ]
             },
             {
               "name": "Quantity",
-              "instanceOf": "number",
-              "children": []
+              "children": [],
+              "features": [
+                {
+                  "modelName": "number",
+                  "isRequired": true
+                }
+              ]
             },
             {
               "name": "Crust",
-              "instanceOf": "CrustList",
-              "children": []
+              "children": [],
+              "features": [
+                {
+                  "modelName": "CrustList",
+                  "isRequired": true
+                }
+              ]
             },
             {
               "name": "ToppingModifiers",
-              "instanceOf": null,
               "children": [
                 {
                   "name": "Topping",
-                  "instanceOf": "ToppingList",
-                  "children": []
+                  "children": [],
+                  "features": [
+                    {
+                      "modelName": "ToppingList",
+                      "isRequired": true
+                    }
+                  ]
                 },
                 {
                   "name": "Modifier",
-                  "instanceOf": "ModifierList",
-                  "children": []
+                  "children": [],
+                  "features": [
+                    {
+                      "modelName": "ModifierList",
+                      "isRequired": true
+                    }
+                  ]
                 },
                 {
                   "name": "Scope",
-                  "instanceOf": "ScopeList",
-                  "children": []
+                  "children": [],
+                  "features": [
+                    {
+                      "modelName": "ScopeList",
+                      "isRequired": true
+                    }
+                  ]
                 }
               ]
             }
@@ -64,18 +91,16 @@
         },
         {
           "name": "SideOrder",
-          "instanceOf": null,
           "children": [
             {
               "name": "SideProduct",
-              "instanceOf": null,
               "children": []
             }
           ],
           "features": [
             {
               "featureName": "SideOrderDescriptor",
-              "featureType": "phraselist"
+              "isRequired": false
             }
           ]
         }
@@ -83,7 +108,7 @@
       "features": [
         {
           "featureName": "SideOrderDescriptor",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     }

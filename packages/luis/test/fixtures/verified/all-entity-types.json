@@ -7,11 +7,11 @@
       "features": [
         {
           "featureName": "ChocolateType",
-          "featureType": "phraselist"
+          "isRequired": false
         },
         {
           "featureName": "question",
-          "featureType": "phraselist"
+          "isRequired": false
         }
       ]
     }
