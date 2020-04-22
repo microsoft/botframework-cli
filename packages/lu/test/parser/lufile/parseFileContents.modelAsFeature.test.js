@@ -19,14 +19,19 @@ describe('Model as feature definitions', function () {
                 .catch(err => done())
         });
         
-        it('Intent can only have features and nothing else empty throws', function (done) {
+        it('Intent can have empty uses feature assignment line', function (done) {
             let luFile = `
-                @ intent xyz
+            ## None
+            - all of them
+            - i want them all
+            - i want to all of them
+            
+            @ intent None
             `;
 
             parseFile.parseFile(luFile)
-                .then(res => done(res))
-                .catch(err => done())
+                .then(res => done())
+                .catch(err => done(err))
         });
 
         it('Intent must be defined before a feature can be added to it.', function(done) {

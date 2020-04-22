@@ -170,15 +170,15 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         'main.lu': {
-          'dia1.lu': 'dia1_trigger',
-          'dia2.lu': 'dia2_trigger'
+          'dia1_trigger': 'dia1.lu',
+          'dia2_trigger': 'dia2.lu'
         },
         'dia2.lu': {
-          'dia3.lu': 'dia3_trigger',
-          'dia4.lu': 'dia4_trigger'
+          'dia3_trigger': 'dia3.lu',
+          'dia4_trigger': 'dia4.lu'
         },
         'main.fr-fr.lu': {
-          'dia1.fr-fr.lu': 'dia1_trigger'
+          'dia1_trigger': 'dia1.fr-fr.lu'
         }
       },
       intentName: '_Interruption',
@@ -242,11 +242,10 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Name, '_Interruption')
     assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Body, `- guide de l'utilisateur${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
     assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia1')
-    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Body, `- raconter la blague`)
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Body, '- raconter la blague')
 
     assert.equal(qnaResult.get('dia1.fr-fr.qna').Sections[1].Questions.join(', '), 'J\'ai besoin d\'un hôtel quatre étoiles, puis-je réserver un hôtel près de l\'aiguille spatiale, guide de l\'utilisateur')
   })
-
 
   it('luis:cross training can get expected result when nestedIntentSection is enabled', () => {
     let luContentArray = []
@@ -285,8 +284,8 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         './main/main.lu': {
-          './dia1/dia1.lu': 'dia1_trigger',
-          './dia2/dia2.lu': 'dia2_trigger'
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia2/dia2.lu'
         }
       },
       intentName: '_Interruption',
@@ -297,7 +296,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     const luResult = trainedResult.luResult
 
     assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, `- book a flight for me`)
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, '- book a flight for me')
   })
 
   it('luis:cross training can get expected result when multiple dialog invocations occur in same trigger', () => {
@@ -340,9 +339,8 @@ describe('luis:cross training tests among lu and qna contents', () => {
       ],
       triggerRules: {
         './main/main.lu': {
-          './dia1/dia1.lu': 'dia1_trigger',
-          './dia2/dia2.lu': 'dia1_trigger',
-          './dia3/dia3.lu': 'dia2_trigger'
+          'dia1_trigger': ['./dia1/dia1.lu', './dia2/dia2.lu'],
+          'dia2_trigger': './dia3/dia3.lu'
         }
       },
       intentName: '_Interruption',
@@ -353,12 +351,194 @@ describe('luis:cross training tests among lu and qna contents', () => {
     const luResult = trainedResult.luResult
 
     assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Body, `- book a hotel for me`)
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Body, '- book a hotel for me')
 
     assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, `- book a hotel for me`)
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, '- book a hotel for me')
 
     assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Body, `- I want to travel to Seattle`)
+    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Body, '- I want to travel to Seattle')
+  })
+
+  it('luis:cross training can get expected result when local intents exist', () => {
+    let luContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - I want to travel to Seattle
+                    
+        # dia2_trigger
+        - book a hotel for me
+        
+        # local_intent
+        - help`,
+      id: './main/main.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# bookTicket
+        - book a flight for me
+        - book a train ticket for me`,
+      id: './dia1/dia1.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# hotelLevel
+        - I prefer 4 stars hotel`,
+      id: './dia2/dia2.lu'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [
+        './main/main.lu'
+      ],
+      triggerRules: {
+        './main/main.lu': {
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia2/dia2.lu'
+        }
+      },
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const luResult = trainedResult.luResult
+
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Name, '_Interruption')
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Body, '- book a hotel for me')
+
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, '- I want to travel to Seattle')
+  })
+
+  it('luis:cross training can get expected result when trigger intent or dialog is empty', () => {
+    let luContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - I want to travel to Seattle
+                    
+        # dia2_trigger
+        - book a hotel for me
+        
+        # dia3_trigger
+        - cancel`,
+      id: './main/main.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# bookTicket
+        - book a flight for me
+        - book a train ticket for me`,
+      id: './dia1/dia1.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# hotelLevel
+        - I prefer 4 stars hotel`,
+      id: './dia2/dia2.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# help
+        - can I help you`,
+      id: './dia3/dia3.lu'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [
+        './main/main.lu'
+      ],
+      triggerRules: {
+        './main/main.lu': {
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia2/dia2.lu',
+          'dia3_trigger': '',
+          '': './dia3/dia3.lu'
+        }
+      },
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const luResult = trainedResult.luResult
+
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Name, '_Interruption')
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Body, `- book a hotel for me${NEWLINE}- cancel`)
+
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- cancel`)
+
+    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Name, '_Interruption')
+    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me${NEWLINE}- cancel`)
+  })
+
+  it('luis:cross training can get expected result when multi trigger intents point to same lu file', () => {
+    let luContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - I want to travel to Seattle
+                    
+        # dia2_trigger
+        - book a hotel for me
+        
+        # dia3_trigger
+        - cancel`,
+      id: './main/main.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# bookTicket
+        - book a flight for me
+        - book a train ticket for me
+        
+        # hotelLevel
+        - I prefer 4 stars hotel`,
+      id: './dia1/dia1.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# cancelTask
+        - cancel that task`,
+      id: './dia2/dia2.lu'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [
+        './main/main.lu'
+      ],
+      triggerRules: {
+        './main/main.lu': {
+          'dia1_trigger': './dia1/dia1.lu',
+          'dia2_trigger': './dia1/dia1.lu',
+          'dia3_trigger': './dia2/dia2.lu',
+          '': './dia2/dia2.lu'
+        }
+      },
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const luResult = trainedResult.luResult
+
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[2].Name, '_Interruption')
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[2].Body, `- cancel`)
+
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me`)
   })
 })

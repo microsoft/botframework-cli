@@ -189,7 +189,7 @@ export class Builder {
         // update settings asset
         if (settings && settings.has(path.dirname(content.path))) {
           let setting = settings.get(path.dirname(content.path)) as Settings
-          setting.luis[content.name.split('.').join('_')] = recognizer.getAppId()
+          setting.luis[content.name.split('.').join('_').replace(/-/g, '_')] = recognizer.getAppId()
         }
       }))
     }
@@ -324,6 +324,7 @@ export class Builder {
         for (const versionObj of versionObjs) {
           if (versionObj.version !== newVersionId) {
             this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
+            await delay(delayDuration)
             await luBuildCore.deleteVersion(recognizer.getAppId(), versionObj.version)
           }
         }

@@ -1,7 +1,0 @@
-# filename
-- ${removeFilename('personName')}
-
-# template
-- ${removeDialog('personName')}
-
-[generator.lg](generator.lg)
