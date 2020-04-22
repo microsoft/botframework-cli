@@ -9,7 +9,7 @@ import {Settings} from './settings'
 import * as path from 'path'
 const Content = require('./../lu/qna')
 const LUOptions = require('./../lu/luOptions')
-const {ServiceBase} = require('./../utils/serviceBase')
+const {ServiceBase} = require('./serviceBase')
 const NEWLINE = require('os').EOL
 
 export class QnaBuildCore {
