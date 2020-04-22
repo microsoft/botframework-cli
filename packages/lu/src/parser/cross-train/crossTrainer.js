@@ -93,19 +93,32 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
       }
     }
 
-    const destLuFileToIntent = triggerRules[fileId]
-    for (const destLuFile of Object.keys(destLuFileToIntent)) {
-      if (!fileIdsFromInput.includes(destLuFile)) continue
-
-      const triggerIntentName = destLuFileToIntent[destLuFile]
-      if (!intents.some(i => i.Name === triggerIntentName)) {
-        throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntentName}' is not found in lu file: ${fileId}`))
+    const intentToDestLuFiles = triggerRules[fileId]
+    for (const triggerIntent of Object.keys(intentToDestLuFiles)) {
+      if (triggerIntent !== '' && !intents.some(i => i.Name === triggerIntent)) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntent}' is not found in lu file: ${fileId}`))
       }
 
-      resource.children.push({
-        target: destLuFile,
-        intent: triggerIntentName
-      })
+      let destLuFiles = intentToDestLuFiles[triggerIntent]
+      if (typeof destLuFiles === 'string') destLuFiles = [destLuFiles]
+
+      if (destLuFiles.length > 0) {
+        destLuFiles.forEach(destLuFile => {
+          if (destLuFile !== '' && !fileIdsFromInput.includes(destLuFile)) {
+            throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, lu file '${destLuFile}' is not found`))
+          } else {
+            resource.children.push({
+              target: destLuFile,
+              intent: triggerIntent
+            })
+          }
+        })
+      } else {
+        resource.children.push({
+          target: '',
+          intent: triggerIntent
+        })
+      }
     }
 
     resources.push(resource)
@@ -144,7 +157,7 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
   mergeBrothersInterruption(rootResource, result, intentName)
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
-    if (childResource.visited === undefined) {
+    if (childResource && childResource.visited === undefined) {
       const rootQnaFileId = rootResource.id.replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
       const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
       const newChildResource = mergeFatherInterruptionToChild(rootResource, rootQnaResource, childResource, intentName)
@@ -158,10 +171,16 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
 const mergeBrothersInterruption = function (resource, result, intentName) {
   let children = resource.children
   for (const child of children) {
-    let triggerIntent = child.intent
+    const triggerIntent = child.intent
+    const destLuFile = child.target
+    let intentsWithSameTarget = []
+    if (destLuFile !== '') intentsWithSameTarget = children.filter(c => c.target === destLuFile && c.intent !== '').map(x => x.intent)
+
     const brotherSections = resource.content.Sections.filter(s => s.Name !== triggerIntent
       && s.Name !== intentName
-      && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION))
+      && (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
+      && children.some(brotherChild => brotherChild.intent === s.Name)
+      && !intentsWithSameTarget.some(intent => intent === s.Name))
 
     let brotherUtterances = []
     brotherSections.forEach(s => {
@@ -177,8 +196,10 @@ const mergeBrothersInterruption = function (resource, result, intentName) {
     let targetResource = result.get(child.target)
 
     // Merge direct brother's utterances
-    targetResource = mergeInterruptionIntent(brotherUtterances, targetResource, intentName)
-    result.set(targetResource.id, targetResource)
+    if (targetResource) {
+      targetResource = mergeInterruptionIntent(brotherUtterances, targetResource, intentName)
+      result.set(targetResource.id, targetResource)
+    }
   }
 }
 
