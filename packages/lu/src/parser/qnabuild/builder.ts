@@ -181,7 +181,7 @@ export class Builder {
           needPublish = await this.updateKB(currentKB, content.textContent, qnaBuildCore, recognizer, delayDuration)
         } else {
           // create a new kb
-          needPublish = await this.createKB(currentKB, content.textContent, qnaBuildCore, recognizer, currentKB.name, delayDuration)
+          needPublish = await this.createKB(content.textContent, qnaBuildCore, recognizer, currentKB.name, delayDuration)
         }
 
         if (needPublish) {
@@ -289,19 +289,6 @@ export class Builder {
         this.handler(`${recognizer.getQnaPath()} updating to new version...\n`)
         await delay(delayDuration)
         await qnaBuildCore.replaceKB(recognizer.getKBId(), qnaContent)
-        if (currentKB.urls.length > 0 || currentKB.files.length > 0) {
-          const urlsAndFiles = {
-            add: {
-              urls: currentKB.urls,
-              files: currentKB.files
-            }
-          }
-
-          await delay(delayDuration)
-          const response = await qnaBuildCore.updateKB(recognizer.getKBId(), urlsAndFiles)
-          const operationId = response.operationId
-          await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
-        }
 
         this.handler(`${recognizer.getQnaPath()} updating finished\n`)
       } catch (err) {
@@ -316,7 +303,7 @@ export class Builder {
     }
   }
 
-  async createKB(currentKB: any, qnaContent: string, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, kbName: string, delayDuration: number) {
+  async createKB(qnaContent: string, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, kbName: string, delayDuration: number) {
     this.handler(`${recognizer.getQnaPath()} creating qnamaker KB: ${kbName}...\n`)
     await delay(delayDuration)
     const emptyKBJson = {
@@ -333,19 +320,6 @@ export class Builder {
       recognizer.setKBId(opResult.resourceLocation.split('/')[2])
       await delay(delayDuration)
       await qnaBuildCore.replaceKB(recognizer.getKBId(), qnaContent)
-      if (currentKB.urls.length > 0 || currentKB.files.length > 0) {
-        const urlsAndFiles = {
-          add: {
-            urls: currentKB.urls,
-            files: currentKB.files
-          }
-        }
-
-        await delay(delayDuration)
-        response = await qnaBuildCore.updateKB(recognizer.getKBId(), urlsAndFiles)
-        operationId = response.operationId
-        await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
-      }
 
       this.handler(`${recognizer.getQnaPath()} creating finished\n`)
     } catch (err) {

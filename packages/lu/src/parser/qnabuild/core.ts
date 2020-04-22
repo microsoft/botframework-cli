@@ -6,7 +6,6 @@
 import {Recognizer} from './recognizer'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
-import {isEqual, differenceWith} from 'lodash'
 import * as path from 'path'
 const Content = require('./../lu/qna')
 const LUOptions = require('./../lu/luOptions')
@@ -133,20 +132,6 @@ export class QnaBuildCore {
 
   public isKBEqual(kbA: any, kbB: any): boolean {
     const qnaListA = kbA.qnaList
-    const qnaListSourcesA = qnaListA.map((qna: any) => qna.source)
-
-    const qnaDocumentsB = kbB.qnaDocuments || []
-    const qnaListBToCompare = qnaDocumentsB.filter((qnaDoc: any) => qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => {
-      return {
-        id: qna.id,
-        answer: qna.answer,
-        source: qna.source,
-        questions: qna.questions,
-        metadata: qna.metadata,
-        context: qna.context
-      }
-    })
-
     const qnaListAToCompare = qnaListA.map((qna: any) => {
       return {
         id: qna.id,
@@ -158,16 +143,19 @@ export class QnaBuildCore {
       }
     })
 
-    let equal = this.isQnaListEqual(qnaListAToCompare, qnaListBToCompare)
+    const qnaDocumentsB = kbB.qnaDocuments || []
+    const qnaListBToCompare = qnaDocumentsB.map((qna: any) => {
+      return {
+        id: qna.id,
+        answer: qna.answer,
+        source: qna.source,
+        questions: qna.questions,
+        metadata: qna.metadata,
+        context: qna.context
+      }
+    })
 
-    if (equal) {
-      const qnaUrlsA = kbA.urls || []
-      const qnaFilesA = kbA.files || []
-      const urlsAndFileNamesResA = new Set(qnaUrlsA.concat(qnaFilesA.map((qnaFile: any) => qnaFile.fileName)))
-      const otherResourcesB = new Set(qnaDocumentsB.filter((qnaDoc: any) => !qnaListSourcesA.includes(qnaDoc.source)).map((qna: any) => qna.source))
-
-      equal = this.isArrayEqual([...urlsAndFileNamesResA], [...otherResourcesB])
-    }
+    const equal = this.isQnaListEqual(qnaListAToCompare, qnaListBToCompare)
 
     return equal
   }
@@ -216,13 +204,5 @@ export class QnaBuildCore {
     })
 
     return fileContent
-  }
-
-  // compare arrays
-  private isArrayEqual(x: any, y: any) {
-    if (x.length !== y.length) return false
-    if (differenceWith(x, y, isEqual).length > 0) return false
-
-    return true
   }
 }
