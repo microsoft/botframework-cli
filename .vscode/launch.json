@@ -155,14 +155,14 @@
             ],
             "args": [
                 "dialog:merge",
-                "../libraries/**/*.schema",
+                "libraries/**/Microsoft.LuisRecognizer.schema",
+                "libraries/**/Microsoft.IRecognizer.schema",
                 "-o",
                 "sdk.schema",
-                "--verbose",
-                "-u"
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet/schemas"
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
         },
         {
             "type": "node",

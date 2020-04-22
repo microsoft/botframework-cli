@@ -7,8 +7,6 @@ import { Command, flags } from '@microsoft/bf-cli-command';
 import * as chalk from 'chalk';
 import { Definition, DialogTracker, SchemaTracker } from '../../library/dialogTracker';
 
-// import * as process from 'process';
-
 export default class DialogVerify extends Command {
 
     static args = [

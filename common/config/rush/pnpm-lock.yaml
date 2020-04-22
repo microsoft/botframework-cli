@@ -1,4 +1,5 @@
 dependencies:
+  '@apidevtools/json-schema-ref-parser': 8.0.0
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
@@ -26,13 +27,11 @@ dependencies:
   '@types/semver': 6.2.1
   '@types/supports-color': 5.3.0
   '@types/xml2js': 0.4.5
-  adaptive-expressions: 4.8.0-preview
   ajv: 6.12.0
   antlr4: 4.8.0
   applicationinsights: 1.7.3
   argparse: 1.0.10
   await-delay: 1.0.0
-  botbuilder-lg: 4.8.0-preview
   botframework-schema: 4.7.2
   camelcase: 4.1.0
   chai: 4.2.0
@@ -47,19 +46,19 @@ dependencies:
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0
   fancy-test: 1.4.7
   fetch-mock: 7.7.3
-  get-json: 1.0.1
   get-stdin: 6.0.0
+  get-uri: 3.0.2
   glob: 7.1.6
   https-proxy-agent: 2.2.4
   intercept-stdout: 0.1.2
   is-ci: 2.0.0
   json-schema-merge-allof: 0.6.0
-  json-schema-ref-parser: 7.1.4
   latest-version: 4.0.0
   lodash: 4.17.15
   md5: 2.2.1
   mime-types: 2.1.26
   minimist: 1.2.0
+  nock: 11.9.1
   nyc: 14.1.1
   os: 0.1.1
   pascal-case: 2.0.1
@@ -80,6 +79,14 @@ dependencies:
   xml2js: 0.4.23
 lockfileVersion: 5.1
 packages:
+  /@apidevtools/json-schema-ref-parser/8.0.0:
+    dependencies:
+      '@jsdevtools/ono': 7.1.2
+      call-me-maybe: 1.0.1
+      js-yaml: 3.13.1
+    dev: false
+    resolution:
+      integrity: sha512-n4YBtwQhdpLto1BaUCyAeflizmIbaloGShsPyRtFf5qdFJxfssj+GgLavczgKJFa3Bq+3St2CKcpRJdjtB4EBw==
   /@azure/cognitiveservices-luis-authoring/4.0.0-preview.1:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
@@ -288,6 +295,10 @@ packages:
       typescript: '>= 3.3.0 || >= 3.6.0-dev || >= 3.7.0-dev'
     resolution:
       integrity: sha512-T/y7WqPsm4n3zhT08EpB5sfdm2Kvw3gurAxr2Lr5dQeLi8ZsMlNT/Jby+ZmuuAAd1PnXYzKp+2SXgIkQIIMCUg==
+  /@jsdevtools/ono/7.1.2:
+    dev: false
+    resolution:
+      integrity: sha512-qS/a24RA5FEoiJS9wiv6Pwg2c/kiUo3IVUQcfeM9JvsR6pM8Yx+yl/6xWYLckZCT5jpLNhslgjiA8p/XcGyMRQ==
   /@microsoft/recognizers-text-data-types-timex-expression/1.1.4:
     dev: false
     engines:
@@ -530,6 +541,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
+  /@tootallnate/once/1.0.0:
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-KYyTT/T6ALPkIRd2Ge080X/BsXvy9O0hcWTtMWkPvwAwF99+vn6Dv4GzrFT/Nn1LePr+FFDbRXXlqmsy9lw2zA==
   /@types/ansi-styles/3.2.1:
     dependencies:
       '@types/color-name': 1.1.1
@@ -1685,6 +1702,14 @@ packages:
       node: '>=0.10'
     resolution:
       integrity: sha1-hTz6D3y+L+1d4gMmuN1YEDX24vA=
+  /data-uri-to-buffer/3.0.0:
+    dependencies:
+      buffer-from: 1.1.1
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-MJ6mFTZ+nPQO+39ua/ltwNePXrfdF3Ww0wP1Od7EePySXN1cP9XNqRQOG3FxTfipp8jx898LUCgBCEP11Qw/ZQ==
   /debug/2.6.9:
     dependencies:
       ms: 2.0.0
@@ -2451,6 +2476,12 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha512-bCg29ictuBaKUwwArK4ouCaqDgLZcysCFLmM/Yn/FDoqndh/9vNuQfXRDvTuXKLxfD/JtZQGKFT8MGcJBK644g==
+  /file-uri-to-path/2.0.0:
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-hjPFI8oE/2iQPVe4gbrJ73Pp+Xfub2+WI2LlXDbsaJBwT5wuMh35WNWVYYTpnz895shtwfyutMFLFywpQAFdLg==
   /fill-keys/1.0.2:
     dependencies:
       is-object: 1.0.1
@@ -2633,6 +2664,15 @@ packages:
     dev: false
     resolution:
       integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=
+  /ftp/0.3.10:
+    dependencies:
+      readable-stream: 1.1.14
+      xregexp: 2.0.0
+    dev: false
+    engines:
+      node: '>=0.8.0'
+    resolution:
+      integrity: sha1-kZfYYa2BQvPmPVqDv+TFn3MwiF0=
   /function-bind/1.1.1:
     dev: false
     resolution:
@@ -2687,6 +2727,19 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-EXr1FOzrzTfGeL0gQdeFEvOMm2mzMOglyiOXSTpPC+iAjAKftbr3jpCMWynogwYnM+eSj9sHGc6wjIcDvYiygw==
+  /get-uri/3.0.2:
+    dependencies:
+      '@tootallnate/once': 1.0.0
+      data-uri-to-buffer: 3.0.0
+      debug: 4.1.1
+      file-uri-to-path: 2.0.0
+      fs-extra: 8.1.0
+      ftp: 0.3.10
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-+5s0SJbGoyiJTZZ2JTpFPLMPSch72KEqGOTvQsBqg0RBWvwhWUSYZFAtz3TPW0GXJuLBJPts1E241iHg+VRfhg==
   /get-value/2.0.6:
     dev: false
     engines:
@@ -3502,14 +3555,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-LEw4VMQVRceOPLuGRWcxW5orTTiR9ZAtqTAe4rQUjNADTeR81bezBVFa0MqIwp0YmHIM1KkhSjZM7o+IQhaPbQ==
-  /json-schema-ref-parser/7.1.4:
+  /json-schema-ref-parser/8.0.0:
     dependencies:
-      call-me-maybe: 1.0.1
-      js-yaml: 3.13.1
-      ono: 6.0.1
+      '@apidevtools/json-schema-ref-parser': 8.0.0
     dev: false
+    engines:
+      node: '>=10'
     resolution:
-      integrity: sha512-AD7bvav0vak1/63w3jH8F7eHId/4E4EPdMAEZhGxtjktteUv9dnNB/cJy6nVnMyoTPBJnLwFK6tiQPSTeleCtQ==
+      integrity: sha512-2P4icmNkZLrBr6oa5gSZaDSol/oaBHYkoP/8dsw63E54NnHGRhhiFuy9yFoxPuSm+uHKmeGxAAWMDF16SCHhcQ==
   /json-schema-traverse/0.4.1:
     dev: false
     resolution:
@@ -4297,10 +4350,6 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-BnQoIw/WdEOyeUsiu6UotoZ5YtQ=
-  /ono/6.0.1:
-    dev: false
-    resolution:
-      integrity: sha512-5rdYW/106kHqLeG22GE2MHKq+FlsxMERZev9DCzQX1zwkxnFwBivSn5i17a5O/rDmOJOdf4Wyt80UZljzx9+DA==
   /optionator/0.8.3:
     dependencies:
       deep-is: 0.1.3
@@ -4741,6 +4790,15 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-nLxoaXj+5l0WwA4rGcI3/Pbjg4k=
+  /readable-stream/1.1.14:
+    dependencies:
+      core-util-is: 1.0.2
+      inherits: 2.0.4
+      isarray: 0.0.1
+      string_decoder: 0.10.31
+    dev: false
+    resolution:
+      integrity: sha1-fPTFTvZI44EwhMY23SB54WbAgdk=
   /readable-stream/2.3.7:
     dependencies:
       core-util-is: 1.0.2
@@ -5335,6 +5393,10 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha512-qFvWL3/+QIgZXVmJBfpHmxLB7xsUXz6HsUmP8+5dRaC3Q7oKUv9Vo6aMCRZC1smrtyECFsIT30PqBJ1gTjAs+g==
+  /string_decoder/0.10.31:
+    dev: false
+    resolution:
+      integrity: sha1-YuIDvEF2bGwoyfyEMB2rHFMQ+pQ=
   /string_decoder/1.1.1:
     dependencies:
       safe-buffer: 5.1.2
@@ -6201,6 +6263,10 @@ packages:
       node: '>=4.0'
     resolution:
       integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==
+  /xregexp/2.0.0:
+    dev: false
+    resolution:
+      integrity: sha1-UqY+VsoLhKfzpfPWGHLxJq16WUM=
   /y18n/4.0.0:
     dev: false
     resolution:
@@ -6399,6 +6465,7 @@ packages:
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
     dependencies:
+      '@apidevtools/json-schema-ref-parser': 8.0.0
       '@chrimc62/adaptive-expressions': 4.1.20
       '@chrimc62/botbuilder-lg': 4.1.20
       '@oclif/command': 1.5.19
@@ -6425,9 +6492,10 @@ packages:
       crypto: 1.0.1
       fs-extra: 8.1.0
       get-json: 1.0.1
+      get-uri: 3.0.2
       globby: 9.2.0
       json-schema-merge-allof: 0.6.0
-      json-schema-ref-parser: 7.1.4
+      json-schema-ref-parser: 8.0.0
       mocha: 6.2.2
       nyc: 14.1.1
       os: 0.1.1
@@ -6443,7 +6511,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-l/JpOxhaKI+Te4Qhgmn6wnlbZrcMfMgWbIPPTvTr39KNHEmGGXxzfMk7sgkU1OgkrvgI/Nm42ZJsplasoshmeQ==
+      integrity: sha512-2An6wfxd2Eew1s6loE5zZw37r4/e5hyQYygsOJBRRDH28Y+waH5FPKaox1Lu0FpTJNPV6I6cm0/W+H9Hvt4PqA==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6556,7 +6624,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-Y/cMFp/mmyBBVGa/wdcPdZSBVBaJRkV6JEOJGiifE47jY3y3aMLCq2X4ID8ApFN1eHR5R2kSNH51CU0xZi9KRw==
+      integrity: sha512-+a3baEHSiPkEERKZ9smUAZprX6iFIjazQCH5YcTuurdsvgX8EjPQWKPcI9O43ct85dK45lUqwwDoRBc3OC5zpw==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6644,6 +6712,7 @@ packages:
     version: 0.0.0
 registry: ''
 specifiers:
+  '@apidevtools/json-schema-ref-parser': ^8.0.0
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
@@ -6671,13 +6740,11 @@ specifiers:
   '@types/semver': ^6.0.1
   '@types/supports-color': ^5.3.0
   '@types/xml2js': ^0.4.4
-  adaptive-expressions: ^4.8.0-preview
   ajv: ^6.9.1
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
   argparse: ~1.0.10
   await-delay: ^1.0.0
-  botbuilder-lg: ^4.8.0-preview
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
   chai: ^4.2.0
@@ -6692,19 +6759,19 @@ specifiers:
   eslint-config-oclif-typescript: ^0.1.0
   fancy-test: ^1.4.3
   fetch-mock: ^7.3.9
-  get-json: ^1.0.1
   get-stdin: ^6.0.0
+  get-uri: ~3.0.2
   glob: ^7.1.3
   https-proxy-agent: ^2.2.1
   intercept-stdout: ^0.1.2
   is-ci: 2.0.0
   json-schema-merge-allof: ^0.6.0
-  json-schema-ref-parser: ^7.1.0
   latest-version: ^4.0.0
   lodash: ^4.17.15
   md5: ^2.2.1
   mime-types: ^2.1.18
   minimist: ^1.2.0
+  nock: ^11.7.0
   nyc: ^14.1.1
   os: ~0.1.1
   pascal-case: ^2.0.1
