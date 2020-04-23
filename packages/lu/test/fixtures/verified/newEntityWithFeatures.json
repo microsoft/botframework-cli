@@ -147,14 +147,16 @@
       "intent": "GetUserProfile",
       "entities": [
         {
-          "entity": "userAge",
-          "startPos": 4,
-          "endPos": 5
-        },
-        {
           "entity": "userProfile",
           "startPos": 4,
-          "endPos": 5
+          "endPos": 5,
+          "children": [
+            {
+              "entity": "userAge",
+              "startPos": 4,
+              "endPos": 5
+            }
+          ]
         }
       ]
     },
@@ -163,14 +165,16 @@
       "intent": "GetUserProfile",
       "entities": [
         {
-          "entity": "userAge",
-          "startPos": 10,
-          "endPos": 11
-        },
-        {
           "entity": "userProfile",
           "startPos": 10,
-          "endPos": 11
+          "endPos": 11,
+          "children": [
+            {
+              "entity": "userAge",
+              "startPos": 10,
+              "endPos": 11
+            }
+          ]
         }
       ]
     },
@@ -179,19 +183,23 @@
       "intent": "GetUserProfile",
       "entities": [
         {
-          "entity": "firstName",
-          "startPos": 11,
-          "endPos": 17
-        },
-        {
-          "entity": "userName",
-          "startPos": 11,
-          "endPos": 17
-        },
-        {
           "entity": "userProfile",
           "startPos": 11,
-          "endPos": 17
+          "endPos": 17,
+          "children": [
+            {
+              "entity": "userName",
+              "startPos": 11,
+              "endPos": 17,
+              "children": [
+                {
+                  "entity": "firstName",
+                  "startPos": 11,
+                  "endPos": 17
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -200,19 +208,23 @@
       "intent": "GetUserProfile",
       "entities": [
         {
-          "entity": "lastName",
-          "startPos": 16,
-          "endPos": 21
-        },
-        {
-          "entity": "userName",
-          "startPos": 16,
-          "endPos": 21
-        },
-        {
           "entity": "userProfile",
           "startPos": 16,
-          "endPos": 21
+          "endPos": 21,
+          "children": [
+            {
+              "entity": "userName",
+              "startPos": 16,
+              "endPos": 21,
+              "children": [
+                {
+                  "entity": "lastName",
+                  "startPos": 16,
+                  "endPos": 21
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -221,19 +233,23 @@
       "intent": "GetUserProfile",
       "entities": [
         {
-          "entity": "firstName",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
-          "entity": "userName",
-          "startPos": 0,
-          "endPos": 6
-        },
-        {
           "entity": "userProfile",
           "startPos": 0,
-          "endPos": 6
+          "endPos": 6,
+          "children": [
+            {
+              "entity": "userName",
+              "startPos": 0,
+              "endPos": 6,
+              "children": [
+                {
+                  "entity": "firstName",
+                  "startPos": 0,
+                  "endPos": 6
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -242,14 +258,16 @@
       "intent": "GetUserProfile",
       "entities": [
         {
-          "entity": "userAge",
-          "startPos": 0,
-          "endPos": 1
-        },
-        {
           "entity": "userProfile",
           "startPos": 0,
-          "endPos": 1
+          "endPos": 1,
+          "children": [
+            {
+              "entity": "userAge",
+              "startPos": 0,
+              "endPos": 1
+            }
+          ]
         }
       ]
     }

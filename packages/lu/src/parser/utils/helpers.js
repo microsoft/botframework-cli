@@ -204,7 +204,142 @@ const updateToV7 = function(finalLUISJSON) {
         });
         (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
         (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
+        transformUtterancesWithNDepthEntities(finalLUISJSON)
     }
+}
+
+const constructEntityParentTree = function(entityCollection, entityParentTree, curPath)
+{
+    entityCollection.forEach(entity => {
+        if (entity.children !== undefined && Array.isArray(entity.children) && entity.children.length !== 0) {
+            constructEntityParentTree(entity.children, entityParentTree, curPath.concat(entity.name));
+        }
+        updateTreeWithNode(curPath, entity.name, entityParentTree)
+    })
+}
+const updateTreeWithNode = function(curPath, entityName, entityParentTree) {
+    let revPath = JSON.parse(JSON.stringify(curPath.reverse()));
+    if (entityParentTree[entityName] === undefined) {
+        entityParentTree[entityName] = [revPath];
+    }
+    else {
+        if (entityParentTree[entityName].find(item => item.join('->') == revPath.join('->')) === undefined)
+            entityParentTree[entityName].push(revPath);
+    }
+    curPath.reverse();
+}
+
+const transformUtterancesWithNDepthEntities = function (finalLUISJSON) {
+    let entityParentTree = {};
+    const curPath = ["$root$"];
+    constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
+    finalLUISJSON.utterances.forEach(utt => {
+        if (utt.entities !== undefined && Array.isArray(utt.entities) && utt.entities.length !== 0) {
+            // sort all entities by start and end position
+            utt.entities = objectSortByStartPos(utt.entities)
+            let entityIdsToRemove = [];
+            utt.entities.forEach((item, idx) => {
+                // find the immediate parents of this entity
+                // if the enity has a role, find by that
+                let entityToFind = item.role || item.entity;
+                if (isRootEntity(entityToFind, finalLUISJSON.entities)) return;
+                
+                if (entityParentTree[entityToFind] === undefined) {
+                    return;
+                }
+                let parentPathsForEntity = entityParentTree[entityToFind];
+                let parentIdx = [];
+                parentPathsForEntity.forEach(path => {
+                    utt.entities.find((i, id) => {
+                        if (i.entity === path[0] && i.startPos <= item.startPos && i.endPos >= item.endPos) {
+                            parentIdx.push(id);
+                        } 
+                    })
+                })
+                if (parentIdx.length !== 0) {
+                    parentIdx.forEach(id => {
+                        if (item.role !== undefined) {
+                            item.entity = item.role;
+                            delete item.role;
+                        }
+                        if (utt.entities[id].children === undefined) {
+                            utt.entities[id].children = [Object.assign({}, item)]
+                        } else {
+                            utt.entities[id].children.push(Object.assign({}, item));
+                        }
+                    })
+                    entityIdsToRemove.push(idx);
+                } 
+            })
+            if (entityIdsToRemove.length !== 0) {
+                entityIdsToRemove.sort((a, b) => b - a).forEach(id => {
+                    utt.entities.splice(id, 1);
+                })
+            }
+            // remove any children that are not a root entity
+            removeNonRootChildren(utt.entities, finalLUISJSON.entities)
+        }
+    })
+}
+
+const removeNonRootChildren = function(entitiesList, allEntitiesList) {
+    let idxToRemove = [];
+    entitiesList.forEach((entity, idx) => {
+        if (!isRootEntity(entity.entity, allEntitiesList)) {
+            idxToRemove.push(idx)
+        }
+    })
+    if (idxToRemove.length !== 0) {
+        idxToRemove.sort((a,b) => b-a).forEach(id => entitiesList.splice(id, 1));
+        idxToRemove = [];
+    }
+    // de-dupe children
+    deDupeChildren(entitiesList);
+}
+
+const deDupeChildren = function(collection) {
+    collection.forEach(entity => {
+        if (entity.children !== undefined && Array.isArray(entity.children) && entity.children.length !== 0) {
+            let childAsStr = entity.children.map(item => JSON.stringify(item));
+            var newList = [];
+            childAsStr.forEach(item => {
+                if (newList.indexOf(item) === -1) newList.push(item)
+            })
+            entity.children = newList.map(item => JSON.parse(item))
+            deDupeChildren(entity.children)
+        }
+    })
+}
+
+const isRootEntity = function (entityName, entitiesCollection) {
+    if ((entitiesCollection || []).find(ecEntity => ecEntity.name == entityName) !== undefined)
+        return true
+    return false
+}
+
+const findParent = function (entityInUtt, entityCollection, parentTree, curParent) {
+    let numOfParentsFound = 0;
+    entityCollection.forEach(childEntity => {
+        if (childEntity.name == entityInUtt.entity) {
+            parentTree[curParent] = childEntity.name;
+            numOfParentsFound++;
+        }
+        if (childEntity.children !== undefined && Array.isArray(childEntity.children) && childEntity.children.length !== 0) {
+            parentTree[childEntity.name] = {};
+            numOfParentsFound += findParent(entityInUtt, childEntity.children, parentTree[childEntity.name], childEntity.name)
+        }
+    });
+    return numOfParentsFound;
+}
+
+const objectSortByStartPos = function (objectArray) {
+    let ObjectByStartPos = objectArray.slice(0);
+    ObjectByStartPos.sort(function (a, b) {
+        if (a.startPos === b.startPos)
+            return a.endPos - b.endPos;
+        return a.startPos - b.startPos;
+    })
+    return ObjectByStartPos
 }
 
 const transformAllEntityConstraintsToFeatures = function(entity) {
