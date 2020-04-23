@@ -11,6 +11,7 @@ This package is intended for Microsoft use only and should be consumed through @
 - [.qna file format][1]
 - [Working with .qna files][2]
 - [Machine translating .qna content][3]
+- [using qnamaker:build][4]
 
 # Commands
 <!-- commands -->
@@ -597,3 +598,4 @@ _See code: [src/commands/qnamaker/build.ts](https://github.com/microsoft/botfram
 [1]:./docs/qna-file-format.md
 [2]:./docs/working-with-qna.md
 [3]:./docs/translate-command.md
+[4]:./docs/using-qnamaker-build.md
