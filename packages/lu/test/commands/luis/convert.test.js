@@ -149,7 +149,7 @@ describe('luis:convert version 7 upgrade test', () => {
     })
 
     it('V7 LU (from LUIS team) converts correctly to JSON format', async () => {
-        await assertToJSON('./../../fixtures/verified/v7app.lu', './../../fixtures/testcases/v7app.json')
+        await assertToJSON('./../../fixtures/verified/v7app.lu', './../../fixtures/verified/v7app_c.json')
     })
 
     it('luis:convert successfully reconstructs a markdown file from a LUIS input file with v5 constructs', async () => {
