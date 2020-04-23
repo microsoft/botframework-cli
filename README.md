@@ -77,6 +77,14 @@ To disable data collection see the  __*bf config*__ command.
 
 Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.
 
+### Enable Telemetry in Continuous Integration Pipelines
+
+Per above, Microsoft will only collect anonymous data to help improve the CLI. To set your CI/CD pipeline telemetry collection behavior set the following OS environment variable:
+
+* set BF_CLI_TELEMETRY = true  : Bypass prompts and **enables** telemetry collection.
+* set BF_CLI_TELEMETRY = false : Bypass prompts and **disables** telemetry collection (default).
+* BF_CLI_TELEMETRY = null (absent) : If no value is set in configuration file defaults to false - disabled.
+
 ## Nightly builds
 
 Nightly builds are generated using the latest code. Therefore, they may not be stable, and most likely lack up to date documentation. These builds are better suited for more experienced users, although everyone is welcome to use them and provide feedback.
