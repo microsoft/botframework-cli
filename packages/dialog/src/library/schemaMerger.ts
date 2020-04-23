@@ -28,8 +28,10 @@ export class SchemaMerger {
     private error: any
 
     // State tracking
+    private metaSchemaId = ''
     private definitions = {}
-    private expanded = {}
+    private schemaDefinitions = {}
+    private expanded = {} // Expanded versions for analysis
     private interfaces: string[] = []
     private implementations = {}
     private rootURI = ''
@@ -73,7 +75,7 @@ export class SchemaMerger {
             if (schemaPaths.length === 0) {
                 return false
             } else {
-                let metaSchemaId = ''
+
                 let metaSchema: any
                 let validator = new Validator()
 
@@ -93,15 +95,16 @@ export class SchemaMerger {
 
                             // Pick up meta-schema from first .dialog file
                             if (!metaSchema) {
-                                metaSchemaId = schema.$schema
+                                this.metaSchemaId = schema.$schema
                                 metaSchema = await this.getJSON(schema.$schema)
                                 validator.addSchema(metaSchema, 'componentSchema')
                                 this.rootURI = ppath.dirname(schema.$schema)
                                 if (this.verbose) {
                                     this.log(`  Using component.schema ${metaSchema.$id}`)
                                 }
-                            } else if (schema.$schema !== metaSchemaId) {
-                                this.error(`${this.currentFile}: error:${this.currentFile}: ${schema.$schema} does not match component.schema ${metaSchemaId}`)
+                                this.schemaDefinitions = await fs.readJSON(`${this.rootURI}/definitions.schema`)
+                            } else if (schema.$schema !== this.metaSchemaId) {
+                                this.error(`${this.currentFile}: error:${this.currentFile}: ${schema.$schema} does not match component.schema ${this.metaSchemaId}`)
                             }
                             if (!validator.validate('componentSchema', schema)) {
                                 for (let error of validator.errors as Validator.ErrorObject[]) {
@@ -126,14 +129,13 @@ export class SchemaMerger {
                 this.expandInterfaces()
                 this.addComponentProperties()
                 this.sortImplementations()
+                // this.addSchemaDefinitions()
 
                 let finalDefinitions: any = {}
                 for (let key of Object.keys(this.definitions).sort()) {
                     finalDefinitions[key] = this.definitions[key]
                 }
                 let finalSchema = {
-                    $schema: metaSchemaId,
-                    $id: ppath.basename(this.output),
                     type: 'object',
                     title: 'Component kinds',
                     description: 'These are all of the kinds that can be created by the loader.',
@@ -148,14 +150,15 @@ export class SchemaMerger {
                     definitions: finalDefinitions
                 }
 
-                // Convert all remote references to local ones
+                // Convert all references to local ones
                 let bundle = await parser.bundle(finalSchema as any, { resolve: { definition: this.definitionResolver() } })
-
-                this.removeSchemas(bundle)
+                bundle = this.addTopLevelProperties(bundle)
 
                 if (!this.failed) {
                     this.log(`Writing ${this.output}`)
                     await fs.writeJSON(this.output, bundle, this.jsonOptions)
+                    // TODO: This is for debugging only
+                    await fs.writeJSON(this.output + '.noref', allof(bundle), this.jsonOptions);
                 } else {
                     this.error(`${this.currentFile}: Could not merge schemas`)
                 }
@@ -440,18 +443,12 @@ export class SchemaMerger {
 
     // Include standard component properties
     addComponentProperties(): void {
-        for (let kind in this.definitions) {
+        const topProps = ['title', 'description', '$role', 'allOf']
+        for (let kind of Object.keys(this.definitions)) {
             if (!this.isInterface(kind)) {
                 let definition = this.definitions[kind]
-                if (!definition.allOf) {
-                    definition.allOf = []
-                }
-                definition.allOf.push({ $ref: `${this.rootURI}/definitions.schema#/definitions/component` })
-                if (!definition.properties) {
-                    definition.properties = {}
-                }
-                definition.properties.$kind = {}
-                definition.properties.$kind.const = kind
+
+                // Add $kind and $copy to required
                 let required = definition.required
                 if (required) {
                     required.push('$kind')
@@ -469,6 +466,27 @@ export class SchemaMerger {
                         required
                     }
                 ]
+
+                // Define component constraints
+                let componentDef = {}
+                for (let prop of Object.keys(definition)) {
+                    if (!topProps.includes(prop)) {
+                        componentDef[prop] = definition[prop]
+                        delete definition[prop]
+                    }
+                }
+
+                // Define $kind restriction
+                let kindDef = { type: 'object', properties: { $kind: { const: `${kind}` } } }
+
+                // TODO: Explicitly import definitions to refer to them...
+                // Add to allOf
+                if (!definition.allOf) {
+                    definition.allOf = []
+                }
+                definition.allOf.push(kindDef)
+                definition.allOf.push(componentDef)
+                definition.allOf.push({ $ref: `${this.rootURI}/definitions.schema#/definitions/component` })
             }
         }
     }
@@ -482,13 +500,31 @@ export class SchemaMerger {
         }
     }
 
-    removeSchemas(schema: object): void {
-        this.walkJSON(schema, (val: any, obj: any, key?: string) => {
-            if (key && val.$schema) {
-                delete val.$schema
-            }
+    addSchemaDefinitions(): void {
+        this.definitions = { ...this.schemaDefinitions, ...this.definitions}
+    }
+
+    addTopLevelProperties(bundle: any): any {
+        // Remove top-level properties
+        this.walkJSON(bundle, (val: any, obj?: any, key?: string) => {
+            if (val.$schema) delete val.$schema
+            if (val.$id) delete val.$id
+            if (val.hasOwnProperty('additionalProperties')) delete val.additionalProperties
+            if (val.patternProperties) delete val.patternProperties
             return false
         })
+
+        return {
+            $schema: this.metaSchemaId,
+            $id: ppath.resolve(this.output),
+            ...bundle,
+            additionalProperties: false,
+            patternProperties: {
+                "^\\$": {
+                    "type": "string"
+                }
+            }
+        }
     }
 
     walkJSON(elt: any, fun: (val: any, obj?: any, key?: string) => boolean, obj?: any, key?: any): boolean {
