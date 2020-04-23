@@ -17,9 +17,9 @@
 ## GetUserProfile
 - I'm {@userProfile={@userAge=36}} years old
 - My age is {@userProfile={@userAge=36}}
-- My name is {@userProfile={@userName=vishwac}}
-- My last name is {@userProfile={@userName=kannan}}
-- {@userProfile={@userName=vishwac}}
+- My name is {@userProfile={@userName={@firstName=vishwac}}}
+- My last name is {@userProfile={@userName={@lastName=kannan}}}
+- {@userProfile={@userName={@firstName=vishwac}}}
 - {@userProfile={@userAge=36}}
 - I'm {@firstName} and I'm {userAge} [years old]
 

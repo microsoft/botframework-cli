@@ -623,39 +623,45 @@
       "intent": "ModifyOrder",
       "entities": [
         {
-          "entity": "Size",
-          "startPos": 15,
-          "endPos": 20
-        },
-        {
-          "entity": "Modifier",
-          "startPos": 22,
-          "endPos": 30
-        },
-        {
-          "entity": "Topping",
-          "startPos": 32,
-          "endPos": 40
-        },
-        {
-          "entity": "Topping",
-          "startPos": 46,
-          "endPos": 52
-        },
-        {
-          "entity": "ToppingModifiers",
-          "startPos": 22,
-          "endPos": 52
-        },
-        {
           "entity": "Order",
           "startPos": 0,
-          "endPos": 52
-        },
-        {
-          "entity": "FullPizzaWithModifiers",
-          "startPos": 0,
-          "endPos": 52
+          "endPos": 52,
+          "children": [
+            {
+              "entity": "FullPizzaWithModifiers",
+              "startPos": 0,
+              "endPos": 52,
+              "children": [
+                {
+                  "entity": "Size",
+                  "startPos": 15,
+                  "endPos": 20
+                },
+                {
+                  "entity": "ToppingModifiers",
+                  "startPos": 22,
+                  "endPos": 52,
+                  "children": [
+                    {
+                      "entity": "Modifier",
+                      "startPos": 22,
+                      "endPos": 30
+                    },
+                    {
+                      "entity": "Topping",
+                      "startPos": 32,
+                      "endPos": 40
+                    },
+                    {
+                      "entity": "Topping",
+                      "startPos": 46,
+                      "endPos": 52
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -664,29 +670,33 @@
       "intent": "ModifyOrder",
       "entities": [
         {
-          "entity": "Quantity",
-          "startPos": 4,
-          "endPos": 4
-        },
-        {
-          "entity": "Size",
-          "startPos": 6,
-          "endPos": 15
-        },
-        {
-          "entity": "PizzaType",
-          "startPos": 17,
-          "endPos": 31
-        },
-        {
-          "entity": "FullPizzaWithModifiers",
-          "startPos": 4,
-          "endPos": 31
-        },
-        {
           "entity": "Order",
           "startPos": 0,
-          "endPos": 62
+          "endPos": 62,
+          "children": [
+            {
+              "entity": "FullPizzaWithModifiers",
+              "startPos": 4,
+              "endPos": 31,
+              "children": [
+                {
+                  "entity": "Quantity",
+                  "startPos": 4,
+                  "endPos": 4
+                },
+                {
+                  "entity": "Size",
+                  "startPos": 6,
+                  "endPos": 15
+                },
+                {
+                  "entity": "PizzaType",
+                  "startPos": 17,
+                  "endPos": 31
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -695,49 +705,57 @@
       "intent": "ModifyOrder",
       "entities": [
         {
-          "entity": "Quantity",
-          "startPos": 10,
-          "endPos": 10
-        },
-        {
-          "entity": "PizzaType",
-          "startPos": 12,
-          "endPos": 27
-        },
-        {
-          "entity": "FullPizzaWithModifiers",
-          "startPos": 10,
-          "endPos": 27
-        },
-        {
-          "entity": "PizzaType",
-          "startPos": 35,
-          "endPos": 51
-        },
-        {
-          "entity": "FullPizzaWithModifiers",
-          "startPos": 33,
-          "endPos": 51
-        },
-        {
-          "entity": "SideProduct",
-          "startPos": 58,
-          "endPos": 76
-        },
-        {
-          "entity": "SideProduct",
-          "startPos": 82,
-          "endPos": 94
-        },
-        {
-          "entity": "SideOrder",
-          "startPos": 53,
-          "endPos": 94
-        },
-        {
           "entity": "Order",
           "startPos": 10,
-          "endPos": 94
+          "endPos": 94,
+          "children": [
+            {
+              "entity": "FullPizzaWithModifiers",
+              "startPos": 10,
+              "endPos": 27,
+              "children": [
+                {
+                  "entity": "Quantity",
+                  "startPos": 10,
+                  "endPos": 10
+                },
+                {
+                  "entity": "PizzaType",
+                  "startPos": 12,
+                  "endPos": 27
+                }
+              ]
+            },
+            {
+              "entity": "FullPizzaWithModifiers",
+              "startPos": 33,
+              "endPos": 51,
+              "children": [
+                {
+                  "entity": "PizzaType",
+                  "startPos": 35,
+                  "endPos": 51
+                }
+              ]
+            },
+            {
+              "entity": "SideOrder",
+              "startPos": 53,
+              "endPos": 94,
+              "children": [
+                {
+                  "entity": "SideProduct",
+                  "startPos": 58,
+                  "endPos": 76
+                },
+                {
+                  "entity": "SideProduct",
+                  "startPos": 82,
+                  "endPos": 94
+                }
+              ]
+            }
+          ]
         }
       ]
     }

@@ -13,7 +13,7 @@
 - my name is {@userName={@firstName=vishwac sena} {@lastName=kannan}}
 - my first name is {@userName={@firstName=vishwac}}
 - last name is {@userName={@lastName=kannan}}
-- my {@userName=name is {@firstName=vishwac} {@middleName=sena} {@lastName=kannan}} and {@userProfile=I'm {@userAge=32 years old}}
+- my {@userName=name is {@firstName=vishwac} {@middleName=sena} {@lastName=kannan}} and {@userProfile=I'm {@userAge={@candidateAge=32} years old}}
 
 
 > # Entity definitions

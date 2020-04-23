@@ -105,9 +105,10 @@ const parseUtterancesToLu = function(utterances, luisJSON){
 }
 
 const getEntitiesByPositionList = function(entitiesList, tokenizedText) {
-    entitiesList.forEach(entity => {
+    (entitiesList || []).forEach(entity => {
         // does this entity have child labels?
         (entity.children || []).forEach(child => {
+            getEntitiesByPositionList(child.children, tokenizedText);
             updateTokenizedTextByEntity(tokenizedText, child);
         })
         updateTokenizedTextByEntity(tokenizedText, entity);

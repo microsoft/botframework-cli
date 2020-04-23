@@ -263,13 +263,13 @@ const transformUtterancesWithNDepthEntities = function (finalLUISJSON) {
                             delete item.role;
                         }
                         if (utt.entities[id].children === undefined) {
-                            utt.entities[id].children = [Object.assign({}, item)]
+                            utt.entities[id].children = [item]
                         } else {
-                            utt.entities[id].children.push(Object.assign({}, item));
+                            utt.entities[id].children.push(item);
                         }
                     })
                     entityIdsToRemove.push(idx);
-                } 
+                }
             })
             if (entityIdsToRemove.length !== 0) {
                 entityIdsToRemove.sort((a, b) => b - a).forEach(id => {

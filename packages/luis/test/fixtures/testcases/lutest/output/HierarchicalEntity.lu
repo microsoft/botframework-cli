@@ -14,7 +14,7 @@
 ## ModifyOrder
 > PASS. Predicted intent: ModifyOrder(0.99580574)
 > PASS. Predicted entities: {@Order={@FullPizzaWithModifiers=a cheese pizza {@Size=medium} {@ToppingModifiers={@Modifier=with some} {@Topping=pineapple} and {@Topping=chicken}}}}
-- {@FullPizzaWithModifiers={@Order=a cheese pizza {@Size=medium} {@ToppingModifiers={@Modifier=with some} {@Topping=pineapple} and {@Topping=chicken}}}}
+- {@Order={@FullPizzaWithModifiers=a cheese pizza {@Size=medium} {@ToppingModifiers={@Modifier=with some} {@Topping=pineapple} and {@Topping=chicken}}}}
 > PASS. Predicted intent: ModifyOrder(0.9951326)
 > PASS. Predicted entities: {@Order=add {@FullPizzaWithModifiers={@Quantity=5} {@Size=party size} {@PizzaType=marinera pizzas}} and i will pick them up at 6pm}
 - {@Order=add {@FullPizzaWithModifiers={@Quantity=5} {@Size=party size} {@PizzaType=marinera pizzas}} and i will pick them up at 6pm}
