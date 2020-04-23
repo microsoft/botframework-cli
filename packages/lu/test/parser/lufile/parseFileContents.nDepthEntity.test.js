@@ -169,18 +169,6 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done())
     });
 
-    it('Invalid child definition throws (missing -)', function (done) {
-        let luFile = `
-            @ml xyz = 
-                - @ ml x1
-                - @ ml abc =
-                    @number p1
-        `;
-        parseFile.parseFile(luFile)
-            .then(res => done(res))
-            .catch(err => done())
-    });
-
     it('Invalid child definition throws (missing type or name)', function (done) {
         let luFile = `
             @ml xyz = 

@@ -982,7 +982,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
  */
 const getEntityType = function(entityName, entities) {
     let entityFound = (entities || []).find(item => item.Name == entityName || item.Name == `${entityName}(interchangeable)`);
-    return entityFound ? entityFound.Type : undefined;
+    if (entityFound && entityFound.Type !== undefined) return entityFound.Type
+    // see if this one of the prebuilt type
+    if (builtInTypes.consolidatedList.includes(entityName)) return EntityTypeEnum.PREBUILT
+    return undefined;
 };
 
 /**
