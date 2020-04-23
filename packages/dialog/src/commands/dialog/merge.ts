@@ -41,7 +41,7 @@ export default class DialogMerge extends Command {
     }
 
     static examples = [
-        '$ bf dialog:merge *.csporj',
+        '$ bf dialog:merge *.csproj',
         '$ bf dialog:merge libraries/*.schema -o app.schema'
     ]   
      
@@ -85,6 +85,10 @@ export default class DialogMerge extends Command {
                 output = 'app.schema'
             }
 
+            if (!branch) {
+                branch = 'master'
+            }
+
             // delete output so we don't attempt to process it
             if (fs.existsSync(output)) {
                 fs.unlinkSync(output)
@@ -119,7 +123,7 @@ export default class DialogMerge extends Command {
                     if (update) {
                         let schema = await fs.readJSON(schemaPath)
                         if (!schema.$id) {
-                            schema.$schema = schema.$schema.replace(/botbuilder-dotnet\/[^/]*\//, `botbuilder-dotnet/${branch}/`)
+                            schema.$schema = schema.$schema.replace(/botframework-sdk\/[^/]*\//, `botframework-sdk/${branch}/`)
                             await fs.writeJSON(schemaPath, schema, this.jsonOptions)
                         }
                     }
