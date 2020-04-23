@@ -1,5 +1,5 @@
 /**
- * @module @microsoft/bf-cli-lg
+ * @module @microsoft/bf-lg-cli
  */
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
@@ -14,7 +14,7 @@ const  generatedFolderPath = './../../fixtures/generated'
 const  verifiedFolderPath = './../../fixtures/verified'
 const  generatedFolder = path.join(__dirname, generatedFolderPath)
 
-describe('mslg:verify lg file', async () => {
+describe('lg:verify lg file', async () => {
   after(async function () {
     await fs.remove(generatedFolder)
   })
@@ -26,7 +26,7 @@ describe('mslg:verify lg file', async () => {
 
   // simple lg
   test
-  .command(['mslg:verify',
+  .command(['lg:verify',
     '--in',
     path.join(__dirname, testcaseFolderPath, '1.lg'),
     '--out',
@@ -40,7 +40,7 @@ describe('mslg:verify lg file', async () => {
 
   // lg that has imports
   test
-  .command(['mslg:verify',
+  .command(['lg:verify',
     '--in',
     path.join(__dirname, testcaseFolderPath, '2.lg'),
     '--out',
@@ -56,7 +56,7 @@ describe('mslg:verify lg file', async () => {
   const errorFileName = '3.lg'
 
   test
-  .command(['mslg:verify',
+  .command(['lg:verify',
     '--in',
     path.join(__dirname, testcaseFolderPath, errorFileName),
     '-r',

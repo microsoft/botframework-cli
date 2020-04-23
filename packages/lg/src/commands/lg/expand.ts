@@ -1,5 +1,5 @@
 /**
- * @module @microsoft/bf-cli-lg
+ * @module @microsoft/bf-lg-cli
  */
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
@@ -15,21 +15,21 @@ import * as fs from 'fs-extra'
 import * as readlineSync from 'readline-sync'
 
 export default class ExpandCommand extends Command {
-  static description = 'Expand one or all templates in a .lg file or an inline expression.'
+  static description = 'Expand one or all templates in .lg file(s). Expand an inline expression.'
 
   private readonly TempTemplateName = '__temp__'
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
-    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lg file(s)'}),
+    recurse: flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
     template: flags.string({description: 'Name of the template to expand. Template names with spaces must be enclosed in quotes.'}),
-    expression: flags.string({description: ' Inline expression provided as a string to evaluate.'}),
-    all: flags.boolean({description: 'Flag option to request that all templates in the .lg file be expanded.'}),
-    interactive: flags.boolean({description: 'Flag option to request that all missing entity value references be obtained through interactive prompts.'}),
-    testInput: flags.string({description: 'full or relative path to a JSON file containing test input for all variable references.'}),
-    help: flags.help({char: 'h', description: 'mslg:expand helper'}),
+    expression: flags.string({description: 'Inline expression provided as a string to evaluate.'}),
+    all: flags.boolean({description: 'When set, all templates in the .lg file be expanded.'}),
+    interactive: flags.boolean({description: 'Interactively prompt for all missing entity value references required for expansion.'}),
+    testInput: flags.string({description: 'Path to a JSON file containing test input for all variable references.'}),
+    help: flags.help({char: 'h', description: 'lg:expand help'}),
   }
 
   async run() {

@@ -1,5 +1,5 @@
 /**
- * @module @microsoft/bf-cli-lg
+ * @module @microsoft/bf-lg-cli
  */
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.

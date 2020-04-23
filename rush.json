@@ -32,7 +32,7 @@
       "projectFolder": "packages/dispatcher"
     },
     {
-      "packageName": "@microsoft/bf-cli-lg",
+      "packageName": "@microsoft/bf-lg-cli",
       "projectFolder": "packages/lg"
     },
     {

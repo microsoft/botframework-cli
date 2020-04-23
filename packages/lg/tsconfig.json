@@ -9,6 +9,6 @@
     "target": "es2017"
   },
   "include": [
-    "src/**/*", "src/commands/mslg/expand/.ts"
+    "src/**/*", "src/commands/lg/expand/.ts"
   ]
 }

@@ -1,5 +1,5 @@
 /**
- * @module @microsoft/bf-cli-lg
+ * @module @microsoft/bf-lg-cli
  */
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
@@ -12,14 +12,14 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 
 export default class VerifyCommand extends Command {
-  static description = 'Verify any provided .lg file and collate them into a single file.'
+  static description = 'Verify .lg file(s) and collate them into a single file.'
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
-    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lg file(s)'}),
+    recurse: flags.boolean({char: 'r', description: 'Considere sub-folders to find .lg file(s)'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
-    help: flags.help({char: 'h', description: 'mslg:parse helper'}),
+    help: flags.help({char: 'h', description: 'lg:verify help'}),
   }
 
   async run() {

@@ -1,5 +1,5 @@
 /**
- * @module @microsoft/bf-cli-lg
+ * @module @microsoft/bf-lg-cli
  */
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
@@ -18,7 +18,7 @@ const  verifiedFolderPath = './../../fixtures/verified'
 const  generatedFolder = path.join(__dirname, generatedFolderPath)
 const translatekey = '11111111111111111111111111111111'
 
-describe('mslg:translate to fr', async () => {
+describe('lg:translate to fr', async () => {
   const response = require('./../../fixtures/testcase/translate-fr-1.json')
   const response2 = require('./../../fixtures/testcase/translate-fr-2.json')
 
@@ -45,7 +45,7 @@ describe('mslg:translate to fr', async () => {
   const frOutputName = '2.fr.lg'
 
   test
-    .command(['mslg:translate',
+    .command(['lg:translate',
       '--translatekey',
       translatekey,
       '--in',
@@ -60,7 +60,7 @@ describe('mslg:translate to fr', async () => {
     })
 })
 
-describe('mslg:translate to zh-cn', async () => {
+describe('lg:translate to zh-cn', async () => {
   const response = require('./../../fixtures/testcase/translate-zh-cn-1.json')
   const response2 = require('./../../fixtures/testcase/translate-zh-cn-2.json')
 
@@ -87,7 +87,7 @@ describe('mslg:translate to zh-cn', async () => {
   const cnOutputName = '2.zh-cn.lg'
 
   test
-  .command(['mslg:translate',
+  .command(['lg:translate',
     '--translatekey',
     translatekey,
     '--in',
@@ -102,7 +102,7 @@ describe('mslg:translate to zh-cn', async () => {
   })
 })
 
-describe('mslg:translate to zh-cn with comments', async () => {
+describe('lg:translate to zh-cn with comments', async () => {
   const response = require('./../../fixtures/testcase/translate-zh-cn-with-comments-1.json')
   const response2 = require('./../../fixtures/testcase/translate-zh-cn-with-comments-2.json')
 
@@ -128,7 +128,7 @@ describe('mslg:translate to zh-cn with comments', async () => {
   const zhcn = 'zh-cn'
   const outputCommentsName = '2.comments.zh-cn.lg'
   test
-  .command(['mslg:translate',
+  .command(['lg:translate',
     '--translatekey',
     translatekey,
     '--in',
@@ -144,7 +144,7 @@ describe('mslg:translate to zh-cn with comments', async () => {
   })
 })
 
-describe('mslg:translate to zh-cn with translate_link_text', async () => {
+describe('lg:translate to zh-cn with translate_link_text', async () => {
   const response = require('./../../fixtures/testcase/translate-zh-cn-with-link-text-1.json')
   const response2 = require('./../../fixtures/testcase/translate-zh-cn-with-link-text-2.json')
 
@@ -170,7 +170,7 @@ describe('mslg:translate to zh-cn with translate_link_text', async () => {
   const zhcn = 'zh-cn'
   const outputLinkName = '2.link.zh-cn.lg'
   test
-  .command(['mslg:translate',
+  .command(['lg:translate',
     '--translatekey',
     translatekey,
     '--in',

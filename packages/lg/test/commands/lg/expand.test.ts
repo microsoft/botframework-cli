@@ -1,5 +1,5 @@
 /**
- * @module @microsoft/bf-cli-lg
+ * @module @microsoft/bf-lg-cli
  */
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
@@ -15,7 +15,7 @@ const  generatedFolderPath = './../../fixtures/generated'
 const  verifiedFolderPath = './../../fixtures/verified'
 const  generatedFolder = path.join(__dirname, generatedFolderPath)
 
-describe('mslg:expand lg template', async () => {
+describe('lg:expand lg template', async () => {
   after(async function () {
     await fs.remove(generatedFolder)
   })
@@ -30,7 +30,7 @@ describe('mslg:expand lg template', async () => {
 
   // test expand all templates
   test
-  .command(['mslg:expand',
+  .command(['lg:expand',
     '--in',
     path.join(__dirname, testcaseFolderPath, inputFileName),
     '--out',
@@ -45,7 +45,7 @@ describe('mslg:expand lg template', async () => {
   // test expand specific templates
   const templateName = 'MultiLineTemplate'
   test
-  .command(['mslg:expand',
+  .command(['lg:expand',
     '--in',
     path.join(__dirname, testcaseFolderPath, inputFileName),
     '--out',
@@ -62,7 +62,7 @@ describe('mslg:expand lg template', async () => {
   // eslint-disable-next-line no-template-curly-in-string
   const inlineString = '${MultiLineTemplate()}'
   test
-  .command(['mslg:expand',
+  .command(['lg:expand',
     '--in',
     path.join(__dirname, testcaseFolderPath, inputFileName),
     '--out',
@@ -78,7 +78,7 @@ describe('mslg:expand lg template', async () => {
   const testInputTemplate = 'TimeOfDayWithCondition'
   // test testInput
   test
-  .command(['mslg:expand',
+  .command(['lg:expand',
     '--in',
     path.join(__dirname, testcaseFolderPath, inputFileName),
     '--out',
