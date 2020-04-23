@@ -103,7 +103,7 @@ export default class DialogMerge extends Command {
 
                 if (!metaSchema && branch) {
                     // Find branch specific schema
-                    let path = `https://raw.githubusercontent.com/Microsoft/botbuilder-dotnet/${branch}/schemas/component.schema`
+                    let path = `https://raw.githubusercontent.com/microsoft/botframework-sdk/${branch}/schemas/component/component.schema`
                     metaSchema = await getJson(path)
                 }
 
