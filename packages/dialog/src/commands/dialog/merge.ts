@@ -21,9 +21,10 @@ export default class DialogMerge extends Command {
     ]
 
     static flags: flags.Input<any> = {
+        debug: flags.boolean({ char: 'd', description: 'Generate debug files.', hidden: true, default: false}),
         help: flags.help({ char: 'h' }),
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
-        verbose: flags.boolean({ description: 'Show verbose logging of files as they are processed.', default: false }),
+        verbose: flags.boolean({ char: 'v', description: 'Show verbose logging of files as they are processed.', default: false }),
     }
 
     static examples = [
@@ -33,7 +34,7 @@ export default class DialogMerge extends Command {
 
     async run() {
         const { argv, flags } = this.parse(DialogMerge)
-        let merger = new SchemaMerger(argv, flags.output, flags.verbose, this.log, this.warn, this.error)
+        let merger = new SchemaMerger(argv, flags.output, flags.verbose, this.log, this.warn, this.error, flags.debug)
         await merger.mergeSchemas()
     }
 }

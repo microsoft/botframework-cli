@@ -26,14 +26,15 @@ export class SchemaMerger {
     private log: any
     private warn: any
     private error: any
+    private debug: boolean | undefined
 
     // State tracking
     private metaSchemaId = ''
-    private definitions = {}
-    private schemaDefinitions = {}
-    private expanded = {} // Expanded versions for analysis
+    private metaSchema: any
+    private definitions: any = {}
+    private expanded: any = {} // Expanded versions for analysis
     private interfaces: string[] = []
-    private implementations = {}
+    private implementations: any = {}
     private rootURI = ''
     private failed = false
     private missingKinds = new Set()
@@ -48,14 +49,16 @@ export class SchemaMerger {
      * @param log Logger for informational messages.
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
+     * @param debug Generate debug output.
      */
-    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any) {
+    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, debug?: boolean) {
         this.patterns = patterns
         this.output = output
         this.verbose = verbose
         this.log = log
         this.warn = warn
         this.error = error
+        this.debug = debug
     }
 
     async mergeSchemas(): Promise<boolean> {
@@ -75,8 +78,6 @@ export class SchemaMerger {
             if (schemaPaths.length === 0) {
                 return false
             } else {
-
-                let metaSchema: any
                 let validator = new Validator()
 
                 this.log('Parsing component .schema files')
@@ -94,15 +95,14 @@ export class SchemaMerger {
                             this.relativeToAbsoluteRefs(schema, schemaPath)
 
                             // Pick up meta-schema from first .dialog file
-                            if (!metaSchema) {
+                            if (!this.metaSchema) {
                                 this.metaSchemaId = schema.$schema
-                                metaSchema = await this.getJSON(schema.$schema)
-                                validator.addSchema(metaSchema, 'componentSchema')
+                                this.metaSchema = await this.getJSON(schema.$schema)
+                                validator.addSchema(this.metaSchema, 'componentSchema')
                                 this.rootURI = ppath.dirname(schema.$schema)
                                 if (this.verbose) {
-                                    this.log(`  Using component.schema ${metaSchema.$id}`)
+                                    this.log(`  Using component.schema ${this.metaSchemaId}`)
                                 }
-                                this.schemaDefinitions = await fs.readJSON(`${this.rootURI}/definitions.schema`)
                             } else if (schema.$schema !== this.metaSchemaId) {
                                 this.error(`${this.currentFile}: error:${this.currentFile}: ${schema.$schema} does not match component.schema ${this.metaSchemaId}`)
                             }
@@ -123,13 +123,22 @@ export class SchemaMerger {
                 }
 
                 this.log('Merging schemas')
+                this.removeSchemas()
                 this.processRoles()
                 this.fixWithinComponentReferences()
                 this.expandKinds()
                 this.expandInterfaces()
                 this.addComponentProperties()
                 this.sortImplementations()
-                // this.addSchemaDefinitions()
+                let oneOf = Object.keys(this.definitions)
+                    .filter(kind => !this.isInterface(kind))
+                    .sort()
+                    .map(kind => {
+                        return {
+                            $ref: '#/definitions/' + kind
+                        }
+                    })
+                this.addSchemaDefinitions()
 
                 let finalDefinitions: any = {}
                 for (let key of Object.keys(this.definitions).sort()) {
@@ -139,15 +148,11 @@ export class SchemaMerger {
                     type: 'object',
                     title: 'Component kinds',
                     description: 'These are all of the kinds that can be created by the loader.',
-                    oneOf: Object.keys(this.definitions)
-                        .filter(kind => !this.isInterface(kind))
-                        .sort()
-                        .map(kind => {
-                            return {
-                                $ref: '#/definitions/' + kind
-                            }
-                        }),
+                    oneOf,
                     definitions: finalDefinitions
+                }
+                if (this.debug) {
+                    await fs.writeJSON(this.output + '.final', finalSchema, this.jsonOptions)
                 }
 
                 // Convert all references to local ones
@@ -157,8 +162,9 @@ export class SchemaMerger {
                 if (!this.failed) {
                     this.log(`Writing ${this.output}`)
                     await fs.writeJSON(this.output, bundle, this.jsonOptions)
-                    // TODO: This is for debugging only
-                    await fs.writeJSON(this.output + '.noref', allof(bundle), this.jsonOptions);
+                    if (this.debug) {
+                        await fs.writeJSON(this.output + '.expanded', allof(bundle), this.jsonOptions);
+                    }
                 } else {
                     this.error(`${this.currentFile}: Could not merge schemas`)
                 }
@@ -187,6 +193,7 @@ export class SchemaMerger {
         })
     }
 
+    // TODO: Remove resolvers
     definitionResolver(): any {
         let reader = (file: parser.FileInfo): string => {
             return `${this.rootURI}/definitions#${file}`
@@ -333,20 +340,12 @@ export class SchemaMerger {
         return result
     }
 
-    /* TODO: Remove this
-    // Expand all definition: into full URI
-    expandDefinitionProtocol() {
-        const scheme = 'definition:'
-        for (let kind in this.definitions) {
-            this.walkJSON(this.definitions[kind], (val: any, _obj, key) => {
-                if (val.$ref && val.$ref.startsWith(scheme)) {
-                    val.$ref = `${this.rootURI}/definitions.schema#/definitions/${val.$ref.substring(scheme.length)}`
-                }
-                return false
-            })
-        }
+    removeSchemas() {
+        this.walkJSON(this.definitions, (val) => {
+            if (val.$schema) delete val.$schema
+            return false
+        })
     }
-    */
 
     // Check $role validity and identify implementations and interfaces
     processRoles(): void {
@@ -443,7 +442,6 @@ export class SchemaMerger {
 
     // Include standard component properties
     addComponentProperties(): void {
-        const topProps = ['title', 'description', '$role', 'allOf']
         for (let kind of Object.keys(this.definitions)) {
             if (!this.isInterface(kind)) {
                 let definition = this.definitions[kind]
@@ -467,26 +465,28 @@ export class SchemaMerger {
                     }
                 ]
 
-                // Define component constraints
-                let componentDef = {}
-                for (let prop of Object.keys(definition)) {
-                    if (!topProps.includes(prop)) {
-                        componentDef[prop] = definition[prop]
-                        delete definition[prop]
+                // Define $kind restriction
+                // NOTE: This must be pushed into the full definition because otherwise 
+                // the const doesn't end up forcing the rest of the schema.
+                let kindDef = { ...this.metaSchema.definitions.kind, const: `${kind}` }
+                let found = false
+                this.walkJSON(definition, (val) => {
+                    if (val.properties) {
+                        val.properties.$kind = kindDef
+                        found = true
+                        return true
                     }
+                    return false
+                })
+                if (!found) {
+                    definition.properties = { $kind: kindDef }
                 }
 
-                // Define $kind restriction
-                let kindDef = { type: 'object', properties: { $kind: { const: `${kind}` } } }
-
-                // TODO: Explicitly import definitions to refer to them...
-                // Add to allOf
+                // Enforce allOF on component schema
                 if (!definition.allOf) {
                     definition.allOf = []
                 }
-                definition.allOf.push(kindDef)
-                definition.allOf.push(componentDef)
-                definition.allOf.push({ $ref: `${this.rootURI}/definitions.schema#/definitions/component` })
+                definition.allOf.push({ $ref: `#/definitions/component` })
             }
         }
     }
@@ -501,7 +501,18 @@ export class SchemaMerger {
     }
 
     addSchemaDefinitions(): void {
-        this.definitions = { ...this.schemaDefinitions, ...this.definitions}
+        const scheme = 'definition:'
+        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
+        this.walkJSON(this.definitions, (val: any) => {
+            if (val.$ref) {
+                if (val.$ref.startsWith(scheme)) {
+                    val.$ref = `#/definitions/${val.$ref.subtring(scheme.length)}`
+                } else if (val.$ref.startsWith(this.metaSchemaId)) {
+                    val.$ref = val.$ref.substring(this.metaSchemaId.length)
+                }
+            }
+            return false
+        })
     }
 
     addTopLevelProperties(bundle: any): any {
