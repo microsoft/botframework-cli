@@ -158,7 +158,7 @@
                 "libraries/**/Microsoft.LuisRecognizer.schema",
                 "libraries/**/Microsoft.IRecognizer.schema",
                 "-o",
-                "sdk.schema",
+                "../botframework-sdk/schemas/component/sdk.schema",
                 "--verbose",
                 "-d"
             ],
