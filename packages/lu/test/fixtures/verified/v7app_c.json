@@ -1,0 +1,176 @@
+{
+  "intents": [
+    {
+      "name": "None"
+    }
+  ],
+  "entities": [
+    {
+      "name": "C1",
+      "roles": []
+    },
+    {
+      "name": "C2",
+      "roles": []
+    },
+    {
+      "name": "C3",
+      "roles": []
+    },
+    {
+      "name": "P1",
+      "roles": [],
+      "children": [
+        {
+          "name": "CC1",
+          "children": [],
+          "features": [
+            {
+              "modelName": "C2",
+              "isRequired": false
+            },
+            {
+              "modelName": "C1",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "CC2",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [
+    {
+      "name": "hellp",
+      "regexPattern": "hellp",
+      "roles": []
+    }
+  ],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "my alias is omr sobeh",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "C1",
+          "startPos": 12,
+          "endPos": 14
+        },
+        {
+          "entity": "P1",
+          "startPos": 12,
+          "endPos": 20,
+          "children": [
+            {
+              "entity": "CC1",
+              "startPos": 12,
+              "endPos": 14
+            },
+            {
+              "entity": "CC2",
+              "startPos": 16,
+              "endPos": 20
+            }
+          ]
+        },
+        {
+          "entity": "C2",
+          "startPos": 16,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "my alias is walid",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "C3",
+          "startPos": 12,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "my name is omar sobeih",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "C1",
+          "startPos": 11,
+          "endPos": 14
+        },
+        {
+          "entity": "P1",
+          "startPos": 11,
+          "endPos": 21,
+          "children": [
+            {
+              "entity": "CC1",
+              "startPos": 11,
+              "endPos": 14
+            },
+            {
+              "entity": "CC2",
+              "startPos": 16,
+              "endPos": 21
+            }
+          ]
+        },
+        {
+          "entity": "C2",
+          "startPos": 16,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "my name is walid",
+      "intent": "None",
+      "entities": [
+        {
+          "entity": "C3",
+          "startPos": 11,
+          "endPos": 15
+        }
+      ]
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [
+    {
+      "name": "patr",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
+  "prebuiltEntities": [
+    {
+      "name": "age",
+      "roles": []
+    }
+  ],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "app-build-v7",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "settings": [
+    {
+      "name": "NormalizePunctuation",
+      "value": true
+    },
+    {
+      "name": "UseAllTrainingDate",
+      "value": true
+    }
+  ],
+  "phraselists": []
+}
