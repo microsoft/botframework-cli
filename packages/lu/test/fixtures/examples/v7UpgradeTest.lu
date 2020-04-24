@@ -1,0 +1,24 @@
+@ ml userProfile = 
+    - @ ml userAge
+        - @ age candidateAge
+    
+@ ml userName
+    - @ personName firstName
+    - @ personName middleName
+    - @ personName lastName
+
+@ prebuilt age
+@ prebuilt personName
+@ personName firstName
+@ personName lastName
+
+# test
+- my initials are {@userName = {@middleName = VSK}}
+- i'm {@userProfile = {@userAge = 32} years old}
+- my name is {@userName = {@firstName = vishwac sena} {@lastName = kannan}}
+- my first name is {@userName = {@firstName = vishwac}}
+- last name is {@userName = {@lastName = kannan}}
+- my {@userName = name is {@firstName = vishwac} {@middleName = sena} {@lastName = kannan}} and {@userProfile = I'm {@userAge = {@candidateAge = 32} years old}} 
+
+> Construct a hierarchy tree of labels
+> prefer local entity names in case of nDepth entity

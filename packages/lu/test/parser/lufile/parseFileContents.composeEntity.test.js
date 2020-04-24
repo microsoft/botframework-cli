@@ -492,20 +492,21 @@ $deviceTemperature:simple`;
       parseFile(luFile)
         .then(res => {
           assert.equal(res.LUISJsonStructure.utterances.length, 1);
-          assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 4);
+          assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
           assert.equal(res.LUISJsonStructure.utterances[0].text, "1. foo bar is bar")
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].entity, "ENT1");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].entity, "PAR");
           assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].startPos, 7);
           assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].endPos, 9);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].entity, "ENT1");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].startPos, 7);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].endPos, 9);
           assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].entity, "PAR");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].startPos, 7);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].endPos, 9);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].entity, "ENT2");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].startPos, 14);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].endPos, 16);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].entity, "PAR");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].startPos, 14);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].endPos, 16);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].startPos, 14);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].endPos, 16);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].entity, "ENT2");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].startPos, 14);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].endPos, 16);
+          
           done()
         })
         .catch(err => done(err))
@@ -523,20 +524,20 @@ $deviceTemperature:simple`;
       parseFile(luFile)
         .then(res => {
           assert.equal(res.LUISJsonStructure.utterances.length, 1);
-          assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 4);
+          assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
           assert.equal(res.LUISJsonStructure.utterances[0].text, "2. foo barbar")
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].entity, "ENT1");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].entity, "PAR");
           assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].startPos, 7);
           assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].endPos, 9);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].entity, "ENT1");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].startPos, 7);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].endPos, 9);
           assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].entity, "PAR");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].startPos, 7);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].endPos, 9);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].entity, "ENT2");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].startPos, 10);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].endPos, 12);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].entity, "PAR");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].startPos, 10);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].endPos, 12);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].startPos, 10);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].endPos, 12);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].entity, "ENT2");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].startPos, 10);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].endPos, 12);
           done()
         })
         .catch(err => done(err))
@@ -554,20 +555,21 @@ $deviceTemperature:simple`;
       parseFile(luFile)
         .then(res => {
           assert.equal(res.LUISJsonStructure.utterances.length, 1);
-          assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 4);
+          assert.equal(res.LUISJsonStructure.utterances[0].entities.length, 2);
           assert.equal(res.LUISJsonStructure.utterances[0].text, "7. foo before bar and after that is some other bar and some other text followed by some more text")
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].entity, "ENT1");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].startPos, 14);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].endPos, 16);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].entity, "PAR");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].startPos, 7);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].endPos, 31);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].entity, "ENT1");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].startPos, 14);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[0].children[0].endPos, 16);
           assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].entity, "PAR");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].startPos, 7);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].endPos, 31);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].entity, "ENT2");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].startPos, 47);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[2].endPos, 49);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].entity, "PAR");
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].startPos, 36);
-          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[3].endPos, 69);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].startPos, 36);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].endPos, 69);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].entity, "ENT2");
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].startPos, 47);
+          assert.deepEqual(res.LUISJsonStructure.utterances[0].entities[1].children[0].endPos, 49);
+
           done()
         })
         .catch(err => done(err))
@@ -581,13 +583,14 @@ $deviceTemperature:simple`;
   @ ml outer 
       - @ ml inner`;
         let parsedLUContent = await luisBuilder.fromLUAsync(new lu(luContent))
-        assert.deepEqual(parsedLUContent.utterances[0].entities.length, 2);
-        assert.deepEqual(parsedLUContent.utterances[0].entities[0].entity, "inner");
-        assert.deepEqual(parsedLUContent.utterances[0].entities[0].startPos, 20);
-        assert.deepEqual(parsedLUContent.utterances[0].entities[0].endPos, 23);
-        assert.deepEqual(parsedLUContent.utterances[0].entities[1].entity, "outer");
-        assert.deepEqual(parsedLUContent.utterances[0].entities[1].startPos, 15);
-        assert.deepEqual(parsedLUContent.utterances[0].entities[1].endPos, 54);
+        assert.deepEqual(parsedLUContent.utterances[0].entities.length, 1);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].entity, "outer");
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].startPos, 15);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].endPos, 54);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].children[0].entity, "inner");
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].children[0].startPos, 20);
+        assert.deepEqual(parsedLUContent.utterances[0].entities[0].children[0].endPos, 23);
+        
     })
 
     it('Nested entity references convert correctly back to LU', async () => {
