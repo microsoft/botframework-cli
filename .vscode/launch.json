@@ -155,8 +155,6 @@
             ],
             "args": [
                 "dialog:merge",
-                "libraries/**/Microsoft.LuisRecognizer.schema",
-                "libraries/**/Microsoft.IRecognizer.schema",
                 "libraries/**/*.schema",
                 "-o",
                 "../botframework-sdk/schemas/component/sdk.schema",

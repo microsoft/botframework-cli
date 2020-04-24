@@ -13,6 +13,7 @@ import * as semver from 'semver'
 import * as xp from 'xml2js'
 let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
+// TODO: Are we using this?
 let fileUtils: any = require('@apidevtools/json-schema-ref-parser/lib/util/url')
 let getUri: any = require('get-uri')
 let util: any = require('util')
@@ -113,12 +114,13 @@ export class SchemaMerger {
                             }
                             let filename = schemaPath.split(/[\\\/]/).pop() as string
                             let kind = filename.substr(0, filename.lastIndexOf('.'))
+                            this.expandDefinition(schema)
                             this.definitions[kind] = schema
-                            let noref = await parser.dereference(clone(schema))
+                            let noref = await parser.dereference(clone(schema), this.definitionResolver())
                             this.expanded[kind] = allof(noref)
                         }
                     } catch (e) {
-                        this.thrownError(e)
+                        this.parsingError(e)
                     }
                 }
 
@@ -156,7 +158,7 @@ export class SchemaMerger {
                 }
 
                 // Convert all references to local ones
-                let bundle = await parser.bundle(finalSchema as any, { resolve: { definition: this.definitionResolver() } })
+                let bundle = await parser.bundle(finalSchema as any, this.definitionResolver())
                 bundle = this.addTopLevelProperties(bundle)
 
                 if (!this.failed) {
@@ -170,7 +172,7 @@ export class SchemaMerger {
                 }
             }
         } catch (e) {
-            this.thrownError(e)
+            this.mergingError(e)
         }
         return true
     }
@@ -193,32 +195,20 @@ export class SchemaMerger {
         })
     }
 
-    // TODO: Remove resolvers
     definitionResolver(): any {
         let reader = (file: parser.FileInfo): string => {
-            return `${this.rootURI}/definitions#${file}`
+            return JSON.stringify(this.metaSchema)
         }
 
         return {
-            canRead: /^definition:/i,
-            read(file: parser.FileInfo, callback: any, $refs: any): any {
-                return reader(file)
-            }
-        }
-    }
-
-    localPathResolver(schemaPath: string): any {
-        return {
-            order: 1,
-            canRead(file: parser.FileInfo) {
-                return fileUtils.isFileSystemPath(file.url)
-            },
-            async read(file: parser.FileInfo) {
-                let path = fileUtils.toFileSystemPath(file.url);
-                if (path.endsWith(schemaPath)) {
-                    return await fs.readFile(path, 'utf8')
+            resolve: {
+                defintion: {
+                    order: 1,
+                    canRead: /^schema:/i,
+                    read(file: parser.FileInfo, callback: any, $refs: any): any {
+                        return reader(file)
+                    }
                 }
-                return `$ref: "${file.url}`
             }
         }
     }
@@ -404,7 +394,7 @@ export class SchemaMerger {
         }
     }
 
-    // Expand $kind into $ref: $/defintions/kind
+    // Expand $kind into $ref: #/defintions/kind
     expandKinds(): void {
         this.walkJSON(this.definitions, val => {
             if (val.$kind) {
@@ -486,7 +476,7 @@ export class SchemaMerger {
                 if (!definition.patternProperties) {
                     definition.patternProperties = {}
                 }
-                definition.patternProperties = { ...definition.patternProperties, ...this.metaSchema.definitions.patternProperties}
+                definition.patternProperties = { ...definition.patternProperties, ...this.metaSchema.definitions.patternProperties }
 
                 // Enforce allOF on component schema
                 if (!definition.allOf) {
@@ -506,16 +496,23 @@ export class SchemaMerger {
         }
     }
 
-    addSchemaDefinitions(): void {
+    // Turn definition: into full URI
+    expandDefinition(definition: any): void {
         const scheme = 'definition:'
+        this.walkJSON(definition, (val: any) => {
+            if (val.$ref && val.$ref.startsWith(scheme)) {
+                val.$ref = `${this.metaSchemaId}#/definitions/${val.$ref.substring(scheme.length)}`
+            }
+            return false
+        })
+    }
+
+    // Turn full definition URI into local reference
+    addSchemaDefinitions(): void {
         this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         this.walkJSON(this.definitions, (val: any) => {
-            if (val.$ref) {
-                if (val.$ref.startsWith(scheme)) {
-                    val.$ref = `#/definitions/${val.$ref.subtring(scheme.length)}`
-                } else if (val.$ref.startsWith(this.metaSchemaId)) {
-                    val.$ref = val.$ref.substring(this.metaSchemaId.length)
-                }
+            if (val.$ref && val.$ref.startsWith(this.metaSchemaId)) {
+                val.$ref = val.$ref.substring(this.metaSchemaId.length)
             }
             return false
         })
@@ -575,7 +572,7 @@ export class SchemaMerger {
         this.failed = true
     }
 
-    thrownError(err: Error): void {
+    parsingError(err: Error): void {
         let posMatch = /position\s+([0-9]+)/.exec(err.message)
         if (posMatch) {
             let file = fs.readFileSync(this.currentFile, 'utf8')
@@ -586,8 +583,8 @@ export class SchemaMerger {
         this.failed = true
     }
 
-    errorMsg(kind: string, message: string): void {
-        this.error(`${this.currentFile}: ${kind}: ${message}`)
+    mergingError(err: Error): void {
+        this.error(err.message)
         this.failed = true
     }
 }
