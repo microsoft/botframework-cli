@@ -87,7 +87,7 @@ export default class DialogMerge extends Command {
                 let definitions: any = {}
                 let validator = new Validator()
 
-                let path = `https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema`
+                let path = 'https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema'
                 metaSchema = await getJson(path)
 
                 if (metaSchema) {
