@@ -1,8 +1,8 @@
 > # QnA pairs
 
-<a id = "1"></a>
-
 > !# @qna.pair.source = xyz
+
+<a id = "1"></a>
 
 ## ? hello
 
@@ -18,9 +18,9 @@ hi there
 - [flight booking](#32) `context-only`
 - [weather](#2) `context-only`
 
-<a id = "2"></a>
-
 > !# @qna.pair.source = custom editorial
+
+<a id = "2"></a>
 
 ## ? weather
 
@@ -28,9 +28,9 @@ hi there
 sure will get weather
 ```
 
-<a id = "3"></a>
-
 > !# @qna.pair.source = custom editorial
+
+<a id = "3"></a>
 
 ## ? q2
 - tell me a joke
@@ -39,9 +39,9 @@ sure will get weather
 ha ha ha
 ```
 
-<a id = "32"></a>
-
 > !# @qna.pair.source = custom editorial
+
+<a id = "32"></a>
 
 ## ? book flight
 
@@ -49,9 +49,9 @@ ha ha ha
 sure. happy to help with that.
 ```
 
-<a id = "4"></a>
-
 > !# @qna.pair.source = custom editorial
+
+<a id = "4"></a>
 
 ## ? batata
 
@@ -59,9 +59,9 @@ sure. happy to help with that.
 tomato
 ```
 
-<a id = "5"></a>
-
 > !# @qna.pair.source = custom editorial
+
+<a id = "5"></a>
 
 ## ? testquestion
 
