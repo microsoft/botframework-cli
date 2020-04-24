@@ -482,6 +482,12 @@ export class SchemaMerger {
                     definition.properties = { $kind: kindDef }
                 }
 
+                // Ensure we always allow some extra properties
+                if (!definition.patternProperties) {
+                    definition.patternProperties = {}
+                }
+                definition.patternProperties = { ...definition.patternProperties, ...this.metaSchema.definitions.patternProperties}
+
                 // Enforce allOF on component schema
                 if (!definition.allOf) {
                     definition.allOf = []
@@ -520,21 +526,13 @@ export class SchemaMerger {
         this.walkJSON(bundle, (val: any, obj?: any, key?: string) => {
             if (val.$schema) delete val.$schema
             if (val.$id) delete val.$id
-            if (val.hasOwnProperty('additionalProperties')) delete val.additionalProperties
-            if (val.patternProperties) delete val.patternProperties
             return false
         })
 
         return {
             $schema: this.metaSchemaId,
             $id: ppath.resolve(this.output),
-            ...bundle,
-            additionalProperties: false,
-            patternProperties: {
-                "^\\$": {
-                    "type": "string"
-                }
-            }
+            ...bundle
         }
     }
 
