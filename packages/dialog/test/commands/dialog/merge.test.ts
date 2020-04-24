@@ -15,7 +15,7 @@ import DialogMerge from '../../../src/commands/dialog/merge';
 import * as dt from '../../../src/library/dialogTracker';
 
 // TODO(chrande): these aren't working because they bring in a bunch of dotnet dependency stuff
-describe('Test schema merge', async () => {
+xdescribe('Test schema merge', async () => {
     let schemas = new dt.SchemaTracker();
     let tracker = new dt.DialogTracker(schemas);
 
