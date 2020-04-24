@@ -239,14 +239,18 @@ export function getConfigObject(configContent: any, intentName: string) {
             for (const triggerKey of Object.keys(triggers)) {
               const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
               for (const destLuFile of destLuFiles) {
-                const destLuFileFullPath = path.resolve(configFileDir, destLuFile)
+                const destLuFileFullPath = destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
                 if (rootLuFileFullPath in finalLuConfigObj) {
-                  const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
-                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                  const finalIntentToDestLuFiles = finalLuConfigObj[rootLuFileFullPath]
+                  if (finalIntentToDestLuFiles[triggerKey]) {
+                    finalIntentToDestLuFiles[triggerKey].push(destLuFileFullPath)
+                  } else {
+                    finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                  }
                 } else {
-                  let finalDestLuFileToIntent = Object.create(null)
-                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
-                  finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
+                  let finalIntentToDestLuFiles = Object.create(null)
+                  finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                  finalLuConfigObj[rootLuFileFullPath] = finalIntentToDestLuFiles
                 }
               }
             }
