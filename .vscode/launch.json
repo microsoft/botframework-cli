@@ -34,7 +34,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                ".*Test schema merge.*"
+                ".*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
