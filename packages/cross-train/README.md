@@ -6,6 +6,9 @@
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-cross-train)](https://npmjs.org/package/@microsoft/bf-cross-train)
 
+# Relevant docs
+- [Cross-train overview][1]
+
 # Commands
 <!-- commands -->
 * [`bf cross-train`](#bf-cross-train)
@@ -27,3 +30,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/cross-train/src/commands/cross-train.ts)_
+
+
+[1]:./docs/overview.md
