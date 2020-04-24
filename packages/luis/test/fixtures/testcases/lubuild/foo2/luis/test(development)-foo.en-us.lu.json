@@ -45,7 +45,7 @@
       "entities": []
     }
   ],
-  "luis_schema_version": "6.0.0",
+  "luis_schema_version": "7.0.0",
   "tokenizerVersion": "1.0.0",
   "settings": []
 }

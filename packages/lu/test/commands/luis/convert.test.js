@@ -135,7 +135,23 @@ describe('luis:convert', () => {
         assert.equal(sanitize(newLU.content), result); 
     });
 })
-describe('luis:convert version 5 upgrade test', () => {
+describe('luis:convert version 7 upgrade test', () => {
+    it('luis:convert successfully converts a lu file with depth information preserved in entity and utterances', async () => {
+        await assertToJSON('./../../fixtures/examples/v7UpgradeTest.lu', './../../fixtures/verified/v7UpgradeTest.json')
+    })
+
+    it('luis:convert successfully converts a JSON file with depth information preserved in entity and utterances', async () => {
+        await assertToLu('./../../fixtures/verified/v7UpgradeTest.json', './../../fixtures/verified/v7UpgradeTest.lu')
+    })
+
+    it('V7 json from LUIS team converts correctly to lu format', async () => {
+        await assertToLu('./../../fixtures/testcases/v7app.json', './../../fixtures/verified/v7app.lu')
+    })
+
+    it('V7 LU (from LUIS team) converts correctly to JSON format', async () => {
+        await assertToJSON('./../../fixtures/verified/v7app.lu', './../../fixtures/verified/v7app_c.json')
+    })
+
     it('luis:convert successfully reconstructs a markdown file from a LUIS input file with v5 constructs', async () => {
         await assertToJSON('./../../fixtures/verified/v5UpgradeTest.lu', './../../fixtures/verified/v5Upgrade.json')
     })

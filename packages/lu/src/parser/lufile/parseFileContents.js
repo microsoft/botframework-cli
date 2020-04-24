@@ -288,7 +288,7 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
             // base type can only be a list or regex or prebuilt.
-            if (![EntityTypeEnum.LIST, EntityTypeEnum.REGEX, EntityTypeEnum.PREBUILT].includes(baseEntityFound.type)) {
+            if (![EntityTypeEnum.LIST, EntityTypeEnum.REGEX, EntityTypeEnum.PREBUILT, EntityTypeEnum.ML].includes(baseEntityFound.type)) {
                 let errorMsg = `Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
                 const error = BuildDiagnostic({
                     message: errorMsg,
@@ -982,7 +982,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
  */
 const getEntityType = function(entityName, entities) {
     let entityFound = (entities || []).find(item => item.Name == entityName || item.Name == `${entityName}(interchangeable)`);
-    return entityFound ? entityFound.Type : undefined;
+    if (entityFound && entityFound.Type !== undefined) return entityFound.Type
+    // see if this one of the prebuilt type
+    if (builtInTypes.consolidatedList.includes(entityName)) return EntityTypeEnum.PREBUILT
+    return undefined;
 };
 
 /**

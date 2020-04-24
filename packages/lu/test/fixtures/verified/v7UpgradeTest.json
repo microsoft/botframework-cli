@@ -1,0 +1,235 @@
+{
+  "intents": [
+    {
+      "name": "test"
+    }
+  ],
+  "entities": [
+    {
+      "name": "userProfile",
+      "roles": [],
+      "children": [
+        {
+          "name": "userAge",
+          "children": [
+            {
+              "name": "candidateAge",
+              "children": [],
+              "features": [
+                {
+                  "modelName": "age",
+                  "isRequired": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "userName",
+      "roles": [],
+      "children": [
+        {
+          "name": "firstName",
+          "children": [],
+          "features": [
+            {
+              "modelName": "personName",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "middleName",
+          "children": [],
+          "features": [
+            {
+              "modelName": "personName",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "lastName",
+          "children": [],
+          "features": [
+            {
+              "modelName": "personName",
+              "isRequired": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "my initials are VSK",
+      "intent": "test",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 16,
+          "endPos": 18,
+          "children": [
+            {
+              "entity": "middleName",
+              "startPos": 16,
+              "endPos": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "i'm 32 years old",
+      "intent": "test",
+      "entities": [
+        {
+          "entity": "userProfile",
+          "startPos": 4,
+          "endPos": 15,
+          "children": [
+            {
+              "entity": "userAge",
+              "startPos": 4,
+              "endPos": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "my name is vishwac sena kannan",
+      "intent": "test",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 11,
+          "endPos": 29,
+          "children": [
+            {
+              "entity": "firstName",
+              "startPos": 11,
+              "endPos": 22
+            },
+            {
+              "entity": "lastName",
+              "startPos": 24,
+              "endPos": 29
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "my first name is vishwac",
+      "intent": "test",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 17,
+          "endPos": 23,
+          "children": [
+            {
+              "entity": "firstName",
+              "startPos": 17,
+              "endPos": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "last name is kannan",
+      "intent": "test",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 13,
+          "endPos": 18,
+          "children": [
+            {
+              "entity": "lastName",
+              "startPos": 13,
+              "endPos": 18
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "my name is vishwac sena kannan and I'm 32 years old",
+      "intent": "test",
+      "entities": [
+        {
+          "entity": "userName",
+          "startPos": 3,
+          "endPos": 29,
+          "children": [
+            {
+              "entity": "firstName",
+              "startPos": 11,
+              "endPos": 17
+            },
+            {
+              "entity": "middleName",
+              "startPos": 19,
+              "endPos": 22
+            },
+            {
+              "entity": "lastName",
+              "startPos": 24,
+              "endPos": 29
+            }
+          ]
+        },
+        {
+          "entity": "userProfile",
+          "startPos": 35,
+          "endPos": 50,
+          "children": [
+            {
+              "entity": "userAge",
+              "startPos": 39,
+              "endPos": 50,
+              "children": [
+                {
+                  "entity": "candidateAge",
+                  "startPos": 39,
+                  "endPos": 40
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [
+    {
+      "name": "age",
+      "roles": []
+    },
+    {
+      "name": "personName",
+      "roles": [
+        "firstName",
+        "lastName"
+      ]
+    }
+  ],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us",
+  "phraselists": []
+}
