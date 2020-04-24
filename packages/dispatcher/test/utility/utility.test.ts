@@ -217,7 +217,7 @@ describe("Test Suite - utility/Utility", () => {
         stringNumberMap.set("a", 1);
         const mapInObject: any = Utility.stringMapToObject(stringNumberMap);
         const mapInJsonString: string =
-            JSON.stringify(mapInObject);
+            Utility.JSONstringify(mapInObject);
         Utility.debuggingLog(
             `mapInJsonString=${mapInJsonString}`);
     });
@@ -228,7 +228,7 @@ describe("Test Suite - utility/Utility", () => {
         stringNumberMap.set("a", 1);
         const mapInObject: any = Utility.stringMapToObject(stringNumberMap);
         const mapInJsonString: string =
-            JSON.stringify(mapInObject);
+            Utility.JSONstringify(mapInObject);
         Utility.debuggingLog(
             `mapInJsonString=${mapInJsonString}`);
         const mapInObjectFromJsonString: Map<string, number> =
@@ -245,7 +245,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapSetInObject: any =
             Utility.stringMapSetToObject(stringNumberMapSet);
         const mapSetInJsonString: string =
-            JSON.stringify(stringMapSetInObject);
+            Utility.JSONstringify(stringMapSetInObject);
         Utility.debuggingLog(
             `mapSetInJsonString=${mapSetInJsonString}`);
     });
@@ -257,7 +257,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapSetInObject: any =
             Utility.stringMapSetToObject(stringNumberMapSet);
         const mapSetInJsonString: string =
-            JSON.stringify(stringMapSetInObject);
+            Utility.JSONstringify(stringMapSetInObject);
         Utility.debuggingLog(
             `mapSetInJsonString=${mapSetInJsonString}`);
         const stringNumberMapSetNew: Map<string, Set<number>> =
@@ -268,7 +268,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapSetNewInObject: any =
             Utility.stringMapSetToObject(stringNumberMapSetNew);
         const mapSetNewInJsonString: string =
-            JSON.stringify(stringMapSetNewInObject);
+            Utility.JSONstringify(stringMapSetNewInObject);
         Utility.debuggingLog(
             `mapSetNewInJsonString=${mapSetNewInJsonString}`);
         assert.ok((stringNumberMapSetNew.get("a") as Set<number>).size === 1,
@@ -286,7 +286,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapArrayInObject: any =
             Utility.stringMapArrayToObject(stringNumberMapArray);
         const mapArrayInJsonString: string =
-            JSON.stringify(stringMapArrayInObject);
+            Utility.JSONstringify(stringMapArrayInObject);
         Utility.debuggingLog(
             `mapArrayInJsonString=${mapArrayInJsonString}`);
     });
@@ -298,7 +298,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapArrayInObject: any =
             Utility.stringMapArrayToObject(stringNumberMapArray);
         const mapArrayInJsonString: string =
-            JSON.stringify(stringMapArrayInObject);
+            Utility.JSONstringify(stringMapArrayInObject);
         Utility.debuggingLog(
             `mapArrayInJsonString=${mapArrayInJsonString}`);
         const stringNumberMapArrayNew: Map<string, number[]> =
@@ -309,7 +309,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapArrayNewInObject: any =
             Utility.stringMapArrayToObject(stringNumberMapArrayNew);
         const mapArrayNewInJsonString: string =
-            JSON.stringify(stringMapArrayNewInObject);
+            Utility.JSONstringify(stringMapArrayNewInObject);
         Utility.debuggingLog(
             `mapArrayNewInJsonString=${mapArrayNewInJsonString}`);
         assert.ok((stringNumberMapArrayNew.get("a") as number[]).length === 1,
@@ -329,7 +329,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapSetInJson: string =
             Utility.stringMapSetToJson(stringNumberMapSet);
         const mapSetInJsonString: string =
-            JSON.stringify(stringMapSetInJson);
+            Utility.JSONstringify(stringMapSetInJson);
         Utility.debuggingLog(
             `mapSetInJsonString=${mapSetInJsonString}`);
     });
@@ -341,7 +341,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapSetInJson: string =
             Utility.stringMapSetToJson(stringNumberMapSet);
         const mapSetInJsonString: string =
-            JSON.stringify(stringMapSetInJson);
+            Utility.JSONstringify(stringMapSetInJson);
         Utility.debuggingLog(
             `mapSetInJsonString=${mapSetInJsonString}`);
         const stringNumberMapSetNew: Map<string, Set<number>> =
@@ -352,7 +352,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapSetNewInJson: string =
             Utility.stringMapSetToJson(stringNumberMapSetNew);
         const mapSetNewInJsonString: string =
-            JSON.stringify(stringMapSetNewInJson);
+            Utility.JSONstringify(stringMapSetNewInJson);
         Utility.debuggingLog(
             `mapSetNewInJsonString=${mapSetNewInJsonString}`);
         assert.ok((stringNumberMapSetNew.get("a") as Set<number>).size === 1,
@@ -370,7 +370,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapArrayInJson: string =
             Utility.stringMapArrayToJson(stringNumberMapArray);
         const mapArrayInJsonString: string =
-            JSON.stringify(stringMapArrayInJson);
+            Utility.JSONstringify(stringMapArrayInJson);
         Utility.debuggingLog(
             `mapArrayInJsonString=${mapArrayInJsonString}`);
     });
@@ -382,7 +382,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapArrayInJson: string =
             Utility.stringMapArrayToJson(stringNumberMapArray);
         const mapArrayInJsonString: string =
-            JSON.stringify(stringMapArrayInJson);
+            Utility.JSONstringify(stringMapArrayInJson);
         Utility.debuggingLog(
             `mapArrayInJsonString=${mapArrayInJsonString}`);
         const stringNumberMapArrayNew: Map<string, number[]> =
@@ -393,7 +393,7 @@ describe("Test Suite - utility/Utility", () => {
         const stringMapArrayNewInJson: string =
             Utility.stringMapArrayToJson(stringNumberMapArrayNew);
         const mapArrayNewInJsonString: string =
-            JSON.stringify(stringMapArrayNewInJson);
+            Utility.JSONstringify(stringMapArrayNewInJson);
         Utility.debuggingLog(
             `mapArrayNewInJsonString=${mapArrayNewInJsonString}`);
         assert.ok((stringNumberMapArrayNew.get("a") as number[]).length === 1,
@@ -643,13 +643,13 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const array: number[] = [1, 2, 3, 4, 5];
         const arrayInJsonString: string =
-            JSON.stringify(array);
+            Utility.JSONstringify(array);
         Utility.debuggingLog(
             `arrayInJsonString=${arrayInJsonString}`);
         const arrayShuffled: number[] =
             Utility.shuffle(array);
         const arrayShuffledInJsonString: string =
-            JSON.stringify(arrayShuffled);
+            Utility.JSONstringify(arrayShuffled);
         Utility.debuggingLog(
             `arrayShuffledInJsonString=${arrayShuffledInJsonString}`);
         assert.ok(array === arrayShuffled,
@@ -660,7 +660,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const arrayOriginal: number[] = [1, 2, 3, 4, 5];
         const arrayOriginalInJsonString: string =
-            JSON.stringify(arrayOriginal);
+            Utility.JSONstringify(arrayOriginal);
         Utility.debuggingLog(
             `arrayOriginalInJsonString=${arrayOriginalInJsonString}`);
         Utility.rngSeedXorshift128plusBigIntWithNumber(3, 4);
@@ -668,7 +668,7 @@ describe("Test Suite - utility/Utility", () => {
             Object.assign([], arrayOriginal);
         Utility.shuffle(arrayShuffled);
         const arrayShuffledInJsonString: string =
-            JSON.stringify(arrayShuffled);
+            Utility.JSONstringify(arrayShuffled);
         Utility.debuggingLog(
             `arrayShuffledInJsonString=${arrayShuffledInJsonString}`);
         Utility.rngSeedXorshift128plusBigIntWithNumber(3, 4);
@@ -676,7 +676,7 @@ describe("Test Suite - utility/Utility", () => {
             Object.assign([], arrayOriginal);
         Utility.shuffle(arrayShuffledNew);
         const arrayShuffledNewInJsonString: string =
-            JSON.stringify(arrayShuffledNew);
+            Utility.JSONstringify(arrayShuffledNew);
         Utility.debuggingLog(
             `arrayShuffledNewInJsonString=${arrayShuffledNewInJsonString}`);
         assert.ok(arrayOriginal.length === arrayShuffled.length,
@@ -694,13 +694,13 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["b", "a", "c", "d"];
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringMapInJsonString=${stringMapInJsonString}`);
     });
@@ -709,7 +709,7 @@ describe("Test Suite - utility/Utility", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["b", "a", "b", "c", "a", "a", "b", "d"];
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         const stringArrayMap: { "stringArray": string[], "stringMap": IDictionaryStringIdGenericValue<number> } =
@@ -719,11 +719,11 @@ describe("Test Suite - utility/Utility", () => {
         const stringMappedMap: IDictionaryStringIdGenericValue<number> =
             stringArrayMap.stringMap;
         const stringMappedArrayInJsonString: string =
-            JSON.stringify(stringMappedArray);
+            Utility.JSONstringify(stringMappedArray);
         Utility.debuggingLog(
             `stringMappedArrayInJsonString=${stringMappedArrayInJsonString}`);
         const stringMappedMapInJsonString: string =
-            JSON.stringify(stringMappedMap);
+            Utility.JSONstringify(stringMappedMap);
         Utility.debuggingLog(
             `stringMappedMapInJsonString=${stringMappedMapInJsonString}`);
     });
@@ -734,7 +734,7 @@ describe("Test Suite - utility/Utility", () => {
             [["b", "a", "b", "c", "a", "a", "b", "d"],
              ["b", "a", "b", "c", "a", "a", "b", "d"]];
         const stringArraysInJsonString: string =
-            JSON.stringify(stringArrays);
+            Utility.JSONstringify(stringArrays);
         Utility.debuggingLog(
             `stringArraysInJsonString=${stringArraysInJsonString}`);
         const stringArrayMap: { "stringArray": string[], "stringMap": IDictionaryStringIdGenericValue<number> } =
@@ -744,11 +744,11 @@ describe("Test Suite - utility/Utility", () => {
         const stringMappedMap: IDictionaryStringIdGenericValue<number> =
             stringArrayMap.stringMap;
         const stringMappedArrayInJsonString: string =
-            JSON.stringify(stringMappedArray);
+            Utility.JSONstringify(stringMappedArray);
         Utility.debuggingLog(
             `stringMappedArrayInJsonString=${stringMappedArrayInJsonString}`);
         const stringMappedMapInJsonString: string =
-            JSON.stringify(stringMappedMap);
+            Utility.JSONstringify(stringMappedMap);
         Utility.debuggingLog(
             `stringMappedMapInJsonString=${stringMappedMapInJsonString}`);
     });
@@ -759,9 +759,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = ["b", "a", "c", "d"];
         const stringArray0InJsonString: string =
-            JSON.stringify(stringArray0);
+            Utility.JSONstringify(stringArray0);
         const stringArray1InJsonString: string =
-            JSON.stringify(stringArray1);
+            Utility.JSONstringify(stringArray1);
         Utility.debuggingLog(
             `stringArray0InJsonString=${stringArray0InJsonString}`);
         Utility.debuggingLog(
@@ -778,9 +778,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray0: string[] = [];
         const stringArray1: string[] = [];
         const stringArray0InJsonString: string =
-            JSON.stringify(stringArray0);
+            Utility.JSONstringify(stringArray0);
         const stringArray1InJsonString: string =
-            JSON.stringify(stringArray1);
+            Utility.JSONstringify(stringArray1);
         Utility.debuggingLog(
             `stringArray0InJsonString=${stringArray0InJsonString}`);
         Utility.debuggingLog(
@@ -797,9 +797,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray0: string[] = [];
         const stringArray1: string[] = ["b", "a", "c", "d"];
         const stringArray0InJsonString: string =
-            JSON.stringify(stringArray0);
+            Utility.JSONstringify(stringArray0);
         const stringArray1InJsonString: string =
-            JSON.stringify(stringArray1);
+            Utility.JSONstringify(stringArray1);
         Utility.debuggingLog(
             `stringArray0InJsonString=${stringArray0InJsonString}`);
         Utility.debuggingLog(
@@ -816,9 +816,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = [];
         const stringArray0InJsonString: string =
-            JSON.stringify(stringArray0);
+            Utility.JSONstringify(stringArray0);
         const stringArray1InJsonString: string =
-            JSON.stringify(stringArray1);
+            Utility.JSONstringify(stringArray1);
         Utility.debuggingLog(
             `stringArray0InJsonString=${stringArray0InJsonString}`);
         Utility.debuggingLog(
@@ -835,9 +835,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray0: string[] = [];
         const stringArray1: string[] = ["b", "f", "c", "d"];
         const stringArray0InJsonString: string =
-            JSON.stringify(stringArray0);
+            Utility.JSONstringify(stringArray0);
         const stringArray1InJsonString: string =
-            JSON.stringify(stringArray1);
+            Utility.JSONstringify(stringArray1);
         Utility.debuggingLog(
             `stringArray0InJsonString=${stringArray0InJsonString}`);
         Utility.debuggingLog(
@@ -851,9 +851,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = [];
         const stringArray0InJsonString: string =
-            JSON.stringify(stringArray0);
+            Utility.JSONstringify(stringArray0);
         const stringArray1InJsonString: string =
-            JSON.stringify(stringArray1);
+            Utility.JSONstringify(stringArray1);
         Utility.debuggingLog(
             `stringArray0InJsonString=${stringArray0InJsonString}`);
         Utility.debuggingLog(
@@ -867,9 +867,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = ["b", "f", "c", "d"];
         const stringArray0InJsonString: string =
-            JSON.stringify(stringArray0);
+            Utility.JSONstringify(stringArray0);
         const stringArray1InJsonString: string =
-            JSON.stringify(stringArray1);
+            Utility.JSONstringify(stringArray1);
         Utility.debuggingLog(
             `stringArray0InJsonString=${stringArray0InJsonString}`);
         Utility.debuggingLog(
@@ -1007,9 +1007,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap0InJsonString: string =
-            JSON.stringify(stringMap0);
+            Utility.JSONstringify(stringMap0);
         const stringMap1InJsonString: string =
-            JSON.stringify(stringMap1);
+            Utility.JSONstringify(stringMap1);
         Utility.debuggingLog(
             `stringMap0InJsonString=${stringMap0InJsonString}`);
         Utility.debuggingLog(
@@ -1026,9 +1026,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringMap0: IDictionaryStringIdGenericValue<number> = {};
         const stringMap1: IDictionaryStringIdGenericValue<number> = {};
         const stringMap0InJsonString: string =
-            JSON.stringify(stringMap0);
+            Utility.JSONstringify(stringMap0);
         const stringMap1InJsonString: string =
-            JSON.stringify(stringMap1);
+            Utility.JSONstringify(stringMap1);
         Utility.debuggingLog(
             `stringMap0InJsonString=${stringMap0InJsonString}`);
         Utility.debuggingLog(
@@ -1045,9 +1045,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringMap0: IDictionaryStringIdGenericValue<number> = {};
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap0InJsonString: string =
-            JSON.stringify(stringMap0);
+            Utility.JSONstringify(stringMap0);
         const stringMap1InJsonString: string =
-            JSON.stringify(stringMap1);
+            Utility.JSONstringify(stringMap1);
         Utility.debuggingLog(
             `stringMap0InJsonString=${stringMap0InJsonString}`);
         Utility.debuggingLog(
@@ -1064,9 +1064,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = {};
         const stringMap0InJsonString: string =
-            JSON.stringify(stringMap0);
+            Utility.JSONstringify(stringMap0);
         const stringMap1InJsonString: string =
-            JSON.stringify(stringMap1);
+            Utility.JSONstringify(stringMap1);
         Utility.debuggingLog(
             `stringMap0InJsonString=${stringMap0InJsonString}`);
         Utility.debuggingLog(
@@ -1083,9 +1083,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringMap0: IDictionaryStringIdGenericValue<number> = {};
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap0InJsonString: string =
-            JSON.stringify(stringMap0);
+            Utility.JSONstringify(stringMap0);
         const stringMap1InJsonString: string =
-            JSON.stringify(stringMap1);
+            Utility.JSONstringify(stringMap1);
         Utility.debuggingLog(
             `stringMap0InJsonString=${stringMap0InJsonString}`);
         Utility.debuggingLog(
@@ -1099,9 +1099,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = {};
         const stringMap0InJsonString: string =
-            JSON.stringify(stringMap0);
+            Utility.JSONstringify(stringMap0);
         const stringMap1InJsonString: string =
-            JSON.stringify(stringMap1);
+            Utility.JSONstringify(stringMap1);
         Utility.debuggingLog(
             `stringMap0InJsonString=${stringMap0InJsonString}`);
         Utility.debuggingLog(
@@ -1115,9 +1115,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 2, b: 2, c: 3 };
         const stringMap0InJsonString: string =
-            JSON.stringify(stringMap0);
+            Utility.JSONstringify(stringMap0);
         const stringMap1InJsonString: string =
-            JSON.stringify(stringMap1);
+            Utility.JSONstringify(stringMap1);
         Utility.debuggingLog(
             `stringMap0InJsonString=${stringMap0InJsonString}`);
         Utility.debuggingLog(
@@ -1132,9 +1132,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1151,9 +1151,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = [];
         const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1170,9 +1170,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {};
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1189,9 +1189,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1208,9 +1208,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b", "d"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1227,9 +1227,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: -1, c: 2 };
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1246,9 +1246,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = [];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1265,9 +1265,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {};
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1284,9 +1284,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1303,9 +1303,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b", "d"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1322,9 +1322,9 @@ describe("Test Suite - utility/Utility", () => {
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: -1, c: 2 };
         const stringArrayInJsonString: string =
-            JSON.stringify(stringArray);
+            Utility.JSONstringify(stringArray);
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `stringArrayInJsonString=${stringArrayInJsonString}`);
         Utility.debuggingLog(
@@ -1341,7 +1341,7 @@ describe("Test Suite - utility/Utility", () => {
         const keyId: number = 1;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `keyId=${keyId}`);
         Utility.debuggingLog(
@@ -1358,7 +1358,7 @@ describe("Test Suite - utility/Utility", () => {
         const keyId: number = -1;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `keyId=${keyId}`);
         Utility.debuggingLog(
@@ -1375,7 +1375,7 @@ describe("Test Suite - utility/Utility", () => {
         const keyId: number = 3;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `keyId=${keyId}`);
         Utility.debuggingLog(
@@ -1392,7 +1392,7 @@ describe("Test Suite - utility/Utility", () => {
         const keyId: number = -1;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `keyId=${keyId}`);
         Utility.debuggingLog(
@@ -1408,7 +1408,7 @@ describe("Test Suite - utility/Utility", () => {
         const keyId: number = 3;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `keyId=${keyId}`);
         Utility.debuggingLog(
@@ -1424,7 +1424,7 @@ describe("Test Suite - utility/Utility", () => {
         const key: string = "b";
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `key=${key}`);
         Utility.debuggingLog(
@@ -1441,7 +1441,7 @@ describe("Test Suite - utility/Utility", () => {
         const key: string = "d";
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `key=${key}`);
         Utility.debuggingLog(
@@ -1458,7 +1458,7 @@ describe("Test Suite - utility/Utility", () => {
         const key: string = "d";
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
         const stringMapInJsonString: string =
-            JSON.stringify(stringMap);
+            Utility.JSONstringify(stringMap);
         Utility.debuggingLog(
             `key=${key}`);
         Utility.debuggingLog(
@@ -1477,16 +1477,18 @@ describe("Test Suite - utility/Utility", () => {
         const filename: string = "resources/data/Columnar/Email.tsv";
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
+        const weightColumnIndex: number = 1;
         const lineIndexToStart: number = 1;
         const columnDelimiter: string = "\t";
         const rowDelimiter: string = "\n";
         const encoding: string = "utf8";
         const lineIndexToEnd: number = -1;
-        const result: { "intents": string[], "utterances": string[] } =
+        const result: { "intents": string[], "texts": string[], "weights": number[] } =
             Utility.loadLabelTextColumnarFile(
                 filename,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 lineIndexToStart,
                 columnDelimiter,
                 rowDelimiter,
@@ -1494,12 +1496,12 @@ describe("Test Suite - utility/Utility", () => {
                 lineIndexToEnd);
         const intents: string[] =
             result.intents;
-        const utterances: string[] =
-            result.utterances;
+        const texts: string[] =
+            result.texts;
         assert.ok(intents.length === 601,
             `intents.length=${intents.length}`);
-        assert.ok(utterances.length === 601,
-            `utterances.length=${utterances.length}`);
+        assert.ok(texts.length === 601,
+            `utterances.length=${texts.length}`);
     });
     it("Test.1001 loadLabelTextColumnarContent()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -1511,27 +1513,33 @@ describe("Test Suite - utility/Utility", () => {
             Utility.loadFile(filename);
         const labelColumnIndex: number = 0;
         const textColumnIndex: number = 2;
+        const weightColumnIndex: number = 1;
         const lineIndexToStart: number = 1;
         const columnDelimiter: string = "\t";
         const rowDelimiter: string = "\n";
         const lineIndexToEnd: number = -1;
-        const result: { "intents": string[], "utterances": string[] } =
+        const result: { "intents": string[], "texts": string[], "weights": number[] } =
             Utility.loadLabelTextColumnarContent(
                 fileContent,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 lineIndexToStart,
                 columnDelimiter,
                 rowDelimiter,
                 lineIndexToEnd);
         const intents: string[] =
             result.intents;
-        const utterances: string[] =
-            result.utterances;
+        const texts: string[] =
+            result.texts;
+        const weights: number[] =
+            result.weights;
         assert.ok(intents.length === 601,
             `intents.length=${intents.length}`);
-        assert.ok(utterances.length === 601,
-            `utterances.length=${utterances.length}`);
+        assert.ok(texts.length === 601,
+            `texts.length=${texts.length}`);
+        assert.ok(weights.length === 601,
+            `weights.length=${weights.length}`);
     });
 
     it("Test.1100 loadEntityAnnotatedCorpusFile()", function() {

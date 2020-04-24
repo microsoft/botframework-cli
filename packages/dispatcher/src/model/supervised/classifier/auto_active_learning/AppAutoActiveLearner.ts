@@ -45,6 +45,7 @@ export class AppAutoActiveLearner {
      * @param data - a Data object whose label and text connect are used as input.
      * @param labelColumnIndex - label/intent column index.
      * @param textColumnIndex - text/utterace column index.
+     * @param weightColumnIndex - weight column index.
      * @param linesToSkip - number of header lines skipped before processing each line as an instance record.
      * @param doBootstrapResampling - boolean flag to activate bootstrap resampling (BRS) logic or not.
      * @param brsDistribution - explicit distribution to control bootstrap resampling process
@@ -65,6 +66,7 @@ export class AppAutoActiveLearner {
         data: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         doBootstrapResampling: boolean =
             AppAutoActiveLearner.defaultDoBootstrapResampling,
@@ -126,6 +128,7 @@ export class AppAutoActiveLearner {
                     data,
                     labelColumnIndex,
                     textColumnIndex,
+                    weightColumnIndex,
                     linesToSkip,
                     samplingIndexArray,
                     false);
@@ -247,6 +250,7 @@ export class AppAutoActiveLearner {
             data,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip,
             new Set<number>(aalSampledInstanceIndexArray),
             false);
@@ -349,6 +353,7 @@ export class AppAutoActiveLearner {
                     luData,
                     -1, // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
                     -1, // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
+                    -1, // ---- NOTE-NO-NEED-FOR-LuData ---- weightColumnIndex,
                     -1, // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
                     samplingIndexArray,
                     false);
@@ -488,6 +493,7 @@ export class AppAutoActiveLearner {
      * @param columnarContent - content of a TSV columnar file in string form as input.
      * @param labelColumnIndex - label/intent column index.
      * @param textColumnIndex - text/utterace column index.
+     * @param weightColumnIndex - weight column index.
      * @param linesToSkip - number of header lines skipped before processing each line as an instance record.
      * @param doBootstrapResampling - boolean flag to activate bootstrap resampling (BRS) logic or not.
      * @param brsDistribution - explicit distribution to control bootstrap resampling process
@@ -508,6 +514,7 @@ export class AppAutoActiveLearner {
         columnarContent: string,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         linesToSkip: number,
         doBootstrapResampling: boolean =
             AppAutoActiveLearner.defaultDoBootstrapResampling,
@@ -549,6 +556,7 @@ export class AppAutoActiveLearner {
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 linesToSkip,
                 true);
         // -------------------------------------------------------------------
@@ -578,6 +586,7 @@ export class AppAutoActiveLearner {
                     columnarData,
                     labelColumnIndex,
                     textColumnIndex,
+                    weightColumnIndex,
                     linesToSkip,
                     samplingIndexArray,
                     false);
@@ -700,6 +709,7 @@ export class AppAutoActiveLearner {
                 columnarData,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 linesToSkip,
                 new Set<number>(aalSampledInstanceIndexArray),
                 false);
@@ -918,8 +928,16 @@ export class AppAutoActiveLearner {
         parser.addArgument(
             ["-ti", "--textColumnIndex"],
             {
-                defaultValue: 0,
+                defaultValue: 1,
                 help: "text/utterance column index",
+                required: false,
+            },
+        );
+        parser.addArgument(
+            ["-wi", "--weightColumnIndex"],
+            {
+                defaultValue: -1,
+                help: "weight column index",
                 required: false,
             },
         );
@@ -935,9 +953,9 @@ export class AppAutoActiveLearner {
         const args: any = parsedKnownArgs[0];
         const unknownArgs: any = parsedKnownArgs[1];
         Utility.debuggingLog(
-            `args=${JSON.stringify(args)}`);
+            `args=${Utility.JSONstringify(args)}`);
         Utility.debuggingLog(
-            `unknownArgs=${JSON.stringify(unknownArgs)}`);
+            `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
         const debugFlag: boolean = Utility.toBoolean(args.debug);
         Utility.toPrintDebuggingLogToConsole = debugFlag;
         // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -1025,11 +1043,14 @@ export class AppAutoActiveLearner {
         // -------------------------------------------------------------------
         const labelColumnIndex: number = +args.labelColumnIndex;
         const textColumnIndex: number = +args.textColumnIndex;
+        const weightColumnIndex: number = +args.weightColumnIndex;
         const linesToSkip: number = +args.linesToSkip;
         Utility.debuggingLog(
             `labelColumnIndex=${labelColumnIndex}`);
         Utility.debuggingLog(
             `textColumnIndex=${textColumnIndex}`);
+        Utility.debuggingLog(
+            `weightColumnIndex=${weightColumnIndex}`);
         Utility.debuggingLog(
             `linesToSkip=${linesToSkip}`);
         // -------------------------------------------------------------------
@@ -1049,20 +1070,25 @@ export class AppAutoActiveLearner {
             `bootstrapResamplingDistributionFileLinesToSkip=` +
             `${bootstrapResamplingDistributionFileLinesToSkip}`);
         // -------------------------------------------------------------------
-        let intentsUtterances: {
+        let intentsUtterancesWeights: {
             "intents": string[],
-            "utterances": string[] } = {
+            "utterances": string[],
+            "weights": number[] } = {
                 intents: [],
-                utterances: [] };
+                utterances: [],
+                weights: [] };
         let intentLabelIndexArray: number[] = [];
         let utteranceFeatureIndexArrays: number[][] = [];
         const data: Data = await DataUtility.LoadData(
             filename,
+            null,
+            true,
             filetype,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip);
-        intentsUtterances = data.getIntentsUtterances();
+        intentsUtterancesWeights = data.getIntentsUtterancesWeights();
         intentLabelIndexArray = data.getIntentLabelIndexArray();
         utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
         // -------------------------------------------------------------------
@@ -1071,6 +1097,8 @@ export class AppAutoActiveLearner {
             if (Utility.exists(bootstrapResamplingDistributionFilename)) {
                 const dataBootstrapResampling: Data = await DataUtility.LoadData(
                     bootstrapResamplingDistributionFilename,
+                    null,
+                    true,
                     filetype,
                     bootstrapResamplingDistributionFileLabelColumnIndex,
                     bootstrapResamplingDistributionFileTextColumnIndex,
@@ -1092,6 +1120,7 @@ export class AppAutoActiveLearner {
             data,
             labelColumnIndex,
             textColumnIndex,
+            weightColumnIndex,
             linesToSkip,
             doBootstrapResampling,
             bootstrapResamplingDistribution,

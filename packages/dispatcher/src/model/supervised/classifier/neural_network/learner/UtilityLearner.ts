@@ -19,37 +19,41 @@ export class LearnerUtility {
         testDatasetFilename: string,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         lineIndexToStart: number) {
         // -------------------------------------------------------------------
         const labels: string[] =
             featurizer.getLabels();
         // -------------------------------------------------------------------
-        const intentsUtterancesDev: { "intents": string[], "utterances": string[] } =
+        const intentsUtterancesWeightsDev: { "intents": string[], "texts": string[], "weights": number[] } =
             LearnerUtility.exampleFunctionLoadTestDataset(
                 testDatasetFilename,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 lineIndexToStart);
         const intents: string[] =
-            intentsUtterancesDev.intents;
-        const utterances: string[] =
-            intentsUtterancesDev.utterances;
+            intentsUtterancesWeightsDev.intents;
+        const texts: string[] =
+            intentsUtterancesWeightsDev.texts;
+        // const weights: string[] =
+        //     intentsUtterancesWeightsDev.weights;
         const numberIntentUtterancesDev: number =
             intents.length;
         let countPredictionsCorrect = 0;
         for (let i: number = 0; i < numberIntentUtterancesDev; i++) {
             const intent: string =
                 intents[i];
-            const utterance: string =
-                utterances[i];
-            const utteranceFeatureIndexArray: string[] =
+            const text: string =
+                texts[i];
+            const textFeatureIndexArray: string[] =
                 new Array<string>(1);
-            utteranceFeatureIndexArray[0] = utterance;
-            const utteranceFeatures: number[][] =
+            textFeatureIndexArray[0] = text;
+            const textFeatures: number[][] =
                 featurizer.createFeatureSparseIndexArrays(
-                    utteranceFeatureIndexArray);
+                    textFeatureIndexArray);
             const predictions: number[][] =
-                model.predict(utteranceFeatures);
+                model.predict(textFeatures);
             const predictionsDataArray: number[][] =
                 predictions;
             const predictionLabelIndexMax: { "indexMax": number, "max": number } =
@@ -84,37 +88,41 @@ export class LearnerUtility {
         testDatasetFilename: string,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         lineIndexToStart: number) {
         // -------------------------------------------------------------------
         const labels: string[] =
             featurizer.getLabels();
         // -------------------------------------------------------------------
-        const intentsUtterancesDev: { "intents": string[], "utterances": string[] } =
+        const intentsUtterancesWeightsDev: { "intents": string[], "texts": string[], "weights": number[] } =
             LearnerUtility.exampleFunctionLoadTestDataset(
                 testDatasetFilename,
                 labelColumnIndex,
                 textColumnIndex,
+                weightColumnIndex,
                 lineIndexToStart);
         const intents: string[] =
-            intentsUtterancesDev.intents;
-        const utterances: string[] =
-            intentsUtterancesDev.utterances;
+            intentsUtterancesWeightsDev.intents;
+        const texts: string[] =
+            intentsUtterancesWeightsDev.texts;
+        const weights: number[] =
+            intentsUtterancesWeightsDev.weights;
         const numberIntentUtterancesDev: number =
             intents.length;
         let countPredictionsCorrect = 0;
         for (let i: number = 0; i < numberIntentUtterancesDev; i++) {
             const intent: string =
                 intents[i];
-            const utterance: string =
-                utterances[i];
-            const utteranceFeatureIndexArray: string[] =
+            const text: string =
+                texts[i];
+            const textFeatureIndexArray: string[] =
                 new Array<string>(1);
-            utteranceFeatureIndexArray[0] = utterance;
-            const utteranceFeatures: number[][] =
+            textFeatureIndexArray[0] = text;
+            const textFeatures: number[][] =
                 featurizer.createFeatureHashingSparseIndexArrays(
-                    utteranceFeatureIndexArray);
+                    textFeatureIndexArray);
             const predictions: number[][] =
-                model.predict(utteranceFeatures);
+                model.predict(textFeatures);
             const predictionsDataArray: number[][] =
                 predictions;
             const predictionLabelIndexMax: { "indexMax": number, "max": number } =
@@ -148,6 +156,7 @@ export class LearnerUtility {
         filename: string,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         lineIndexToStart: number,
         subwordNgramBegin: number = 3,
         subwordNgramEnd: number = 4,
@@ -159,11 +168,12 @@ export class LearnerUtility {
             Utility.debuggingThrow(
                 `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
         }
-        const intentsUtterances: { "intents": string[], "utterances": string[] } =
-        Utility.loadLabelTextColumnarFile(
+        const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
+        Utility.loadLabelUtteranceColumnarFile(
             filename, // ---- filename: string,
             labelColumnIndex, // ---- labelColumnIndex: number = 0,
             textColumnIndex,  // ---- textColumnIndex: number = 1,
+            weightColumnIndex, // ---- weightColumnIndex: number = -1,
             lineIndexToStart, // ---- lineIndexToStart: number = 0,
             "\t",     // ---- columnDelimiter: string = "\t",
             "\n",     // ---- rowDelimiter: string = "\n",
@@ -178,7 +188,7 @@ export class LearnerUtility {
             toRemoveEmptyElements,
             splitDelimiter,
             numberHashingFeaturesSetting);
-        featurizer.resetLabelFeatureMaps(intentsUtterances);
+        featurizer.resetLabelFeatureMaps(intentsUtterancesWeights);
         return featurizer;
     }
 
@@ -186,23 +196,25 @@ export class LearnerUtility {
         filename: string,
         labelColumnIndex: number,
         textColumnIndex: number,
+        weightColumnIndex: number,
         lineIndexToStart: number):
-        { "intents": string[], "utterances": string[] } {
+        { "intents": string[], "texts": string[], "weights": number[] } {
         if (!Utility.exists(filename)) {
             Utility.debuggingThrow(
                 `The input dataset file ${filename} does not exist! process.cwd()=${process.cwd()}`);
         }
-        const intentsUtterances: { "intents": string[], "utterances": string[] } =
+        const intentsUtterancesWeights: { "intents": string[], "texts": string[], "weights": number[] } =
         Utility.loadLabelTextColumnarFile(
             filename, // ---- filename: string,
             labelColumnIndex, // ---- labelColumnIndex: number = 0,
             textColumnIndex,  // ---- textColumnIndex: number = 1,
+            weightColumnIndex, // ---- weightColumnIndex: number = -1,
             lineIndexToStart, // ---- lineIndexToStart: number = 0,
             "\t",     // ---- columnDelimiter: string = "\t",
             "\n",     // ---- rowDelimiter: string = "\n",
             "utf8",   // ---- encoding: string = "utf8",
             -1,       // ---- lineIndexToEnd: number = -1
         );
-        return intentsUtterances;
+        return intentsUtterancesWeights;
     }
 }

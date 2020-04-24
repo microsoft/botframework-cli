@@ -23,9 +23,11 @@
 - can i get {@Order={@FullPizzaWithModifiers={@Quantity=3} {@PizzaType=pepperoni pizzas}} and {@FullPizzaWithModifiers=a {@PizzaType=four cheese pizza}} {@SideOrder=with {@SideProduct=a large house salad} and {@SideProduct=a large fries}}}
 
 
+@ intent ModifyOrder usesFeature SideOrderDescriptor
+
 > # Entity definitions
 
-@ ml Order
+@ ml Order usesFeature SideOrderDescriptor
     - @ ml FullPizzaWithModifiers
         - @ ml PizzaType
         - @ SizeList Size

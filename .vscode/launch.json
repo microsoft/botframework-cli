@@ -34,12 +34,13 @@
                 "999999",
                 "--colors",
                 "-g",
-                ".*Test schema merge.*"
+                ".*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./package/dialog/lib/**"
-            ]
+            ],
         },
         {
             "type": "node",
@@ -56,6 +57,7 @@
                 ".*dialog:verify.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./package/dialog/lib/**"
             ]
@@ -75,8 +77,50 @@
                 ".*dialog:generate.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./package/dialog/lib/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LUIS Tests",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/luis/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/luis",
+            "args": [
+                "test/",
+                "--timeout",
+                "999999",
+                "--colors",
+                "-g",
+                ".*"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "outFiles": [
+                "./lib/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LU Tests",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/luis/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/lu",
+            "args": [
+                "test/",
+                "--timeout",
+                "999999",
+                "--colors",
+                "-g",
+                ".*"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/lu/lib/**"
             ]
         },
         {
@@ -94,6 +138,7 @@
                 ".*luis:build.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/lu/lib/**"
             ]
@@ -104,6 +149,7 @@
             "name": "BotBuilder schema",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
             "outFiles": [
                 "./packages/dialog/lib/**"
             ],
@@ -123,8 +169,10 @@
             "request": "launch",
             "name": "LUIS Build Sandwich",
             "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/lu/bin/run",
+            "program": "${workspaceFolder}/packages/luis/bin/run",
+            "outputCapture": "std",
             "outFiles": [
+                "./packages/luis/lib/**",
                 "./packages/lu/lib/**"
             ],
             "args": [
@@ -137,7 +185,9 @@
                 "sandwich",
                 "--dialog",
                 "--suffix",
-                "${env:USERNAME}"
+                "${env:USERNAME}",
+                "--out",
+                "."
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${env:TEMP}/sandwich.out/luis"
@@ -148,8 +198,10 @@
             "name": "LUIS Build DynamicLists",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/lu/bin/run",
+            "outputCapture": "std",
             "outFiles": [
-                "./packages/lu/lib/**"
+                "./packages/lu/lib/**",
+                "./pacakges/luis/lib/**"
             ],
             "args": [
                 "luis:build",
@@ -163,44 +215,6 @@
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet/tests/Microsoft.Bot.Builder.Dialogs.Adaptive.Tests/tests/LUISRecognizerTests"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Generate Sandwich",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/sandwich.schema",
-                "-o",
-                "${env:TEMP}/sandwich.out",
-                "--force",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Generate Unit Test",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:generate",
-                "${workspaceFolder}/packages/dialog/test/commands/dialog/forms/unittests.schema",
-                "-o",
-                "${env:TEMP}/unittests.out",
-                "--force",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

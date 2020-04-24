@@ -33,7 +33,7 @@ export class Recognizer {
 
   constructor(private readonly luFile: string, targetFileName: string) {
     this.appId = ''
-    this.applicationId = `=settings.luis.${targetFileName.split('.').join('_')}`
+    this.applicationId = `=settings.luis.${targetFileName.split('.').join('_').replace(/-/g, '_')}`
     this.endpoint = '=settings.luis.endpoint'
     this.endpointKey = '=settings.luis.endpointKey'
     this.versionId = '0.1'
@@ -41,7 +41,7 @@ export class Recognizer {
 
   save(): string {
     let output = {
-      $type: 'Microsoft.LuisRecognizer',
+      $kind: 'Microsoft.LuisRecognizer',
       applicationId: this.applicationId,
       endpoint: this.endpoint,
       endpointKey: this.endpointKey

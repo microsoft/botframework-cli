@@ -26,7 +26,10 @@ const luisToLuContent = function(luisJSON){
     fileContent += handlePhraseLists(luisJSON.model_features);
     fileContent += handlePhraseLists(luisJSON.phraselists);
     fileContent += parseToLuClosedLists(luisJSON)
-    fileContent += parseRegExEntitiesToLu(luisJSON)
+    fileContent += parseRegExEntitiesToLu(luisJSON.regex_entities)
+    // handle regexEntities in json returned from luis export api
+    // similar with regex_entities
+    fileContent += parseRegExEntitiesToLu(luisJSON.regexEntities)
     fileContent += parseCompositesToLu(luisJSON)
     fileContent += parsePatternAnyEntitiesToLu(luisJSON)
     return fileContent
@@ -238,13 +241,13 @@ const parseToLuClosedLists = function(luisJson){
     return fileContent
 }
 
-const parseRegExEntitiesToLu = function(luisJson){
+const parseRegExEntitiesToLu = function(regex_entities){
     let fileContent = ''
-    if(!luisJson.regex_entities) {
+    if(!regex_entities) {
         return fileContent
     }
     fileContent += '> # RegEx entities' + NEWLINE + NEWLINE; 
-    luisJson.regex_entities.forEach(function(regExEntity) {
+    regex_entities.forEach(function(regExEntity) {
         fileContent += `@ regex `;
         fileContent += regExEntity.name.includes(' ') ? `"${regExEntity.name}"` : regExEntity.name;
         fileContent += addRolesAndFeatures(regExEntity);
@@ -281,10 +284,10 @@ const parsePatternAnyEntitiesToLu = function(luisJson){
     if(!luisJson.patternAnyEntities || luisJson.patternAnyEntities.length <= 0) {
         return fileContent;
     }
+    fileContent += '> # Pattern.Any entities' + NEWLINE + NEWLINE;
     luisJson.patternAnyEntities.forEach(patternAnyEntity => {
         // Add inherits information if any
         if (patternAnyEntity.inherits !== undefined) {
-            fileContent += '> # Pattern.Any entities' + NEWLINE + NEWLINE;
             // > !# @intent.inherits = {name = Web.WebSearch; domain_name = Web; model_name = WebSearch}
             fileContent += '> !# @patternAnyEntity.inherits = name : ' + patternAnyEntity.name;
             if (patternAnyEntity.inherits.domain_name !== undefined) {
@@ -294,12 +297,12 @@ const parsePatternAnyEntitiesToLu = function(luisJson){
                 fileContent += '; model_name : ' + patternAnyEntity.inherits.model_name;
             }
             fileContent += NEWLINE + NEWLINE;
-            // For back compat we will only write this if the pattern.any has inherits information.
-            fileContent += `@ patternany `;
-            fileContent += patternAnyEntity.name.includes(' ') ? `"${patternAnyEntity.name}"` : patternAnyEntity.name;
-            fileContent += addRolesAndFeatures(patternAnyEntity);
-            fileContent += NEWLINE;
         }
+        // For back compat we will only write this if the pattern.any has inherits information.
+        fileContent += `@ patternany `;
+        fileContent += patternAnyEntity.name.includes(' ') ? `"${patternAnyEntity.name}"` : patternAnyEntity.name;
+        fileContent += addRolesAndFeatures(patternAnyEntity);
+        fileContent += NEWLINE;
     })
     return fileContent;
 }

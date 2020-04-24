@@ -1,7 +1,0 @@
-# filename
-- ${builtinEntityFilename('ageEntity')}
-
-# template
-- @ prebuilt age ${roles()}
-
-[generator.lg](../generator.lg)
