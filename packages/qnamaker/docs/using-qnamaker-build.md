@@ -40,14 +40,14 @@ Every combination of project, environment, and file name (with locale) will be u
 
 QnA Maker KB names will use this format:
 
-> {botName}-{suffix}-{QnAfilename}-{langcode}.qna
+> {botName}-{suffix}-{langcode}.qna
 
 Example:
 
 ```
-MyProject(vishwac)-RootDialog.en-us.qna
-MyProject(vishwac)-RootDialog.fr-fr.lu
-MyProject(vishwac)-RootDialog.de-de.lu
+MyProject(vishwac).en-us.qna
+MyProject(vishwac).fr-fr.qna
+MyProject(vishwac).de-de.qna
 ```
 
 ## Environments
@@ -68,8 +68,9 @@ Example for user **vishwac** targeting authoring region **westus**
 ```json
 {
     "qna": {
-        "RootDialog_en-us_qna": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "hostname": "https://xxxxxxxxxxxxxxxxxx.azurewebsites.net"
+        "RootDialog_en_us_qna": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "RootDialog_fr_fr_qna": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "hostname": "https://xxxxxxxxxxxxxxxxxx.azurewebsites.net/qnamaker"
     }
 }
 ```
@@ -82,7 +83,8 @@ Example:
 
 ```
 ./rootDialog/RootDialog.qna.dialog <-- MultiLanguageRecognizer configured to use all of the languages 
-./rootDialog/RootDialog.en-us.qna.dialog <-- QnARecognizer
+./rootDialog/RootDialog.en-us.qna.dialog <-- QnARecognizer for en-us locale
+./rootDialog/RootDialog.fr-fr.qna.dialog <-- QnARecognizer for fr-fr locale
 ```
 
 The net result is that to consume all of the language models in a dialog you simply can do this:
