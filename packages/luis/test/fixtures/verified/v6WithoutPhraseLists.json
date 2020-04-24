@@ -66,7 +66,7 @@
       "roles": []
     }
   ],
-  "luis_schema_version": "6.0.0",
+  "luis_schema_version": "7.0.0",
   "versionId": "0.1",
   "name": "test app",
   "desc": "test",

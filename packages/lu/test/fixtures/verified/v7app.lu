@@ -1,0 +1,51 @@
+
+> LUIS application information
+> !# @app.name = app-build-v7
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 7.0.0
+> !# @app.settings.NormalizePunctuation = true
+> !# @app.settings.UseAllTrainingDate = true
+> !# @app.tokenizerVersion = 1.0.0
+
+
+> # Intent definitions
+
+## None
+- my alias is {@P1={@CC1={@C1=omr}} {@C2={@CC2=sobeh}}}
+- my alias is {@C3=walid}
+- my name is {@P1={@CC1={@C1=omar}} {@C2={@CC2=sobeih}}}
+- my name is {@C3=walid}
+
+
+> # Entity definitions
+
+@ ml C1
+
+@ ml C2
+
+@ ml C3
+
+@ ml P1
+    - @ C1 CC1 usesFeature C2
+    - @ ml CC2
+
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt age
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+@ regex hellp = /hellp/
+
+> # Pattern.Any entities
+
+@ patternany patr
