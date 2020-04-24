@@ -44,14 +44,6 @@ describe('qnamaker:build cli parameters test', () => {
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain('Missing required flag:\n -b, --botName BOTNAME  Bot name')
     })
-  
-  test
-    .stdout()
-    .stderr()
-    .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild/file-name-duplicated')}`, '--botName', 'Contoso'])
-    .it('displays an error if files with same name and locale are found', ctx => {
-      expect(ctx.stderr).to.contain('Files with same name and locale are found')
-    })
 })
 
 describe('qnamaker:build create a new knowledge base successfully', () => {
@@ -105,11 +97,11 @@ describe('qnamaker:build create a new knowledge base successfully', () => {
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should create a new knowledge base successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
-      expect(ctx.stdout).to.contain('creating qnamaker KB: test(development)-sandwich.en-us.qna...')
-      expect(ctx.stdout).to.contain('creating finished')
-      expect(ctx.stdout).to.contain('publishing...')
-      expect(ctx.stdout).to.contain('publishing finished')
-      expect(ctx.stdout).to.contain('replacing alterations...')
+      expect(ctx.stdout).to.contain('Creating qnamaker KB: test(development).en-us.qna...')
+      expect(ctx.stdout).to.contain('Creating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
+      expect(ctx.stdout).to.contain('Publishing finished')
+      expect(ctx.stdout).to.contain('Replacing alterations...')
     })
 })
 
@@ -120,7 +112,7 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
       .reply(200, {
         knowledgebases:
           [{
-            name: 'test(development)-sandwich2.en-us.qna',
+            name: 'test(development).en-us.qna',
             id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
             hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
@@ -152,9 +144,9 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a knowledge base when qa list changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
-      expect(ctx.stdout).to.contain('updating to new version')
-      expect(ctx.stdout).to.contain('updating finished')
-      expect(ctx.stdout).to.contain('publishing...')
+      expect(ctx.stdout).to.contain('Updating to new version for kb test(development).en-us.qna')
+      expect(ctx.stdout).to.contain('Updating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
     })
 })
 
@@ -165,7 +157,7 @@ describe('qnamaker:build not update knowledge if no changes', () => {
       .reply(200, {
         knowledgebases:
           [{
-            name: 'test(development)-sandwich2.en-us.qna',
+            name: 'test(development).en-us.qna',
             id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
             hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
@@ -202,7 +194,7 @@ describe('qnamaker:build write dialog assets successfully if --dialog set', () =
       .reply(200, {
         knowledgebases:
           [{
-            name: 'test(development)-sandwich2.en-us.qna',
+            name: 'test(development).en-us.qna',
             id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
             hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
@@ -230,8 +222,75 @@ describe('qnamaker:build write dialog assets successfully if --dialog set', () =
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully when --dialog set', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+    })
+})
+
+describe('qnamaker:build write dialog assets successfully with multi locales', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development).en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          },
+          {
+            name: 'test(development).fr-fr.qna',
+            id: 'f8c64e2a-2222-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        qnaDocuments: [{
+          id: 1,
+          source: 'custom editorial',
+          questions: ['who are you'],
+          answer: 'I\'m Lucy',
+          metadata: []
+        },
+        {
+          id: 2,
+          source: 'custom editorial',
+          questions: ['weather'],
+          answer: 'It\'s rainy',
+          metadata: []
+        }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        qnaDocuments: [{
+          id: 1,
+          source: 'custom editorial',
+          questions: ['Météo'],
+          answer: 'C\'est pluvieux',
+          metadata: []
+        }]
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multi-locales/qnafiles', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write dialog assets successfully with multi locales', async ctx => {
+      expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/multi-locales/config/qnamaker.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.fr-fr.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.fr-fr.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.qna.dialog')).to.be.true
     })
 })
 
@@ -242,7 +301,7 @@ describe('qnamaker:build not update knowledge base if only cases are changed', (
       .reply(200, {
         knowledgebases:
           [{
-            name: 'test(development)-sandwich2.en-us.qna',
+            name: 'test(development).en-us.qna',
             id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
             hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
@@ -317,10 +376,10 @@ describe('qnamaker:build create a new knowledge base with multiturn qna successf
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should create a new knowledge base with multiturn qna successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
-      expect(ctx.stdout).to.contain('creating qnamaker KB: test(development)-multiturn.en-us.qna...')
-      expect(ctx.stdout).to.contain('creating finished')
-      expect(ctx.stdout).to.contain('publishing...')
-      expect(ctx.stdout).to.contain('publishing finished')
+      expect(ctx.stdout).to.contain('Creating qnamaker KB: test(development).en-us.qna...')
+      expect(ctx.stdout).to.contain('Creating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
+      expect(ctx.stdout).to.contain('Publishing finished')
     })
 })
 
@@ -331,7 +390,7 @@ describe('qnamaker:build update knowledge base with multiturn successfully when 
       .reply(200, {
         knowledgebases:
           [{
-            name: 'test(development)-multiturn.en-us.qna',
+            name: 'test(development).en-us.qna',
             id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
             hostName: 'https://myqnamakerbot.azurewebsites.net'
           }]
@@ -363,8 +422,8 @@ describe('qnamaker:build update knowledge base with multiturn successfully when 
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a knowledge base with multiturn when qa list changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
-      expect(ctx.stdout).to.contain('updating to new version')
-      expect(ctx.stdout).to.contain('updating finished')
-      expect(ctx.stdout).to.contain('publishing...')
+      expect(ctx.stdout).to.contain('Updating to new version')
+      expect(ctx.stdout).to.contain('Updating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
     })
 })

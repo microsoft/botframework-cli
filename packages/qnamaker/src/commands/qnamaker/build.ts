@@ -10,7 +10,7 @@ const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const Content = require('@microsoft/bf-lu').V2.LU
-const LUOptions = require('@microsoft/bf-lu/lib/parser/lu/luOptions')
+const qnaOptions = require('@microsoft/bf-lu/lib/parser/lu/qnaOptions')
 const Settings = require('@microsoft/bf-lu/lib/parser/qnabuild/settings')
 const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/multi-language-recognizer')
 const Recognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/recognizer')
@@ -62,17 +62,19 @@ export default class QnamakerBuild extends Command {
 
       let qnaContents: any[] = []
       let recognizers = new Map<string, any>()
-      let multiRecognizers = new Map<string, any>()
-      let settings = new Map<string, any>()
+      let multiRecognizer: any
+      let settings: any
+
+      const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.QnAFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
 
       if (flags.stdin && flags.stdin !== '') {
         // load qna content from stdin and create default recognizer, multiRecognier and settings
         if (flags.log) this.log('Load qna content from stdin\n')
-        const content = new Content(flags.stdin, new LUOptions('stdin', true, flags.defaultCulture, path.join(process.cwd(), 'stdin')))
+        const content = new Content(flags.stdin, new qnaOptions(flags.botName, true, flags.defaultCulture, path.join(process.cwd(), 'stdin')))
         qnaContents.push(content)
-        multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.qna.dialog'), {}))
-        settings.set('stdin', new Settings(path.join(process.cwd(), `qnamaker.settings.${flags.suffix}.${flags.region}.json`), {}))
-        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
+        multiRecognizer = new MultiLanguageRecognizer(path.join(process.cwd(), `${flags.botName}.qna.dialog`), {})
+        settings = new Settings(path.join(process.cwd(), `qnamaker.settings.${flags.suffix}.${flags.region}.json`), {})
+        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings, {})
         recognizers.set(content.name, recognizer)
       } else {
         if (flags.log) this.log('Loading files...\n')
@@ -90,22 +92,21 @@ export default class QnamakerBuild extends Command {
 
         // load qna contents from qna files
         // load existing recognizers, multiRecogniers and settings or create default ones
-        const loadedResources = await builder.loadContents(files, flags.suffix, flags.region, flags.defaultCulture)
+        const loadedResources = await builder.loadContents(files, dialogFilePath, flags.botName, flags.suffix, flags.region, flags.defaultCulture)
         qnaContents = loadedResources.qnaContents
         recognizers = loadedResources.recognizers
-        multiRecognizers = loadedResources.multiRecognizers
+        multiRecognizer = loadedResources.multiRecognizer
         settings = loadedResources.settings
       }
 
       // update or create and then publish qnamaker kb based on loaded resources
       if (flags.log) this.log('Handling qnamaker knowledge bases...')
-      const dialogContents = await builder.build(qnaContents, recognizers, flags.subscriptionKey, endpoint, flags.botName, flags.suffix, flags.fallbackLocale, multiRecognizers, settings)
+      const dialogContents = await builder.build(qnaContents, recognizers, flags.subscriptionKey, endpoint, flags.botName, flags.suffix, flags.fallbackLocale, multiRecognizer, settings)
 
       // write dialog assets based on config
       if (flags.dialog) {
-        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, flags.out)
-        const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.QnAFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
         const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
+        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, outputFolder)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {

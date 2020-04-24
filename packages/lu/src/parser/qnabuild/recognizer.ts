@@ -34,7 +34,7 @@ export class Recognizer {
   constructor(private readonly qnaFile: string, targetFileName: string) {
     this.kbId = ''
     this.id = `QnA_${targetFileName.split('.')[0]}`
-    this.knowledgeBaseId = `=settings.qna.${targetFileName.split('.').join('_')}`
+    this.knowledgeBaseId = `=settings.qna.${targetFileName.split('.').join('_').replace(/-/g, '_')}`
     this.hostname = '=settings.qna.hostname'
     this.endpointKey = '=settings.qna.endpointKey'
   }

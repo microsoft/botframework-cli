@@ -109,7 +109,7 @@ export class QnaBuildCore {
     }
   }
 
-  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
+  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizer: MultiLanguageRecognizer, settings: Settings)
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
@@ -117,13 +117,13 @@ export class QnaBuildCore {
       contents.push(content)
     }
 
-    for (const multiRecognizer of multiRecognizers) {
+    if (multiRecognizer) {
       const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
       contents.push(multiLangContent)
     }
 
-    for (const setting of settings) {
-      const settingsContent = new Content(setting.save(), new LUOptions(path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath()))
+    if (settings) {
+      const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
       contents.push(settingsContent)
     }
 
