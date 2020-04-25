@@ -15,6 +15,7 @@ class KB {
             this.urls = [];
             this.qnaList = [];
             this.files = [];
+            this.name = '';
         }
     }
 

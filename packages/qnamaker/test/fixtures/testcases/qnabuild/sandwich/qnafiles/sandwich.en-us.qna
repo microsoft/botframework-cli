@@ -1,0 +1,16 @@
+# ? how many sandwich types do you have
+```
+25 types
+```
+
+$botframework : qna-alterations=
+- bot framework
+- Azure bot service
+
+$qnamaker : qna-alterations=
+- qna maker
+- QnA Maker
+- question and answer pairs
+
+$webchat : qna-alterations=
+- web chat
