@@ -11,6 +11,7 @@ This package is intended for Microsoft use only and should be consumed through @
 - [.qna file format][1]
 - [Working with .qna files][2]
 - [Machine translating .qna content][3]
+- [using qnamaker:build][4]
 
 # Commands
 <!-- commands -->
@@ -40,6 +41,7 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf qnamaker:query`](#bf-qnamakerquery)
 * [`bf qnamaker:train`](#bf-qnamakertrain)
 * [`bf qnamaker:translate`](#bf-qnamakertranslate)
+* [`bf qnamaker:build`](#bf-qnamakerbuild)
 
 ## `bf qnamaker`
 
@@ -566,8 +568,34 @@ OPTIONS
 ```
 
 _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/translate.ts)_
+
+## `bf qnamaker:build`
+
+Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations
+
+```
+USAGE
+  $ bf qnamaker:build
+
+OPTIONS
+  -f, --force                        If --dialog flag is provided, overwirtes relevant dialog file
+  -h, --help                         qnamaker:build help
+  -i, --in=in                        Source .qna file or folder
+  -o, --out=out                      Output file or folder name. If not specified, current directory will be used as output
+  -b, --botName=botName              (required) Bot name
+  --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
+  --defaultCulture=defaultCulture    Culture code for the content. Infer from .qna if available. Defaults to en-us if not set
+  --fallbackLocale=fallbackLocale    Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set
+  --region=region                    [default: westus] QnA maker api endpoint region [westus|westeurope|australiaeast]
+  --suffix=suffix                    Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in useralias
+  --dialog                           Write out .dialog files
+  --log                              write out log messages to console
+```
+
+_See code: [src/commands/qnamaker/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/build.ts)_
 <!-- commandsstop -->
 
 [1]:./docs/qna-file-format.md
 [2]:./docs/working-with-qna.md
 [3]:./docs/translate-command.md
+[4]:./docs/using-qnamaker-build.md
