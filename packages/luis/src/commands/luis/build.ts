@@ -34,7 +34,7 @@ export default class LuisBuild extends Command {
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
-    suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in useralias'}),
+    suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
     dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
     force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build'}),
