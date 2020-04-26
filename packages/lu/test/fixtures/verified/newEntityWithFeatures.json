@@ -272,12 +272,7 @@
       ]
     }
   ],
-  "patterns": [
-    {
-      "pattern": "I'm {firstName} and I'm {userAge} [years old]",
-      "intent": "GetUserProfile"
-    }
-  ],
+  "patterns": [],
   "patternAnyEntities": [],
   "prebuiltEntities": [
     {
