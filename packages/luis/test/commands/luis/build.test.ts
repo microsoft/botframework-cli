@@ -26,7 +26,7 @@ describe('luis:build cli parameters test', () => {
     .stderr()
     .command(['luis:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botName', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain('Missing required flag:\n --authoringKey AUTHORINGKEY')
+      expect(ctx.stderr).to.contain('Missing luis authoring key. Please pass authoring key with --authoringKey flag')
     })
 
   test
