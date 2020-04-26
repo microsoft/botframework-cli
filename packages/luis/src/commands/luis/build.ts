@@ -16,6 +16,7 @@ const Settings = require('@microsoft/bf-lu/lib/parser/lubuild/settings')
 const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
 const Recognizer = require('@microsoft/bf-lu/lib/parser/lubuild/recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
+const utils = require('../../utils/index')
 
 export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
@@ -27,7 +28,7 @@ export default class LuisBuild extends Command {
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
     in: flags.string({char: 'i', description: 'Lu file or folder'}),
-    authoringKey: flags.string({description: 'LUIS authoring key', required: true}),
+    authoringKey: flags.string({description: 'LUIS authoring key'}),
     botName: flags.string({description: 'Bot name'}),
     region: flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
@@ -43,6 +44,7 @@ export default class LuisBuild extends Command {
   async run() {
     try {
       const {flags} = this.parse(LuisBuild)
+      const userConfig = await utils.getUserConfig(this.config.configDir)
 
       flags.stdin = await this.readStdin()
 
@@ -64,6 +66,12 @@ export default class LuisBuild extends Command {
 
       if (!flags.stdin && !flags.in && files.length === 0) {
         throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
+      }
+
+      if (!flags.authoringKey && (!userConfig || !userConfig.authoringKey)) {
+        throw new CLIError('Missing luis authoring key. Please pass authoring key with --authoringKey flag')
+      } else {
+        flags.authoringKey = flags.authoringKey || userConfig.authoringKey
       }
 
       if (!flags.botName) {
