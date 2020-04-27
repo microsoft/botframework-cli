@@ -2,13 +2,30 @@ import {expect, test} from '@oclif/test';
 const path = require('path')
 const fs = require('fs-extra')
 
-const compareFiles = async function (file1: string, file2: string) {
-  let result = await fs.readFile(path.join(__dirname, file1))
-  let fixtureFile = await fs.readFile(path.join(__dirname, file2))
-  result = result.toString().replace(/\r\n/g, '\n')
-  fixtureFile = fixtureFile.toString().replace(/\r\n/g, '\n')
-  expect(fixtureFile).to.deep.equal(result)
-  return result === fixtureFile
+const EMULATOR_CONNECTION_STRING: string = 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;' +
+    'AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;' +
+    'BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;' +
+    'TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;' +
+    'QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;';
+
+function findFile(dir: string, fileToFind: string): string {
+
+  const files: string[] = fs.readdirSync(dir);
+
+  for (let i: number = 0; i < files.length; i++) {
+    const fullPath: string = path.join(dir, files[i]);
+
+    if (fs.lstatSync(fullPath).isDirectory()) {
+      const result = findFile(fullPath, fileToFind);
+      if (result !== '') {
+        return result;
+      }
+    } else if (files[i] === fileToFind) {
+      console.log(`START DIR: ${fullPath}`);
+      return fullPath;
+    }
+  }
+  return '';
 }
 
 describe('orchestrator:finetune cli parameters test', () => {
@@ -39,17 +56,18 @@ describe('orchestrator:finetune cli parameters test', () => {
   .stdout()
   .stderr()
   .command(['orchestrator:finetune', '--put'])
-  .it('FT.0002 displays an error if any required input parameters are missing', (ctx: any) => {
-    expect(ctx.stderr).to.contain('Command "--put" unknown')
+  .it('FT.0003 displays an error if any required input parameters are missing', (ctx: any) => {
+    expect(ctx.stderr).to.contain('Command "--put" unknown');
   });
 
   if (process.env.USE_EMULATOR === 'true') {
+    const testFile: string = findFile(process.cwd(), 'dteDataFile.tsv');
+
     test
     .stdout()
-    .stderr()
-    .command(['luis:build', '--get'])
-    .it('displays an error if any required output parameters are missing', (ctx: any) => {
-      expect(ctx.stderr).to.contain('Missing input. Please use stdin or pass a file or folder location with --in flag');
+    .command(['orchestrator:finetune', 'put', '--debug', '--in', testFile, '--logformat', 'dtedata'])
+    .it('FT.0004 uploads dtedata with lowercase logformat', (ctx: any) => {
+      // expect(ctx.stdout).to.contain('Upload result:');
     });
   }
 });
