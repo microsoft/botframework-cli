@@ -7,9 +7,8 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
 const path = require('path')
-const helper = require('./../utils/helper')
 
-export default class CrossTrain extends Command {
+export default class LuisCrossTrain extends Command {
   static description = 'Lu and Qna cross train tool'
 
   static flags: flags.Input<any> = {
@@ -23,14 +22,14 @@ export default class CrossTrain extends Command {
 
   async run() {
     try {
-      const {flags} = this.parse(CrossTrain)
+      const {flags} = this.parse(LuisCrossTrain)
 
       if (!path.isAbsolute(flags.in)) flags.in = path.resolve(flags.in)
       if (flags.config && flags.config !== '') {
         if (!path.isAbsolute(flags.config)) flags.config = path.join(flags.in, flags.config)
       } else if (flags.rootDialog && flags.rootDialog !== '') {
         if (!path.isAbsolute(flags.rootDialog)) flags.rootDialog = path.join(flags.in, flags.rootDialog)
-        flags.config = await helper.generateConfig(flags.in, flags.rootDialog)
+        flags.config = await crossTrain.generateConfig(flags.in, flags.rootDialog)
       }
 
       const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config)

@@ -10,8 +10,21 @@ const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const exception = require('../utils/exception')
 const retCode = require('../utils/enums/CLI-errors')
 const crossTrainer = require('./crossTrainer')
+const confighelper = require('./confighelper')
 
 module.exports = {
+  /**
+   * Generate cross train config based on input folder and root dialog file.
+   * @param {string} inputFolder full path of input lu and qna files folder.
+   * @param {string} rootDialogFile full path of root dialog file.
+   * @returns {string} config object json string.
+   */
+  generateConfig: async function (inputFolder, rootDialogFile) {
+    const configStr = await confighelper.generateConfig(inputFolder, rootDialogFile)
+
+    return configStr
+  },
+
   /**
    * Cross train lu and qna files.
    * @param {string} input full path of input lu and qna files folder.

@@ -18,10 +18,6 @@
       "projectFolder": "packages/config"
     },
     {
-      "packageName": "@microsoft/bf-cross-train",
-      "projectFolder": "packages/cross-train"
-    },
-    {
       "packageName": "@microsoft/bf-dialog",
       "projectFolder": "packages/dialog"
     },
