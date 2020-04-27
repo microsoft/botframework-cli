@@ -765,5 +765,22 @@ describe('V2 NDepth definitions using @ notation', function () {
             .then(res => done(res))
             .catch(err => done())
     })
+
+    it('[V7 upgrade test] Patterns cannot have refernece to child entities', function(done) {
+        let luFile = `
+@ ml userProfile = 
+	- @ personName firstName
+	- @ personName lastName
+
+@ prebuilt personName
+
+# test
+- [my] name is vishwac
+- my first name is {@firstName} and last name is {@lastName}`;
+
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    })
     
 });

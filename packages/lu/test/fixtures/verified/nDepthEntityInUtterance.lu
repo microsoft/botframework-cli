@@ -14,7 +14,6 @@
 - {@nDepth=i have {@nDepth_child1=20 years old}}
 - {@nDepth=i have {@nDepth_child1=25 years old}}
 - {@nDepth=i have {@nDepth_child1=98 years old}}
-- this is a {@nDepth_child1} pattern and {nDepth} pattern
 
 
 > # Entity definitions

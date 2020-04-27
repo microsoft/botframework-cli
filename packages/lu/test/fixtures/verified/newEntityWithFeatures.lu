@@ -21,7 +21,6 @@
 - My last name is {@userProfile={@userName={@lastName=kannan}}}
 - {@userProfile={@userName={@firstName=vishwac}}}
 - {@userProfile={@userAge=36}}
-- I'm {@firstName} and I'm {userAge} [years old]
 
 
 @ intent GetUserProfile usesFeatures userProfile,profileDefinition
