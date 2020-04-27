@@ -204,8 +204,34 @@ const updateToV7 = function(finalLUISJSON) {
         });
         (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
         (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
-        transformUtterancesWithNDepthEntities(finalLUISJSON)
+        let entityParentTree = {};
+        const curPath = ["$root$"];
+        constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
+        transformUtterancesWithNDepthEntities(finalLUISJSON, entityParentTree)
+        verifyPatternsDoNotHaveChildEntityReferences(finalLUISJSON, entityParentTree)
     }
+}
+
+const verifyPatternsDoNotHaveChildEntityReferences = function(finalLUISJSON, entityParentTree)
+{
+    if (finalLUISJSON.patterns === undefined || !Array.isArray(finalLUISJSON.patterns) || finalLUISJSON.patterns.length === 0) return;
+    (finalLUISJSON.patterns || []).forEach(pattern => {
+        // detect if pattern has an entity definition
+        let entitiesRegExp = /{(?<entity>[^{,}]+)}/gmi;
+        let entitiesFound = pattern.pattern.match(entitiesRegExp);
+        if (entitiesFound !== null) {
+            // verify that each entity is not a child entity
+            entitiesFound.forEach(entity => {
+                entity = entity.replace(/[{}]/g, '');
+                let entityInTree = entityParentTree[entity]
+                if (entityInTree !== undefined) {
+                    if (entityInTree[0] != "$root$") {
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, `Patterns cannot contain references to child entities. Pattern: "${pattern.pattern}" has reference to "{${entity}}".`));
+                    }                
+                }
+            })
+        }
+    })
 }
 
 const constructEntityParentTree = function(entityCollection, entityParentTree, curPath)
@@ -229,11 +255,8 @@ const updateTreeWithNode = function(curPath, entityName, entityParentTree) {
     curPath.reverse();
 }
 
-const transformUtterancesWithNDepthEntities = function (finalLUISJSON) {
-    let entityParentTree = {};
-    const curPath = ["$root$"];
-    constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
-    finalLUISJSON.utterances.forEach(utt => {
+const transformUtterancesWithNDepthEntities = function (finalLUISJSON, entityParentTree) {
+    (finalLUISJSON.utterances || []).forEach(utt => {
         if (utt.entities !== undefined && Array.isArray(utt.entities) && utt.entities.length !== 0) {
             // sort all entities by start and end position
             utt.entities = objectSortByStartPos(utt.entities)
