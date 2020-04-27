@@ -4,11 +4,12 @@
  */
 const chai = require('chai');
 const assert = chai.assert;
-const exception = require('./../../../../src/parser/lufile/classes/exception');
-const QnA = require('./../../../../src/parser/lufile/classes/qna');
-const QnAList = require('./../../../../src/parser/lufile/classes/qnaList');
-const QnAMetadata = require('./../../../../src/parser/lufile/classes/qnaMetaData');
+const exception = require('./../../../../src/parser/utils/exception');
+const QnA = require('./../../../../src/parser/qna/qnamaker/kb');
+const QnAList = require('./../../../../src/parser/qna/qnamaker/qnaList');
+const QnAMetadata = require('./../../../../src/parser/qna/qnamaker/qnaMetaData');
 const hClasses = require('./../../../../src/parser/lufile/classes/hclasses');
+const qnaContext = require('./../../../../src/parser/qna/qnamaker/qnaContext');
 
 describe('Testing all classes', function() {
     describe('Exception class', function() {
@@ -44,9 +45,10 @@ describe('Testing all classes', function() {
 
     describe('QnA class', function() {
         it('can create a new instance with explicit values as args', function() {
-            let urls = [];
             let qnatList = {test:123};
-            assert.deepEqual(new QnA(urls, qnatList).qnaList, qnatList);
+            let qna = new QnA()
+            qna.qnaList = qnatList
+            assert.deepEqual(qna.qnaList, qnatList)
         });
 
         it('can create a new instance with no values passed in', function() {
@@ -56,7 +58,7 @@ describe('Testing all classes', function() {
 
     describe('QnA List class', function() {
         it('can create a new instance with explicit values as args', function() {
-            assert.deepEqual(new QnAList(0, 'test', '1', ['2'], {}), {id: 0, answer: 'test', source: '1', questions: ['2'], metadata: {}});
+            assert.deepEqual(new QnAList(0, 'test', '1', ['2'], {}), {id: 0, answer: 'test', source: '1', questions: ['2'], metadata: {}, context : new qnaContext()});
         });
 
         it('can create a new instance with no values passed in', function() {
@@ -103,12 +105,6 @@ describe('Testing all classes', function() {
     describe('uttereances class', function() {
         it('can create a new instance with no values passed in', function() {
             assert.equal(new hClasses.uttereances().text, '');
-        });
-    });
-
-    describe('validateLUISBlobEntity class', function() {
-        it('can create a new instance with no values passed in', function() {
-            assert.equal(new hClasses.validateLUISBlobEntity().name, '');
         });
     });
 

@@ -1,0 +1,57 @@
+> # QnA pairs
+
+> !# @qna.pair.source = Editorial
+
+<a id = "1"></a>
+
+## ? ques1
+
+```markdown
+ans1
+```
+
+**Prompts:**
+- [p1](#2) `context-only`
+- [p2](#3) `context-only`
+- [p3](#4)
+
+> !# @qna.pair.source = Editorial
+
+<a id = "2"></a>
+
+## ? p1
+
+```markdown
+ap1
+```
+
+> !# @qna.pair.source = Editorial
+
+<a id = "3"></a>
+
+## ? p2
+
+```markdown
+ap2
+```
+
+> !# @qna.pair.source = Editorial
+
+<a id = "4"></a>
+
+## ? p3
+
+```markdown
+ap3
+```
+
+> !# @qna.pair.source = Editorial
+
+<a id = "5"></a>
+
+## ? qew
+
+```markdown
+zxc
+```
+

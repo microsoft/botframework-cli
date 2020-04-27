@@ -3,62 +3,64 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, utils} from '@microsoft/bf-cli-command'
+import {readTextFile} from './textfilereader'
+const exception = require('./../parser/utils/exception')
+const retCode = require('./../parser/utils/enums/CLI-errors')
 const fs = require('fs-extra')
 const path = require('path')
-const helpers = require('./../parser/lufile/helpers')
-const luObject = require('./../parser/lufile/classes/luObject')
+const helpers = require('./../parser/utils/helpers')
+const luObject = require('./../parser/lu/lu')
+const LUOptions = require('./../parser/lu/luOptions')
+const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
   if (stdin) {
-    luObjects.push(new luObject('stdin', stdin))
+    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
   } else {
     let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
-      luObjects.push(new luObject(path.resolve(luFiles[i]), luContent))
+      const opts = new LUOptions(path.resolve(luFiles[i]))
+      luObjects.push(new luObject(luContent, opts))
     }
   }
 
   return luObjects
 }
 
-async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
-  let filesToParse = []
+export async function getLuFiles(input: string | undefined, recurse = false, extType: string | undefined): Promise<Array<any>> {
+  let filesToParse: any[] = []
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
-    filesToParse.push(input)
+    filesToParse.push(path.resolve(input))
     return filesToParse
   }
 
   if (!fileStat.isDirectory()) {
-    throw new CLIError('Sorry, ' + input + ' is not a folder or does not exist')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, ' + input + ' is not a folder or does not exist'))
   }
 
   filesToParse = helpers.findLUFiles(input, recurse, extType)
 
-  if (filesToParse.length === 0) {
-    throw new CLIError(`Sorry, no ${extType} files found in the specified folder.`)
-  }
   return filesToParse
 }
 
 export async function getContentFromFile(file: string) {
   // catch if input file is a folder
   if (fs.lstatSync(file).isDirectory()) {
-    throw new CLIError('Sorry, "' + file + '" is a directory! Unable to read as a file')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, "' + file + '" is a directory! Unable to read as a file'))
   }
   if (!fs.existsSync(path.resolve(file))) {
-    throw new CLIError('Sorry [' + file + '] does not exist')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry [' + file + '] does not exist'))
   }
   let fileContent
   try {
-    fileContent = await utils.readTextFile(file)
+    fileContent = await readTextFile(file)
   } catch (err) {
-    throw new CLIError('Sorry, error reading file: ' + file)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, error reading file: ' + file))
   }
   return fileContent
 }
@@ -67,7 +69,7 @@ export async function generateNewFilePath(outFileName: string, inputfile: string
   let base = path.resolve(outFileName)
   let root = path.dirname(base)
   if (!fs.existsSync(root)) {
-    throw new CLIError('Path not found: ' + root)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Path not found: ' + root))
   }
 
   let extension = path.extname(base)
@@ -90,16 +92,16 @@ export async function generateNewTranslatedFilePath(fileName: string, translated
 
   let extension = path.extname(newPath)
   if (extension) {
-    throw new CLIError('Output can only be writen to a folder')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Output can only be writen to a folder'))
   }
 
   if (!fs.existsSync(newPath)) {
-    throw new CLIError('Path not found: ' + newPath)
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Path not found: ' + newPath))
   }
 
   newPath = path.join(output, translatedLanguage)
   await fs.mkdirp(newPath)
-  return path.join(newPath, fileName)
+  return path.join(newPath, path.basename(fileName))
 }
 
 export function validatePath(outputPath: string, defaultFileName: string, forceWrite = false): string {
@@ -107,7 +109,7 @@ export function validatePath(outputPath: string, defaultFileName: string, forceW
   const containingDir = path.dirname(completePath)
 
   // If the cointaining folder doesnt exist
-  if (!fs.existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
+  if (!fs.existsSync(containingDir)) throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Containing directory path doesn't exist: ${containingDir}`))
 
   const baseElement = path.basename(completePath)
   const pathAlreadyExist = fs.existsSync(completePath)
@@ -118,7 +120,7 @@ export function validatePath(outputPath: string, defaultFileName: string, forceW
   }
 
   // If the last element in the path is a folder
-  if (!pathAlreadyExist) throw new CLIError(`Target directory path doesn't exist: ${completePath}`)
+  if (!pathAlreadyExist) throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Target directory path doesn't exist: ${completePath}`))
   completePath = path.join(completePath, defaultFileName)
   return fs.existsSync(completePath) && !forceWrite ? enumerateFileName(completePath) : completePath
 }
@@ -127,7 +129,7 @@ function enumerateFileName(filePath: string): string {
   const fileName = path.basename(filePath)
   const containingDir = path.dirname(filePath)
 
-  if (!fs.existsSync(containingDir)) throw new CLIError(`Containing directory path doesn't exist: ${containingDir}`)
+  if (!fs.existsSync(containingDir)) throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Containing directory path doesn't exist: ${containingDir}`))
 
   const extension = path.extname(fileName)
   const baseName = path.basename(fileName, extension)
@@ -143,12 +145,12 @@ function enumerateFileName(filePath: string): string {
 
 export async function detectLuContent(stdin: string, input: string) {
   if (!stdin && !input) {
-    throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Missing input. Please use stdin or pass a file location with --in flag'))
   }
 
   if (!stdin) {
     if (!fs.existsSync(path.resolve(input))) {
-      throw new CLIError(`Sorry unable to open [${input}]`)
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry unable to open [${input}]`))
     }
 
     let inputStat = await fs.stat(input)
@@ -161,4 +163,146 @@ export async function detectLuContent(stdin: string, input: string) {
     return true
   }
   return false
+}
+
+export async function getFilesContent(input: string, extType: string) {
+  let fileStat = await fs.stat(input)
+  if (fileStat.isFile()) {
+    const filePath = path.resolve(input)
+    const content = await getContentFromFile(input)
+    return [{id: filePath, content}]
+  }
+
+  if (!fileStat.isDirectory()) {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, ' + input + ' is not a folder or does not exist'))
+  }
+  const paths = await globby([`**/*${extType}`], {cwd: input, dot: true})
+  return Promise.all(paths.map(async (item: string) => {
+    const itemPath = path.resolve(path.join(input, item))
+    const content = await getContentFromFile(itemPath)
+    return {id: itemPath, content}
+  }))
+}
+
+export async function getConfigContent(input: string) {
+  const luConfigFile = await getConfigFile(input)
+  const content = await getContentFromFile(luConfigFile)
+  return {id: luConfigFile, content}
+}
+
+async function getConfigFile(input: string): Promise<string> {
+  let fileStat = await fs.stat(input)
+  if (fileStat.isFile()) {
+    return input
+  }
+
+  if (!fileStat.isDirectory()) {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, ${input} is not a folder or does not exist`))
+  }
+
+  const defaultConfigFile = helpers.findConfigFile(input)
+
+  if (defaultConfigFile === undefined || defaultConfigFile === '') {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, no config file found in folder ${input}.`))
+  }
+
+  return defaultConfigFile
+}
+
+export function getParsedObjects(contents: {id: string, content: string}[]) {
+  const parsedObjects = contents.map(content => {
+    const opts = new LUOptions(content.id)
+    return new luObject(content.content, opts)
+  })
+
+  return parsedObjects
+}
+
+export function getConfigObject(configContent: any, intentName: string) {
+  let finalLuConfigObj = Object.create(null)
+  let rootLuFiles: string[] = []
+  const configFileDir = path.dirname(configContent.id)
+  const luConfigContent = configContent.content
+  if (luConfigContent && luConfigContent !== '') {
+    try {
+      const luConfigObj = JSON.parse(luConfigContent)
+      for (const rootluFilePath of Object.keys(luConfigObj)) {
+        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
+        const triggerObj = luConfigObj[rootluFilePath]
+        for (const triggerObjKey of Object.keys(triggerObj)) {
+          if (triggerObjKey === 'rootDialog') {
+            if (triggerObj[triggerObjKey]) {
+              rootLuFiles.push(rootLuFileFullPath)
+            }
+          } else if (triggerObjKey === 'triggers') {
+            const triggers = triggerObj[triggerObjKey]
+            for (const triggerKey of Object.keys(triggers)) {
+              const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
+              for (const destLuFile of destLuFiles) {
+                const destLuFileFullPath = destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
+                if (rootLuFileFullPath in finalLuConfigObj) {
+                  const finalIntentToDestLuFiles = finalLuConfigObj[rootLuFileFullPath]
+                  if (finalIntentToDestLuFiles[triggerKey]) {
+                    finalIntentToDestLuFiles[triggerKey].push(destLuFileFullPath)
+                  } else {
+                    finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                  }
+                } else {
+                  let finalIntentToDestLuFiles = Object.create(null)
+                  finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                  finalLuConfigObj[rootLuFileFullPath] = finalIntentToDestLuFiles
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, invalid cross training config: ${err}`))
+    }
+  }
+
+  if (rootLuFiles.length > 0) {
+    let crossTrainConfig = {
+      rootIds: rootLuFiles,
+      triggerRules: finalLuConfigObj,
+      intentName,
+      verbose: true
+    }
+
+    return crossTrainConfig
+  } else {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
+  }
+}
+
+export function parseJSON(input: string, appType: string) {
+  try {
+    return JSON.parse(input)
+  } catch (error) {
+    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, `Sorry, error parsing content as ${appType} JSON`))
+  }
+}
+
+export function getCultureFromPath(file: string): string | null {
+  let fn = path.basename(file, path.extname(file))
+  let lang = path.extname(fn).substring(1)
+  switch (lang.toLowerCase()) {
+  case 'en-us':
+  case 'zh-cn':
+  case 'nl-nl':
+  case 'fr-fr':
+  case 'fr-ca':
+  case 'de-de':
+  case 'it-it':
+  case 'ja-jp':
+  case 'ko-kr':
+  case 'pt-br':
+  case 'es-es':
+  case 'es-mx':
+  case 'tr-tr':
+    return lang
+  default:
+    return null
+  }
 }

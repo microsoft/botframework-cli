@@ -3,9 +3,7 @@
 ![Bot Framework CLI](./media/BFCLI-header.png)
 
 # BF Command Line Interface
-
-[![Build Status](https://fuselabs.visualstudio.com/SDK_v4/_apis/build/status/CLI/Botframework-CLI-CI-PR?branchName=master)](https://fuselabs.visualstudio.com/SDK_v4/_build/latest?definitionId=537&branchName=master)
-[![Coverage Status](https://img.shields.io/coveralls/github/microsoft/botframework-cli/master)](https://coveralls.io/github/microsoft/botframework-cli?branch=master)
+[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=master)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=master)
 
 The new BF Command Line Interface (CLI) tool replaces the collection of standalone tools used to manage Bot Framework bots and related services. We have ported most tools and are in process of porting the rest. The new BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
 
@@ -28,14 +26,16 @@ $ bf
 
 ## Available Commands
 The following commands are currently available:
-* [Chatdown](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-chatdown) 
-* [QnAMaker](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-qnamaker)
+* [Chatdown][1] 
+* [QnAMaker][2]
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
-* [Luis](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-luis)
+* [Luis][3]
+
+Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins#microsoftbf-cli-plugins))
+* [Dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog)
 
 #### Future Commands
 The following commands will be ported in upcoming releases:
-* LUIS (API)
 * Dispatch
 
 See [Porting Map](https://github.com/microsoft/botframework-cli/blob/master/PortingMap.md) for a mapping reference between old and new tools
@@ -50,7 +50,7 @@ As your bot grows in sophistication, use [Dispatch](https://github.com/Microsoft
 
 To test and refine your bot, you can use the new [V4 Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator/releases). The Bot Framework Emulator is a cross-platform [Electron](https://electronjs.org/) application that enables you to test and debug your bots on local machine or in the cloud.
 
-Also, during early designs stages you may want to create mockup of conversations between the user and the bot for the specific scenarios your bot will support. Use [bf chatdown](./packages/Chatdown) command to author conversation mockup .chat files and convert them into rich transcripts and view the conversations in the the Emulator. 
+Also, during early designs stages you may want to create mockup of conversations between the user and the bot for the specific scenarios your bot will support. Use [bf chatdown](./packages/cli#bf-chatdown) command to author conversation mockup .chat files and convert them into rich transcripts and view the conversations in the the Emulator. 
 
 Lastly, with the [Azure CLI Bot extension](./AzureCli.md) (_az bot_ command), you can create, download, publish, configure channels with the [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/). It is a plugin that extends the functionality of Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to manage your Azure Bot Service assets.
 
@@ -77,7 +77,36 @@ Privacy is very important to us. BF CLI contains optional instrumentation that i
 
 To disable data collection see the  __*bf config*__ command.
 
-Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.  
+
+Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.
+
+### Enable Telemetry in Continuous Integration Pipelines
+
+Per above, Microsoft will only collect anonymous data to help improve the CLI. To set your CI/CD pipeline telemetry collection behavior set the following OS environment variable:
+
+* set BF_CLI_TELEMETRY = true  : Bypass prompts and **enables** telemetry collection.
+* set BF_CLI_TELEMETRY = false : Bypass prompts and **disables** telemetry collection (default).
+* BF_CLI_TELEMETRY = null (absent) : If no value is set in configuration file defaults to false - disabled.
+
+## Nightly builds
+
+Nightly builds are generated using the latest code. Therefore, they may not be stable, and most likely lack up to date documentation. These builds are better suited for more experienced users, although everyone is welcome to use them and provide feedback.
+
+You can get the latest nightly build of bot framework cli from the [BotBuilder MyGet](https://botbuilder.myget.org/gallery) feed. To install the nightly -
+
+```shell
+npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
+```
+
+Install using npm:
+```shell
+npm i -g @microsoft/botframework-cli
+```
+
+To reset registry:
+```shell
+npm config set registry https://registry.npmjs.org/
+```
 
 ## Contributing
 
@@ -98,3 +127,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 Security issues and bugs should be reported privately, via email, to the Microsoft Security Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Further information, including the [MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
 
 Copyright (c) Microsoft Corporation. All rights reserved.
+
+[1]:./packages/chatdown/README.md
+[2]:./packages/qnamaker/README.md
+[3]:./packages/luis/README.md

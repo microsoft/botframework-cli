@@ -1,0 +1,41 @@
+{
+  "name": "test(development)-foo.fr-fr.lu",
+  "versionId": "0.1",
+  "desc": "Model for test app, targetting development",
+  "culture": "fr-fr",
+  "intents": [
+    {
+      "name": "None",
+      "features": []
+    },
+    {
+      "name": "YoCarlos",
+      "features": []
+    }
+  ],
+  "entities": [],
+  "closedLists": [],
+  "composites": [],
+  "hierarchicals": [],
+  "patternAnyEntities": [],
+  "regexEntities": [],
+  "prebuiltEntities": [],
+  "regexFeatures": [],
+  "phraselists": [],
+  "patterns": [],
+  "utterances": [
+    {
+      "text": "bon jour carlos!",
+      "intent": "YoCarlos",
+      "entities": []
+    }
+  ],
+  "luis_schema_version": "7.0.0",
+  "tokenizerVersion": "1.0.0",
+  "settings": [
+    {
+      "name": "NormalizeDiacritics",
+      "value": "true"
+    }
+  ]
+}

@@ -1,10 +1,17 @@
 @microsoft/bf-qnamaker
 ======================
 
-
+This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-qnamaker)](https://npmjs.org/package/@microsoft/bf-qnamaker)
+
+
+# Relevant docs
+- [.qna file format][1]
+- [Working with .qna files][2]
+- [Machine translating .qna content][3]
+- [using qnamaker:build][4]
 
 # Commands
 <!-- commands -->
@@ -12,6 +19,7 @@
 * [`bf qnamaker:alterations`](#bf-qnamakeralterations)
 * [`bf qnamaker:alterations:list`](#bf-qnamakeralterationslist)
 * [`bf qnamaker:alterations:replace`](#bf-qnamakeralterationsreplace)
+* [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:endpointkeys`](#bf-qnamakerendpointkeys)
 * [`bf qnamaker:endpointkeys:list`](#bf-qnamakerendpointkeyslist)
 * [`bf qnamaker:endpointkeys:refresh`](#bf-qnamakerendpointkeysrefresh)
@@ -32,6 +40,8 @@
 * [`bf qnamaker:operationdetails:get`](#bf-qnamakeroperationdetailsget)
 * [`bf qnamaker:query`](#bf-qnamakerquery)
 * [`bf qnamaker:train`](#bf-qnamakertrain)
+* [`bf qnamaker:translate`](#bf-qnamakertranslate)
+* [`bf qnamaker:build`](#bf-qnamakerbuild)
 
 ## `bf qnamaker`
 
@@ -99,6 +109,28 @@ OPTIONS
 ```
 
 _See code: [src/commands/qnamaker/alterations/replace.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/alterations/replace.ts)_
+
+## `bf qnamaker:convert`
+
+Converts .qna file(s) to QnA application JSON models or vice versa.
+
+```
+USAGE
+  $ bf qnamaker:convert
+
+OPTIONS
+  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help     qnamaker:convert help
+  -i, --in=in    Source .qna file(s) or QnA KB JSON file
+  -o, --out=out  Output file or folder name. If not specified stdout will be used as output
+  -r, --recurse  Indicates if sub-folders need to be considered to file .qna file(s)
+  --alterations  Indicates if files is QnA Alterations
+  --log          Enables log messages
+  --name=name    Name of the QnA KB
+  --sort         When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files
+```
+
+_See code: [src/commands/qnamaker/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/convert.ts)_
 
 ## `bf qnamaker:endpointkeys`
 
@@ -295,7 +327,7 @@ USAGE
 OPTIONS
   -h, --help                         qnamaker:kb:export command help
   --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
-  --environment=environment          (required) Specifies whether environment is Test or Prod.
+  --environment=environment          [default: Prod] Specifies whether environment is Test or Prod.
 
   --kbId=kbId                        Knowledgebase id to be exported. Overrides the knowledge base id present in the
                                      config
@@ -513,4 +545,57 @@ OPTIONS
 ```
 
 _See code: [src/commands/qnamaker/train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/train.ts)_
+
+## `bf qnamaker:translate`
+
+Translate given QnA maker application JSON model or qna file(s)
+
+```
+USAGE
+  $ bf qnamaker:translate
+
+OPTIONS
+  -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                   qnamaker:translate help
+  -i, --in=in                  Source .qna file(s) or QnA maker application JSON model
+  -o, --out=out                Output folder name. If not specified stdout will be used as output
+  -r, --recurse                Indicates if sub-folders need to be considered to find .qna file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         When set, machine translate comments found in .qna file
+  --translate_link_text        When set, machine translate link description in .qna file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
+```
+
+_See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/translate.ts)_
+
+## `bf qnamaker:build`
+
+Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations
+
+```
+USAGE
+  $ bf qnamaker:build
+
+OPTIONS
+  -f, --force                        If --dialog flag is provided, overwirtes relevant dialog file
+  -h, --help                         qnamaker:build help
+  -i, --in=in                        Source .qna file or folder
+  -o, --out=out                      Output file or folder name. If not specified, current directory will be used as output
+  -b, --botName=botName              (required) Bot name
+  --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
+  --defaultCulture=defaultCulture    Culture code for the content. Infer from .qna if available. Defaults to en-us if not set
+  --fallbackLocale=fallbackLocale    Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set
+  --region=region                    [default: westus] QnA maker api endpoint region [westus|westeurope|australiaeast]
+  --suffix=suffix                    Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in useralias
+  --dialog                           Write out .dialog files
+  --log                              write out log messages to console
+```
+
+_See code: [src/commands/qnamaker/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/build.ts)_
 <!-- commandsstop -->
+
+[1]:./docs/qna-file-format.md
+[2]:./docs/working-with-qna.md
+[3]:./docs/translate-command.md
+[4]:./docs/using-qnamaker-build.md

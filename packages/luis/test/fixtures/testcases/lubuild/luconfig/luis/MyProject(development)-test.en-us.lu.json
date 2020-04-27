@@ -1,0 +1,1230 @@
+{
+  "name": "MyProject(development)-test.en-us.lu",
+  "versionId": "0.1",
+  "desc": "Model for MyProject app, targetting development",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "AddItem",
+      "features": []
+    },
+    {
+      "name": "Cancel",
+      "features": []
+    },
+    {
+      "name": "DeleteItem",
+      "features": []
+    },
+    {
+      "name": "Greeting",
+      "features": []
+    },
+    {
+      "name": "Help",
+      "features": []
+    },
+    {
+      "name": "None",
+      "features": []
+    },
+    {
+      "name": "ViewCollection",
+      "features": []
+    }
+  ],
+  "entities": [
+    {
+      "name": "itemTitle",
+      "children": [],
+      "features": [],
+      "roles": []
+    }
+  ],
+  "closedLists": [
+    {
+      "name": "listType",
+      "subLists": [
+        {
+          "canonicalForm": "todo",
+          "list": [
+            "to do",
+            "todos",
+            "laundry"
+          ]
+        },
+        {
+          "canonicalForm": "shopping",
+          "list": [
+            "shop",
+            "shoppers"
+          ]
+        },
+        {
+          "canonicalForm": "grocery",
+          "list": [
+            "groceries",
+            "fruits",
+            "vegetables",
+            "household items",
+            "house hold items"
+          ]
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "composites": [],
+  "hierarchicals": [],
+  "patternAnyEntities": [],
+  "regexEntities": [],
+  "prebuiltEntities": [],
+  "regexFeatures": [],
+  "phraselists": [],
+  "patterns": [
+    {
+      "pattern": "add to do to {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add a todo named {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add {itemTitle} to my to dos",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "create to do to {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add a to do that shop {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "i need you to remember [that] {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "remove {itemTitle} from my [todo] list",
+      "intent": "DeleteItem"
+    },
+    {
+      "pattern": "add a to do that purchase {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "[please] add {itemTitle} to the todo list",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add a to do to {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "i did {itemTitle}",
+      "intent": "DeleteItem"
+    },
+    {
+      "pattern": "add to do that {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "[please] delete {itemTitle} from the list",
+      "intent": "DeleteItem"
+    },
+    {
+      "pattern": "add a to do that buy {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "create a to do to {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "mark {itemTitle} as complete",
+      "intent": "DeleteItem"
+    },
+    {
+      "pattern": "i completed {itemTitle}",
+      "intent": "DeleteItem"
+    },
+    {
+      "pattern": "add {itemTitle} to my todo list",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add {itemTitle} to my to do list",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "please remember [to] {itemTitle}",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add {itemTitle} to the list",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "add {itemTitle} to my todo",
+      "intent": "AddItem"
+    },
+    {
+      "pattern": "delete {itemTitle}",
+      "intent": "DeleteItem"
+    },
+    {
+      "pattern": "remind me to {itemTitle}",
+      "intent": "AddItem"
+    }
+  ],
+  "utterances": [
+    {
+      "text": "abort",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "add",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "add a to do item",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "add a to do that purchase a nice sweater",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 17,
+          "endPos": 39,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add a to do to buy shoes",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 15,
+          "endPos": 23,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add a todo item vacuuming by october 3rd",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 16,
+          "endPos": 39,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add a todo named send report over this weekend",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 17,
+          "endPos": 45,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add an task of chores to do around the house",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 15,
+          "endPos": 43,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add another one",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "add call my mother to my todo list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 17,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add due date august to peanut butter jelly bread milk on todos list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 52,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add finish this demo to my todo list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 19,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add get a new car to the todo list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 16,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add go running to my todos",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 13,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add go to whole foods in my to do list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 20,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add reading to my to do list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 10,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add this thing in to do list",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "add to my to do list pick up clothes",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 21,
+          "endPos": 35,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add to my to do list print papers for 10 copies this afternoon",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 21,
+          "endPos": 61,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add to my todos list mail the insurance forms out by saturday",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 21,
+          "endPos": 60,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "add todo",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "add write a spec to the list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 15,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "can i add shirts on the todos list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 10,
+          "endPos": 15,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "can you delete todo1",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 15,
+          "endPos": 19,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "can you delete xxx item",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 15,
+          "endPos": 17,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "can you please help?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "can you please show my todos?",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "can you show me the list?",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "can you show my todo",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "cancel",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel add todo",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel all",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel delete todo",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel that",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "cancel this",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "clear my todo named get a new car",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 20,
+          "endPos": 32,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "clear my todos",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "could i add medicine to the todos list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 12,
+          "endPos": 19,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "create to do",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "create to do that read a book tonight",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 18,
+          "endPos": 36,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "create to do to go running in the park",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 16,
+          "endPos": 37,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete all my todos",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "delete eggs from list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 10,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete off pancake mix on the shopping list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 11,
+          "endPos": 21,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete shampoo from shopping list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 13,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete shirts from list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 12,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete task go fishing",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 12,
+          "endPos": 21,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete task go to cinema tonight",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 12,
+          "endPos": 31,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete the item buy socks from my todo list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 16,
+          "endPos": 24,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete the second task in my shopping list",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "delete the task house cleanup this weekend",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 16,
+          "endPos": 41,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete the task that hit the gym every morning",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 21,
+          "endPos": 45,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete the to do meet my friends tomorrow",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 17,
+          "endPos": 40,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete the to do that daily practice piano",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 22,
+          "endPos": 41,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete the to do that meet john when he come here the next friday",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 22,
+          "endPos": 64,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete to do buy milk",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 13,
+          "endPos": 20,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete to do go shopping",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 13,
+          "endPos": 23,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete to do that go hiking tomorrow",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 18,
+          "endPos": 35,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "delete todo",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "do i have any tasks left?",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "do i have anything left on my todo list?",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "do not do it",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "erase bananas from shopping list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 6,
+          "endPos": 12,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "erase peanuts on the shopping list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 6,
+          "endPos": 12,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "flag first one as done",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 5,
+          "endPos": 13,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "forget the list",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "help please",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "hit me up with more items",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "hiya",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "how are you?",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "how do you do?",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "i changed my mind",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "i do not know",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "i do not want to add a todo",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "i do not wish to delete my todo anymore",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "i finished the las todo",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "i hope i do not have any todo left",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "i need help",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "i need to see my todo list",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "i need you to remember that my wife's birthday is jan 9th",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 28,
+          "endPos": 56,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "i would like to see my todos list",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "i'm done with the first todo",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "keep my todos as is",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "let's just leave it as is",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "mark buy milk as complete",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 5,
+          "endPos": 12,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "new to do",
+      "intent": "AddItem",
+      "entities": []
+    },
+    {
+      "text": "no todo for me",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "not sure what i can do",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "please remember that i need to buy milk",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 31,
+          "endPos": 38,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "please remind me to buy milk",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 20,
+          "endPos": 27,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "please show my todo list",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "please show the list",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "please stop what you are doing",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "purge the todo list",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "put hikes on my to do list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 4,
+          "endPos": 8,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remind me to pick up dry cleaning",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 13,
+          "endPos": 32,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "remove all my todo",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "remove another one",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "remove asprin from shopping list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 12,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove black shoes from shopping list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 17,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove class from todo list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 11,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove finish this demo from the todo list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 22,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove salad vegetables from grocery list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 7,
+          "endPos": 22,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove task buy dog food",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 12,
+          "endPos": 23,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove task go shopping",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 12,
+          "endPos": 22,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove task that go hiking this weekend",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 17,
+          "endPos": 38,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove task that lawn mowing",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 17,
+          "endPos": 27,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove the first todo",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "remove the item paris from my list",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 16,
+          "endPos": 20,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove the task that go to library after work",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 21,
+          "endPos": 44,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove the to do physical examination",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 17,
+          "endPos": 36,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove the to do that pick tom up at six p.m.",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 22,
+          "endPos": 44,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove to do go to the gym",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 13,
+          "endPos": 25,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove to do that go to the dentist tomorrow morning",
+      "intent": "DeleteItem",
+      "entities": [
+        {
+          "startPos": 18,
+          "endPos": 51,
+          "entity": "itemTitle"
+        }
+      ]
+    },
+    {
+      "text": "remove todo",
+      "intent": "DeleteItem",
+      "entities": []
+    },
+    {
+      "text": "see todo",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "show my todo",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "stop that",
+      "intent": "Cancel",
+      "entities": []
+    },
+    {
+      "text": "todo list please",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "view my todos",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "well, i do not know what my todo's title is",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what are my options?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what can i say?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what can you do?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what can you help with?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what do i have on my todo?",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "what do you want me to say?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "what is on my list?",
+      "intent": "ViewCollection",
+      "entities": []
+    },
+    {
+      "text": "who am I?",
+      "intent": "Help",
+      "entities": []
+    },
+    {
+      "text": "would you add heavy cream to the todos list",
+      "intent": "AddItem",
+      "entities": [
+        {
+          "startPos": 14,
+          "endPos": 24,
+          "entity": "itemTitle"
+        }
+      ]
+    }
+  ],
+  "luis_schema_version": "7.0.0",
+  "tokenizerVersion": "1.0.0",
+  "settings": []
+}

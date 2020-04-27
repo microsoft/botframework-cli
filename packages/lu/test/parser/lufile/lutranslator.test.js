@@ -6,8 +6,8 @@ var chai = require('chai');
 var assert = chai.assert;
 const testData = require('./../../fixtures/testcases/translate-testcase-data');
 const translate = require('./../../../src/parser/lufile/translate-helpers');
-const retCode = require('./../../../src/parser/lufile/enums/CLI-errors');
-const helpers = require('./../../../src/parser/lufile/helpers');
+const retCode = require('./../../../src/parser/utils/enums/CLI-errors');
+const helpers = require('./../../../src/parser/utils/helpers');
 const NEWLINE = require('os').EOL;
 const TRANSLATE_KEY = 'd825d5ac21d643f89761de3679fd0fb3';
 

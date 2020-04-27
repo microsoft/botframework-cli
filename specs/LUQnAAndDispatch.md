@@ -12,7 +12,7 @@ The following botbuilder-tools CLI that perform local file transformations will 
 1. Ability to work directly with LUIS and QnA maker models deployed in the cloud
 2. Ability to work with local LUIS and QnA model definition files. 
 
-\#2 above in particular will be brought fowrard under the converged LU command group in BF CLI.
+\#2 above in particular will be brought forward under the converged LU command group in BF CLI.
 
 ## Command group mappings
 

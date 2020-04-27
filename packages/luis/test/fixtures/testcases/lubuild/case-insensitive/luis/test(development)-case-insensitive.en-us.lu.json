@@ -1,0 +1,139 @@
+{
+  "name": "test(development)-case-insensitive.en-us.lu",
+  "versionId": "0.2",
+  "desc": "Model for test app, targetting development",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "GetUserProfile",
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
+    },
+    {
+      "name": "Greeting",
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
+    },
+    {
+      "name": "Help",
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
+    },
+    {
+      "name": "None",
+      "features": [
+        {
+          "featureName": "profileDefinition"
+        }
+      ]
+    }
+  ],
+  "entities": [],
+  "closedLists": [
+    {
+      "name": "Cities",
+      "subLists": [
+        {
+          "canonicalForm": "seattle",
+          "list": [
+            "SEA",
+            "Seatac"
+          ]
+        },
+        {
+          "canonicalForm": "redmond",
+          "list": [
+            "microsoft",
+            "REA"
+          ]
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "composites": [],
+  "hierarchicals": [],
+  "patternAnyEntities": [
+    {
+      "name": "Item",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
+  "regexEntities": [
+    {
+      "name": "zipCode",
+      "regexPattern": "[0-9]{5}",
+      "roles": []
+    }
+  ],
+  "prebuiltEntities": [
+    {
+      "name": "age",
+      "roles": []
+    },
+    {
+      "name": "personName",
+      "roles": []
+    }
+  ],
+  "regexFeatures": [],
+  "phraselists": [
+    {
+      "activated": true,
+      "name": "profileDefinition",
+      "words": "I'm,My,I am",
+      "mode": true,
+      "enabledForAllModels": true
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "help me with {Item}",
+      "intent": "Help"
+    },
+    {
+      "pattern": "please help {Item}",
+      "intent": "Help"
+    }
+  ],
+  "utterances": [
+    {
+      "text": "hello evening",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "hi morning",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "i am 36",
+      "intent": "GetUserProfile",
+      "entities": []
+    },
+    {
+      "text": "i'm 36 years old",
+      "intent": "GetUserProfile",
+      "entities": []
+    },
+    {
+      "text": "my age is 36",
+      "intent": "GetUserProfile",
+      "entities": []
+    }
+  ],
+  "luis_schema_version": "7.0.0",
+  "tokenizerVersion": "1.0.0",
+  "settings": []
+}

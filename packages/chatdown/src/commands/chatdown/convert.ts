@@ -21,7 +21,7 @@ export default class ChatdownConvert extends Command {
   $ bf chatdown --in ./test/utils/*.sample.chat -o ./
   $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static`]
 
-  static flags = {
+  static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'The path of the chat file or directory to be parsed. A glob expression may be passed containing chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an output directory is not present (-o), it will default the output to the current working directory.'}),
     out: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-o) will be placed.'}),
     stamp: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),

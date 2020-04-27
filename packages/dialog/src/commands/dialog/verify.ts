@@ -28,7 +28,7 @@ export default class DialogVerify extends Command {
         verbose: flags.boolean({ description: 'Show verbose output', default: false }),
     }
 
-    private currentFile: string
+    private currentFile = ''
     private files = 0
     private errors = 0
     private warnings = 0
@@ -74,7 +74,7 @@ export default class DialogVerify extends Command {
             }
 
             for (let def of tracker.missingTypes) {
-                this.consoleError(`Missing $type for ${def}`, 'DLG004')
+                this.consoleError(`Missing $kind for ${def}`, 'DLG004')
             }
 
             for (let def of tracker.unusedIDs()) {
@@ -115,4 +115,5 @@ export default class DialogVerify extends Command {
         this.errors++
         this.error(`${this.currentFile} - error ${code || ''}: ${msg}`)
     }
+
 }

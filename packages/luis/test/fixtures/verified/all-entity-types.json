@@ -1,0 +1,111 @@
+{
+  "intents": [],
+  "entities": [
+    {
+      "name": "userName",
+      "roles": [],
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "composites": [],
+  "closedLists": [
+    {
+      "name": "commPreference",
+      "subLists": [
+        {
+          "canonicalForm": "call",
+          "list": [
+            "phone call",
+            "give me a ring",
+            "ring",
+            "call",
+            "cell phone",
+            "phone"
+          ]
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [
+    {
+      "name": "datetimeV2",
+      "roles": []
+    },
+    {
+      "name": "age",
+      "roles": []
+    },
+    {
+      "name": "dimension",
+      "roles": []
+    },
+    {
+      "name": "email",
+      "roles": []
+    },
+    {
+      "name": "money",
+      "roles": []
+    },
+    {
+      "name": "number",
+      "roles": []
+    },
+    {
+      "name": "ordinal",
+      "roles": []
+    },
+    {
+      "name": "percentage",
+      "roles": []
+    },
+    {
+      "name": "phonenumber",
+      "roles": []
+    },
+    {
+      "name": "temperature",
+      "roles": []
+    },
+    {
+      "name": "url",
+      "roles": []
+    }
+  ],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "all-entity-types",
+  "desc": "",
+  "culture": "en-us",
+  "phraselists": [
+    {
+      "name": "ChocolateType",
+      "words": "m&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix",
+      "mode": false,
+      "activated": true,
+      "enabledForAllModels": true
+    },
+    {
+      "name": "question",
+      "words": "are you,you are",
+      "mode": true,
+      "activated": true,
+      "enabledForAllModels": true
+    }
+  ]
+}

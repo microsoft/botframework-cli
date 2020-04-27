@@ -54,7 +54,7 @@ export class Dialog {
 
 // Definition of a Bot Framework component.
 export class Definition {
-    // $type definition of the copmonent or undefined.
+    // $kind definition of the component or undefined.
     type?: st.Type
 
     // dialog that contains definition.
@@ -74,7 +74,7 @@ export class Definition {
 
     /**
      * Construct a component definition.
-     * @param type The $type of the component.
+     * @param type The $kind of the component.
      * @param id The $id of the component if present.
      * @param dialog The dialog that contains the definition. (undefined for forward reference.)
      * @param path The path within the file to the component.
@@ -178,7 +178,7 @@ export class DialogTracker {
     // Map from a type to all instances of that type.
     typeToDef: Map<string, Definition[]>
 
-    // Definitions that are missing a $type.
+    // Definitions that are missing a $kind.
     missingTypes: Definition[]
 
     // Top-level cogs in tracker.
@@ -225,8 +225,8 @@ export class DialogTracker {
             })
             dialog.body.$id = dialog.id()
             walkJSON(dialog.body, '', (elt, path) => {
-                if (elt.$type) {
-                    let def = new Definition(this.schema.typeToType.get(elt.$type), elt.$id, dialog, path, elt.$copy)
+                if (elt.$kind) {
+                    let def = new Definition(this.schema.typeToType.get(elt.$kind), elt.$id, dialog, path, elt.$copy)
                     this.addDefinition(def)
                     if (elt.$copy) {
                         this.addReference(elt.$copy, def)

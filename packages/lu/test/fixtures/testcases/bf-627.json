@@ -1,0 +1,51 @@
+{
+  "intents": [
+    {
+      "name": "Repros"
+    }
+  ],
+  "entities": [
+    {
+      "name": "outer",
+      "roles": [],
+      "children": [
+        {
+          "name": "inner",
+          "instanceOf": null,
+          "children": []
+        }
+      ]
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "when I use the same text twice in nested ML entity text",
+      "intent": "Repros",
+      "entities": [
+        {
+          "entity": "inner",
+          "startPos": 20,
+          "endPos": 23
+        },
+        {
+          "entity": "outer",
+          "startPos": 15,
+          "endPos": 54
+        }
+      ]
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us",
+  "phraselists": []
+}

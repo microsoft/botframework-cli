@@ -1,0 +1,9 @@
+{
+    "$kind": "Microsoft.MultiLanguageRecognizer",
+    "recognizers": {
+        "fr-fr": "foo.fr-fr.lu",
+        "en-us": "foo.en-us.lu",
+        "": "foo.en-us.lu",
+        "zh-cn": "foo.zh-cn.lu"
+    }
+}

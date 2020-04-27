@@ -1,0 +1,92 @@
+[
+    {
+      "translations": [
+        {
+          "text": "Que diriez-vous de la météo d’aujourd’hui",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:2-4:14 0:2-0:2 10:12-19:20 10:12-16:17 14:20-22:26 22:26-28:40"
+          }
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": "Quel est le temps aujourd’hui",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:3-0:3 5:6-5:7 8:10-9:10 12:18-12:16 20:24-18:28"
+          }
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": "Salut ",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:2-0:4"
+          }
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": "Salut, bon ",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:2-0:5 4:7-7:9"
+          }
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": ", ",
+          "to": "fr"
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": "Salut, bon ",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:2-0:5 4:7-7:9"
+          }
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": ", ",
+          "to": "fr"
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": "Salut, bon ",
+          "to": "fr",
+          "alignment": {
+            "proj": "0:2-0:5 4:7-7:9"
+          }
+        }
+      ]
+    },
+    {
+      "translations": [
+        {
+          "text": ", ",
+          "to": "fr"
+        }
+      ]
+    }
+  ]

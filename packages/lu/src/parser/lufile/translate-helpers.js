@@ -1,16 +1,14 @@
-#!/usr/bin/env node
 /**
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
 
 const fetch = require('node-fetch');
-const PARSERCONSTS = require('./enums/parserconsts');
-const retCode = require('./enums/CLI-errors');
+const PARSERCONSTS = require('./../utils/enums/parserconsts');
+const retCode = require('./../utils/enums/CLI-errors');
 const chalk = require('chalk');
-const helperClasses = require('./classes/hclasses');
-const exception = require('./classes/exception');
-const helpers = require('./helpers');
+const exception = require('./../utils/exception');
+const helpers = require('./../utils/helpers');
 const NEWLINE = require('os').EOL;
 const MAX_TRANSLATE_BATCH_SIZE = 25;
 const MAX_CHAR_IN_REQUEST = 4990;
@@ -287,10 +285,10 @@ const addSegment = function (linesToTranslate, text, localize) {
         let splitRegExp = new RegExp(`(.{${MAX_CHAR_IN_REQUEST}})`);
         let splitLine = text.split(splitRegExp).filter(O => O);
         splitLine.forEach(item => {
-            linesToTranslate.push(new helperClasses.translateLine(item, localize));
+            linesToTranslate.push(new translateLine(item, localize));
         })
     } else {
-        linesToTranslate.push(new helperClasses.translateLine(text, localize));
+        linesToTranslate.push(new translateLine(text, localize));
     }
 };
 /**
@@ -372,6 +370,14 @@ const get_guid = function () {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
+}
+
+class translateLine{
+    constructor(text, localize, idx) {
+        this.text = text ? text: '';
+        this.localize = localize ? localize : false;
+        this.idx = idx ? idx : -1;
+    }
 }
 
 module.exports = translateHelpers;

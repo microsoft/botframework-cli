@@ -1,0 +1,25 @@
+{
+  "urls": [],
+  "qnaList": [
+    {
+      "id": 0,
+      "answer": "hi there",
+      "source": "hand added",
+      "questions": [
+        "hello",
+        "Hi",
+        "Hello",
+        "Good morning",
+        "Good evening"
+      ],
+      "metadata": [
+        {
+          "name": "a",
+          "value": "b"
+        }
+      ]
+    }
+  ],
+  "files": [],
+  "name": ""
+}

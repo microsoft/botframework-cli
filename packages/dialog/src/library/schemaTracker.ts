@@ -30,16 +30,16 @@ export class SchemaTracker {
             added = true
             if (schemaObject.oneOf) {
                 const defRef = '#/definitions/'
-                const unionRole = 'unionType('
+                const implementsRole = 'implements('
                 let processRole = (role: string, type: Type) => {
-                    if (role.startsWith(unionRole)) {
-                        role = role.substring(unionRole.length, role.length - 1)
-                        let unionType = this.typeToType.get(role)
-                        if (!unionType) {
-                            unionType = new Type(role)
-                            this.typeToType.set(role, unionType)
+                    if (role.startsWith(implementsRole)) {
+                        role = role.substring(implementsRole.length, role.length - 1)
+                        let interfaceDefinition = this.typeToType.get(role)
+                        if (!interfaceDefinition) {
+                            interfaceDefinition = new Type(role)
+                            this.typeToType.set(role, interfaceDefinition)
                         }
-                        unionType.addImplementation(type)
+                        interfaceDefinition.addImplementation(type)
                     }
                 }
                 for (let one of schemaObject.oneOf) {
@@ -90,6 +90,9 @@ export class SchemaTracker {
             this.validator.addSchema(schemaObject, schemaPath)
             validator = this.validator.getSchema(schemaPath)
         }
+        if (!validator) {
+            throw new Error('Could not find schema validator.')
+        }
         return [validator, added]
     }
 
@@ -105,7 +108,7 @@ export class SchemaTracker {
             client.get(url, (resp: any) => {
                 let data = ''
 
-                // A chunk of data has been recieved.
+                // A chunk of data has been received.
                 resp.on('data', (chunk: any) => {
                     data += chunk
                 })
@@ -131,17 +134,17 @@ export class Type {
     // Paths to lg properties for concrete types.
     lgProperties: string[]
 
-    // Possible types for a union type.
+    // Possible types for an interface type.
     implementations: Type[]
 
-    // Union types this type is part of.
-    unionTypes: Type[]
+    // Interface types this type implements.
+    interfaces: Type[]
 
     constructor(name: string, schema?: any) {
         this.name = name
         this.lgProperties = []
         this.implementations = []
-        this.unionTypes = []
+        this.interfaces = []
         if (schema) {
             this.walkProps(schema, name)
         }
@@ -149,7 +152,7 @@ export class Type {
 
     addImplementation(type: Type) {
         this.implementations.push(type)
-        type.unionTypes.push(this)
+        type.interfaces.push(this)
     }
 
     toString(): string {

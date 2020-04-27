@@ -1,0 +1,117 @@
+{
+  "urls": [],
+  "qnaList": [
+    {
+      "id": 1,
+      "answer": "hi there",
+      "source": "xyz",
+      "questions": [
+        "hello"
+      ],
+      "metadata": [
+        {
+          "name": "a",
+          "value": "b"
+        }
+      ],
+      "context": {
+        "isContextOnly": false,
+        "prompts": [
+          {
+            "displayText": "joke",
+            "qnaId": 3,
+            "qna": null,
+            "displayOrder": 0
+          },
+          {
+            "displayText": "flight booking",
+            "qnaId": 32,
+            "qna": null,
+            "displayOrder": 1
+          },
+          {
+            "displayText": "weather",
+            "qnaId": 2,
+            "qna": null,
+            "displayOrder": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "answer": "sure will get weather",
+      "source": "custom editorial",
+      "questions": [
+        "weather"
+      ],
+      "metadata": [],
+      "context": {
+        "isContextOnly": true,
+        "prompts": []
+      }
+    },
+    {
+      "id": 3,
+      "answer": "ha ha ha",
+      "source": "custom editorial",
+      "questions": [
+        "q2",
+        "tell me a joke"
+      ],
+      "metadata": [],
+      "context": {
+        "isContextOnly": false,
+        "prompts": []
+      }
+    },
+    {
+      "id": 32,
+      "answer": "sure. happy to help with that.",
+      "source": "custom editorial",
+      "questions": [
+        "book flight"
+      ],
+      "metadata": [],
+      "context": {
+        "isContextOnly": true,
+        "prompts": []
+      }
+    },
+    {
+      "id": 4,
+      "answer": "tomato",
+      "source": "custom editorial",
+      "questions": [
+        "batata"
+      ],
+      "metadata": [],
+      "context": {
+        "isContextOnly": false,
+        "prompts": []
+      }
+    },
+    {
+      "id": 5,
+      "answer": "test answer",
+      "source": "custom editorial",
+      "questions": [
+        "testquestion"
+      ],
+      "metadata": [],
+      "context": {
+        "isContextOnly": false,
+        "prompts": [
+          {
+            "displayText": "flight booking",
+            "qnaId": 32,
+            "qna": null,
+            "displayOrder": 0
+          }
+        ]
+      }
+    }
+  ],
+  "files": [],
+  "name": ""
+}

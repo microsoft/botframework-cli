@@ -3,50 +3,130 @@ const LUFileLexer = require('./generated/LUFileLexer').LUFileLexer;
 const LUFileParser = require('./generated/LUFileParser').LUFileParser;
 const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext;
 const LUResource = require('./luResource');
-const LUIntent = require('./luIntent');
-const LUEntity = require('./luEntity');
-const LUNewEntity = require('./luNewEntity');
-const LUImport = require('./luImport');
-const LUQna = require('./luQna');
-const LUModelInfo = require('./luModelInfo');
+const NestedIntentSection = require('./nestedIntentSection');
+const SimpleIntentSection = require('./simpleIntentSection');
+const EntitySection = require('./entitySection');
+const NewEntitySection =  require('./newEntitySection');
+const ImportSection = require('./importSection');
+const QnaSection = require('./qnaSection');
+const ModelInfoSection = require('./modelInfoSection');
 const LUErrorListener = require('./luErrorListener');
+const SectionType = require('./../utils/enums/lusectiontypes');
+const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
+const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const NEWLINE = require('os').EOL;
 
 class LUParser {
     /**
      * @param {string} text
      */
     static parse(text) {
-        let luIntents;
-        let luEntities;
-        let luNewEntities;
-        let luImports;
-        let qnas;
-        let modelInfos;
-
-        let { fileContent, errors } = this.getFileContent(text);
-        if (errors.length > 0) {
-            return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
+        if (text === undefined || text === '') {
+            return new LUResource([], '', []);
         }
 
-        luIntents = this.extractLUIntents(fileContent);
-        luIntents.forEach(luIntent => errors = errors.concat(luIntent.Errors));
+        let sections = [];
+        let content = text;
 
-        luEntities = this.extractLUEntities(fileContent);
-        luEntities.forEach(luEntity => errors = errors.concat(luEntity.Errors));
+        let {fileContent, errors} = this.getFileContent(text);
 
-        luNewEntities = this.extractNewEntities(fileContent); 
-        luNewEntities.forEach(luNewEntity => errors = errors.concat(luNewEntities.Errors));
+        try {
+            let modelInfoSections = this.extractModelInfoSections(fileContent);
+            modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(modelInfoSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing model information: ${err.message}`
+            }))
+        }
 
-        luImports = this.extractLUImports(fileContent);
-        luImports.forEach(luImport => errors = errors.concat(luImport.Errors));
-        
-        qnas = this.extractLUQnas(fileContent);
-        qnas.forEach(qna => errors = errors.concat(qna.Errors));
+        try {
+            let isSectionEnabled = this.isSectionEnabled(sections);
 
-        modelInfos = this.extractLUModelInfos(fileContent);
-        modelInfos.forEach(modelInfo => errors = errors.concat(modelInfo.Errors));
-        
-        return new LUResource(luIntents, luEntities, luNewEntities, luImports, qnas, modelInfos, errors);
+            let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
+            nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
+            if (isSectionEnabled) {
+                sections = sections.concat(nestedIntentSections);
+            } else {
+                nestedIntentSections.forEach(section => {
+                    let emptyIntentSection = new SimpleIntentSection();
+                    emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
+                    emptyIntentSection.Name = section.Name;
+                    let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
+                    let error = BuildDiagnostic({
+                        message: errorMsg,
+                        context: emptyIntentSection.ParseTree,
+                        severity: DiagnosticSeverity.WARN
+                    })
+
+                    errors.push(error);
+                    sections.push(emptyIntentSection);
+
+                    section.SimpleIntentSections.forEach(subSection => {
+                        sections.push(subSection);
+                        errors = errors.concat(subSection.Errors);
+                    })
+                });
+            }
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing nested intent section: ${err.message}`
+            }))
+        }
+
+        try {
+            let simpleIntentSections = this.extractSimpleIntentSections(fileContent, content);
+            simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(simpleIntentSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing simple intent section: ${err.message}`
+            }))
+        }
+
+        try {
+            let entitySections = this.extractEntitiesSections(fileContent);
+            entitySections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(entitySections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing entities: ${err.message}`
+            }))
+        }
+
+        try {
+            let newEntitySections = this.extractNewEntitiesSections(fileContent);
+            newEntitySections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(newEntitySections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing new entities: ${err.message}`
+            }))
+        }
+
+        try {
+            let importSections = this.extractImportSections(fileContent);
+            importSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(importSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing import section: ${err.message}`
+            }))
+        }
+
+        try {
+            let qnaSections = this.extractQnaSections(fileContent);
+            qnaSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(qnaSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing qna section: ${err.message}`
+            }))
+        }
+
+        this.extractIntentBody(sections, content)
+
+        return new LUResource(sections, content, errors);
     }
 
     /**
@@ -75,107 +155,196 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
+     * @param {string} content 
      */
-    static extractLUIntents(fileContext) {
+    static extractNestedIntentSections(fileContext, content) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let intentDefinitions = fileContext.paragraph()
-            .map(x => x.intentDefinition())
+        let nestedIntentSections = fileContext.paragraph()
+            .map(x => x.nestedIntentSection())
             .filter(x => x !== undefined && x !== null);
 
-        let intents = intentDefinitions.map(x => new LUIntent(x));
+        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x, content));
 
-        return intents;
+        return nestedIntentSectionList;
     }
 
-    static extractNewEntities(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.newEntityDefinition())
-            .filter(x => x !== undefined && x != null);
-
-        let entities = entityDefinitions.map(x => new LUNewEntity(x));
-
-        return entities;
-    }
     /**
      * @param {FileContext} fileContext 
+     * @param {string} content 
      */
-    static extractLUEntities(fileContext) {
+    static extractSimpleIntentSections(fileContext, content) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.entityDefinition())
-            .filter(x => x !== undefined && x != null);
+        let simpleIntentSections = fileContext.paragraph()
+            .map(x => x.simpleIntentSection())
+            .filter(x => x && x.intentDefinition());
 
-        let entities = entityDefinitions.map(x => new LUEntity(x));
+        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x, content));
 
-        return entities;
+        return simpleIntentSectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUImports(fileContext) {
+    static extractEntitiesSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let entityDefinitions = fileContext.paragraph()
-            .map(x => x.importDefinition())
-            .filter(x => x !== undefined && x != null);
+        let entitySections = fileContext.paragraph()
+            .map(x => x.simpleIntentSection())
+            .filter(x => x && !x.intentDefinition());
 
-        let imports = entityDefinitions.map(x => new LUImport(x));
+        let entitySectionList = [];
+        entitySections.forEach(x => {
+            if (x.entitySection) {
+                for (const entitySection of x.entitySection()) {
+                    entitySectionList.push(new EntitySection(entitySection));
+                }
+            }
+        })
 
-        return imports;
+        return entitySectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUQnas(fileContext) {
+    static extractNewEntitiesSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let qnaDefinitions = fileContext.paragraph()
-            .map(x => x.qnaDefinition())
-            .filter(x => x !== undefined && x != null);
+        let newEntitySections = fileContext.paragraph()
+            .map(x => x.simpleIntentSection())
+            .filter(x => x && !x.intentDefinition());
+        
+        let newEntitySectionList = [];
+        newEntitySections.forEach(x => {
+            if (x.newEntitySection) {
+                for (const newEntitySection of x.newEntitySection()) {
+                    newEntitySectionList.push(new NewEntitySection(newEntitySection));
+                }
+            }
+        })
 
-        let qnas = qnaDefinitions.map(x => new LUQna(x));
-
-        return qnas;
+        return newEntitySectionList;
     }
 
     /**
      * @param {FileContext} fileContext 
      */
-    static extractLUModelInfos(fileContext) {
+    static extractImportSections(fileContext) {
         if (fileContext === undefined
             || fileContext === null) {
                 return [];
         }
 
-        let modelInfoDefinitions = fileContext.paragraph()
-            .map(x => x.modelInfoDefinition())
-            .filter(x => x !== undefined && x != null);
+        let importSections = fileContext.paragraph()
+            .map(x => x.importSection())
+            .filter(x => x !== undefined && x !== null);
 
-        let modelInfos = modelInfoDefinitions.map(x => new LUModelInfo(x));
+        let importSectionList = importSections.map(x => new ImportSection(x));
 
-        return modelInfos;
+        return importSectionList;
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractQnaSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let qnaSections = fileContext.paragraph()
+            .map(x => x.qnaSection())
+            .filter(x => x !== undefined && x !== null);
+
+        let qnaSectionList = qnaSections.map(x => new QnaSection(x));
+
+        return qnaSectionList;
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractModelInfoSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let modelInfoSections = fileContext.paragraph()
+            .map(x => x.modelInfoSection())
+            .filter(x => x !== undefined && x !== null);
+
+        let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
+
+        return modelInfoSectionList;
+    }
+
+    /**
+     * @param {any[]} sections
+     * @param {string} content
+     */
+    static extractIntentBody(sections, content) {
+        sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
+        const originList = content.split(/\r?\n/)
+        sections.forEach(function (section, index) {
+            if (section.SectionType === SectionType.SIMPLEINTENTSECTION || section.SectionType === SectionType.NESTEDINTENTSECTION) {
+                const startLine = section.ParseTree.start.line - 1
+                let stopLine
+                if (index + 1 < sections.length) {
+                    stopLine = sections[index + 1].ParseTree.start.line - 1
+                    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine >= stopLine || originList.Length <= stopLine) {
+                        throw new Error("index out of range.")
+                    }
+                } else {
+                    stopLine = originList.length
+                }
+
+                const destList = originList.slice(startLine + 1, stopLine)
+                section.Body = destList.join(NEWLINE)
+                section.StartLine = startLine
+                section.StopLine = stopLine - 1
+
+                if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
+                    LUParser.extractIntentBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
+                }
+            }
+        })
+    }
+
+    static isSectionEnabled(sections) {
+        let modelInfoSections = sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
+        let enableSections = false;
+        if (modelInfoSections && modelInfoSections.length > 0) {
+            for (const modelInfo of modelInfoSections) {
+                let line = modelInfo.ModelInfo
+                let kvPair = line.split(/@(enableSections).(.*)=/g).map(item => item.trim());
+                if (kvPair.length === 4) {
+                    if (kvPair[1] === 'enableSections' && kvPair[3] === 'true') {
+                        enableSections = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return enableSections;
     }
 }
 
