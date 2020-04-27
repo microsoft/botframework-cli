@@ -36,7 +36,11 @@ const modules = {
         KB: require('./qna/qnamaker/kb'),
         Alterations: require('./qna/alterations/alterations'),
         QnAMakerBuilder: require('./qna/qnamaker/qnaMakerBuilder'),
-        Exception: require('./utils/exception')
+        Exception: require('./utils/exception'),
+        LUOptions: require('./lu/luOptions'),
+        Utils: {
+            ReadTextFile: require('./lufile/read-text-file').readSync
+        }
     }
 };
 
