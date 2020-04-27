@@ -1,0 +1,90 @@
+[
+  {
+    "translations": [
+      {
+        "text": "奶酪怪人！",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "0:5-0:1 7:13-4:4 7:13-3:3 7:13-2:2"
+        }
+      }
+    ]
+  },
+  {
+    "translations": [
+      {
+        "text": "这是一些描述卡的文本，它很酷，因为它很酷",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "0:3-0:1 8:11-3:3 8:11-2:2 13:16-7:9 18:27-4:5 33:37-6:6 33:37-10:10 39:42-11:11 44:47-12:13 49:55-15:17 57:60-14:14 62:65-18:19"
+        }
+      }
+    ]
+  },
+  {
+    "translations": [
+      {
+        "text": "https://memegenerator.net/img/instances/500x/73055378/cheese-gromit.jpg",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "0:70-0:70"
+        }
+      }
+    ]
+  },
+  {
+    "translations": [
+      {
+        "text": "选项 1",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "0:5-0:1 7:7-3:3"
+        }
+      }
+    ]
+  },
+  {
+    "translations": [
+      {
+        "text": "选项 2",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "1:6-0:1 8:8-3:3"
+        }
+      }
+    ]
+  },
+  {
+    "translations": [
+      {
+        "text": "选项 3",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "1:6-0:1  8:8-3:3"
+        }
+      }
+    ]
+  },
+  {
+    "translations": [
+      {
+        "text": "这是英雄卡",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "5:6-0:1 8:15-4:4 8:15-2:3"
+        }
+      }
+    ]
+  },
+  {
+    "translations": [
+      {
+        "text": "是英雄卡",
+        "to": "zh-Hans",
+        "alignment": {
+          "proj": "3:4-0:0 6:13-3:3 6:13-1:2"
+        }
+      }
+    ]
+  }
+]
