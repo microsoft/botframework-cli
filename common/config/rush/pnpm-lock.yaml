@@ -10,7 +10,6 @@ dependencies:
   '@rush-temp/bf-cli-command': 'file:projects/bf-cli-command.tgz'
   '@rush-temp/bf-cli-config': 'file:projects/bf-cli-config.tgz'
   '@rush-temp/bf-cli-plugins': 'file:projects/bf-cli-plugins.tgz'
-  '@rush-temp/bf-cross-train': 'file:projects/bf-cross-train.tgz'
   '@rush-temp/bf-dialog': 'file:projects/bf-dialog.tgz'
   '@rush-temp/bf-dispatcher': 'file:projects/bf-dispatcher.tgz'
   '@rush-temp/bf-lu': 'file:projects/bf-lu.tgz'
@@ -6506,32 +6505,6 @@ packages:
       integrity: sha512-2n8WG0y6vxBpyUrSJLVWwLcwUN+FqR8wI5htyMvDmPJOBp/PnH4WrupuQXDhl0UacI6LBhI4RWiZtunIkJ1zBw==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
-  'file:projects/bf-cross-train.tgz':
-    dependencies:
-      '@oclif/command': 1.5.19
-      '@oclif/config': 1.13.3
-      '@oclif/dev-cli': 1.22.2
-      '@oclif/errors': 1.2.2
-      '@oclif/plugin-help': 2.2.3
-      '@oclif/test': 1.2.5
-      '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.7.4
-      '@types/mocha': 5.2.7
-      '@types/node': 10.17.13
-      '@types/rimraf': 2.0.3
-      fs-extra: 5.0.0
-      mocha: 6.2.2
-      nyc: 14.1.1
-      rimraf: 3.0.0
-      ts-node: 8.5.4_typescript@3.7.4
-      tslib: 1.10.0
-      tslint: 5.20.1_typescript@3.7.4
-      typescript: 3.7.4
-    dev: false
-    name: '@rush-temp/bf-cross-train'
-    resolution:
-      integrity: sha512-MEonYzzDi8DYtH39beNLNNeHCpXi6KIRaCgefvCqK8ZE97CviMBfzqnqZrbzPgbkgf9hRkCQafcZF4Gg0jguKA==
-      tarball: 'file:projects/bf-cross-train.tgz'
-    version: 0.0.0
   'file:projects/bf-dialog.tgz':
     dependencies:
       '@chrimc62/adaptive-expressions': 4.1.20
@@ -6743,11 +6716,12 @@ packages:
       tslib: 1.10.0
       tslint: 5.20.1_typescript@3.7.4
       typescript: 3.7.4
+      username: 4.1.0
       window-size: 1.1.1
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-tMkq5ynIurSZZFLV0dRPYs31ee/RwvW6+6P3GPO1fIJTX4TZrQMmwQFGKUi1Lne0YL5FbWJRjGt3E+sWAyuuzg==
+      integrity: sha512-MEatwVZQH7c9/VJP8AiNf2MNCJw5Cl8qfT5dzKACNag/5kPNIATNxxNPOscaTxHI5mJb95lG0TRjFafHYmIxkA==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6797,7 +6771,6 @@ specifiers:
   '@rush-temp/bf-cli-command': 'file:./projects/bf-cli-command.tgz'
   '@rush-temp/bf-cli-config': 'file:./projects/bf-cli-config.tgz'
   '@rush-temp/bf-cli-plugins': 'file:./projects/bf-cli-plugins.tgz'
-  '@rush-temp/bf-cross-train': 'file:./projects/bf-cross-train.tgz'
   '@rush-temp/bf-dialog': 'file:./projects/bf-dialog.tgz'
   '@rush-temp/bf-dispatcher': 'file:./projects/bf-dispatcher.tgz'
   '@rush-temp/bf-lu': 'file:./projects/bf-lu.tgz'

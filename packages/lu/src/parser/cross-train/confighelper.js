@@ -7,6 +7,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const exception = require('../utils/exception')
 const retCode = require('../utils/enums/CLI-errors')
+const fileHelper = require('../../utils/filehelper')
 
 const dialogExt = '.dialog'
 const luExt = '.lu'
@@ -51,7 +52,7 @@ const getDialogFiles = async function (inputFolder, results) {
 const getInputFromFile = async function (path) {
   if (path) {
     try {
-      return await utils.readTextFile(path)
+      return await fileHelper.getContentFromFile(path)
     } catch (error) {
       throw (new exception(retCode.errorCode.INVALID_INPUT, `Failed to read file: ${error}`))
     }
