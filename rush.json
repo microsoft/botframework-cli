@@ -32,6 +32,10 @@
       "projectFolder": "packages/dispatcher"
     },
     {
+      "packageName": "@microsoft/bf-lg-cli",
+      "projectFolder": "packages/lg"
+    },
+    {
       "packageName": "@microsoft/bf-luis-cli",
       "projectFolder": "packages/luis"
     },
