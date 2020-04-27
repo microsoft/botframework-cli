@@ -7,8 +7,9 @@ import {CLIError} from '@microsoft/bf-cli-command';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import {Utility} from './utility';
-const LuisBuilder = require('@microsoft/bf-lu').V2.LuisBuilder;
-const QnaMakerBuilder = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
+const ReadText: any = require('read-text-file');
+const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
+const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
 
 export class OrchestratorHelper {
   public static isDirectory(path: string): boolean {
@@ -22,8 +23,7 @@ export class OrchestratorHelper {
 
   public static readFile(filePath: string): string {
     try {
-      const content: string = fs.readFileSync(filePath, {encoding: 'utf8'});
-      return content;
+      return ReadText.readSync(filePath);
     } catch (error) {
       throw new CLIError(error);
     }
@@ -150,7 +150,11 @@ export class OrchestratorHelper {
 
   static async parseLuFile(luFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
     const fileContents: string = OrchestratorHelper.readFile(luFile);
-    const luisObject: any = await LuisBuilder.fromContentAsync(fileContents);
+    const luObject: any = {
+      content: fileContents,
+      id: luFile,
+    };
+    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
     OrchestratorHelper.getIntentsUtterances(luisObject, hierarchicalLabel, utterancesLabelsMap);
   }
 
@@ -311,16 +315,13 @@ export class OrchestratorHelper {
     if (existingLabels) {
       if (hierarchicalLabel && hierarchicalLabel.length > 0) {
         OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels);
-      }
-      else {
+      } else {
         OrchestratorHelper.addUniqueLabel(label, existingLabels);
       }
       utterancesLabelsMap[utterance] = existingLabels;
-    }
-    else if (hierarchicalLabel && hierarchicalLabel.length > 0) {
+    } else if (hierarchicalLabel && hierarchicalLabel.length > 0) {
       utterancesLabelsMap[utterance] = [hierarchicalLabel];
-    }
-    else {
+    } else {
       utterancesLabelsMap[utterance] = [label];
     }
   }
@@ -337,5 +338,25 @@ export class OrchestratorHelper {
     if (!labelExists) {
       labels.push(newLabel);
     }
+  }
+
+  static findLuFiles(srcId: string, idsToFind: string[]) {
+    const baseDir: string = path.dirname(srcId);
+    const retPayload: any[] = [];
+    (idsToFind || []).forEach((ask: any)  => {
+      const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.join(baseDir, ask.filePath);
+      const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
+      if (fileContent) {
+        retPayload.push({
+          content: fileContent,
+          options: {
+            id: ask.filePath,
+          },
+        });
+      } else {
+        throw new CLIError(`Content not found for ${resourceToFind}.`);
+      }
+    });
+    return retPayload;
   }
 }
