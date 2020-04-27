@@ -9,6 +9,18 @@ const toLU = require('./../../../src/parser/luis/luConverter')
 const luis = require('./../../../src/parser/luis/luis')
 const collate = require('./../../../src/parser/luis/luisCollate').collate
 describe('Roles in LU files', function() {
+    it('In new entity notation, prebuilt types do not need to be defined to add roles', function(done) {
+        let fileContent = `@ age userAge`;
+        parseFile(fileContent, false, null) 
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, "age");
+                assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles.length, 1);
+                assert.equal(res.LUISJsonStructure.prebuiltEntities[0].roles[0], "userAge");
+                done()
+            })
+            .catch(err => done(err))
+    })
     it('Correctly parses prebuilt entity with roles defined via labelled utterance', function(done) {
         let fileContent = `> # Intent definitions
         ## Book flight

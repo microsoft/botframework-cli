@@ -72,7 +72,7 @@ export default class QnamakerConvert extends Command {
 
       // Add headers to QnAJson
       if (isQnA) {
-        result.kb.name = flags.name || result.name || ''
+        result.kb.name = flags.name || result.kb.name || ''
       }
 
       // Print or write the parsed object

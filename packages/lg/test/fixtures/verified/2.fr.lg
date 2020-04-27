@@ -1,0 +1,36 @@
+[import](1.lg)
+> Translate basic weather
+# Weather
+- Que diriez-vous de la météo d’aujourd’hui
+- Quel est le temps aujourd’hui
+
+> Not translate reference and expression
+# TimeOfDayWithCondition
+- IF: ${time == null}
+    - Salut ${Weather()}
+- ELSEIF: ${time == 'morning'}
+    - Salut, bon ${time}, ${Weather()}
+- ELSEIF: ${time == 'evening'}
+    - Salut, bon ${time}, ${Weather()}
+- ELSE:
+    - Salut, bon ${time}, ${Weather()}
+
+> Not translate multi line body
+# MultiLineTemplate
+- ```
+hi, what is your name?
+and , what is your age?
+```
+
+# MyStructure
+[Herocard
+    title=Fromage gromit!
+    subtitle=${title()}
+    text=C’est un texte décrivant la carte, c’est cool parce que c’est cool
+    images=https://memegenerator.net/img/instances/500x/73055378/cheese-gromit.jpg
+    buttons=Option 1| Option 2| Option 3
+]
+
+# title
+- c’est herocard
+- c’est herocard

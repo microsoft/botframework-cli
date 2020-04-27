@@ -150,12 +150,7 @@
       ]
     }
   ],
-  "patterns": [
-    {
-      "pattern": "this is a {nDepth_child1} pattern and {nDepth} pattern",
-      "intent": "None"
-    }
-  ],
+  "patterns": [],
   "patternAnyEntities": [],
   "prebuiltEntities": [
     {
