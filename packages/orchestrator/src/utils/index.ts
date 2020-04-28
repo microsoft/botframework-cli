@@ -10,6 +10,7 @@ import {Utility} from './utility';
 const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
 const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
+const processedFiles: string[] = [];
 
 export class OrchestratorHelper {
   public static isDirectory(path: string): boolean {
@@ -259,6 +260,9 @@ export class OrchestratorHelper {
         await OrchestratorHelper.iterateInputFolder(currentItemPath, utterancesLabelsMap, hierarchical);
       } else {
         const ext: string = path.extname(item);
+        if (processedFiles.includes(currentItemPath)) {
+          continue;
+        }
         if (supportedFileFormats.indexOf(ext) > -1) {
           // eslint-disable-next-line no-await-in-loop
           await OrchestratorHelper.processFile(currentItemPath, item, utterancesLabelsMap, hierarchical);
@@ -268,8 +272,8 @@ export class OrchestratorHelper {
   }
 
   static getIntentsUtterances(
-    luisObject: any, 
-    hierarchicalLabel: string, 
+    luisObject: any,
+    hierarchicalLabel: string,
     utterancesLabelsMap: any) {
     // eslint-disable-next-line no-prototype-builtins
     if (luisObject.hasOwnProperty('utterances')) {
@@ -288,7 +292,6 @@ export class OrchestratorHelper {
   }
 
   static getQnaQuestionsAsUtterances(qnaObject: any, label: string, utterancesLabelsMap: any) {
-
     qnaObject.kb.qnaList.forEach((e: any) => {
       const questions: string[] = e.questions;
       questions.forEach((q: string) => {
@@ -333,7 +336,7 @@ export class OrchestratorHelper {
         labelExists = true;
         break;
       }
-    }  
+    }
 
     if (!labelExists) {
       labels.push(newLabel);
@@ -346,6 +349,9 @@ export class OrchestratorHelper {
     (idsToFind || []).forEach((ask: any)  => {
       const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.join(baseDir, ask.filePath);
       const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
+      if (!processedFiles.includes(resourceToFind)) {
+        processedFiles.push(resourceToFind);
+      }
       if (fileContent) {
         retPayload.push({
           content: fileContent,
