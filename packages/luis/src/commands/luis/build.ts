@@ -16,6 +16,7 @@ const Settings = require('@microsoft/bf-lu/lib/parser/lubuild/settings')
 const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
 const Recognizer = require('@microsoft/bf-lu/lib/parser/lubuild/recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
+const recognizerType = require('@microsoft/bf-lu/lib/parser/utils/enums/recognizertypes')
 const utils = require('../../utils/index')
 
 export default class LuisBuild extends Command {
@@ -35,7 +36,7 @@ export default class LuisBuild extends Command {
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
-    dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
+    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [luis|crosstrained] is specified by --dialog.'}),
     force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build'}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
@@ -57,7 +58,7 @@ export default class LuisBuild extends Command {
           if (configObj.defaultLanguage && configObj.defaultLanguage !== '') flags.defaultCulture = configObj.defaultLanguage
           if (configObj.deleteOldVersion) flags.deleteOldVersion = true
           if (configObj.out && configObj.out !== '') flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
-          if (configObj.writeDialogFiles) flags.dialog = true
+          if (configObj.writeDialogFiles) flags.dialog = configObj.writeDialogFiles
           if (configObj.models && configObj.models.length > 0) {
             files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
           }
@@ -76,6 +77,10 @@ export default class LuisBuild extends Command {
 
       if (!flags.botName) {
         throw new CLIError('Missing bot name. Please pass bot name with --botName flag')
+      }
+
+      if (flags.dialog && flags.dialog && flags.dialog !== recognizerType.LUIS && flags.dialog !== recognizerType.CROSSTRAINED) {
+        throw new CLIError('Recognizer type specified by --dialog is not right. Please specify [luis|crosstrained]')
       }
 
       flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'
@@ -129,7 +134,7 @@ export default class LuisBuild extends Command {
 
       // write dialog assets based on config
       if (flags.dialog) {
-        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, flags.out, flags.luConfig)
+        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, flags.out, flags.dialog, flags.luConfig)
         const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
         const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
         if (writeDone) {

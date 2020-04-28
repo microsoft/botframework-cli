@@ -3,7 +3,7 @@
     "defaultLanguage": "en-us",
     "deleteOldVersion": true,
     "out": "./../../../../../../results",
-    "writeDialogFiles": true,
+    "writeDialogFiles": "luis",
     "models": [
         "./test.lu"
     ]
