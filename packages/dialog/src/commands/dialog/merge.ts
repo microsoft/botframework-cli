@@ -41,7 +41,7 @@ export default class DialogMerge extends Command {
     }
 
     static examples = [
-        '$ bf dialog:merge *.csporj',
+        '$ bf dialog:merge *.csproj',
         '$ bf dialog:merge libraries/*.schema -o app.schema'
     ]   
      
