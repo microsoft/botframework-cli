@@ -31,6 +31,9 @@ The following commands are currently available:
 * [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
 * [Luis][3]
 
+Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins#microsoftbf-cli-plugins))
+* [Dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog)
+
 #### Future Commands
 The following commands will be ported in upcoming releases:
 * Dispatch

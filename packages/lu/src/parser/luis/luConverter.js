@@ -94,29 +94,34 @@ const parseUtterancesToLu = function(utterances, luisJSON){
             let text = utterance.text;
             let sortedEntitiesList = objectSortByStartPos(utterance.entities);
             let tokenizedText = text.split('');
-            let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
-            nonCompositesInUtterance.forEach(entity => {
-                if (entity.role !== undefined) {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                } else {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                }
-                tokenizedText[parseInt(entity.endPos)] += `}`;
-            })
-            let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
-            compositeEntitiesInUtterance.forEach(entity => {
-                if (entity.role !== undefined) {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
-                } else {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
-                }
-                tokenizedText[parseInt(entity.endPos)] += `}`;
-            })
-            updatedText = tokenizedText.join(''); 
+            // handle cases where we have both child as well as cases where more than one entity can have the same start position
+            // if there are multiple entities in the same start position, then order them by composite, nDepth, regular entity
+            getEntitiesByPositionList(sortedEntitiesList, tokenizedText);
+            updatedText = tokenizedText.join('');
         }
         if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
-    }); 
-    return fileContent  
+    });
+    return fileContent
+}
+
+const getEntitiesByPositionList = function(entitiesList, tokenizedText) {
+    (entitiesList || []).forEach(entity => {
+        // does this entity have child labels?
+        (entity.children || []).forEach(child => {
+            getEntitiesByPositionList(child.children, tokenizedText);
+            updateTokenizedTextByEntity(tokenizedText, child);
+        })
+        updateTokenizedTextByEntity(tokenizedText, entity);
+    })
+};
+
+const updateTokenizedTextByEntity = function(tokenizedText, entity) {
+    if (entity.role !== undefined) {
+        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+    } else {
+        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+    }
+    tokenizedText[parseInt(entity.endPos)] = tokenizedText[parseInt(entity.endPos)] + '}';
 }
 
 const parsePredictedResultToLu =  function(utterance, luisJSON){
@@ -379,8 +384,10 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
     (childCollection || []).forEach(child => {
         myFileContent += "".padStart(tabStop * 4, ' ');
         myFileContent += '- @ ';
-        if (child.instanceOf) {
-            myFileContent += child.instanceOf;
+        // find constraint
+        let constraint = (child.features || []).find(feature => feature.isRequired == true);
+        if (constraint !== undefined) {
+            myFileContent += constraint.modelName;
         } else {
             myFileContent += EntityTypeEnum.ML;
         }
@@ -414,7 +421,14 @@ const addRolesAndFeatures = function(entity) {
     let featuresList = new Array();
     entity.features.forEach(item => {
         if (item.featureName) featuresList.push(item.featureName);
-        if (item.modelName) featuresList.push(item.modelName);
+        if (item.modelName) {
+            if (item.isRequired !== undefined) {
+                if (item.isRequired !== true) 
+                    featuresList.push(item.modelName);
+            } else {
+                featuresList.push(item.modelName);
+            }
+        }
     })
     if (featuresList.length > 0) {
         roleAndFeatureContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} `;

@@ -35,13 +35,11 @@ export default class DialogMerge extends Command {
     static flags: flags.Input<any> = {
         help: flags.help({ char: 'h' }),
         output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
-        branch: flags.string({ char: 'b', description: 'The branch to use for the meta-schema component.schema.', default: 'master', required: false }),
-        update: flags.boolean({ char: 'u', description: 'Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.', default: false, required: false }),
         verbose: flags.boolean({ description: 'output verbose logging of files as they are processed', default: false }),
     }
 
     static examples = [
-        '$ bf dialog:merge *.csporj',
+        '$ bf dialog:merge *.csproj',
         '$ bf dialog:merge libraries/*.schema -o app.schema'
     ]   
      
@@ -54,32 +52,20 @@ export default class DialogMerge extends Command {
     async run() {
         const { argv, flags } = this.parse(DialogMerge)
 
-        await this.mergeSchemas(argv, flags.output, flags.branch, flags.update, flags.verbose)
+        await this.mergeSchemas(argv, flags.output, flags.verbose)
     }
 
     /**
      * Merge together .schema files to make a custom schema.
      * @param patterns Glob patterns for the .schema files to combine.
      * @param output The output file to create.  app.schema by default.
-     * @param branch Branch to use for where to find component.schema.
-     * @param update True to update .schema files to point to branch component.schema files.
      */
-    async mergeSchemas(patterns: string[], output?: string, branch?: string, update?: boolean, verbose?: boolean): Promise<boolean> {
+    async mergeSchemas(patterns: string[], output?: string, verbose?: boolean): Promise<boolean> {
         this.verbose = verbose
         this.failed = false
         this.missingKinds = new Set()
         try {
             let schemaPaths: any[] = []
-            if (update) {
-                if (!branch) {
-                    this.error(`${this.currentFile}: error: Must specify -branch <branch> in order to use -update`)
-                    return false
-                }
-                await this.updateMetaSchema(branch)
-                if (verbose) {
-                    this.log(`Updating component.schema references to branch ${branch}`)
-                }
-            }
 
             if (!output) {
                 output = 'app.schema'
@@ -101,11 +87,8 @@ export default class DialogMerge extends Command {
                 let definitions: any = {}
                 let validator = new Validator()
 
-                if (!metaSchema && branch) {
-                    // Find branch specific schema
-                    let path = `https://raw.githubusercontent.com/Microsoft/botbuilder-dotnet/${branch}/schemas/component.schema`
-                    metaSchema = await getJson(path)
-                }
+                let path = 'https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema'
+                metaSchema = await getJson(path)
 
                 if (metaSchema) {
                     validator.addSchema(metaSchema, 'componentSchema')
@@ -116,13 +99,7 @@ export default class DialogMerge extends Command {
                     if (verbose) {
                         this.log(`Parsing ${schemaPath}`)
                     }
-                    if (update) {
-                        let schema = await fs.readJSON(schemaPath)
-                        if (!schema.$id) {
-                            schema.$schema = schema.$schema.replace(/botbuilder-dotnet\/[^/]*\//, `botbuilder-dotnet/${branch}/`)
-                            await fs.writeJSON(schemaPath, schema, this.jsonOptions)
-                        }
-                    }
+                    
                     let noref = await parser.dereference(schemaPath)
                     if (noref.$id) {
                         this.error(`${this.currentFile}: warning: Skipping because of top-level $id:${noref.$id}.`)
