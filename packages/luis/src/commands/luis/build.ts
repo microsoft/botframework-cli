@@ -79,7 +79,7 @@ export default class LuisBuild extends Command {
         throw new CLIError('Missing bot name. Please pass bot name with --botName flag')
       }
 
-      if (flags.dialog && flags.dialog && flags.dialog !== recognizerType.LUIS && flags.dialog !== recognizerType.CROSSTRAINED) {
+      if (flags.dialog && flags.dialog !== recognizerType.LUIS && flags.dialog !== recognizerType.CROSSTRAINED) {
         throw new CLIError('Recognizer type specified by --dialog is not right. Please specify [luis|crosstrained]')
       }
 

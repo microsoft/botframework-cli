@@ -7,6 +7,7 @@ import {QnaBuildCore} from './core'
 import {Settings} from './settings'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Recognizer} from './recognizer'
+import {CrossTrainedRecognizer} from './cross-trained-recognizer'
 const path = require('path')
 const fs = require('fs-extra')
 const delay = require('delay')
@@ -20,6 +21,7 @@ const qnaOptions = require('./../lu/qnaOptions')
 const Content = require('./../lu/qna')
 const KB = require('./../qna/qnamaker/kb')
 const NEWLINE = require('os').EOL
+const recognizerType = require('./../utils/enums/recognizertypes')
 
 export class Builder {
   private readonly handler: (input: string) => any
@@ -285,7 +287,7 @@ export class Builder {
     return kbToLuContent
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string) {
     let writeDone = false
 
     if (out) {
@@ -293,7 +295,7 @@ export class Builder {
         const outFilePath = path.join(path.resolve(out), path.basename(content.path))
         if (force || !fs.existsSync(outFilePath)) {
           this.handler(`Writing to ${outFilePath}\n`)
-          await fs.writeFile(outFilePath, content.content, 'utf-8')
+          await this.writeDialog(content.content, outFilePath, dialogType)
           writeDone = true
         }
       }
@@ -301,7 +303,7 @@ export class Builder {
       for (const content of contents) {
         if (force || !fs.existsSync(content.path)) {
           this.handler(`Writing to ${content.path}\n`)
-          await fs.writeFile(content.path, content.content, 'utf-8')
+          await this.writeDialog(content.content, content.path, dialogType)
           writeDone = true
         }
       }
@@ -466,5 +468,41 @@ export class Builder {
     await delay(delayDuration)
     await qnaBuildCore.publishKB(recognizer.getKBId())
     this.handler(`Publishing finished for kb ${kbName}\n`)
+  }
+
+  async writeDialog(content: string, filePath: string, dialogType: string) {
+    const fileName = path.basename(filePath, '.dialog')
+
+    if (fs.existsSync(filePath)) {
+      const existingDialog = JSON.parse(await fileHelper.getContentFromFile(filePath))
+
+      if (existingDialog.$kind === 'Microsoft.QnAMakerRecognizer') {
+        if (dialogType === recognizerType.CROSSTRAINED) {
+          const recognizers = [fileName]
+          content = new CrossTrainedRecognizer(filePath, recognizers).save()
+        }
+      } else if (existingDialog.$kind === 'Microsoft.CrossTrainedRecognizerSet') {
+        if (dialogType !== recognizerType.CROSSTRAINED) {
+          throw (new exception(retCode.errorCode.INVALID_INPUT, "CrossTrainedRecognizerSet cannot be updated to other recognizer. Please specify the right recognizer type with '--dialog crosstrained'."))
+        }
+
+        if (!existingDialog.recognizers.includes(fileName)) {
+          existingDialog.recognizers.push(fileName)
+        }
+
+        content = JSON.stringify(existingDialog, null, 4)
+      }
+
+      await fs.writeFile(filePath, content, 'utf-8')
+    } else {
+      const contentObj = JSON.parse(content)
+
+      if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.QnAMakerRecognizer') {
+        const recognizers = [fileName]
+        content = new CrossTrainedRecognizer(filePath, recognizers).save()
+      }
+
+      await fs.writeFile(filePath, content, 'utf-8')
+    }
   }
 }
