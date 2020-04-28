@@ -52,13 +52,14 @@
     "get-uri": "~3.0.2",
     "globby": "^9.2.0",
     "json-schema-merge-allof": "^0.6.0",
-    "@apidevtools/json-schema-ref-parser": "^8.0.0",
+    "@apidevtools/json-schema-ref-parser": "^9.0.1",
     "os": "~0.1.1",
     "path": "^0.12.7",
     "seedrandom": "~3.0.5",
     "semver": "^5.7.0",
     "tslib": "^1.10.0",
-    "xml2js": "^0.4.19"
+    "xml2js": "^0.4.19",
+    "json-ptr": "~1.2.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",

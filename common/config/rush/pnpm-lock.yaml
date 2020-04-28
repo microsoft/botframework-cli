@@ -1,5 +1,5 @@
 dependencies:
-  '@apidevtools/json-schema-ref-parser': 8.0.0
+  '@apidevtools/json-schema-ref-parser': 9.0.1
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
@@ -52,6 +52,7 @@ dependencies:
   https-proxy-agent: 2.2.4
   intercept-stdout: 0.1.2
   is-ci: 2.0.0
+  json-ptr: 1.2.0
   json-schema-merge-allof: 0.6.0
   latest-version: 4.0.0
   lodash: 4.17.15
@@ -87,6 +88,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-n4YBtwQhdpLto1BaUCyAeflizmIbaloGShsPyRtFf5qdFJxfssj+GgLavczgKJFa3Bq+3St2CKcpRJdjtB4EBw==
+  /@apidevtools/json-schema-ref-parser/9.0.1:
+    dependencies:
+      '@jsdevtools/ono': 7.1.2
+      call-me-maybe: 1.0.1
+      js-yaml: 3.13.1
+    dev: false
+    resolution:
+      integrity: sha512-Qsdz0W0dyK84BuBh5KZATWXOtVDXIF2EeNRzpyWblPUeAmnIokwWcwrpAm5pTPMjuWoIQt9C67X3Af1OlL6oSw==
   /@azure/cognitiveservices-luis-authoring/4.0.0-preview.1:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
@@ -3541,6 +3550,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
+  /json-ptr/1.2.0:
+    dev: false
+    resolution:
+      integrity: sha512-wkqozzmmyu+vtazHF11uvIDbLsgkE4juY41QoXgKYSy166KQalyc72PqveII21f8UWKtYN7btUXg16vya+9xnw==
   /json-schema-compare/0.2.2:
     dependencies:
       lodash: 4.17.15
@@ -6465,7 +6478,7 @@ packages:
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
     dependencies:
-      '@apidevtools/json-schema-ref-parser': 8.0.0
+      '@apidevtools/json-schema-ref-parser': 9.0.1
       '@chrimc62/adaptive-expressions': 4.1.20
       '@chrimc62/botbuilder-lg': 4.1.20
       '@oclif/command': 1.5.19
@@ -6494,6 +6507,7 @@ packages:
       get-json: 1.0.1
       get-uri: 3.0.2
       globby: 9.2.0
+      json-ptr: 1.2.0
       json-schema-merge-allof: 0.6.0
       json-schema-ref-parser: 8.0.0
       mocha: 6.2.2
@@ -6511,7 +6525,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-2An6wfxd2Eew1s6loE5zZw37r4/e5hyQYygsOJBRRDH28Y+waH5FPKaox1Lu0FpTJNPV6I6cm0/W+H9Hvt4PqA==
+      integrity: sha512-x02VlIHnka985/dMLslLC72hnxd6wCfKgB5pFcssgFr2UaZz1AQ0jPSCP+ICt5W2JD5Bwcszj1X1B3YR+CPqdw==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6712,7 +6726,7 @@ packages:
     version: 0.0.0
 registry: ''
 specifiers:
-  '@apidevtools/json-schema-ref-parser': ^8.0.0
+  '@apidevtools/json-schema-ref-parser': ^9.0.1
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
@@ -6765,6 +6779,7 @@ specifiers:
   https-proxy-agent: ^2.2.1
   intercept-stdout: ^0.1.2
   is-ci: 2.0.0
+  json-ptr: ~1.2.0
   json-schema-merge-allof: ^0.6.0
   latest-version: ^4.0.0
   lodash: ^4.17.15
