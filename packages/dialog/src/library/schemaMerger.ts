@@ -11,7 +11,6 @@ import * as parser from '@apidevtools/json-schema-ref-parser'
 import * as ppath from 'path'
 import * as semver from 'semver'
 import * as xp from 'xml2js'
-let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
 let getUri: any = require('get-uri')
 let ptr = require('json-ptr')
@@ -43,65 +42,6 @@ async function getJSON(uri: string): Promise<any> {
     return JSON.parse(data)
 }
 
-// We mark the $ref we don't want to expand by changing them to $pref
-function protectRefs(schema: any) {
-    walkJSON(schema, (val: any, obj?: any, key?: any) => {
-        if (!key) {
-            // Root oneOf
-            for (let child of val.oneOf) {
-                if (child.$ref) {
-                    child.$pref = child.$ref
-                    delete child.$ref
-                }
-            }
-        } else {
-            if (val.$kind && val.$ref) {
-                // Don't expand $kind refs
-                val.$pref = val.$ref
-                delete val.$ref
-            } else if (val.$role === 'interface') {
-                // Don't expand interface refs
-                for (let child of val.oneOf) {
-                    if (child.$ref) {
-                        child.$pref = child.$ref
-                        delete child.$ref
-                    }
-                }
-            }
-        }
-        return false
-    })
-}
-
-// Restore $pref to $ref
-function restoreRefs(schema: any) {
-    walkJSON(schema, (val) => {
-        if (val.$pref) {
-            val.$ref = val.$pref
-            delete val.$pref
-        }
-        return false
-    })
-}
-
-
-// Simplify schema by expanding allOf and local references to anything
-// except root oneOf, interface oneOf and $kind references.
-export async function simplifySchema(schema: any): Promise<any> {
-    protectRefs(schema)
-    await parser.dereference(schema)
-    restoreRefs(schema)
-    let result = allof(schema, {
-        resolvers: {
-            const: function (values, path, mergeSchemas, options) {
-                // Last value is the top-most schema element
-                return values[values.length - 1]
-            }
-        }
-    })
-    return result
-}
-
 export class SchemaMerger {
     // Input parameters
     private patterns: string[]
@@ -118,7 +58,6 @@ export class SchemaMerger {
     private metaSchema: any
     private definitions: any = {}
     private source: any = {}
-    private expanded: any = {} // Expanded versions for analysis
     private interfaces: string[] = []
     private implementations: any = {}
     private failed = false
@@ -183,7 +122,7 @@ export class SchemaMerger {
                                 this.metaSchema = await getJSON(component.$schema)
                                 this.validator.addSchema(this.metaSchema, 'componentSchema')
                                 if (this.verbose) {
-                                    this.log(`  Using component.schema ${this.metaSchemaId}`)
+                                    this.log(`  Using ${this.metaSchemaId} to define components.`)
                                 }
                                 this.validateSchema(component)
                             } else if (component.$schema !== this.metaSchemaId) {
@@ -198,9 +137,11 @@ export class SchemaMerger {
                                 this.parsingError(`redefines ${kind} from ${this.source[kind]}.`)
                             }
                             this.source[kind] = ppath.resolve(componentPath)
+                            this.fixComponentReferences(kind, component)
+                            if (component.allOf) {
+                                this.parsingError(`Does not support allOf in component .schema definitions`)
+                            }
                             this.definitions[kind] = component
-                            let noref = await parser.dereference(clone(component), this.schemaProtocolResolver())
-                            this.expanded[kind] = allof(noref)
                         }
                     } catch (e) {
                         this.parsingError(e)
@@ -209,8 +150,8 @@ export class SchemaMerger {
                 this.currentFile = ''
 
                 this.log('Merging component schemas')
-                this.processRoles()
-                this.fixComponentReferences()
+                this.processExtensions()
+                this.processImplementations()
                 this.expandKinds()
                 this.expandInterfaces()
                 this.addComponentProperties()
@@ -219,14 +160,13 @@ export class SchemaMerger {
                     .filter(kind => !this.isInterface(kind))
                     .sort()
                     .map(kind => {
-                        return {
-                            $ref: '#/definitions/' + kind
-                        }
+                        return { $ref: `#/definitions/${kind}` }
                     })
                 this.addSchemaDefinitions()
 
                 if (!this.failed) {
                     this.currentFile = this.output
+                    this.currentKind = ''
                     let finalDefinitions: any = {}
                     for (let key of Object.keys(this.definitions).sort()) {
                         finalDefinitions[key] = this.definitions[key]
@@ -248,18 +188,16 @@ export class SchemaMerger {
                     await parser.bundle(finalSchema as any, this.schemaProtocolResolver())
                     this.removeSchemaAndId(finalSchema)
 
-                    // Simplify schema to make checking easier
-                    let start = process.hrtime()
-                    let simple = await simplifySchema(clone(finalSchema))
-                    let [_, end] = process.hrtime(start)
-                    end = end / 1000000000
                     if (this.debug) {
+                        let start = process.hrtime()
+                        let simple = await parser.dereference(clone(finalSchema))
+                        let [_, end] = process.hrtime(start)
+                        end = end / 1000000000
                         this.log(`Expanding took ${end} seconds`)
-                        await fs.writeJSON(this.output + '.expanded', simple, this.jsonOptions);
                     }
 
                     // Final verification
-                    this.verifySchema(simple)
+                    this.verifySchema(finalSchema)
                     if (!this.failed) {
                         this.log(`Writing ${this.output}`)
                         await fs.writeJSON(this.output, finalSchema, this.jsonOptions)
@@ -443,76 +381,189 @@ export class SchemaMerger {
         return result
     }
 
-    // Check $role validity and identify implementations and interfaces
-    processRoles(): void {
-        let expanded = {}
-        for (let kind in this.definitions) {
-            let schema = this.expanded[kind]
-            if (schema.$role === 'interface') {
-                this.interfaces.push(kind)
-            }
-            expanded[kind] = schema
-        }
-        for (let kind in expanded) {
-            // Expand all references and allof to make processing simpler
-            let schema = expanded[kind]
-            let role = schema.$role
-            const prefix = 'implements('
-            if (role && role.startsWith(prefix) && role.endsWith(')')) {
-                // Connect to interface
-                let interfaceName = role.substring(prefix.length, role.length - 1)
-                if (!this.definitions[interfaceName]) {
-                    this.error(`${kind}: interface ${interfaceName} is not defined.`)
-                } else if (!this.isInterface(interfaceName)) {
-                    this.error(`${kind}: ${interfaceName} is missing an interface $role.`)
-                } else {
-                    if (!this.implementations[interfaceName]) {
-                        this.implementations[interfaceName] = []
-                    }
-                    this.implementations[interfaceName].push(kind)
-                }
+    mergeInto(extensionName: string, definition: any, canOverride?: boolean) {
+        let extension = this.definitions[extensionName] || this.metaSchema.definitions[extensionName]
 
-                // Verify all $roles are valid
-                walkJSON(schema, (val: any, _obj, key) => {
-                    if (val.$role) {
-                        if (key ? val.$role !== 'expression' : val.$role !== 'implements' && !val.$role.startsWith(prefix)) {
-                            this.error(`${kind}: $role ${role} is not valid in ${val}`)
-                        }
+        // Ensure it is an object
+        if (!definition.type) {
+            definition.type = 'object'
+        }
+
+        // Merge properties
+        if (extension.properties) {
+            if (!definition.properties) {
+                definition.properties = clone(extension.properties)
+            } else {
+                for (let property in extension.properties) {
+                    if (definition.properties[property]) {
+                        this.mergingError(`Redefines property ${property} from ${extensionName}.`)
+                    } else {
+                        definition.properties[property] = clone(extension.properties[property])
                     }
-                    return false
-                })
+                }
+            }
+        }
+
+        // Merge required
+        if (!definition.required) {
+            definition.required = []
+        }
+        definition.required = [...definition.required, ...extension.required]
+
+        // Merge property restrictions
+        if (extension.hasOwnProperty('additionalProperties')) {
+            if (definition.hasOwnProperty('additionalProperties')) {
+                if (!canOverride) {
+                    this.mergingError(`Redefines additionalProperties from ${extensionName}`)
+                }
+            } else {
+                definition.additionalProperties = extension.additionalProperties
+            }
+        }
+
+        if (extension.patternProperties) {
+            if (definition.patternProperties) {
+                if (definition.hasOwnProperty('additionalProperties')) {
+                    if (!canOverride) {
+                        this.mergingError(`Redefines patternProperties from ${extensionName}`)
+                    }
+                }
+            } else {
+                definition.patternProperties = extension.patternProperties
+            }
+        }
+    }
+
+    // Return a list of references for a particular type of role
+    roles(definition: any, type: string): string[] {
+        let found: string[] = []
+        let addArg = (val: string) => {
+            let start = val.indexOf('(')
+            let end = val.indexOf(')')
+            if (start < 0 && end < 0) {
+                found.push('')
+            } else {
+                if (start < 0 || end < 0) {
+                    this.mergingError(`Invalid $role ${val}`)
+                } else {
+                    found.push(val.substring(start + 1, end).trim())
+                }
+            }
+        }
+        if (Array.isArray(definition.$role)) {
+            for (let elt in definition.$role) {
+                if (elt.startsWith(type)) {
+                    addArg(elt)
+                }
+            }
+        } else {
+            let elt = definition.$role
+            if (definition.$role && definition.$role.startsWith(type)) {
+                addArg(elt)
+            }
+        }
+        return found
+    }
+
+    processExtension(definition: any): void {
+        let extensions = this.roles(definition, 'extends')
+        for (let extensionName of extensions) {
+            // Ensure base has been extended
+            let extension = this.definitions[extensionName]
+            if (!extension.$processed) {
+                this.processExtension(extension)
+            }
+
+            this.mergeInto(extensionName, definition)
+        }
+        definition.$processed = true
+    }
+
+    // Add in any extension definitions
+    processExtensions(): void {
+        for (this.currentKind in this.definitions) {
+            this.processExtension(this.definitions[this.currentKind])
+        }
+        walkJSON(this.definitions, (val: any) => {
+            if (val.$processed) {
+                delete val.$processed
+            }
+            return false
+        })
+    }
+
+    // Check $role validity and identify implementations and interfaces
+    processImplementations(): void {
+        for (this.currentKind in this.definitions) {
+            let schema = this.definitions[this.currentKind]
+            if (this.roles(this.definitions[this.currentKind], 'interface').length > 0) {
+                this.interfaces.push(this.currentKind)
+            }
+        }
+        for (this.currentKind in this.definitions) {
+            if (!this.isInterface(this.currentKind)) {
+                // Expand all references and allof to make processing simpler
+                let definition = this.definitions[this.currentKind]
+                for (let interfaceName of this.roles(definition, 'implements')) {
+                    // Connect to interface
+                    if (!this.definitions[interfaceName]) {
+                        this.mergingError(`Interface ${interfaceName} is not defined.`)
+                    } else if (!this.isInterface(interfaceName)) {
+                        this.mergingError(`${interfaceName} is missing an interface $role.`)
+                    } else {
+                        if (!this.implementations[interfaceName]) {
+                            this.implementations[interfaceName] = []
+                        }
+                        this.implementations[interfaceName].push(this.currentKind)
+                    }
+
+                    // Verify all $roles are valid
+                    walkJSON(definition, (val: any, _obj, key) => {
+                        if (val.$role) {
+                            let expression = this.roles(val, 'expression')
+                            let implementation = this.roles(val, 'implementation')
+                            let iface = this.roles(val, 'interface')
+                            let extension = this.roles(val, 'extends')
+                            if (!key) {
+                                if (expression.length > 0) {
+                                    this.mergingError(`$role ${val.$role} is not valid for component`)
+                                }
+                            } else {
+                                if (implementation.length > 0 || iface.length > 0 || extension.length > 0) {
+                                    this.mergingError(`$role ${val.$role} is not valid in ${key}`)
+                                }
+                            }
+                        }
+                        return false
+                    })
+                }
             }
         }
     }
 
     // Turn #/definitions/foo into #/definitions/${kind}/definitions/foo
-    fixComponentReferences(): void {
-        for (let kind in this.definitions) {
-            this.currentKind = kind
-            walkJSON(this.definitions[kind], (val: any) => {
-                if (val.$ref && typeof val.$ref === 'string') {
-                    let ref: string = val.$ref
-                    if (ref.startsWith('#/definitions/')) {
-                        val.$ref = '#/definitions/' + kind + '/definitions' + ref.substring(ref.indexOf('/'))
-                    } else if (ref.startsWith('file:')) {
-                        let filename = ppath.basename(ref)
-                        let kind = filename.substring(0, filename.lastIndexOf('.'))
-                        if (this.source[kind]) {
-                            val.$ref = `#/definitions/${kind}`
-                        }
+    fixComponentReferences(kind: string, definition: any): void {
+        walkJSON(definition, (val: any) => {
+            if (val.$ref && typeof val.$ref === 'string') {
+                let ref: string = val.$ref
+                if (ref.startsWith('#/definitions/')) {
+                    val.$ref = '#/definitions/' + kind + '/definitions' + ref.substring(ref.indexOf('/'))
+                } else if (ref.startsWith('file:')) {
+                    let filename = ppath.basename(ref)
+                    let kind = filename.substring(0, filename.lastIndexOf('.'))
+                    if (this.source[kind]) {
+                        val.$ref = `#/definitions/${kind}`
                     }
                 }
-                return false
-            })
-        }
-        this.currentKind = ''
+            }
+            return false
+        })
     }
 
     // Expand $kind into $ref: #/defintions/kind
     expandKinds(): void {
-        for (let kind in this.definitions) {
-            this.currentKind = kind
-            walkJSON(this.definitions[kind], val => {
+        for (this.currentKind in this.definitions) {
+            walkJSON(this.definitions[this.currentKind], val => {
                 if (val.$kind) {
                     if (this.definitions.hasOwnProperty(val.$kind)) {
                         val.$ref = '#/definitions/' + val.$kind
@@ -523,7 +574,6 @@ export class SchemaMerger {
                 return false
             })
         }
-        this.currentKind = ''
     }
 
     // Expand interface definitions to include all implementations
@@ -541,8 +591,6 @@ export class SchemaMerger {
                 ]
             }
             for (let implementation of this.implementations[interfaceName]) {
-                this.currentKind = implementation
-                let definition = this.definitions[implementation]
                 interfaceDefinition.oneOf.push({
                     $ref: `#/definitions/${implementation}`
                 })
@@ -553,77 +601,36 @@ export class SchemaMerger {
 
     // Include standard component properties
     addComponentProperties(): void {
-        for (let kind in this.definitions) {
-            this.currentKind = kind
-            if (!this.isInterface(kind)) {
-                let definition = this.definitions[kind]
-
-                // Add $kind to required
-                if (definition.required) {
-                    definition.required.push('$kind')
-                } else {
-                    definition.required = ['$kind']
-                }
-
-                // Define $kind restriction
-                // NOTE: This must be pushed into the full definition because otherwise 
-                // the const doesn't end up forcing the rest of the schema.
-                let kindDef = { type: 'string', const: `${kind}` }
-
-                if (definition.hasOwnProperty('additionalProperties')) {
-                    // If additionalProperties is specified, you must have a top-level properties
-                    if (definition.allOf) {
-                        this.mergingError('allOf is not allowed with additionalProperties.')
-                    } else {
-                        // Merge into top-level properties
-                        if (!definition.properties) {
-                            definition.properties = {}
-                        }
-                        definition.properties = { ...definition.properties, ...this.metaSchema.definitions.component.properties }
-                        definition.properties.$kind = kindDef
-                    }
-                } else {
-                    // Otherwise you can use allOf to combine schemas
-                    if (!definition.allOf) {
-                        definition.allOf = []
-                        if (definition.properties) {
-                            definition.allOf.push({ properties: definition.properties })
-                        }
-                        delete definition.properties
-                    }
-                    definition.allOf.push({ properties: { $kind: kindDef } })
-                    definition.allOf.push({ $ref: `#/definitions/component` })
-                }
+        for (this.currentKind in this.definitions) {
+            if (!this.isInterface(this.currentKind)) {
+                let definition = this.definitions[this.currentKind]
+                this.mergeInto('component', definition, true)
+                definition.properties.$kind.const = this.currentKind
             }
         }
-        this.currentKind = ''
     }
 
     sortImplementations(): void {
-        for (let kind in this.definitions) {
-            this.currentKind = kind
-            let definition = this.definitions[kind]
+        for (this.currentKind in this.definitions) {
+            let definition = this.definitions[this.currentKind]
             if (this.isInterface(definition) && definition.oneOf) {
                 definition.oneOf = definition.oneOf.sort((a: any, b: any) => a.title.localeCompare(b.title))
             }
         }
-        this.currentKind = ''
     }
 
     // Add schema definitions and turn schema: or full definition URI into local reference
     addSchemaDefinitions(): void {
         const scheme = 'schema:'
         this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
-        for (let kind in this.definitions) {
-            this.currentKind = kind
-            walkJSON(this.definitions[kind], (val: any) => {
+        for (this.currentKind in this.definitions) {
+            walkJSON(this.definitions[this.currentKind], (val: any) => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
                     val.$ref = val.$ref.substring(val.$ref.indexOf('#'))
                 }
                 return false
             })
         }
-        this.currentKind = ''
     }
 
     // Remove $schema and $id and make sure they are unique
