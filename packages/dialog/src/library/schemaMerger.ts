@@ -18,18 +18,22 @@ let util: any = require('util')
 let exec: any = util.promisify(require('child_process').exec)
 
 // Walk over JSON object, stopping if true from walker.
-// Walker gets the current value, the parent object and key in that object.
-function walkJSON(elt: any, fun: (val: any, obj?: any, key?: string) => boolean, obj?: any, key?: any): boolean {
-    let done = fun(elt, obj, key)
+// Walker gets the current value, the parent object and full path to that object.
+function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean, obj?: any, path?: any): boolean {
+    let done = fun(elt, obj, path)
     if (!done) {
         if (typeof elt === 'object' || Array.isArray(elt)) {
             for (let key in elt) {
-                done = walkJSON(elt[key], fun, elt, key)
+                done = walkJSON(elt[key], fun, elt, pathName(path, key))
                 if (done) break
             }
         }
     }
     return done
+}
+
+function pathName(path: string | undefined, extension: string): string {
+    return path ? `${path}/${extension}` : extension
 }
 
 // Get JSON from a URI.
@@ -157,7 +161,7 @@ export class SchemaMerger {
                 this.addComponentProperties()
                 this.sortImplementations()
                 let oneOf = Object.keys(this.definitions)
-                    .filter(kind => !this.isInterface(kind))
+                    .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
                     .sort()
                     .map(kind => {
                         return { $ref: `#/definitions/${kind}` }
@@ -188,19 +192,18 @@ export class SchemaMerger {
                     await parser.bundle(finalSchema as any, this.schemaProtocolResolver())
                     this.removeSchemaAndId(finalSchema)
 
-                    if (this.debug) {
-                        let start = process.hrtime()
-                        let simple = await parser.dereference(clone(finalSchema))
-                        let [_, end] = process.hrtime(start)
-                        end = end / 1000000000
-                        this.log(`Expanding took ${end} seconds`)
-                    }
-
                     // Final verification
                     this.verifySchema(finalSchema)
                     if (!this.failed) {
                         this.log(`Writing ${this.output}`)
                         await fs.writeJSON(this.output, finalSchema, this.jsonOptions)
+                        if (this.debug) {
+                            let start = process.hrtime()
+                            await parser.dereference(clone(finalSchema))
+                            let [_, end] = process.hrtime(start)
+                            end = end / 1000000000
+                            this.log(`Expanding took ${end} seconds`)
+                        }
                     }
                 }
                 if (this.failed) {
@@ -233,7 +236,7 @@ export class SchemaMerger {
 
     // Convrert local references to absolute so we can keep them as references when combined
     relativeToAbsoluteRefs(schema: object, path: string) {
-        walkJSON(schema, (val, obj, key) => {
+        walkJSON(schema, (val) => {
             if (val.$ref) {
                 val.$ref = this.toAbsoluteRef(val.$ref, path)
             } else if (val.$schema) {
@@ -277,7 +280,7 @@ export class SchemaMerger {
                     let json = await this.xmlToJSON(path)
                     let packages = await this.findGlobalNuget()
                     if (packages) {
-                        walkJSON(json, elt => {
+                        walkJSON(json, (elt) => {
                             let done = false
                             if (elt.PackageReference) {
                                 for (let pkgRef of elt.PackageReference) {
@@ -301,7 +304,7 @@ export class SchemaMerger {
                     let json = await this.xmlToJSON(path)
                     let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
                     if (packages) {
-                        walkJSON(json, elt => {
+                        walkJSON(json, (elt) => {
                             let done = false
                             if (elt.package) {
                                 for (let info of elt.package) {
@@ -384,7 +387,7 @@ export class SchemaMerger {
     mergeInto(extensionName: string, definition: any, canOverride?: boolean) {
         let extension = this.definitions[extensionName] || this.metaSchema.definitions[extensionName]
 
-        // Ensure it is an object
+        // Ensure it is an object at the top
         if (!definition.type) {
             definition.type = 'object'
         }
@@ -405,16 +408,18 @@ export class SchemaMerger {
         }
 
         // Merge required
-        if (!definition.required) {
-            definition.required = []
+        if (extension.required) {
+            if (!definition.required) {
+                definition.required = []
+            }
+            definition.required = [...definition.required, ...extension.required]
         }
-        definition.required = [...definition.required, ...extension.required]
 
         // Merge property restrictions
         if (extension.hasOwnProperty('additionalProperties')) {
             if (definition.hasOwnProperty('additionalProperties')) {
                 if (!canOverride) {
-                    this.mergingError(`Redefines additionalProperties from ${extensionName}`)
+                    this.mergingError(`Redefines additionalProperties from ${extensionName}.`)
                 }
             } else {
                 definition.additionalProperties = extension.additionalProperties
@@ -423,13 +428,9 @@ export class SchemaMerger {
 
         if (extension.patternProperties) {
             if (definition.patternProperties) {
-                if (definition.hasOwnProperty('additionalProperties')) {
-                    if (!canOverride) {
-                        this.mergingError(`Redefines patternProperties from ${extensionName}`)
-                    }
-                }
+                definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
             } else {
-                definition.patternProperties = extension.patternProperties
+                definition.patternProperties = clone(extension.patternProperties)
             }
         }
     }
@@ -451,7 +452,7 @@ export class SchemaMerger {
             }
         }
         if (Array.isArray(definition.$role)) {
-            for (let elt in definition.$role) {
+            for (let elt of definition.$role) {
                 if (elt.startsWith(type)) {
                     addArg(elt)
                 }
@@ -484,7 +485,7 @@ export class SchemaMerger {
         for (this.currentKind in this.definitions) {
             this.processExtension(this.definitions[this.currentKind])
         }
-        walkJSON(this.definitions, (val: any) => {
+        walkJSON(this.definitions, (val) => {
             if (val.$processed) {
                 delete val.$processed
             }
@@ -518,19 +519,19 @@ export class SchemaMerger {
                     }
 
                     // Verify all $roles are valid
-                    walkJSON(definition, (val: any, _obj, key) => {
+                    walkJSON(definition, (val, _obj, path) => {
                         if (val.$role) {
                             let expression = this.roles(val, 'expression')
                             let implementation = this.roles(val, 'implementation')
                             let iface = this.roles(val, 'interface')
                             let extension = this.roles(val, 'extends')
-                            if (!key) {
+                            if (!path) {
                                 if (expression.length > 0) {
                                     this.mergingError(`$role ${val.$role} is not valid for component`)
                                 }
                             } else {
                                 if (implementation.length > 0 || iface.length > 0 || extension.length > 0) {
-                                    this.mergingError(`$role ${val.$role} is not valid in ${key}`)
+                                    this.mergingError(`$role ${val.$role} is not valid in ${path}`)
                                 }
                             }
                         }
@@ -563,7 +564,7 @@ export class SchemaMerger {
     // Expand $kind into $ref: #/defintions/kind
     expandKinds(): void {
         for (this.currentKind in this.definitions) {
-            walkJSON(this.definitions[this.currentKind], val => {
+            walkJSON(this.definitions[this.currentKind], (val) => {
                 if (val.$kind) {
                     if (this.definitions.hasOwnProperty(val.$kind)) {
                         val.$ref = '#/definitions/' + val.$kind
@@ -624,7 +625,7 @@ export class SchemaMerger {
         const scheme = 'schema:'
         this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         for (this.currentKind in this.definitions) {
-            walkJSON(this.definitions[this.currentKind], (val: any) => {
+            walkJSON(this.definitions[this.currentKind], (val) => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
                     val.$ref = val.$ref.substring(val.$ref.indexOf('#'))
                 }
@@ -635,8 +636,8 @@ export class SchemaMerger {
 
     // Remove $schema and $id and make sure they are unique
     removeSchemaAndId(bundle: any): void {
-        walkJSON(bundle, (val: any, obj?: any, key?: string) => {
-            if (key) {
+        walkJSON(bundle, (val, _obj, path) => {
+            if (path) {
                 if (val.$schema && typeof val.$schema === 'string') delete val.$schema
                 if (val.$id) delete val.$id
             }
@@ -645,72 +646,67 @@ export class SchemaMerger {
     }
 
     verifySchema(schema: any): void {
-        // TODO: Remove this
-        return
         // Ensure everyone has a $kind and minimum property definitions
         for (let entry of schema.oneOf) {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
             let definition = schema.definitions[this.currentKind]
-            let propName: string
-            let expand = (val: any) => {
+            let verifyProperty = (val, path) => {
                 if (val.$ref) {
+                    val = clone(val)
                     let ref = ptr.get(schema, val.$ref)
                     for (let prop in ref) {
-                        if (!val.hasOwnProperty(prop)) {
+                        if (!val[prop]) {
                             val[prop] = ref[prop]
                         }
                     }
                     delete val.$ref
                 }
-            }
-            let verifyProperty = (val: any) => {
+                if (val.$kind) {
+                    let kind = schema.definitions[val.$kind]
+                    if (this.roles(kind, 'interface').length > 0 && kind.oneOf.length == 0) {
+                        this.mergingError(`${path} has no implementations of ${val.$kind}.`)
+                    }
+                }
                 if (!val.title) {
-                    this.mergingError(`${propName} has no title.`)
+                    this.mergingError(`${path} has no title.`)
                 }
                 if (!val.description) {
-                    this.mergingError(`${propName} has no description.`)
-                }
-                if (val.$kind) {
-                    let ref = ptr.get(schema, val.$ref)
-                    if (val.$role === 'interface' && val.oneOf.length == 0) {
-                        this.mergingError(`${propName} has no implementations of ${val.$kind}.`)
-                    }
-                } else {
-                    expand(val)
+                    this.mergingError(`${path} has no description.`)
                 }
             }
-            walkJSON(definition, (val: any) => {
-                let basePropName = propName
-                if (val.properties) {
-                    for (propName in val.properties) {
-                        verifyProperty(val.properties[propName])
+            walkJSON(definition, (val, _, path) => {
+                if (val.properties && !path?.endsWith('properties')) {
+                    for (let propName in val.properties) {
+                        verifyProperty(val.properties[propName], pathName(path, propName))
                     }
                 }
                 if (val.items) {
                     if (Array.isArray(val.items)) {
                         for (let idx in val.items) {
-                            propName = `${basePropName}/items/${idx}`
-                            verifyProperty(val.items[idx])
+                            verifyProperty(val.items[idx], pathName(path, `items/${idx}`))
                         }
                     } else {
-                        propName = `${basePropName}/items`
-                        verifyProperty(val.items)
+                        verifyProperty(val.items, pathName(path, 'item'))
                     }
-
                 }
                 if (val.oneOf) {
                     for (let idx in val.oneOf) {
-                        propName = `${basePropName}/oneOf/${idx}`
-                        verifyProperty(val.oneOf[idx])
+                        verifyProperty(val.oneOf[idx], pathName(path, `oneOf/${idx}`))
                     }
                 }
                 if (val.anyOf) {
                     for (let idx in val.anyOf) {
-                        propName = `${basePropName}/oneOf/${idx}`
-                        verifyProperty(val.oneOf[idx])
+                        verifyProperty(val.anyOf[idx], pathName(path, `anyOf/${idx}`))
                     }
                 }
-                propName = basePropName
+                if (typeof val.additionalProperties === 'object') {
+                    verifyProperty(val.additionalProperties, pathName(path, 'additionalProperties'))
+                }
+                if (val.patternProperties) {
+                    for (let pattern in val.patternProperties) {
+                        verifyProperty(val.patternProperties[pattern], pathName(path, `patternProperties/${pattern}`))
+                    }
+                }
                 return false
             })
         }
@@ -723,7 +719,7 @@ export class SchemaMerger {
 
     missing(kind: string): void {
         if (!this.missingKinds.has(kind)) {
-            this.error(`${this.currentFile}: Missing ${kind} schema file from merge.`)
+            this.error(`${this.currentKind}: Missing ${kind} schema file from merge.`)
             this.missingKinds.add(kind)
             this.failed = true
         }
