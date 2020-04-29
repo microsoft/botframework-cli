@@ -36,7 +36,7 @@ export default class LuisBuild extends Command {
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [luis|crosstrained] is specified by --dialog.'}),
+    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage'}),
     force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build'}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
@@ -79,8 +79,8 @@ export default class LuisBuild extends Command {
         throw new CLIError('Missing bot name. Please pass bot name with --botName flag')
       }
 
-      if (flags.dialog && flags.dialog !== recognizerType.LUIS && flags.dialog !== recognizerType.CROSSTRAINED) {
-        throw new CLIError('Recognizer type specified by --dialog is not right. Please specify [luis|crosstrained]')
+      if (flags.dialog && flags.dialog !== recognizerType.MULTILANGUAGE && flags.dialog !== recognizerType.CROSSTRAINED) {
+        throw new CLIError('Recognizer type specified by --dialog is not right. Please specify [multiLanguage|crosstrained]')
       }
 
       flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'

@@ -5,5 +5,6 @@
 module.exports = {
     LUIS: 'luis',
     QNAMAKER: 'qnamaker',
+    MULTILANGUAGE: 'multiLanguage',
     CROSSTRAINED: 'crosstrained'
 };

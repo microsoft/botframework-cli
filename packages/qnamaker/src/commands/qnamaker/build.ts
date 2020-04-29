@@ -34,7 +34,7 @@ export default class QnamakerBuild extends Command {
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [qnamaker|crosstrained] is specified by --dialog.'}),
+    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage'}),
     force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
   }
@@ -49,8 +49,8 @@ export default class QnamakerBuild extends Command {
         throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
       }
 
-      if (flags.dialog && flags.dialog !== recognizerType.QNAMAKER && flags.dialog !== recognizerType.CROSSTRAINED) {
-        throw new CLIError('Recognizer type specified by --dialog is not right. Please specify [qnamaker|crosstrained]')
+      if (flags.dialog && flags.dialog !== recognizerType.MULTILANGUAGE && flags.dialog !== recognizerType.CROSSTRAINED) {
+        throw new CLIError('Recognizer type specified by --dialog is not right. Please specify [multiLanguage|crosstrained]')
       }
 
       flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'

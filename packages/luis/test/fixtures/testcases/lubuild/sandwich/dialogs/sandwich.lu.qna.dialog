@@ -1,6 +1,6 @@
 {
     "$kind": "Microsoft.CrossTrainedRecognizerSet",
     "recognizers": [
-        "sandwich.en-us.lu"
+        "sandwich.lu"
     ]
 }

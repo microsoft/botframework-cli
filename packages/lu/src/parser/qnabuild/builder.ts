@@ -471,38 +471,25 @@ export class Builder {
   }
 
   async writeDialog(content: string, filePath: string, dialogType: string) {
-    const fileName = path.basename(filePath, '.dialog')
-
-    if (fs.existsSync(filePath)) {
-      const existingDialog = JSON.parse(await fileHelper.getContentFromFile(filePath))
-
-      if (existingDialog.$kind === 'Microsoft.QnAMakerRecognizer') {
-        if (dialogType === recognizerType.CROSSTRAINED) {
-          const recognizers = [fileName]
-          content = new CrossTrainedRecognizer(filePath, recognizers).save()
-        }
-      } else if (existingDialog.$kind === 'Microsoft.CrossTrainedRecognizerSet') {
-        if (dialogType !== recognizerType.CROSSTRAINED) {
-          throw (new exception(retCode.errorCode.INVALID_INPUT, "CrossTrainedRecognizerSet cannot be updated to other recognizer. Please specify the right recognizer type with '--dialog crosstrained'."))
+    await fs.writeFile(filePath, content, 'utf-8')
+    const contentObj = JSON.parse(content)
+    if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.MultiLanguageRecognizer') {
+      const fileName = path.basename(filePath, '.qna.dialog')
+      const crossTrainedFileName = fileName + '.lu.qna.dialog'
+      const crossTrainedFilePath = path.join(path.dirname(filePath), crossTrainedFileName)
+      if (fs.existsSync(crossTrainedFilePath)) {
+        const existingCRDialog = JSON.parse(await fileHelper.getContentFromFile(crossTrainedFilePath))
+        if (!existingCRDialog.recognizers.includes(fileName + '.qna')) {
+          existingCRDialog.recognizers.push(fileName + '.qna')
         }
 
-        if (!existingDialog.recognizers.includes(fileName)) {
-          existingDialog.recognizers.push(fileName)
-        }
-
-        content = JSON.stringify(existingDialog, null, 4)
+        content = JSON.stringify(existingCRDialog, null, 4)
+      } else {
+        const recognizers = [fileName + '.qna']
+        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers).save()
       }
 
-      await fs.writeFile(filePath, content, 'utf-8')
-    } else {
-      const contentObj = JSON.parse(content)
-
-      if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.QnAMakerRecognizer') {
-        const recognizers = [fileName]
-        content = new CrossTrainedRecognizer(filePath, recognizers).save()
-      }
-
-      await fs.writeFile(filePath, content, 'utf-8')
+      await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
     }
   }
 }
