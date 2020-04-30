@@ -53,7 +53,7 @@ dependencies:
   intercept-stdout: 0.1.2
   is-ci: 2.0.0
   json-ptr: 1.2.0
-  json-schema-merge-allof: 0.6.0
+  json-schema-merge-allof: 0.7.0
   latest-version: 4.0.0
   lodash: 4.17.15
   md5: 2.2.1
@@ -3560,14 +3560,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-c4WYmDKyJXhs7WWvAWm3uIYnfyWFoIp+JEoX34rctVvEkMYCPGhXtvmFFXiffBbxfZsvQ0RNnV5H7GvDF5HCqQ==
-  /json-schema-merge-allof/0.6.0:
+  /json-schema-merge-allof/0.7.0:
     dependencies:
       compute-lcm: 1.1.0
       json-schema-compare: 0.2.2
       lodash: 4.17.15
     dev: false
     resolution:
-      integrity: sha512-LEw4VMQVRceOPLuGRWcxW5orTTiR9ZAtqTAe4rQUjNADTeR81bezBVFa0MqIwp0YmHIM1KkhSjZM7o+IQhaPbQ==
+      integrity: sha512-kvsuSVnl1n5xnNEu5ed4o8r8ujSA4/IgRtHmpgfMfa7FOMIRAzN4F9qbuklouTn5J8bi83y6MQ11n+ERMMTXZg==
   /json-schema-ref-parser/8.0.0:
     dependencies:
       '@apidevtools/json-schema-ref-parser': 8.0.0
@@ -6508,7 +6508,7 @@ packages:
       get-uri: 3.0.2
       globby: 9.2.0
       json-ptr: 1.2.0
-      json-schema-merge-allof: 0.6.0
+      json-schema-merge-allof: 0.7.0
       json-schema-ref-parser: 8.0.0
       mocha: 6.2.2
       nyc: 14.1.1
@@ -6525,7 +6525,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-x02VlIHnka985/dMLslLC72hnxd6wCfKgB5pFcssgFr2UaZz1AQ0jPSCP+ICt5W2JD5Bwcszj1X1B3YR+CPqdw==
+      integrity: sha512-g6LLkNRti4KNPANDlnr4n1PmndNkzyrPtd+fXvO3NBfMqYWlcvq8s2lBi/2zQs+ERMnkRWQ5OpiM5ehy1o8zRQ==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6780,7 +6780,7 @@ specifiers:
   intercept-stdout: ^0.1.2
   is-ci: 2.0.0
   json-ptr: ~1.2.0
-  json-schema-merge-allof: ^0.6.0
+  json-schema-merge-allof: ~0.7.0
   latest-version: ^4.0.0
   lodash: ^4.17.15
   md5: ^2.2.1

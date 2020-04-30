@@ -58,7 +58,8 @@
     "semver": "^5.7.0",
     "tslib": "^1.10.0",
     "xml2js": "^0.4.19",
-    "json-ptr": "~1.2.0"
+    "json-ptr": "~1.2.0",
+    "json-schema-merge-allof": "~0.7.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",

@@ -175,10 +175,10 @@
             ],
             "args": [
                 "dialog:merge",
-                "tests/Microsoft.Bot.Builder.TestBot.JSon/*.csproj",
+                "tests/Microsoft.Bot.Builder.Dialogs.Declarative.Tests/*.csproj",
                 "-o",
                 "${env:TEMP}/app.schema",
-                "--verbose"
+                "-d"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet"

@@ -11,6 +11,7 @@ import * as parser from '@apidevtools/json-schema-ref-parser'
 import * as ppath from 'path'
 import * as semver from 'semver'
 import * as xp from 'xml2js'
+let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
 let getUri: any = require('get-uri')
 let ptr = require('json-ptr')
@@ -57,6 +58,7 @@ export class SchemaMerger {
     private debug: boolean | undefined
 
     // State tracking
+    private projects = {}
     private validator = new Validator()
     private metaSchemaId = ''
     private metaSchema: any
@@ -144,10 +146,11 @@ export class SchemaMerger {
 
                             let filename = ppath.basename(componentPath)
                             let kind = filename.substring(0, filename.lastIndexOf('.'))
-                            if (this.source[kind] && this.source[kind] != componentPath) {
+                            let fullPath = ppath.resolve(componentPath)
+                            if (this.source[kind] && this.source[kind] != fullPath) {
                                 this.parsingError(`redefines ${kind} from ${this.source[kind]}.`)
                             }
-                            this.source[kind] = ppath.resolve(componentPath)
+                            this.source[kind] = fullPath
                             this.fixComponentReferences(kind, component)
                             if (component.allOf) {
                                 this.parsingError(`Does not support allOf in component .schema definitions`)
@@ -198,6 +201,10 @@ export class SchemaMerger {
                     // Convert all remote references to local ones
                     await parser.bundle(finalSchema as any, this.schemaProtocolResolver())
                     this.removeSchemaAndId(finalSchema)
+                    finalSchema = this.expandAllOf(finalSchema)
+                    if (this.debug) {
+                        await fs.writeJSON(this.output + '.expanded', finalSchema, this.jsonOptions)
+                    }
 
                     // Final verification
                     this.verifySchema(finalSchema)
@@ -271,6 +278,54 @@ export class SchemaMerger {
         }
     }
 
+    // Expand .csproj packages and projectsx
+    async expandCSProj(path: string): Promise<string[]> {
+        let references: string[] = []
+        if (!this.projects[path]) {
+            this.projects[path] = true
+            if (this.verbose) {
+                this.log(`  Following ${this.prettyPath(path)}`)
+            }
+            references.push(ppath.join(ppath.dirname(path), '/**/*.schema'))
+            let json = await this.xmlToJSON(path)
+            let packages = await this.findGlobalNuget()
+            if (packages) {
+                walkJSON(json, (elt) => {
+                    if (elt.PackageReference) {
+                        for (let pkgRef of elt.PackageReference) {
+                            let pkg = pkgRef.$
+                            let pkgName = pkg.Include
+                            let pkgPath = ppath.join(packages, pkgName)
+                            let versions: string[] = []
+                            for (let version of fs.readdirSync(pkgPath)) {
+                                versions.push(version.toLowerCase())
+                            }
+                            let baseVersion = pkg.Version || '0.0.0'
+                            let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
+                            references.push(ppath.join(packages, pkgName, version || '', '/**/*.schema'))
+                        }
+                    }
+                    return false
+                })
+            }
+            let projects: string[] = []
+            walkJSON(json, (elt) => {
+                if (elt.ProjectReference) {
+                    for (let ref of elt.ProjectReference) {
+                        let project = ref.$
+                        let projectPath = ppath.resolve(ppath.dirname(path), project.Include)
+                        projects.push(projectPath)
+                    }
+                }
+                return false
+            })
+            for (let project of projects) {
+                references = [...references, ...await this.expandCSProj(project)]
+            }
+        }
+        return references
+    }
+
     // Expand package.json, package.config or *.csproj to look for .schema below referenced packages.
     async * expandPackages(paths: string[]): AsyncIterable<string> {
         for (let path of paths) {
@@ -283,33 +338,11 @@ export class SchemaMerger {
                     this.log(`Following ${path}`)
                 }
                 if (name.endsWith('.csproj')) {
-                    references.push(ppath.join(ppath.dirname(path), '/**/*.schema'))
-                    let json = await this.xmlToJSON(path)
-                    let packages = await this.findGlobalNuget()
-                    if (packages) {
-                        walkJSON(json, (elt) => {
-                            let done = false
-                            if (elt.PackageReference) {
-                                for (let pkgRef of elt.PackageReference) {
-                                    let pkg = pkgRef.$
-                                    let pkgName = pkg.Include.toLowerCase()
-                                    let pkgPath = ppath.join(packages, pkgName)
-                                    let versions: string[] = []
-                                    for (let version of fs.readdirSync(pkgPath)) {
-                                        versions.push(version.toLowerCase())
-                                    }
-                                    let baseVersion = pkg.Version || '0.0.0'
-                                    let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
-                                    references.push(ppath.join(packages, pkgName, version || '', '/**/*.schema'))
-                                }
-                                done = true
-                            }  else if (elt.ProjectReference) {
-                                let todo = 1
-                            }
-                            return done
-                        })
-                    }
+                    references.push(...await this.expandCSProj(ppath.resolve(path)))
                 } else if (name === 'packages.config') {
+                    if (this.verbose) {
+                        this.log(`  Following ${this.prettyPath(path)}`)
+                    }
                     let json = await this.xmlToJSON(path)
                     let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
                     if (packages) {
@@ -326,6 +359,9 @@ export class SchemaMerger {
                         })
                     }
                 } else if (name === 'package.json') {
+                    if (this.verbose) {
+                        this.log(`  Following ${this.prettyPath(path)}`)
+                    }
                     let json = await fs.readJSON(path)
                     for (let pkg in json.dependencies) {
                         references.push(ppath.join(ppath.dirname(path), `node_modules/${pkg}/**/*.schema`))
@@ -428,7 +464,17 @@ export class SchemaMerger {
             if (!definition.required) {
                 definition.required = []
             }
-            definition.required = [...definition.required, ...extension.required]
+            if (!Array.isArray(definition.required)) {
+                definition.required = [definition.required]
+            }
+            if (!Array.isArray(extension.required)) {
+                extension.required = [extension.required]
+            }
+            for (let required of extension.required) {
+                if (!definition.required.includes(required)) {
+                    definition.required.push(required)
+                }
+            }
         }
 
         // Merge property restrictions
@@ -663,8 +709,30 @@ export class SchemaMerger {
         })
     }
 
+    // Expand $ref below allOf and remove allOf
+    expandAllOf(bundle: any): any {
+        walkJSON(bundle, (val) => {
+            if (val.allOf) {
+                for (let child of val.allOf) {
+                    if (child.$ref) {
+                        let ref = ptr.get(bundle, child.$ref)
+                        for (let prop in ref) {
+                            if (!child.hasOwnProperty(prop)) {
+                                child[prop] = clone(ref[prop])
+                            }
+                        }
+                        delete child.$ref
+                    }
+                }
+            }
+            return false
+        })
+        return allof(bundle)
+    }
+
     // Verify schema has title/description everywhere and interfaces exist.
     verifySchema(schema: any): void {
+        this.validateSchema(schema)
         for (let entry of schema.oneOf) {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
             let definition = schema.definitions[this.currentKind]
