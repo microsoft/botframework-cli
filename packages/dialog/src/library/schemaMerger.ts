@@ -19,14 +19,17 @@ let util: any = require('util')
 let exec: any = util.promisify(require('child_process').exec)
 
 // Walk over JSON object, stopping if true from walker.
-// Walker gets the current value, the parent object and full path to that object.
-function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean, obj?: any, path?: any): boolean {
+// Walker gets the current value, the parent object and full path to that object
+// and returns false to continue, true to quit and undefined to not go deeper.
+function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean | undefined, obj?: any, path?: any): boolean | undefined {
     let done = fun(elt, obj, path)
-    if (!done) {
+    if (done == false) {
         if (typeof elt === 'object' || Array.isArray(elt)) {
             for (let key in elt) {
                 done = walkJSON(elt[key], fun, elt, pathName(path, key))
-                if (done) break
+                if (done == true) {
+                    break
+                }
             }
         }
     }
@@ -47,6 +50,9 @@ async function getJSON(uri: string): Promise<any> {
     return JSON.parse(data)
 }
 
+/**
+ * This class will find and merge component .schema files into a validated custom schema.
+ */
 export class SchemaMerger {
     // Input parameters
     private patterns: string[]
@@ -75,7 +81,7 @@ export class SchemaMerger {
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
      * @param patterns Glob patterns for the .schema files to combine.
-     * @param output The output file to create.  app.schema by default.
+     * @param output The output file to create.
      * @param verbose True to show files as processed.
      * @param log Logger for informational messages.
      * @param warn Logger for warning messages.
@@ -98,6 +104,7 @@ export class SchemaMerger {
      * $kind for a property connects to another component.
      * schema:#/definitions/foo will refer to $schema#/definition/foo
      * Does extensive error checking and validation to ensure information is present and consistent.
+     * Returns true if successfull.
      */
     async mergeSchemas(): Promise<boolean> {
         try {
@@ -143,6 +150,7 @@ export class SchemaMerger {
                             } else {
                                 this.validateSchema(component)
                             }
+                            delete component.$schema
 
                             let filename = ppath.basename(componentPath)
                             let kind = filename.substring(0, filename.lastIndexOf('.'))
@@ -185,7 +193,7 @@ export class SchemaMerger {
                     for (let key of Object.keys(this.definitions).sort()) {
                         finalDefinitions[key] = this.definitions[key]
                     }
-                    let finalSchema = {
+                    let finalSchema: any = {
                         $schema: this.metaSchemaId,
                         $id: ppath.resolve(this.output),
                         type: 'object',
@@ -199,8 +207,7 @@ export class SchemaMerger {
                     }
 
                     // Convert all remote references to local ones
-                    await parser.bundle(finalSchema as any, this.schemaProtocolResolver())
-                    this.removeSchemaAndId(finalSchema)
+                    finalSchema = await parser.bundle(finalSchema as parser.JSONSchema, this.schemaProtocolResolver())
                     finalSchema = this.expandAllOf(finalSchema)
                     if (this.debug) {
                         await fs.writeJSON(this.output + '.expanded', finalSchema, this.jsonOptions)
@@ -209,15 +216,17 @@ export class SchemaMerger {
                     // Final verification
                     this.verifySchema(finalSchema)
                     if (!this.failed) {
+                        // Verify all refs work
+                        let start = process.hrtime()
+                        await parser.dereference(clone(finalSchema))
+                        let [_, end] = process.hrtime(start)
+                        end = end / 1000000000
+                        if (this.verbose) {
+                            this.log(`Expanding all $ref took ${end} seconds`)
+                        }
+
                         this.log(`Writing ${this.output}`)
                         await fs.writeJSON(this.output, finalSchema, this.jsonOptions)
-                        if (this.debug) {
-                            let start = process.hrtime()
-                            await parser.dereference(clone(finalSchema))
-                            let [_, end] = process.hrtime(start)
-                            end = end / 1000000000
-                            this.log(`Expanding took ${end} seconds`)
-                        }
                     }
                 }
                 if (this.failed) {
@@ -227,7 +236,7 @@ export class SchemaMerger {
         } catch (e) {
             this.mergingError(e)
         }
-        return true
+        return !this.failed
     }
 
     // Validate against component schema
@@ -304,6 +313,7 @@ export class SchemaMerger {
                             let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
                             references.push(ppath.join(packages, pkgName, version || '', '/**/*.schema'))
                         }
+                        return undefined
                     }
                     return false
                 })
@@ -316,6 +326,7 @@ export class SchemaMerger {
                         let projectPath = ppath.resolve(ppath.dirname(path), project.Include)
                         projects.push(projectPath)
                     }
+                    return undefined
                 }
                 return false
             })
@@ -347,15 +358,14 @@ export class SchemaMerger {
                     let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
                     if (packages) {
                         walkJSON(json, (elt) => {
-                            let done = false
                             if (elt.package) {
                                 for (let info of elt.package) {
                                     let id = `${info.$.id}.${info.$.version}`
                                     references.push(ppath.join(packages, `${id}/**/*.schema`))
                                 }
-                                done = true
+                                return undefined
                             }
-                            return done
+                            return false
                         })
                     }
                 } else if (name === 'package.json') {
@@ -552,6 +562,7 @@ export class SchemaMerger {
         walkJSON(this.definitions, (val) => {
             if (val.$processed) {
                 delete val.$processed
+                return undefined
             }
             return false
         })
@@ -698,21 +709,10 @@ export class SchemaMerger {
         }
     }
 
-    // Remove $schema and $id and make sure they are unique
-    removeSchemaAndId(bundle: any): void {
-        walkJSON(bundle, (val, _obj, path) => {
-            if (path) {
-                if (val.$schema && typeof val.$schema === 'string') delete val.$schema
-                if (val.$id) delete val.$id
-            }
-            return false
-        })
-    }
-
     // Expand $ref below allOf and remove allOf
     expandAllOf(bundle: any): any {
         walkJSON(bundle, (val) => {
-            if (val.allOf) {
+            if (val.allOf && Array.isArray(val.allOf)) {
                 for (let child of val.allOf) {
                     if (child.$ref) {
                         let ref = ptr.get(bundle, child.$ref)
@@ -732,35 +732,41 @@ export class SchemaMerger {
 
     // Verify schema has title/description everywhere and interfaces exist.
     verifySchema(schema: any): void {
+        this.log('Verifying schema')
         this.validateSchema(schema)
         for (let entry of schema.oneOf) {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
             let definition = schema.definitions[this.currentKind]
             let verifyProperty = (val, path) => {
-                if (val.$ref) {
-                    val = clone(val)
-                    let ref = ptr.get(schema, val.$ref)
-                    for (let prop in ref) {
-                        if (!val[prop]) {
-                            val[prop] = ref[prop]
+                if (!val.$id) {
+                    if (val.$ref) {
+                        val = clone(val)
+                        let ref = ptr.get(schema, val.$ref)
+                        for (let prop in ref) {
+                            if (!val[prop]) {
+                                val[prop] = ref[prop]
+                            }
+                        }
+                        delete val.$ref
+                    }
+                    if (val.$kind) {
+                        let kind = schema.definitions[val.$kind]
+                        if (this.roles(kind, 'interface').length > 0 && kind.oneOf.length == 0) {
+                            this.mergingError(`${path} has no implementations of ${val.$kind}.`)
                         }
                     }
-                    delete val.$ref
-                }
-                if (val.$kind) {
-                    let kind = schema.definitions[val.$kind]
-                    if (this.roles(kind, 'interface').length > 0 && kind.oneOf.length == 0) {
-                        this.mergingError(`${path} has no implementations of ${val.$kind}.`)
+                    if (!val.title) {
+                        this.mergingWarning(`${path} has no title.`)
                     }
-                }
-                if (!val.title) {
-                    this.mergingError(`${path} has no title.`)
-                }
-                if (!val.description) {
-                    this.mergingError(`${path} has no description.`)
+                    if (!val.description) {
+                        this.mergingWarning(`${path} has no description.`)
+                    }
                 }
             }
             walkJSON(definition, (val, _, path) => {
+                if (val.$id && path) {
+                    return undefined
+                }
                 if (val.properties && !path?.endsWith('properties')) {
                     for (let propName in val.properties) {
                         verifyProperty(val.properties[propName], pathName(path, propName))
@@ -831,13 +837,22 @@ export class SchemaMerger {
         this.failed = true
     }
 
+    // Warning while merging schemas
+    mergingWarning(msg: string): void {
+        if (this.currentKind) {
+            this.warn(`Warning ${this.currentKind}: ${msg}`)
+        } else {
+            this.warn(`Warning ${msg}`)
+        }
+    }
+
     // Error while merging schemas
     mergingError(err: Error | string): void {
         let msg = typeof err === 'string' ? err : err.message
         if (this.currentKind) {
-            this.error(`${this.currentKind}: ${msg}`)
+            this.error(`Error ${this.currentKind}: ${msg}`)
         } else {
-            this.error(msg)
+            this.error(`Error ${msg}`)
         }
         this.failed = true
     }
