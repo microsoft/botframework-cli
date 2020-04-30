@@ -304,7 +304,7 @@ export class SchemaMerger {
                                 }
                                 done = true
                             }  else if (elt.ProjectReference) {
-                                int todo = 1
+                                let todo = 1
                             }
                             return done
                         })
