@@ -287,7 +287,7 @@ export class Builder {
     return kbToLuContent
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, files: string[]) {
     let writeDone = false
 
     if (out) {
@@ -295,7 +295,7 @@ export class Builder {
         const outFilePath = path.join(path.resolve(out), path.basename(content.path))
         if (force || !fs.existsSync(outFilePath)) {
           this.handler(`Writing to ${outFilePath}\n`)
-          await this.writeDialog(content.content, outFilePath, dialogType)
+          await this.writeDialog(content.content, outFilePath, dialogType, files)
           writeDone = true
         }
       }
@@ -303,7 +303,7 @@ export class Builder {
       for (const content of contents) {
         if (force || !fs.existsSync(content.path)) {
           this.handler(`Writing to ${content.path}\n`)
-          await this.writeDialog(content.content, content.path, dialogType)
+          await this.writeDialog(content.content, content.path, dialogType, files)
           writeDone = true
         }
       }
@@ -470,26 +470,38 @@ export class Builder {
     this.handler(`Publishing finished for kb ${kbName}\n`)
   }
 
-  async writeDialog(content: string, filePath: string, dialogType: string) {
+  async writeDialog(content: string, filePath: string, dialogType: string, files: string[]) {
     await fs.writeFile(filePath, content, 'utf-8')
     const contentObj = JSON.parse(content)
     if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.MultiLanguageRecognizer') {
-      const fileName = path.basename(filePath, '.qna.dialog')
-      const crossTrainedFileName = fileName + '.lu.qna.dialog'
-      const crossTrainedFilePath = path.join(path.dirname(filePath), crossTrainedFileName)
-      if (fs.existsSync(crossTrainedFilePath)) {
-        const existingCRDialog = JSON.parse(await fileHelper.getContentFromFile(crossTrainedFilePath))
-        if (!existingCRDialog.recognizers.includes(fileName + '.qna')) {
-          existingCRDialog.recognizers.push(fileName + '.qna')
+      const fileName = path.basename(filePath, '.dialog')
+
+      for (const file of files) {
+        let qnafileName
+        let cultureFromPath = fileHelper.getCultureFromPath(file)
+        if (cultureFromPath) {
+          let fileNameWithCulture = path.basename(file, path.extname(file))
+          qnafileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - cultureFromPath.length - 1)
+        } else {
+          qnafileName = path.basename(file, path.extname(file))
         }
 
-        content = JSON.stringify(existingCRDialog, null, 4)
-      } else {
-        const recognizers = [fileName + '.qna']
-        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers).save()
-      }
+        let crossTrainedFileName = `${qnafileName}.lu.qna.dialog`
+        let crossTrainedFilePath = path.join(path.dirname(filePath), crossTrainedFileName)
+        if (fs.existsSync(crossTrainedFilePath)) {
+          let existingCRDialog = JSON.parse(await fileHelper.getContentFromFile(crossTrainedFilePath))
+          if (!existingCRDialog.recognizers.includes(fileName)) {
+            existingCRDialog.recognizers.push(fileName)
+          }
 
-      await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
+          content = JSON.stringify(existingCRDialog, null, 4)
+        } else {
+          let recognizers = [fileName + '.qna']
+          content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers).save()
+        }
+
+        await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
+      }  
     }
   }
 }

@@ -71,6 +71,8 @@ export default class QnamakerBuild extends Command {
       let settings: any
 
       const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.QnAFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
+      
+      let files: string[] = []
 
       if (flags.stdin && flags.stdin !== '') {
         // load qna content from stdin and create default recognizer, multiRecognier and settings
@@ -83,8 +85,6 @@ export default class QnamakerBuild extends Command {
         recognizers.set(content.name, recognizer)
       } else {
         if (flags.log) this.log('Loading files...\n')
-
-        let files: string[] = []
 
         // get qna files from flags.in.
         if (flags.in && flags.in !== '') {
@@ -111,7 +111,7 @@ export default class QnamakerBuild extends Command {
       // write dialog assets based on config
       if (flags.dialog) {
         const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
-        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, outputFolder, flags.dialog)
+        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, outputFolder, flags.dialog, files)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {
