@@ -300,20 +300,21 @@ const removeDupUtterances = function (resource) {
 
 const extractIntentUtterances = function(resource, intentName) {
   const intentSections = resource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
+  const curlyRe = /.*\{.*\}.*/
 
   let intentUtterances = []
   if (intentName && intentName !== '') {
     const specificSections = intentSections.filter(s => s.Name === intentName)
     if (specificSections.length > 0) {
-      intentUtterances = intentUtterances.concat(specificSections[0].UtteranceAndEntitiesMap.map(u => u.utterance))
+      intentUtterances = intentUtterances.concat(specificSections[0].UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => curlyRe.exec(i) === null))
     }
   } else {
     intentSections.forEach(s => {
       if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-        intentUtterances = intentUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance))
+        intentUtterances = intentUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => curlyRe.exec(i) === null))
       } else {
         s.SimpleIntentSections.forEach(section => {
-          intentUtterances = intentUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance))
+          intentUtterances = intentUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => curlyRe.exec(i) === null))
         })
       }
   })}
