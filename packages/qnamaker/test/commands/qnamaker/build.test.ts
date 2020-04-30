@@ -290,7 +290,7 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to cro
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully when --dialog set to qnamaker', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.lu.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.lu.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
     })
 })

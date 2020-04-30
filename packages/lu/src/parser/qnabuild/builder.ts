@@ -496,7 +496,7 @@ export class Builder {
 
           content = JSON.stringify(existingCRDialog, null, 4)
         } else {
-          let recognizers = [fileName + '.qna']
+          let recognizers = [fileName]
           content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers).save()
         }
 
