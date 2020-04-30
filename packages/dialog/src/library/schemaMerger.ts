@@ -90,6 +90,13 @@ export class SchemaMerger {
         this.debug = debug
     }
 
+    /** Merge component schemas together into a single self-contained files.
+     * $role of implements(interface) hooks up defintion to interface.
+     * $role of extends(kind) will extend the kind by picking up property related restrictions.
+     * $kind for a property connects to another component.
+     * schema:#/definitions/foo will refer to $schema#/definition/foo
+     * Does extensive error checking and validation to ensure information is present and consistent.
+     */
     async mergeSchemas(): Promise<boolean> {
         try {
             let componentPaths: any[] = []
@@ -99,7 +106,7 @@ export class SchemaMerger {
                 fs.unlinkSync(this.output)
             }
 
-            this.log(`Finding component .schema files in ${this.patterns.join(', ')}`)
+            this.log(`Finding component .schema files in${os.EOL}  ${this.patterns.join(os.EOL + '  ')}`)
             for await (const path of this.expandPackages(await glob(this.patterns))) {
                 componentPaths.push(path)
             }
@@ -296,6 +303,8 @@ export class SchemaMerger {
                                     references.push(ppath.join(packages, pkgName, version || '', '/**/*.schema'))
                                 }
                                 done = true
+                            }  else if (elt.ProjectReference) {
+                                int todo = 1
                             }
                             return done
                         })
@@ -372,6 +381,7 @@ export class SchemaMerger {
             }))
     }
 
+    // Find the first parent directory that has dir
     async findParentDirectory(path: string, dir: string): Promise<string> {
         path = ppath.resolve(path)
         let result = ''
@@ -384,6 +394,12 @@ export class SchemaMerger {
         return result
     }
 
+    /**
+     * Merge extension into definition.
+     * @param extensionName Name of definition to merge in.
+     * @param definition Definition that will be changed
+     * @param canOverride True if definition can override extension.
+     */
     mergeInto(extensionName: string, definition: any, canOverride?: boolean) {
         let extension = this.definitions[extensionName] || this.metaSchema.definitions[extensionName]
 
@@ -466,6 +482,7 @@ export class SchemaMerger {
         return found
     }
 
+    // Process extensions by making sure they have been done and then merging into definition.
     processExtension(definition: any): void {
         let extensions = this.roles(definition, 'extends')
         for (let extensionName of extensions) {
@@ -485,6 +502,7 @@ export class SchemaMerger {
         for (this.currentKind in this.definitions) {
             this.processExtension(this.definitions[this.currentKind])
         }
+        // Remove processing informationx
         walkJSON(this.definitions, (val) => {
             if (val.$processed) {
                 delete val.$processed
@@ -600,7 +618,7 @@ export class SchemaMerger {
         this.currentKind = ''
     }
 
-    // Include standard component properties
+    // Include standard component properties from schema
     addComponentProperties(): void {
         for (this.currentKind in this.definitions) {
             if (!this.isInterface(this.currentKind)) {
@@ -645,8 +663,8 @@ export class SchemaMerger {
         })
     }
 
+    // Verify schema has title/description everywhere and interfaces exist.
     verifySchema(schema: any): void {
-        // Ensure everyone has a $kind and minimum property definitions
         for (let entry of schema.oneOf) {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
             let definition = schema.definitions[this.currentKind]
@@ -717,6 +735,7 @@ export class SchemaMerger {
         return this.interfaces.includes(kind)
     }
 
+    // Report missing component.
     missing(kind: string): void {
         if (!this.missingKinds.has(kind)) {
             this.error(`${this.currentKind}: Missing ${kind} schema file from merge.`)

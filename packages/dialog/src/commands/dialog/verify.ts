@@ -8,17 +8,10 @@ import * as chalk from 'chalk';
 import { Definition, DialogTracker, SchemaTracker } from '../../library/dialogTracker';
 
 export default class DialogVerify extends Command {
-
+    static description = 'Verify .dialog files match their app.schema.'
+    
     static args = [
-        { name: 'glob1', required: true },
-        { name: 'glob2', required: false },
-        { name: 'glob3', required: false },
-        { name: 'glob4', required: false },
-        { name: 'glob5', required: false },
-        { name: 'glob6', required: false },
-        { name: 'glob7', required: false },
-        { name: 'glob8', required: false },
-        { name: 'glob9', required: false },
+        { name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .dialog files.' },
     ]
 
     static flags: flags.Input<any> = {

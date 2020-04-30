@@ -7,18 +7,13 @@ import { Command, flags } from '@microsoft/bf-cli-command'
 import { SchemaMerger } from '../../library/schemaMerger'
 
 export default class DialogMerge extends Command {
+    static description = 'Merge component .schema files into an app.schema.'
 
     static args = [
-        { name: 'glob1', required: true },
-        { name: 'glob2', required: false },
-        { name: 'glob3', required: false },
-        { name: 'glob4', required: false },
-        { name: 'glob5', required: false },
-        { name: 'glob6', required: false },
-        { name: 'glob7', required: false },
-        { name: 'glob8', required: false },
-        { name: 'glob9', required: false },
+        { name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .schema, .csproj, or package.json files.'},
     ]
+
+    static strict = false
 
     static flags: flags.Input<any> = {
         debug: flags.boolean({ char: 'd', description: 'Generate debug files.', hidden: true, default: false}),
@@ -29,7 +24,7 @@ export default class DialogMerge extends Command {
 
     static examples = [
         '$ bf dialog:merge *.csproj',
-        '$ bf dialog:merge libraries/*.schema -o app.schema'
+        '$ bf dialog:merge libraries/**/*.schema **/*.csproj -o app.schema'
     ]
 
     async run() {

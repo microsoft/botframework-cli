@@ -155,13 +155,30 @@
             ],
             "args": [
                 "dialog:merge",
-                "libraries/**/Microsoft.IRecognizer.schema",
-                "libraries/**/Microsoft.LuisRecognizer.schema",
                 "libraries/**/*.schema",
                 "-o",
                 "../botframework-sdk/schemas/component/sdk.schema",
-                "--verbose",
-                "-d"
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "BotBuilder project",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:merge",
+                "tests/Microsoft.Bot.Builder.TestBot.JSon/*.csproj",
+                "-o",
+                "${env:TEMP}/app.schema",
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet"
