@@ -21,7 +21,6 @@ const luisToLuContent = function(luisJSON){
 
     // Parse Intents
     fileContent += parseIntentsToLu(luisObj, luisJSON)
-    fileContent += parseEntitiesToLu(luisJSON)
     fileContent += parseToLuPrebuiltEntities(luisJSON)
     fileContent += handlePhraseLists(luisJSON.model_features);
     fileContent += handlePhraseLists(luisJSON.phraselists);
@@ -32,6 +31,8 @@ const luisToLuContent = function(luisJSON){
     fileContent += parseRegExEntitiesToLu(luisJSON.regexEntities)
     fileContent += parseCompositesToLu(luisJSON)
     fileContent += parsePatternAnyEntitiesToLu(luisJSON)
+    // do entities at the end so all other types are defined prior to ml entities.
+    fileContent += parseEntitiesToLu(luisJSON)
     return fileContent
 }
 
@@ -191,8 +192,7 @@ const parseEntitiesToLu =  function(luisJson){
                 }
                 fileContent += NEWLINE + NEWLINE;
             }
-            fileContent += `@ ml `;
-            fileContent += entity.name.includes(' ') ? `"${entity.name}"` : `${entity.name}`;
+            fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
             fileContent += addRolesAndFeatures(entity);
             fileContent += NEWLINE + NEWLINE;
         } else {
@@ -203,6 +203,10 @@ const parseEntitiesToLu =  function(luisJson){
     fileContent += NEWLINE;
     
     return fileContent
+}
+
+const writeEntityName = function(entityName) {
+    return entityName.includes(' ') ? `"${entityName}"` : `${entityName}`
 }
 
 const parseToLuPrebuiltEntities = function(luisJson){
@@ -367,7 +371,7 @@ const addAppMetaData = function(LUISJSON) {
 const handleNDepthEntity = function(entity) {
     let fileContent = '';
     const BASE_TAB_STOP = 1;
-    fileContent += `@ ${EntityTypeEnum.ML} ${entity.name}`;
+    fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
     fileContent += addRolesAndFeatures(entity);
     fileContent += NEWLINE;
     fileContent += addNDepthChildDefinitions(entity.children, BASE_TAB_STOP, fileContent) + NEWLINE + NEWLINE
@@ -383,15 +387,7 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
     let myFileContent = '';
     (childCollection || []).forEach(child => {
         myFileContent += "".padStart(tabStop * 4, ' ');
-        myFileContent += '- @ ';
-        // find constraint
-        let constraint = (child.features || []).find(feature => feature.isRequired == true);
-        if (constraint !== undefined) {
-            myFileContent += constraint.modelName;
-        } else {
-            myFileContent += EntityTypeEnum.ML;
-        }
-        myFileContent += ` ${child.name}`;
+        myFileContent += `- @ ${getEntityType(child.features)} ${writeEntityName(child.name)}`;
         myFileContent += addRolesAndFeatures(child);
         myFileContent += NEWLINE;
         if (child.children && child.children.length !== 0) {
@@ -399,6 +395,15 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
         }
     });
     return myFileContent;
+}
+const getEntityType = function(features) {
+    // find constraint
+    let constraint = (features || []).find(feature => feature.isRequired == true);
+    if (constraint !== undefined) {
+        return constraint.modelName;
+    } else {
+        return EntityTypeEnum.ML;
+    }
 }
 /**
  * Helper to construt role and features list for an entity
