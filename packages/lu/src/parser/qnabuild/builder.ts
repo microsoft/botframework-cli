@@ -501,7 +501,7 @@ export class Builder {
         }
 
         await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
-      }  
+      }
     }
   }
 }
