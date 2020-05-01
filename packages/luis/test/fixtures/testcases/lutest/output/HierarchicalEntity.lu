@@ -3,7 +3,7 @@
 > !# @app.name = MicrosoftPizza
 > !# @app.versionId = 1.2 - As Constraints
 > !# @app.culture = en-us
-> !# @app.luis_schema_version = 6.0.0
+> !# @app.luis_schema_version = 7.0.0
 
 
 > Total passed: 3/3
@@ -14,7 +14,7 @@
 ## ModifyOrder
 > PASS. Predicted intent: ModifyOrder(0.99580574)
 > PASS. Predicted entities: {@Order={@FullPizzaWithModifiers=a cheese pizza {@Size=medium} {@ToppingModifiers={@Modifier=with some} {@Topping=pineapple} and {@Topping=chicken}}}}
-- {@FullPizzaWithModifiers={@Order=a cheese pizza {@Size=medium} {@ToppingModifiers={@Modifier=with some} {@Topping=pineapple} and {@Topping=chicken}}}}
+- {@Order={@FullPizzaWithModifiers=a cheese pizza {@Size=medium} {@ToppingModifiers={@Modifier=with some} {@Topping=pineapple} and {@Topping=chicken}}}}
 > PASS. Predicted intent: ModifyOrder(0.9951326)
 > PASS. Predicted entities: {@Order=add {@FullPizzaWithModifiers={@Quantity=5} {@Size=party size} {@PizzaType=marinera pizzas}} and i will pick them up at 6pm}
 - {@Order=add {@FullPizzaWithModifiers={@Quantity=5} {@Size=party size} {@PizzaType=marinera pizzas}} and i will pick them up at 6pm}
