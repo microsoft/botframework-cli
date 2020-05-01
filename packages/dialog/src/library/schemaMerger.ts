@@ -207,7 +207,6 @@ export default class SchemaMerger {
 
                 // Convert all remote references to local ones
                 finalSchema = await parser.bundle(finalSchema as parser.JSONSchema, this.schemaProtocolResolver())
-                finalSchema = this.expandAllOf(finalSchema)
                 this.removeId(finalSchema)
                 if (this.debug) {
                     await fs.writeJSON(this.output + '.expanded', finalSchema, this.jsonOptions)
