@@ -4,7 +4,7 @@
  */
 
 import { Command, flags } from '@microsoft/bf-cli-command'
-import { SchemaMerger } from '../../library/schemaMerger'
+import SchemaMerger from '../../library/schemaMerger'
 
 export default class DialogMerge extends Command {
     static description = 'Merge component .schema files into an app.schema.'

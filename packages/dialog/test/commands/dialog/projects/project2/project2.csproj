@@ -37,9 +37,4 @@
         <AssemblyOriginatorKeyFile>..\..\..\build\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    </ItemGroup>
-
 </Project>

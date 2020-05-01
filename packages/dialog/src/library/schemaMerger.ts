@@ -53,7 +53,7 @@ async function getJSON(uri: string): Promise<any> {
 /**
  * This class will find and merge component .schema files into a validated custom schema.
  */
-export class SchemaMerger {
+export default class SchemaMerger {
     // Input parameters
     private patterns: string[]
     private output: string
@@ -110,10 +110,10 @@ export class SchemaMerger {
         try {
             let componentPaths: any[] = []
 
-            // delete output so we don't attempt to process it
-            if (fs.existsSync(this.output)) {
-                fs.unlinkSync(this.output)
-            }
+            // Delete existing output
+            await fs.remove(this.output)
+            await fs.remove(this.output + '.final')
+            await fs.remove(this.output + '.expanded')
 
             this.log(`Finding component .schema files in${os.EOL}  ${this.patterns.join(os.EOL + '  ')}`)
             for await (const path of this.expandPackages(await glob(this.patterns))) {
@@ -132,21 +132,23 @@ export class SchemaMerger {
                         }
                         let component = await fs.readJSON(componentPath)
                         if (component.$id) {
-                            this.error(`${this.currentFile}: warning: Skipping because of top-level $id: ${component.$id}.`)
+                            this.parsingWarning(`Skipping because of top-level $id ${component.$id}`)
                         } else {
                             this.relativeToAbsoluteRefs(component, componentPath)
 
                             // Pick up meta-schema from first .dialog file
                             if (!this.metaSchema) {
                                 this.metaSchemaId = component.$schema
+                                this.currentFile = this.metaSchemaId
                                 this.metaSchema = await getJSON(component.$schema)
                                 this.validator.addSchema(this.metaSchema, 'componentSchema')
                                 if (this.verbose) {
-                                    this.log(`  Using ${this.metaSchemaId} to define components.`)
+                                    this.log(`  Using ${this.metaSchemaId} to define components`)
                                 }
+                                this.currentFile = componentPath
                                 this.validateSchema(component)
                             } else if (component.$schema !== this.metaSchemaId) {
-                                this.error(`${this.currentFile}: error:${this.currentFile}: ${component.$schema} does not match component.schema ${this.metaSchemaId}`)
+                                this.parsingWarning(`Component schema ${component.$schema} does not match ${this.metaSchemaId}`)
                             } else {
                                 this.validateSchema(component)
                             }
@@ -156,7 +158,7 @@ export class SchemaMerger {
                             let kind = filename.substring(0, filename.lastIndexOf('.'))
                             let fullPath = ppath.resolve(componentPath)
                             if (this.source[kind] && this.source[kind] != fullPath) {
-                                this.parsingError(`redefines ${kind} from ${this.source[kind]}.`)
+                                this.parsingError(`Redefines ${kind} from ${this.source[kind]}`)
                             }
                             this.source[kind] = fullPath
                             this.fixComponentReferences(kind, component)
@@ -292,8 +294,9 @@ export class SchemaMerger {
         let references: string[] = []
         if (!this.projects[path]) {
             this.projects[path] = true
+            this.currentFile = this.prettyPath(path)
             if (this.verbose) {
-                this.log(`  Following ${this.prettyPath(path)}`)
+                this.log(`  Following ${this.currentFile}`)
             }
             references.push(ppath.join(ppath.dirname(path), '/**/*.schema'))
             let json = await this.xmlToJSON(path)
@@ -345,42 +348,45 @@ export class SchemaMerger {
             } else {
                 let references: string[] = []
                 let name = ppath.basename(path)
-                if (this.verbose) {
-                    this.log(`Following ${path}`)
-                }
                 if (name.endsWith('.csproj')) {
                     references.push(...await this.expandCSProj(ppath.resolve(path)))
-                } else if (name === 'packages.config') {
-                    if (this.verbose) {
-                        this.log(`  Following ${this.prettyPath(path)}`)
-                    }
-                    let json = await this.xmlToJSON(path)
-                    let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
-                    if (packages) {
-                        walkJSON(json, (elt) => {
-                            if (elt.package) {
-                                for (let info of elt.package) {
-                                    let id = `${info.$.id}.${info.$.version}`
-                                    references.push(ppath.join(packages, `${id}/**/*.schema`))
-                                }
-                                return undefined
-                            }
-                            return false
-                        })
-                    }
-                } else if (name === 'package.json') {
-                    if (this.verbose) {
-                        this.log(`  Following ${this.prettyPath(path)}`)
-                    }
-                    let json = await fs.readJSON(path)
-                    for (let pkg in json.dependencies) {
-                        references.push(ppath.join(ppath.dirname(path), `node_modules/${pkg}/**/*.schema`))
-                    }
                 } else {
-                    throw new Error(`Unknown package type ${path}`)
+                    if (this.verbose) {
+                        this.log(`Following ${path}`)
+                    }
+                    if (name === 'packages.config') {
+                        if (this.verbose) {
+                            this.log(`  Following ${this.prettyPath(path)}`)
+                        }
+                        let json = await this.xmlToJSON(path)
+                        let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
+                        if (packages) {
+                            walkJSON(json, (elt) => {
+                                if (elt.package) {
+                                    for (let info of elt.package) {
+                                        let id = `${info.$.id}.${info.$.version}`
+                                        references.push(ppath.join(packages, `${id}/**/*.schema`))
+                                    }
+                                    return undefined
+                                }
+                                return false
+                            })
+                        }
+                    } else if (name === 'package.json') {
+                        if (this.verbose) {
+                            this.log(`  Following ${this.prettyPath(path)}`)
+                        }
+                        let json = await fs.readJSON(path)
+                        for (let pkg in json.dependencies) {
+                            references.push(ppath.join(ppath.dirname(path), `node_modules/${pkg}/**/*.schema`))
+                        }
+                    } else {
+                        throw new Error(`Unknown package type ${path}`)
+                    }
                 }
                 for (let ref of references) {
-                    for (let expandedRef of await glob(ref)) {
+                    let matches = await glob(ref.replace(/\\/g, '/'))
+                    for (let expandedRef of matches) {
                         yield this.prettyPath(expandedRef)
                     }
                 }
@@ -395,7 +401,7 @@ export class SchemaMerger {
         if (newPath.startsWith('..')) {
             newPath = path
         }
-        return newPath
+        return newPath.replace(/\\/g, '/')
     }
 
     // Find the global nuget repository
@@ -409,7 +415,7 @@ export class SchemaMerger {
                 result = stdout.substring(start + name.length).trim()
             }
         } catch (err) {
-            this.warn(`${this.currentFile}: warning: Cannot find global nuget packages so skipping .csproj\n${err}`)
+            this.parsingError(`Cannot find global nuget packages`)
         }
         return result
     }
@@ -449,60 +455,64 @@ export class SchemaMerger {
     mergeInto(extensionName: string, definition: any, canOverride?: boolean) {
         let extension = this.definitions[extensionName] || this.metaSchema.definitions[extensionName]
 
-        // Ensure it is an object at the top
-        if (!definition.type) {
-            definition.type = 'object'
-        }
+        if (!extension) {
+            this.mergingError(`Cannot extend ${extensionName} because it is not included`)
+        } else {
+            // Ensure it is an object at the top
+            if (!definition.type) {
+                definition.type = 'object'
+            }
 
-        // Merge properties
-        if (extension.properties) {
-            if (!definition.properties) {
-                definition.properties = clone(extension.properties)
-            } else {
-                for (let property in extension.properties) {
-                    if (definition.properties[property]) {
-                        this.mergingError(`Redefines property ${property} from ${extensionName}.`)
-                    } else {
-                        definition.properties[property] = clone(extension.properties[property])
+            // Merge properties
+            if (extension.properties) {
+                if (!definition.properties) {
+                    definition.properties = clone(extension.properties)
+                } else {
+                    for (let property in extension.properties) {
+                        if (definition.properties[property]) {
+                            this.mergingError(`Redefines property ${property} from ${extensionName}`)
+                        } else {
+                            definition.properties[property] = clone(extension.properties[property])
+                        }
                     }
                 }
             }
-        }
 
-        // Merge required
-        if (extension.required) {
-            if (!definition.required) {
-                definition.required = []
-            }
-            if (!Array.isArray(definition.required)) {
-                definition.required = [definition.required]
-            }
-            if (!Array.isArray(extension.required)) {
-                extension.required = [extension.required]
-            }
-            for (let required of extension.required) {
-                if (!definition.required.includes(required)) {
-                    definition.required.push(required)
+            // Merge required
+            if (extension.required) {
+                if (!definition.required) {
+                    definition.required = []
+                }
+                if (!Array.isArray(definition.required)) {
+                    definition.required = [definition.required]
+                }
+                if (!Array.isArray(extension.required)) {
+                    extension.required = [extension.required]
+                }
+                for (let required of extension.required) {
+                    if (!definition.required.includes(required)) {
+                        definition.required.push(required)
+                    }
                 }
             }
-        }
 
-        // Merge property restrictions
-        if (extension.hasOwnProperty('additionalProperties')) {
-            if (definition.hasOwnProperty('additionalProperties')) {
-                if (!canOverride) {
-                    this.mergingError(`Redefines additionalProperties from ${extensionName}.`)
+            // Merge property restrictions
+            if (extension.hasOwnProperty('additionalProperties')) {
+                if (definition.hasOwnProperty('additionalProperties')) {
+                    if (!canOverride) {
+                        this.mergingError(`Redefines additionalProperties from ${extensionName}`)
+                    }
+                } else {
+                    definition.additionalProperties = extension.additionalProperties
                 }
-            } else {
-                definition.additionalProperties = extension.additionalProperties
             }
-        }
 
-        if (extension.patternProperties) {
-            if (definition.patternProperties) {
-                definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
-            } else {
-                definition.patternProperties = clone(extension.patternProperties)
+            if (extension.patternProperties) {
+                if (definition.patternProperties) {
+                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
+                } else {
+                    definition.patternProperties = clone(extension.patternProperties)
+                }
             }
         }
     }
@@ -544,7 +554,7 @@ export class SchemaMerger {
         for (let extensionName of extensions) {
             // Ensure base has been extended
             let extension = this.definitions[extensionName]
-            if (!extension.$processed) {
+            if (extension && !extension.$processed) {
                 this.processExtension(extension)
             }
 
@@ -558,7 +568,7 @@ export class SchemaMerger {
         for (this.currentKind in this.definitions) {
             this.processExtension(this.definitions[this.currentKind])
         }
-        // Remove processing informationx
+        // Remove processing information
         walkJSON(this.definitions, (val) => {
             if (val.$processed) {
                 delete val.$processed
@@ -570,9 +580,10 @@ export class SchemaMerger {
 
     // Check $role validity and identify implementations and interfaces
     processImplementations(): void {
+        // Identify interfaces
         for (this.currentKind in this.definitions) {
             let schema = this.definitions[this.currentKind]
-            if (this.roles(this.definitions[this.currentKind], 'interface').length > 0) {
+            if (this.roles(schema, 'interface').length > 0) {
                 this.interfaces.push(this.currentKind)
             }
         }
@@ -583,36 +594,36 @@ export class SchemaMerger {
                 for (let interfaceName of this.roles(definition, 'implements')) {
                     // Connect to interface
                     if (!this.definitions[interfaceName]) {
-                        this.mergingError(`Interface ${interfaceName} is not defined.`)
+                        this.mergingError(`Interface ${interfaceName} is not defined`)
                     } else if (!this.isInterface(interfaceName)) {
-                        this.mergingError(`${interfaceName} is missing an interface $role.`)
+                        this.mergingError(`${interfaceName} is missing an interface $role`)
                     } else {
                         if (!this.implementations[interfaceName]) {
                             this.implementations[interfaceName] = []
                         }
                         this.implementations[interfaceName].push(this.currentKind)
                     }
+                }
 
-                    // Verify all $roles are valid
-                    walkJSON(definition, (val, _obj, path) => {
-                        if (val.$role) {
-                            let expression = this.roles(val, 'expression')
-                            let implementation = this.roles(val, 'implementation')
-                            let iface = this.roles(val, 'interface')
-                            let extension = this.roles(val, 'extends')
-                            if (!path) {
-                                if (expression.length > 0) {
-                                    this.mergingError(`$role ${val.$role} is not valid for component`)
-                                }
-                            } else {
-                                if (implementation.length > 0 || iface.length > 0 || extension.length > 0) {
-                                    this.mergingError(`$role ${val.$role} is not valid in ${path}`)
-                                }
+                // Verify all $roles are valid
+                walkJSON(definition, (val, _obj, path) => {
+                    if (val.$role) {
+                        let expression = this.roles(val, 'expression')
+                        let implementation = this.roles(val, 'implementation')
+                        let iface = this.roles(val, 'interface')
+                        let extension = this.roles(val, 'extends')
+                        if (!path) {
+                            if (expression.length > 0) {
+                                this.mergingError(`$role ${val.$role} is not valid for component`)
+                            }
+                        } else {
+                            if (implementation.length > 0 || iface.length > 0 || extension.length > 0) {
+                                this.mergingError(`$role ${val.$role} is not valid in ${path}`)
                             }
                         }
-                        return false
-                    })
-                }
+                    }
+                    return false
+                })
             }
         }
     }
@@ -622,8 +633,8 @@ export class SchemaMerger {
         walkJSON(definition, (val: any) => {
             if (val.$ref && typeof val.$ref === 'string') {
                 let ref: string = val.$ref
-                if (ref.startsWith('#/definitions/')) {
-                    val.$ref = '#/definitions/' + kind + '/definitions' + ref.substring(ref.indexOf('/'))
+                if (ref.startsWith('#/')) {
+                    val.$ref = `#/definitions/${kind}${ref.substring(ref.indexOf('/'))}`
                 } else if (ref.startsWith('file:')) {
                     let filename = ppath.basename(ref)
                     let kind = filename.substring(0, filename.lastIndexOf('.'))
@@ -657,19 +668,22 @@ export class SchemaMerger {
         for (let interfaceName of this.interfaces) {
             this.currentKind = interfaceName
             let interfaceDefinition = this.definitions[interfaceName]
-            if (!interfaceDefinition.oneOf) {
-                interfaceDefinition.oneOf = [
-                    {
-                        type: 'string',
-                        title: `Reference to ${interfaceName}`,
-                        description: `Reference to ${interfaceName} .dialog file.`
-                    }
-                ]
-            }
-            for (let implementation of this.implementations[interfaceName]) {
-                interfaceDefinition.oneOf.push({
-                    $ref: `#/definitions/${implementation}`
-                })
+            let implementations = this.implementations[interfaceName]
+            if (implementations) {
+                if (!interfaceDefinition.oneOf) {
+                    interfaceDefinition.oneOf = [
+                        {
+                            type: 'string',
+                            title: `Reference to ${interfaceName}`,
+                            description: `Reference to ${interfaceName} .dialog file.`
+                        }
+                    ]
+                }
+                for (let implementation of this.implementations[interfaceName]) {
+                    interfaceDefinition.oneOf.push({
+                        $ref: `#/definitions/${implementation}`
+                    })
+                }
             }
         }
         this.currentKind = ''
@@ -751,15 +765,27 @@ export class SchemaMerger {
                     }
                     if (val.$kind) {
                         let kind = schema.definitions[val.$kind]
-                        if (this.roles(kind, 'interface').length > 0 && kind.oneOf.length == 0) {
-                            this.mergingError(`${path} has no implementations of ${val.$kind}.`)
+                        if (this.roles(kind, 'interface').length > 0) {
+                            let implementations = kind.oneOf
+                            let hasImplementation = false
+                            if (kind.oneOf) {
+                                for (let implementation of implementations) {
+                                    if (implementation.$ref) {
+                                        hasImplementation = true
+                                        break
+                                    }
+                                }
+                            }
+                            if (!hasImplementation) {
+                                this.mergingError(`${path} has no implementations of ${val.$kind}`)
+                            }
                         }
                     }
                     if (!val.title) {
-                        this.mergingWarning(`${path} has no title.`)
+                        this.mergingWarning(`${path} has no title`)
                     }
                     if (!val.description) {
-                        this.mergingWarning(`${path} has no description.`)
+                        this.mergingWarning(`${path} has no description`)
                     }
                 }
             }
@@ -812,7 +838,7 @@ export class SchemaMerger {
     // Report missing component.
     missing(kind: string): void {
         if (!this.missingKinds.has(kind)) {
-            this.error(`${this.currentKind}: Missing ${kind} schema file from merge.`)
+            this.error(`${this.currentKind}: Missing ${kind} schema file from merge`)
             this.missingKinds.add(kind)
             this.failed = true
         }
@@ -824,6 +850,10 @@ export class SchemaMerger {
         this.failed = true
     }
 
+    parsingWarning(msg: string): void {
+        this.warn(`Warning ${this.currentFile}: ${msg}`)
+    }
+
     // Error while parsing component schemas
     parsingError(err: Error | string): void {
         let msg = typeof err === 'string' ? err : err.message
@@ -832,8 +862,10 @@ export class SchemaMerger {
             let file = fs.readFileSync(this.currentFile, 'utf8')
             let pos = Number(posMatch[1])
             msg += os.EOL + file.substring(pos - 40, pos) + '^^^' + file.substring(pos, pos + 40)
+        } else {
+            msg = `${this.currentFile}: ${msg}`
         }
-        this.error(`${this.currentFile}: ${msg}`)
+        this.error(`Error ${msg}`)
         this.failed = true
     }
 

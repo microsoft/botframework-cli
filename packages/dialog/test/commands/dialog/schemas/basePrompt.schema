@@ -1,0 +1,15 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$comment": "This is a base schema that cannot be instantiated.",
+    "properties": {
+        "prompt": {
+            "type": "string",
+            "title": "Base prompt",
+            "description": "Base prompt."
+        },
+        "alternatePrompt": {
+            "title": "Alternate",
+            "description": "Alternate prompt of anything."
+        }
+    }
+}

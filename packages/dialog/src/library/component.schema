@@ -1,292 +1,272 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/component.schema",
-    "title": "JSON Schema definition for dialog schemas.",
-    "definitions": {
-        "schemaArray": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-                "$ref": "#"
-            }
+    "$id": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "title": "JSON Schema definition for Bot Framework dialog schemas.",
+    "description": "In order to create a component for Bot Framework .dialog files you need to create a schema file describing your configuration that meets this definition.  This extends http://json-schema.org/draft-07/schema#.",
+    "allOf": [
+        {
+            "$ref": "http://json-schema.org/draft-07/schema#"
         },
-        "nonNegativeInteger": {
-            "type": "integer",
-            "minimum": 0
-        },
-        "nonNegativeIntegerDefault0": {
-            "allOf": [
-                {
-                    "$ref": "#/definitions/nonNegativeInteger"
+        {
+            "properties": {
+                "$role": {
+                    "title": "$role",
+                    "description": "Defines the roles played in the dialog schema one of [expression|interface|implements($kind)|extends($kind)].",
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/role"
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/role"
+                            }
+                        }
+                    ]
                 },
-                {
-                    "default": 0
+                "$kind": {
+                    "title": "$kind",
+                    "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+                    "type": "string",
+                    "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
                 }
-            ]
-        },
-        "simpleTypes": {
-            "enum": [
-                "array",
-                "boolean",
-                "integer",
-                "null",
-                "number",
-                "object",
-                "string"
-            ]
-        },
-        "stringArray": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            },
-            "uniqueItems": true,
-            "default": []
-        },
+            }
+        }
+    ],
+    "definitions": {
         "role": {
             "title": "$role",
-            "description": "Defines the role played in the dialog schema [expression|union|union(Kind)].",
+            "description": "Defines the role played in the dialog schema from [expression|interface|implements($kind)|extends($kind)].",
             "type": "string",
-            "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
+            "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\))|(extends\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
         },
-        "id": {
-            "title": "$id",
-            "description": "Inline id for reuse of an inline definition",
-            "type": "string",
-            "pattern": "^([a-zA-Z][a-zA-Z0-9.]*)$"
-        },
-        "copy": {
-            "title": "$copy",
-            "description": "Copy the definition by id from a .dialog file.",
-            "type": "string",
-            "pattern": "^(([a-zA-Z][a-zA-Z0-9.]*)?(#[a-zA-Z][a-zA-Z0-9.]*)?)$"
-        },
-        "kind": {
-            "title": "$kind",
-            "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
-            "type": "string",
-            "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
-        },
-        "designer": {
-            "title": "$designer",
-            "type": "object",
-            "description": "Extra information for the Bot Framework Designer."
-        }
-    },
-    "type": [
-        "object",
-        "boolean"
-    ],
-    "properties": {
-        "$id": {
-            "type": "string",
-            "format": "uri-reference"
-        },
-        "$schema": {
-            "type": "string",
-            "format": "uri"
-        },
-        "$ref": {
-            "type": "string",
-            "format": "uri-reference"
-        },
-        "$comment": {
-            "type": "string"
-        },
-        "title": {
-            "type": "string"
-        },
-        "description": {
-            "type": "string"
-        },
-        "default": true,
-        "readOnly": {
-            "type": "boolean",
-            "default": false
-        },
-        "writeOnly": {
-            "type": "boolean",
-            "default": false
-        },
-        "examples": {
-            "type": "array",
-            "items": true
-        },
-        "multipleOf": {
-            "type": "number",
-            "exclusiveMinimum": 0
-        },
-        "maximum": {
-            "type": "number"
-        },
-        "exclusiveMaximum": {
-            "type": "number"
-        },
-        "minimum": {
-            "type": "number"
-        },
-        "exclusiveMinimum": {
-            "type": "number"
-        },
-        "maxLength": {
-            "$ref": "#/definitions/nonNegativeInteger"
-        },
-        "minLength": {
-            "$ref": "#/definitions/nonNegativeIntegerDefault0"
-        },
-        "pattern": {
-            "type": "string",
-            "format": "regex"
-        },
-        "additionalItems": {
-            "$ref": "#"
-        },
-        "items": {
-            "anyOf": [
-                {
-                    "$ref": "#"
+        "component": {
+            "properties": {
+                "$kind": {
+                    "title": "Kind of dialog object",
+                    "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+                    "type": "string",
+                    "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
                 },
-                {
-                    "$ref": "#/definitions/schemaArray"
+                "$designer": {
+                    "title": "Designer information",
+                    "type": "object",
+                    "description": "Extra information for the Bot Framework Composer."
                 }
+            },
+            "required": [
+                "$kind"
             ],
-            "default": true
-        },
-        "maxItems": {
-            "$ref": "#/definitions/nonNegativeInteger"
-        },
-        "minItems": {
-            "$ref": "#/definitions/nonNegativeIntegerDefault0"
-        },
-        "uniqueItems": {
-            "type": "boolean",
-            "default": false
-        },
-        "contains": {
-            "$ref": "#"
-        },
-        "maxProperties": {
-            "$ref": "#/definitions/nonNegativeInteger"
-        },
-        "minProperties": {
-            "$ref": "#/definitions/nonNegativeIntegerDefault0"
-        },
-        "required": {
-            "$ref": "#/definitions/stringArray"
-        },
-        "additionalProperties": {
-            "$ref": "#"
-        },
-        "definitions": {
-            "type": "object",
-            "additionalProperties": {
-                "$ref": "#"
-            },
-            "default": {}
-        },
-        "properties": {
-            "type": "object",
-            "additionalProperties": {
-                "$ref": "#"
-            },
-            "default": {}
-        },
-        "patternProperties": {
-            "type": "object",
-            "additionalProperties": {
-                "$ref": "#"
-            },
-            "propertyNames": {
-                "format": "regex"
-            },
-            "default": {}
-        },
-        "dependencies": {
-            "type": "object",
-            "additionalProperties": {
-                "anyOf": [
-                    {
-                        "$ref": "#"
-                    },
-                    {
-                        "$ref": "#/definitions/stringArray"
-                    }
-                ]
+            "additionalProperties": false,
+            "patternProperties": {
+                "^\\$": {
+                    "title": "Tooling property",
+                    "description": "Open ended property for tooling."
+                }
             }
         },
-        "propertyNames": {
-            "$ref": "#"
-        },
-        "const": true,
-        "enum": {
-            "type": "array",
-            "items": true,
-            "minItems": 1,
-            "uniqueItems": true
-        },
-        "type": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/simpleTypes"
-                },
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/simpleTypes"
-                    },
-                    "minItems": 1,
-                    "uniqueItems": true
-                }
+        "expression": {
+            "type": "string",
+            "title": "Expression",
+            "description": "Expression to evaluate.",
+            "pattern": "^.*\\S.*",
+            "examples": [
+                "user.age > 13"
             ]
         },
-        "format": {
-            "type": "string"
+        "equalsExpression": {
+            "type": "string",
+            "title": "Expression",
+            "description": "Expression starting with =.",
+            "pattern": "^=.*\\S.*",
+            "examples": [
+                "=user.name"
+            ]
         },
-        "contentMediaType": {
-            "type": "string"
-        },
-        "contentEncoding": {
-            "type": "string"
-        },
-        "if": {
-            "$ref": "#"
-        },
-        "then": {
-            "$ref": "#"
-        },
-        "else": {
-            "$ref": "#"
-        },
-        "allOf": {
-            "$ref": "#/definitions/schemaArray"
-        },
-        "anyOf": {
-            "$ref": "#/definitions/schemaArray"
-        },
-        "oneOf": {
-            "$ref": "#/definitions/schemaArray"
-        },
-        "not": {
-            "$ref": "#"
-        },
-        "$role": {
+        "condition": {
+            "$role": "expression",
+            "title": "Boolean condition",
+            "description": "Boolean constant or expression to evaluate.",
             "oneOf": [
                 {
-                    "$ref": "#/definitions/role"
+                    "$ref": "#/definitions/expression"
                 },
                 {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/role"
-                    }
+                    "type": "boolean",
+                    "title": "Boolean",
+                    "description": "Boolean value.",
+                    "default": true,
+                    "examples": [
+                        false
+                    ]
                 }
             ]
         },
-        "$kind": {
-            "$ref": "#/definitions/kind"
+        "booleanExpression": {
+            "$role": "expression",
+            "title": "Boolean or expression",
+            "description": "Boolean constant or expression to evaluate.",
+            "oneOf": [
+                {
+                    "type": "boolean",
+                    "title": "Boolean",
+                    "description": "Boolean constant.",
+                    "default": false,
+                    "examples": [
+                        false
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/equalsExpression",
+                    "examples": [
+                        "=user.isVip"
+                    ]
+                }
+            ]
+        },
+        "numberExpression": {
+            "$role": "expression",
+            "title": "Number or expression",
+            "description": "Number constant or expression to evaluate.",
+            "oneOf": [
+                {
+                    "type": "number",
+                    "title": "Number",
+                    "description": "Number constant.",
+                    "default": 0,
+                    "examples": [
+                        15.5
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/equalsExpression",
+                    "examples": [
+                        "=dialog.quantity"
+                    ]
+                }
+            ]
+        },
+        "integerExpression": {
+            "$role": "expression",
+            "title": "Integer or expression",
+            "description": "Integer constant or expression to evaluate.",
+            "oneOf": [
+                {
+                    "type": "integer",
+                    "title": "Integer",
+                    "description": "Integer constant.",
+                    "default": 0,
+                    "examples": [
+                        15
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/equalsExpression",
+                    "examples": [
+                        "=user.age"
+                    ]
+                }
+            ]
+        },
+        "stringExpression": {
+            "$role": "expression",
+            "title": "String or expression",
+            "description": "Interpolated string or expression to evaluate.",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "title": "String",
+                    "description": "Interpolated string",
+                    "pattern": "^(?!(=)).*",
+                    "examples": [
+                        "Hello ${user.name}"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/equalsExpression",
+                    "examples": [
+                        "=concat('x','y','z')"
+                    ]
+                }
+            ]
+        },
+        "arrayExpression": {
+            "$role": "expression",
+            "title": "Array or expression",
+            "description": "Array or expression to evaluate.",
+            "oneOf": [
+                {
+                    "type": "array",
+                    "title": "Array",
+                    "description": "Array constant."
+                },
+                {
+                    "$ref": "#/definitions/equalsExpression"
+                }
+            ]
+        },
+        "objectExpression": {
+            "$role": "expression",
+            "title": "Object or expression",
+            "description": "Object or expression to evaluate.",
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "Object",
+                    "description": "Object constant."
+                },
+                {
+                    "$ref": "#/definitions/equalsExpression"
+                }
+            ]
+        },
+        "valueExpression": {
+            "$role": "expression",
+            "title": "Any or expression",
+            "description": "Any constant or expression to evaluate.",
+            "oneOf": [
+                {
+                    "type": "object",
+                    "title": "Object",
+                    "description": "Object constant."
+                },
+                {
+                    "type": "array",
+                    "title": "Array",
+                    "description": "Array constant."
+                },
+                {
+                    "type": "string",
+                    "title": "String",
+                    "description": "Interpolated string.",
+                    "pattern": "^(?!(=)).*",
+                    "examples": [
+                        "Hello ${user.name}"
+                    ]
+                },
+                {
+                    "type": "boolean",
+                    "title": "Boolean",
+                    "description": "Boolean constant",
+                    "examples": [
+                        false
+                    ]
+                },
+                {
+                    "type": "number",
+                    "title": "Number",
+                    "description": "Number constant.",
+                    "examples": [
+                        15.5
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/equalsExpression",
+                    "examples": [
+                        "=..."
+                    ]
+                }
+            ]
         }
-    },
-    "default": true,
-    "description": "In order to create a component for Bot Framework .dialog files you need to create a schema file describing your configuration that meets this definition.  This extends http://json-schema.org/draft-07/schema#.",
-    "$comment": "File generated by: 'bf dialog:merge -u -b master'."
+    }
 }
