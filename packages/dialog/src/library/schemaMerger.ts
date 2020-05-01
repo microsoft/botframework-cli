@@ -298,7 +298,7 @@ export default class SchemaMerger {
             if (this.verbose) {
                 this.log(`  Following ${this.currentFile}`)
             }
-            references.push(ppath.join(ppath.dirname(path), '/**/*.schema'))
+            references.push(ppath.normalize(ppath.join(ppath.dirname(path), '/**/*.schema')))
             let json = await this.xmlToJSON(path)
             let packages = await this.findGlobalNuget()
             if (packages) {
@@ -315,7 +315,7 @@ export default class SchemaMerger {
                                 }
                                 let baseVersion = pkg.Version || '0.0.0'
                                 let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
-                                pkgPath = ppath.join(pkgPath, version || '', '**/*.schema')
+                                pkgPath = ppath.normalize(ppath.join(pkgPath, version || '', '**/*.schema'))
                                 references.push(pkgPath)
                                 if (this.verbose) {
                                     this.log(`  Following nuget ${this.prettyPath(pkgPath)}`)
@@ -334,7 +334,7 @@ export default class SchemaMerger {
                 if (elt.ProjectReference) {
                     for (let ref of elt.ProjectReference) {
                         let project = ref.$
-                        let projectPath = ppath.resolve(ppath.dirname(path), project.Include)
+                        let projectPath = ppath.normalize(ppath.resolve(ppath.dirname(path), project.Include))
                         projects.push(projectPath)
                     }
                     return undefined
@@ -393,7 +393,7 @@ export default class SchemaMerger {
                     }
                 }
                 for (let ref of references) {
-                    let matches = await glob(ref.replace(/\\/g, '/'))
+                    let matches = await glob(ref)
                     for (let expandedRef of matches) {
                         yield this.prettyPath(expandedRef)
                     }
@@ -409,7 +409,7 @@ export default class SchemaMerger {
         if (newPath.startsWith('..')) {
             newPath = path
         }
-        return newPath.replace(/\\/g, '/')
+        return newPath
     }
 
     // Find the global nuget repository
