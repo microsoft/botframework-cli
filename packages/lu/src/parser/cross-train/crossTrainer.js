@@ -300,20 +300,21 @@ const removeDupUtterances = function (resource) {
 
 const extractIntentUtterances = function(resource, intentName) {
   const intentSections = resource.Sections.filter(s => s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION || s.SectionType === LUSectionTypes.NESTEDINTENTSECTION)
+  const curlyRe = /.*\{.*\}.*/
 
   let intentUtterances = []
   if (intentName && intentName !== '') {
     const specificSections = intentSections.filter(s => s.Name === intentName)
     if (specificSections.length > 0) {
-      intentUtterances = intentUtterances.concat(specificSections[0].UtteranceAndEntitiesMap.map(u => u.utterance))
+      intentUtterances = intentUtterances.concat(specificSections[0].UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => curlyRe.exec(i) === null))
     }
   } else {
     intentSections.forEach(s => {
       if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-        intentUtterances = intentUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance))
+        intentUtterances = intentUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => curlyRe.exec(i) === null))
       } else {
         s.SimpleIntentSections.forEach(section => {
-          intentUtterances = intentUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance))
+          intentUtterances = intentUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => curlyRe.exec(i) === null))
         })
       }
   })}
@@ -430,11 +431,13 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     qnaSectionContents.push(qnaSectionContent)
   }
 
-  const qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
+  let qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
   if (qnaContents && qnaContents !== '') {
     const modelInfoSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.MODELINFOSECTION)
     const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
-    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(NEWLINE + qnaContents)
+    if (modelInforContent && modelInforContent !== '') qnaContents = NEWLINE + qnaContents
+
+    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
   }
 
   // remove utterances which are duplicated with local qna questions

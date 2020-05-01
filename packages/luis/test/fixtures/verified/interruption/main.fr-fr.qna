@@ -1,0 +1,19 @@
+# ? guide de l'utilisateur
+
+**Filters:**
+- aa=bb
+- dialogName=main
+
+```
+    Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
+```
+
+> Source: cross training. Please do not edit these directly!
+# ? réserver un hôtel
+
+**Filters:**
+- dialogName=main
+
+```
+intent=DeferToRecognizer_LUIS_main
+```

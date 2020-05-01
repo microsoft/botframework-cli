@@ -20,6 +20,7 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf qnamaker:alterations:list`](#bf-qnamakeralterationslist)
 * [`bf qnamaker:alterations:replace`](#bf-qnamakeralterationsreplace)
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
+* [`bf qnamaker:cross-train`](#bf-qnamakercross-train)
 * [`bf qnamaker:endpointkeys`](#bf-qnamakerendpointkeys)
 * [`bf qnamaker:endpointkeys:list`](#bf-qnamakerendpointkeyslist)
 * [`bf qnamaker:endpointkeys:refresh`](#bf-qnamakerendpointkeysrefresh)
@@ -131,6 +132,24 @@ OPTIONS
 ```
 
 _See code: [src/commands/qnamaker/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/convert.ts)_
+
+## `bf qnamaker:cross-train`
+
+Lu and Qna cross train tool
+
+```
+USAGE
+  $ bf qnamaker:cross-train
+
+OPTIONS
+  -h, --help       cross-train command help
+  -i, --in         source lu and qna files folder
+  -o, --out        output folder name. If not specified, the cross trained files will be wrote to cross-trained folder under folder of current command
+  --config         path to config file of mapping rules which is relative to folder specified by --in. If not specified, it will read default config.json from the folder specified by --in
+  --intentName     Interruption intent name. Default: _Interruption
+```
+
+_See code: [src/commands/qnamaker/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_
 
 ## `bf qnamaker:endpointkeys`
 
@@ -588,7 +607,7 @@ OPTIONS
   --fallbackLocale=fallbackLocale    Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set
   --region=region                    [default: westus] QnA maker api endpoint region [westus|westeurope|australiaeast]
   --suffix=suffix                    Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in useralias
-  --dialog                           Write out .dialog files
+  --dialog                           [default: multiLanguage]Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog
   --log                              write out log messages to console
 ```
 

@@ -1,0 +1,16 @@
+> !# @enableSections = true
+> !# @enableMergeIntents = true
+
+# dia1_trigger
+## bookFlight
+- book a flight for me
+			
+# dia2_trigger
+- book a hotel for me
+
+# dia3_trigger
+- cancel
+
+# local_intent
+- Hello
+- Hi
