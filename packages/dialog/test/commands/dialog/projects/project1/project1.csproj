@@ -40,6 +40,11 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+        <PackageReference Include="NonExistent.Json" Version="1.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\project2\project2.csproj" />
     </ItemGroup>
 
 </Project>

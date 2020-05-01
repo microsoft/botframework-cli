@@ -49,18 +49,17 @@
     "chalk": "^2.4.2",
     "clone": "^2.1.2",
     "fs-extra": "^8.1.0",
-    "get-json": "^1.0.1",
+    "get-uri": "~3.0.2",
     "globby": "^9.2.0",
-    "json-schema-merge-allof": "^0.6.0",
-    "json-schema-ref-parser": "^7.1.0",
+    "@apidevtools/json-schema-ref-parser": "^9.0.1",
     "os": "~0.1.1",
     "path": "^0.12.7",
     "seedrandom": "~3.0.5",
     "semver": "^5.7.0",
     "tslib": "^1.10.0",
     "xml2js": "^0.4.19",
-    "adaptive-expressions": "^4.8.0-preview",
-    "botbuilder-lg": "^4.8.0-preview"
+    "json-ptr": "~1.2.0",
+    "json-schema-merge-allof": "~0.7.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.0",
