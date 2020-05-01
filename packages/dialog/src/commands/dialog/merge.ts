@@ -18,7 +18,7 @@ export default class DialogMerge extends Command {
     static flags: flags.Input<any> = {
         debug: flags.boolean({ char: 'd', description: 'Generate debug files.', hidden: true, default: false}),
         help: flags.help({ char: 'h' }),
-        output: flags.string({ char: 'o', description: 'Output path and filename for merged schema. [default: app.schema]', default: 'app.schema', required: false }),
+        output: flags.string({ char: 'o', description: 'Output path and filename for merged schema.', default: 'app.schema', required: false }),
         verbose: flags.boolean({ char: 'v', description: 'Show verbose logging of files as they are processed.', default: false }),
     }
 

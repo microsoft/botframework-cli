@@ -194,7 +194,7 @@ export default class SchemaMerger {
                 }
                 let finalSchema: any = {
                     $schema: this.metaSchemaId,
-                    $id: ppath.resolve(this.output),
+                    $id: `file:///${ppath.resolve(this.output).replace(/\\/g, '/')}#`,
                     type: 'object',
                     title: 'Component kinds',
                     description: 'These are all of the kinds that can be created by the loader.',
@@ -208,6 +208,7 @@ export default class SchemaMerger {
                 // Convert all remote references to local ones
                 finalSchema = await parser.bundle(finalSchema as parser.JSONSchema, this.schemaProtocolResolver())
                 finalSchema = this.expandAllOf(finalSchema)
+                this.removeId(finalSchema)
                 if (this.debug) {
                     await fs.writeJSON(this.output + '.expanded', finalSchema, this.jsonOptions)
                 }
@@ -758,6 +759,16 @@ export default class SchemaMerger {
         return allof(bundle)
     }
 
+    // Remove any child $id because their references have been changed to be local
+    removeId(bundle: any) {
+        walkJSON(bundle, (val, _obj, path) => {
+            if (path && val.$id) {
+                delete val.$id
+            }
+            return false
+        })
+    }
+
     // Verify schema has title/description everywhere and interfaces exist.
     verifySchema(schema: any): void {
         this.log('Verifying schema')
@@ -766,7 +777,7 @@ export default class SchemaMerger {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
             let definition = schema.definitions[this.currentKind]
             let verifyProperty = (val, path) => {
-                if (!val.$id) {
+                if (!val.$schema) {
                     if (val.$ref) {
                         val = clone(val)
                         let ref = ptr.get(schema, val.$ref)
@@ -804,7 +815,7 @@ export default class SchemaMerger {
                 }
             }
             walkJSON(definition, (val, _, path) => {
-                if (val.$id && path) {
+                if (val.$schema && path) {
                     return true
                 }
                 if (val.properties && !path?.endsWith('properties')) {
