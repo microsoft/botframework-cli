@@ -309,12 +309,20 @@ export default class SchemaMerger {
                             let pkgName = pkg.Include
                             let pkgPath = ppath.join(packages, pkgName)
                             let versions: string[] = []
-                            for (let version of fs.readdirSync(pkgPath)) {
-                                versions.push(version.toLowerCase())
+                            if (fs.pathExistsSync(pkgPath)) {
+                                for (let version of fs.readdirSync(pkgPath)) {
+                                    versions.push(version.toLowerCase())
+                                }
+                                let baseVersion = pkg.Version || '0.0.0'
+                                let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
+                                pkgPath = ppath.join(pkgPath, version || '', '**/*.schema')
+                                references.push(pkgPath)
+                                if (this.verbose) {
+                                    this.log(`  Following nuget ${this.prettyPath(pkgPath)}`)
+                                }
+                            } else {
+                                this.parsingError(`Nuget package does not exist ${pkgPath}`)
                             }
-                            let baseVersion = pkg.Version || '0.0.0'
-                            let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
-                            references.push(ppath.join(packages, pkgName, version || '', '/**/*.schema'))
                         }
                         return undefined
                     }

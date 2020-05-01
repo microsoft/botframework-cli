@@ -143,12 +143,16 @@ describe('dialog:merge', async () => {
     it('csproj', async () => {
         console.log('\nStart csproj')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
+        let dotnet = countMatches(/global nuget/, lines)
+        let missing = countMatches(/does not exist/, lines)
+        let found = countMatches(/Following nuget/, lines)
         let errors = countMatches(/error|warning/i, lines)
         if (errors == 0) {
             assert(merged, 'Could not merge schemas')
         } else {
             assert(!merged, 'Should not have merged schemas')
-            assert(errors == 2, 'Did not fail on both projects`')
+            assert(errors == dotnet + missing, 'Extra errors')
+            assert(dotnet == 2 || missing == 2 || missing + found == 2, 'Wrong number of errors')
         }
         assert(countMatches(/Following.*project1/, lines) == 1, 'Did not follow project1')
         assert(countMatches(/Following.*project2/, lines) == 1, 'Did not follow project2')
