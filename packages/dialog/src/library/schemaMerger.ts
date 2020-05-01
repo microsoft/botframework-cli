@@ -119,117 +119,116 @@ export default class SchemaMerger {
 
             if (componentPaths.length === 0) {
                 return false
-            } else {
-                this.log('Parsing component .schema files')
-                for (let componentPath of componentPaths) {
-                    try {
-                        this.currentFile = componentPath
-                        if (this.verbose) {
-                            this.log(`Parsing ${componentPath}`)
-                        }
-                        let component = await fs.readJSON(componentPath)
-                        if (component.$id) {
-                            this.parsingWarning(`Skipping because of top-level $id ${component.$id}`)
+            }
+            this.log('Parsing component .schema files')
+            for (let componentPath of componentPaths) {
+                try {
+                    this.currentFile = componentPath
+                    if (this.verbose) {
+                        this.log(`Parsing ${componentPath}`)
+                    }
+                    let component = await fs.readJSON(componentPath)
+                    if (component.$id) {
+                        this.parsingWarning(`Skipping because of top-level $id ${component.$id}`)
+                    } else {
+                        this.relativeToAbsoluteRefs(component, componentPath)
+
+                        // Pick up meta-schema from first .dialog file
+                        if (!this.metaSchema) {
+                            this.metaSchemaId = component.$schema
+                            this.currentFile = this.metaSchemaId
+                            this.metaSchema = await getJSON(component.$schema)
+                            this.validator.addSchema(this.metaSchema, 'componentSchema')
+                            if (this.verbose) {
+                                this.log(`  Using ${this.metaSchemaId} to define components`)
+                            }
+                            this.currentFile = componentPath
+                            this.validateSchema(component)
+                        } else if (component.$schema !== this.metaSchemaId) {
+                            this.parsingWarning(`Component schema ${component.$schema} does not match ${this.metaSchemaId}`)
                         } else {
-                            this.relativeToAbsoluteRefs(component, componentPath)
-
-                            // Pick up meta-schema from first .dialog file
-                            if (!this.metaSchema) {
-                                this.metaSchemaId = component.$schema
-                                this.currentFile = this.metaSchemaId
-                                this.metaSchema = await getJSON(component.$schema)
-                                this.validator.addSchema(this.metaSchema, 'componentSchema')
-                                if (this.verbose) {
-                                    this.log(`  Using ${this.metaSchemaId} to define components`)
-                                }
-                                this.currentFile = componentPath
-                                this.validateSchema(component)
-                            } else if (component.$schema !== this.metaSchemaId) {
-                                this.parsingWarning(`Component schema ${component.$schema} does not match ${this.metaSchemaId}`)
-                            } else {
-                                this.validateSchema(component)
-                            }
-                            delete component.$schema
-
-                            let filename = ppath.basename(componentPath)
-                            let kind = filename.substring(0, filename.lastIndexOf('.'))
-                            let fullPath = ppath.resolve(componentPath)
-                            if (this.source[kind] && this.source[kind] !== fullPath) {
-                                this.parsingError(`Redefines ${kind} from ${this.source[kind]}`)
-                            }
-                            this.source[kind] = fullPath
-                            this.fixComponentReferences(kind, component)
-                            if (component.allOf) {
-                                this.parsingError('Does not support allOf in component .schema definitions')
-                            }
-                            this.definitions[kind] = component
+                            this.validateSchema(component)
                         }
-                    } catch (e) {
-                        this.parsingError(e)
+                        delete component.$schema
+
+                        let filename = ppath.basename(componentPath)
+                        let kind = filename.substring(0, filename.lastIndexOf('.'))
+                        let fullPath = ppath.resolve(componentPath)
+                        if (this.source[kind] && this.source[kind] !== fullPath) {
+                            this.parsingError(`Redefines ${kind} from ${this.source[kind]}`)
+                        }
+                        this.source[kind] = fullPath
+                        this.fixComponentReferences(kind, component)
+                        if (component.allOf) {
+                            this.parsingError('Does not support allOf in component .schema definitions')
+                        }
+                        this.definitions[kind] = component
                     }
+                } catch (e) {
+                    this.parsingError(e)
                 }
-                this.currentFile = ''
+            }
+            this.currentFile = ''
 
-                this.log('Merging component schemas')
-                this.processExtensions()
-                this.processImplementations()
-                this.expandKinds()
-                this.expandInterfaces()
-                this.addComponentProperties()
-                this.sortImplementations()
-                let oneOf = Object.keys(this.definitions)
-                    .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
-                    .sort()
-                    .map(kind => {
-                        return { $ref: `#/definitions/${kind}` }
-                    })
-                this.addSchemaDefinitions()
+            this.log('Merging component schemas')
+            this.processExtensions()
+            this.processImplementations()
+            this.expandKinds()
+            this.expandInterfaces()
+            this.addComponentProperties()
+            this.sortImplementations()
+            let oneOf = Object.keys(this.definitions)
+                .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
+                .sort()
+                .map(kind => {
+                    return { $ref: `#/definitions/${kind}` }
+                })
+            this.addSchemaDefinitions()
 
+            if (!this.failed) {
+                this.currentFile = this.output
+                this.currentKind = ''
+                let finalDefinitions: any = {}
+                for (let key of Object.keys(this.definitions).sort()) {
+                    finalDefinitions[key] = this.definitions[key]
+                }
+                let finalSchema: any = {
+                    $schema: this.metaSchemaId,
+                    $id: ppath.resolve(this.output),
+                    type: 'object',
+                    title: 'Component kinds',
+                    description: 'These are all of the kinds that can be created by the loader.',
+                    oneOf,
+                    definitions: finalDefinitions
+                }
+                if (this.debug) {
+                    await fs.writeJSON(this.output + '.final', finalSchema, this.jsonOptions)
+                }
+
+                // Convert all remote references to local ones
+                finalSchema = await parser.bundle(finalSchema as parser.JSONSchema, this.schemaProtocolResolver())
+                finalSchema = this.expandAllOf(finalSchema)
+                if (this.debug) {
+                    await fs.writeJSON(this.output + '.expanded', finalSchema, this.jsonOptions)
+                }
+
+                // Final verification
+                this.verifySchema(finalSchema)
                 if (!this.failed) {
-                    this.currentFile = this.output
-                    this.currentKind = ''
-                    let finalDefinitions: any = {}
-                    for (let key of Object.keys(this.definitions).sort()) {
-                        finalDefinitions[key] = this.definitions[key]
-                    }
-                    let finalSchema: any = {
-                        $schema: this.metaSchemaId,
-                        $id: ppath.resolve(this.output),
-                        type: 'object',
-                        title: 'Component kinds',
-                        description: 'These are all of the kinds that can be created by the loader.',
-                        oneOf,
-                        definitions: finalDefinitions
-                    }
-                    if (this.debug) {
-                        await fs.writeJSON(this.output + '.final', finalSchema, this.jsonOptions)
+                    // Verify all refs work
+                    let start = process.hrtime()
+                    await parser.dereference(clone(finalSchema))
+                    let end = process.hrtime(start)[1] / 1000000000
+                    if (this.verbose) {
+                        this.log(`Expanding all $ref took ${end} seconds`)
                     }
 
-                    // Convert all remote references to local ones
-                    finalSchema = await parser.bundle(finalSchema as parser.JSONSchema, this.schemaProtocolResolver())
-                    finalSchema = this.expandAllOf(finalSchema)
-                    if (this.debug) {
-                        await fs.writeJSON(this.output + '.expanded', finalSchema, this.jsonOptions)
-                    }
-
-                    // Final verification
-                    this.verifySchema(finalSchema)
-                    if (!this.failed) {
-                        // Verify all refs work
-                        let start = process.hrtime()
-                        await parser.dereference(clone(finalSchema))
-                        let end = process.hrtime(start)[1] / 1000000000
-                        if (this.verbose) {
-                            this.log(`Expanding all $ref took ${end} seconds`)
-                        }
-
-                        this.log(`Writing ${this.output}`)
-                        await fs.writeJSON(this.output, finalSchema, this.jsonOptions)
-                    }
+                    this.log(`Writing ${this.output}`)
+                    await fs.writeJSON(this.output, finalSchema, this.jsonOptions)
                 }
-                if (this.failed) {
-                    this.error('*** Could not merge component schemas ***')
-                }
+            }
+            if (this.failed) {
+                this.error('*** Could not merge component schemas ***')
             }
         } catch (e) {
             this.mergingError(e)
