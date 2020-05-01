@@ -27,7 +27,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [src\commands\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\index.ts)_
+_See code: [src\commands\index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src\commands\index.ts)_
 
 ## `bf dialog`
 
@@ -41,7 +41,7 @@ OPTIONS
   -h, --help  Dialog command help
 ```
 
-_See code: [src\commands\dialog\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\dialog\index.ts)_
+_See code: [src\commands\dialog\index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src\commands\dialog\index.ts)_
 
 ## `bf dialog:merge PATTERNS`
 
@@ -64,7 +64,7 @@ EXAMPLES
   $ bf dialog:merge libraries/**/*.schema **/*.csproj -o app.schema
 ```
 
-_See code: [src\commands\dialog\merge.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\dialog\merge.ts)_
+_See code: [src\commands\dialog\merge.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src\commands\dialog\merge.ts)_
 
 ## `bf dialog:verify PATTERNS`
 
@@ -82,82 +82,5 @@ OPTIONS
   --verbose   Show verbose output
 ```
 
-_See code: [src\commands\dialog\verify.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\dialog\verify.ts)_
+_See code: [src\commands\dialog\verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src\commands\dialog\verify.ts)_
 <!-- commandsstop -->
-- [@microsoft/bf-dialog](#microsoftbf-dialog)
-- [Commands](#commands)
-  - [`bf `](#bf)
-  - [`bf dialog`](#bf-dialog)
-  - [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
-  - [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
-
-## `bf `
-
-The dialog commands allow you to work with dialog schema.
-
-```
-USAGE
-  $ bf
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [src\commands\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\index.ts)_
-
-## `bf dialog`
-
-Dialog related commands for working with .schema and .dialog files.
-
-```
-USAGE
-  $ bf dialog
-
-OPTIONS
-  -h, --help  Dialog command help
-```
-
-_See code: [src\commands\dialog\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\dialog\index.ts)_
-
-## `bf dialog:merge PATTERNS`
-
-Merge component .schema files into an app.schema.
-
-```
-USAGE
-  $ bf dialog:merge PATTERNS
-
-ARGUMENTS
-  PATTERNS  Any number of glob regex patterns to match .schema, .csproj, or package.json files.
-
-OPTIONS
-  -h, --help           show CLI help
-  -o, --output=output  [default: app.schema] Output path and filename for merged schema.
-  -v, --verbose        Show verbose logging of files as they are processed.
-
-EXAMPLES
-  $ bf dialog:merge *.csproj
-  $ bf dialog:merge libraries/**/*.schema **/*.csproj -o app.schema
-```
-
-_See code: [src\commands\dialog\merge.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\dialog\merge.ts)_
-
-## `bf dialog:verify PATTERNS`
-
-Verify .dialog files match their app.schema.
-
-```
-USAGE
-  $ bf dialog:verify PATTERNS
-
-ARGUMENTS
-  PATTERNS  Any number of glob regex patterns to match .dialog files.
-
-OPTIONS
-  -h, --help  show CLI help
-  --verbose   Show verbose output
-```
-
-_See code: [src\commands\dialog\verify.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\dialog\verify.ts)_
-<!-- commandsstop -->
-* [`bf `](#bf-)
