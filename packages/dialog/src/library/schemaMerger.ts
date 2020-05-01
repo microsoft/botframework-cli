@@ -20,20 +20,16 @@ let exec: any = util.promisify(require('child_process').exec)
 
 // Walk over JSON object, stopping if true from walker.
 // Walker gets the current value, the parent object and full path to that object
-// and returns false to continue, true to quit and undefined to not go deeper.
-function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean | undefined, obj?: any, path?: any): boolean | undefined {
+// and returns false to continue, true to stop going deeper.
+function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean, obj?: any, path?: any) {
     let done = fun(elt, obj, path)
-    if (done == false) {
+    if (!done) {
         if (typeof elt === 'object' || Array.isArray(elt)) {
             for (let key in elt) {
-                done = walkJSON(elt[key], fun, elt, pathName(path, key))
-                if (done == true) {
-                    break
-                }
+                walkJSON(elt[key], fun, elt, pathName(path, key))
             }
         }
     }
-    return done
 }
 
 function pathName(path: string | undefined, extension: string): string {
@@ -55,25 +51,25 @@ async function getJSON(uri: string): Promise<any> {
  */
 export default class SchemaMerger {
     // Input parameters
-    private patterns: string[]
-    private output: string
-    private verbose: boolean
-    private log: any
-    private warn: any
-    private error: any
-    private debug: boolean | undefined
+    private readonly patterns: string[]
+    private readonly output: string
+    private readonly verbose: boolean
+    private readonly log: any
+    private readonly warn: any
+    private readonly error: any
+    private readonly debug: boolean | undefined
 
     // State tracking
-    private projects = {}
-    private validator = new Validator()
+    private readonly projects = {}
+    private readonly validator = new Validator()
     private metaSchemaId = ''
     private metaSchema: any
     private definitions: any = {}
-    private source: any = {}
-    private interfaces: string[] = []
-    private implementations: any = {}
+    private readonly source: any = {}
+    private readonly interfaces: string[] = []
+    private readonly implementations: any = {}
     private failed = false
-    private missingKinds = new Set()
+    private readonly missingKinds = new Set()
     private currentFile = ''
     private currentKind = ''
     private readonly jsonOptions = { spaces: '\t', EOL: os.EOL }
@@ -98,7 +94,8 @@ export default class SchemaMerger {
         this.debug = debug
     }
 
-    /** Merge component schemas together into a single self-contained files.
+    /** 
+     * Merge component schemas together into a single self-contained files.
      * $role of implements(interface) hooks up defintion to interface.
      * $role of extends(kind) will extend the kind by picking up property related restrictions.
      * $kind for a property connects to another component.
@@ -157,13 +154,13 @@ export default class SchemaMerger {
                             let filename = ppath.basename(componentPath)
                             let kind = filename.substring(0, filename.lastIndexOf('.'))
                             let fullPath = ppath.resolve(componentPath)
-                            if (this.source[kind] && this.source[kind] != fullPath) {
+                            if (this.source[kind] && this.source[kind] !== fullPath) {
                                 this.parsingError(`Redefines ${kind} from ${this.source[kind]}`)
                             }
                             this.source[kind] = fullPath
                             this.fixComponentReferences(kind, component)
                             if (component.allOf) {
-                                this.parsingError(`Does not support allOf in component .schema definitions`)
+                                this.parsingError('Does not support allOf in component .schema definitions')
                             }
                             this.definitions[kind] = component
                         }
@@ -221,8 +218,7 @@ export default class SchemaMerger {
                         // Verify all refs work
                         let start = process.hrtime()
                         await parser.dereference(clone(finalSchema))
-                        let [_, end] = process.hrtime(start)
-                        end = end / 1000000000
+                        let end = process.hrtime(start)[1] / 1000000000
                         if (this.verbose) {
                             this.log(`Expanding all $ref took ${end} seconds`)
                         }
@@ -261,7 +257,7 @@ export default class SchemaMerger {
 
     // Convrert local references to absolute so we can keep them as references when combined
     relativeToAbsoluteRefs(schema: object, path: string) {
-        walkJSON(schema, (val) => {
+        walkJSON(schema, val => {
             if (val.$ref) {
                 val.$ref = this.toAbsoluteRef(val.$ref, path)
             } else if (val.$schema) {
@@ -273,7 +269,7 @@ export default class SchemaMerger {
 
     // Resovler for schema: -> metaSchema
     schemaProtocolResolver(): any {
-        let reader = (file: parser.FileInfo): string => {
+        let reader = _file => {
             return JSON.stringify(this.metaSchema)
         }
         return {
@@ -281,7 +277,7 @@ export default class SchemaMerger {
                 defintion: {
                     order: 1,
                     canRead: /^schema:/i,
-                    read(file: parser.FileInfo, callback: any, $refs: any): any {
+                    read(file: parser.FileInfo, _callback: any, _$refs: any) {
                         return reader(file)
                     }
                 }
@@ -289,7 +285,18 @@ export default class SchemaMerger {
         }
     }
 
-    // Expand .csproj packages and projectsx
+    // Convert to the right kind of slash. 
+    // ppath.normalize did not do this properly on the mac.
+    normalize(path: string): string {
+        if (ppath.sep === '/') {
+            path = path.replace(/\\/g, ppath.sep)
+        } else {
+            path = path.replace(/\//g, ppath.sep)
+        }
+        return ppath.normalize(path)
+    }
+
+    // Expand .csproj packages and projects
     async expandCSProj(path: string): Promise<string[]> {
         let references: string[] = []
         if (!this.projects[path]) {
@@ -298,11 +305,11 @@ export default class SchemaMerger {
             if (this.verbose) {
                 this.log(`  Following ${this.currentFile}`)
             }
-            references.push(ppath.normalize(ppath.join(ppath.dirname(path), '/**/*.schema')))
+            references.push(this.normalize(ppath.join(ppath.dirname(path), '/**/*.schema')))
             let json = await this.xmlToJSON(path)
             let packages = await this.findGlobalNuget()
             if (packages) {
-                walkJSON(json, (elt) => {
+                walkJSON(json, elt => {
                     if (elt.PackageReference) {
                         for (let pkgRef of elt.PackageReference) {
                             let pkg = pkgRef.$
@@ -315,7 +322,7 @@ export default class SchemaMerger {
                                 }
                                 let baseVersion = pkg.Version || '0.0.0'
                                 let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
-                                pkgPath = ppath.normalize(ppath.join(pkgPath, version || '', '**/*.schema'))
+                                pkgPath = this.normalize(ppath.join(pkgPath, version || '', '**/*.schema'))
                                 references.push(pkgPath)
                                 if (this.verbose) {
                                     this.log(`  Following nuget ${this.prettyPath(pkgPath)}`)
@@ -324,27 +331,20 @@ export default class SchemaMerger {
                                 this.parsingError(`Nuget package does not exist ${pkgPath}`)
                             }
                         }
-                        return undefined
+                        return true
                     }
                     return false
                 })
             }
             let projects: string[] = []
-            walkJSON(json, (elt) => {
+            walkJSON(json, elt => {
                 if (elt.ProjectReference) {
                     for (let ref of elt.ProjectReference) {
                         let project = ref.$
-                        let projectPath = ppath.normalize(ppath.resolve(ppath.dirname(path), project.Include))
-                        // TODO: Remove this
-                        this.log(`dirname ${ppath.dirname(path)}`)
-                        this.log(`project ${project.Include}`)
-                        this.log(`project normalize ${ppath.normalize(project.Include)}`)
-                        this.log(`resolve ${ppath.resolve(ppath.dirname(path), project.Include)}`)
-                        this.log(`normalize ${projectPath}`)
-                        this.log(`full normalize ${ ppath.normalize(ppath.resolve(ppath.dirname(path), ppath.normalize(project.Include)))}`)
+                        let projectPath = this.normalize(ppath.join(ppath.dirname(path), project.Include))
                         projects.push(projectPath)
                     }
-                    return undefined
+                    return true
                 }
                 return false
             })
@@ -376,13 +376,13 @@ export default class SchemaMerger {
                         let json = await this.xmlToJSON(path)
                         let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
                         if (packages) {
-                            walkJSON(json, (elt) => {
+                            walkJSON(json, elt => {
                                 if (elt.package) {
                                     for (let info of elt.package) {
                                         let id = `${info.$.id}.${info.$.version}`
                                         references.push(ppath.join(packages, `${id}/**/*.schema`))
                                     }
-                                    return undefined
+                                    return true
                                 }
                                 return false
                             })
@@ -429,8 +429,8 @@ export default class SchemaMerger {
             if (start > -1) {
                 result = stdout.substring(start + name.length).trim()
             }
-        } catch (err) {
-            this.parsingError(`Cannot find global nuget packages`)
+        } catch {
+            this.parsingError('Cannot find global nuget packages')
         }
         return result
     }
@@ -584,10 +584,10 @@ export default class SchemaMerger {
             this.processExtension(this.definitions[this.currentKind])
         }
         // Remove processing information
-        walkJSON(this.definitions, (val) => {
+        walkJSON(this.definitions, val => {
             if (val.$processed) {
                 delete val.$processed
-                return undefined
+                return true
             }
             return false
         })
@@ -645,7 +645,7 @@ export default class SchemaMerger {
 
     // Turn #/definitions/foo into #/definitions/${kind}/definitions/foo
     fixComponentReferences(kind: string, definition: any): void {
-        walkJSON(definition, (val: any) => {
+        walkJSON(definition, val => {
             if (val.$ref && typeof val.$ref === 'string') {
                 let ref: string = val.$ref
                 if (ref.startsWith('#/')) {
@@ -665,7 +665,7 @@ export default class SchemaMerger {
     // Expand $kind into $ref: #/defintions/kind
     expandKinds(): void {
         for (this.currentKind in this.definitions) {
-            walkJSON(this.definitions[this.currentKind], (val) => {
+            walkJSON(this.definitions[this.currentKind], val => {
                 if (val.$kind) {
                     if (this.definitions.hasOwnProperty(val.$kind)) {
                         val.$ref = '#/definitions/' + val.$kind
@@ -729,7 +729,7 @@ export default class SchemaMerger {
         const scheme = 'schema:'
         this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         for (this.currentKind in this.definitions) {
-            walkJSON(this.definitions[this.currentKind], (val) => {
+            walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
                     val.$ref = val.$ref.substring(val.$ref.indexOf('#'))
                 }
@@ -740,7 +740,7 @@ export default class SchemaMerger {
 
     // Expand $ref below allOf and remove allOf
     expandAllOf(bundle: any): any {
-        walkJSON(bundle, (val) => {
+        walkJSON(bundle, val => {
             if (val.allOf && Array.isArray(val.allOf)) {
                 for (let child of val.allOf) {
                     if (child.$ref) {
@@ -806,7 +806,7 @@ export default class SchemaMerger {
             }
             walkJSON(definition, (val, _, path) => {
                 if (val.$id && path) {
-                    return undefined
+                    return true
                 }
                 if (val.properties && !path?.endsWith('properties')) {
                     for (let propName in val.properties) {
