@@ -335,6 +335,13 @@ export default class SchemaMerger {
                     for (let ref of elt.ProjectReference) {
                         let project = ref.$
                         let projectPath = ppath.normalize(ppath.resolve(ppath.dirname(path), project.Include))
+                        // TODO: Remove this
+                        this.log(`dirname ${ppath.dirname(path)}`)
+                        this.log(`project ${project.Include}`)
+                        this.log(`project normalize ${ppath.normalize(project.Include)}`)
+                        this.log(`resolve ${ppath.resolve(ppath.dirname(path), project.Include)}`)
+                        this.log(`normalize ${projectPath}`)
+                        this.log(`full normalize ${ ppath.normalize(ppath.resolve(ppath.dirname(path), ppath.normalize(project.Include)))}`)
                         projects.push(projectPath)
                     }
                     return undefined

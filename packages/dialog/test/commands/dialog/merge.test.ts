@@ -71,8 +71,34 @@ describe('dialog:merge', async () => {
         let generated = await fs.readJSON('generated.schema')
         delete oracle.$id
         delete generated.$id
-        assert(JSON.stringify(oracle) === JSON.stringify(generated),
-            `Schema ${ppath.resolve('generated.schema')} does not match ${ppath.resolve('schemas/app.schema')}`)
+        let oracles = JSON.stringify(oracle)
+        let generateds = JSON.stringify(generated)
+        if (oracles !== generateds) {
+            console.log(`Oracle   : ${oracles.length}`)
+            console.log(`Generated: ${generateds.length}`)
+            let max = oracles.length
+            if (max > generateds.length) {
+                max == generateds.length
+            }
+            let idx: number
+            for (idx = 0; idx < max; ++idx) {
+                if (oracles[idx] != generateds[idx]) {
+                    break;
+                }
+            }
+            let start = idx - 40
+            if (start < 0) {
+                start = 0
+            }
+            let end = idx + 40
+            if (end > max) {
+                end = max
+            }
+            console.log(`Oracle   : ${oracles.substring(start, end)}`)
+            console.log(`Generated: ${generateds.substring(start, end)}`)
+            assert(false, 
+                `Schema ${ppath.resolve('generated.schema')} does not match ${ppath.resolve('schemas/app.schema')}`)
+        }
     })
 
     it('bad json', async () => {
