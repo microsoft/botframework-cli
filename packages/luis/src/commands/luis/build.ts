@@ -54,11 +54,26 @@ export default class LuisBuild extends Command {
         const configFilePath = path.resolve(flags.luConfig)
         if (fs.existsSync(configFilePath)) {
           const configObj = JSON.parse(await file.getContentFromFile(configFilePath))
-          if (configObj.name && configObj.name !== '') flags.botName = configObj.name
-          if (configObj.defaultLanguage && configObj.defaultLanguage !== '') flags.defaultCulture = configObj.defaultLanguage
-          if (configObj.deleteOldVersion) flags.deleteOldVersion = true
-          if (configObj.out && configObj.out !== '') flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
-          if (configObj.writeDialogFiles) flags.dialog = configObj.writeDialogFiles
+          if (configObj.name && configObj.name !== '') {
+            flags.botName = configObj.name
+          }
+
+          if (configObj.defaultLanguage && configObj.defaultLanguage !== '') {
+            flags.defaultCulture = configObj.defaultLanguage
+          }
+
+          if (configObj.deleteOldVersion) {
+            flags.deleteOldVersion = true
+          }
+
+          if (configObj.out && configObj.out !== '') {
+            flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
+          }
+
+          if (configObj.writeDialogFiles) {
+            flags.dialog = configObj.writeDialogFiles
+          }
+
           if (configObj.models && configObj.models.length > 0) {
             files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
           }

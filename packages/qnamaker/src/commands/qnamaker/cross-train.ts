@@ -24,11 +24,14 @@ export default class QnamakerCrossTrain extends Command {
     try {
       const {flags} = this.parse(QnamakerCrossTrain)
 
-      if (!path.isAbsolute(flags.in)) flags.in = path.resolve(flags.in)
-      if (flags.config && flags.config !== '') {
-        if (!path.isAbsolute(flags.config)) flags.config = path.join(flags.in, flags.config)
+      if (!path.isAbsolute(flags.in)) {
+        flags.in = path.resolve(flags.in)
+      }
+      
+      if (flags.config && flags.config !== '' && !path.isAbsolute(flags.config)) {
+        flags.config = path.join(flags.in, flags.config)
       } else if (flags.rootDialog && flags.rootDialog !== '') {
-        if (!path.isAbsolute(flags.rootDialog)) flags.rootDialog = path.join(flags.in, flags.rootDialog)
+        flags.rootDialog = !path.isAbsolute(flags.rootDialog) ? path.join(flags.in, flags.rootDialog) : flags.rootDialog
         flags.config = await crossTrain.generateConfig(flags.in, flags.rootDialog)
       }
 

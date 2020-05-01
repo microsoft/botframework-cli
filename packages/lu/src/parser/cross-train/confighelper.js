@@ -74,23 +74,24 @@ const createConfig = function (rootDialog, dialogs, configPath) {
     if (trigger.$type && trigger.$type === 'Microsoft.OnIntent') {
       const actions = trigger.actions || []
       for (const action of actions) {
-        if (action.$type && action.$type === 'Microsoft.BeginDialog') {
-          const dialogName = action.dialog
-          const target = dialogs.find(dialog => path.basename(dialog.path, dialogExt) === dialogName)
-          if (target) {
-            const relativePath = createPath(target.path, configPath)
-            if (!result[key]) result[key] = {triggers: {}}
-            if (!result[key].triggers[trigger.intent]) {
-              result[key].triggers[trigger.intent] = relativePath
-            } else if (typeof result[key].triggers[trigger.intent] === 'string') {
-              result[key].triggers[trigger.intent] = [result[key].triggers[trigger.intent], relativePath]
-            } else {
-              result[key].triggers[trigger.intent].push(relativePath)
-            }
+        if (action.$type !== 'Microsoft.BeginDialog') continue
 
-            result = {...result, ...createConfig(target, dialogs, configPath)}
-          }
+        const dialogName = action.dialog
+        const target = dialogs.find(dialog => path.basename(dialog.path, dialogExt) === dialogName)
+        
+        if (!target) continue
+
+        const relativePath = createPath(target.path, configPath)
+        if (!result[key]) result[key] = { triggers: {} }
+        if (!result[key].triggers[trigger.intent]) {
+          result[key].triggers[trigger.intent] = relativePath
+        } else if (typeof result[key].triggers[trigger.intent] === 'string') {
+          result[key].triggers[trigger.intent] = [result[key].triggers[trigger.intent], relativePath]
+        } else {
+          result[key].triggers[trigger.intent].push(relativePath)
         }
+
+        result = { ...result, ...createConfig(target, dialogs, configPath) }
       }
     }
   })

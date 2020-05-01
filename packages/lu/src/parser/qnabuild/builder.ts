@@ -290,22 +290,18 @@ export class Builder {
   async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, files: string[]) {
     let writeDone = false
 
-    if (out) {
-      for (const content of contents) {
-        const outFilePath = path.join(path.resolve(out), path.basename(content.path))
-        if (force || !fs.existsSync(outFilePath)) {
-          this.handler(`Writing to ${outFilePath}\n`)
-          await this.writeDialog(content.content, outFilePath, dialogType, files)
-          writeDone = true
-        }
+    for (const content of contents) {
+      let outFilePath
+      if (out) {
+        outFilePath = path.join(path.resolve(out), path.basename(content.path))
+      } else {
+        outFilePath = content.path
       }
-    } else {
-      for (const content of contents) {
-        if (force || !fs.existsSync(content.path)) {
-          this.handler(`Writing to ${content.path}\n`)
-          await this.writeDialog(content.content, content.path, dialogType, files)
-          writeDone = true
-        }
+
+      if (force || !fs.existsSync(outFilePath)) {
+        this.handler(`Writing to ${outFilePath}\n`)
+        await this.writeDialog(content.content, outFilePath, dialogType, files)
+        writeDone = true
       }
     }
 
