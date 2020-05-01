@@ -62,10 +62,20 @@ describe('luis:build cli parameters test', () => {
       expect(ctx.stderr).to.contain('bad3.lu')
       expect(ctx.stderr).to.contain('[ERROR] line 4:0 - line 4:16: Invalid intent body line, did you miss \'-\' at line begin')
     })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botName', 'Contoso', '--dialog', 'cross-train'])
+    .it('displays an error if option specified by --dialog is not right', ctx => {
+      expect(ctx.stderr).to.contain('Recognizer type specified by --dialog is not right. Please specify [multiLanguage|crosstrained]')
+    })
 })
 
 describe('luis:build create a new application successfully', () => {
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -105,9 +115,13 @@ describe('luis:build create a new application successfully', () => {
       })
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should create a new application successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
@@ -120,7 +134,9 @@ describe('luis:build create a new application successfully', () => {
 
 describe('luis:build update application succeed when utterances changed', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.utteranceChanged.en-us.lu.json')
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -170,9 +186,13 @@ describe('luis:build update application succeed when utterances changed', () => 
       })
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should update a luis application when utterances changed', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -185,7 +205,9 @@ describe('luis:build update application succeed when utterances changed', () => 
 
 describe('luis:build update application succeed when utterances added', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.utteranceAdded.en-us.lu.json')
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -235,9 +257,13 @@ describe('luis:build update application succeed when utterances added', () => {
       })
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should update a luis application when utterances added', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -249,38 +275,6 @@ describe('luis:build update application succeed when utterances added', () => {
 })
 
 describe('luis:build not update application if no changes', () => {
-  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
-  before(function () {
-    nock('https://westus.api.cognitive.microsoft.com')
-      .get(uri => uri.includes('apps'))
-      .reply(200, [{
-        name: 'test(development)-sandwich.en-us.lu',
-        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
-      }])
-
-    nock('https://westus.api.cognitive.microsoft.com')
-      .get(uri => uri.includes('apps'))
-      .reply(200, {
-        name: 'test(development)-sandwich.en-us.lu',
-        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
-        activeVersion: '0.1'
-      })
-
-    nock('https://westus.api.cognitive.microsoft.com')
-      .get(uri => uri.includes('export'))
-      .reply(200, existingLuisApp)
-  })
-
-  test
-    .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
-    .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
-      expect(ctx.stdout).to.contain('Handling applications...')
-      expect(ctx.stdout).to.contain('no changes')
-    })
-})
-
-describe('luis:build write dialog assets successfully if --dialog set', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
@@ -311,10 +305,87 @@ describe('luis:build write dialog assets successfully if --dialog set', () => {
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when --dialog set', async ctx => {
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
+    .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('no changes')
+    })
+})
+
+describe('luis:build write dialog assets successfully if --dialog set to multiLanguage', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write dialog assets successfully when --dialog set to multiLanguage', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.en-us.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.dialog')).to.be.true
+    })
+})
+
+describe('luis:build write dialog assets successfully if --dialog set to crosstrained', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write dialog assets successfully when --dialog set to crosstrained', async ctx => {
+      expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.lu.qna.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.dialog')).to.be.true
     })
 })
@@ -430,7 +501,7 @@ describe('luis:build create multiple applications successfully when input is a f
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
     .it('should create multiple applications and write dialog assets successfully when input is a folder', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
@@ -536,7 +607,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', '--out', './results', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo2/lufiles-and-dialog-assets', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
     .it('should update dialog assets successfully when dialog assets exist', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
@@ -571,7 +642,9 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
 
 describe('luis:build not update application if only cases of utterances or patterns are changed', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/case-insensitive/luis/test(development)-case-insensitive.en-us.lu.json')
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -592,9 +665,13 @@ describe('luis:build not update application if only cases of utterances or patte
       .reply(200, existingLuisApp)
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should not update a luis application when only cases of utterances or patterns are different for the coming lu file', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')

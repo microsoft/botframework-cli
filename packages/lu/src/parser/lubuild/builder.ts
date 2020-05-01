@@ -7,6 +7,7 @@ import {LuBuildCore} from './core'
 import {Settings} from './settings'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Recognizer} from './recognizer'
+import {CrossTrainedRecognizer} from './cross-trained-recognizer'
 const path = require('path')
 const fs = require('fs-extra')
 const delay = require('delay')
@@ -18,6 +19,7 @@ const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
 const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
+const recognizerType = require('./../utils/enums/recognizertypes')
 
 export class Builder {
   private readonly handler: (input: string) => any
@@ -215,7 +217,7 @@ export class Builder {
     return dialogContents
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string, luconfig: string) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, luconfig: string) {
     let writeDone = false
 
     let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
@@ -242,7 +244,7 @@ export class Builder {
           }
 
           this.handler(`Writing to ${outFilePath}\n`)
-          await fs.writeFile(outFilePath, content.content, 'utf-8')
+          await this.writeDialog(content.content, outFilePath, dialogType)
           writeDone = true
         }
       }
@@ -254,7 +256,7 @@ export class Builder {
           }
 
           this.handler(`Writing to ${content.path}\n`)
-          await fs.writeFile(content.path, content.content, 'utf-8')
+          await this.writeDialog(content.content, content.path, dialogType)
           writeDone = true
         }
       }
@@ -402,6 +404,29 @@ export class Builder {
       const filteredIntents = intents.filter((intent: any) => !emptyIntents.some((emptyIntent: any) => emptyIntent.name === intent.name))
       this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
       app.intents = filteredIntents
+    }
+  }
+
+  async writeDialog(content: string, filePath: string, dialogType: string) {
+    await fs.writeFile(filePath, content, 'utf-8')
+    const contentObj = JSON.parse(content)
+    if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.MultiLanguageRecognizer') {
+      const fileName = path.basename(filePath, '.lu.dialog')
+      const crossTrainedFileName = fileName + '.lu.qna.dialog'
+      const crossTrainedFilePath = path.join(path.dirname(filePath), crossTrainedFileName)
+      if (fs.existsSync(crossTrainedFilePath)) {
+        const existingCRDialog = JSON.parse(await fileHelper.getContentFromFile(crossTrainedFilePath))
+        if (!existingCRDialog.recognizers.includes(fileName + '.lu')) {
+          existingCRDialog.recognizers.push(fileName + '.lu')
+        }
+
+        content = JSON.stringify(existingCRDialog, null, 4)
+      } else {
+        const recognizers = [fileName + '.lu']
+        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers).save()
+      }
+
+      await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
     }
   }
 }
