@@ -6,7 +6,6 @@
  */
 
 import * as ajv from 'ajv';
-import * as ppath from 'path'
 let getUri: any = require('get-uri')
 
 // Get JSON from a URI.
