@@ -7,7 +7,7 @@
 
 import { assert } from 'chai'
 import * as fs from 'fs-extra'
-import glob from 'globby'
+import * as glob from 'globby'
 import 'mocha'
 import * as os from 'os'
 import * as ppath from 'path'

@@ -8,7 +8,8 @@
 import { expect, test } from '@oclif/test';
 import * as path from 'path'
 
-describe('dialog:verify', () => {
+// TODO: Tests from merge need to move here and improve these.
+xdescribe('dialog:verify', () => {
     test
         .stdout()
         .stderr()

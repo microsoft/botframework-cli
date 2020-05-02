@@ -400,7 +400,7 @@ export default class SchemaMerger {
                     }
                 }
                 for (let ref of references) {
-                    let matches = await glob(ref)
+                    let matches = await glob(ref.replace(/\\/g, '/'))
                     for (let expandedRef of matches) {
                         yield this.prettyPath(expandedRef)
                     }
