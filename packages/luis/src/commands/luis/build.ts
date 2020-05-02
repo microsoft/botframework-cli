@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import { CLIError, Command, flags } from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
@@ -27,24 +27,25 @@ export default class LuisBuild extends Command {
   `]
 
   static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    in: flags.string({char: 'i', description: 'Lu file or folder'}),
-    authoringKey: flags.string({description: 'LUIS authoring key'}),
-    botName: flags.string({description: 'Bot name'}),
-    region: flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
-    defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
-    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
-    suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage'}),
-    force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
-    luConfig: flags.string({description: 'Path to config for lu build'}),
-    log: flags.boolean({description: 'write out log messages to console', default: false}),
+    help: flags.help({ char: 'h' }),
+    in: flags.string({ char: 'i', description: 'Lu file or folder' }),
+    authoringKey: flags.string({ description: 'LUIS authoring key' }),
+    botName: flags.string({ description: 'Bot name' }),
+    region: flags.string({ description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus' }),
+    out: flags.string({ char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output' }),
+    defaultCulture: flags.string({ description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us' }),
+    fallbackLocale: flags.string({ description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set' }),
+    suffix: flags.string({ description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias' }),
+    dialog: flags.string({ description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage' }),
+    force: flags.boolean({ char: 'f', description: 'If --dialog flag is provided, overwrites relevant dialog file', default: false }),
+    luConfig: flags.string({ description: 'Path to config for lu build which can contain switches for arguments' }),
+    deleteOldVersion: flags.boolean({ description: 'Delete old version of LUIS application after building new one.' }),
+    log: flags.boolean({ description: 'write out log messages to console', default: false }),
   }
 
   async run() {
     try {
-      const {flags} = this.parse(LuisBuild)
+      const { flags } = this.parse(LuisBuild)
       const userConfig = await utils.getUserConfig(this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -52,30 +53,16 @@ export default class LuisBuild extends Command {
       let files: string[] = []
       if (flags.luConfig) {
         const configFilePath = path.resolve(flags.luConfig)
-        if (fs.existsSync(configFilePath)) {
+        if (await fs.exists(configFilePath)) {
           const configObj = JSON.parse(await file.getContentFromFile(configFilePath))
-          if (configObj.name && configObj.name !== '') {
-            flags.botName = configObj.name
-          }
-
-          if (configObj.defaultLanguage && configObj.defaultLanguage !== '') {
-            flags.defaultCulture = configObj.defaultLanguage
-          }
-
-          if (configObj.deleteOldVersion) {
-            flags.deleteOldVersion = true
-          }
-
-          if (configObj.out && configObj.out !== '') {
-            flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
-          }
-
-          if (configObj.writeDialogFiles) {
-            flags.dialog = configObj.writeDialogFiles
-          }
-
-          if (configObj.models && configObj.models.length > 0) {
-            files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
+          for (let prop in configObj) {
+            if (prop === 'models') {
+              files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
+            } else if (prop === 'out') {
+              flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
+            } else {
+              flags[prop] = configObj[prop]
+            }
           }
         }
       }

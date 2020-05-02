@@ -156,8 +156,7 @@
             ],
             "args": [
                 "dialog:verify",
-                "tests/**/sandwich*.dialog",
-                "!*schema*",
+                "tests/**/*.dialog",
                 "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
@@ -198,18 +197,13 @@
                 "luis:build",
                 "--in",
                 ".",
+                "--luConfig",
+                "luconfig.json",
                 "--authoringKey",
-                "${env:LUIS_AUTHORING_KEY}",
-                "--botName",
-                "sandwich",
-                "--dialog",
-                "--suffix",
-                "${env:USERNAME}",
-                "--out",
-                "."
+                "${env:LUIS_AUTHORING_KEY}"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/sandwich.out/luis"
+            "cwd": "${env:TEMP}/sandwich.out"
         },
         {
             "type": "node",

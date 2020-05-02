@@ -10,13 +10,14 @@ export default class ConfigSetLuis extends Command {
   static description = 'Stores default LUIS application values in global config.'
 
   static examples = [`
-    $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --endpoint {ENDPOINT}
+    $ bf config:set:luis --appId {APPLICATION_ID} --authoringKey {AUTHORING_KEY} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --endpoint {ENDPOINT}
   `]
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
+    appId: flags.string({ description: 'LUIS application Id' }),
+    authoringKey: flags.string({ description: 'LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    appId: flags.string({description: 'LUIS application Id'}),
     versionId: flags.string({description: 'LUIS version Id'}),
     endpoint: flags.string({description: 'LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com'}),
   }
