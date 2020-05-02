@@ -1,6 +1,6 @@
 {
-    "name":"todobot",
-    "defaultLanguage":"en-us",
+    "botName":"todobot",
+    "defaultCulture":"en-us",
     "deleteOldVersion": true, 
     "models": [
         "RootDialog/LU/root.lu",

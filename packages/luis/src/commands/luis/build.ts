@@ -23,7 +23,7 @@ export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
 
   static examples = [`
-    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
+    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog multiLanguage
   `]
 
   static flags: flags.Input<any> = {

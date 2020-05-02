@@ -19,31 +19,34 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-* [`bf luis`](#bf-luis)
-* [`bf luis:application:create`](#bf-luisapplicationcreate)
-* [`bf luis:application:delete`](#bf-luisapplicationdelete)
-* [`bf luis:application:import`](#bf-luisapplicationimport)
-* [`bf luis:application:list`](#bf-luisapplicationlist)
-* [`bf luis:application:publish`](#bf-luisapplicationpublish)
-* [`bf luis:application:query`](#bf-luisapplicationquery)
-* [`bf luis:application:rename`](#bf-luisapplicationrename)
-* [`bf luis:application:show`](#bf-luisapplicationshow)
-* [`bf luis:build`](#bf-luisbuild)
-* [`bf luis:convert`](#bf-luisconvert)
-* [`bf luis:cross-train`](#bf-luiscross-train)
-* [`bf luis:endpoints:list`](#bf-luisendpointslist)
-* [`bf luis:test`](#bf-luistest)
-* [`bf luis:generate:cs`](#bf-luisgeneratecs)
-* [`bf luis:generate:ts`](#bf-luisgeneratets)
-* [`bf luis:train:run`](#bf-luistrainrun)
-* [`bf luis:train:show`](#bf-luistrainshow)
-* [`bf luis:translate`](#bf-luistranslate)
-* [`bf luis:version:clone`](#bf-luisversionclone)
-* [`bf luis:version:delete`](#bf-luisversiondelete)
-* [`bf luis:version:export`](#bf-luisversionexport)
-* [`bf luis:version:import`](#bf-luisversionimport)
-* [`bf luis:version:list`](#bf-luisversionlist)
-* [`bf luis:version:rename`](#bf-luisversionrename)
+- [@microsoft/bf-luis-cli](#microsoftbf-luis-cli)
+- [Relevant docs](#relevant-docs)
+- [Commands](#commands)
+  - [`bf luis`](#bf-luis)
+  - [`bf luis:application:create`](#bf-luisapplicationcreate)
+  - [`bf luis:application:delete`](#bf-luisapplicationdelete)
+  - [`bf luis:application:import`](#bf-luisapplicationimport)
+  - [`bf luis:application:list`](#bf-luisapplicationlist)
+  - [`bf luis:application:publish`](#bf-luisapplicationpublish)
+  - [`bf luis:application:query`](#bf-luisapplicationquery)
+  - [`bf luis:application:rename`](#bf-luisapplicationrename)
+  - [`bf luis:application:show`](#bf-luisapplicationshow)
+  - [`bf luis:build`](#bf-luisbuild)
+  - [`bf luis:convert`](#bf-luisconvert)
+  - [`bf luis:cross-train`](#bf-luiscross-train)
+  - [`bf luis:endpoints:list`](#bf-luisendpointslist)
+  - [`bf luis:test`](#bf-luistest)
+  - [`bf luis:generate:cs`](#bf-luisgeneratecs)
+  - [`bf luis:generate:ts`](#bf-luisgeneratets)
+  - [`bf luis:train:run`](#bf-luistrainrun)
+  - [`bf luis:train:show`](#bf-luistrainshow)
+  - [`bf luis:translate`](#bf-luistranslate)
+  - [`bf luis:version:clone`](#bf-luisversionclone)
+  - [`bf luis:version:delete`](#bf-luisversiondelete)
+  - [`bf luis:version:export`](#bf-luisversionexport)
+  - [`bf luis:version:import`](#bf-luisversionimport)
+  - [`bf luis:version:list`](#bf-luisversionlist)
+  - [`bf luis:version:rename`](#bf-luisversionrename)
 
 ## `bf luis`
 
@@ -321,6 +324,8 @@ OPTIONS
 
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
 
+  --deleteOldVersion               Delete old version of LUIS application after building new one.  
+  
   --dialog                         [default: multiLanguage]Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
@@ -337,7 +342,7 @@ OPTIONS
 
 EXAMPLE
 
-       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog multiLanguage
 ```
 
 _See code: [src/commands/luis/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/build.ts)_
