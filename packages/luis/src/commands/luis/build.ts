@@ -23,7 +23,7 @@ export default class LuisBuild extends Command {
   static description = 'Build lu files to train and publish luis applications'
 
   static examples = [`
-    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
+    $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog multiLanguage
   `]
 
   static flags: flags.Input<any> = {
@@ -37,8 +37,9 @@ export default class LuisBuild extends Command {
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
     dialog: flags.string({description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage'}),
-    force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
-    luConfig: flags.string({description: 'Path to config for lu build'}),
+    force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwrites relevant dialog file', default: false}),
+    luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
+    deleteOldVersion: flags.boolean({description: 'Delete old version of LUIS application after building new one.'}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
   }
 
@@ -52,30 +53,16 @@ export default class LuisBuild extends Command {
       let files: string[] = []
       if (flags.luConfig) {
         const configFilePath = path.resolve(flags.luConfig)
-        if (fs.existsSync(configFilePath)) {
+        if (await fs.exists(configFilePath)) {
           const configObj = JSON.parse(await file.getContentFromFile(configFilePath))
-          if (configObj.name && configObj.name !== '') {
-            flags.botName = configObj.name
-          }
-
-          if (configObj.defaultLanguage && configObj.defaultLanguage !== '') {
-            flags.defaultCulture = configObj.defaultLanguage
-          }
-
-          if (configObj.deleteOldVersion) {
-            flags.deleteOldVersion = true
-          }
-
-          if (configObj.out && configObj.out !== '') {
-            flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
-          }
-
-          if (configObj.writeDialogFiles) {
-            flags.dialog = configObj.writeDialogFiles
-          }
-
-          if (configObj.models && configObj.models.length > 0) {
-            files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
+          for (let prop of Object.keys(configObj)) {
+            if (prop === 'models') {
+              files = configObj.models.map((m: string) => path.isAbsolute(m) ? m : path.join(path.dirname(configFilePath), m))
+            } else if (prop === 'out') {
+              flags.out = path.isAbsolute(configObj.out) ? configObj.out : path.join(path.dirname(configFilePath), configObj.out)
+            } else {
+              flags[prop] = configObj[prop]
+            }
           }
         }
       }

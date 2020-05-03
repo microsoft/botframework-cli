@@ -16,7 +16,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                ".*dialog:merge.*"
+                "dialog:merge.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
@@ -36,7 +36,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                ".*dialog:verify.*"
+                "dialog:verify.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
@@ -147,6 +147,24 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "BotBuilder verify",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:verify",
+                "tests/**/*.dialog",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Dialog merge test schema",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
@@ -179,18 +197,13 @@
                 "luis:build",
                 "--in",
                 ".",
+                "--luConfig",
+                "luconfig.json",
                 "--authoringKey",
-                "${env:LUIS_AUTHORING_KEY}",
-                "--botName",
-                "sandwich",
-                "--dialog",
-                "--suffix",
-                "${env:USERNAME}",
-                "--out",
-                "."
+                "${env:LUIS_AUTHORING_KEY}"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/sandwich.out/luis"
+            "cwd": "${env:TEMP}/sandwich.out"
         },
         {
             "type": "node",

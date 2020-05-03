@@ -8,15 +8,17 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-* [`bf config`](#bf-config)
-* [`bf config:set`](#bf-configset)
-* [`bf config:set:luis`](#bf-configsetluis)
-* [`bf config:set:qnamaker`](#bf-configsetqnamaker)
-* [`bf config:set:telemetry`](#bf-configsettelemetry)
-* [`bf config:show`](#bf-configshow)
-* [`bf config:show:luis`](#bf-configshowluis)
-* [`bf config:show:qnamaker`](#bf-configshowqnamaker)
-* [`bf config:show:telemetry`](#bf-configshowtelemetry)
+- [@microsoft/bf-cli-config](#microsoftbf-cli-config)
+- [Commands](#commands)
+  - [`bf config`](#bf-config)
+  - [`bf config:set`](#bf-configset)
+  - [`bf config:set:luis`](#bf-configsetluis)
+  - [`bf config:set:qnamaker`](#bf-configsetqnamaker)
+  - [`bf config:set:telemetry`](#bf-configsettelemetry)
+  - [`bf config:show`](#bf-configshow)
+  - [`bf config:show:luis`](#bf-configshowluis)
+  - [`bf config:show:qnamaker`](#bf-configshowqnamaker)
+  - [`bf config:show:telemetry`](#bf-configshowtelemetry)
 
 ## `bf config`
 
@@ -59,13 +61,14 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      LUIS application Id
+  --authoringKey=authoringKey        LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).
   --endpoint=endpoint                LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com
   --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
   --versionId=versionId              LUIS version Id
 
 EXAMPLE
 
-       $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} 
+       $ bf config:set:luis --appId {APPLICATION_ID} --authoringKey {AUTHORING_KEY} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} 
   --endpoint {ENDPOINT}
 ```
 

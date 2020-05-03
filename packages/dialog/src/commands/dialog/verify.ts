@@ -14,9 +14,11 @@ export default class DialogVerify extends Command {
         { name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .dialog files.' },
     ]
 
+    static strict = false
+
     static flags: flags.Input<any> = {
         help: flags.help({ char: 'h' }),
-        verbose: flags.boolean({ description: 'Show verbose output', default: false }),
+        verbose: flags.boolean({ char: 'v', description: 'Show verbose output', default: false }),
     }
 
     private currentFile = ''
@@ -106,5 +108,4 @@ export default class DialogVerify extends Command {
         this.errors++
         this.error(`${this.currentFile} - error ${code || ''}: ${msg}`)
     }
-
 }
