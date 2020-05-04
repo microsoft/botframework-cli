@@ -7,6 +7,24 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "bf CLI",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/cli/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "${workspaceFolder}/packages/luis/lib/**"
+            ],
+            "args": [
+                "luis:build",
+                "--luConfig", 
+                "${env:TEMP}/sandwich.out/luconfig.json"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Dialog Merge Tests",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
@@ -198,9 +216,7 @@
                 "--in",
                 ".",
                 "--luConfig",
-                "luconfig.json",
-                "--authoringKey",
-                "${env:LUIS_AUTHORING_KEY}"
+                "luconfig.json"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${env:TEMP}/sandwich.out"

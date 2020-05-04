@@ -69,8 +69,6 @@ describe('dialog:merge', async () => {
         assert(countMatches(/error|warning/i, lines) == 1, 'Error merging schemas')
         let oracle = await fs.readJSON('schemas/app.schema')
         let generated = await fs.readJSON('generated.schema')
-        delete oracle.$id
-        delete generated.$id
         let oracles = JSON.stringify(oracle)
         let generateds = JSON.stringify(generated)
         if (oracles !== generateds) {

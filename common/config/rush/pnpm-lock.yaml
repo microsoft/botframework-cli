@@ -4211,17 +4211,6 @@ packages:
       node: '>= 8.0'
     resolution:
       integrity: sha512-U5wPctaY4/ar2JJ5Jg4wJxlbBfayxgKbiAeGh+a1kk6Pwnc2ZEuKviLyDSG6t0uXl56q7AALIxoM6FJrBSsVXA==
-  /nock/12.0.2:
-    dependencies:
-      debug: 4.1.1
-      json-stringify-safe: 5.0.1
-      lodash: 4.17.15
-      propagate: 2.0.1
-    dev: false
-    engines:
-      node: '>= 10.13'
-    resolution:
-      integrity: sha512-pTckyfP8QHvwXP/oX+zQuSIL3S/mWTd84ba4pOGZlS/FgRZyljv4C3ZyOjgMilvkydSaERML/aJEF13EBUuDTQ==
   /node-environment-flags/1.0.5:
     dependencies:
       object.getownpropertydescriptors: 2.1.0
@@ -6680,6 +6669,7 @@ packages:
       '@types/chai': 4.2.10
       '@types/lodash': 4.14.149
       '@types/mocha': 5.2.7
+      '@types/nock': 11.1.0
       '@types/node': 10.17.17
       '@types/node-fetch': 2.5.5
       '@types/rimraf': 2.0.3
@@ -6690,7 +6680,7 @@ packages:
       globby: 10.0.2
       lodash: 4.17.15
       mocha: 6.2.2
-      nock: 12.0.2
+      nock: 11.9.1
       node-fetch: 2.6.0
       nyc: 14.1.1
       rimraf: 3.0.2
@@ -6704,7 +6694,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-+a3baEHSiPkEERKZ9smUAZprX6iFIjazQCH5YcTuurdsvgX8EjPQWKPcI9O43ct85dK45lUqwwDoRBc3OC5zpw==
+      integrity: sha512-ge5JmDMOc6xRrWutOD8Qv31C4GsinM7JIhOrLUtKIKQeCtvOSBAMwcagckfwfgKk2j8pmXHZX4rf51b+P0eDeg==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
