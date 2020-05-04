@@ -72,7 +72,7 @@ export default class SchemaMerger {
     private readonly missingKinds = new Set()
     private currentFile = ''
     private currentKind = ''
-    private readonly jsonOptions = { spaces: '\t', EOL: os.EOL }
+    private readonly jsonOptions = {spaces: '\t', EOL: os.EOL}
 
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
@@ -128,8 +128,8 @@ export default class SchemaMerger {
                         this.log(`Parsing ${componentPath}`)
                     }
                     let component = await fs.readJSON(componentPath)
-                    if (component.$id) {
-                        this.parsingWarning(`Skipping because of top-level $id ${component.$id}`)
+                    if (component.definitions && component.definitions.component) {
+                        this.parsingWarning('Skipping merged schema')
                     } else {
                         this.relativeToAbsoluteRefs(component, componentPath)
 
@@ -181,7 +181,7 @@ export default class SchemaMerger {
                 .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
                 .sort()
                 .map(kind => {
-                    return { $ref: `#/definitions/${kind}` }
+                    return {$ref: `#/definitions/${kind}`}
                 })
             this.addSchemaDefinitions()
 
@@ -194,7 +194,6 @@ export default class SchemaMerger {
                 }
                 let finalSchema: any = {
                     $schema: this.metaSchemaId,
-                    $id: `file:///${ppath.resolve(this.output).replace(/\\/g, '/')}#`,
                     type: 'object',
                     title: 'Component kinds',
                     description: 'These are all of the kinds that can be created by the loader.',
@@ -423,7 +422,7 @@ export default class SchemaMerger {
     async findGlobalNuget(): Promise<string> {
         let result = ''
         try {
-            const { stdout } = await exec('dotnet nuget locals global-packages --list')
+            const {stdout} = await exec('dotnet nuget locals global-packages --list')
             const name = 'global-packages:'
             let start = stdout.indexOf(name)
             if (start > -1) {
@@ -524,7 +523,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
+                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -666,7 +665,7 @@ export default class SchemaMerger {
     expandKinds(): void {
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
-                if (val.$kind) {
+                if (val.$kind && typeof val.$kind === 'string') {
                     if (this.definitions.hasOwnProperty(val.$kind)) {
                         val.$ref = '#/definitions/' + val.$kind
                     } else {
@@ -727,7 +726,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
+        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
@@ -761,8 +760,8 @@ export default class SchemaMerger {
 
     // Remove any child $id because their references have been changed to be local
     removeId(bundle: any) {
-        walkJSON(bundle, (val, _obj, path) => {
-            if (path && val.$id) {
+        walkJSON(bundle, val => {
+            if (val.$id) {
                 delete val.$id
             }
             return false
