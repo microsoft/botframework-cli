@@ -8,17 +8,15 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-- [@microsoft/bf-cli-config](#microsoftbf-cli-config)
-- [Commands](#commands)
-  - [`bf config`](#bf-config)
-  - [`bf config:set`](#bf-configset)
-  - [`bf config:set:luis`](#bf-configsetluis)
-  - [`bf config:set:qnamaker`](#bf-configsetqnamaker)
-  - [`bf config:set:telemetry`](#bf-configsettelemetry)
-  - [`bf config:show`](#bf-configshow)
-  - [`bf config:show:luis`](#bf-configshowluis)
-  - [`bf config:show:qnamaker`](#bf-configshowqnamaker)
-  - [`bf config:show:telemetry`](#bf-configshowtelemetry)
+* [`bf config`](#bf-config)
+* [`bf config:set`](#bf-configset)
+* [`bf config:set:luis`](#bf-configsetluis)
+* [`bf config:set:qnamaker`](#bf-configsetqnamaker)
+* [`bf config:set:telemetry`](#bf-configsettelemetry)
+* [`bf config:show`](#bf-configshow)
+* [`bf config:show:luis`](#bf-configshowluis)
+* [`bf config:show:qnamaker`](#bf-configshowqnamaker)
+* [`bf config:show:telemetry`](#bf-configshowtelemetry)
 
 ## `bf config`
 
@@ -68,8 +66,8 @@ OPTIONS
 
 EXAMPLE
 
-       $ bf config:set:luis --appId {APPLICATION_ID} --authoringKey {AUTHORING_KEY} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} 
-  --endpoint {ENDPOINT}
+       $ bf config:set:luis --appId {APPLICATION_ID} --authoringKey {AUTHORING_KEY} --subscriptionKey {SUBSCRIPTION_KEY} 
+  --versionId {VERSION_ID} --endpoint {ENDPOINT}
 ```
 
 _See code: [src/commands/config/set/luis.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/luis.ts)_

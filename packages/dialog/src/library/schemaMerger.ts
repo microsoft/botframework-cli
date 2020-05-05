@@ -817,7 +817,7 @@ export default class SchemaMerger {
                 if (val.$schema && path) {
                     return true
                 }
-                if (val.properties && !path?.endsWith('properties')) {
+                if (val.properties && (!path || !path.endsWith('properties'))) {
                     for (let propName in val.properties) {
                         verifyProperty(val.properties[propName], pathName(path, propName))
                     }
