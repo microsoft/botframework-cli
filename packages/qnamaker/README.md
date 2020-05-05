@@ -19,6 +19,7 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf qnamaker:alterations`](#bf-qnamakeralterations)
 * [`bf qnamaker:alterations:list`](#bf-qnamakeralterationslist)
 * [`bf qnamaker:alterations:replace`](#bf-qnamakeralterationsreplace)
+* [`bf qnamaker:build`](#bf-qnamakerbuild)
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
 * [`bf qnamaker:cross-train`](#bf-qnamakercross-train)
 * [`bf qnamaker:endpointkeys`](#bf-qnamakerendpointkeys)
@@ -42,7 +43,6 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf qnamaker:query`](#bf-qnamakerquery)
 * [`bf qnamaker:train`](#bf-qnamakertrain)
 * [`bf qnamaker:translate`](#bf-qnamakertranslate)
-* [`bf qnamaker:build`](#bf-qnamakerbuild)
 
 ## `bf qnamaker`
 
@@ -111,6 +111,50 @@ OPTIONS
 
 _See code: [src/commands/qnamaker/alterations/replace.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/alterations/replace.ts)_
 
+## `bf qnamaker:build`
+
+Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations
+
+```
+USAGE
+  $ bf qnamaker:build
+
+OPTIONS
+  -b, --botName=botName                  (required) Bot name
+  -f, --force                            If --dialog flag is provided, overwirtes relevant dialog file
+  -h, --help                             show CLI help
+  -i, --in=in                            Source .qna file or folder
+
+  -o, --out=out                          Output file or folder name. If not specified, current directory will be used as
+                                         output
+
+  -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
+
+  --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
+                                         if not set
+
+  --dialog=dialog                        [default: multiLanguage] Write out .dialog files whose recognizer type
+                                         [multiLanguage|crosstrained] is specified by --dialog
+
+  --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
+                                         Only valid if --dialog is set
+
+  --log                                  write out log messages to console
+
+  --region=region                        [default: westus] Overrides public endpoint
+                                         https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/
+
+  --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
+                                         Defaults to current logged in user alias
+
+EXAMPLE
+
+       $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} 
+  --dialog
+```
+
+_See code: [src/commands/qnamaker/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/build.ts)_
+
 ## `bf qnamaker:convert`
 
 Converts .qna file(s) to QnA application JSON models or vice versa.
@@ -142,11 +186,20 @@ USAGE
   $ bf qnamaker:cross-train
 
 OPTIONS
-  -h, --help       cross-train command help
-  -i, --in         source lu and qna files folder
-  -o, --out        output folder name. If not specified, the cross trained files will be wrote to cross-trained folder under folder of current command
-  --config         path to config file of mapping rules which is relative to folder specified by --in. If not specified, it will read default config.json from the folder specified by --in
-  --intentName     Interruption intent name. Default: _Interruption
+  -h, --help               luis:cross-train help
+  -i, --in=in              source lu and qna files folder
+
+  -o, --out=out            output folder name. If not specified, the cross trained files will be wrote to cross-trained
+                           folder under folder of current command
+
+  --config=config          path to config file of mapping rules which is relative to folder specified by --in. If not
+                           specified, it will read default config.json from the folder specified by --in
+
+  --intentName=intentName  [default: _Interruption] Interruption intent name
+
+  --rootDialog=rootDialog  rootDialog file path which is relative to folder specified by --in. If --config not
+                           specified, cross-trian will automatically construct the config from file system based on root
+                           dialog file
 ```
 
 _See code: [src/commands/qnamaker/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_
@@ -351,6 +404,8 @@ OPTIONS
   --kbId=kbId                        Knowledgebase id to be exported. Overrides the knowledge base id present in the
                                      config
 
+  --qnaFormat                        Specifies if the content should be exported to .qna format.
+
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
                                      subscriptionkey value present in the config
@@ -429,8 +484,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:kb:replace command help
-  -i, --in=in                        File path to the ReplaceKbDTO object to send in the body of the request
+
+  -i, --in=in                        File path to the ReplaceKbDTO object to send in the body of the request.
+                                     Alternately this can be path to a .qna file
+
   --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+
   --kbId=kbId                        Knowledgebase id. Overrides the knowledge base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
@@ -587,31 +646,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/translate.ts)_
-
-## `bf qnamaker:build`
-
-Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations
-
-```
-USAGE
-  $ bf qnamaker:build
-
-OPTIONS
-  -f, --force                        If --dialog flag is provided, overwirtes relevant dialog file
-  -h, --help                         qnamaker:build help
-  -i, --in=in                        Source .qna file or folder
-  -o, --out=out                      Output file or folder name. If not specified, current directory will be used as output
-  -b, --botName=botName              (required) Bot name
-  --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
-  --defaultCulture=defaultCulture    Culture code for the content. Infer from .qna if available. Defaults to en-us if not set
-  --fallbackLocale=fallbackLocale    Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set
-  --region=region                    [default: westus] QnA maker api endpoint region [westus|westeurope|australiaeast]
-  --suffix=suffix                    Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in useralias
-  --dialog                           [default: multiLanguage]Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog
-  --log                              write out log messages to console
-```
-
-_See code: [src/commands/qnamaker/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/build.ts)_
 <!-- commandsstop -->
 
 [1]:./docs/qna-file-format.md
