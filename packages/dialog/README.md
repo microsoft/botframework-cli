@@ -10,26 +10,9 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-- [@microsoft/bf-dialog](#microsoftbf-dialog)
-- [Commands](#commands)
-  - [`bf `](#bf)
-  - [`bf dialog`](#bf-dialog)
-  - [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
-  - [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
-
-## `bf `
-
-The dialog commands allow you to work with dialog schema.
-
-```
-USAGE
-  $ bf
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [src/commands/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/index.ts)_
+* [`bf dialog`](#bf-dialog)
+* [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
+* [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
 
 ## `bf dialog`
 
@@ -80,8 +63,8 @@ ARGUMENTS
   PATTERNS  Any number of glob regex patterns to match .dialog files.
 
 OPTIONS
-  -h, --help  show CLI help
-  --verbose   Show verbose output
+  -h, --help     show CLI help
+  -v, --verbose  Show verbose output
 ```
 
 _See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/verify.ts)_
