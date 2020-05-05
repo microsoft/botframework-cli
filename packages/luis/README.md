@@ -311,7 +311,7 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --dialog flag is provided, overwirtes relevant dialog file
+  -f, --force                      If --dialog flag is provided, overwrites relevant dialog file
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
 

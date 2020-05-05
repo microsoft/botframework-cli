@@ -597,7 +597,7 @@ USAGE
   $ bf qnamaker:build
 
 OPTIONS
-  -f, --force                        If --dialog flag is provided, overwirtes relevant dialog file
+  -f, --force                        If --dialog flag is provided, overwrites relevant dialog file
   -h, --help                         qnamaker:build help
   -i, --in=in                        Source .qna file or folder
   -o, --out=out                      Output file or folder name. If not specified, current directory will be used as output

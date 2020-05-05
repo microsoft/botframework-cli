@@ -16,7 +16,7 @@
             ],
             "args": [
                 "luis:build",
-                "--luConfig", 
+                "--luConfig",
                 "${env:TEMP}/sandwich.out/luconfig.json"
             ],
             "internalConsoleOptions": "openOnSessionStart",
@@ -183,7 +183,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Dialog merge test schema",
+            "name": "Bot Builder merge test schema",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/dialog/bin/run",
             "outputCapture": "std",
@@ -203,6 +203,26 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Runbot schema",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:merge",
+                "runbot.csproj",
+                "-o",
+                "runbot.schema",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-samples/experimental/generation/runbot/"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "LUIS Build Sandwich",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/luis/bin/run",
@@ -213,10 +233,10 @@
             ],
             "args": [
                 "luis:build",
-                "--in",
-                ".",
                 "--luConfig",
-                "luconfig.json"
+                "luconfig.json",
+                "--authoringKey",
+                "${env:LUIS_AUTHORING_KEY}"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${env:TEMP}/sandwich.out"
