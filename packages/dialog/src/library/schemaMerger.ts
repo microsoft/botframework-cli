@@ -61,6 +61,7 @@ export default class SchemaMerger {
 
     // State tracking
     private readonly projects = {}
+    private nugetRoot = ''
     private readonly validator = new Validator()
     private metaSchemaId = ''
     private metaSchema: any
@@ -295,7 +296,78 @@ export default class SchemaMerger {
         return ppath.normalize(path)
     }
 
-    // Expand .csproj packages and projects
+    // Expand nuget package and all of its dependencies
+    async expandNuget(packageName: string, minVersion: string, root: boolean): Promise<string[]> {
+        let packages: string[] = []
+        let pkgPath = ppath.join(this.nugetRoot, packageName)
+        if (!this.projects[pkgPath] && !packageName.startsWith('System')) {
+            let oldFile = this.currentFile
+            try {
+                this.currentFile = pkgPath
+                this.projects[pkgPath] = true
+                let versions: string[] = []
+                if (await fs.pathExists(pkgPath)) {
+                    for (let pkgVersion of await fs.readdir(pkgPath)) {
+                        versions.push(pkgVersion.toLowerCase())
+                    }
+                    minVersion = minVersion || '0.0.0'
+                    // NOTE: The semver package does not handle more complex nuget range revisions
+                    // We get an exception and will ignore those dependencies.
+                    let version = semver.minSatisfying(versions, minVersion)
+                    pkgPath = this.normalize(ppath.join(pkgPath, version || ''))
+                    this.currentFile = pkgPath
+                    packages.push(pkgPath)
+                    if (this.verbose) {
+                        this.log(`  Following nuget ${this.prettyPath(pkgPath)}`)
+                    }
+                    let nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
+                    if (await fs.pathExists(nuspecPath)) {
+                        let nuspec = await this.xmlToJSON(nuspecPath)
+                        let dependencies: any[] = []
+                        walkJSON(nuspec, val => {
+                            if (val.dependencies) {
+                                // NOTE: We assume first framework with dependencies has schema files.
+                                for (let groups of val.dependencies) {
+                                    if (groups.dependency) {
+                                        // Direct dependencies
+                                        for (let dependency of groups.dependency) {
+                                            dependencies.push(dependency.$)
+                                        }
+                                        break
+                                    } else {
+                                        // Grouped dependencies
+                                        for (let group of groups.group) {
+                                            if (group.dependency) {
+                                                for (let dependency of group.dependency) {
+                                                    dependencies.push(dependency.$)
+                                                }
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
+                                return true
+                            }
+                            return false
+                        })
+                        for (let dependent of dependencies) {
+                            let dependentPackages = await this.expandNuget(dependent.id, dependent.version, false)
+                            packages = [...packages, ...dependentPackages]
+                        }
+                    }
+                } else if (root) {
+                    this.parsingError('  Nuget package does not exist')
+                }
+            } catch (e) {
+                this.parsingWarning(e.message)
+            } finally {
+                this.currentFile = oldFile
+            }
+        }
+        return packages
+    }
+
+    // Expand .csproj packages, nugets and projects
     async expandCSProj(path: string): Promise<string[]> {
         let references: string[] = []
         if (!this.projects[path]) {
@@ -306,41 +378,30 @@ export default class SchemaMerger {
             }
             references.push(this.normalize(ppath.join(ppath.dirname(path), '/**/*.schema')))
             let json = await this.xmlToJSON(path)
-            let packages = await this.findGlobalNuget()
-            if (packages) {
+            await this.findGlobalNuget()
+            if (this.nugetRoot !== '') {
+                let nugetPackages: any[] = []
                 walkJSON(json, elt => {
                     if (elt.PackageReference) {
                         for (let pkgRef of elt.PackageReference) {
-                            let pkg = pkgRef.$
-                            let pkgName = pkg.Include
-                            let pkgPath = ppath.join(packages, pkgName)
-                            let versions: string[] = []
-                            if (fs.pathExistsSync(pkgPath)) {
-                                for (let version of fs.readdirSync(pkgPath)) {
-                                    versions.push(version.toLowerCase())
-                                }
-                                let baseVersion = pkg.Version || '0.0.0'
-                                let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
-                                pkgPath = this.normalize(ppath.join(pkgPath, version || '', '**/*.schema'))
-                                references.push(pkgPath)
-                                if (this.verbose) {
-                                    this.log(`  Following nuget ${this.prettyPath(pkgPath)}`)
-                                }
-                            } else {
-                                this.parsingError(`Nuget package does not exist ${pkgPath}`)
-                            }
+                            nugetPackages.push(pkgRef.$)
                         }
                         return true
                     }
                     return false
                 })
+                for (let pkg of nugetPackages) {
+                    let nugetReferences = await this.expandNuget(pkg.Include, pkg.Version, true)
+                    for (let nuget of nugetReferences) {
+                        references.push(this.normalize(ppath.join(nuget, '**/*.schema')))
+                    }
+                }
             }
             let projects: string[] = []
             walkJSON(json, elt => {
                 if (elt.ProjectReference) {
                     for (let ref of elt.ProjectReference) {
-                        let project = ref.$
-                        let projectPath = this.normalize(ppath.join(ppath.dirname(path), project.Include))
+                        let projectPath = this.normalize(ppath.join(ppath.dirname(path), ref.$.Include))
                         projects.push(projectPath)
                     }
                     return true
@@ -419,19 +480,20 @@ export default class SchemaMerger {
     }
 
     // Find the global nuget repository
-    async findGlobalNuget(): Promise<string> {
-        let result = ''
-        try {
-            const {stdout} = await exec('dotnet nuget locals global-packages --list')
-            const name = 'global-packages:'
-            let start = stdout.indexOf(name)
-            if (start > -1) {
-                result = stdout.substring(start + name.length).trim()
+    async findGlobalNuget(): Promise<void> {
+        if (!this.nugetRoot) {
+            this.nugetRoot = ''
+            try {
+                const {stdout} = await exec('dotnet nuget locals global-packages --list')
+                const name = 'global-packages:'
+                let start = stdout.indexOf(name)
+                if (start > -1) {
+                    this.nugetRoot = stdout.substring(start + name.length).trim()
+                }
+            } catch {
+                this.parsingError('Cannot find global nuget packages')
             }
-        } catch {
-            this.parsingError('Cannot find global nuget packages')
         }
-        return result
     }
 
     // Convert XML to JSON
