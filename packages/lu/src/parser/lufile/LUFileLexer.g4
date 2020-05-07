@@ -54,7 +54,7 @@ MODEL_INFO
   ;
 
 COMMENT
-  : WS* '>' ~('\r'|'\n')+ -> skip
+  : WS* '>' ~('\r'|'\n')* -> skip
   ;
 
 QNA
@@ -191,7 +191,7 @@ EXPRESSION
   ;
 
 TEXT
-  : ~[ \t\r\n{\\}]+
+  : ~[ \t\r\n\\]+?
   ;
 
 mode ENTITY_MODE;
