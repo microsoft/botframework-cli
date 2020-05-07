@@ -191,7 +191,7 @@ EXPRESSION
   ;
 
 TEXT
-  : ~[ \t\r\n{\\}]+
+  : ~[ \t\r\n\\]+?
   ;
 
 mode ENTITY_MODE;
