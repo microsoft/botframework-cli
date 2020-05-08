@@ -175,6 +175,10 @@ describe('luis:convert version 7 upgrade test', () => {
     it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
         await assertToJSON('./../../fixtures/testcases/plWithFlags.lu', './../../fixtures/verified/plWithFlags.json')
     })
+
+    it('Child entities names with spaces in them parse correctly to .lu format', async () => {
+        await assertToLu('./../../fixtures/testcases/Child_Entity_With_Spaces.json', './../../fixtures/verified/Child_Entity_With_Spaces.lu')
+    })
   })
 
 describe('luis:convert negative tests', () => {
