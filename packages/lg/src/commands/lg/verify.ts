@@ -15,7 +15,7 @@ export default class VerifyCommand extends Command {
   static description = 'Verify .lg file(s) and collate them into a single file.'
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
+    in: flags.string({char: 'i', description: 'Folder that contains .lg file.', required: true}),
     recurse: flags.boolean({char: 'r', description: 'Considere sub-folders to find .lg file(s)'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
