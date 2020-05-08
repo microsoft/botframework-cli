@@ -390,7 +390,7 @@ USAGE
 OPTIONS
   -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
   -h, --help               lg:expand help
-  -i, --in=in              (required) .lg file or folder that contains .lg file.
+  -i, --in=in              (required) Folder that contains .lg file.
   -o, --out=out            Output file or folder name. If not specified stdout will be used as output
   -r, --recurse            Consider sub-folders to find .lg file(s)
   --all                    When set, all templates in the .lg file be expanded.
@@ -413,7 +413,7 @@ USAGE
 OPTIONS
   -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file
   -h, --help                   lg:translate help
-  -i, --in=in                  (required) .lg file or folder that contains .lg file.
+  -i, --in=in                  (required) Folder that contains .lg file.
   -o, --out=out                Output file or folder name. If not specified stdout will be used as output
   -r, --recurse                Consider sub-folders to find .lg file(s)
   --srclang=srclang            Source lang code. Auto detect if missing.
@@ -436,7 +436,7 @@ USAGE
 OPTIONS
   -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
   -h, --help     lg:verify help
-  -i, --in=in    (required) .lg file or folder that contains .lg file.
+  -i, --in=in    (required) Folder that contains .lg file.
   -o, --out=out  Output file or folder name. If not specified stdout will be used as output
   -r, --recurse  Considere sub-folders to find .lg file(s)
 ```
