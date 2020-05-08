@@ -15,6 +15,7 @@ const Settings = require('@microsoft/bf-lu/lib/parser/qnabuild/settings')
 const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/multi-language-recognizer')
 const Recognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/qnabuild/builder').Builder
+const recognizerType = require('@microsoft/bf-lu/lib/parser/utils/enums/recognizertypes')
 
 export default class QnamakerBuild extends Command {
   static description = 'Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations'
@@ -33,7 +34,7 @@ export default class QnamakerBuild extends Command {
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
-    dialog: flags.boolean({description: 'Write out .dialog files', default: false}),
+    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage'}),
     force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwirtes relevant dialog file', default: false}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
   }
@@ -46,6 +47,10 @@ export default class QnamakerBuild extends Command {
 
       if (!flags.stdin && !flags.in) {
         throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
+      }
+
+      if (flags.dialog && flags.dialog !== recognizerType.MULTILANGUAGE && flags.dialog !== recognizerType.CROSSTRAINED) {
+        throw new CLIError('Recognizer type specified by --dialog is not right. Please specify [multiLanguage|crosstrained]')
       }
 
       flags.defaultCulture = flags.defaultCulture && flags.defaultCulture !== '' ? flags.defaultCulture : 'en-us'
@@ -66,6 +71,8 @@ export default class QnamakerBuild extends Command {
       let settings: any
 
       const dialogFilePath = (flags.stdin || !flags.in) ? process.cwd() : flags.in.endsWith(fileExtEnum.QnAFile) ? path.dirname(path.resolve(flags.in)) : path.resolve(flags.in)
+      
+      let files: string[] = []
 
       if (flags.stdin && flags.stdin !== '') {
         // load qna content from stdin and create default recognizer, multiRecognier and settings
@@ -78,8 +85,6 @@ export default class QnamakerBuild extends Command {
         recognizers.set(content.name, recognizer)
       } else {
         if (flags.log) this.log('Loading files...\n')
-
-        let files: string[] = []
 
         // get qna files from flags.in.
         if (flags.in && flags.in !== '') {
@@ -106,7 +111,7 @@ export default class QnamakerBuild extends Command {
       // write dialog assets based on config
       if (flags.dialog) {
         const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
-        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, outputFolder)
+        const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, outputFolder, flags.dialog, files)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {

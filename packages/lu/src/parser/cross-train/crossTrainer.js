@@ -12,6 +12,7 @@ const DiagnosticSeverity = require('../lufile/diagnostic').DiagnosticSeverity
 const fileHelper = require('../../utils/filehelper')
 const exception = require('../utils/exception')
 const retCode = require('../utils/enums/CLI-errors')
+const prebuiltEntityTypes = require('../utils/enums/luisbuiltintypes').consolidatedList
 const NEWLINE = require('os').EOL
 const path = require('path')
 const QNA_GENERIC_SOURCE = "custom editorial"
@@ -185,10 +186,10 @@ const mergeBrothersInterruption = function (resource, result, intentName) {
     let brotherUtterances = []
     brotherSections.forEach(s => {
       if (s.SectionType === LUSectionTypes.SIMPLEINTENTSECTION) {
-        brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance))
+        brotherUtterances = brotherUtterances.concat(s.UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => !patternWithPrebuiltEntity(i)))
       } else {
         s.SimpleIntentSections.forEach(section => {
-          brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance))
+          brotherUtterances = brotherUtterances.concat(section.UtteranceAndEntitiesMap.map(u => u.utterance).filter(i => !patternWithPrebuiltEntity(i)))
         })
       }
     })
@@ -396,7 +397,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   }
 
   // construct questions content
-  dedupedQuestions = dedupedQuestions.map(q => '- '.concat(q))
+  dedupedQuestions = dedupedQuestions.map(q => '- '.concat(q)).filter(i => !patternWithPrebuiltEntity(i))
   let questionsContent = dedupedQuestions.join(NEWLINE)
 
   // cross training comments
@@ -430,15 +431,20 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     qnaSectionContents.push(qnaSectionContent)
   }
 
-  const qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
+  let qnaContents = qnaSectionContents.join(NEWLINE + NEWLINE)
   if (qnaContents && qnaContents !== '') {
     const modelInfoSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.MODELINFOSECTION)
     const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
-    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(NEWLINE + qnaContents)
+    if (modelInforContent && modelInforContent !== '') qnaContents = NEWLINE + qnaContents
+
+    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
   }
 
+  // remove utterances with curly brackets
+  const utterancesWithoutPatterns = utterances.filter(i => /{([^}]+)}/g.exec(i) === null)
+
   // remove utterances which are duplicated with local qna questions
-  const dedupedUtterances = utterances.filter(u => !questions.includes(u))
+  const dedupedUtterances = utterancesWithoutPatterns.filter(u => !questions.includes(u))
 
   // construct new question content for qna resource
   let utterancesContent = dedupedUtterances.join(NEWLINE + '- ')
@@ -491,4 +497,23 @@ const pretreatment = function (luContents, qnaContents) {
    const qnaObjectArray = fileHelper.getParsedObjects(qnaContents)
 
    return {luObjectArray, qnaObjectArray}
+}
+
+const patternWithPrebuiltEntity = function (utterance) {
+  let patternAnyEntity
+  let matchedEntity = /{([^}]+)}/g.exec(utterance)
+
+  if (matchedEntity !== null) {
+    patternAnyEntity = matchedEntity[1]
+
+    if (patternAnyEntity && patternAnyEntity.startsWith('@')) {
+      patternAnyEntity = patternAnyEntity.slice(1)
+    }
+
+    if (prebuiltEntityTypes.includes(patternAnyEntity)) {
+      return true
+    }
+  }
+
+  return false
 }

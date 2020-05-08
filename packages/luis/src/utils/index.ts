@@ -70,7 +70,7 @@ const isDirectory = (path: string): boolean => {
 }
 
 const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
-  const allowedConfigValues = [`${prefix}appId`, `${prefix}endpoint`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`]
+  const allowedConfigValues = [`${prefix}appId`, `${prefix}endpoint`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`, `${prefix}authoringKey`]
   const filtered = Object.keys(configObj)
   .filter(key => allowedConfigValues.includes(key))
   .reduce((filteredConfigObj: any, key) => {

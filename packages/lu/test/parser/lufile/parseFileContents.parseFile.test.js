@@ -642,6 +642,20 @@ describe('parseFile correctly parses utterances', function () {
                         .catch(err => done(err))
         })
 
+        it('correctly parses an utterance with single curly bracket', function (done) {
+                let testLUFile = `# test
+                - {userName= vishwac
+                - userName= vishwac}`;
+                parseFile.parseFile(testLUFile, false)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.utterances.length, 2);
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "{userName= vishwac");
+                                assert.equal(res.LUISJsonStructure.utterances[1].text, "userName= vishwac}");
+                                done();
+                        })
+                        .catch(err => done(err))
+        })
+
         it('correctly parses pattern with only pattern.any entity in it.', function (done) {
                 let testLUFile = `# test
                 - {userName}`;

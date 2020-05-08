@@ -20,6 +20,7 @@ This package is intended for Microsoft use only and should be consumed through @
 # Commands
 <!-- commands -->
 * [`bf luis`](#bf-luis)
+* [`bf luis:application:assignazureaccount`](#bf-luisapplicationassignazureaccount)
 * [`bf luis:application:create`](#bf-luisapplicationcreate)
 * [`bf luis:application:delete`](#bf-luisapplicationdelete)
 * [`bf luis:application:import`](#bf-luisapplicationimport)
@@ -30,10 +31,11 @@ This package is intended for Microsoft use only and should be consumed through @
 * [`bf luis:application:show`](#bf-luisapplicationshow)
 * [`bf luis:build`](#bf-luisbuild)
 * [`bf luis:convert`](#bf-luisconvert)
+* [`bf luis:cross-train`](#bf-luiscross-train)
 * [`bf luis:endpoints:list`](#bf-luisendpointslist)
-* [`bf luis:test`](#bf-luistest)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
+* [`bf luis:test`](#bf-luistest)
 * [`bf luis:train:run`](#bf-luistrainrun)
 * [`bf luis:train:show`](#bf-luistrainshow)
 * [`bf luis:translate`](#bf-luistranslate)
@@ -57,6 +59,36 @@ OPTIONS
 ```
 
 _See code: [src/commands/luis/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/index.ts)_
+
+## `bf luis:application:assignazureaccount`
+
+Assign a LUIS azure accounts to an application
+
+```
+USAGE
+  $ bf luis:application:assignazureaccount
+
+OPTIONS
+  -h, --help                                 show CLI help
+  --accountName=accountName                  (required) Account name
+  --appId=appId                              (required) LUIS application Id (defaults to config:LUIS:appId)
+
+  --armToken=armToken                        (required) The bearer authorization header to use; containing the user`s
+                                             ARM token used to validate azure accounts information
+
+  --azureSubscriptionId=azureSubscriptionId  (required) Azure Subscription Id
+
+  --endpoint=endpoint                        LUIS endpoint hostname
+
+  --json                                     Display output as JSON
+
+  --resourceGroup=resourceGroup              (required) Resource Group
+
+  --subscriptionKey=subscriptionKey          (required) LUIS cognitive services subscription key (default:
+                                             config:LUIS:subscriptionKey)
+```
+
+_See code: [src/commands/luis/application/assignazureaccount.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/assignazureaccount.ts)_
 
 ## `bf luis:application:create`
 
@@ -307,36 +339,40 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --dialog flag is provided, overwirtes relevant dialog file
+  -f, --force                      If --dialog flag is provided, overwrites relevant dialog file
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
 
   -o, --out=out                    Output file or folder name. If not specified, current directory will be used as
                                    output
 
-  --authoringKey=authoringKey      (required) LUIS authoring key
+  --authoringKey=authoringKey      LUIS authoring key
 
   --botName=botName                Bot name
 
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
 
-  --dialog                         Write out .dialog files
+  --deleteOldVersion               Delete old version of LUIS application after building new one.
+
+  --dialog=dialog                  [default: multiLanguage] Write out .dialog files whose recognizer type
+                                   [multiLanguage|crosstrained] is specified by --dialog
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --dialog is set
 
   --log                            write out log messages to console
 
-  --luConfig=luConfig              Path to config for lu build
+  --luConfig=luConfig              Path to config for lu build which can contain switches for arguments
 
   --region=region                  [default: westus] LUIS authoring region [westus|westeurope|australiaeast]
 
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
-                                   current logged in useralias
+                                   current logged in user alias
 
 EXAMPLE
 
-       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog 
+  multiLanguage
 ```
 
 _See code: [src/commands/luis/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/build.ts)_
@@ -365,6 +401,33 @@ OPTIONS
 ```
 
 _See code: [src/commands/luis/convert.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/convert.ts)_
+
+## `bf luis:cross-train`
+
+Lu and Qna cross train tool
+
+```
+USAGE
+  $ bf luis:cross-train
+
+OPTIONS
+  -h, --help               luis:cross-train help
+  -i, --in=in              source lu and qna files folder
+
+  -o, --out=out            output folder name. If not specified, the cross trained files will be wrote to cross-trained
+                           folder under folder of current command
+
+  --config=config          path to config file of mapping rules which is relative to folder specified by --in. If not
+                           specified, it will read default config.json from the folder specified by --in
+
+  --intentName=intentName  [default: _Interruption] Interruption intent name
+
+  --rootDialog=rootDialog  rootDialog file path which is relative to folder specified by --in. If --config not
+                           specified, cross-trian will automatically construct the config from file system based on root
+                           dialog file
+```
+
+_See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
 
 ## `bf luis:endpoints:list`
 
@@ -395,33 +458,6 @@ EXAMPLE
 ```
 
 _See code: [src/commands/luis/endpoints/list.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/endpoints/list.ts)_
-
-## `bf luis:test`
-
-Test a .lu file or LUIS application JSON model against a published LUIS model
-
-```
-USAGE
-  $ bf luis:test
-
-OPTIONS
-  -a, --appId=appId                      (required) LUIS application Id
-  -h, --help                             luis:test help
-  -i, --in=in                            Source .lu file or LUIS application JSON model for testing
-  -o, --out=out                          Output file or folder name. If not specified stdout will be used as output
-  -s, --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key
-  --allowIntentsCount=allowIntentsCount  [default: 1] Top-scoring intent or top n Intent with score to show in the result
-  --endpoint=endpoint                    [default: https://westus.api.cognitive.microsoft.com] LUIS endpoint hostname
-  --force                                If --out flag is provided with the path to an existing file, overwrites that file
-  --intentOnly                           Only test intent
-  --staging                              Presence of flag targets the staging app, if no flag passed defaults to production
-
-EXAMPLE
-
-       $ bf luis:test  -i {TESTDATA.lu} -o {RESULT.lu} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID}
-```
-
-_See code: [src/commands/luis/test.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/test.ts)_
 
 ## `bf luis:generate:cs`
 
@@ -458,6 +494,37 @@ OPTIONS
 ```
 
 _See code: [src/commands/luis/generate/ts.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/generate/ts.ts)_
+
+## `bf luis:test`
+
+Test a .lu file or LUIS application JSON model against a published LUIS model
+
+```
+USAGE
+  $ bf luis:test
+
+OPTIONS
+  -a, --appId=appId                      (required) LUIS application Id
+  -h, --help                             luis:test help
+  -i, --in=in                            Source .lu file or LUIS application JSON model for testing
+  -o, --out=out                          Output file or folder name. If not specified stdout will be used as output
+  -s, --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key
+
+  --allowIntentsCount=allowIntentsCount  [default: 1] Top-scoring intent or top n Intent with score to show in the
+                                         result
+
+  --endpoint=endpoint                    [default: https://westus.api.cognitive.microsoft.com] LUIS endpoint hostname
+
+  --force                                If --out flag is provided with the path to an existing file, overwrites that
+                                         file
+
+  --intentOnly                           Only test intent
+
+  --staging                              Presence of flag targets the staging app, if no flag passed defaults to
+                                         production
+```
+
+_See code: [src/commands/luis/test.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/test.ts)_
 
 ## `bf luis:train:run`
 

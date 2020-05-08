@@ -1,0 +1,9 @@
+# dia3_trigger
+- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+
+@simple fromLocation
+
+@ simple toLocation
+
+# dia4_trigger
+- book a train ticket from Seattle to Portland

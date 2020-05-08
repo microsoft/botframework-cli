@@ -1,9 +1,9 @@
 {
-    "name": "MyProject",
-    "defaultLanguage": "en-us",
+    "botName": "MyProject",
+    "defaultCulture": "en-us",
     "deleteOldVersion": true,
     "out": "./../../../../../../results",
-    "writeDialogFiles": true,
+    "dialog": "multiLanguage",
     "models": [
         "./test.lu"
     ]

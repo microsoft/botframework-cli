@@ -1,0 +1,20 @@
+# dia3_trigger
+- book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+
+@simple fromLocation
+
+@ simple toLocation
+
+# dia4_trigger
+- book a train ticket from Seattle to Portland
+
+> Source: cross training. Please do not edit these directly!
+# _Interruption
+- book a hotel for me
+- user guide
+- tell joke
+
+> Source: cross training. Please do not edit these directly!
+# DeferToRecognizer_QnA_dia2
+- sing song
+- tell a joke

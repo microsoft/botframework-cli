@@ -1,13 +1,6 @@
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/component.schema",
-    "properties": {
-        "prompt": {
-            "$role": "expression"
-        },
-        "alternatePrompt": {
-            "$role": "expression"
-        }
-    },
+    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$role": "extends(basePrompt)",
     "required": [
         "prompt"
     ]

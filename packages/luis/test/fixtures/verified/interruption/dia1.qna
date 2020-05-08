@@ -1,0 +1,40 @@
+> !# @app.desc = description of my luis application
+
+> !# @qna.pair.source = xyz
+
+<a id = "1"></a>
+
+# ? tell joke
+- tell me a joke
+
+**Filters:**
+- dialogName=dia1
+
+```
+    ha ha ha
+```
+
+**Prompts:**
+- [flight booking](#?-book-flight) `context-only`
+
+# ? can I book a hotel near space needle
+
+**Filters:**
+- dialogName=dia1
+
+```
+    of course you can
+```
+
+> Source: cross training. Please do not edit these directly!
+# ? I need a four star hotel
+- book a flight for me
+- book a train ticket for me
+- user guide
+
+**Filters:**
+- dialogName=dia1
+
+```
+intent=DeferToRecognizer_LUIS_dia1
+```

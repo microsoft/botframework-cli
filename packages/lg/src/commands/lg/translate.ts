@@ -31,7 +31,7 @@ export default class TranslateCommand extends Command {
   private readonly ExpressionRegex = /(?<!\\)\$\{(('[^'\r\n]*')|("[^"\r\n]*")|(`(\\`|[^`])*`)|([^\r\n{}'"`]))+\}?/g
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: '.lg file or folder that contains .lg file.', required: true}),
+    in: flags.string({char: 'i', description: 'Folder that contains .lg file.', required: true}),
     tgtlang: flags.string({description: 'Comma separated list of target languages.', required: true}),
     translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
     recurse: flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),

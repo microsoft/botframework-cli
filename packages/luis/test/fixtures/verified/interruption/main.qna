@@ -1,0 +1,30 @@
+# ? user guide
+
+**Filters:**
+- aa=bb
+- dialogName=main
+
+```
+    Here is the [user guide](http://contoso.com/userguide.pdf)
+```
+
+# ? tell joke
+
+**Filters:**
+- dialogName=main
+
+```
+    Tell a funny joke
+```
+
+> Source: cross training. Please do not edit these directly!
+# ? book a hotel for me
+- book a flight for me
+- book a train ticket for me
+
+**Filters:**
+- dialogName=main
+
+```
+intent=DeferToRecognizer_LUIS_main
+```
