@@ -21,6 +21,7 @@ const luisToLuContent = function(luisJSON){
 
     // Parse Intents
     fileContent += parseIntentsToLu(luisObj, luisJSON)
+    fileContent += parseEntitiesToLu(luisJSON)
     fileContent += parseToLuPrebuiltEntities(luisJSON)
     fileContent += handlePhraseLists(luisJSON.model_features);
     fileContent += handlePhraseLists(luisJSON.phraselists);
@@ -31,8 +32,6 @@ const luisToLuContent = function(luisJSON){
     fileContent += parseRegExEntitiesToLu(luisJSON.regexEntities)
     fileContent += parseCompositesToLu(luisJSON)
     fileContent += parsePatternAnyEntitiesToLu(luisJSON)
-    // do entities at the end so all other types are defined prior to ml entities.
-    fileContent += parseEntitiesToLu(luisJSON)
     return fileContent
 }
 
