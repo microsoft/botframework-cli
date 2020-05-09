@@ -13,6 +13,8 @@ import * as os from 'os'
 import * as ppath from 'path'
 import SchemaMerger from '../../../src/library/schemaMerger'
 import * as dt from '../../../src/library/dialogTracker'
+let util: any = require('util')
+let exec: any = util.promisify(require('child_process').exec)
 
 function countMatches(pattern: string | RegExp, lines: string[]): number {
     let count = 0
@@ -36,8 +38,7 @@ async function merge(patterns: string[], output?: string, verbose?: boolean): Pr
 }
 
 describe('dialog:merge', async () => {
-    let schemas = new dt.SchemaTracker()
-    let tracker = new dt.DialogTracker(schemas)
+    let nugetRoot = ''
 
     before(async () => {
         // If you want to regenerate the oracle *.schema files, run schemas/makeschemas.cmd
@@ -60,6 +61,32 @@ describe('dialog:merge', async () => {
         }) 
         await fs.mkdirp('node_modules')
         await fs.move('packages/Newtonsoft.Json', 'node_modules/Newtonsoft.Json')
+
+        // Setup some fake nuget packages
+        try {
+            const {stdout} = await exec('dotnet nuget locals global-packages --list')
+            const name = 'global-packages:'
+            let start = stdout.indexOf(name)
+            if (start > -1) {
+                nugetRoot = stdout.substring(start + name.length).trim()
+            }
+        } catch {
+            console.log('no global nuget')
+        }
+        if (nugetRoot) {
+            // This is setup so project1->nuget1->nuget2 and project1->project2->nuget3
+            // TODO: need to copy into global nuget
+            // TODO: need to make sure package.json is also there
+            // TODO: need to do a package.config test as well
+            await fs.copy()
+        }
+    })
+
+    after(async () => {
+        if (nugetRoot) {
+            // TODO: remove all the globally added packages
+            await fs.unlink()
+        }
     })
 
     it('app.schema', async () => {

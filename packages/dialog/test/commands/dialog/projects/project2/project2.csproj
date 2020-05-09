@@ -37,4 +37,8 @@
         <AssemblyOriginatorKeyFile>..\..\..\build\35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="nuget2" Version="1.0.1" />
+    </ItemGroup>
 </Project>
