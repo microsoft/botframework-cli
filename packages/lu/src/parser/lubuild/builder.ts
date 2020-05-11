@@ -43,10 +43,20 @@ export class Builder {
       let fileName: string
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
 
+      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath
+        let fileNameWithCulture = path.basename(file, path.extname(file))
+        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
+      } else {
+        fileCulture = culture
+        fileName = path.basename(file, path.extname(file))
+      }
+
       let fileContent = ''
       let result
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, culture)
+        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
         fileContent = result.parseToLuContent()
       } catch (err) {
         if (err.source) {
@@ -58,15 +68,7 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
-      if (cultureFromPath) {
-        fileCulture = cultureFromPath
-        let fileNameWithCulture = path.basename(file, path.extname(file))
-        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
-      } else {
-        fileCulture = result.culture !== 'en-us' ? result.culture : culture
-        fileName = path.basename(file, path.extname(file))
-      }
+      
 
       const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
@@ -128,7 +130,8 @@ export class Builder {
     fallbackLocale: string,
     deleteOldVersion: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
-    settings?: Map<string, Settings>) {
+    settings?: Map<string, Settings>,
+    endpoint?: string) {
     // luis api TPS which means 5 concurrent transactions to luis api in 1 second
     // can set to other value if switched to a higher TPS(transaction per second) key
     let luisApiTps = 5
@@ -136,7 +139,7 @@ export class Builder {
     // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
     let delayDuration = 1100
 
-    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
+    const luBuildCore = new LuBuildCore(authoringKey, endpoint && endpoint !== '' ? endpoint : `https://${region}.api.cognitive.microsoft.com`)
     const apps = await luBuildCore.getApplicationList()
 
     // here we do a while loop to make full use of luis tps capacity
