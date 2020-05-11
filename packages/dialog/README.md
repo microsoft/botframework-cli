@@ -9,7 +9,7 @@ This package is intended for Microsoft use only and should be consumed through @
 [![License](https://img.shields.io/npm/l/@microsoft/bf-dialog.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
 
 # Relevant docs
-- [Dialog documentation](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/docs/reademe.md)
+- [Dialog documentation](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/docs/readme.md)
 
 # Commands
 <!-- commands -->
