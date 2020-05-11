@@ -1129,6 +1129,32 @@ describe('V2 Entity definitions using @ notation', function () {
                 })
                 .catch(err => done(err));
         })
+
+        it('Phrase list definition with spaces in them are handled correctly when added as features', function(done){
+            let luFile = `
+@ phraselist LeaveModifiers(interchangeable) = 
+	- Change,cancel,replace,edit,remove,modify,delete,alter,change,drop
+
+@ phraselist Durations(interchangeable) = 
+	- days,day,month,months,weeks,week
+
+@ phraselist "Months of the Year"(interchangeable) = 
+- January,Jan,Feburary,Feb,March,Mar,April,Apr,May,June,Jun,July,Jul,August,Aug,September,Sep,Sept,October,Oct,November,Nov,December,Dec
+
+@ ml Leave
+    - @ ml LeaveType
+    - @ ml LeaveDate
+        - @ ml "Start Date" usesFeatures "Months of the Year"`;
+        
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.phraselists.length, 3);
+                    assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].name, 'Start Date');
+                    assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].features[0].featureName, 'Months of the Year');
+                    done();
+                })
+                .catch(err => done(err));
+        })
     })
 
     describe('multi-content', function(){
