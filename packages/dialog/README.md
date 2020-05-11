@@ -8,6 +8,9 @@ This package is intended for Microsoft use only and should be consumed through @
 [​![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-dialog.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
 
+# Relevant docs
+- [Dialog documentation](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/docs/reademe.md)
+
 # Commands
 <!-- commands -->
 * [`bf dialog`](#bf-dialog)
