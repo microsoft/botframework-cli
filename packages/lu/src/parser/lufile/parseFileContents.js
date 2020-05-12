@@ -45,6 +45,11 @@ const featureProperties = {
     phraseListFeature: 'phraselist'
 }
 const INTENTTYPE = 'intent';
+const PLCONSTS = {
+    DISABLED : 'disabled',
+    ENABLEDFORALLMODELS: 'enabledforallmodels',
+    INTERCHANGEABLE: '(interchangeable)'
+};
 const parseFileContentsModule = {
     /**
      * Main parser code to parse current file contents into LUIS and QNA sections.
@@ -304,6 +309,7 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
             (child.features || []).forEach((feature, idx) => {
                 if (typeof feature === "object") return;
                 featureHandled = false;
+                feature = feature.replace(/["']/gi, '');
                 let featureExists = entitiesAndRoles.find(i => (i.name == feature || i.name == `${feature}(interchangeable)`));
                 if (featureExists) {
                     // is feature phrase list?
@@ -1008,12 +1014,16 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
         newRoles.forEach(role => {
             let roleFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.roles.includes(role) || item.name === role);
             if (roleFound !== undefined) {
-                let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}". Prior definition - '@ ${roleFound.type} ${roleFound.name}${roleFound.roles.length > 0 ? ` hasRoles ${roleFound.roles.join(',')}` : ``}'`;
-                let error = BuildDiagnostic({
-                    message: errorMsg,
-                    context: line
-                })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                // PL entities use roles for things like interchangeable, disabled, enabled for all models. There are really not 'dupes'.
+                let hasBadNonPLRoles = (roleFound.roles || []).filter(item => item !== PLCONSTS.INTERCHANGEABLE && item !== PLCONSTS.ENABLEDFORALLMODELS && item !== PLCONSTS.DISABLED);
+                if (hasBadNonPLRoles.length !== 0) {
+                    let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}". Prior definition - '@ ${roleFound.type} ${roleFound.name}${roleFound.roles.length > 0 ? ` hasRoles ${roleFound.roles.join(',')}` : ``}'`;
+                    let error = BuildDiagnostic({
+                        message: errorMsg,
+                        context: line
+                    })
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                } 
             } 
         });
 
@@ -1337,11 +1347,11 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
     if (entityRoles.length !== 0) {
         // Phrase lists cannot have roles; however we will allow inline definition of enabledForAllModels as well as disabled as a property on phrase list.
         entityRoles.forEach(item => {
-            if (item.toLowerCase() === 'disabled') {
+            if (item.toLowerCase() === PLCONSTS.DISABLED) {
                 isPLEnabled = false;
-            } else if (item.toLowerCase() === 'enabledforallmodels') {
+            } else if (item.toLowerCase() === PLCONSTS.ENABLEDFORALLMODELS) {
                 isPLEnabledForAllModels = true;
-            } else if (item.toLowerCase() === '(interchangeable)') {
+            } else if (item.toLowerCase() === PLCONSTS.INTERCHANGEABLE) {
                 entityName += item;
             } else {
                 let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
