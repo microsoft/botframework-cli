@@ -137,7 +137,7 @@ export class QnaBuildCore {
         id: qna.id,
         answer: qna.answer,
         source: qna.source,
-        questions: qna.questions,
+        questions: qna.questions.slice(),
         metadata: qna.metadata,
         context: qna.context
       }
