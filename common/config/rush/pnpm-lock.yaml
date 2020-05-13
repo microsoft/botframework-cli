@@ -15,6 +15,7 @@ dependencies:
   '@rush-temp/bf-luis-cli': 'file:projects/bf-luis-cli.tgz'
   '@rush-temp/bf-qnamaker': 'file:projects/bf-qnamaker.tgz'
   '@rush-temp/botframework-cli': 'file:projects/botframework-cli.tgz'
+  '@snyk/nuget-semver': 1.3.0
   '@types/ansi-styles': 3.2.1
   '@types/argparse': 1.0.38
   '@types/lodash': 4.14.149
@@ -561,6 +562,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
+  /@snyk/nuget-semver/1.3.0:
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-1CL4BzQKFPwml+BBefKuM0v9UfsFOgSKzrTfYpUkiSNkUVsMxXK37LlT3HtG7zGpMxXiG+XXfPopo/96Z0wfNg==
   /@tootallnate/once/1.0.0:
     dev: false
     engines:
@@ -6504,6 +6511,7 @@ packages:
       '@oclif/plugin-help': 2.2.3
       '@oclif/test': 1.2.5
       '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.8.3
+      '@snyk/nuget-semver': 1.3.0
       '@types/chai': 4.2.10
       '@types/fs-extra': 8.1.0
       '@types/lru-cache': 5.1.0
@@ -6541,7 +6549,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-KWJUnQitQ+WsL21h4u0BDxtEuWCNBjGb5DBS0BzznyR/zhxpw+gAVPUYuRtMsKGvfhzU2aC0daAmu7dqAAYdeQ==
+      integrity: sha512-IgekbF41gelQzvxeDSu2V/BJDtZQRHcLHp/NPW9X6dVFxKgq2qUzJpHaCjCY5agXxrfKxRLuKkBC8wGKLkBBew==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6778,7 +6786,7 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-f1nnz9F1/35azTyewl2g0huc4K6/HunKKoCR4XRB/4dF8WJhMyrjdypGFSNGtBaVhcunvkFo2y9FE0Wt0mwavA==
+      integrity: sha512-H4sIZwO9EY6dS2ABqEtRfH1VI6d9au7pm5oeQpW1Ccw5XyUjExZ5paAIegoxZizRTcyjRRgNvawI9FfHhoE3gA==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
@@ -6799,6 +6807,7 @@ specifiers:
   '@rush-temp/bf-luis-cli': 'file:./projects/bf-luis-cli.tgz'
   '@rush-temp/bf-qnamaker': 'file:./projects/bf-qnamaker.tgz'
   '@rush-temp/botframework-cli': 'file:./projects/botframework-cli.tgz'
+  '@snyk/nuget-semver': ~1.3.0
   '@types/ansi-styles': ^3.2.1
   '@types/argparse': ^1.0.36
   '@types/lodash': ~4.14.146

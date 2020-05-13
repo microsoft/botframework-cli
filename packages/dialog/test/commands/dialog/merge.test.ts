@@ -34,7 +34,7 @@ async function merge(patterns: string[], output?: string, verbose?: boolean): Pr
         console.log(msg)
         lines.push(msg)
     }
-    let merger = new SchemaMerger(patterns, output || 'generated.schema', verbose || false, logger, logger, logger, false, ppath.join(srcDir, 'nuget'))
+    let merger = new SchemaMerger(patterns, output || ppath.join(tempDir, 'generated.schema'), verbose || false, logger, logger, logger, false, ppath.join(srcDir, 'nuget'))
     let merged = await merger.mergeSchemas()
     return [merged, lines]
 }
@@ -44,64 +44,17 @@ describe('dialog:merge', async () => {
         // If you want to regenerate the oracle *.schema files, run schemas/makeschemas.cmd
         await fs.remove(tempDir)
         await fs.mkdirp(tempDir)
-
-        /*
-        for (let file of await glob(['test/commands/dialog/schemas/**', 'test/commands/dialog/examples/**', 'test/commands/dialog/projects/**', 'test/commands/dialog/nuget/**', 'test/commands/dialog/npm/**'])) {
-            let target = ppath.join(tempDir, file.substring(file.indexOf('/') + 1).replace('commands/dialog', ''))
-            await fs.copy(file, target)
-        }
-        */
-
-        /*
-        // Setup fake npm packages
-        await fs.copy(ppath.join(srcDir, 'npm/package.json'), ppath.join(tempDir, 'package.json'))
-        await fs.copy(ppath.join(srcDir, 'npm/node_modules'), ppath.join(tempDir, 'node_modules/'))
-        */
-
-        /*
-                // Setup fake nuget packages
-                try {
-                    const { stdout } = await exec('dotnet nuget locals global-packages --list')
-                    const name = 'global-packages:'
-                    let start = stdout.indexOf(name)
-                    if (start > -1) {
-                        nugetRoot = stdout.substring(start + name.length).trim()
-                    }
-                    if (nugetRoot) {
-                        // This is setup so project1->nuget1->nuget2 and project1->project2->nuget3
-                        let src = ppath.join(srcDir, 'nuget/')
-                        let dst = nugetRoot
-                        await fs.copy(src, dst)
-                    }
-                } catch {
-                    console.log('no global nuget')
-                }
-                */
-
         process.chdir(srcDir)
-
-        // Setup fake projects
-        //  await fs.copy(ppath.join(srcDir, 'projects'), ppath.join(tempDir, 'projects'))
     })
-
-    after(async () => {
-        /* TODO
-        if (nugetRoot) {
-            // Remove global nuget packages
-            await fs.unlink(ppath.join(nugetRoot, 'nuget1'))
-            await fs.unlink(ppath.join(nugetRoot, 'nuget2'))
-            await fs.unlink(ppath.join(nugetRoot, 'nuget3'))
-        }
-        */
-    })
-
+    
     it('app.schema', async () => {
         console.log('Start app.schema')
         let [merged, lines] = await merge(['schemas/*.schema'])
         assert(merged, 'Could not merge schemas')
         assert(countMatches(/error|warning/i, lines) === 1, 'Error merging schemas')
         let oracle = await fs.readJSON('schemas/app.schema')
-        let generated = await fs.readJSON('generated.schema')
+        let generatedPath = ppath.join(tempDir, 'generated.schema')
+        let generated = await fs.readJSON(generatedPath)
         let oracles = JSON.stringify(oracle)
         let generateds = JSON.stringify(generated)
         if (oracles !== generateds) {
@@ -128,7 +81,7 @@ describe('dialog:merge', async () => {
             console.log(`Oracle   : ${oracles.substring(start, end)}`)
             console.log(`Generated: ${generateds.substring(start, end)}`)
             assert(false,
-                `Schema ${ppath.resolve('generated.schema')} does not match ${ppath.resolve('schemas/app.schema')}`)
+                `Schema ${ppath.resolve(generatedPath)} does not match ${ppath.resolve('schemas/app.schema')}`)
         }
     })
 
@@ -219,10 +172,10 @@ describe('dialog:merge', async () => {
 
     it('package.json', async () => {
         console.log('\nStart package.json')
-        let [merged, lines] = await merge(['package.json'], undefined, true)
+        let [merged, lines] = await merge(['npm/package.json'], undefined, true)
         assert(merged, 'Could not merge schemas')
         assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
-        assert(countMatches('node.schema', lines) === 1, 'Did not pick up package.json dependency')
+        assert(countMatches('npm-package.schema', lines) === 1, 'Did not pick up package.json dependency')
     })
 })
 
