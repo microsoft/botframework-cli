@@ -7,14 +7,10 @@
 
 import { assert } from 'chai'
 import * as fs from 'fs-extra'
-import * as glob from 'globby'
 import 'mocha'
 import * as os from 'os'
 import * as ppath from 'path'
 import SchemaMerger from '../../../src/library/schemaMerger'
-import * as dt from '../../../src/library/dialogTracker'
-let util: any = require('util')
-let exec: any = util.promisify(require('child_process').exec)
 let srcDir = ppath.resolve('test/commands/dialog/')
 let tempDir = ppath.join(os.tmpdir(), 'test.out')
 
@@ -46,7 +42,7 @@ describe('dialog:merge', async () => {
         await fs.mkdirp(tempDir)
         process.chdir(srcDir)
     })
-    
+
     it('app.schema', async () => {
         console.log('Start app.schema')
         let [merged, lines] = await merge(['schemas/*.schema'])
@@ -172,10 +168,13 @@ describe('dialog:merge', async () => {
 
     it('package.json', async () => {
         console.log('\nStart package.json')
-        let [merged, lines] = await merge(['npm/package.json'], undefined, true)
+        let [merged, lines] = await merge(['npm/node_modules/root-package/package.json'], undefined, true)
         assert(merged, 'Could not merge schemas')
         assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
-        assert(countMatches('npm-package.schema', lines) === 1, 'Did not pick up package.json dependency')
+        assert(countMatches('root-package.schema', lines) === 1, 'Missing root-package.schema')
+        assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
+        assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
+        assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
     })
 })
 

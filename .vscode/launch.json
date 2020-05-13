@@ -34,7 +34,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                "dialog:merge.*"
+                "dialog:merge.*package.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
