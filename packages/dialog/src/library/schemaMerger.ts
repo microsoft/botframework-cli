@@ -61,6 +61,7 @@ export default class SchemaMerger {
 
     // State tracking
     private readonly projects = {}
+    private nugetRoot = ''
     private readonly validator = new Validator()
     private metaSchemaId = ''
     private metaSchema: any
@@ -72,7 +73,7 @@ export default class SchemaMerger {
     private readonly missingKinds = new Set()
     private currentFile = ''
     private currentKind = ''
-    private readonly jsonOptions = {spaces: '\t', EOL: os.EOL}
+    private readonly jsonOptions = { spaces: '\t', EOL: os.EOL }
 
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
@@ -83,8 +84,9 @@ export default class SchemaMerger {
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
      * @param debug Generate debug output.
+     * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
-    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, debug?: boolean) {
+    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
         this.output = output
         this.verbose = verbose
@@ -92,6 +94,7 @@ export default class SchemaMerger {
         this.warn = warn
         this.error = error
         this.debug = debug
+        this.nugetRoot = nugetRoot || ''
     }
 
     /** 
@@ -181,7 +184,7 @@ export default class SchemaMerger {
                 .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
                 .sort()
                 .map(kind => {
-                    return {$ref: `#/definitions/${kind}`}
+                    return { $ref: `#/definitions/${kind}` }
                 })
             this.addSchemaDefinitions()
 
@@ -306,14 +309,14 @@ export default class SchemaMerger {
             }
             references.push(this.normalize(ppath.join(ppath.dirname(path), '/**/*.schema')))
             let json = await this.xmlToJSON(path)
-            let packages = await this.findGlobalNuget()
-            if (packages) {
+            await this.findGlobalNuget()
+            if (this.nugetRoot) {
                 walkJSON(json, elt => {
                     if (elt.PackageReference) {
                         for (let pkgRef of elt.PackageReference) {
                             let pkg = pkgRef.$
                             let pkgName = pkg.Include
-                            let pkgPath = ppath.join(packages, pkgName)
+                            let pkgPath = ppath.join(this.nugetRoot, pkgName)
                             let versions: string[] = []
                             if (fs.pathExistsSync(pkgPath)) {
                                 for (let version of fs.readdirSync(pkgPath)) {
@@ -321,8 +324,8 @@ export default class SchemaMerger {
                                 }
                                 let baseVersion = pkg.Version || '0.0.0'
                                 let version = semver.minSatisfying(versions, `>=${baseVersion.toLowerCase()}`)
-                                pkgPath = this.normalize(ppath.join(pkgPath, version || '', '**/*.schema'))
-                                references.push(pkgPath)
+                                pkgPath = this.normalize(ppath.join(pkgPath, version || ''))
+                                references.push(this.normalize(ppath.join(pkgPath, '**/*.schema')))
                                 if (this.verbose) {
                                     this.log(`  Following nuget ${this.prettyPath(pkgPath)}`)
                                 }
@@ -419,19 +422,21 @@ export default class SchemaMerger {
     }
 
     // Find the global nuget repository
-    async findGlobalNuget(): Promise<string> {
-        let result = ''
-        try {
-            const {stdout} = await exec('dotnet nuget locals global-packages --list')
-            const name = 'global-packages:'
-            let start = stdout.indexOf(name)
-            if (start > -1) {
-                result = stdout.substring(start + name.length).trim()
+    async findGlobalNuget(): Promise<void> {
+        if (!this.nugetRoot) {
+            try {
+                const { stdout } = await exec('dotnet nuget locals global-packages --list')
+                const name = 'global-packages:'
+                let start = stdout.indexOf(name)
+                if (start > -1) {
+                    this.nugetRoot = stdout.substring(start + name.length).trim()
+                }
+                // TODO: remove this
+                throw new Error('woof')
+            } catch {
+                this.parsingError('Cannot find global nuget packages')
             }
-        } catch {
-            this.parsingError('Cannot find global nuget packages')
         }
-        return result
     }
 
     // Convert XML to JSON
@@ -523,7 +528,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
+                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -726,7 +731,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
+        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {

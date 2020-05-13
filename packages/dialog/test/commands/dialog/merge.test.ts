@@ -1,5 +1,5 @@
-/**
- * Copyright(c) Microsoft Corporation.All rights reserved.
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
 // tslint:disable:no-console
@@ -15,6 +15,8 @@ import SchemaMerger from '../../../src/library/schemaMerger'
 import * as dt from '../../../src/library/dialogTracker'
 let util: any = require('util')
 let exec: any = util.promisify(require('child_process').exec)
+let srcDir = ppath.resolve('test/commands/dialog/')
+let tempDir = ppath.join(os.tmpdir(), 'test.out')
 
 function countMatches(pattern: string | RegExp, lines: string[]): number {
     let count = 0
@@ -28,72 +30,76 @@ function countMatches(pattern: string | RegExp, lines: string[]): number {
 
 async function merge(patterns: string[], output?: string, verbose?: boolean): Promise<[boolean, string[]]> {
     let lines: string[] = []
-    let logger = (msg) => {
+    let logger = msg => {
         console.log(msg)
         lines.push(msg)
     }
-    let merger = new SchemaMerger(patterns, output || 'generated.schema', verbose || false, logger, logger, logger)
+    let merger = new SchemaMerger(patterns, output || 'generated.schema', verbose || false, logger, logger, logger, false, ppath.join(srcDir, 'nuget'))
     let merged = await merger.mergeSchemas()
     return [merged, lines]
 }
 
 describe('dialog:merge', async () => {
-    let nugetRoot = ''
-
     before(async () => {
         // If you want to regenerate the oracle *.schema files, run schemas/makeschemas.cmd
-        let tempDir = ppath.join(os.tmpdir(), 'test.out')
-        // console.log(`Test dir ${tempDir}`)
-
         await fs.remove(tempDir)
         await fs.mkdirp(tempDir)
 
-        for (let file of await glob(['test/commands/dialog/schemas/**', 'test/commands/dialog/examples/**', 'test/commands/dialog/projects/**', 'test/commands/dialog/packages/**'])) {
+        /*
+        for (let file of await glob(['test/commands/dialog/schemas/**', 'test/commands/dialog/examples/**', 'test/commands/dialog/projects/**', 'test/commands/dialog/nuget/**', 'test/commands/dialog/npm/**'])) {
             let target = ppath.join(tempDir, file.substring(file.indexOf('/') + 1).replace('commands/dialog', ''))
             await fs.copy(file, target)
         }
-        process.chdir(tempDir)
+        */
 
-        await fs.writeJSON('package.json', {
-            dependencies: {
-                'Newtonsoft.Json': '^13.0.2'
-            }
-        }) 
-        await fs.mkdirp('node_modules')
-        await fs.move('packages/Newtonsoft.Json', 'node_modules/Newtonsoft.Json')
+        /*
+        // Setup fake npm packages
+        await fs.copy(ppath.join(srcDir, 'npm/package.json'), ppath.join(tempDir, 'package.json'))
+        await fs.copy(ppath.join(srcDir, 'npm/node_modules'), ppath.join(tempDir, 'node_modules/'))
+        */
 
-        // Setup some fake nuget packages
-        try {
-            const {stdout} = await exec('dotnet nuget locals global-packages --list')
-            const name = 'global-packages:'
-            let start = stdout.indexOf(name)
-            if (start > -1) {
-                nugetRoot = stdout.substring(start + name.length).trim()
-            }
-        } catch {
-            console.log('no global nuget')
-        }
-        if (nugetRoot) {
-            // This is setup so project1->nuget1->nuget2 and project1->project2->nuget3
-            // TODO: need to copy into global nuget
-            // TODO: need to make sure package.json is also there
-            // TODO: need to do a package.config test as well
-            await fs.copy()
-        }
+        /*
+                // Setup fake nuget packages
+                try {
+                    const { stdout } = await exec('dotnet nuget locals global-packages --list')
+                    const name = 'global-packages:'
+                    let start = stdout.indexOf(name)
+                    if (start > -1) {
+                        nugetRoot = stdout.substring(start + name.length).trim()
+                    }
+                    if (nugetRoot) {
+                        // This is setup so project1->nuget1->nuget2 and project1->project2->nuget3
+                        let src = ppath.join(srcDir, 'nuget/')
+                        let dst = nugetRoot
+                        await fs.copy(src, dst)
+                    }
+                } catch {
+                    console.log('no global nuget')
+                }
+                */
+
+        process.chdir(srcDir)
+
+        // Setup fake projects
+        //  await fs.copy(ppath.join(srcDir, 'projects'), ppath.join(tempDir, 'projects'))
     })
 
     after(async () => {
+        /* TODO
         if (nugetRoot) {
-            // TODO: remove all the globally added packages
-            await fs.unlink()
+            // Remove global nuget packages
+            await fs.unlink(ppath.join(nugetRoot, 'nuget1'))
+            await fs.unlink(ppath.join(nugetRoot, 'nuget2'))
+            await fs.unlink(ppath.join(nugetRoot, 'nuget3'))
         }
+        */
     })
 
     it('app.schema', async () => {
         console.log('Start app.schema')
         let [merged, lines] = await merge(['schemas/*.schema'])
         assert(merged, 'Could not merge schemas')
-        assert(countMatches(/error|warning/i, lines) == 1, 'Error merging schemas')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Error merging schemas')
         let oracle = await fs.readJSON('schemas/app.schema')
         let generated = await fs.readJSON('generated.schema')
         let oracles = JSON.stringify(oracle)
@@ -103,11 +109,11 @@ describe('dialog:merge', async () => {
             console.log(`Generated: ${generateds.length}`)
             let max = oracles.length
             if (max > generateds.length) {
-                max == generateds.length
+                max = generateds.length
             }
             let idx: number
             for (idx = 0; idx < max; ++idx) {
-                if (oracles[idx] != generateds[idx]) {
+                if (oracles[idx] !== generateds[idx]) {
                     break;
                 }
             }
@@ -121,7 +127,7 @@ describe('dialog:merge', async () => {
             }
             console.log(`Oracle   : ${oracles.substring(start, end)}`)
             console.log(`Generated: ${generateds.substring(start, end)}`)
-            assert(false, 
+            assert(false,
                 `Schema ${ppath.resolve('generated.schema')} does not match ${ppath.resolve('schemas/app.schema')}`)
         }
     })
@@ -130,92 +136,93 @@ describe('dialog:merge', async () => {
         console.log('\nStart bad json')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/badJson.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) == 2, 'Extra errors or warnings')
-        assert(countMatches('Unexpected token', lines) == 1, 'Did not detect bad JSON')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches('Unexpected token', lines) === 1, 'Did not detect bad JSON')
     })
 
     it('schema mismatch', async () => {
         console.log('\nStart schema mismatch')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/schemaMismatch.schema'])
         assert(merged, 'Merging failed')
-        assert(countMatches(/error|warning/i, lines) == 2, 'Extra errors or warnings')
-        assert(countMatches('does not match', lines) == 1, 'Did not detect schema mismatch')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches('does not match', lines) === 1, 'Did not detect schema mismatch')
     })
 
     it('no allof', async () => {
         console.log('\nStart no allof')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/allof.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) == 2, 'Extra errors or warnings')
-        assert(countMatches('allOf', lines) == 1, 'Did not detect allOf in schema')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches('allOf', lines) === 1, 'Did not detect allOf in schema')
     })
 
     it('missing extends', async () => {
         console.log('\nStart missing extends')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingExtends.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) == 2, 'Extra errors or warnings')
-        assert(countMatches('it is not included', lines) == 1, 'Did not detect missing extends in schema')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches('it is not included', lines) === 1, 'Did not detect missing extends in schema')
     })
 
     it('missing schema reference', async () => {
         console.log('\nStart missing schema reference')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingSchemaRef.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) == 2, 'Extra errors or warnings')
-        assert(countMatches('does not exist', lines) == 1, 'Did not detect missing schema ref')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches('does not exist', lines) === 1, 'Did not detect missing schema ref')
     })
 
     it('bad role', async () => {
         console.log('\nStart bad role')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/badRole.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) == 3, 'Extra errors or warnings')
-        assert(countMatches('is not valid for component', lines) == 1, 'Did not detect bad component $role')
-        assert(countMatches('is not valid in properties/foo', lines) == 1, 'Did not detect bad property $role')
+        assert(countMatches(/error|warning/i, lines) === 3, 'Extra errors or warnings')
+        assert(countMatches('is not valid for component', lines) === 1, 'Did not detect bad component $role')
+        assert(countMatches('is not valid in properties/foo', lines) === 1, 'Did not detect bad property $role')
     })
 
     it('duplicate $kind', async () => {
         console.log('\nStart duplicate $kind')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/prompt.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) == 2, 'Extra errors or warnings')
-        assert(countMatches('Redefines prompt', lines) == 1, 'Did not detect duplicate $kind')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches('Redefines prompt', lines) === 1, 'Did not detect duplicate $kind')
     })
 
     it('missing implementation', async () => {
         console.log('\nStart missing implementation')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingImplementation.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) == 2, 'Extra errors or warnings')
-        assert(countMatches('no implementations', lines) == 1, 'Did not detect missing implementations')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches('no implementations', lines) === 1, 'Did not detect missing implementations')
     })
-    
+
     it('csproj', async () => {
         console.log('\nStart csproj')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
-        let dotnet = countMatches(/global nuget/, lines)
-        let missing = countMatches(/does not exist/, lines)
-        let found = countMatches(/Following nuget/, lines)
         let errors = countMatches(/error|warning/i, lines)
-        if (errors == 0) {
+        if (errors === 0) {
             assert(merged, 'Could not merge schemas')
         } else {
             assert(!merged, 'Should not have merged schemas')
-            assert(errors == dotnet + missing, 'Extra errors')
-            assert(dotnet == 2 || missing == 2 || missing + found == 2, 'Wrong number of errors')
         }
-        assert(countMatches(/Following.*project1/, lines) == 1, 'Did not follow project1')
-        assert(countMatches(/Following.*project2/, lines) == 1, 'Did not follow project2')
-        assert(countMatches(/Parsing.*node.schema/, lines) == 1, 'Did not find node.schema')
+        assert(countMatches(/Following.*project1/, lines) === 1, 'Did not follow project1')
+        assert(countMatches(/Following nuget.*nuget1\\10.0.1/, lines) === 1, 'Did not follow nuget1')
+        assert(countMatches(/Following.*project2/, lines) === 1, 'Did not follow project2')
+        assert(countMatches(/Following nuget.*nuget2\\1.0.1/, lines) === 1, 'Did not follow nuget2')
+        assert(countMatches(/Following nuget.*nuget3\\1.0.0/, lines) === 1, 'Did not follow nuget3')
+        assert(countMatches(/Parsing.*nuget1-10.schema/, lines) === 1, 'Missing project1.schema')
+        assert(countMatches(/Parsing.*nuget2.schema/, lines) === 1, 'Missing nuget2.schema')
+        assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
+        assert(countMatches(/Parsing.*project2.schema/, lines) === 1, 'Missing project2.schema')
     })
 
     it('package.json', async () => {
         console.log('\nStart package.json')
         let [merged, lines] = await merge(['package.json'], undefined, true)
         assert(merged, 'Could not merge schemas')
-        assert(countMatches(/error|warning/i, lines) == 0, 'Extra errors or warnings')
-        assert(countMatches('node.schema', lines) == 1, 'Did not pick up package.json dependency')
+        assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
+        assert(countMatches('node.schema', lines) === 1, 'Did not pick up package.json dependency')
     })
 })
 
@@ -326,7 +333,7 @@ for (let used of def.usedBy) {
 function findDefinition(definitions: undefined | dt.Definition[], definition: dt.Definition): boolean {
 let ok = false
 if (definitions) {
-    ok = definitions.findIndex((d) => d.compare(definition) == 0) != -1
+    ok = definitions.findIndex((d) => d.compare(definition) === 0) != -1
 }
 return ok
 }
