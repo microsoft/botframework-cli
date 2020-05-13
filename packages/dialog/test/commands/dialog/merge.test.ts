@@ -160,10 +160,10 @@ describe('dialog:merge', async () => {
             assert(!merged, 'Should not have merged schemas')
         }
         assert(countMatches(/Following.*project1/, lines) === 1, 'Did not follow project1')
-        assert(countMatches(/Following nuget.*nuget1\\10.0.1/, lines) === 1, 'Did not follow nuget1')
+        assert(countMatches(/Following nuget.*nuget1.*10.0.1/, lines) === 1, 'Did not follow nuget1')
         assert(countMatches(/Following.*project2/, lines) === 1, 'Did not follow project2')
-        assert(countMatches(/Following nuget.*nuget2\\1.0.1/, lines) === 1, 'Did not follow nuget2')
-        assert(countMatches(/Following nuget.*nuget3\\1.0.0/, lines) === 1, 'Did not follow nuget3')
+        assert(countMatches(/Following nuget.*nuget2.*1.0.1/, lines) === 1, 'Did not follow nuget2')
+        assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
         assert(countMatches(/Parsing.*nuget1-10.schema/, lines) === 1, 'Missing project1.schema')
         assert(countMatches(/Parsing.*nuget2.schema/, lines) === 1, 'Missing nuget2.schema')
         assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
