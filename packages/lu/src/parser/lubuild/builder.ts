@@ -68,7 +68,6 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
-      
 
       const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
