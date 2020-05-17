@@ -204,18 +204,6 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done())
     });
 
-    it('Child entity names must be unique', function (done) {
-        let luFile = `
-            @ml xyz
-            @ml xyz1 = 
-                - @ ml xyz
-
-        `;
-        parseFile.parseFile(luFile)
-            .then(res => done(res))
-            .catch(err => done())
-    });
-
     it('Simple child entity is handled correctly', function (done) {
         let luFile = `
             @ml xyz1 = 
