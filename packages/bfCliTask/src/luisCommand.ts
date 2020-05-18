@@ -20,6 +20,8 @@ export class LuisCommand {
     public luisBotName: string;
     public luisAppId: string;
     public luisPublishStaging: boolean;
+    public luisConvertInput: string;
+    public luisConvertOutput: string;
 
     private utils = new Utils();
 
@@ -35,6 +37,8 @@ export class LuisCommand {
         this.luisBotName = taskLibrary.getInput('luisBotName', false) as string;
         this.luisAppId = taskLibrary.getInput('luisAppId', false) as string;
         this.luisPublishStaging = taskLibrary.getBoolInput('luisPublishStaging', false);
+        this.luisConvertInput = taskLibrary.getInput('luisConvertInput', false) as string;
+        this.luisConvertOutput = taskLibrary.getInput('luisConvertOutput', false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -60,6 +64,9 @@ export class LuisCommand {
             case 'LuisApplicationRename':
                 this.renameLuisApplication();
                 break;
+            case 'LuisConvert':
+                this.convertLuisModel();
+                break;
             default:
                 console.log('No LUIS Command was selected.');
         }
@@ -70,51 +77,51 @@ export class LuisCommand {
         const outputFileLuisCreate = `${ rootPath }/LuisApplicationCreate.json`;
 
         console.log('Creating LUIS Application...');
-    
+
         let command = `bf luis:application:create --name "${ this.luisApplicationName }" --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" `;
         command += `--culture "${ this.luisCulture }" --description "${ this.luisAppDescription }" --versionId "${ this.luisVersionId }" > ${ outputFileLuisCreate }`;
-    
+
         execSync(command);
         console.log('LUIS Application successfully created');
     }
-    
+
     private buildLuisApplication = (): void => {
         console.log('Building LUIS Application...');
-    
+
         const command = `bf luis:build --in "${ this.luisInputFile }" --authoringKey "${ this.luisSubscriptionKey }" --botName "${ this.luisBotName }" `;
-    
+
         execSync(command);
         console.log('LUIS Application successfully built');
     }
-    
+
     private trainLuisApplication = (): void => {
         console.log('Training LUIS Application...');
-    
+
         const command = `bf luis:train:run --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }"`;
-    
+
         execSync(command);
         console.log('LUIS Training request successfully issued');
     }
-    
+
     private publishLuisApplication = (): void => {
         console.log('Publishing LUIS Application...');
-    
+
         let command = `bf luis:application:publish --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --versionId "${ this.luisVersionId }" --appId "${ this.luisAppId }"`;
         command += this.luisPublishStaging? ` --staging` : '';
-    
+
         execSync(command);
         console.log('LUIS Application successfully published');
     }
-    
+
     private deleteLuisApplication = (): void => {
         console.log('Deleting LUIS Application...');
-    
+
         const command = `bf luis:application:delete --appId "${ this.luisAppId }" --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --force`;
-    
+
         execSync(command);
         console.log('LUIS Application successfully deleted');
     }
-    
+
     private importLuisApplication = (): void => {
         const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
         const outputFileLuisImport = `${ rootPath }/LuisApplicationImport.json`;
@@ -123,7 +130,7 @@ export class LuisCommand {
     
         let command = `bf luis:application:import --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --name "${ this.luisApplicationName }" `
         command += `--in "${ this.luisInputFile }" > ${ outputFileLuisImport }`;
-    
+
         execSync(command);
         console.log('LUIS Application successfully imported');
     }
@@ -136,5 +143,15 @@ export class LuisCommand {
     
         execSync(command);
         console.log('LUIS Application successfully renamed');
-    }   
+    }
+
+    private convertLuisModel = (): void => {
+        console.log('Converting LUIS model...');
+    
+        let command = `bf luis:convert --name "${ this.luisApplicationName }" --description "${ this.luisAppDescription }" `;
+        command += `--in "${ this.luisConvertInput }" --out "${ this.luisConvertOutput }" --culture "${ this.luisCulture }" --force --recurse`;
+    
+        execSync(command);
+        console.log('LUIS model successfully wrote to:' + this.luisConvertOutput);
+    }
 }

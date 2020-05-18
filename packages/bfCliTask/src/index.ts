@@ -65,13 +65,18 @@ const run = (): void => {
 
     azureLogin(helper);
 
-    if (!checkInstalledTool()) {
-        installBfCliTool();
-    }
+    try {
+        if (!checkInstalledTool()) {
+            installBfCliTool();
+        }
 
-    if (luisCommand) {
-        const luis = new LuisCommand();
-        luis.executeSubCommand();
+        if (luisCommand) {
+            const luis = new LuisCommand();
+            luis.executeSubCommand();
+        }
+    }
+    catch (error) {
+        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error.message, true);
     }
 }
 

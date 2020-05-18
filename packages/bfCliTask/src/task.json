@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":39
+        "Release":42
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -73,7 +73,8 @@
                 "LuisPublish" : "Luis Publish",
                 "LuisApplicationDelete" : "Application Delete",
                 "LuisApplicationImport" : "Application Import",
-                "LuisApplicationRename" : "Application Rename"
+                "LuisApplicationRename" : "Application Rename",
+                "LuisConvert": "Luis Convert"
             }       
         },
         {
@@ -91,7 +92,7 @@
             "label": "Application Name",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisConvert",
             "helpMarkDown": "Enter a name for the LUIS application."    
         },
         {
@@ -110,7 +111,7 @@
             "required": false,
             "groupname": "command",
             "defaultValue": "en-us",
-            "visibleRule": "luisSubCommand=ApplicationCreate",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisConvert",
             "helpMarkDown": "Enter the culture for the LUIS application (default: en-us)."
         },
         {
@@ -128,7 +129,7 @@
             "label": "Description",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationRename",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisConvert",
             "helpMarkDown": "Enter a description for the LUIS application."
         },
         {
@@ -167,6 +168,24 @@
             "groupname": "command",
             "visibleRule": "luisSubCommand=LuisPublish",
             "helpMarkDown": "Check to publish the application version to Production slot."
+        },
+        {
+            "name": "luisConvertInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisConvert",
+            "helpMarkDown": "The path to the source .lu file(s) or LUIS application JSON model to convert."
+        },
+        {
+            "name": "luisConvertOutput",
+            "type": "filepath",
+            "label": "Output Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisConvert",
+            "helpMarkDown": "The path to the output file or folder name."
         }
     ],
     "execution": {
