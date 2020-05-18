@@ -123,14 +123,13 @@ export class Builder {
     luContents: any[],
     recognizers: Map<string, Recognizer>,
     authoringKey: string,
-    region: string,
+    endpoint: string,
     botName: string,
     suffix: string,
     fallbackLocale: string,
     deleteOldVersion: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
-    settings?: Map<string, Settings>,
-    endpoint?: string) {
+    settings?: Map<string, Settings>) {
     // luis api TPS which means 5 concurrent transactions to luis api in 1 second
     // can set to other value if switched to a higher TPS(transaction per second) key
     let luisApiTps = 5
@@ -138,7 +137,7 @@ export class Builder {
     // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
     let delayDuration = 1100
 
-    const luBuildCore = new LuBuildCore(authoringKey, endpoint && endpoint !== '' ? endpoint : `https://${region}.api.cognitive.microsoft.com`)
+    const luBuildCore = new LuBuildCore(authoringKey, endpoint)
     const apps = await luBuildCore.getApplicationList()
 
     // here we do a while loop to make full use of luis tps capacity
