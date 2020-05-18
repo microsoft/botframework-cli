@@ -1149,5 +1149,27 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         })
     })
+
+    describe('phrase lists with enabledForAllModels', function(){
+        it('BF-CLI #789 - phrase lists with enabledForAllModels parse correctly', function(done){
+            let luContent1 = new luObj(`@ phraselist Iam_gpl(interchangeable) enabledForAllModels =
+            - I
+            - I'm
+            - I am
+            - I be
+        
+        @ phraselist my_gpl(interchangeable) enabledForAllModels =
+            - my
+            - mine
+            - me
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.isTrue(res.model_features.length === 2);
+                    done()
+                })
+                .catch(err => done(err))
+        })
+    })
     
 });
