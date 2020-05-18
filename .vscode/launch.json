@@ -157,7 +157,8 @@
                 "dialog:merge",
                 "tests/Microsoft.Bot.Builder.Dialogs.Declarative.Tests/*.csproj",
                 "-o",
-                "${env:TEMP}/app.schema"
+                "${env:TEMP}/app.schema",
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet"

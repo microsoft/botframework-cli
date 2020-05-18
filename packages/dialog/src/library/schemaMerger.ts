@@ -9,7 +9,7 @@ import * as glob from 'globby'
 import * as os from 'os'
 import * as parser from '@apidevtools/json-schema-ref-parser'
 import * as ppath from 'path'
-import * as semver from 'semver'
+import * as nuget from '@snyk/nuget-semver'
 import * as xp from 'xml2js'
 let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
@@ -60,7 +60,9 @@ export default class SchemaMerger {
     private readonly debug: boolean | undefined
 
     // State tracking
-    private readonly projects = {}
+
+    private readonly projects = new Set()
+    private readonly packages = new Set()
     private nugetRoot = ''
     private readonly validator = new Validator()
     private metaSchemaId = ''
@@ -73,7 +75,7 @@ export default class SchemaMerger {
     private readonly missingKinds = new Set()
     private currentFile = ''
     private currentKind = ''
-    private readonly jsonOptions = {spaces: '\t', EOL: os.EOL}
+    private readonly jsonOptions = { spaces: '\t', EOL: os.EOL }
 
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
@@ -84,8 +86,9 @@ export default class SchemaMerger {
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
      * @param debug Generate debug output.
+     * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
-    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, debug?: boolean) {
+    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
         this.output = output
         this.verbose = verbose
@@ -93,6 +96,7 @@ export default class SchemaMerger {
         this.warn = warn
         this.error = error
         this.debug = debug
+        this.nugetRoot = nugetRoot || ''
     }
 
     /** 
@@ -182,7 +186,7 @@ export default class SchemaMerger {
                 .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
                 .sort()
                 .map(kind => {
-                    return {$ref: `#/definitions/${kind}`}
+                    return { $ref: `#/definitions/${kind}` }
                 })
             this.addSchemaDefinitions()
 
@@ -300,11 +304,11 @@ export default class SchemaMerger {
     async expandNuget(packageName: string, minVersion: string, root: boolean): Promise<string[]> {
         let packages: string[] = []
         let pkgPath = ppath.join(this.nugetRoot, packageName)
-        if (!this.projects[pkgPath] && !packageName.startsWith('System')) {
+        if (!this.projects.has(pkgPath) && !packageName.startsWith('System')) {
             let oldFile = this.currentFile
             try {
                 this.currentFile = pkgPath
-                this.projects[pkgPath] = true
+                this.projects.add(pkgPath)
                 let versions: string[] = []
                 if (await fs.pathExists(pkgPath)) {
                     for (let pkgVersion of await fs.readdir(pkgPath)) {
@@ -313,7 +317,8 @@ export default class SchemaMerger {
                     minVersion = minVersion || '0.0.0'
                     // NOTE: The semver package does not handle more complex nuget range revisions
                     // We get an exception and will ignore those dependencies.
-                    let version = semver.minSatisfying(versions, minVersion)
+
+                    let version = nuget.minSatisfying(versions, minVersion)
                     pkgPath = this.normalize(ppath.join(pkgPath, version || ''))
                     this.currentFile = pkgPath
                     packages.push(pkgPath)
@@ -334,7 +339,7 @@ export default class SchemaMerger {
                                             dependencies.push(dependency.$)
                                         }
                                         break
-                                    } else {
+                                    } else if (groups.group) {
                                         // Grouped dependencies
                                         for (let group of groups.group) {
                                             if (group.dependency) {
@@ -415,6 +420,46 @@ export default class SchemaMerger {
         return references
     }
 
+    async walkPackageJson(packagePath: string, basePath: string, visitor: (path: string) => void): Promise<boolean> {
+        let found = this.packages.has(packagePath)
+        let fullPath = ppath.join(packagePath, 'package.json')
+        if (!found && await fs.pathExists(fullPath)) {
+            this.projects.add(packagePath)
+            found = true
+            let pkg = await fs.readJSON(fullPath)
+            visitor(packagePath)
+            if (pkg.dependencies) {
+                for (let dependent of Object.keys(pkg.dependencies)) {
+                    let rootDir = basePath
+                    while (rootDir) {
+                        let dependentPath = ppath.join(rootDir, 'node_modules', dependent)
+                        if (await this.walkPackageJson(dependentPath, basePath, visitor)) {
+                            break;
+                        } else {
+                            rootDir = ppath.dirname(rootDir)
+                        }
+                    }
+                }
+            }
+        }
+        return found
+    }
+
+    async expandPackageJson(path: string): Promise<string[]> {
+        let references: string[] = []
+        let basePath = ppath.resolve(ppath.dirname(path))
+        await this.walkPackageJson(basePath, basePath,
+            async path => {
+                if (this.verbose) {
+                    this.log(`  Following ${this.prettyPath(ppath.join(path, 'package.json'))}`)
+                }
+                references.push(this.normalize(ppath.join(path, '**/*.schema')))
+                // Negative pattern to exclude node_modules
+                references.push(`!${this.normalize(ppath.join(path, 'node_modules/**/*.schema'))}`)
+            })
+        return references
+    }
+
     // Expand package.json, package.config or *.csproj to look for .schema below referenced packages.
     async * expandPackages(paths: string[]): AsyncIterable<string> {
         for (let path of paths) {
@@ -426,9 +471,6 @@ export default class SchemaMerger {
                 if (name.endsWith('.csproj')) {
                     references.push(...await this.expandCSProj(ppath.resolve(path)))
                 } else {
-                    if (this.verbose) {
-                        this.log(`Following ${path}`)
-                    }
                     if (name === 'packages.config') {
                         if (this.verbose) {
                             this.log(`  Following ${this.prettyPath(path)}`)
@@ -448,22 +490,15 @@ export default class SchemaMerger {
                             })
                         }
                     } else if (name === 'package.json') {
-                        if (this.verbose) {
-                            this.log(`  Following ${this.prettyPath(path)}`)
-                        }
-                        let json = await fs.readJSON(path)
-                        for (let pkg in json.dependencies) {
-                            references.push(ppath.join(ppath.dirname(path), `node_modules/${pkg}/**/*.schema`))
-                        }
+                        let children = await this.expandPackageJson(path)
+                        references = [...references, ...children]
                     } else {
                         throw new Error(`Unknown package type ${path}`)
                     }
                 }
-                for (let ref of references) {
-                    let matches = await glob(ref.replace(/\\/g, '/'))
-                    for (let expandedRef of matches) {
-                        yield this.prettyPath(expandedRef)
-                    }
+                references = references.map(ref => ref.replace(/\\/g, '/'))
+                for (let expandedRef of await glob(references)) {
+                    yield this.prettyPath(expandedRef)
                 }
             }
         }
@@ -484,7 +519,7 @@ export default class SchemaMerger {
         if (!this.nugetRoot) {
             this.nugetRoot = ''
             try {
-                const {stdout} = await exec('dotnet nuget locals global-packages --list')
+                const { stdout } = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
                 let start = stdout.indexOf(name)
                 if (start > -1) {
@@ -585,7 +620,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
+                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -788,7 +823,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
+        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
