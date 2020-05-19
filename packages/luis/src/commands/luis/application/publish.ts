@@ -42,8 +42,6 @@ export default class LuisApplicationPublish extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId, versionId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     const applicationPublishObject = {
       versionId,
       isStaging: staging,
