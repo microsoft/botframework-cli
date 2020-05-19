@@ -7,7 +7,7 @@ Once you have created individual .lu files you can parse them all to a LUIS JSON
 
 This will parse all .lu files found and will create **ONE** LUIS JSON model. 
 
-If you would like to create multiple luis apps, then you can add a [root.lu file](./lu-file-format.md#External-references) that holds reference to other relevant .lu files and parse it like this: 
+If you would like to create multiple luis apps, then you can add a [root.lu file](https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#external-references) that holds reference to other relevant .lu files and parse it like this: 
 
 ```bash
 > bf luis:convert --in <root_file.lu> [--out <outputFolder> --name <luisAppName> --culture <luisAppCulture>]
@@ -22,7 +22,7 @@ You can use the new LUIS JSON file to create a new LUIS application using this c
 ```bash
 bf luis:application:import --in _LUISApp.json --authoringKey "" --endpoint ""
 ```
-Note: If you are using CLI command, you might see the option to provide a versionId, application name directly in the LUIS CLI. You can also provide this information directly in the [.lu file format](./lu-file-format.md#Model-description). Version information specified as arguments to CLI command will override any information in the .lu file. 
+Note: If you are using CLI command, you might see the option to provide a versionId, application name directly in the LUIS CLI. You can also provide this information directly in the [.lu file format](https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#model-description). Version information specified as arguments to CLI command will override any information in the .lu file. 
 
 ## using [LUIS](http://luis.ai) portal
 - Navigate to [LUIS](http://luis.ai)
