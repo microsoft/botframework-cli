@@ -1015,7 +1015,7 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
             let roleFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.roles.includes(role) || item.name === role);
             if (roleFound !== undefined) {
                 // PL entities use roles for things like interchangeable, disabled, enabled for all models. There are really not 'dupes'.
-                let hasBadNonPLRoles = (roleFound.roles || []).filter(item => item !== PLCONSTS.INTERCHANGEABLE && item !== PLCONSTS.ENABLEDFORALLMODELS && item !== PLCONSTS.DISABLED);
+                let hasBadNonPLRoles = (roleFound.roles || []).filter(item => item.toLowerCase() !== PLCONSTS.INTERCHANGEABLE && item.toLowerCase() !== PLCONSTS.ENABLEDFORALLMODELS && item.toLowerCase() !== PLCONSTS.DISABLED);
                 if (hasBadNonPLRoles.length !== 0) {
                     let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}". Prior definition - '@ ${roleFound.type} ${roleFound.name}${roleFound.roles.length > 0 ? ` hasRoles ${roleFound.roles.join(',')}` : ``}'`;
                     let error = BuildDiagnostic({
