@@ -339,12 +339,11 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --dialog flag is provided, overwrites relevant dialog file
+  -f, --force                      If --out flag is provided, overwrites relevant dialog file
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output file or folder name. If not specified, current directory will be used as
-                                   output
+  -o, --out=out                    Output folder name to write out .dialog files. If not specified, only application ids will be output to console
 
   --authoringKey=authoringKey      LUIS authoring key
 
@@ -354,11 +353,10 @@ OPTIONS
 
   --deleteOldVersion               Delete old version of LUIS application after building new one.
 
-  --dialog=dialog                  [default: multiLanguage] Write out .dialog files whose recognizer type
-                                   [multiLanguage|crosstrained] is specified by --dialog
+  --dialog=dialog                  [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
-                                   valid if --dialog is set
+                                   valid if --out is set
 
   --log                            write out log messages to console
 
