@@ -215,6 +215,8 @@ const updateToV7 = function(finalLUISJSON) {
 const verifyPatternsDoNotHaveChildEntityReferences = function(finalLUISJSON, entityParentTree)
 {
     if (finalLUISJSON.patterns === undefined || !Array.isArray(finalLUISJSON.patterns) || finalLUISJSON.patterns.length === 0) return;
+    // update entityParentTree with all entity types.
+    updateEntityParentTreeWithAllEntityTypes(finalLUISJSON, entityParentTree);
     (finalLUISJSON.patterns || []).forEach(pattern => {
         // detect if pattern has an entity definition
         let entitiesRegExp = /{(?<entity>[^{,}]+)}/gmi;
@@ -225,13 +227,35 @@ const verifyPatternsDoNotHaveChildEntityReferences = function(finalLUISJSON, ent
                 entity = entity.replace(/[{}]/g, '');
                 let entityInTree = entityParentTree[entity]
                 if (entityInTree !== undefined) {
-                    if (entityInTree[0] != "$root$") {
+                    // at least one of these need to be a root entity.
+                    let isEntityAlsoRoot = entityInTree.find(item => item[0] === "$root$");
+                    if (isEntityAlsoRoot === undefined) {
                         throw (new exception(retCode.errorCode.INVALID_INPUT, `Patterns cannot contain references to child entities. Pattern: "${pattern.pattern}" has reference to "{${entity}}".`));
                     }                
                 }
             })
         }
     })
+}
+
+const updateEntityParentTreeWithAllEntityTypes = function(finalLUISJSON, entityParentTree)
+{
+    (finalLUISJSON.prebuiltEntities || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+    (finalLUISJSON.patternAnyEntities || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+    (finalLUISJSON.model_features || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+    (finalLUISJSON.phraselists || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+    (finalLUISJSON.regex_entities || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+    (finalLUISJSON.closedLists || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+    (finalLUISJSON.composites || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+}
+
+const addEntityToParentTree = function(entityParentTree, entityName)
+{
+    if (entityParentTree[entityName] === undefined) {
+        entityParentTree[entityName] = [["$root$"]];
+    } else {
+        entityParentTree[entityName].push(["$root$"]);
+    }
 }
 
 const constructEntityParentTree = function(entityCollection, entityParentTree, curPath)
