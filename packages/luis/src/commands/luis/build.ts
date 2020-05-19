@@ -139,7 +139,7 @@ export default class LuisBuild extends Command {
 
       // update or create and then train and publish luis applications based on loaded resources
       if (log) this.log('Handling applications...')
-      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, flags.suffix, fallbackLocale, deleteOldVersion, multiRecognizers, settings)
+      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, deleteOldVersion, multiRecognizers, settings)
 
       // write dialog assets based on config
       if (out) {
