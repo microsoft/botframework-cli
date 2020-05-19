@@ -14,8 +14,8 @@ You can learn more about language x locale support for [LUIS.ai](https://www.lui
 - List of .lu files under a specific path.
 
 When translating .lu file, 
-- [Intent](lu-file-format.md#intent) names are not translated
-- [Entity](lu-file-format.md#entity) names are not translated
+- [Intent](https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#intent) names are not translated
+- [Entity](https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#entity) names are not translated
 
 ```
 >bf luis:translate
