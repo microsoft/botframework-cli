@@ -102,16 +102,7 @@ export default class LuisBuild extends Command {
       let multiRecognizers = new Map<string, any>()
       let settings = new Map<string, any>()
 
-      if (flags.stdin && flags.stdin !== '') {
-        // load lu content from stdin and create default recognizer, multiRecognier and settings
-        if (log) this.log('Load lu content from stdin\n')
-        const content = new Content(flags.stdin, new LUOptions('stdin', true, defaultCulture, path.join(process.cwd(), 'stdin')))
-        luContents.push(content)
-        multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
-        settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {}))
-        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
-        recognizers.set(content.name, recognizer)
-      } else {
+      if ((inVal && inVal !== '') || files.length > 0) {
         if (log) this.log('Loading files...\n')
 
         // get lu files from in.
@@ -130,6 +121,15 @@ export default class LuisBuild extends Command {
         recognizers = loadedResources.recognizers
         multiRecognizers = loadedResources.multiRecognizers
         settings = loadedResources.settings
+      } else {
+        // load lu content from stdin and create default recognizer, multiRecognier and settings
+        if (log) this.log('Load lu content from stdin\n')
+        const content = new Content(flags.stdin, new LUOptions('stdin', true, defaultCulture, path.join(process.cwd(), 'stdin')))
+        luContents.push(content)
+        multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
+        settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {}))
+        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
+        recognizers.set(content.name, recognizer)
       }
 
       // update or create and then train and publish luis applications based on loaded resources
