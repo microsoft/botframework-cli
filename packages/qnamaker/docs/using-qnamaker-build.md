@@ -103,7 +103,7 @@ This will configure your recognizer to a QnAMakerRecognizer("RootDialog.en-us.qn
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/QnAMaker/how-to/set-up-qnamaker-service-azure#create-a-new-qna-maker-service
 [2]:https://docs.microsoft.com/en-us/azure/cognitive-services/QnAMaker/how-to/set-up-qnamaker-service-azure#find-subscription-keys-in-the-azure-portal
 [3]:https://qnamaker.ai
-[3]:./lu-file-format.md#External-references
-[4]:./lu-file-format.md#Model-description
+[3]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#external-references
+[4]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#model-description
 [5]:./examples/luis-build
 [6]:./examples/luis-build/luconfig.json
