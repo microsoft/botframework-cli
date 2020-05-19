@@ -4,10 +4,14 @@
  */
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {Inputs, processInputs} from '../../../utils/qnamakerbase'
 
+const qnaBuilderVerbose = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/kbCollate')
+const qnaMakerBuilder = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/qnaMakerBuilder')
+const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const qnamaker = require('./../../../../utils/index')
 const replaceKbJSON = require('./../../../../utils/payloads/replacekb')
-import {Inputs, processInputs} from '../../../utils/qnamakerbase'
 
 export default class QnamakerKbReplace extends Command {
   static description = 'Replace a knowledgebase contents with new contents'
@@ -32,6 +36,12 @@ export default class QnamakerKbReplace extends Command {
     if (input.requestBody.qnaDocuments && !input.requestBody.qnaList) {
       input.requestBody.qnaList = input.requestBody.qnaDocuments
       delete input.requestBody.qnaDocuments
+    } else if (flags.qnaFormat) {
+      const qnaFiles = await fileHelper.getLuObjects(stdin, flags.in, false, fileExtEnum.QnAFile)
+      const result = await qnaBuilderVerbose.build(qnaFiles)
+      const qnamaker = await qnaMakerBuilder.fromContent(result.parseToQnAContent())
+      input.requestBody = qnamaker ? JSON.parse(JSON.stringify(qnamaker.kb)) : undefined
+      flags.qnaFormat = false
     }
 
     const result = await qnamaker(input.config, input.serviceManifest, flags, input.requestBody)

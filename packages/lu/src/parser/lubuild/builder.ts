@@ -43,10 +43,20 @@ export class Builder {
       let fileName: string
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
 
+      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath
+        let fileNameWithCulture = path.basename(file, path.extname(file))
+        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
+      } else {
+        fileCulture = culture
+        fileName = path.basename(file, path.extname(file))
+      }
+
       let fileContent = ''
       let result
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, culture)
+        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
         fileContent = result.parseToLuContent()
       } catch (err) {
         if (err.source) {
@@ -58,15 +68,6 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
-      if (cultureFromPath) {
-        fileCulture = cultureFromPath
-        let fileNameWithCulture = path.basename(file, path.extname(file))
-        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
-      } else {
-        fileCulture = result.culture !== 'en-us' ? result.culture : culture
-        fileName = path.basename(file, path.extname(file))
-      }
 
       const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
@@ -122,7 +123,7 @@ export class Builder {
     luContents: any[],
     recognizers: Map<string, Recognizer>,
     authoringKey: string,
-    region: string,
+    endpoint: string,
     botName: string,
     suffix: string,
     fallbackLocale: string,
@@ -136,7 +137,7 @@ export class Builder {
     // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
     let delayDuration = 1100
 
-    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
+    const luBuildCore = new LuBuildCore(authoringKey, endpoint)
     const apps = await luBuildCore.getApplicationList()
 
     // here we do a while loop to make full use of luis tps capacity

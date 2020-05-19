@@ -66,8 +66,11 @@ export default class LuisBuild extends Command {
       }
 
       // Flags override userConfig
-      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log}
-        = await utils.processInputs(flags, Object.keys(LuisBuild.flags), this.config.configDir)
+      let luisBuildFlags = Object.keys(LuisBuild.flags)
+      luisBuildFlags.push('endpoint')
+
+      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint}
+        = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
 
@@ -91,6 +94,8 @@ export default class LuisBuild extends Command {
       region = region && region !== '' ? region : 'westus'
       suffix = suffix && suffix !== '' ? suffix : await username() || 'development'
       fallbackLocale = fallbackLocale && fallbackLocale !== '' ? fallbackLocale : 'en-us'
+
+      endpoint = endpoint && endpoint !== '' ? endpoint : `https://${region}.api.cognitive.microsoft.com`
 
       // create builder class
       const builder = new Builder((input: string) => {
@@ -134,7 +139,7 @@ export default class LuisBuild extends Command {
 
       // update or create and then train and publish luis applications based on loaded resources
       if (log) this.log('Handling applications...')
-      const dialogContents = await builder.build(luContents, recognizers, authoringKey, region, botName, flags.suffix, fallbackLocale, deleteOldVersion, multiRecognizers, settings)
+      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, flags.suffix, fallbackLocale, deleteOldVersion, multiRecognizers, settings)
 
       // write dialog assets based on config
       if (dialog) {
