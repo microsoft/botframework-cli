@@ -143,9 +143,8 @@ export default class LuisBuild extends Command {
 
       // write dialog assets based on config
       if (out) {
-        const writeDone = await builder.writeDialogAssets(dialogContents, force, out, dialog, luConfig)
-        const dialogFilePath = (flags.stdin || !inVal) ? process.cwd() : inVal.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(inVal)) : path.resolve(inVal)
-        const outputFolder = out ? path.resolve(out) : dialogFilePath
+        const outputFolder = path.resolve(out)
+        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, dialog, luConfig)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {
