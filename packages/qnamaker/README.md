@@ -149,8 +149,7 @@ OPTIONS
 
 EXAMPLE
 
-       $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} 
-  --dialog
+       $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}
 ```
 
 _See code: [src/commands/qnamaker/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/build.ts)_
@@ -648,7 +647,7 @@ OPTIONS
 _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/translate.ts)_
 <!-- commandsstop -->
 
-[1]:./docs/qna-file-format.md
+[1]:https://aka.ms/qna-file-format
 [2]:./docs/working-with-qna.md
 [3]:./docs/translate-command.md
 [4]:./docs/using-qnamaker-build.md
