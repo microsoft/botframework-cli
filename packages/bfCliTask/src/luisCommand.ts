@@ -22,6 +22,10 @@ export class LuisCommand {
     public luisPublishStaging: boolean;
     public luisConvertInput: string;
     public luisConvertOutput: string;
+    public luisGenerateInput: string;
+    public luisGenerateOutput: string;
+    public className: string;
+    public programmingLanguage: string;
 
     private utils = new Utils();
 
@@ -39,6 +43,10 @@ export class LuisCommand {
         this.luisPublishStaging = taskLibrary.getBoolInput('luisPublishStaging', false);
         this.luisConvertInput = taskLibrary.getInput('luisConvertInput', false) as string;
         this.luisConvertOutput = taskLibrary.getInput('luisConvertOutput', false) as string;
+        this.luisGenerateInput = taskLibrary.getInput('luisGenerateInput', false) as string;
+        this.luisGenerateOutput = taskLibrary.getInput('luisGenerateOutput', false) as string;
+        this.className = taskLibrary.getInput('className', false) as string;
+        this.programmingLanguage = taskLibrary.getInput('programmingLanguage', false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -66,6 +74,9 @@ export class LuisCommand {
                 break;
             case 'LuisConvert':
                 this.convertLuisModel();
+                break;
+            case 'LuisGenerate':
+                this.generateSourceCode();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
@@ -153,5 +164,22 @@ export class LuisCommand {
     
         execSync(command);
         console.log('LUIS model successfully wrote to:' + this.luisConvertOutput);
+    }
+
+    private generateSourceCode = (): void => {
+        console.log('Generating Source Code...');
+    
+        let language: string;
+
+        if (this.programmingLanguage === 'C#') {
+            language = 'cs';
+        } else {
+            language = 'ts';
+        }
+
+        const command = `bf luis:generate:${ language } --in "${ this.luisGenerateInput }" --out "${ this.luisGenerateOutput }" --className "${ this.className }" --force`;
+    
+        execSync(command);
+        console.log('The file: ' + this.luisGenerateOutput + ' containing the class: ' + this.className + ' was successfully generated.');
     }
 }
