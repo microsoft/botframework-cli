@@ -194,7 +194,7 @@ generates the following files
 
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-keys#programmatic-key
 [2]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-regions#luis-authoring-regions
-[3]:./lu-file-format.md#External-references
-[4]:./lu-file-format.md#Model-description
+[3]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#external-references
+[4]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#model-description
 [5]:./examples/luis-build
 [6]:./examples/luis-build/luconfig.json

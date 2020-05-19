@@ -789,7 +789,7 @@ EXAMPLE
 _See code: [src/commands/luis/version/rename.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/rename.ts)_
 <!-- commandsstop -->
 
-[1]:./docs/lu-file-format.md
+[1]:https://aka.ms/lu-file-format
 [2]:./docs/working-with-luis.md
 [3]:./docs/translate-command.md
 [4]:./docs/using-luis-build.md
