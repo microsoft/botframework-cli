@@ -245,14 +245,17 @@ const buildPrebuiltEntities = function(blob, FinalLUISJSON){
 }
 
 const buildModelFeatures = function(blob, FinalLUISJSON){
-    // do we have model_features?
-    if (blob.model_features === undefined || blob.model_features.length === 0) {
-        return
-    }
-    blob.model_features.forEach(function (modelFeature) {
-        let modelFeatureInMaster = helpers.filterMatch(FinalLUISJSON.model_features, 'name', modelFeature.name);
+    // Find what scope to use in blob
+    let blobScope = blob.model_features || blob.phraselists || [];
+    if (blobScope.length === 0) return;
+
+    // Find the finalLuisJson scope to use
+    let finalScope = FinalLUISJSON.model_features || FinalLUISJSON.phraselists;
+
+    blobScope.forEach(function (modelFeature) {
+        let modelFeatureInMaster = helpers.filterMatch(finalScope, 'name', modelFeature.name);
         if (modelFeatureInMaster.length === 0) {
-            FinalLUISJSON.model_features.push(modelFeature);
+            finalScope.push(modelFeature);
         } else {
             if (modelFeatureInMaster[0].mode !== modelFeature.mode) {
                 // error.

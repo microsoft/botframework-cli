@@ -167,12 +167,39 @@ describe('Deep reference tests', function() {
                 done()
             })
     })
+
+    it('Fix for BF-CLI #797 - deep references to phrase lists are handled correctly', function(done) {
+        let luContent = `
+@ phraselist pl_1(interchangeable) =
+    - pl 1
+    - pl 1 1
+    
+## l_Test
+- [l_Test](./Test.lu#Test.Weather)
+`;
+
+        luMerger.Build([new luObj(luContent, new luOptions('main.lu', true))], false, undefined, findLuFiles)
+        .then(res => done())
+        .catch(err => done(err))
+    })
 })
     
 const findLuFiles = async function(srcId, idsToFind){
     let retPayload = [];
     idsToFind.forEach(ask => {
         switch(ask.filePath) {
+            case './Test.lu': 
+                retPayload.push(new luObj(`
+[Phrase list definitions](./phrases.lumodule)
+
+> # Intent definitions
+## Test.Weather
+- what is the weather`, new luOptions(ask.filePath, false)));
+                retPayload.push(new luObj(`
+@ phraselist pl_2(interchangeable) =
+- pl 2
+- pl 2 2`, new luOptions(`phrases.lumodule`, true)))
+                break;
             case 'qna1': 
                 retPayload.push(new luObj(`
 # ? q1
