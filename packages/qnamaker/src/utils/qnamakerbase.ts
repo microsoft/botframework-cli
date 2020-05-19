@@ -22,7 +22,7 @@ export async function processInputs(flags: any, payload: any, configfile: string
     await qnaconfig.validateConfig(flags)
     const serviceManifest = srvMan.getServiceManifest(payload)
     const input = flags.in
-    flags.in = flags.in || stdin
+    flags.in = flags.in || stdin || undefined
     result.requestBody = await srvMan.validateArguments(serviceManifest, flags)
     if (flags.in) {
       result.requestBody = input ? await file.getContentFromFile(input) : stdin
