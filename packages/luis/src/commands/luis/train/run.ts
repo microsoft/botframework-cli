@@ -63,6 +63,7 @@ export default class LuisTrainRun extends Command {
 
   async checkTrainingStatus(client: any, appId: string, versionId: string, jsonOutput: boolean) {
     try {
+      await this.timeout(1000)
       const trainingStatusData = await client.train.getStatus(appId, versionId)
       const inProgress = trainingStatusData.filter((model: any) => {
         if (model.details && model.details.status) {
@@ -70,7 +71,6 @@ export default class LuisTrainRun extends Command {
         }
       })
       if (inProgress.length > 0) {
-        await this.timeout(1000)
         await this.checkTrainingStatus(client, appId, versionId, jsonOutput)
       } else {
         let completionMssg = ''
