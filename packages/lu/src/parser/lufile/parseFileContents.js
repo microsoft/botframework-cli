@@ -1176,8 +1176,6 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childEntityType = groupsFound.groups.instanceOf.trim();
         let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()) : undefined;
-        // Verify that the entity name is unique
-        verifyUniqueEntityName(parsedContent, childEntityName, childEntityType, line, true);
         
         // Get current tab level
         let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces !== undefined ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : 0) || (groupsFound.groups.leadingTabs !== undefined ? groupsFound.groups.leadingTabs.length : 0);
