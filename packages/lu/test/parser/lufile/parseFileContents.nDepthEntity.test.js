@@ -717,43 +717,7 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done(err))
     });
 
-    it('[level 1 child] Every child must have its parent labelled in an utterance', function(done) {
-        let luFile = `
-        # test
-        - my name is vishwac
-            - my name is {@userName = vishwac}
-
-        @ ml userProfile = 
-            - @ personName userName
-            - @ age userAge
-
-        @ prebuilt personName
-        @ prebuilt age`;
-
-        parseFile.parseFile(luFile)
-            .then(res => done(res))
-            .catch(err => done())
-    })
-
-    it('[level 2 child] Every child must have its parent labelled in an utterance', function(done) {
-        let luFile = `
-        # test
-        - my name is vishwac
-            - my name is {@firstName = vishwac}
-
-        @ ml userProfile = 
-            - @ ml userName
-                - @ personName firstName
-            - @ age userAge
-
-        @ prebuilt personName
-        @ prebuilt age`;
-
-        parseFile.parseFile(luFile)
-            .then(res => done(res))
-            .catch(err => done())
-    })
-
+    
     it('prebuilt child entity type can be labelled in an utterance', function(done) {
         let luFile = `
         @ ml userProfile

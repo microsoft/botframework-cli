@@ -1231,8 +1231,12 @@ describe('V2 Entity definitions using @ notation', function () {
     - {@name = something}
             `);
             luBuilder.fromLUAsync([luContent1])
-                .then(res => done(res))
-                .catch(err => done())
+                .then(res => {
+                    assert.equal(res.utterances.length, 2);
+                    assert.equal(res.entities.length, 2);
+                    done()
+                })
+                .catch(err => done(res))
         })
     
         it('[3] Verify ml entity both at root as well as child level is handled correctly', function(done) {
@@ -1369,7 +1373,44 @@ describe('V2 Entity definitions using @ notation', function () {
               })
               .catch(err => done(err))
           })
-      
+
+          it('[level 1 child] Every child must have its parent labelled in an utterance', function(done) {
+            let luContent1 = new luObj(`
+            # test
+            - my name is vishwac
+                - my name is {@userName = vishwac}
+    
+            @ ml userProfile = 
+                - @ personName userName
+                - @ age userAge
+    
+            @ prebuilt personName
+            @ prebuilt age
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => done(res))
+                .catch(err => done())
+        })
+    
+        it('[level 2 child] Every child must have its parent labelled in an utterance', function(done) {
+            let luContent1 = new luObj(`
+            # test
+            - my name is vishwac
+                - my name is {@firstName = vishwac}
+    
+            @ ml userProfile = 
+                - @ ml userName
+                    - @ personName firstName
+                - @ age userAge
+    
+            @ prebuilt personName
+            @ prebuilt age
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => done(res))
+                .catch(err => done())
+        })
+         
     })
     
 });

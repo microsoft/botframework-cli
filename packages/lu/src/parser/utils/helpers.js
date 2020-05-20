@@ -213,13 +213,14 @@ const updateToV7 = function(finalLUISJSON) {
         const curPath = ["$root$"];
         constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
         updateEntityParentTreeWithAllEntityTypes(finalLUISJSON, entityParentTree);
+        // Remove dead ML entity definitions. 
+        removeDeadMLEntityDefinitions(finalLUISJSON);
         // Verify that all parents of a child entity are labelled.
         updateModelBasedOnNDepthEntities(finalLUISJSON.utterances, entityParentTree);
         
         transformUtterancesWithNDepthEntities(finalLUISJSON, entityParentTree)
         verifyPatternsDoNotHaveChildEntityReferences(finalLUISJSON, entityParentTree)
-        // Remove dead ML entity definitions. 
-        removeDeadMLEntityDefinitions(finalLUISJSON);
+        
     }
 }
 
@@ -238,8 +239,6 @@ const removeDeadMLEntityDefinitions = function(finalLUISJSON) {
             // is not the same name as a phrase list
             let entityIsPL = (finalLUISJSON.phraselists || []).find(x => x.name == entity.name);
             if (entityIsPL !== undefined) return;
-            // is this entity a required feature for another child?
-            // isEntityRequireFeatureToAnotherChild(entity, entities)
             idxToRemove.push(idx)
         }
     })
@@ -257,9 +256,6 @@ const updateModelBasedOnNDepthEntities = function(utterances, entityParentTree)
             // do not proceed further if there isnt at least one non root parent
             let nonRootParents = parentsForEntity.filter(t => t[0] != "$root$");
             if (nonRootParents.length === 0) return;
-            // do not proceed further if this entity is also a root entity
-            //let isRootEntity = parentsForEntity.find(t => t[0] == "$root$");
-            //if (isRootEntity !== undefined) return;
             let parentIsLabelled = false;
             nonRootParents.forEach(tree => {
                 if (tree.length === 1 && tree[0] === "$root$") return;
@@ -274,8 +270,12 @@ const updateModelBasedOnNDepthEntities = function(utterances, entityParentTree)
                 })
             })
             if (!parentIsLabelled) {
-                const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Child entity "${entityInUtterance.entity}" does not have its parent labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
-                throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                // Is the entity a root entity? 
+                let isRootEntity = parentsForEntity.find(t => t[0] == "$root$")
+                if (isRootEntity === undefined) {
+                    const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Child entity "${entityInUtterance.entity}" does not have its parent labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                }
             }
         })
     })
