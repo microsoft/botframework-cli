@@ -754,6 +754,79 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done())
     })
 
-    
+    it('prebuilt child entity type can be labelled in an utterance', function(done) {
+        let luFile = `
+        @ ml userProfile
+    - @ number number
+    - @ personName name
+
+@ prebuilt number
+@ prebuilt personName
+
+# userProfile
+- I'm {@userProfile = {@number = 36}} years old
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done())
+            .catch(err => done(err))
+    })
+
+    it('list child entity type can be labelled in an utterance', function(done) {
+        let luFile = `
+        # test
+- {@AddToQuantity={@PROPERTYName=Quantity} is {@number=99}}
+
+@ml AddToQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+
+@ list PROPERTYName
+    - Quantity:
+		- property
+
+@ prebuilt number
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done())
+            .catch(err => done(err))
+    })
+
+    it('At least one immediate parent of a child entity must be labelled', function(done) {
+        let luFile = `
+        # test
+- add {@AddToQuantity={@number=1000}}
+
+@ml AddToQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+@ml RemoveFromQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+
+@ list PROPERTYName
+    - Quantity:
+		- property
+
+@ prebuilt number
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done())
+            .catch(err => done(err))
+    })
+
+    it('Invalid utterance definition throws with good error message', function(done) {
+        let luFile = `
+        # test
+- add {{@AddToSauces={@SaucesEntity=yellow}}, {{@AddToSauces={@SaucesEntity=mustard}} and {{@AddToSauces={@SaucesEntity=yellow}}
+- add {{@AddToSauces={@SaucesEntity=mustard}}, {{@AddToSauces={@SaucesEntity=mustard}} and {{@AddToSauces={@SaucesEntity=dijon mustard}}
+- add {{@AddToSauces={@SaucesEntity=mustard}}, {{@AddToSauces={@SaucesEntity=yellow}} and {{@AddToSauces={@SaucesEntity=pepper}}
+
+@ml AddToSauces = 
+    - @ml SaucesEntity
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done(res))
+            .catch(err => done())
+    })
     
 });
