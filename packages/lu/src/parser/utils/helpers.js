@@ -254,6 +254,7 @@ const updateModelBasedOnNDepthEntities = function(utterances, entityParentTree)
     utterancesWithLabels.forEach(utterance => {
         utterance.entities.forEach(entityInUtterance => {
             let parentsForEntity = entityParentTree[entityInUtterance.entity];
+            if (parentsForEntity === undefined) return;
             // do not proceed further if there isnt at least one non root parent
             let nonRootParents = parentsForEntity.filter(t => t[0] != "$root$");
             if (nonRootParents.length === 0) return;
