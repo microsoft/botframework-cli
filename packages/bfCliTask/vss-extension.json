@@ -1,8 +1,8 @@
 {
     "manifestVersion": 1,
-     "id": "bf-cli-task",
-     "name": "BotFramework Task",
-     "version": "4.8.0.39",
+     "id": "bf-cli-task-qna",
+     "name": "BotFramework Task-qna",
+     "version": "4.8.0.43",
      "publisher": "Southworks-Pipelines-Test",
      "targets": [
          {

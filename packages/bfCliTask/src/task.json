@@ -1,6 +1,6 @@
 {
-    "id": "ea18cfcb-9e65-46de-acfb-6398f379db71",
-    "name": "bf-cli-task",
+    "id": "b8b3f550-a4b2-48a2-95e6-c2d22933341a",
+    "name": "bf-cli-task-qna",
     "friendlyName": "BotFramework Task",
     "description": "Wraps the BF CLI tooling",
     "helpMarkDown": "",
@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":39
+        "Release":43
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -182,7 +182,8 @@
                 "DeleteKB" : "Deletes knowledgebase",
                 "PublishKB" : "Publish knowledgebase",
                 "ReplaceKB" : "Replace knowledgebase",
-                "UpdateKB" : "Update knowledgebase"
+                "UpdateKB" : "Update knowledgebase",
+                "TrainKB" : "Train knowledgebase"
             }
         },
         {
@@ -209,7 +210,7 @@
             "label": "Knowledgebase ID",
             "required": false,
             "groupname": "command",
-            "visibleRule": "qnaMakerSubCommand=DeleteKB || qnaMakerSubCommand=PublishKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB",
+            "visibleRule": "qnaMakerSubCommand=DeleteKB || qnaMakerSubCommand=PublishKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB || qnaMakerSubCommand=TrainKB",
             "helpMarkDown": "Enter the ID of the knowledgebase."
         },
         {
@@ -230,6 +231,33 @@
             "defaultValue": "false",
             "visibleRule": "qnaMakerSubCommand=CreateKB",
             "helpMarkDown": "Check to publish this knowledgebase after the creation."
+        },
+        {
+            "name": "feedbackRecordDTOFileLocation",
+            "type": "filepath",
+            "label": "FeedbackRecord DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB",
+            "helpMarkDown": "Enter the location of your FeedbackRecord DTO file"
+        },
+        {
+            "name": "kbHostName",
+            "type": "string",
+            "label": "Specifies the url for your private QnA service",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB",
+            "helpMarkDown": "Enter the url for your private QnA service"   
+        },
+        {
+            "name": "kbEndPointKey",
+            "type": "string",
+            "label": "Specifies the endpoint key for your private QnA service",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB",
+            "helpMarkDown": "Enter the endpoint key for your private QnA service"   
         }
     ],
     "execution": {

@@ -14,6 +14,9 @@ export class QnAMakerCommand {
     private kbDTOFileLocation: string;
     private publishNewKB: boolean;
     private kbId: string;
+    private kbDTOFeedbackRecord: string;
+    private kbHostName: string;
+    private kbEndPointKey: string;
 
     constructor() {
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
@@ -22,6 +25,9 @@ export class QnAMakerCommand {
         this.kbDTOFileLocation = taskLibrary.getInput('kbDTOFileLocation', false) as string;
         this.publishNewKB = taskLibrary.getBoolInput('publishNewKB', false);
         this.kbId = taskLibrary.getInput('kbId', false) as string;
+        this.kbDTOFeedbackRecord = taskLibrary.getInput('feedbackRecord',false) as string;
+        this.kbHostName = taskLibrary.getInput('kbHostName',false) as string;
+        this.kbEndPointKey = taskLibrary.getInput('kbEndPointKey',false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -40,6 +46,9 @@ export class QnAMakerCommand {
                 break;
             case 'UpdateKB':
                 this.updateKnowledgeBase();
+                break;
+            case 'TrainKB':
+                this.traingKnowledgeBase();
                 break;
             default:
                 console.log('No QnA Maker command was selected')
@@ -97,5 +106,14 @@ export class QnAMakerCommand {
 
         execSync(command);
         console.log('QnA knowledgebase succesfully updated');
+    }
+
+    private traingKnowledgeBase = (): void => {
+        console.log('Updating QnA knowledgebase');
+
+        let command = `bf qnamaker:kb:train --kbId ${ this.kbId } --endpointKey ${this.kbEndPointKey} --hostname ${this.kbHostName} --in ${this.kbDTOFeedbackRecord} --subscriptionKey ${ this.qnaKey } --wait`;
+
+        execSync(command);
+        console.log('QnA knowledgebase succesfully trained');
     }
 }
