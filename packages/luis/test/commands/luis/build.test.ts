@@ -769,3 +769,64 @@ describe('luis:build update application succeed with parameters set from luconfi
       expect(await compareFiles('./../../../results/test.lu.dialog', './../../fixtures/testcases/lubuild/luconfig/dialogs/test.lu.dialog')).to.be.true
     })
 })
+
+describe('luis:build create a new application successfully with locale set to it-it', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test.en-us.lu',
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('import'))
+      .reply(201, {
+        appId: 'f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.2',
+        isStaging: true
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/file-with-personName/personName.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results', '--defaultCulture', 'it-it'])
+    .it('should create a new application successfully for prebuilt entity personName with locale set to it-it', ctx => {
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('Creating LUIS.ai application')
+      expect(ctx.stdout).to.contain('training version=0.1')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.1')
+      expect(ctx.stdout).to.contain('publishing version=0.1')
+      expect(ctx.stdout).to.contain('publishing finished')
+      expect(ctx.stdout.includes('personName is not available for the requested locale: it-it')).to.be.false
+    })
+})
