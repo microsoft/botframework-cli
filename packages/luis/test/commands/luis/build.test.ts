@@ -817,7 +817,7 @@ describe('luis:build create a new application successfully with locale set to it
     await fs.remove(path.join(__dirname, './../../../results/'))
   })
 
-  test.only()
+  test
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/file-with-personName/personName.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results', '--defaultCulture', 'it-it'])
     .it('should create a new application successfully for prebuilt entity personName with locale set to it-it', ctx => {

@@ -51,7 +51,7 @@ export default class LuisTest extends Command {
           throw new CLIError('No LU content parsed!')
         }
       } else {
-        const luisContent = stdin ? stdin : await file.getContentFromFile(flags.in)
+        const luisContent = flags.in ? await file.getContentFromFile(flags.in) : stdin
         luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
         if (!hasContent(luisObject)) {
           throw new CLIError('No LUIS content found!')

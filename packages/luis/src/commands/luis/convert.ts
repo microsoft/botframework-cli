@@ -49,7 +49,7 @@ export default class LuisConvert extends Command {
           throw new CLIError('No LU or Luis content parsed!')
         }
       } else {
-        const luisContent = stdin ? stdin : await file.getContentFromFile(flags.in)
+        const luisContent = flags.in ? await file.getContentFromFile(flags.in) : stdin
         const luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
         if (flags.sort) {
           sort(luisObject)
