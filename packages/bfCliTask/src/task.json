@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":44
+        "Release":50
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -75,7 +75,9 @@
                 "LuisApplicationImport" : "Application Import",
                 "LuisApplicationRename" : "Application Rename",
                 "LuisConvert": "Luis Convert",
-                "LuisGenerate": "Luis Generate"
+                "LuisGenerate": "Luis Generate",
+                "LuisTranslate": "Luis Translate",
+                "LuisVersionClone": "Luis Version Clone"
             }       
         },
         {
@@ -84,8 +86,8 @@
             "label": "Subscription Key",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisCommand = TRUE && luisSubCommand!=LuisGenerate",
-            "helpMarkDown": "Enter the LUIS cognitive services subscription key."    
+            "visibleRule": "luisCommand = TRUE && luisSubCommand!=LuisGenerate && luisSubCommand!=LuisTranslate",
+            "helpMarkDown": "Enter the LUIS cognitive services subscription key."
         },
         {
             "name": "luisApplicationName",
@@ -102,7 +104,7 @@
             "label": "Endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename  || luisSubCommand=LuisVersionClone",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
         },
         {
@@ -121,7 +123,7 @@
             "label": "Version Id",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish  || luisSubCommand=LuisVersionClone",
             "helpMarkDown": "Enter the version Id for the LUIS application."
         },
         {
@@ -157,7 +159,7 @@
             "label": "AppId",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename",
+            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisVersionClone",
             "helpMarkDown": "Enter the LUIS application id."
         },
         {
@@ -228,6 +230,60 @@
                 "CSharp": "C#",
                 "Typescript": "Typescript"
             }
+        },
+        {
+            "name": "luisTranslateInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The path to the input file(s) to translate."
+        },
+        {
+            "name": "luisTranslateOutputFolder",
+            "type": "filepath",
+            "label": "Output Folder",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The path to the folder where the translated files will be written."
+        },
+        {
+            "name": "translateKey",
+            "type": "string",
+            "label": "Translation Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The key of the Translation Text service endpoint."
+        },
+        {
+            "name": "sourceLang",
+            "type": "string",
+            "label": "Source Language",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The source's language code. Auto detect if missing."
+        },
+        {
+            "name": "targetLang",
+            "type": "string",
+            "label": "Target Languages",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "A comma separated list of target languages."
+        },
+        {
+            "name": "targetVersionId",
+            "type": "string",
+            "label": "Target Version Id",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisVersionClone",
+            "helpMarkDown": "The id of the version to create."
         }
     ],
     "execution": {

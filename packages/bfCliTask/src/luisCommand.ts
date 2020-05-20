@@ -6,6 +6,7 @@
 import taskLibrary = require('azure-pipelines-task-lib/task');
 import { execSync } from 'child_process';
 import { Utils } from './utils';
+import { ServerResponse } from 'http';
 
 export class LuisCommand {
 
@@ -26,6 +27,12 @@ export class LuisCommand {
     public luisGenerateOutput: string;
     public className: string;
     public programmingLanguage: string;
+    public luisTranslateInput: string;
+    public luisTranslateOutputFolder: string;
+    public translateKey: string;
+    public sourceLang: string;
+    public targetLang: string;
+    public targetVersionId: string;
 
     private utils = new Utils();
 
@@ -47,6 +54,12 @@ export class LuisCommand {
         this.luisGenerateOutput = taskLibrary.getInput('luisGenerateOutput', false) as string;
         this.className = taskLibrary.getInput('className', false) as string;
         this.programmingLanguage = taskLibrary.getInput('programmingLanguage', false) as string;
+        this.luisTranslateInput = taskLibrary.getInput('luisTranslateInput', false) as string;
+        this.luisTranslateOutputFolder = taskLibrary.getInput('luisTranslateOutputFolder', false) as string;
+        this.translateKey = taskLibrary.getInput('translateKey', false) as string;
+        this.sourceLang = taskLibrary.getInput('sourceLang', false) as string;
+        this.targetLang = taskLibrary.getInput('targetLang', false) as string;
+        this.targetVersionId = taskLibrary.getInput('targetVersionId', false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -77,6 +90,12 @@ export class LuisCommand {
                 break;
             case 'LuisGenerate':
                 this.generateSourceCode();
+                break;
+            case 'LuisTranslate':
+                this.translateLuisModel();
+                break;
+            case 'LuisVersionClone':
+                this.versionClone();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
@@ -181,5 +200,26 @@ export class LuisCommand {
     
         execSync(command);
         console.log('The file: ' + this.luisGenerateOutput + ' containing the class: ' + this.className + ' was successfully generated.');
+    }
+
+    private translateLuisModel = (): void => {
+        console.log('Translating LUIS model...');
+
+        let command = `bf luis:translate --in "${ this.luisTranslateInput }" --out "${ this.luisTranslateOutputFolder }" --translatekey "${ this.translateKey }"`;
+        command += this.sourceLang? ` --srclang "${ this.sourceLang }"` : '';
+        command += ` --tgtlang "${ this.targetLang }" --force --recurse --translate_comments --translate_link_text`;
+
+        execSync(command);
+        console.log('LUIS model successfully translated');
+    }
+
+    private versionClone = (): void => {
+        console.log('Cloning LUIS application version...');
+
+        let command = `bf luis:version:clone --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --targetVersionId "${ this.targetVersionId }" `;
+        command += `--endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }"`;
+
+        execSync(command);
+        console.log('LUIS version successfully cloned');
     }
 }
