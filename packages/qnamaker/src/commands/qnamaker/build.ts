@@ -108,18 +108,30 @@ export default class QnamakerBuild extends Command {
       if (flags.log) this.log('Handling qnamaker knowledge bases...')
       const dialogContents = await builder.build(qnaContents, recognizers, flags.subscriptionKey, endpoint, flags.botName, flags.suffix, flags.fallbackLocale, multiRecognizer, settings)
 
+      // get endpointKeys
+      const endpointKeysInfo = await builder.getEndpointKeys(flags.subscriptionKey, endpoint)
+      const endpointKeys: any = {
+        "primaryEndpointKey": endpointKeysInfo.primaryEndpointKey,
+        "secondaryEndpointKey": endpointKeysInfo.secondaryEndpointKey
+      }
+
       // write dialog assets based on config
       if (flags.dialog) {
         const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
         const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, outputFolder, flags.dialog, files)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
+          this.log('QnA knowledge base endpointKeys:')
+          this.log(endpointKeys)
         } else {
           this.log(`No changes to .dialog files in ${outputFolder}\n`)
         }
       } else {
         this.log('The published knowledge base setting:')
         this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).qna)
+        this.log('\n')
+        this.log('QnA knowledge base endpointKeys:')
+        this.log(endpointKeys)
       }
     } catch (error) {
       if (error instanceof exception) {
