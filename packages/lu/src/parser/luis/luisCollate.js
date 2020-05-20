@@ -52,6 +52,7 @@ const collate = function(luisList) {
         buildPatternAny(blob, luisObject)
     }
     helpers.checkAndUpdateVersion(luisObject)
+    helpers.cleanUpExplicitEntityProperty(luisObject)
     cleanupEntities(luisObject)
     return luisObject
 }

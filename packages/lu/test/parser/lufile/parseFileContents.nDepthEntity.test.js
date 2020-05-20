@@ -791,7 +791,7 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done(err))
     })
 
-    it('At least one immediate parent of a child entity must be labelled', function(done) {
+    it('[1] At least one immediate parent of a child entity must be labelled', function(done) {
         let luFile = `
         # test
 - add {@AddToQuantity={@number=1000}}
@@ -808,6 +808,29 @@ describe('V2 NDepth definitions using @ notation', function () {
 		- property
 
 @ prebuilt number
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done())
+            .catch(err => done(err))
+    })
+
+    it('At least one immediate parent of a child entity must be labelled', function(done) {
+        let luFile = `
+        # test
+- remove {@RemoveFromQuantity={@number=99}}
+
+@ml AddToQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+@ml RemoveFromQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+
+@ prebuilt number hasRole Quantity
+@ list PROPERTYName
+    - Quantity:
+		- property
+
         `;
         parseFile.parseFile(luFile)
             .then(res => done())

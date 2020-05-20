@@ -184,10 +184,6 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     validateNDepthEntities(parsedContent.LUISJsonStructure.entities, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles, parsedContent.LUISJsonStructure.intents);
 
-    // This nDepth child might have been labelled, if so, remove the duplicate simple entity.
-    // If utterances have this child, then all parents must be included in the label
-    updateModelBasedOnNDepthEntities(parsedContent.LUISJsonStructure.utterances, parsedContent.LUISJsonStructure.entities);
-
     // Update intent and entities with phrase lists if any
     updateIntentAndEntityFeatures(parsedContent.LUISJsonStructure);
 
@@ -1179,6 +1175,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
     const SPACEASTABS = 4;
     addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
     let rootEntity = parsedContent.LUISJsonStructure.entities.find(item => item.name == entityName);
+    rootEntity.explicitlyAdded = true;
     let defLine = line.start.line;
     let baseTabLevel = 0;
     let entityIdxByLevel = [];
@@ -1658,6 +1655,8 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
             } else if (entityType.toLowerCase() === 'simple') {
                 // add this to entities if it doesnt exist
                 addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
+                let rootEntity = parsedContent.LUISJsonStructure.entities.find(item => item.name == entityName);
+                rootEntity.explicitlyAdded = true;
             } else if (entityType.endsWith('=')) {
                 // is this qna maker alterations list? 
                 if (entityType.includes(PARSERCONSTS.QNAALTERATIONS)) {
