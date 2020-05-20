@@ -17,15 +17,15 @@ const globby = require('globby')
 
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
-  if (stdin) {
-    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
-  } else {
+  if (input) {
     let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
       const opts = new LUOptions(path.resolve(luFiles[i]))
       luObjects.push(new luObject(luContent, opts))
     }
+  } else {
+    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
   }
 
   return luObjects
