@@ -39,7 +39,7 @@ export default class LuisVersionImport extends Command {
 
     inVal = inVal ? inVal.trim() : flags.in
 
-    const appJSON = stdin ? stdin : await utils.getInputFromFile(inVal)
+    const appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
     if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
 
     if (versionId) options.versionId = versionId

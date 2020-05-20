@@ -40,7 +40,7 @@ export default class LuisGenerateTs extends Command {
       const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
       let app: any
       try {
-        app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+        app = flags.in ? await fs.readJSON(path.join(pathPrefix, flags.in)) : JSON.parse(stdInput as string)
       } catch (error) {
         throw new CLIError(error)
       }

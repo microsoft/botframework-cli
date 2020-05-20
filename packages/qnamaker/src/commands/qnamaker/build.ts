@@ -74,16 +74,7 @@ export default class QnamakerBuild extends Command {
       
       let files: string[] = []
 
-      if (flags.stdin && flags.stdin !== '') {
-        // load qna content from stdin and create default recognizer, multiRecognier and settings
-        if (flags.log) this.log('Load qna content from stdin\n')
-        const content = new Content(flags.stdin, new qnaOptions(flags.botName, true, flags.defaultCulture, path.join(process.cwd(), 'stdin')))
-        qnaContents.push(content)
-        multiRecognizer = new MultiLanguageRecognizer(path.join(process.cwd(), `${flags.botName}.qna.dialog`), {})
-        settings = new Settings(path.join(process.cwd(), `qnamaker.settings.${flags.suffix}.${flags.region}.json`), {})
-        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings, {})
-        recognizers.set(content.name, recognizer)
-      } else {
+      if (flags.in && flags.in !== '') {
         if (flags.log) this.log('Loading files...\n')
 
         // get qna files from flags.in.
@@ -102,6 +93,15 @@ export default class QnamakerBuild extends Command {
         recognizers = loadedResources.recognizers
         multiRecognizer = loadedResources.multiRecognizer
         settings = loadedResources.settings
+      } else {
+        // load qna content from stdin and create default recognizer, multiRecognier and settings
+        if (flags.log) this.log('Load qna content from stdin\n')
+        const content = new Content(flags.stdin, new qnaOptions(flags.botName, true, flags.defaultCulture, path.join(process.cwd(), 'stdin')))
+        qnaContents.push(content)
+        multiRecognizer = new MultiLanguageRecognizer(path.join(process.cwd(), `${flags.botName}.qna.dialog`), {})
+        settings = new Settings(path.join(process.cwd(), `qnamaker.settings.${flags.suffix}.${flags.region}.json`), {})
+        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings, {})
+        recognizers.set(content.name, recognizer)
       }
 
       // update or create and then publish qnamaker kb based on loaded resources

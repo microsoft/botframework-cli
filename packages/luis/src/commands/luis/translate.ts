@@ -51,9 +51,9 @@ export default class LuisTranslate extends Command {
           })
         })
       } else {
-        const json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
+        const json = flags.in ? await fileHelper.getContentFromFile(flags.in) : stdin
         const luisObject = new Luis(fileHelper.parseJSON(json, 'Luis'))
-        const key = stdin ? 'stdin' : path.basename(flags.in)
+        const key = flags.in ? path.basename(flags.in) : 'stdin'
         const translation = new Lu(luisObject.parseToLuContent(), key)
         const translatedLuis = await luTranslator.translateLu(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
         result = {

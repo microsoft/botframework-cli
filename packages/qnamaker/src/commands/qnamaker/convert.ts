@@ -46,7 +46,7 @@ export default class QnamakerConvert extends Command {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
         result = await QnAMakerBuilder.build([...luFiles], false, flags.luis_culture) 
       } else {
-        const qnaContent = stdin ? stdin : await file.getContentFromFile(flags.in)
+        const qnaContent = flags.in ? await file.getContentFromFile(flags.in) : stdin
         let QnA 
         let sortFucntion
 
