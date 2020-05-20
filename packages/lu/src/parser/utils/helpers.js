@@ -209,12 +209,13 @@ const updateToV7 = function(finalLUISJSON) {
         });
         (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
         (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
+        // Remove dead ML entity definitions. 
+        removeDeadMLEntityDefinitions(finalLUISJSON);
         let entityParentTree = {};
         const curPath = ["$root$"];
         constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
         updateEntityParentTreeWithAllEntityTypes(finalLUISJSON, entityParentTree);
-        // Remove dead ML entity definitions. 
-        removeDeadMLEntityDefinitions(finalLUISJSON);
+        
         // Verify that all parents of a child entity are labelled.
         updateModelBasedOnNDepthEntities(finalLUISJSON.utterances, entityParentTree);
         
