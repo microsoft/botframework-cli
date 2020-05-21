@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":50
+        "Release":52
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -77,7 +77,8 @@
                 "LuisConvert": "Luis Convert",
                 "LuisGenerate": "Luis Generate",
                 "LuisTranslate": "Luis Translate",
-                "LuisVersionClone": "Luis Version Clone"
+                "LuisVersionClone": "Luis Version Clone",
+                "LuisVersionExport": "Luis Version Export"
             }       
         },
         {
@@ -104,7 +105,7 @@
             "label": "Endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename  || luisSubCommand=LuisVersionClone",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
         },
         {
@@ -123,7 +124,7 @@
             "label": "Version Id",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish  || luisSubCommand=LuisVersionClone",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport",
             "helpMarkDown": "Enter the version Id for the LUIS application."
         },
         {
@@ -159,7 +160,7 @@
             "label": "AppId",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisVersionClone",
+            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport",
             "helpMarkDown": "Enter the LUIS application id."
         },
         {
@@ -284,6 +285,15 @@
             "groupname": "command",
             "visibleRule": "luisSubCommand=LuisVersionClone",
             "helpMarkDown": "The id of the version to create."
+        },
+        {
+            "name": "luisOutputFile",
+            "type": "filepath",
+            "label": "Output File",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisVersionExport",
+            "helpMarkDown": "The path to the output file."
         }
     ],
     "execution": {

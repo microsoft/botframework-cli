@@ -6,7 +6,6 @@
 import taskLibrary = require('azure-pipelines-task-lib/task');
 import { execSync } from 'child_process';
 import { Utils } from './utils';
-import { ServerResponse } from 'http';
 
 export class LuisCommand {
 
@@ -33,6 +32,7 @@ export class LuisCommand {
     public sourceLang: string;
     public targetLang: string;
     public targetVersionId: string;
+    public luisOutputFile: string;
 
     private utils = new Utils();
 
@@ -60,6 +60,7 @@ export class LuisCommand {
         this.sourceLang = taskLibrary.getInput('sourceLang', false) as string;
         this.targetLang = taskLibrary.getInput('targetLang', false) as string;
         this.targetVersionId = taskLibrary.getInput('targetVersionId', false) as string;
+        this.luisOutputFile = taskLibrary.getInput('luisOutputFile', false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -96,6 +97,9 @@ export class LuisCommand {
                 break;
             case 'LuisVersionClone':
                 this.versionClone();
+                break;
+            case 'LuisVersionExport':
+                this.exportVersion();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
@@ -221,5 +225,15 @@ export class LuisCommand {
 
         execSync(command);
         console.log('LUIS version successfully cloned');
+    }
+
+    private exportVersion = (): void => {
+        console.log('Exporting LUIS application version...');
+
+        let command = `bf luis:version:export --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --out "${ this.luisOutputFile }" `;
+        command += `--endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --force`;
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('LUIS version successfully exported');
     }
 }
