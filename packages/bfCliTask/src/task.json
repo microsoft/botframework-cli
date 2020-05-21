@@ -1,7 +1,7 @@
 {
     "id": "b8b3f550-a4b2-48a2-95e6-c2d22933341a",
     "name": "bf-cli-task-qna",
-    "friendlyName": "BotFramework Task",
+    "friendlyName": "BotFramework Task QnA",
     "description": "Wraps the BF CLI tooling",
     "helpMarkDown": "",
     "category": "Utility",
@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":43
+        "Release":51
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -183,7 +183,8 @@
                 "PublishKB" : "Publish knowledgebase",
                 "ReplaceKB" : "Replace knowledgebase",
                 "UpdateKB" : "Update knowledgebase",
-                "TrainKB" : "Train knowledgebase"
+                "TrainKB" : "Train knowledgebase",
+                "AlterationsReplaceKB" : "Alterations:Replace knowledgebase"
             }
         },
         {
@@ -193,7 +194,7 @@
             "required": false,
             "groupname": "command",
             "visibleRule": "qnaMakerCommand = TRUE",
-            "helpMarkDown": "Enter you QnAMaker found on the Cognitive Services Azure portal page under 'access keys'"   
+            "helpMarkDown": "Enter you QnAMaker found on the Cognitive Services Azure portal page under 'access keys'"
         },
         {
             "name": "kbName",
@@ -242,6 +243,25 @@
             "helpMarkDown": "Enter the location of your FeedbackRecord DTO file"
         },
         {
+            "name": "wordAlterationsDTOFileLocation",
+            "type": "filepath",
+            "label": "wordAlterations DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=AlterationsReplaceKB",
+            "helpMarkDown": "Enter the location of your wordAlterations DTO file"
+        },
+        {
+            "name": "overrideServiceEndpointKB",
+            "type": "boolean",
+            "label": "Override Public Endpoint",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=AlterationsReplaceKB",
+            "helpMarkDown": "Supported Cognitive Services endpoints (protocol and hostname, for example: https://westus.api.cognitive.microsoft.com).."
+        },
+        {
             "name": "kbHostName",
             "type": "string",
             "label": "Specifies the url for your private QnA service",
@@ -258,6 +278,15 @@
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=TrainKB",
             "helpMarkDown": "Enter the endpoint key for your private QnA service"   
+        },
+        {
+            "name": "serviceEndpoint",
+            "type": "string",
+            "label": "Cognitive Services endpoint",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "overrideServiceEndpointKB=true",
+            "helpMarkDown": "Enter the Supported Cognitive Services endpoint"
         }
     ],
     "execution": {
