@@ -33,6 +33,7 @@ export class LuisCommand {
     public targetLang: string;
     public targetVersionId: string;
     public luisOutputFile: string;
+    public luisImportFile: string;
 
     private utils = new Utils();
 
@@ -61,6 +62,7 @@ export class LuisCommand {
         this.targetLang = taskLibrary.getInput('targetLang', false) as string;
         this.targetVersionId = taskLibrary.getInput('targetVersionId', false) as string;
         this.luisOutputFile = taskLibrary.getInput('luisOutputFile', false) as string;
+        this.luisImportFile = taskLibrary.getInput('luisImportFile', false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -100,6 +102,9 @@ export class LuisCommand {
                 break;
             case 'LuisVersionExport':
                 this.exportVersion();
+                break;
+            case 'LuisVersionImport':
+                this.importVersion();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
@@ -232,6 +237,16 @@ export class LuisCommand {
 
         let command = `bf luis:version:export --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --out "${ this.luisOutputFile }" `;
         command += `--endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --force`;
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('LUIS version successfully exported');
+    }
+
+    private importVersion = (): void => {
+        console.log('Importing LUIS application version...');
+
+        let command = `bf luis:version:import --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --in "${ this.luisImportFile }" `;
+        command += `--endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }"`;
 
         execSync(command, {stdio: 'inherit'});
         console.log('LUIS version successfully exported');

@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":52
+        "Release":53
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -78,8 +78,9 @@
                 "LuisGenerate": "Luis Generate",
                 "LuisTranslate": "Luis Translate",
                 "LuisVersionClone": "Luis Version Clone",
-                "LuisVersionExport": "Luis Version Export"
-            }       
+                "LuisVersionExport": "Luis Version Export",
+                "LuisVersionImport": "Luis Version Import"
+            }
         },
         {
             "name": "luisSubscriptionKey",
@@ -105,7 +106,7 @@
             "label": "Endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport || luisSubCommand=LuisVersionImport",
             "helpMarkDown": "Enter the LUIS endpoint hostname."    
         },
         {
@@ -124,7 +125,7 @@
             "label": "Version Id",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport  || luisSubCommand=LuisVersionImport",
             "helpMarkDown": "Enter the version Id for the LUIS application."
         },
         {
@@ -160,7 +161,7 @@
             "label": "AppId",
             "required": false,
             "groupname": "command",
-            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport",
+            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport || luisSubCommand=LuisVersionImport",
             "helpMarkDown": "Enter the LUIS application id."
         },
         {
@@ -294,6 +295,15 @@
             "groupname": "command",
             "visibleRule": "luisSubCommand=LuisVersionExport",
             "helpMarkDown": "The path to the output file."
+        },
+        {
+            "name": "luisImportFile",
+            "type": "filepath",
+            "label": "Input File",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisVersionImport",
+            "helpMarkDown": "The path to the JSON or .lu input file."
         }
     ],
     "execution": {
