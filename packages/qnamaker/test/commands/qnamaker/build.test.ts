@@ -55,7 +55,9 @@ describe('qnamaker:build cli parameters test', () => {
 })
 
 describe('qnamaker:build create a new knowledge base successfully', () => {
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('qnamaker'))
       .reply(200, {
@@ -100,9 +102,13 @@ describe('qnamaker:build create a new knowledge base successfully', () => {
       .reply(204)
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should create a new knowledge base successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('Creating qnamaker KB: test(development).en-us.qna...')
@@ -114,7 +120,9 @@ describe('qnamaker:build create a new knowledge base successfully', () => {
 })
 
 describe('qnamaker:build update knowledge base succeed when qa changed', () => {
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('qnamaker'))
       .reply(200, {
@@ -147,9 +155,13 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
       .reply(204)
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should update a knowledge base when qa list changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('Updating to new version for kb test(development).en-us.qna')
@@ -160,6 +172,8 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
 
 describe('qnamaker:build not update knowledge if no changes', () => {
   before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('qnamaker'))
       .reply(200, {
@@ -184,9 +198,13 @@ describe('qnamaker:build not update knowledge if no changes', () => {
       })
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should not update a knowledge base when no changes', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('no changes')
@@ -227,7 +245,7 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to mul
 
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development'])
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully when --dialog set to multiLanguage', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.en-us.qna.dialog')).to.be.true
@@ -345,7 +363,9 @@ describe('qnamaker:build write dialog assets successfully with multi locales', (
 })
 
 describe('qnamaker:build not update knowledge base if only cases are changed', () => {
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('qnamaker'))
       .reply(200, {
@@ -370,9 +390,13 @@ describe('qnamaker:build not update knowledge base if only cases are changed', (
       })
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should not update a knowledge base when only cases changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('no changes')
@@ -380,7 +404,9 @@ describe('qnamaker:build not update knowledge base if only cases are changed', (
 })
 
 describe('qnamaker:build create a new knowledge base with multiturn qna successfully', () => {
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('qnamaker'))
       .reply(200, {
@@ -421,9 +447,13 @@ describe('qnamaker:build create a new knowledge base with multiturn qna successf
       })
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should create a new knowledge base with multiturn qna successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('Creating qnamaker KB: test(development).en-us.qna...')
@@ -434,7 +464,9 @@ describe('qnamaker:build create a new knowledge base with multiturn qna successf
 })
 
 describe('qnamaker:build update knowledge base with multiturn successfully when qa changed', () => {
-  before(function () {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('qnamaker'))
       .reply(200, {
@@ -467,9 +499,13 @@ describe('qnamaker:build update knowledge base with multiturn successfully when 
       .reply(204)
   })
 
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multiturn/multiturn.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
     .it('should update a knowledge base with multiturn when qa list changed', ctx => {
       expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
       expect(ctx.stdout).to.contain('Updating to new version')

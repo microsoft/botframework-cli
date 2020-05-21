@@ -121,22 +121,23 @@ USAGE
 
 OPTIONS
   -b, --botName=botName                  (required) Bot name
-  -f, --force                            If --out flag is provided, overwirtes relevant dialog file
+  -f, --force                            If --dialog flag is provided, overwirtes relevant dialog file
   -h, --help                             show CLI help
   -i, --in=in                            Source .qna file or folder
 
-  -o, --out=out                          Output folder name to write out .dialog files. If not specified, only application 
-                                         ids will be output to console
+  -o, --out=out                          Output file or folder name. If not specified, current directory will be used as
+                                         output
 
   -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
 
   --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
                                          if not set
 
-  --dialog=dialog                        [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
+  --dialog=dialog                        [default: multiLanguage] Write out .dialog files whose recognizer type
+                                         [multiLanguage|crosstrained] is specified by --dialog
 
   --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
-                                         Only valid if --out is set
+                                         Only valid if --dialog is set
 
   --log                                  write out log messages to console
 

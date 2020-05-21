@@ -30,12 +30,12 @@ export default class QnamakerBuild extends Command {
     subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key', required: true}),
     botName: flags.string({char: 'b', description: 'Bot name', required: true}),
     region: flags.string({description: 'Overrides public endpoint https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog files. If not specified, only application ids will be output to console'}),
+    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
-    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
+    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
+    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage'}),
+    force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwrites relevant dialog file', default: false}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
   }
 
@@ -109,8 +109,8 @@ export default class QnamakerBuild extends Command {
       const dialogContents = await builder.build(qnaContents, recognizers, flags.subscriptionKey, endpoint, flags.botName, flags.suffix, flags.fallbackLocale, multiRecognizer, settings)
 
       // write dialog assets based on config
-      if (flags.out) {
-        const outputFolder = path.resolve(flags.out)
+      if (flags.dialog) {
+        const outputFolder = flags.out ? path.resolve(flags.out) : dialogFilePath
         const writeDone = await builder.writeDialogAssets(dialogContents, flags.force, outputFolder, flags.dialog, files)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
