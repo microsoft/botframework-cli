@@ -118,7 +118,7 @@ export class QnAMakerCommand {
     private traingKnowledgeBase = (): void => {
         console.log('Updating QnA knowledgebase');
 
-        let command = `bf qnamaker:kb:train --kbId ${ this.kbId } --endpointKey ${this.kbEndPointKey} --hostname ${this.kbHostName} --in ${this.feedbackRecordDTOLocation} --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:train --kbId ${ this.kbId } --endpointKey ${this.kbEndPointKey} --hostname ${this.kbHostName} --in ${this.feedbackRecordDTOLocation} --subscriptionKey ${ this.qnaKey }`;
 
         execSync(command, {stdio: 'inherit'});
         console.log('QnA knowledgebase successfully trained');
