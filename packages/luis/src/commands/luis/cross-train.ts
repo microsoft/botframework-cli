@@ -13,7 +13,7 @@ export default class LuisCrossTrain extends Command {
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'luis:cross-train help'}),
-    in: flags.string({char: 'i', description: 'source lu and qna files folder', required: true}),
+    in: flags.string({char: 'i', description: 'source lu and qna files folder'}),
     out: flags.string({char: 'o', description: 'output folder name. If not specified, the cross trained files will be written to cross-trained folder under folder of current command'}),
     config: flags.string({description: 'path to config file of mapping rules'}),
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
