@@ -57,6 +57,9 @@ jobs:
     - script: 'rush build -p 2'
       displayName: 'rush build'
 
+    - bash: 'node_modules/.bin/jest --ci --coverage true --maxWorkers=4 --no-watch'
+      displayName: jest
+
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
     
