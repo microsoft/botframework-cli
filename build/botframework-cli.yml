@@ -57,8 +57,22 @@ jobs:
     - script: 'rush build -p 2'
       displayName: 'rush build'
 
-    - bash: 'node_modules/.bin/jest --ci --coverage true --maxWorkers=4 --no-watch'
-      displayName: jest
+    - task: Npm@1
+      displayName: 'npm install coveralls --global'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: install coveralls --global
+
+    - task: Npm@1
+      displayName: 'npm install jest --global'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: install jest --global
+
+    - bash: 'jest --coverage && coveralls < coverage/lcov.info'
+      displayName: jest --coverage
 
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
