@@ -125,7 +125,7 @@ OPTIONS
   -h, --help                             show CLI help
   -i, --in=in                            Source .qna file or folder
 
-  -o, --out=out                          Output folder name to write out .dialog files. If not specified, only application 
+  -o, --out=out                          Output folder name to write out .dialog files. If not specified, knowledge base
                                          ids will be output to console
 
   -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
