@@ -343,7 +343,7 @@ OPTIONS
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output folder name to write out .dialog files. If not specified, only application 
+  -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
                                    ids will be output to console
                                    
   --authoringKey=authoringKey      LUIS authoring key
