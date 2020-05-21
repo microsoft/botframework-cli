@@ -48,6 +48,7 @@ export abstract class Command extends Base {
         this.trackEvent(this.id + '', {flags : this.getTelemetryProperties(), error: this.extractError(err)})
         this.error('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues')
         this.error(err.message)
+        this.error(err)
       } catch (e) {}
     }
   }
