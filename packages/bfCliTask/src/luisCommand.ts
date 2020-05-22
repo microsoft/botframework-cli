@@ -34,6 +34,7 @@ export class LuisCommand {
     public targetVersionId: string;
     public luisOutputFile: string;
     public luisImportFile: string;
+    public newVersionId: string;
 
     private utils = new Utils();
 
@@ -63,6 +64,7 @@ export class LuisCommand {
         this.targetVersionId = taskLibrary.getInput('targetVersionId', false) as string;
         this.luisOutputFile = taskLibrary.getInput('luisOutputFile', false) as string;
         this.luisImportFile = taskLibrary.getInput('luisImportFile', false) as string;
+        this.newVersionId = taskLibrary.getInput('newVersionId', false) as string;
     }
 
     public executeSubCommand = (): void => {
@@ -105,6 +107,9 @@ export class LuisCommand {
                 break;
             case 'LuisVersionImport':
                 this.importVersion();
+                break;
+            case 'LuisVersionRename':
+                this.renameVersion();
                 break;
             default:
                 console.log('No LUIS Command was selected.');
@@ -250,5 +255,14 @@ export class LuisCommand {
 
         execSync(command, {stdio: 'inherit'});
         console.log('LUIS version successfully exported');
+    }
+
+    private renameVersion = (): void => {
+        console.log('Renaming LUIS application version...');
+
+        let command = `bf luis:version:rename --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --appId "${ this.luisAppId }" `;
+        command += `--versionId "${ this.luisVersionId }" --newVersionId "${ this.newVersionId }"`;
+
+        execSync(command, {stdio: 'inherit'});
     }
 }
