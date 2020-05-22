@@ -111,6 +111,9 @@ export class LuisCommand {
             case 'LuisVersionRename':
                 this.renameVersion();
                 break;
+            case 'LuisVersionDelete':
+                this.deleteVersion();
+                break;
             default:
                 console.log('No LUIS Command was selected.');
         }
@@ -262,6 +265,15 @@ export class LuisCommand {
 
         let command = `bf luis:version:rename --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --appId "${ this.luisAppId }" `;
         command += `--versionId "${ this.luisVersionId }" --newVersionId "${ this.newVersionId }"`;
+
+        execSync(command, {stdio: 'inherit'});
+    }
+
+    private deleteVersion = (): void => {
+        console.log('Deleting LUIS application version...');
+
+        let command = `bf luis:version:delete --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --appId "${ this.luisAppId }" `;
+        command += `--versionId "${ this.luisVersionId }"`;
 
         execSync(command, {stdio: 'inherit'});
     }
