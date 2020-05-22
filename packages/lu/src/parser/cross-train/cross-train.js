@@ -40,7 +40,7 @@ module.exports = {
 
     const configObject = file.getConfigObject(configContent, intentName)
 
-    const trainedResult = crossTrainer.crossTrain(luContents, qnaContents, configObject)
+    const trainedResult = await crossTrainer.crossTrain(luContents, qnaContents, configObject)
     
     return trainedResult
   },
