@@ -50,13 +50,24 @@ class SimpleIntentSection {
             }
 
             for (const normalIntentStr of parseTree.intentDefinition().intentBody().normalIntentBody().normalIntentString()) {
-                let utteranceAndEntities = visitor.visitNormalIntentStringContext(normalIntentStr);
-                utteranceAndEntities.context = normalIntentStr;
-                utteranceAndEntitiesMap.push(utteranceAndEntities);
-                utteranceAndEntities.errorMsgs.forEach(errorMsg => errors.push(BuildDiagnostic({
-                    message: errorMsg,
-                    context: normalIntentStr
-                })))
+                let utteranceAndEntities;
+                try {
+                    utteranceAndEntities = visitor.visitNormalIntentStringContext(normalIntentStr);
+                }
+                catch (err) {
+                    errors.push(BuildDiagnostic({
+                        message: "Invalid utterance definition found. Did you miss a '{' or '}'?",
+                        context: normalIntentStr
+                    }))
+                };
+                if (utteranceAndEntities !== undefined) {
+                    utteranceAndEntities.context = normalIntentStr;
+                    utteranceAndEntitiesMap.push(utteranceAndEntities);
+                    utteranceAndEntities.errorMsgs.forEach(errorMsg => errors.push(BuildDiagnostic({
+                        message: errorMsg,
+                        context: normalIntentStr
+                    })));
+                }
             }
         }
 

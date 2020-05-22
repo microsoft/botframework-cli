@@ -1171,5 +1171,220 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         })
     })
+
+    describe('ml entity at both root and child level', function() {
+        it('[1] Verify ml entity both at root as well as child level is handled correctly', function(done) {
+            let luContent1 = new luObj(`
+            @ ml name
+    
+    @ ml userName
+        - @ ml name
+    
+    # userProfile
+    - {@userName = {@name = vishwac}}
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.equal(res.entities.length, 2);
+                    assert.equal(res.utterances[0].entities[0].entity, "userName");
+                    assert.equal(res.utterances[0].entities[0].children[0].entity, "name");
+                    done()
+                })
+                .catch(err => done(err))
+        })
+    
+        it('[2] Verify ml entity both at root as well as child level is handled correctly', function(done) {
+            let luContent1 = new luObj(`
+            @ ml name
+    
+    @ ml userName
+        - @ ml name
+    
+    # userProfile
+    - {@userName = {@name = vishwac}}
+    - {@name = something}
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.equal(res.utterances.length, 2);
+                    assert.equal(res.entities.length, 2);
+                    done()
+                })
+                .catch(err => done(res))
+        })
+    
+        it('[3] Verify ml entity both at root as well as child level is handled correctly', function(done) {
+            let luContent1 = new luObj(`
+            @ ml name
+    
+    @ ml userName
+        - @ name name
+    
+    # userProfile
+    - {@userName = {@name = vishwac}}
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.equal(res.entities.length, 2);
+                    assert.equal(res.utterances[0].entities[0].entity, "userName");
+                    assert.equal(res.utterances[0].entities[0].children[0].entity, "name");
+                    assert.equal(res.entities[1].children[0].features[0].modelName, "name");
+                    assert.equal(res.entities[1].children[0].features[0].isRequired, true);
+                    done()
+                })
+                .catch(err => done(err))
+        })
+    
+        it('[4] Verify ml entity both at root as well as child level is handled correctly', function(done) {
+            let luContent1 = new luObj(`
+            @ ml userName
+        - @ ml name
+    
+    # userProfile
+    - {@userName = {@name = vishwac}}
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.equal(res.entities.length, 1);
+                    assert.equal(res.utterances[0].entities[0].entity, "userName");
+                    assert.equal(res.utterances[0].entities[0].children[0].entity, "name");
+                    done()
+                })
+                .catch(err => done(err))
+        })
+
+        it ('[BF CLI #555] Correctly handles multiple nDepth entity labels (leading and trailing chars)', function(done) {
+            let luContent1 = new luObj(`
+            ## SampleINtent
+      - 7. foo {@PAR = before {@ENT1 = bar} and after that} is {@PAR = some other {@ENT2 = bar} and some other text} followed by some more text
+      
+      @ ml PAR
+          - @ ml ENT1
+          - @ ml ENT2
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.equal(res.utterances.length, 1);
+                    assert.equal(res.utterances[0].entities.length, 2);
+                    assert.equal(res.utterances[0].text, "7. foo before bar and after that is some other bar and some other text followed by some more text")
+                    assert.deepEqual(res.utterances[0].entities[0].entity, "PAR");
+                    assert.deepEqual(res.utterances[0].entities[0].startPos, 7);
+                    assert.deepEqual(res.utterances[0].entities[0].endPos, 31);
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].entity, "ENT1");
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].startPos, 14);
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].endPos, 16);
+                    assert.deepEqual(res.utterances[0].entities[1].entity, "PAR");
+                    assert.deepEqual(res.utterances[0].entities[1].startPos, 36);
+                    assert.deepEqual(res.utterances[0].entities[1].endPos, 69);
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].entity, "ENT2");
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].startPos, 47);
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].endPos, 49);
+        
+                    done()
+              })
+              .catch(err => done(err))
+          })
+
+          it ('[BF CLI #555] Correctly handles multiple nDepth entity labels (no spaces)', function(done) {
+            let luContent1 = new luObj(`
+            ## SampleINtent
+      - 2. foo {@PAR={@ENT1=bar}}{@PAR={@ENT2=bar}}
+      
+      @ ml PAR
+          - @ ml ENT1
+          - @ ml ENT2
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.equal(res.utterances.length, 1);
+                    assert.equal(res.utterances[0].entities.length, 2);
+                    assert.equal(res.utterances[0].text, "2. foo barbar")
+                    assert.deepEqual(res.utterances[0].entities[0].entity, "PAR");
+                    assert.deepEqual(res.utterances[0].entities[0].startPos, 7);
+                    assert.deepEqual(res.utterances[0].entities[0].endPos, 9);
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].entity, "ENT1");
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].startPos, 7);
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].endPos, 9);
+                    assert.deepEqual(res.utterances[0].entities[1].entity, "PAR");
+                    assert.deepEqual(res.utterances[0].entities[1].startPos, 10);
+                    assert.deepEqual(res.utterances[0].entities[1].endPos, 12);
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].entity, "ENT2");
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].startPos, 10);
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].endPos, 12);
+                    done()
+              })
+              .catch(err => done(err))
+          })
+
+          it ('[BF CLI #555] Correctly handles multiple nDepth entity labels', function(done) {
+            let luContent1 = new luObj(`
+            ## SampleINtent
+      - 1. foo {@PAR={@ENT1=bar}} is {@PAR={@ENT2=bar}}
+      
+      @ ml PAR
+          - @ ml ENT1
+          - @ ml ENT2
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => {
+                    assert.equal(res.utterances.length, 1);
+                    assert.equal(res.utterances[0].entities.length, 2);
+                    assert.equal(res.utterances[0].text, "1. foo bar is bar")
+                    assert.deepEqual(res.utterances[0].entities[0].entity, "PAR");
+                    assert.deepEqual(res.utterances[0].entities[0].startPos, 7);
+                    assert.deepEqual(res.utterances[0].entities[0].endPos, 9);
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].entity, "ENT1");
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].startPos, 7);
+                    assert.deepEqual(res.utterances[0].entities[0].children[0].endPos, 9);
+                    assert.deepEqual(res.utterances[0].entities[1].entity, "PAR");
+                    assert.deepEqual(res.utterances[0].entities[1].startPos, 14);
+                    assert.deepEqual(res.utterances[0].entities[1].endPos, 16);
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].entity, "ENT2");
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].startPos, 14);
+                    assert.deepEqual(res.utterances[0].entities[1].children[0].endPos, 16);
+                    
+                    done()
+              })
+              .catch(err => done(err))
+          })
+
+          it('[level 1 child] Every child must have its parent labelled in an utterance', function(done) {
+            let luContent1 = new luObj(`
+            # test
+            - my name is vishwac
+                - my name is {@userName = vishwac}
+    
+            @ ml userProfile = 
+                - @ personName userName
+                - @ age userAge
+    
+            @ prebuilt personName
+            @ prebuilt age
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => done(res))
+                .catch(err => done())
+        })
+    
+        it('[level 2 child] Every child must have its parent labelled in an utterance', function(done) {
+            let luContent1 = new luObj(`
+            # test
+            - my name is vishwac
+                - my name is {@firstName = vishwac}
+    
+            @ ml userProfile = 
+                - @ ml userName
+                    - @ personName firstName
+                - @ age userAge
+    
+            @ prebuilt personName
+            @ prebuilt age
+            `);
+            luBuilder.fromLUAsync([luContent1])
+                .then(res => done(res))
+                .catch(err => done())
+        })
+         
+    })
     
 });

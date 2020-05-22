@@ -17,6 +17,7 @@ const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
 const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
+const Luis = require('./../luis/luis')
 const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 const recognizerType = require('./../utils/enums/recognizertypes')
@@ -43,11 +44,23 @@ export class Builder {
       let fileName: string
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
 
+      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath
+        let fileNameWithCulture = path.basename(file, path.extname(file))
+        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
+      } else {
+        fileCulture = culture
+        fileName = path.basename(file, path.extname(file))
+      }
+
       let fileContent = ''
       let result
+      let luisObj
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, culture)
-        fileContent = result.parseToLuContent()
+        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
+        luisObj = new Luis(result)
+        fileContent = luisObj.parseToLuContent()
       } catch (err) {
         if (err.source) {
           err.text = `Invalid LU file ${err.source}: ${err.text}`
@@ -58,15 +71,6 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
-      if (cultureFromPath) {
-        fileCulture = cultureFromPath
-        let fileNameWithCulture = path.basename(file, path.extname(file))
-        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
-      } else {
-        fileCulture = result.culture !== 'en-us' ? result.culture : culture
-        fileName = path.basename(file, path.extname(file))
-      }
 
       const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)

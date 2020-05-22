@@ -7,6 +7,7 @@ const assert = chai.assert;
 const luMerger = require('./../../../src/parser/lu/luMerger');
 const luObj = require('../../../src/parser/lu/lu');
 const luOptions = require('../../../src/parser/lu/luOptions');
+const luisBuilder = require('./../../../src/parser/luis/luisBuilder');
 describe('Deep reference tests', function() {
     it('Ability to pull in all answers from a qna', function(done) {
         let luContent = `
@@ -182,12 +183,162 @@ describe('Deep reference tests', function() {
         .then(res => done())
         .catch(err => done(err))
     })
+
+    it('NDepth entities with incompatible types throw', function(done) {
+        let luContent = `
+@ ml AddToName r1 =
+    - @ personName personName usesFeature f1
+    - @ ml l2 = 
+        - @ personName p1
+
+@ ml f1
+@ prebuilt personName
+
+[import](./3nDepth.lu)`;
+        luisBuilder.fromLUAsync([new luObj(luContent, new luOptions('main.lu', true))], findLuFiles)
+            .then(res => done(res))
+            .catch(err => done())
+    })
+
+    it('NDepth entities are correctly merged via reference', function(done) {
+        let luContent = `
+@ ml AddToName r1 =
+    - @ personName personName usesFeature f1
+    - @ ml l2 = 
+        - @ personName p1
+
+@ ml f1
+@ prebuilt personName
+
+[import](./2nDepth.lu)`;
+        luisBuilder.fromLUAsync([new luObj(luContent, new luOptions('main.lu', true))], findLuFiles)
+        .then(res => {
+            let entitiesJson = `{"entities": [
+                {
+                  "name": "AddToName",
+                  "roles": [
+                    "r1",
+                    "r2"
+                  ],
+                  "children": [
+                    {
+                      "name": "personName",
+                      "children": [],
+                      "features": [
+                        {
+                          "modelName": "f1",
+                          "isRequired": false
+                        },
+                        {
+                          "modelName": "personName",
+                          "isRequired": true
+                        },
+                        {
+                          "modelName": "f2",
+                          "isRequired": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "l2",
+                      "children": [
+                        {
+                          "name": "p1",
+                          "children": [],
+                          "features": [
+                            {
+                              "modelName": "personName",
+                              "isRequired": true
+                            }
+                          ]
+                        },
+                        {
+                          "name": "f2l2",
+                          "children": [],
+                          "features": [
+                            {
+                              "modelName": "f2",
+                              "isRequired": true
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "NameEntity",
+                      "children": [],
+                      "features": [
+                        {
+                          "modelName": "NameEntity",
+                          "isRequired": true
+                        }
+                      ]
+                    },
+                    {
+                      "name": "l3",
+                      "children": [
+                        {
+                          "name": "N2",
+                          "children": [],
+                          "features": [
+                            {
+                              "modelName": "NameEntity",
+                              "isRequired": true
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "f1",
+                  "roles": []
+                },
+                {
+                  "name": "f2",
+                  "roles": []
+                },
+                {
+                  "name": "NameEntity",
+                  "roles": []
+                }
+              ]}`;
+
+            let entityParsed = JSON.parse(entitiesJson);
+            assert.deepEqual(res.entities, entityParsed.entities);
+            assert.equal(res.prebuiltEntities[0].name, 'personName');
+            done()
+        })
+        .catch(err => done(err))
+    })
 })
     
 const findLuFiles = async function(srcId, idsToFind){
     let retPayload = [];
     idsToFind.forEach(ask => {
         switch(ask.filePath) {
+            case './3nDepth.lu':
+                retPayload.push(new luObj(`
+@ ml AddToName r2 =
+- @ f3 personName usesFeature f2
+
+@ ml f2
+@ ml f3`, new luOptions(ask.filePath)));
+            case './2nDepth.lu':
+                retPayload.push(new luObj(`
+@ ml AddToName r2 =
+- @ personName personName usesFeature f2
+- @ NameEntity NameEntity
+- @ ml l3
+    - @ NameEntity N2
+- @ ml l2
+    - @ f2 f2l2
+            
+@ prebuilt personName
+@ ml f2
+@ ml NameEntity`, new luOptions(ask.filePath)));
+                break;
             case './Test.lu': 
                 retPayload.push(new luObj(`
 [Phrase list definitions](./phrases.lumodule)
