@@ -209,19 +209,22 @@ const updateToV7 = function(finalLUISJSON) {
         });
         (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
         (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
-        // Remove dead ML entity definitions. 
-        removeDeadMLEntityDefinitions(finalLUISJSON);
-        let entityParentTree = {};
-        const curPath = ["$root$"];
-        constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
-        updateEntityParentTreeWithAllEntityTypes(finalLUISJSON, entityParentTree);
-        
-        // Verify that all parents of a child entity are labelled.
-        updateModelBasedOnNDepthEntities(finalLUISJSON.utterances, entityParentTree);
-        
-        transformUtterancesWithNDepthEntities(finalLUISJSON, entityParentTree)
-        verifyPatternsDoNotHaveChildEntityReferences(finalLUISJSON, entityParentTree)
-        
+        // do we have nDepthEntities?
+        let nDepthEntityExists = (finalLUISJSON.entities || []).find(x => x.children !== undefined && Array.isArray(x.children) && x.children.length !== 0);
+        if (nDepthEntityExists !== undefined) {
+            // Remove dead ML entity definitions. 
+            removeDeadMLEntityDefinitions(finalLUISJSON);
+            let entityParentTree = {};
+            const curPath = ["$root$"];
+            constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
+            updateEntityParentTreeWithAllEntityTypes(finalLUISJSON, entityParentTree);
+            
+            // Verify that all parents of a child entity are labelled.
+            updateModelBasedOnNDepthEntities(finalLUISJSON.utterances, entityParentTree);
+            
+            transformUtterancesWithNDepthEntities(finalLUISJSON, entityParentTree)
+            verifyPatternsDoNotHaveChildEntityReferences(finalLUISJSON, entityParentTree)    
+        }
     }
 }
 
