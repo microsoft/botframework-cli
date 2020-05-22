@@ -17,6 +17,7 @@ const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
 const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
+const Luis = require('./../luis/luis')
 const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 const recognizerType = require('./../utils/enums/recognizertypes')
@@ -55,9 +56,11 @@ export class Builder {
 
       let fileContent = ''
       let result
+      let luisObj
       try {
         result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
-        fileContent = result.parseToLuContent()
+        luisObj = new Luis(result)
+        fileContent = luisObj.parseToLuContent()
       } catch (err) {
         if (err.source) {
           err.text = `Invalid LU file ${err.source}: ${err.text}`
