@@ -68,8 +68,9 @@ export default class LuisBuild extends Command {
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
       luisBuildFlags.push('endpoint')
+
       let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint}
-        = await utils.processInputs(flags, Object.keys(LuisBuild.flags), this.config.configDir)
+        = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
 

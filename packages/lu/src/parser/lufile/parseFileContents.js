@@ -45,6 +45,11 @@ const featureProperties = {
     phraseListFeature: 'phraselist'
 }
 const INTENTTYPE = 'intent';
+const PLCONSTS = {
+    DISABLED : 'disabled',
+    ENABLEDFORALLMODELS: 'enabledforallmodels',
+    INTERCHANGEABLE: '(interchangeable)'
+};
 const parseFileContentsModule = {
     /**
      * Main parser code to parse current file contents into LUIS and QNA sections.
