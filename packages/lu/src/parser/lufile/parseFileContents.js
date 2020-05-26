@@ -184,10 +184,6 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     validateNDepthEntities(parsedContent.LUISJsonStructure.entities, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles, parsedContent.LUISJsonStructure.intents);
 
-    // This nDepth child might have been labelled, if so, remove the duplicate simple entity.
-    // If utterances have this child, then all parents must be included in the label
-    updateModelBasedOnNDepthEntities(parsedContent.LUISJsonStructure.utterances, parsedContent.LUISJsonStructure.entities);
-
     // Update intent and entities with phrase lists if any
     updateIntentAndEntityFeatures(parsedContent.LUISJsonStructure);
 
@@ -234,23 +230,30 @@ const updateModelBasedOnNDepthEntities = function(utterances, entities) {
                     entityFoundInMaster.push({id: idx, entityRoot: entity, path: entityPath});
                 }
             });
+            let isParentLabelled = false;
             entityFoundInMaster.forEach(entityInMaster => {
                 let splitPath = entityInMaster.path.split("/").filter(item => item.trim() !== "");
                 if (entityFoundInMaster.length > 1 && splitPath.length === 0 && (!entityInMaster.entityRoot.children || entityInMaster.entityRoot.children.length === 0)) {
                     // this child needs to be removed. Note: There can only be at most one more entity due to utterance validation rules.
                     entities.splice(entityInMaster.id, 1);
                 } else { 
-                    splitPath.reverse().forEach(parent => {
-                        // Ensure each parent is also labelled in this utterance
-                        let parentLabelled = utterance.entities.find(entityUtt => entityUtt.entity == parent);
-                        if (!parentLabelled) {
-                            const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
-                            const error = BuildDiagnostic({
-                                message: errorMsg
-                            });
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                        }
-                    })
+                    if (isParentLabelled === false) {
+                        let rSplitPath = splitPath.reverse();
+                        rSplitPath.splice(0, 1);
+                        rSplitPath.forEach(parent => {
+                            // Ensure each parent is also labelled in this utterance
+                            let parentLabelled = utterance.entities.find(entityUtt => entityUtt.entity == parent);
+                            if (!parentLabelled) {
+                                const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
+                                const error = BuildDiagnostic({
+                                    message: errorMsg
+                                });
+                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                            } else {
+                                isParentLabelled = true;
+                            }
+                        })
+                    }
                 }
             })
         })
@@ -876,37 +879,43 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                     if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.CLOSEDLISTS, entity.entity, [entity.role.trim()]);
                                     } else {
-                                        let errorMsg = `${entity.entity} has been defined as a LIST entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
-                                        let error = BuildDiagnostic({
-                                            message: errorMsg,
-                                            context: utteranceAndEntities.context
-                                        });
+                                        if (!isChildEntity(entity, entitiesFound)) {
+                                            let errorMsg = `${entity.entity} has been defined as a LIST entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
+                                            let error = BuildDiagnostic({
+                                                message: errorMsg,
+                                                context: utteranceAndEntities.context
+                                            });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                        }
                                     }
                                 } else if (prebuiltExists !== undefined) {
                                     if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.PREBUILT, entity.entity, [entity.role.trim()]);
                                     } else {
-                                        let errorMsg = `${entity.entity} has been defined as a PREBUILT entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
-                                        let error = BuildDiagnostic({
-                                            message: errorMsg,
-                                            context: utteranceAndEntities.context
-                                        });
+                                        if (!isChildEntity(entity, entitiesFound)) {
+                                            let errorMsg = `${entity.entity} has been defined as a PREBUILT entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
+                                            let error = BuildDiagnostic({
+                                                message: errorMsg,
+                                                context: utteranceAndEntities.context
+                                            });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                        }
                                     }
                                 } else if (regexExists !== undefined) {
                                     if (entity.role) {
                                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.REGEX, entity.entity, [entity.role.trim()]);
                                     } else {
-                                        let errorMsg = `${entity.entity} has been defined as a Regex entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
-                                        let error = BuildDiagnostic({
-                                            message: errorMsg,
-                                            context: utteranceAndEntities.context
-                                        });
+                                        if (!isChildEntity(entity, entitiesFound)) {
+                                            let errorMsg = `${entity.entity} has been defined as a Regex entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
+                                            let error = BuildDiagnostic({
+                                                message: errorMsg,
+                                                context: utteranceAndEntities.context
+                                            });
 
-                                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                        }
                                     }
                                 } else if (patternAnyExists !== undefined) {
                                     if (entity.value != '') {
@@ -979,6 +988,11 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
             }
         }
     }
+}
+
+const isChildEntity = function(entity, entitiesFound) {
+    // return true if the current entity is contained within a parent bounding label
+    return (entitiesFound || []).find(item => item.entity !== entity.entity && entity.startPos >= item.startPos && entity.endPos <= item.endPos) === undefined ? false : true;
 }
 
 /**
@@ -1161,6 +1175,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
     const SPACEASTABS = 4;
     addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
     let rootEntity = parsedContent.LUISJsonStructure.entities.find(item => item.name == entityName);
+    rootEntity.explicitlyAdded = true;
     let defLine = line.start.line;
     let baseTabLevel = 0;
     let entityIdxByLevel = [];
@@ -1640,6 +1655,8 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
             } else if (entityType.toLowerCase() === 'simple') {
                 // add this to entities if it doesnt exist
                 addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
+                let rootEntity = parsedContent.LUISJsonStructure.entities.find(item => item.name == entityName);
+                rootEntity.explicitlyAdded = true;
             } else if (entityType.endsWith('=')) {
                 // is this qna maker alterations list? 
                 if (entityType.includes(PARSERCONSTS.QNAALTERATIONS)) {
