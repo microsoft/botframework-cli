@@ -32,12 +32,12 @@ export default class LuisBuild extends Command {
     authoringKey: flags.string({description: 'LUIS authoring key'}),
     botName: flags.string({description: 'Bot name'}),
     region: flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified, current directory will be used as output'}),
+    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog files. If not specified, application ids will be output to console'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
-    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is set'}),
+    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Write out .dialog files whose recognizer type [multiLanguage|crosstrained] is specified by --dialog', default: 'multiLanguage'}),
-    force: flags.boolean({char: 'f', description: 'If --dialog flag is provided, overwrites relevant dialog file', default: false}),
+    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
     deleteOldVersion: flags.boolean({description: 'Delete old version of LUIS application after building new one.'}),
     log: flags.boolean({description: 'write out log messages to console', default: false}),
@@ -66,7 +66,9 @@ export default class LuisBuild extends Command {
       }
 
       // Flags override userConfig
-      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log}
+      let luisBuildFlags = Object.keys(LuisBuild.flags)
+      luisBuildFlags.push('endpoint')
+      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint}
         = await utils.processInputs(flags, Object.keys(LuisBuild.flags), this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -91,6 +93,8 @@ export default class LuisBuild extends Command {
       region = region && region !== '' ? region : 'westus'
       suffix = suffix && suffix !== '' ? suffix : await username() || 'development'
       fallbackLocale = fallbackLocale && fallbackLocale !== '' ? fallbackLocale : 'en-us'
+
+      endpoint = endpoint && endpoint !== '' ? endpoint : `https://${region}.api.cognitive.microsoft.com`
 
       // create builder class
       const builder = new Builder((input: string) => {
@@ -134,13 +138,12 @@ export default class LuisBuild extends Command {
 
       // update or create and then train and publish luis applications based on loaded resources
       if (log) this.log('Handling applications...')
-      const dialogContents = await builder.build(luContents, recognizers, authoringKey, region, botName, flags.suffix, fallbackLocale, deleteOldVersion, multiRecognizers, settings)
+      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, deleteOldVersion, multiRecognizers, settings)
 
       // write dialog assets based on config
-      if (dialog) {
-        const writeDone = await builder.writeDialogAssets(dialogContents, force, out, dialog, luConfig)
-        const dialogFilePath = (flags.stdin || !inVal) ? process.cwd() : inVal.endsWith(fileExtEnum.LUFile) ? path.dirname(path.resolve(inVal)) : path.resolve(inVal)
-        const outputFolder = out ? path.resolve(out) : dialogFilePath
+      if (out) {
+        const outputFolder = path.resolve(out)
+        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, dialog, luConfig)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {
