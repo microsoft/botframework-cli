@@ -27,22 +27,22 @@ export default class LuisVersionList extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(LuisVersionList)
-    const flagLabels = Object.keys(LuisVersionList.flags)
-    const configDir = this.config.configDir
-    const options: any = {}
-
-    let {endpoint, subscriptionKey, appId, force, out, skip, take} = await utils.processInputs(flags, flagLabels, configDir)
-
-    const requiredProps = {endpoint, subscriptionKey}
-    utils.validateRequiredProps(requiredProps)
-
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
-    if (skip) options.skip = parseInt(skip, 10)
-    if (take) options.take = parseInt(take, 10)
-
     try {
+      const {flags} = this.parse(LuisVersionList)
+      const flagLabels = Object.keys(LuisVersionList.flags)
+      const configDir = this.config.configDir
+      const options: any = {}
+
+      let {endpoint, subscriptionKey, appId, force, out, skip, take} = await utils.processInputs(flags, flagLabels, configDir)
+
+      const requiredProps = {endpoint, subscriptionKey}
+      utils.validateRequiredProps(requiredProps)
+
+      const client = utils.getLUISClient(subscriptionKey, endpoint)
+
+      if (skip) options.skip = parseInt(skip, 10)
+      if (take) options.take = parseInt(take, 10)
+
       const versionList = await client.versions.list(appId, options)
       if (out) {
         const writtenFilePath: string = await utils.writeToFile(out, versionList, force)
@@ -51,7 +51,9 @@ export default class LuisVersionList extends Command {
         await utils.writeToConsole(versionList)
       }
     } catch (err) {
-      throw new CLIError(`Failed to export versions list: ${err}`)
+      // throw new CLIError(`Failed to export versions list: ${err}`)
+      this.log(err)
+      this.log(err.stack)
     }
   }
 
