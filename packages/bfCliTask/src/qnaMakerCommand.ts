@@ -36,7 +36,7 @@ export class QnAMakerCommand {
         this.qnaQuestion = taskLibrary.getInput('qnaQuestion', false) as string;
     }
 
-    public executeSubCommand = async () => {
+    public executeSubCommand = () => {
         switch (this.qnaMakerSubCommand) {
             case 'CreateKB':
                 this.createKnowledgeBase();
@@ -60,9 +60,10 @@ export class QnAMakerCommand {
                 this.replaceAlterations();
                 break;
             case 'QueryKB':                
-                await this.QueryKnowledgeBase();
+                this.QueryKnowledgeBase();  
+                break;              
             default:
-                console.log('No QnA Maker command was selected')
+                console.log('No QnA Maker command was selected');
         }
     }
 
@@ -141,33 +142,40 @@ export class QnAMakerCommand {
         console.log('Alterations successfully replaced');
     }
 
-    private QueryKnowledgeBase = async () => {
+    private QueryKnowledgeBase = (): void => {
         const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
         const QueryOutputFile = `${ rootPath }/QueryResult.json`;
 
-        await this.QnAMakerInitConfiguration();
-        console.log('Calling for query to the QnA knowledgebase');
+        this.QnAMakerInitConfiguration().then((isconfigured) => {
+            if (isconfigured) {
+                console.log('Calling for query to the QnA knowledgebase');
 
-        let command = `bf qnamaker:query --endpointKey ${ this.kbEndPointKey } --hostname ${ this.kbHostName } --kbId ${ this.kbId } --question "${ this.qnaQuestion }" > ${ QueryOutputFile } | cat  ${ QueryOutputFile }`;
-
-        execSync(command, {stdio: 'inherit'});
-        console.log('The QnA knowledgebase answered successfully');       
+                let command = `bf qnamaker:query --endpointKey ${ this.kbEndPointKey } --hostname ${ this.kbHostName } --kbId ${ this.kbId } --question "${ this.qnaQuestion }" > ${ QueryOutputFile } | cat  ${ QueryOutputFile }`;
+        
+                execSync(command, {stdio: 'inherit'});
+                console.log('The QnA knowledgebase answered successfully'); 
+            }
+        });
+    
     }
 
-    private QnAMakerInitConfiguration = async ()=>{
+    private QnAMakerInitConfiguration(): Promise<boolean>{
         let init = spawn('bf',['qnamaker:init'], { shell: true });
 
         console.log('Setting up the QnA knowledgebase config file');
 
-        init.stderr.on('data',(data) => {
-            let _data: string = ""+ data;
-            if(_data.includes('subscription key')){
-                init.stdin.write(this.qnaKey);
-            }else if(_data.includes('knowledgebase ID')){
-                init.stdin.write(this.kbId);
-            }else if(_data.includes('ok?')){
-                init.stdin.write("yes");
-            }
-        })
+        return new Promise ((resolve, reject) => {               
+            init.stderr.on('data',(data) => {
+                let _data: string = "" + data;
+                if(_data.includes('subscription key')){
+                    init.stdin.write(this.qnaKey);
+                }else if(_data.includes('knowledgebase ID')){
+                    init.stdin.write(this.kbId);
+                }else if(_data.includes('ok?')){
+                    init.stdin.write("yes");
+                    resolve(true);                              
+                }
+            });      
+        });
     }
 }

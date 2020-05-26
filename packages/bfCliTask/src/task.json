@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":61
+        "Release":66
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
