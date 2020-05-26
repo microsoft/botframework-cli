@@ -4,7 +4,7 @@
  */
 
 import taskLibrary = require('azure-pipelines-task-lib/task');
-import { execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
 
 export class QnAMakerCommand {
 
@@ -19,6 +19,7 @@ export class QnAMakerCommand {
     private kbEndPointKey: string;
     private wordAlterationsDTOFileLocation: string;
     private serviceEndpoint: string;
+    private qnaQuestion: string;
 
     constructor() {
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
@@ -32,9 +33,10 @@ export class QnAMakerCommand {
         this.kbEndPointKey = taskLibrary.getInput('kbEndPointKey',false) as string;
         this.wordAlterationsDTOFileLocation = taskLibrary.getInput('wordAlterationsDTOFileLocation',false) as string;
         this.serviceEndpoint = taskLibrary.getInput('serviceEndpoint',false) as string;
+        this.qnaQuestion = taskLibrary.getInput('qnaQuestion', false) as string;
     }
 
-    public executeSubCommand = (): void => {
+    public executeSubCommand = async () => {
         switch (this.qnaMakerSubCommand) {
             case 'CreateKB':
                 this.createKnowledgeBase();
@@ -57,6 +59,8 @@ export class QnAMakerCommand {
             case 'AlterationsReplaceKB':
                 this.replaceAlterations();
                 break;
+            case 'QueryKB':                
+                await this.QueryKnowledgeBase();
             default:
                 console.log('No QnA Maker command was selected')
         }
@@ -135,5 +139,35 @@ export class QnAMakerCommand {
     
         execSync(command, {stdio: 'inherit'});
         console.log('Alterations successfully replaced');
+    }
+
+    private QueryKnowledgeBase = async () => {
+        const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
+        const QueryOutputFile = `${ rootPath }/QueryResult.json`;
+
+        await this.QnAMakerInitConfiguration();
+        console.log('Calling for query to the QnA knowledgebase');
+
+        let command = `bf qnamaker:query --endpointKey ${ this.kbEndPointKey } --hostname ${ this.kbHostName } --kbId ${ this.kbId } --question "${ this.qnaQuestion }" > ${ QueryOutputFile } | cat  ${ QueryOutputFile }`;
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('The QnA knowledgebase answered successfully');       
+    }
+
+    private QnAMakerInitConfiguration = async ()=>{
+        let init = spawn('bf',['qnamaker:init'], { shell: true });
+
+        console.log('Setting up the QnA knowledgebase config file');
+
+        init.stderr.on('data',(data) => {
+            let _data: string = ""+ data;
+            if(_data.includes('subscription key')){
+                init.stdin.write(this.qnaKey);
+            }else if(_data.includes('knowledgebase ID')){
+                init.stdin.write(this.kbId);
+            }else if(_data.includes('ok?')){
+                init.stdin.write("yes");
+            }
+        })
     }
 }

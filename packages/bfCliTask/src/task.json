@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":51
+        "Release":61
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -184,7 +184,8 @@
                 "ReplaceKB" : "Replace knowledgebase",
                 "UpdateKB" : "Update knowledgebase",
                 "TrainKB" : "Train knowledgebase",
-                "AlterationsReplaceKB" : "Alterations:Replace knowledgebase"
+                "AlterationsReplaceKB" : "Alterations:Replace knowledgebase",
+                "QueryKB" : "Query knowledgebase"
             }
         },
         {
@@ -211,7 +212,7 @@
             "label": "Knowledgebase ID",
             "required": false,
             "groupname": "command",
-            "visibleRule": "qnaMakerSubCommand=DeleteKB || qnaMakerSubCommand=PublishKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB || qnaMakerSubCommand=TrainKB",
+            "visibleRule": "qnaMakerSubCommand=QueryKB || qnaMakerSubCommand=DeleteKB || qnaMakerSubCommand=PublishKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB || qnaMakerSubCommand=TrainKB",
             "helpMarkDown": "Enter the ID of the knowledgebase."
         },
         {
@@ -267,7 +268,7 @@
             "label": "Specifies the url for your private QnA service",
             "required": false,
             "groupname": "command",
-            "visibleRule": "qnaMakerSubCommand=TrainKB",
+            "visibleRule": "qnaMakerSubCommand=TrainKB || qnaMakerSubCommand=QueryKB",
             "helpMarkDown": "Enter the url for your private QnA service"   
         },
         {
@@ -276,7 +277,7 @@
             "label": "Specifies the endpoint key for your private QnA service",
             "required": false,
             "groupname": "command",
-            "visibleRule": "qnaMakerSubCommand=TrainKB",
+            "visibleRule": "qnaMakerSubCommand=TrainKB || qnaMakerSubCommand=QueryKB",
             "helpMarkDown": "Enter the endpoint key for your private QnA service"   
         },
         {
@@ -287,6 +288,15 @@
             "groupname": "command",
             "visibleRule": "overrideServiceEndpointKB=true",
             "helpMarkDown": "Enter the Supported Cognitive Services endpoint"
+        },
+        {
+            "name": "qnaQuestion",
+            "type": "string",
+            "label": "Query to get a prediction for",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QueryKB",
+            "helpMarkDown": "Query to get a prediction for"
         }
     ],
     "execution": {
