@@ -30,6 +30,7 @@ class Luis {
 
     parseToLuContent(){
         helpers.checkAndUpdateVersion(this)
+        helpers.cleanUpExplicitEntityProperty(this)
         return luConverter(this)
     }
 
@@ -54,6 +55,12 @@ const initialize = function(instance, LuisJSON) {
     if (Object.keys(LuisJSON).includes(regexEntities)) instance[regexEntities] = LuisJSON[regexEntities];
 
     settingsAndTokenizerCheck(instance, LuisJSON) 
+
+    initializeEntities(instance)
+}
+
+const initializeEntities = function (instance) {
+    (instance.entities || []).forEach(e => e.explicitlyAdded = true)
 }
 
 const settingsAndTokenizerCheck = function(instance, LuisJSON) {
