@@ -5,7 +5,7 @@ const utils = require('../../../../src/utils/index')
 const fs = require('fs-extra')
 import * as rimraf from 'rimraf'
 
-describe('luis:version:list', () => {
+xdescribe('luis:version:list', () => {
 
   before(() => { 
     fs.mkdirSync('./testout');
