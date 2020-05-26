@@ -218,6 +218,13 @@ export class Builder {
     return dialogContents
   }
 
+  async getEndpointKeys(subscriptionkey: string, endpoint: string) {
+    const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
+    const endPointKeys = await qnaBuildCore.getEndpointKeys()
+
+    return endPointKeys
+  }
+
   async importUrlReference(
     url: string,
     subscriptionkey: string,

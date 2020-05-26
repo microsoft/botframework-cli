@@ -109,6 +109,16 @@ export class QnaBuildCore {
     }
   }
 
+  public async getEndpointKeys() {
+    const response = await this.service.createRequest('/endpointkeys', 'GET')
+    const text = await response.text()
+    try {
+      return JSON.parse(text)
+    } catch {
+      return text
+    }
+  }
+
   public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizer: MultiLanguageRecognizer, settings: Settings)
     : Array<any> {
     let contents = new Array<any>()
