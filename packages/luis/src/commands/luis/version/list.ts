@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {Command, flags} from '@microsoft/bf-cli-command'
 
 const utils = require('../../../utils/index')
 
