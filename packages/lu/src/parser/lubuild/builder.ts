@@ -306,7 +306,7 @@ export class Builder {
   async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number, deleteOldVersion: boolean) {
     await delay(delayDuration)
     const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
-    recognizer.versionId = appInfo.activeVersion
+    recognizer.versionId = appInfo.activeVersion || appInfo.endpoints.PRODUCTION.versionId
 
     await delay(delayDuration)
     const existingApp = await luBuildCore.exportApplication(recognizer.getAppId(), recognizer.versionId)
