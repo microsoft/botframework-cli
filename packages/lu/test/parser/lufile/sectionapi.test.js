@@ -270,3 +270,21 @@ describe('Section CRUD tests for entity', () => {
         assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[0].utterance, 'hi');
     });
 });
+
+describe('Section CRUD tests for error import in utterances', () => {
+    let luresource = undefined;
+    
+    it('init section test', () => {
+        let fileContent = 
+`# Greeting
+- hi
+[]
+> @ ml city`;
+
+        luresource = luparser.parse(fileContent);
+        assert.equal(luresource.Errors.length, 1);
+        assert.equal(luresource.Errors[0].Message, 'Invalid intent body line, did you miss \'-\' at line begin')
+        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Sections[0].Body, `- hi${NEWLINE}[]${NEWLINE}> @ ml city`);
+    });
+});
