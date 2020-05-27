@@ -1,5 +1,7 @@
 > !# @app.desc = description of my luis application
 
+[import help](../main/help.qna)
+
 > !# @qna.pair.source = xyz
 <a id = "1"></a>
 

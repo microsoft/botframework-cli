@@ -1839,8 +1839,8 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
             if (kvPair[1] === 'enableSections') continue
 
             if (kvPair.length === 4) {
-                if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
-                    enableMergeIntents = false;
+                if (kvPair[1] === 'enableMergeIntents') {
+                    enableMergeIntents = kvPair[3] === 'false' ? false : true;
                     continue;
                 }
 

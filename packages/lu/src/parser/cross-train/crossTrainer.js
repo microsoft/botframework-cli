@@ -416,7 +416,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   const crossTrainingComments = '> Source: cross training. Please do not edit these directly!'
 
   // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
-  if (questionsContent && questionsContent !== '' && utterances.length > 0) {
+  if (questionsContent && questionsContent !== '') {
     const questionsToUtterances = `${NEWLINE}${crossTrainingComments}${NEWLINE}# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
     trainedLuResource = new SectionOperator(trainedLuResource).addSection(questionsToUtterances)
   }
@@ -462,7 +462,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   let utterancesContent = dedupedUtterances.join(NEWLINE + '- ')
 
   // add utterances from lu file to corresponding qna file with question set to all utterances
-  if (utterancesContent && utterancesContent !== '' && qnaSections.length > 0) {
+  if (utterancesContent && utterancesContent !== '') {
     const utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
@@ -479,16 +479,16 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
  */
 const parseAndValidateContent = async function (objectArray, verbose) {
   let fileIdToResourceMap = new Map()
-  for (const object of objectArray) {
-    if (!object.content) continue
-    
-    let fileContent
-    if (object.id.endsWith(fileExtEnum.LUFile)) {
-      let result = await LuisBuilderVerbose.build([object], true)
-      fileContent = result.parseToLuContent()
-    } else {
-      let result = await qnaBuilderVerbose.build([object], true)
-      fileContent = result.parseToQnAContent()
+  for (const object of objectArray) {    
+    let fileContent = object.content
+    if (object.content && object.content !== '') {
+      if (object.id.endsWith(fileExtEnum.LUFile)) {
+        let result = await LuisBuilderVerbose.build([object], true)
+        fileContent = result.parseToLuContent()
+      } else {
+        let result = await qnaBuilderVerbose.build([object], true)
+        fileContent = result.parseToQnAContent()
+      }
     }
 
     let resource = luParser.parse(fileContent)
@@ -515,8 +515,11 @@ const parseAndValidateContent = async function (objectArray, verbose) {
 
 const pretreatment = function (luContents, qnaContents) {
    // Parse lu and qna objects
-   const luObjectArray = fileHelper.getParsedObjects(luContents)
-   const qnaObjectArray = fileHelper.getParsedObjects(qnaContents)
+   let luObjectArray = fileHelper.getParsedObjects(luContents)
+   let qnaObjectArray = fileHelper.getParsedObjects(qnaContents)
+
+   luObjectArray.forEach(luObject => luObject.id = luObject.id.toLowerCase())
+   qnaObjectArray.forEach(qnaObject => qnaObject.id = qnaObject.id.toLowerCase())
 
    return {luObjectArray, qnaObjectArray}
 }
