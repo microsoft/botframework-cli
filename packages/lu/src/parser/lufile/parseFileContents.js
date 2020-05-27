@@ -312,6 +312,7 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
             (child.features || []).forEach((feature, idx) => {
                 if (typeof feature === "object") return;
                 featureHandled = false;
+                feature = feature.replace(/["']/gi, '');
                 let featureExists = entitiesAndRoles.find(i => (i.name == feature || i.name == `${feature}(interchangeable)`));
                 if (featureExists) {
                     // is feature phrase list?
@@ -1036,7 +1037,7 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
                         context: line
                     })
                     throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                }
+                } 
             } 
         });
 
@@ -1359,11 +1360,11 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
     if (entityRoles.length !== 0) {
         // Phrase lists cannot have roles; however we will allow inline definition of enabledForAllModels as well as disabled as a property on phrase list.
         entityRoles.forEach(item => {
-            if (item.toLowerCase() === 'disabled') {
+            if (item.toLowerCase() === PLCONSTS.DISABLED) {
                 isPLEnabled = false;
-            } else if (item.toLowerCase() === 'enabledforallmodels') {
+            } else if (item.toLowerCase() === PLCONSTS.ENABLEDFORALLMODELS) {
                 isPLEnabledForAllModels = true;
-            } else if (item.toLowerCase() === '(interchangeable)') {
+            } else if (item.toLowerCase() === PLCONSTS.INTERCHANGEABLE) {
                 entityName += item;
             } else {
                 let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
