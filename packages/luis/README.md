@@ -343,9 +343,9 @@ OPTIONS
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
-                                   ids will be output to console
-                                   
+  -o, --out=out                    Output folder name to write out .dialog files. If not specified, application ids will
+                                   be output to console
+
   --authoringKey=authoringKey      LUIS authoring key
 
   --botName=botName                Bot name
@@ -788,7 +788,7 @@ EXAMPLE
 _See code: [src/commands/luis/version/rename.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/version/rename.ts)_
 <!-- commandsstop -->
 
-[1]:./docs/lu-file-format.md
+[1]:https://aka.ms/lu-file-format
 [2]:./docs/working-with-luis.md
 [3]:./docs/translate-command.md
 [4]:./docs/using-luis-build.md

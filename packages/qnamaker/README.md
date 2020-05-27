@@ -121,7 +121,7 @@ USAGE
 
 OPTIONS
   -b, --botName=botName                  (required) Bot name
-  -f, --force                            If --out flag is provided, overwirtes relevant dialog file
+  -f, --force                            If --out flag is provided, overwrites relevant dialog file
   -h, --help                             show CLI help
   -i, --in=in                            Source .qna file or folder
 
