@@ -15,6 +15,7 @@ const exception = require('../utils/exception')
 const retCode = require('../utils/enums/CLI-errors')
 const prebuiltEntityTypes = require('../utils/enums/luisbuiltintypes').consolidatedList
 const LuisBuilderVerbose = require('./../luis/luisCollate')
+const Luis = require('./../luis/luis')
 const qnaBuilderVerbose = require('./../qna/qnamaker/kbCollate')
 const NEWLINE = require('os').EOL
 const path = require('path')
@@ -484,7 +485,8 @@ const parseAndValidateContent = async function (objectArray, verbose) {
     if (object.content && object.content !== '') {
       if (object.id.endsWith(fileExtEnum.LUFile)) {
         let result = await LuisBuilderVerbose.build([object], true)
-        fileContent = result.parseToLuContent()
+        let luisObj = new Luis(result)
+        fileContent = luisObj.parseToLuContent()
       } else {
         let result = await qnaBuilderVerbose.build([object], true)
         fileContent = result.parseToQnAContent()

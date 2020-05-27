@@ -5,7 +5,7 @@
 - dialogName=main
 
 ```
-    Here is the [user guide](http://contoso.com/userguide.pdf)
+Here is the [user guide](http://contoso.com/userguide.pdf)
 ```
 
 # ? tell joke
@@ -14,7 +14,7 @@
 - dialogName=main
 
 ```
-    Tell a funny joke
+Tell a funny joke
 ```
 
 > Source: cross training. Please do not edit these directly!

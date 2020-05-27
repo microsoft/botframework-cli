@@ -5,7 +5,7 @@
 - dialogName=main
 
 ```
-    Here is the [user guide](http://contoso.com/userguide.pdf)
+Here is the [user guide](http://contoso.com/userguide.pdf)
 ```
 
 # ? tell joke
@@ -14,13 +14,25 @@
 - dialogName=main
 
 ```
-    Tell a funny joke
+Tell a funny joke
+```
+
+# ? what can you do
+- how can you help
+
+**Filters:**
+- dialogName=main
+
+```
+I can help book flight, book hotel and book train ticket
 ```
 
 > Source: cross training. Please do not edit these directly!
 # ? book a hotel for me
 - book a flight for me
 - book a train ticket for me
+- hi
+- hello
 
 **Filters:**
 - dialogName=main
