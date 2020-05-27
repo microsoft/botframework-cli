@@ -20,6 +20,7 @@ export class QnAMakerCommand {
     private wordAlterationsDTOFileLocation: string;
     private serviceEndpoint: string;
     private qnaQuestion: string;
+    private activeLearning: boolean;
 
     constructor() {
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
@@ -34,6 +35,7 @@ export class QnAMakerCommand {
         this.wordAlterationsDTOFileLocation = taskLibrary.getInput('wordAlterationsDTOFileLocation',false) as string;
         this.serviceEndpoint = taskLibrary.getInput('serviceEndpoint',false) as string;
         this.qnaQuestion = taskLibrary.getInput('qnaQuestion', false) as string;
+        this.activeLearning = taskLibrary.getBoolInput('activeLearning', false);
     }
 
     public executeSubCommand = () => {
@@ -59,8 +61,12 @@ export class QnAMakerCommand {
             case 'AlterationsReplaceKB':
                 this.replaceAlterations();
                 break;
-            case 'QueryKB':                
+            case 'QueryKB':
                 this.QueryKnowledgeBase();
+                break;
+            case 'EndpointSettingsUpdate':
+                this.updateEndpointSettings();
+                break;
             default:
                 console.log('No QnA Maker command was selected')
         }
@@ -136,7 +142,7 @@ export class QnAMakerCommand {
         if (this.serviceEndpoint) {
             command += ` --endpoint ${ this.serviceEndpoint }`;
         }
-    
+
         execSync(command, {stdio: 'inherit'});
         console.log('Alterations successfully replaced');
     }
@@ -150,12 +156,11 @@ export class QnAMakerCommand {
                 console.log('Calling for query to the QnA knowledgebase');
 
                 let command = `bf qnamaker:query --endpointKey ${ this.kbEndPointKey } --hostname ${ this.kbHostName } --kbId ${ this.kbId } --question "${ this.qnaQuestion }" > ${ QueryOutputFile } | cat  ${ QueryOutputFile }`;
-        
+
                 execSync(command, {stdio: 'inherit'});
-                console.log('The QnA knowledgebase answered successfully'); 
+                console.log('The QnA knowledgebase answered successfully');
             }
         });
-    
     }
 
     private QnAMakerInitConfiguration(): Promise<boolean>{
@@ -163,7 +168,7 @@ export class QnAMakerCommand {
 
         console.log('Setting up the QnA knowledgebase config file');
 
-        return new Promise ((resolve, reject) => {               
+        return new Promise ((resolve, reject) => {
             init.stderr.on('data',(data) => {
                 let _data: string = ""+ data;
                 if(_data.includes('subscription key')){
@@ -172,9 +177,21 @@ export class QnAMakerCommand {
                     init.stdin.write('Id');
                 }else if(_data.includes('ok?')){
                     init.stdin.write("yes");
-                    resolve(true);                              
+                    resolve(true);
                 }
-            });      
+            });
         });
+    }
+
+    private updateEndpointSettings = (): void => {
+        console.log('Updating Endpoint settings');
+
+        let command = `bf qnamaker:endpointsettings:update --subscriptionKey ${ this.qnaKey } --endpoint "${ this.serviceEndpoint }"`;
+        if (this.activeLearning) {
+            command += ` --activelearning`;
+        }
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('Endpoint settings successfully updated');
     }
 }

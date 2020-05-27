@@ -185,7 +185,8 @@
                 "UpdateKB" : "Update knowledgebase",
                 "TrainKB" : "Train knowledgebase",
                 "AlterationsReplaceKB" : "Alterations:Replace knowledgebase",
-                "QueryKB" : "Query knowledgebase"
+                "QueryKB" : "Query knowledgebase",
+                "EndpointSettingsUpdate" : "Update Endpoint Settings"
             }
         },
         {
@@ -286,7 +287,7 @@
             "label": "Cognitive Services endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "overrideServiceEndpointKB=true",
+            "visibleRule": "overrideServiceEndpointKB=true || qnaMakerSubCommand=EndpointSettingsUpdate",
             "helpMarkDown": "Enter the Supported Cognitive Services endpoint"
         },
         {
@@ -297,6 +298,16 @@
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=QueryKB",
             "helpMarkDown": "Query to get a prediction for"
+        },
+        {
+            "name": "activeLearning",
+            "type": "boolean",
+            "label": "Active Learning",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=EndpointSettingsUpdate",
+            "helpMarkDown": "Enable active learning."
         }
     ],
     "execution": {
