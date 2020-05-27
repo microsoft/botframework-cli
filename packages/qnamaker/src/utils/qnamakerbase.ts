@@ -21,10 +21,11 @@ export async function processInputs(flags: any, payload: any, configfile: string
     ServiceBase.config = flags
     await qnaconfig.validateConfig(flags)
     const serviceManifest = srvMan.getServiceManifest(payload)
-    flags.in = stdin ? stdin : flags.in
+    const input = flags.in
+    flags.in = flags.in || stdin || undefined
     result.requestBody = await srvMan.validateArguments(serviceManifest, flags)
-    if (stdin || flags.in) {
-      result.requestBody = stdin || await file.getContentFromFile(flags.in)
+    if (flags.in) {
+      result.requestBody = input ? await file.getContentFromFile(input) : stdin
       try {
         result.requestBody = JSON.parse(result.requestBody)
       } catch(ex) {

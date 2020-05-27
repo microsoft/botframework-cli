@@ -7,6 +7,21 @@ const validateLUISBlob = require('./../../../src/parser/luis/luisValidator')
 var chai = require('chai');
 var assert = chai.assert;
 describe('With helper functions', function () {
+        it('Parsefile correctly handles non nDepth entity references in patterns', function(done) {
+                let luFile = `@ list foo=
+                @ ml operation=
+                    - @foo foo
+                
+                # Test
+                - Pattern {foo}`;
+                parseFile.parseFile(luFile)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patterns.length, 1)
+                                assert.equal(res.LUISJsonStructure.patterns[0].pattern, "Pattern {foo}");
+                                done()
+                        })
+        })
+
         it('parseFile includes defaults for LUIS app', function(done) {
                 let luFile = `@ simple entity1`;
                 parseFile.parseFile(luFile)

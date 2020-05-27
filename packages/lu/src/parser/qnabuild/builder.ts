@@ -170,10 +170,10 @@ export class Builder {
         // otherwise create a new kb
         if (recognizer.getKBId() && recognizer.getKBId() !== '') {
           // To see if need update the model
-          needPublish = await this.updateKB(currentKB, content.content, qnaBuildCore, recognizer, currentKB.name, delayDuration)
+          needPublish = await this.updateKB(currentKB, qnaBuildCore, recognizer, delayDuration)
         } else {
           // create a new kb
-          needPublish = await this.createKB(content.content, qnaBuildCore, recognizer, currentKB.name, delayDuration)
+          needPublish = await this.createKB(currentKB, qnaBuildCore, recognizer, delayDuration)
         }
 
         if (needPublish) {
@@ -216,6 +216,13 @@ export class Builder {
     const dialogContents = qnaBuildCore.generateDeclarativeAssets(recognizerValues, multiRecognizer as MultiLanguageRecognizer, settings as Settings)
 
     return dialogContents
+  }
+
+  async getEndpointKeys(subscriptionkey: string, endpoint: string) {
+    const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
+    const endPointKeys = await qnaBuildCore.getEndpointKeys()
+
+    return endPointKeys
   }
 
   async importUrlReference(
@@ -315,7 +322,7 @@ export class Builder {
     return {kb: currentQna.kb, alterations: currentQna.alterations}
   }
 
-  async updateKB(currentKB: any, qnaContent: string, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, kbName: string, delayDuration: number) {
+  async updateKB(currentKB: any, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, delayDuration: number) {
     await delay(delayDuration)
     const existingKB = await qnaBuildCore.exportKB(recognizer.getKBId(), 'Prod')
 
@@ -323,11 +330,11 @@ export class Builder {
     const isKBEqual = qnaBuildCore.isKBEqual(currentKB, existingKB)
     if (!isKBEqual) {
       try {
-        this.handler(`Updating to new version for kb ${kbName}...\n`)
+        this.handler(`Updating to new version for kb ${currentKB.name}...\n`)
         await delay(delayDuration)
-        await qnaBuildCore.replaceKB(recognizer.getKBId(), qnaContent)
+        await qnaBuildCore.replaceKB(recognizer.getKBId(), currentKB)
 
-        this.handler(`Updating finished for kb ${kbName}\n`)
+        this.handler(`Updating finished for kb ${currentKB.name}\n`)
       } catch (err) {
         err.text = `Updating knowledge base failed: \n${err.text}`
         throw err
@@ -335,16 +342,16 @@ export class Builder {
 
       return true
     } else {
-      this.handler(`kb ${kbName} has no changes\n`)
+      this.handler(`kb ${currentKB.name} has no changes\n`)
       return false
     }
   }
 
-  async createKB(qnaContent: string, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, kbName: string, delayDuration: number) {
-    this.handler(`Creating qnamaker KB: ${kbName}...\n`)
+  async createKB(currentKB: any, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, delayDuration: number) {
+    this.handler(`Creating qnamaker KB: ${currentKB.name}...\n`)
     await delay(delayDuration)
     const emptyKBJson = {
-      name: kbName,
+      name: currentKB.name,
       qnaList: [],
       urls: [],
       files: []
@@ -356,9 +363,9 @@ export class Builder {
       const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
       recognizer.setKBId(opResult.resourceLocation.split('/')[2])
       await delay(delayDuration)
-      await qnaBuildCore.replaceKB(recognizer.getKBId(), qnaContent)
+      await qnaBuildCore.replaceKB(recognizer.getKBId(), currentKB)
 
-      this.handler(`Creating finished for kb ${kbName}\n`)
+      this.handler(`Creating finished for kb ${currentKB.name}\n`)
     } catch (err) {
       err.text = `Creating knowledge base failed: \n${err.text}`
       throw err

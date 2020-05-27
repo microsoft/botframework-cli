@@ -456,7 +456,7 @@ const addRolesAndFeatures = function(entity) {
 const updateUtterancesList = function (srcCollection, tgtCollection, attribute) {
     (srcCollection || []).forEach(srcItem => {
         let matchInTarget = tgtCollection.find(item => item.intent.name == srcItem.intent);
-        if(matchInTarget.utterances.length === 0) {
+        if(!matchInTarget || matchInTarget.utterances.length === 0) {
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
             return;
         }

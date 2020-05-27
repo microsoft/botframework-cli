@@ -165,6 +165,11 @@ const helpers = {
             return
         }
         updateToV7(finalLUISJSON);
+    },
+    cleanUpExplicitEntityProperty : function(finalLUISJSON) {
+        (finalLUISJSON.entities || []).forEach(e => {
+            if (e.explicitlyAdded !== undefined) delete e.explicitlyAdded;
+        })
     }
 };
 
@@ -204,18 +209,87 @@ const updateToV7 = function(finalLUISJSON) {
         });
         (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
         (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
-        let entityParentTree = {};
-        const curPath = ["$root$"];
-        constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
-        transformUtterancesWithNDepthEntities(finalLUISJSON, entityParentTree)
-        verifyPatternsDoNotHaveChildEntityReferences(finalLUISJSON, entityParentTree)
+        // do we have nDepthEntities?
+        let nDepthEntityExists = (finalLUISJSON.entities || []).find(x => x.children !== undefined && Array.isArray(x.children) && x.children.length !== 0);
+        if (nDepthEntityExists !== undefined) {
+            // Remove dead ML entity definitions. 
+            removeDeadMLEntityDefinitions(finalLUISJSON);
+            let entityParentTree = {};
+            const curPath = ["$root$"];
+            constructEntityParentTree(finalLUISJSON.entities, entityParentTree, curPath);
+            updateEntityParentTreeWithAllEntityTypes(finalLUISJSON, entityParentTree);
+            
+            // Verify that all parents of a child entity are labelled.
+            updateModelBasedOnNDepthEntities(finalLUISJSON.utterances, entityParentTree);
+            
+            transformUtterancesWithNDepthEntities(finalLUISJSON, entityParentTree)
+            verifyPatternsDoNotHaveChildEntityReferences(finalLUISJSON, entityParentTree)    
+        }
     }
+}
+
+const removeDeadMLEntityDefinitions = function(finalLUISJSON) {
+    let idxToRemove = [];
+    (finalLUISJSON.entities || []).forEach((entity, idx) => {
+        if (entity.explicitlyAdded === undefined || entity.explicitlyAdded !== true) {
+            // is this entity a child to a composite?
+            let compositeChild = (finalLUISJSON.composites || []).find(c => {
+                let x = c.children.find(x => {
+                    return x.name == entity.name
+                })
+                return x != undefined;
+            });
+            if (compositeChild !== undefined) return;
+            // is not the same name as a phrase list
+            let entityIsPL = (finalLUISJSON.phraselists || []).find(x => x.name == entity.name);
+            if (entityIsPL !== undefined) return;
+            idxToRemove.push(idx)
+        }
+    })
+    if (idxToRemove.length !== 0) {
+        idxToRemove.reverse().forEach(i => finalLUISJSON.entities.splice(i, 1))
+    }
+}
+
+const updateModelBasedOnNDepthEntities = function(utterances, entityParentTree) 
+{
+    let utterancesWithLabels = utterances.filter(utterance => utterance.entities && utterance.entities.length !== 0);
+    utterancesWithLabels.forEach(utterance => {
+        utterance.entities.forEach(entityInUtterance => {
+            let parentsForEntity = entityParentTree[entityInUtterance.entity];
+            if (parentsForEntity === undefined) return;
+            // do not proceed further if there isnt at least one non root parent
+            let nonRootParents = parentsForEntity.filter(t => t[0] != "$root$");
+            if (nonRootParents.length === 0) return;
+            let parentIsLabelled = false;
+            nonRootParents.forEach(tree => {
+                if (tree.length === 1 && tree[0] === "$root$") return;
+                if (parentIsLabelled) return;
+                tree.forEach(parent => {
+                    if (parent === "$root$") return;
+                    if (parentIsLabelled) return;
+                    let parentInUtterance = utterance.entities.find(x => x.entity == parent);
+                    if (parentInUtterance !== undefined) {
+                        parentIsLabelled = true;
+                    }
+                })
+            })
+            if (!parentIsLabelled) {
+                // Is the entity a root entity? 
+                let isRootEntity = parentsForEntity.find(t => t[0] == "$root$")
+                if (isRootEntity === undefined) {
+                    const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Child entity "${entityInUtterance.entity}" does not have its parent labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
+                }
+            }
+        })
+    })
 }
 
 const verifyPatternsDoNotHaveChildEntityReferences = function(finalLUISJSON, entityParentTree)
 {
     if (finalLUISJSON.patterns === undefined || !Array.isArray(finalLUISJSON.patterns) || finalLUISJSON.patterns.length === 0) return;
-    (finalLUISJSON.patterns || []).forEach(pattern => {
+     (finalLUISJSON.patterns || []).forEach(pattern => {
         // detect if pattern has an entity definition
         let entitiesRegExp = /{(?<entity>[^{,}]+)}/gmi;
         let entitiesFound = pattern.pattern.match(entitiesRegExp);
@@ -225,13 +299,32 @@ const verifyPatternsDoNotHaveChildEntityReferences = function(finalLUISJSON, ent
                 entity = entity.replace(/[{}]/g, '');
                 let entityInTree = entityParentTree[entity]
                 if (entityInTree !== undefined) {
-                    if (entityInTree[0] != "$root$") {
+                    // at least one of these need to be a root entity.
+                    let isEntityAlsoRoot = entityInTree.find(item => item[0] === "$root$");
+                    if (isEntityAlsoRoot === undefined) {
                         throw (new exception(retCode.errorCode.INVALID_INPUT, `Patterns cannot contain references to child entities. Pattern: "${pattern.pattern}" has reference to "{${entity}}".`));
                     }                
                 }
             })
         }
     })
+}
+
+const updateEntityParentTreeWithAllEntityTypes = function(finalLUISJSON, entityParentTree)
+{
+    let collection = ["prebuiltEntities", "patternAnyEntities" ,"model_features", "phraselists", "regex_entities", "closedLists", "composites"];
+    collection.forEach(item => {
+        (finalLUISJSON[item] || []).forEach(entity => addEntityToParentTree(entityParentTree, entity.name));
+    })
+}
+
+const addEntityToParentTree = function(entityParentTree, entityName)
+{
+    if (entityParentTree[entityName] === undefined) {
+        entityParentTree[entityName] = [["$root$"]];
+    } else {
+        entityParentTree[entityName].push(["$root$"]);
+    }
 }
 
 const constructEntityParentTree = function(entityCollection, entityParentTree, curPath)
@@ -265,7 +358,6 @@ const transformUtterancesWithNDepthEntities = function (finalLUISJSON, entityPar
                 // find the immediate parents of this entity
                 // if the enity has a role, find by that
                 let entityToFind = item.role || item.entity;
-                if (isRootEntity(entityToFind, finalLUISJSON.entities)) return;
                 
                 if (entityParentTree[entityToFind] === undefined) {
                     return;
