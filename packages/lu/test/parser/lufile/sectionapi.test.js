@@ -279,12 +279,18 @@ describe('Section CRUD tests for error import in utterances', () => {
 `# Greeting
 - hi
 []
-> @ ml city`;
+[
+]
+> @ ml city
+# Cancel
+- cancel that`;
 
         luresource = luparser.parse(fileContent);
         assert.equal(luresource.Errors.length, 1);
         assert.equal(luresource.Errors[0].Message, 'Invalid intent body line, did you miss \'-\' at line begin')
-        assert.equal(luresource.Sections.length, 1);
-        assert.equal(luresource.Sections[0].Body, `- hi${NEWLINE}[]${NEWLINE}> @ ml city`);
+        assert.equal(luresource.Sections.length, 2);
+        assert.equal(luresource.Sections[0].Body, `- hi${NEWLINE}[]${NEWLINE}[${NEWLINE}]${NEWLINE}> @ ml city`);
+        assert.equal(luresource.Sections[1].Name, 'Cancel')
+        assert.equal(luresource.Sections[1].Body, '- cancel that')
     });
 });
