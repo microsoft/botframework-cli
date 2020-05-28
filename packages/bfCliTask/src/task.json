@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":55
+        "Release":58
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -506,7 +506,7 @@
             "helpMarkDown": "Machine translation endpoint key"
         },
         {
-            "name": "sourceLang",
+            "name": "qnaSourceLang",
             "type": "string",
             "label": "Source Language",
             "required": false,
@@ -515,7 +515,7 @@
             "helpMarkDown": "Source lang code. Auto detect if missing"
         },
         {
-            "name": "targetLang",
+            "name": "qnaTargetLang",
             "type": "string",
             "label": "Target Languages",
             "required": false,

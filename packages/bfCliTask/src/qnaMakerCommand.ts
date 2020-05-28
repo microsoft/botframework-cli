@@ -26,8 +26,8 @@ export class QnAMakerCommand {
     private qnaTranslateInput: string;
     private qnaTranslateOutputFolder: string;
     private qnaTranslateKey: string;
-    private sourceLang: string;
-    private targetLang: string;
+    private qnaSourceLang: string;
+    private qnaTargetLang: string;
     private activeLearning: boolean;
     private keyType: string;
 
@@ -50,8 +50,8 @@ export class QnAMakerCommand {
         this.qnaTranslateInput = taskLibrary.getInput('qnaTranslateInput', false) as string;
         this.qnaTranslateOutputFolder = taskLibrary.getInput('qnaTranslateOutputFolder', false) as string;
         this.qnaTranslateKey = taskLibrary.getInput('qnaTranslateKey', false) as string;
-        this.sourceLang = taskLibrary.getInput('sourceLang', false) as string;
-        this.targetLang = taskLibrary.getInput('targetLang', false) as string;
+        this.qnaSourceLang = taskLibrary.getInput('qnaSourceLang', false) as string;
+        this.qnaTargetLang = taskLibrary.getInput('qnaTargetLang', false) as string;
         this.activeLearning = taskLibrary.getBoolInput('activeLearning', false);
         this.keyType = taskLibrary.getInput('keyType', false) as string;
     }
@@ -195,7 +195,7 @@ export class QnAMakerCommand {
 
         console.log('Setting up the QnA knowledgebase config file');
 
-        return new Promise ((resolve, reject) => {               
+        return new Promise ((resolve, reject) => {
             init.stderr.on('data',(data) => {
                 let _data: string = "" + data;
                 if(_data.includes('subscription key')){
@@ -204,9 +204,11 @@ export class QnAMakerCommand {
                     init.stdin.write(`${ this.kbId }`);
                 }else if(_data.includes('ok?')){
                     init.stdin.write("yes");
-                    resolve(true);                              
+                    console.log(_data);
+                    init.kill();
+                    resolve(true);
                 }
-            });      
+            });
         });
     }
  
@@ -250,8 +252,8 @@ export class QnAMakerCommand {
         console.log('Translationg QnA models');
 
         let command = `bf qnamaker:translate --in "${ this.qnaTranslateInput }" --out "${ this.qnaTranslateOutputFolder }" --translatekey "${ this.qnaTranslateKey }"`;
-        command += this.sourceLang? ` --srclang "${ this.sourceLang }"` : '';
-        command += ` --tgtlang "${ this.targetLang }" --force --recurse --translate_comments --translate_link_text`;
+        command += this.qnaSourceLang? ` --srclang "${ this.qnaSourceLang }"` : '';
+        command += ` --tgtlang "${ this.qnaTargetLang }" --force --recurse --translate_comments --translate_link_text`;
 
         execSync(command, {stdio: 'inherit'});
         console.log('QnA models translated successfully');      
