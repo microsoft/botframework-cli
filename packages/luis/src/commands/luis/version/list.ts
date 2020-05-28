@@ -33,7 +33,11 @@ export default class LuisVersionList extends Command {
       const configDir = this.config.configDir
       const options: any = {}
 
+      this.log('flags: endpoint ' + flags.endpoint + ' , subscriptionKey ' + flags.subscriptionKey + ' , appId ' + flags.appId + ' , skip ' + flags.skip + ' , out ' + flags.out)
+
       let {endpoint, subscriptionKey, appId, force, out, skip, take} = await utils.processInputs(flags, flagLabels, configDir)
+
+      this.log('Values: endpoint ' + endpoint + ' , subscriptionKey ' + subscriptionKey + ' , appId ' + appId + ' , skip ' + skip + ' , out ' + out)
 
       const requiredProps = {endpoint, subscriptionKey}
       utils.validateRequiredProps(requiredProps)
