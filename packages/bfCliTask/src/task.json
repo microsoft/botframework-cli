@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":74
+        "Release":77
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -184,10 +184,10 @@
                 "ReplaceKB" : "Replace",
                 "UpdateKB" : "Update",
                 "TrainKB" : "Train",
-                "AlterationsReplaceKB" : "Alterations:Replace",
                 "QueryKB" : "Query",
                 "QnAConvert" : "Convert",
                 "QnATranslate" : "Translate",
+                "AlterationsReplaceKB" : "Replace Alterations",
                 "EndpointSettingsUpdate" : "Update Endpoint Settings",
                 "EndpointKeysRefresh" : "Refresh Endpoint Keys"
             }

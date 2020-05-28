@@ -104,7 +104,7 @@ export class QnAMakerCommand {
     
         let command = `bf qnamaker:kb:publish --kbId ${ newKbId? newKbId: this.kbId } --subscriptionKey ${ this.qnaKey }`;
     
-        execSync(command);
+        execSync(command, {stdio: 'inherit'});
         console.log('QnA knowledgebase succesfully published');
     }
     
@@ -130,7 +130,7 @@ export class QnAMakerCommand {
 
         let command = `bf qnamaker:kb:delete --kbId ${ this.kbId } --subscriptionKey ${ this.qnaKey } --force`;
 
-        execSync(command);
+        execSync(command, {stdio: 'inherit'});
         console.log('QnA knolewdgebase successfully deleted');
     }
 
@@ -139,7 +139,7 @@ export class QnAMakerCommand {
 
         let command = `bf qnamaker:kb:replace --kbId ${ this.kbId } --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey }`;
 
-        execSync(command);
+        execSync(command, {stdio: 'inherit'});
         console.log('QnA knowledgebase successfully replaced');
     }
 
@@ -148,7 +148,7 @@ export class QnAMakerCommand {
 
         let command = `bf qnamaker:kb:update --kbId ${ this.kbId } --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey } --wait`;
 
-        execSync(command);
+        execSync(command, {stdio: 'inherit'});
         console.log('QnA knowledgebase successfully updated');
     }
 
