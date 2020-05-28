@@ -21,6 +21,7 @@ export class QnAMakerCommand {
     private serviceEndpoint: string;
     private qnaQuestion: string;
     private activeLearning: boolean;
+    private keyType: string;
 
     constructor() {
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
@@ -36,6 +37,7 @@ export class QnAMakerCommand {
         this.serviceEndpoint = taskLibrary.getInput('serviceEndpoint',false) as string;
         this.qnaQuestion = taskLibrary.getInput('qnaQuestion', false) as string;
         this.activeLearning = taskLibrary.getBoolInput('activeLearning', false);
+        this.keyType = taskLibrary.getInput('keyType', false) as string;
     }
 
     public executeSubCommand = () => {
@@ -66,6 +68,9 @@ export class QnAMakerCommand {
                 break;
             case 'EndpointSettingsUpdate':
                 this.updateEndpointSettings();
+                break;
+            case 'EndpointKeysRefresh':
+                this.refreshEndpointKeys();
                 break;
             default:
                 console.log('No QnA Maker command was selected')
@@ -193,5 +198,17 @@ export class QnAMakerCommand {
 
         execSync(command, {stdio: 'inherit'});
         console.log('Endpoint settings successfully updated');
+    }
+
+    private refreshEndpointKeys = (): void => {
+        const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
+        const RefreshedKeys = `${ rootPath }/RefreshedKeys.json`;
+        console.log('Refreshing Endpoint keys');
+
+        let command = `bf qnamaker:endpointkeys:refresh --subscriptionKey ${ this.qnaKey } --endpoint "${ this.serviceEndpoint }"`;
+        command += ` --keyType "${ this.keyType }" > ${ RefreshedKeys } | cat  ${ RefreshedKeys }`;
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('Endpoint keys successfully refreshed');
     }
 }
