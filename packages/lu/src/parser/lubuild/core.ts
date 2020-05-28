@@ -19,6 +19,7 @@ const LUOptions = require('./../lu/luOptions')
 const Luis = require('./../luis/luis')
 
 const delayDuration = 1000
+const rateLimitErrorCode = 429
 
 export class LuBuildCore {
   private readonly client: any
@@ -39,7 +40,7 @@ export class LuBuildCore {
     try {
       apps = await this.client.apps.list(undefined, undefined)
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         apps = await this.client.apps.list(undefined, undefined)
       } else {
@@ -55,7 +56,7 @@ export class LuBuildCore {
     try {
       appInfo = await this.client.apps.get(appId)
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         appInfo = await this.client.apps.get(appId)
       } else {
@@ -79,7 +80,7 @@ export class LuBuildCore {
     let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
     let messageData = await response.json()
 
-    if (messageData.error && messageData.error.code === '429') {
+    if (messageData.error && messageData.error.code === rateLimitErrorCode.toString()) {
       await delay(delayDuration)
       response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
       messageData = await response.json()
@@ -97,7 +98,7 @@ export class LuBuildCore {
     try {
       response = await this.client.versions.exportMethod(appId, versionId)
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         response = await this.client.versions.exportMethod(appId, versionId)
       } else {
@@ -171,7 +172,7 @@ export class LuBuildCore {
     let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
     let messageData = await response.json()
 
-    if (messageData.error && messageData.error.code === '429') {
+    if (messageData.error && messageData.error.code === rateLimitErrorCode.toString()) {
       await delay(delayDuration)
       response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
       messageData = await response.json()
@@ -189,7 +190,7 @@ export class LuBuildCore {
     try {
       appVersions = await this.client.versions.list(appId)
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         appVersions = await this.client.versions.list(appId)
       } else {
@@ -204,7 +205,7 @@ export class LuBuildCore {
     try {
       await this.client.versions.deleteMethod(appId, versionId)
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         await this.client.versions.deleteMethod(appId, versionId)
       } else {
@@ -217,7 +218,7 @@ export class LuBuildCore {
     try {
       await this.client.train.trainVersion(appId, versionId)
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         await this.client.train.trainVersion(appId, versionId)
       } else {
@@ -231,7 +232,7 @@ export class LuBuildCore {
     try {
       status = await this.client.train.getStatus(appId, versionId)
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         status = await this.client.train.getStatus(appId, versionId)
       } else {
@@ -250,7 +251,7 @@ export class LuBuildCore {
           isStaging: false
         })
     } catch (e) {
-      if (e.statusCode === 429) {
+      if (e.statusCode === rateLimitErrorCode) {
         await delay(delayDuration)
         await this.client.apps.publish(appId,
           {
