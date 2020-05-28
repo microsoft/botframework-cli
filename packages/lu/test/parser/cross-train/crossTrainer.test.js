@@ -580,12 +580,13 @@ describe('luis:cross training tests among lu and qna contents', () => {
       content:
         `# dia1_trigger
         - book a hotel for me
-        - book a hotel for {personName}
+        - book a hotel for {@personName}
         - book a hotel for {name}
         
         # dia2_trigger
         - book a flight for me
-        - book a train ticket for me`,
+        - book a train ticket for me
+        - can you book a flight for {@ personName : userName}`,
       id: 'main.lu'})
 
     qnaContentArray.push({

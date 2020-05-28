@@ -531,10 +531,15 @@ const patternWithPrebuiltEntity = function (utterance) {
   let matchedEntity = /{([^}]+)}/g.exec(utterance)
 
   if (matchedEntity !== null) {
-    patternAnyEntity = matchedEntity[1]
+    patternAnyEntity = matchedEntity[1].trim()
 
     if (patternAnyEntity && patternAnyEntity.startsWith('@')) {
-      patternAnyEntity = patternAnyEntity.slice(1)
+      patternAnyEntity = patternAnyEntity.slice(1).trim()
+    }
+
+    let patternAnyEntityWithRole = patternAnyEntity.split(':')
+    if (patternAnyEntityWithRole.length > 1) {
+      patternAnyEntity = patternAnyEntityWithRole[0].trim()
     }
 
     if (prebuiltEntityTypes.includes(patternAnyEntity)) {
