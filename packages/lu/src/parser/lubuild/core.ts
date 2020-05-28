@@ -10,11 +10,15 @@ import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import * as path from 'path'
 import fetch from 'node-fetch'
+
+const delay = require('delay')
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
 const Content = require('./../lu/lu')
 const LUOptions = require('./../lu/luOptions')
 const Luis = require('./../luis/luis')
+
+const delayDuration = 1000
 
 export class LuBuildCore {
   private readonly client: any
@@ -31,13 +35,33 @@ export class LuBuildCore {
   }
 
   public async getApplicationList() {
-    let apps = await this.client.apps.list(undefined, undefined)
+    let apps
+    try {
+      apps = await this.client.apps.list(undefined, undefined)
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        apps = await this.client.apps.list(undefined, undefined)
+      } else {
+        throw e
+      }
+    }
 
     return apps
   }
 
   public async getApplicationInfo(appId: string) {
-    let appInfo = await this.client.apps.get(appId)
+    let appInfo
+    try {
+      appInfo = await this.client.apps.get(appId)
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        appInfo = await this.client.apps.get(appId)
+      } else {
+        throw e
+      }
+    }
 
     return appInfo
   }
@@ -52,8 +76,14 @@ export class LuBuildCore {
       'Ocp-Apim-Subscription-Key': this.subscriptionKey
     }
 
-    const response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
-    const messageData = await response.json()
+    let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
+    let messageData = await response.json()
+
+    if (messageData.error && messageData.error.code === '429') {
+      await delay(delayDuration)
+      response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
+      messageData = await response.json()
+    }
 
     if (messageData.error) {
       throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
@@ -63,7 +93,17 @@ export class LuBuildCore {
   }
 
   public async exportApplication(appId: string, versionId: string) {
-    const response = await this.client.versions.exportMethod(appId, versionId)
+    let response
+    try {
+      response = await this.client.versions.exportMethod(appId, versionId)
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        response = await this.client.versions.exportMethod(appId, versionId)
+      } else {
+        throw e
+      }
+    }
 
     return response
   }
@@ -128,8 +168,14 @@ export class LuBuildCore {
       'Ocp-Apim-Subscription-Key': this.subscriptionKey
     }
 
-    const response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
-    const messageData = await response.json()
+    let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
+    let messageData = await response.json()
+
+    if (messageData.error && messageData.error.code === '429') {
+      await delay(delayDuration)
+      response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
+      messageData = await response.json()
+    }
 
     if (messageData.error) {
       throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
@@ -139,29 +185,82 @@ export class LuBuildCore {
   }
 
   public async listApplicationVersions(appId: string) {
-    return this.client.versions.list(appId)
+    let appVersions
+    try {
+      appVersions = await this.client.versions.list(appId)
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        appVersions = await this.client.versions.list(appId)
+      } else {
+        throw e
+      }
+    }
+
+    return appVersions
   }
 
   public async deleteVersion(appId: string, versionId: string) {
-    await this.client.versions.deleteMethod(appId, versionId)
+    try {
+      await this.client.versions.deleteMethod(appId, versionId)
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        await this.client.versions.deleteMethod(appId, versionId)
+      } else {
+        throw e
+      }
+    }
   }
 
   public async trainApplication(appId: string, versionId: string) {
-    await this.client.train.trainVersion(appId, versionId)
+    try {
+      await this.client.train.trainVersion(appId, versionId)
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        await this.client.train.trainVersion(appId, versionId)
+      } else {
+        throw e
+      }
+    }
   }
 
   public async getTrainingStatus(appId: string, versionId: string) {
-    const status = this.client.train.getStatus(appId, versionId)
+    let status
+    try {
+      status = await this.client.train.getStatus(appId, versionId)
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        status = await this.client.train.getStatus(appId, versionId)
+      } else {
+        throw e
+      }
+    }
 
     return status
   }
 
   public async publishApplication(appId: string, versionId: string) {
-    this.client.apps.publish(appId,
-      {
-        versionId,
-        isStaging: false
-      })
+    try {
+      await this.client.apps.publish(appId,
+        {
+          versionId,
+          isStaging: false
+        })
+    } catch (e) {
+      if (e.statusCode === 429) {
+        await delay(delayDuration)
+        await this.client.apps.publish(appId,
+          {
+            versionId,
+            isStaging: false
+          })
+      } else {
+        throw e
+      }
+    }
   }
 
   public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
