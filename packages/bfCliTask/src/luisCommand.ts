@@ -177,7 +177,6 @@ export class LuisCommand {
     
         let command = `bf luis:application:import --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --name "${ this.luisApplicationName }" `
         command += `--in "${ this.luisInputFile }" > ${ outputFileLuisImport }`;
-
         execSync(command);
         console.log('LUIS Application successfully imported');
     }

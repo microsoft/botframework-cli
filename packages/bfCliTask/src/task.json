@@ -315,6 +315,237 @@
             "groupname": "command",
             "visibleRule": "luisSubCommand=LuisVersionRename",
             "helpMarkDown": "The new id of the version."
+        },
+        {
+            "name": "qnaMakerSubCommand",
+            "type": "pickList",
+            "label": "QnA Maker Commands",
+            "required": false,
+            "defaultValue": "",
+            "groupname": "command",
+            "visibleRule": "qnaMakerCommand = TRUE",
+            "helpMarkDown": "Select the sub-command to execute.",
+            "options": {
+                "CreateKB" : "Creates",
+                "DeleteKB" : "Deletes",
+                "PublishKB" : "Publish",
+                "ReplaceKB" : "Replace",
+                "UpdateKB" : "Update",
+                "TrainKB" : "Train",
+                "QueryKB" : "Query",
+                "QnAConvert" : "Convert",
+                "QnATranslate" : "Translate",
+                "AlterationsReplaceKB" : "Replace Alterations",
+                "EndpointSettingsUpdate" : "Update Endpoint Settings",
+                "EndpointKeysRefresh" : "Refresh Endpoint Keys"
+            }
+        },
+        {
+            "name": "qnaKey",
+            "type": "string",
+            "label": "QnA Subscription Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerCommand = TRUE && qnaMakerSubCommand!=QnAConvert && qnaMakerSubCommand!=QnATranslate",
+            "helpMarkDown": "Enter you QnAMaker found on the Cognitive Services Azure portal page under 'access keys'"
+        },
+        {
+            "name": "kbName",
+            "type": "string",
+            "label": "Knowledgebase name",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=CreateKB || qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Enter a name for your knowledgebase"   
+        },
+        {
+            "name": "kbId",
+            "type": "string",
+            "label": "Knowledgebase ID",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QueryKB || qnaMakerSubCommand=DeleteKB || qnaMakerSubCommand=PublishKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB || qnaMakerSubCommand=TrainKB",
+            "helpMarkDown": "Enter the ID of the knowledgebase."
+        },
+        {
+            "name": "kbDTOFileLocation",
+            "type": "filepath",
+            "label": "Knowledgebase DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=CreateKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB",
+            "helpMarkDown": "Enter the location of your knowledgebase DTO file"
+        },
+        {
+            "name": "publishNewKB",
+            "type": "boolean",
+            "label": "Publish knowledgebase",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=CreateKB",
+            "helpMarkDown": "Check to publish this knowledgebase after the creation."
+        },
+        {
+            "name": "feedbackRecordDTOFileLocation",
+            "type": "filepath",
+            "label": "FeedbackRecord DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB",
+            "helpMarkDown": "Enter the location of your FeedbackRecord DTO file"
+        },
+        {
+            "name": "wordAlterationsDTOFileLocation",
+            "type": "filepath",
+            "label": "wordAlterations DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=AlterationsReplaceKB",
+            "helpMarkDown": "Enter the location of your wordAlterations DTO file"
+        },
+        {
+            "name": "overrideServiceEndpointKB",
+            "type": "boolean",
+            "label": "Override Public Endpoint",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=AlterationsReplaceKB",
+            "helpMarkDown": "Supported Cognitive Services endpoints (protocol and hostname, for example: https://westus.api.cognitive.microsoft.com).."
+        },
+        {
+            "name": "kbHostName",
+            "type": "string",
+            "label": "Specifies the url for your private QnA service",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB || qnaMakerSubCommand=QueryKB",
+            "helpMarkDown": "Enter the url for your private QnA service"   
+        },
+        {
+            "name": "kbEndPointKey",
+            "type": "string",
+            "label": "Specifies the endpoint key for your private QnA service",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB || qnaMakerSubCommand=QueryKB",
+            "helpMarkDown": "Enter the endpoint key for your private QnA service"   
+        },
+        {
+            "name": "serviceEndpoint",
+            "type": "string",
+            "label": "Cognitive Services endpoint",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "overrideServiceEndpointKB=true || qnaMakerSubCommand=EndpointSettingsUpdate || qnaMakerSubCommand=EndpointKeysRefresh",
+            "helpMarkDown": "Enter the Supported Cognitive Services endpoint"
+        },
+        {
+            "name": "qnaQuestion",
+            "type": "string",
+            "label": "Query to get a prediction for",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QueryKB",
+            "helpMarkDown": "Query to get a prediction for"
+        },
+        {
+            "name": "qnaConvertInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Source .qna file(s) or QnA KB JSON file"
+        },
+        {
+            "name": "isAlterationFile",
+            "type": "boolean",
+            "label": "Is QnA Alterations file",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Indicates if files is QnA Alterations"
+        },
+        {
+            "name": "qnaConvertOutput",
+            "type": "filepath",
+            "label": "Output Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Output file or folder name. If not specified stdout will be used as output"
+        },
+        {
+            "name": "qnaTranslateInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Source .qna file(s) or QnA maker application JSON model"
+        },
+        {
+            "name": "qnaTranslateOutputFolder",
+            "type": "filepath",
+            "label": "Output Folder",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Output folder name. If not specified stdout will be used as output"
+        },
+        {
+            "name": "qnaTranslateKey",
+            "type": "string",
+            "label": "Translation Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Machine translation endpoint key"
+        },
+        {
+            "name": "sourceLang",
+            "type": "string",
+            "label": "Source Language",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Source lang code. Auto detect if missing"
+        },
+        {
+            "name": "targetLang",
+            "type": "string",
+            "label": "Target Languages",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Comma separated list of target languages"
+        },
+        {    
+            "name": "activeLearning",
+            "type": "boolean",
+            "label": "Active Learning",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=EndpointSettingsUpdate",
+            "helpMarkDown": "Enable active learning."
+        },
+        {
+            "name": "keyType",
+            "type": "pickList",
+            "label": "Key Type",
+            "required": false,
+            "defaultValue": "Primary Key",
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=EndpointKeysRefresh",
+            "helpMarkDown": "Select the type of key.",
+            "options": {
+                "PrimaryKey" : "Primary Key",
+                "SecondaryKey" : "Secondary Key"
+            }
         }
     ],
     "execution": {
