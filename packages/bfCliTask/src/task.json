@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":58
+        "Release":59
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -67,21 +67,21 @@
             "visibleRule": "luisCommand = TRUE",
             "helpMarkDown": "Select the sub-command to execute.",
             "options": {
-                "ApplicationCreate" : "Application Create",
-                "LuisBuild" : "Luis Build",
-                "LuisTrainRun" : "Luis Train Run",
-                "LuisPublish" : "Luis Publish",
-                "LuisApplicationDelete" : "Application Delete",
-                "LuisApplicationImport" : "Application Import",
-                "LuisApplicationRename" : "Application Rename",
-                "LuisConvert": "Luis Convert",
-                "LuisGenerate": "Luis Generate",
-                "LuisTranslate": "Luis Translate",
-                "LuisVersionClone": "Luis Version Clone",
-                "LuisVersionExport": "Luis Version Export",
-                "LuisVersionImport": "Luis Version Import",
-                "LuisVersionRename": "Luis Version Rename",
-                "LuisVersionDelete": "Luis Version Delete"
+                "ApplicationCreate" : "Create",
+                "LuisBuild" : "Build",
+                "LuisTrainRun" : "Train Run",
+                "LuisPublish" : "Publish",
+                "LuisApplicationDelete" : "Delete",
+                "LuisApplicationImport" : "Import",
+                "LuisApplicationRename" : "Rename",
+                "LuisConvert": "Convert",
+                "LuisGenerate": "Generate",
+                "LuisTranslate": "Translate",
+                "LuisVersionClone": "Version Clone",
+                "LuisVersionExport": "Version Export",
+                "LuisVersionImport": "Version Import",
+                "LuisVersionRename": "Version Rename",
+                "LuisVersionDelete": "Version Delete"
             }
         },
         {
@@ -326,8 +326,8 @@
             "visibleRule": "qnaMakerCommand = TRUE",
             "helpMarkDown": "Select the sub-command to execute.",
             "options": {
-                "CreateKB" : "Creates",
-                "DeleteKB" : "Deletes",
+                "CreateKB" : "Create",
+                "DeleteKB" : "Delete",
                 "PublishKB" : "Publish",
                 "ReplaceKB" : "Replace",
                 "UpdateKB" : "Update",
