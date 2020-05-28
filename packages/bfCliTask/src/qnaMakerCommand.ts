@@ -28,7 +28,8 @@ export class QnAMakerCommand {
     private qnaTranslateKey: string;
     private sourceLang: string;
     private targetLang: string;
-
+    private activeLearning: boolean;
+    private keyType: string;
 
     constructor() {
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
@@ -51,6 +52,8 @@ export class QnAMakerCommand {
         this.qnaTranslateKey = taskLibrary.getInput('qnaTranslateKey', false) as string;
         this.sourceLang = taskLibrary.getInput('sourceLang', false) as string;
         this.targetLang = taskLibrary.getInput('targetLang', false) as string;
+        this.activeLearning = taskLibrary.getBoolInput('activeLearning', false);
+        this.keyType = taskLibrary.getInput('keyType', false) as string;
     }
 
     public executeSubCommand = () => {
@@ -84,6 +87,12 @@ export class QnAMakerCommand {
                 break;
             case 'QnATranslate':                
                 this.TranslateQnAModel();  
+                break;
+            case 'EndpointSettingsUpdate':
+                this.updateEndpointSettings();
+                break;
+            case 'EndpointKeysRefresh':
+                this.refreshEndpointKeys();
                 break;
             default:
                 console.log('No QnA Maker command was selected');
@@ -160,7 +169,7 @@ export class QnAMakerCommand {
         if (this.serviceEndpoint) {
             command += ` --endpoint ${ this.serviceEndpoint }`;
         }
-    
+
         execSync(command, {stdio: 'inherit'});
         console.log('Alterations successfully replaced');
     }
@@ -169,16 +178,16 @@ export class QnAMakerCommand {
         const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
         const QueryOutputFile = `${ rootPath }/QueryResult.json`;
 
-        this.QnAMakerInitConfiguration().then((isconfigured) => {
+        this.QnAMakerInitConfiguration().then((isconfigured)=>{
             if (isconfigured) {
                 console.log('Calling for query to the QnA knowledgebase');
 
-                let command = `bf qnamaker:query --endpointKey "${ this.kbEndPointKey }" --hostname "${ this.kbHostName }" --kbId "${ this.kbId }" --question "${ this.qnaQuestion }" > "${ QueryOutputFile }" | cat  "${ QueryOutputFile }"`;                
-                const commandLog = execSync(command);
-                console.log(commandLog+'\nThe QnA knowledgebase answered successfully'); 
+                let command = `bf qnamaker:query --endpointKey ${ this.kbEndPointKey } --hostname ${ this.kbHostName } --kbId ${ this.kbId } --question "${ this.qnaQuestion }" > ${ QueryOutputFile } | cat  ${ QueryOutputFile }`;
+
+                execSync(command, {stdio: 'inherit'});
+                console.log('The QnA knowledgebase answered successfully');
             }
         });
-    
     }
 
     private QnAMakerInitConfiguration(): Promise<boolean>{
@@ -200,7 +209,31 @@ export class QnAMakerCommand {
             });      
         });
     }
+ 
+    private updateEndpointSettings = (): void => {
+        console.log('Updating Endpoint settings');
 
+        let command = `bf qnamaker:endpointsettings:update --subscriptionKey ${ this.qnaKey } --endpoint "${ this.serviceEndpoint }"`;
+        if (this.activeLearning) {
+            command += ` --activelearning`;
+        }
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('Endpoint settings successfully updated');
+    }
+
+    private refreshEndpointKeys = (): void => {
+        const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
+        const RefreshedKeys = `${ rootPath }/RefreshedKeys.json`;
+        console.log('Refreshing Endpoint keys');
+
+        let command = `bf qnamaker:endpointkeys:refresh --subscriptionKey ${ this.qnaKey } --endpoint "${ this.serviceEndpoint }"`;
+        command += ` --keyType "${ this.keyType }" > ${ RefreshedKeys } | cat  ${ RefreshedKeys }`;
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('Endpoint keys successfully refreshed');
+    }
+    
     private ConvertQnaFiles = (): void => {
         console.log('Converting QnA files');
 
@@ -212,7 +245,7 @@ export class QnAMakerCommand {
         execSync(command, {stdio: 'inherit'});
         console.log('QnA files converted successfully');     
     }
-
+    
     private TranslateQnAModel = (): void => {
         console.log('Translationg QnA models');
 
@@ -221,6 +254,6 @@ export class QnAMakerCommand {
         command += ` --tgtlang "${ this.targetLang }" --force --recurse --translate_comments --translate_link_text`;
 
         execSync(command, {stdio: 'inherit'});
-        console.log('QnA models translated successfully');       
+        console.log('QnA models translated successfully');      
     }
 }

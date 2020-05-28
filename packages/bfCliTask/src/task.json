@@ -187,7 +187,9 @@
                 "AlterationsReplaceKB" : "Alterations:Replace",
                 "QueryKB" : "Query",
                 "QnAConvert" : "Convert",
-                "QnATranslate" : "Translate"
+                "QnATranslate" : "Translate",
+                "EndpointSettingsUpdate" : "Update Endpoint Settings",
+                "EndpointKeysRefresh" : "Refresh Endpoint Keys"
             }
         },
         {
@@ -288,7 +290,7 @@
             "label": "Cognitive Services endpoint",
             "required": false,
             "groupname": "command",
-            "visibleRule": "overrideServiceEndpointKB=true",
+            "visibleRule": "overrideServiceEndpointKB=true || qnaMakerSubCommand=EndpointSettingsUpdate || qnaMakerSubCommand=EndpointKeysRefresh",
             "helpMarkDown": "Enter the Supported Cognitive Services endpoint"
         },
         {
@@ -372,6 +374,30 @@
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=QnATranslate",
             "helpMarkDown": "Comma separated list of target languages"
+        },
+        {    
+            "name": "activeLearning",
+            "type": "boolean",
+            "label": "Active Learning",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=EndpointSettingsUpdate",
+            "helpMarkDown": "Enable active learning."
+        },
+        {
+            "name": "keyType",
+            "type": "pickList",
+            "label": "Key Type",
+            "required": false,
+            "defaultValue": "Primary Key",
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=EndpointKeysRefresh",
+            "helpMarkDown": "Select the type of key.",
+            "options": {
+                "PrimaryKey" : "Primary Key",
+                "SecondaryKey" : "Secondary Key"
+            }
         }
     ],
     "execution": {
