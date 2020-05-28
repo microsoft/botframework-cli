@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":66
+        "Release":74
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -178,14 +178,16 @@
             "visibleRule": "qnaMakerCommand = TRUE",
             "helpMarkDown": "Select the sub-command to execute.",
             "options": {
-                "CreateKB" : "Creates knowledgebase",
-                "DeleteKB" : "Deletes knowledgebase",
-                "PublishKB" : "Publish knowledgebase",
-                "ReplaceKB" : "Replace knowledgebase",
-                "UpdateKB" : "Update knowledgebase",
-                "TrainKB" : "Train knowledgebase",
-                "AlterationsReplaceKB" : "Alterations:Replace knowledgebase",
-                "QueryKB" : "Query knowledgebase"
+                "CreateKB" : "Creates",
+                "DeleteKB" : "Deletes",
+                "PublishKB" : "Publish",
+                "ReplaceKB" : "Replace",
+                "UpdateKB" : "Update",
+                "TrainKB" : "Train",
+                "AlterationsReplaceKB" : "Alterations:Replace",
+                "QueryKB" : "Query",
+                "QnAConvert" : "Convert",
+                "QnATranslate" : "Translate"
             }
         },
         {
@@ -194,7 +196,7 @@
             "label": "QnA Subscription Key",
             "required": false,
             "groupname": "command",
-            "visibleRule": "qnaMakerCommand = TRUE",
+            "visibleRule": "qnaMakerCommand = TRUE && qnaMakerSubCommand!=QnAConvert && qnaMakerSubCommand!=QnATranslate",
             "helpMarkDown": "Enter you QnAMaker found on the Cognitive Services Azure portal page under 'access keys'"
         },
         {
@@ -203,7 +205,7 @@
             "label": "Knowledgebase name",
             "required": false,
             "groupname": "command",
-            "visibleRule": "qnaMakerSubCommand=CreateKB",
+            "visibleRule": "qnaMakerSubCommand=CreateKB || qnaMakerSubCommand=QnAConvert",
             "helpMarkDown": "Enter a name for your knowledgebase"   
         },
         {
@@ -297,6 +299,79 @@
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=QueryKB",
             "helpMarkDown": "Query to get a prediction for"
+        },
+        {
+            "name": "qnaConvertInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Source .qna file(s) or QnA KB JSON file"
+        },
+        {
+            "name": "isAlterationFile",
+            "type": "boolean",
+            "label": "Is QnA Alterations file",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Indicates if files is QnA Alterations"
+        },
+        {
+            "name": "qnaConvertOutput",
+            "type": "filepath",
+            "label": "Output Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Output file or folder name. If not specified stdout will be used as output"
+        },
+        {
+            "name": "qnaTranslateInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Source .qna file(s) or QnA maker application JSON model"
+        },
+        {
+            "name": "qnaTranslateOutputFolder",
+            "type": "filepath",
+            "label": "Output Folder",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Output folder name. If not specified stdout will be used as output"
+        },
+        {
+            "name": "qnaTranslateKey",
+            "type": "string",
+            "label": "Translation Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Machine translation endpoint key"
+        },
+        {
+            "name": "sourceLang",
+            "type": "string",
+            "label": "Source Language",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Source lang code. Auto detect if missing"
+        },
+        {
+            "name": "targetLang",
+            "type": "string",
+            "label": "Target Languages",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Comma separated list of target languages"
         }
     ],
     "execution": {

@@ -20,6 +20,15 @@ export class QnAMakerCommand {
     private wordAlterationsDTOFileLocation: string;
     private serviceEndpoint: string;
     private qnaQuestion: string;
+    private qnaConvertInput: string;
+    private isAlterationFile: string;
+    private qnaConvertOutput: string;
+    private qnaTranslateInput: string;
+    private qnaTranslateOutputFolder: string;
+    private qnaTranslateKey: string;
+    private sourceLang: string;
+    private targetLang: string;
+
 
     constructor() {
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
@@ -34,6 +43,14 @@ export class QnAMakerCommand {
         this.wordAlterationsDTOFileLocation = taskLibrary.getInput('wordAlterationsDTOFileLocation',false) as string;
         this.serviceEndpoint = taskLibrary.getInput('serviceEndpoint',false) as string;
         this.qnaQuestion = taskLibrary.getInput('qnaQuestion', false) as string;
+        this.qnaConvertInput = taskLibrary.getInput('qnaConvertInput', false) as string;
+        this.isAlterationFile = taskLibrary.getInput('isAlterationFile', false) as string;
+        this.qnaConvertOutput = taskLibrary.getInput('qnaConvertOutput', false) as string;
+        this.qnaTranslateInput = taskLibrary.getInput('qnaTranslateInput', false) as string;
+        this.qnaTranslateOutputFolder = taskLibrary.getInput('qnaTranslateOutputFolder', false) as string;
+        this.qnaTranslateKey = taskLibrary.getInput('qnaTranslateKey', false) as string;
+        this.sourceLang = taskLibrary.getInput('sourceLang', false) as string;
+        this.targetLang = taskLibrary.getInput('targetLang', false) as string;
     }
 
     public executeSubCommand = () => {
@@ -61,7 +78,13 @@ export class QnAMakerCommand {
                 break;
             case 'QueryKB':                
                 this.QueryKnowledgeBase();  
-                break;              
+                break;
+            case 'QnAConvert':                
+                this.ConvertQnaFiles();  
+                break;
+            case 'QnATranslate':                
+                this.TranslateQnAModel();  
+                break;
             default:
                 console.log('No QnA Maker command was selected');
         }
@@ -150,10 +173,9 @@ export class QnAMakerCommand {
             if (isconfigured) {
                 console.log('Calling for query to the QnA knowledgebase');
 
-                let command = `bf qnamaker:query --endpointKey ${ this.kbEndPointKey } --hostname ${ this.kbHostName } --kbId ${ this.kbId } --question "${ this.qnaQuestion }" > ${ QueryOutputFile } | cat  ${ QueryOutputFile }`;
-        
-                execSync(command, {stdio: 'inherit'});
-                console.log('The QnA knowledgebase answered successfully'); 
+                let command = `bf qnamaker:query --endpointKey "${ this.kbEndPointKey }" --hostname "${ this.kbHostName }" --kbId "${ this.kbId }" --question "${ this.qnaQuestion }" > "${ QueryOutputFile }" | cat  "${ QueryOutputFile }"`;                
+                const commandLog = execSync(command);
+                console.log(commandLog+'\nThe QnA knowledgebase answered successfully'); 
             }
         });
     
@@ -177,5 +199,28 @@ export class QnAMakerCommand {
                 }
             });      
         });
+    }
+
+    private ConvertQnaFiles = (): void => {
+        console.log('Converting QnA files');
+
+        let command = `bf qnamaker:convert --name  ${this.kbName} --in ${this.qnaConvertInput} --out ${this.qnaConvertOutput} --force --recurse`;
+        if (this.isAlterationFile) {
+            command += ` --alterations`;
+        }
+    
+        execSync(command, {stdio: 'inherit'});
+        console.log('QnA files converted successfully');     
+    }
+
+    private TranslateQnAModel = (): void => {
+        console.log('Translationg QnA models');
+
+        let command = `bf qnamaker:translate --in "${ this.qnaTranslateInput }" --out "${ this.qnaTranslateOutputFolder }" --translatekey "${ this.qnaTranslateKey }"`;
+        command += this.sourceLang? ` --srclang "${ this.sourceLang }"` : '';
+        command += ` --tgtlang "${ this.targetLang }" --force --recurse --translate_comments --translate_link_text`;
+
+        execSync(command, {stdio: 'inherit'});
+        console.log('QnA models translated successfully');       
     }
 }

@@ -59,7 +59,7 @@ const installBfCliTool = (): void => {
     console.log('bf cli successfully installed');
 }
 
-const run = async () => {
+const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
     const luisCommand = taskLibrary.getBoolInput('luisCommand', false);
