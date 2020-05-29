@@ -97,4 +97,18 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       expect(await compareLuFiles('./../../../interruptionGen/dia3.lu', './../../fixtures/verified/interruption4/dia3.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia4.lu', './../../fixtures/verified/interruption4/dia4.lu')).to.be.true
     })
+  
+  test
+    .stdout()
+    .command(['luis:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
+      '--intentName', '_Interruption',
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
+      '--out', './interruptionGen'])
+    .it('luis:cross training can split large DeferToLUIS QA pair into smaller ones when it has more than 1000 questions', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption5/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption5/main.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption5/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption5/dia1.qna')).to.be.true
+    })
 })
