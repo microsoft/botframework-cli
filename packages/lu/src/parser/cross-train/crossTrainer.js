@@ -20,6 +20,7 @@ const qnaBuilderVerbose = require('./../qna/qnamaker/kbCollate')
 const NEWLINE = require('os').EOL
 const path = require('path')
 const QNA_GENERIC_SOURCE = "custom editorial"
+const MAX_QUESTIONS_PER_ANSWER = 1000
 
 module.exports = {
   /**
@@ -459,14 +460,15 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
 
   // remove utterances which are duplicated with local qna questions
   let questionsOfLowerCase = questions.map(q => q.toLowerCase())
-  const dedupedUtterances = utterancesWithoutPatterns.filter(u => !questionsOfLowerCase.includes(u.toLowerCase()))
-
-  // construct new question content for qna resource
-  let utterancesContent = dedupedUtterances.join(NEWLINE + '- ')
+  let dedupedUtterances = utterancesWithoutPatterns.filter(u => !questionsOfLowerCase.includes(u.toLowerCase()))
 
   // add utterances from lu file to corresponding qna file with question set to all utterances
-  if (utterancesContent && utterancesContent !== '') {
-    const utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+  // split large QA pair to multiple smaller ones to overcome the limit that the maximum number of questions per answer is 300
+  while (dedupedUtterances.length > 0) {
+    let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
+    // construct new question content for qna resource
+    let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
+    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 
