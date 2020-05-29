@@ -68,7 +68,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         - I need a four star hotel
         
         # hotelLocation
-        - can I book a hotel near space needle`,
+        - can I book a hotel near Space Needle`,
       id: 'dia1.lu'}
     )
 
@@ -77,7 +77,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         `> !# @qna.pair.source = xyz
         <a id = "1"></a>
         
-        # ?tell joke
+        # ?tell Joke
         - tell me a joke
         
         \`\`\`
@@ -205,7 +205,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     
     foundIndex = luResult.get('dia1.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_dia1')
     assert.isTrue(foundIndex > -1)
-    assert.equal(luResult.get('dia1.lu').Sections[foundIndex].Body, `- tell joke${NEWLINE}- tell me a joke`)
+    assert.equal(luResult.get('dia1.lu').Sections[foundIndex].Body, `- tell Joke${NEWLINE}- tell me a joke`)
 
     foundIndex = qnaResult.get('dia1.qna').Sections.findIndex(s => s.FilterPairs && s.FilterPairs[0].key === 'dialogName')
     assert.isTrue(foundIndex > -1)

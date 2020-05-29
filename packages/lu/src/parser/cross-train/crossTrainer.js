@@ -245,14 +245,14 @@ const mergeFatherInterruptionToChild = function (fatherResource, fatherQnaResour
 const mergeInterruptionIntent = function (fromUtterances, toResource, intentName) {
   // remove duplicated utterances in fromUtterances
   const dedupFromUtterances = Array.from(new Set(fromUtterances))
-  let existingUtterances = extractIntentUtterances(toResource.content)
+  let existingUtterances = extractIntentUtterances(toResource.content).map(u => u.toLowerCase())
   const toInterruptions = toResource.content.Sections.filter(section => section.Name === intentName)
   if (toInterruptions && toInterruptions.length > 0) {
     const toInterruption = toInterruptions[0]
     // construct new content here
     let newFileContent = ''
     dedupFromUtterances.forEach(utterance => {
-      if (!existingUtterances.includes(utterance)) {
+      if (!existingUtterances.includes(utterance.toLowerCase())) {
         newFileContent += '- ' + utterance + NEWLINE
       }
     })
@@ -279,7 +279,7 @@ const mergeInterruptionIntent = function (fromUtterances, toResource, intentName
     toResource.content = new SectionOperator(toResource.content).updateSection(toInterruption.Id, newFileContent)
   } else {
     // construct new content here
-    const dedupUtterances = dedupFromUtterances.filter(u => !existingUtterances.includes(u))
+    const dedupUtterances = dedupFromUtterances.filter(u => !existingUtterances.includes(u.toLowerCase()))
     if (dedupUtterances && dedupUtterances.length > 0) {
       let newFileContent = `${NEWLINE}> Source: cross training. Please do not edit these directly!${NEWLINE}# ${intentName}${NEWLINE}- `
       newFileContent += dedupUtterances.join(`${NEWLINE}- `)
@@ -389,14 +389,15 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   let utterancesOfInterruption = extractIntentUtterances(luResource, interruptionIntentName)
 
   // extract lu utterances except interruption
-  let utterancesOfLocalIntents = utterances.filter(u => !utterancesOfInterruption.includes(u))
+  let utterancesOfLocalIntents = utterances.filter(u => !utterancesOfInterruption.includes(u)).map(u => u.toLowerCase())
 
   // remove questions which are duplicated with local lu utterances
-  let dedupedQuestions = questions.filter(q => !utterancesOfLocalIntents.includes(q))
+  let dedupedQuestions = questions.filter(q => !utterancesOfLocalIntents.includes(q.toLowerCase()))
 
   // update interruption intent if there are duplications with questions
-  if (utterancesOfInterruption.some(u => dedupedQuestions.includes(u))) {
-    utterancesOfInterruption = utterancesOfInterruption.filter(u => !dedupedQuestions.includes(u))
+  let dedupedQuestionsOfLowerCase = dedupedQuestions.map(u => u.toLowerCase())
+  if (utterancesOfInterruption.some(u => dedupedQuestionsOfLowerCase.includes(u.toLowerCase()))) {
+    utterancesOfInterruption = utterancesOfInterruption.filter(u => !dedupedQuestionsOfLowerCase.includes(u.toLowerCase()))
 
     // get section id
     const sectionId = trainedLuResource.Sections.filter(s => s.Name === interruptionIntentName)[0].Id
@@ -457,7 +458,8 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   const utterancesWithoutPatterns = utterances.filter(i => /{([^}]+)}/g.exec(i) === null)
 
   // remove utterances which are duplicated with local qna questions
-  const dedupedUtterances = utterancesWithoutPatterns.filter(u => !questions.includes(u))
+  let questionsOfLowerCase = questions.map(q => q.toLowerCase())
+  const dedupedUtterances = utterancesWithoutPatterns.filter(u => !questionsOfLowerCase.includes(u.toLowerCase()))
 
   // construct new question content for qna resource
   let utterancesContent = dedupedUtterances.join(NEWLINE + '- ')
