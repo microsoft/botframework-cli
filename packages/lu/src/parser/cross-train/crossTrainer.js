@@ -36,12 +36,12 @@ module.exports = {
       let {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
       const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
 
-      let triggerFileIds = Object.keys(triggerRules)
-      let destFileIds = Object.values(triggerRules).flatMap(x => Object.values(x)).flatMap(y => y)
+      let triggerFileIds = Object.keys(triggerRules).map(x => x.toLowerCase())
+      let destFileIds = Object.values(triggerRules).flatMap(x => Object.values(x)).flatMap(y => y).map(x => x.toLowerCase())
 
-      luObjectArray = luObjectArray.filter(x => triggerFileIds.includes(x.id) || destFileIds.includes(x.id))
+      luObjectArray = luObjectArray.filter(x => triggerFileIds.includes(x.id.toLowerCase()) || destFileIds.includes(x.id.toLowerCase()))
       qnaObjectArray = qnaObjectArray.filter(x => {
-        const luFileId = x.id.replace(new RegExp(helpers.FileExtTypeEnum.QnAFile + '$'), helpers.FileExtTypeEnum.LUFile)
+        const luFileId = x.id.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.QnAFile + '$'), helpers.FileExtTypeEnum.LUFile)
         return triggerFileIds.includes(luFileId) || destFileIds.includes(luFileId)
       })
 
@@ -56,7 +56,7 @@ module.exports = {
 
       // do lu cross training from roots. One root one core training
       for (const rootObjectId of rootIds) {
-        if (resources.some(r => r.id === rootObjectId)) {
+        if (resources.some(r => r.id.toLowerCase() === rootObjectId.toLowerCase())) {
           // do cross training for each root at top level
           const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName)
           for (const res of result) {
@@ -87,6 +87,10 @@ module.exports = {
 const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
   let resources = []
   let fileIdsFromInput = Array.from(fileIdToLuResourceMap.keys())
+  let lowerCasefileIdsFromInput = Array.from(fileIdToLuResourceMap.keys()).map(x => x.toLowerCase())
+  let triggerKeys = Object.keys(triggerRules)
+  let lowerCaseTriggerKeys = triggerKeys.map(x => x.toLowerCase())
+
   for (const fileId of fileIdsFromInput) {
     let luResource = fileIdToLuResourceMap.get(fileId)
     let resource = {
@@ -95,7 +99,7 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
       children: []
     }
 
-    if (!(fileId in triggerRules)) {
+    if (!lowerCaseTriggerKeys.includes(fileId.toLowerCase())) {
       resources.push(resource)
       continue
     }
@@ -108,7 +112,7 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
       }
     }
 
-    const intentToDestLuFiles = triggerRules[fileId]
+    const intentToDestLuFiles = triggerRules[triggerKeys.find(k => k.toLowerCase() === fileId.toLowerCase())]
     for (const triggerIntent of Object.keys(intentToDestLuFiles)) {
       if (triggerIntent !== '' && !intents.some(i => i.Name === triggerIntent)) {
         throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, trigger intent '${triggerIntent}' is not found in lu file: ${fileId}`))
@@ -119,11 +123,11 @@ const constructResoureTree = function (fileIdToLuResourceMap, triggerRules) {
 
       if (destLuFiles.length > 0) {
         destLuFiles.forEach(destLuFile => {
-          if (destLuFile !== '' && !fileIdsFromInput.includes(destLuFile)) {
+          if (destLuFile !== '' && !lowerCasefileIdsFromInput.includes(destLuFile.toLowerCase())) {
             throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, lu file '${destLuFile}' is not found`))
           } else {
             resource.children.push({
-              target: destLuFile,
+              target: fileIdsFromInput.find(x => x.toLowerCase() === destLuFile.toLowerCase()) || '',
               intent: triggerIntent
             })
           }
@@ -157,7 +161,7 @@ const luCrossTrain = function (rootResourceId, resources, qnaFileToResourceMap, 
   }
 
   // Parse resources
-  let rootResource = resources.filter(r => r.id === rootResourceId)[0]
+  let rootResource = resources.filter(r => r.id.toLowerCase() === rootResourceId.toLowerCase())[0]
   rootResource.visited = true
   mergeRootInterruptionToLeaves(rootResource, idToResourceMap, qnaFileToResourceMap, intentName)
   
@@ -173,7 +177,8 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
     if (childResource && childResource.visited === undefined) {
-      const rootQnaFileId = rootResource.id.replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
+      let rootQnaFileId = rootResource.id.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
+      rootQnaFileId = Array.from(qnaFileToResourceMap.keys()).find(x => x.toLowerCase() === rootQnaFileId)
       const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
       const newChildResource = mergeFatherInterruptionToChild(rootResource, rootQnaResource, childResource, intentName)
       result.set(child.target, newChildResource)
@@ -346,12 +351,13 @@ const extractIntentUtterances = function(resource, intentName) {
 const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName) {
   try {
     for (const luObjectId of Array.from(luFileIdToResourceMap.keys())) {
-      const qnaObjectId = luObjectId.replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
+      let qnaObjectId = luObjectId.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
       let fileName = path.basename(luObjectId, path.extname(luObjectId))
       const culture = fileHelper.getCultureFromPath(luObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
-      if (Array.from(qnaFileIdToResourceMap.keys()).some(q => q === qnaObjectId)) {
+      qnaObjectId = Array.from(qnaFileIdToResourceMap.keys()).find(x => x.toLowerCase() === qnaObjectId)
+      if (qnaObjectId) {
         const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName)
         luFileIdToResourceMap.set(luObjectId, luResource)
         qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
@@ -487,7 +493,7 @@ const parseAndValidateContent = async function (objectArray, verbose) {
   for (const object of objectArray) {    
     let fileContent = object.content
     if (object.content && object.content !== '') {
-      if (object.id.endsWith(fileExtEnum.LUFile)) {
+      if (object.id.toLowerCase().endsWith(fileExtEnum.LUFile)) {
         let result = await LuisBuilderVerbose.build([object], true)
         let luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
@@ -523,9 +529,6 @@ const pretreatment = function (luContents, qnaContents) {
    // Parse lu and qna objects
    let luObjectArray = fileHelper.getParsedObjects(luContents)
    let qnaObjectArray = fileHelper.getParsedObjects(qnaContents)
-
-   luObjectArray.forEach(luObject => luObject.id = luObject.id.toLowerCase())
-   qnaObjectArray.forEach(qnaObject => qnaObject.id = qnaObject.id.toLowerCase())
 
    return {luObjectArray, qnaObjectArray}
 }

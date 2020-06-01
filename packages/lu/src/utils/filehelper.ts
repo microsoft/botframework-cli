@@ -227,7 +227,7 @@ export function getConfigObject(configContent: any, intentName: string) {
     try {
       const luConfigObj = JSON.parse(luConfigContent)
       for (const rootluFilePath of Object.keys(luConfigObj)) {
-        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath).toLowerCase()
+        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
         const triggerObj = luConfigObj[rootluFilePath]
         for (const triggerObjKey of Object.keys(triggerObj)) {
           if (triggerObjKey === 'rootDialog') {
@@ -239,8 +239,7 @@ export function getConfigObject(configContent: any, intentName: string) {
             for (const triggerKey of Object.keys(triggers)) {
               const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
               for (const destLuFile of destLuFiles) {
-                let destLuFileFullPath = destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
-                destLuFileFullPath = destLuFileFullPath.toLowerCase()
+                const destLuFileFullPath = destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
                 if (rootLuFileFullPath in finalLuConfigObj) {
                   const finalIntentToDestLuFiles = finalLuConfigObj[rootLuFileFullPath]
                   if (finalIntentToDestLuFiles[triggerKey]) {

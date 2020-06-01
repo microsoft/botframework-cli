@@ -41,9 +41,9 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption/mapping_rules.json')}`,
       '--out', './interruptionGen'])
     .it('luis:cross training can get expected result when handling multi locales and duplications', async () => {
-      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption/main.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption/main.qna')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/Main.lu', './../../fixtures/verified/interruption/Main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/Main.qna', './../../fixtures/verified/interruption/Main.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/Dia1.lu', './../../fixtures/verified/interruption/Dia1.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption/dia1.qna')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia2.lu', './../../fixtures/verified/interruption/dia2.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia2.qna', './../../fixtures/verified/interruption/dia2.qna')).to.be.true

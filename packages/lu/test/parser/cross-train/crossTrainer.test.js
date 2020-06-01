@@ -37,7 +37,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             tell a funny joke
         \`\`\``,
-      id: 'main.qna'}
+      id: 'Main.qna'}
     )
 
     luContentArray.push({
@@ -69,7 +69,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # hotelLocation
         - can I book a hotel near Space Needle`,
-      id: 'dia1.lu'}
+      id: 'Dia1.lu'}
     )
 
     qnaContentArray.push({
@@ -88,7 +88,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             of course you can
         \`\`\``,
-      id: 'Dia1.qna'}
+      id: 'dia1.qna'}
     )
 
     luContentArray.push({
@@ -118,7 +118,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # dia4_trigger
         - book a train ticket from Seattle to Portland`,
-      id: 'dia2.lu'}
+      id: 'Dia2.lu'}
     )
 
     qnaContentArray.push({
@@ -185,47 +185,47 @@ describe('luis:cross training tests among lu and qna contents', () => {
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
-    let foundIndex = luResult.get('main.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_main')
+    let foundIndex = luResult.get('Main.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_Main')
     assert.isTrue(foundIndex > -1)
-    assert.equal(luResult.get('main.lu').Sections[foundIndex].Body, `- user guide${NEWLINE}- tell joke`)
+    assert.equal(luResult.get('Main.lu').Sections[foundIndex].Body, `- user guide${NEWLINE}- tell joke`)
 
-    foundIndex = qnaResult.get('main.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_main')
+    foundIndex = qnaResult.get('Main.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_Main')
     assert.isTrue(foundIndex > -1)
-    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].FilterPairs[0].value, 'main')
-    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions[0], 'book a hotel for me')
-    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions[2], 'book a train ticket for me')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].FilterPairs[0].value, 'Main')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].Questions[0], 'book a hotel for me')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].Questions[2], 'book a train ticket for me')
 
-    foundIndex = luResult.get('dia1.lu').Sections.findIndex(s => s.ModelInfo === '> !# @app.name = my luis application')
+    foundIndex = luResult.get('Dia1.lu').Sections.findIndex(s => s.ModelInfo === '> !# @app.name = my luis application')
     assert.isTrue(foundIndex > -1)
 
-    foundIndex = luResult.get('dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    foundIndex = luResult.get('Dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
     assert.isTrue(foundIndex > -1)
-    assert.equal(luResult.get('dia1.lu').Sections[foundIndex].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
+    assert.equal(luResult.get('Dia1.lu').Sections[foundIndex].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
     
-    foundIndex = luResult.get('dia1.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_dia1')
+    foundIndex = luResult.get('Dia1.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_Dia1')
     assert.isTrue(foundIndex > -1)
-    assert.equal(luResult.get('dia1.lu').Sections[foundIndex].Body, `- tell Joke${NEWLINE}- tell me a joke`)
+    assert.equal(luResult.get('Dia1.lu').Sections[foundIndex].Body, `- tell Joke${NEWLINE}- tell me a joke`)
 
     foundIndex = qnaResult.get('dia1.qna').Sections.findIndex(s => s.FilterPairs && s.FilterPairs[0].key === 'dialogName')
     assert.isTrue(foundIndex > -1)
-    assert.equal(qnaResult.get('dia1.qna').Sections[foundIndex].FilterPairs[0].value, 'dia1')
+    assert.equal(qnaResult.get('dia1.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia1')
 
     foundIndex = qnaResult.get('dia1.qna').Sections.findIndex(s => s.Questions.join(', ') === 'I need a four star hotel, book a flight for me, book a train ticket for me, user guide')
     assert.isTrue(foundIndex > -1)
 
-    foundIndex = luResult.get('dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    foundIndex = luResult.get('Dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
     assert.isTrue(foundIndex > -1)
-    assert.equal(luResult.get('dia2.lu').Sections[foundIndex].Name, '_Interruption')
-    assert.equal(luResult.get('dia2.lu').Sections[foundIndex].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
+    assert.equal(luResult.get('Dia2.lu').Sections[foundIndex].Name, '_Interruption')
+    assert.equal(luResult.get('Dia2.lu').Sections[foundIndex].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
     
-    foundIndex = luResult.get('dia2.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_dia2')
+    foundIndex = luResult.get('Dia2.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_Dia2')
     assert.isTrue(foundIndex > -1)
-    assert.equal(luResult.get('dia2.lu').Sections[foundIndex].Body, `- sing song${NEWLINE}- tell a joke`)
+    assert.equal(luResult.get('Dia2.lu').Sections[foundIndex].Body, `- sing song${NEWLINE}- tell a joke`)
 
     foundIndex = qnaResult.get('dia2.qna').Sections.findIndex(s => s.FilterPairs && s.FilterPairs[0].key === 'dialogName')
     assert.isTrue(foundIndex > -1)
-    assert.equal(qnaResult.get('dia2.qna').Sections[foundIndex].FilterPairs[0].value, 'dia2')
+    assert.equal(qnaResult.get('dia2.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia2')
 
     foundIndex = qnaResult.get('dia2.qna').Sections.findIndex(s => s.Questions.join(', ') === 'book a flight from Seattle to Beijing, book a train ticket from Seattle to Portland, book a hotel for me, user guide, tell joke')
     assert.isTrue(foundIndex > -1)
