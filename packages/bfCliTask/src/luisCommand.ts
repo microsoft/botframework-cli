@@ -4,8 +4,10 @@
  */
 
 import taskLibrary = require('azure-pipelines-task-lib/task');
-import { execSync } from 'child_process';
+import { exec} from 'child_process';
 import { Utils } from './utils';
+import { promisify }  from 'util';
+const executeCommand = promisify(exec);
 
 export class LuisCommand {
 
@@ -68,58 +70,62 @@ export class LuisCommand {
     }
 
     public executeSubCommand = (): void => {
-        switch (this.luisSubCommand) {
-            case 'ApplicationCreate':
-                this.createLuisApplication();
-                break;
-            case 'LuisBuild':
-                this.buildLuisApplication();
-                break;
-            case 'LuisTrainRun':
-                this.trainLuisApplication();
-                break;
-            case 'LuisPublish':
-                this.publishLuisApplication();
-                break;
-            case 'LuisApplicationDelete':
-                this.deleteLuisApplication();
-                break;
-            case 'LuisApplicationImport':
-                this.importLuisApplication();
-                break;
-            case 'LuisApplicationRename':
-                this.renameLuisApplication();
-                break;
-            case 'LuisConvert':
-                this.convertLuisModel();
-                break;
-            case 'LuisGenerate':
-                this.generateSourceCode();
-                break;
-            case 'LuisTranslate':
-                this.translateLuisModel();
-                break;
-            case 'LuisVersionClone':
-                this.versionClone();
-                break;
-            case 'LuisVersionExport':
-                this.exportVersion();
-                break;
-            case 'LuisVersionImport':
-                this.importVersion();
-                break;
-            case 'LuisVersionRename':
-                this.renameVersion();
-                break;
-            case 'LuisVersionDelete':
-                this.deleteVersion();
-                break;
-            default:
-                console.log('No LUIS Command was selected.');
+        try {
+            switch (this.luisSubCommand) {
+                case 'ApplicationCreate':
+                    this.createLuisApplication();
+                    break;
+                case 'LuisBuild':
+                    this.buildLuisApplication();
+                    break;
+                case 'LuisTrainRun':
+                    this.trainLuisApplication();
+                    break;
+                case 'LuisPublish':
+                    this.publishLuisApplication();
+                    break;
+                case 'LuisApplicationDelete':
+                    this.deleteLuisApplication();
+                    break;
+                case 'LuisApplicationImport':
+                    this.importLuisApplication();
+                    break;
+                case 'LuisApplicationRename':
+                    this.renameLuisApplication();
+                    break;
+                case 'LuisConvert':
+                    this.convertLuisModel();
+                    break;
+                case 'LuisGenerate':
+                    this.generateSourceCode();
+                    break;
+                case 'LuisTranslate':
+                    this.translateLuisModel();
+                    break;
+                case 'LuisVersionClone':
+                    this.versionClone();
+                    break;
+                case 'LuisVersionExport':
+                    this.exportVersion();
+                    break;
+                case 'LuisVersionImport':
+                    this.importVersion();
+                    break;
+                case 'LuisVersionRename':
+                    this.renameVersion();
+                    break;
+                case 'LuisVersionDelete':
+                    this.deleteVersion();
+                    break;
+                default:
+                    console.log('No LUIS Command was selected.');
+            }
+        } catch (error) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, error.message, true);
         }
     }
 
-    private createLuisApplication = (): void => {
+    private createLuisApplication = async () => {
         const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
         const outputFileLuisCreate = `${ rootPath }/LuisApplicationCreate.json`;
 
@@ -128,48 +134,69 @@ export class LuisCommand {
         let command = `bf luis:application:create --name "${ this.luisApplicationName }" --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" `;
         command += `--culture "${ this.luisCulture }" --description "${ this.luisAppDescription }" --versionId "${ this.luisVersionId }" > ${ outputFileLuisCreate }`;
 
-        execSync(command);
-        console.log('LUIS Application successfully created');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);            
+        } else {
+            console.log(`LUIS Application successfully created \n${stdout}`);
+        }
     }
 
-    private buildLuisApplication = (): void => {
+    private buildLuisApplication = async () => {
         console.log('Building LUIS Application...');
 
         const command = `bf luis:build --in "${ this.luisInputFile }" --authoringKey "${ this.luisSubscriptionKey }" --botName "${ this.luisBotName }" `;
-
-        execSync(command);
-        console.log('LUIS Application successfully built');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);            
+        } else {
+            console.log(`LUIS Application successfully built \n${stdout}`);
+        }
     }
 
-    private trainLuisApplication = (): void => {
+    private trainLuisApplication = async () => {
         console.log('Training LUIS Application...');
 
         const command = `bf luis:train:run --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }"`;
-
-        execSync(command);
-        console.log('LUIS Training request successfully issued');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);            
+        } else {
+            console.log(`LUIS Training request successfully issued \n${stdout}`);
+        }
     }
 
-    private publishLuisApplication = (): void => {
+    private publishLuisApplication = async () => {
         console.log('Publishing LUIS Application...');
 
         let command = `bf luis:application:publish --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --versionId "${ this.luisVersionId }" --appId "${ this.luisAppId }"`;
         command += this.luisPublishStaging? ` --staging` : '';
-
-        execSync(command);
-        console.log('LUIS Application successfully published');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS Application successfully published \n${stdout}`);
+        }
     }
 
-    private deleteLuisApplication = (): void => {
+    private deleteLuisApplication = async () => {
         console.log('Deleting LUIS Application...');
 
         const command = `bf luis:application:delete --appId "${ this.luisAppId }" --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --force`;
-
-        execSync(command);
-        console.log('LUIS Application successfully deleted');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS Application successfully deleted \n${stdout}`);
+        }
     }
 
-    private importLuisApplication = (): void => {
+    private importLuisApplication = async () => {
         const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
         const outputFileLuisImport = `${ rootPath }/LuisApplicationImport.json`;
 
@@ -177,31 +204,44 @@ export class LuisCommand {
     
         let command = `bf luis:application:import --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --name "${ this.luisApplicationName }" `
         command += `--in "${ this.luisInputFile }" > ${ outputFileLuisImport }`;
-        execSync(command);
-        console.log('LUIS Application successfully imported');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS Application successfully imported \n${stdout}`);
+        }
     }
     
-    private renameLuisApplication = (): void => {
+    private renameLuisApplication = async () => {
         console.log('Renaming LUIS Application...');
     
         let command = `bf luis:application:rename --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --appId "${ this.luisAppId }" `
         command += `--name "${ this.luisApplicationName }" --description "${ this.luisAppDescription }"`;
+        const { stdout, stderr } = await executeCommand(command);
     
-        execSync(command);
-        console.log('LUIS Application successfully renamed');
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS Application successfully renamed \n${stdout}`);
+        }
     }
 
-    private convertLuisModel = (): void => {
+    private convertLuisModel = async () => {
         console.log('Converting LUIS model...');
     
         let command = `bf luis:convert --name "${ this.luisApplicationName }" --description "${ this.luisAppDescription }" `;
         command += `--in "${ this.luisConvertInput }" --out "${ this.luisConvertOutput }" --culture "${ this.luisCulture }" --force --recurse`;
+        const { stdout, stderr } = await executeCommand(command);
     
-        execSync(command);
-        console.log('LUIS model successfully wrote to:' + this.luisConvertOutput);
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log('LUIS model successfully wrote to:' + this.luisConvertOutput + `\n${stdout}` );
+        }
     }
 
-    private generateSourceCode = (): void => {
+    private generateSourceCode = async () => {
         console.log('Generating Source Code...');
     
         let language: string;
@@ -213,67 +253,97 @@ export class LuisCommand {
         }
 
         const command = `bf luis:generate:${ language } --in "${ this.luisGenerateInput }" --out "${ this.luisGenerateOutput }" --className "${ this.className }" --force`;
+        const { stdout, stderr } = await executeCommand(command);
     
-        execSync(command);
-        console.log('The file: ' + this.luisGenerateOutput + ' containing the class: ' + this.className + ' was successfully generated.');
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`The file: ' + this.luisGenerateOutput + ' containing the class: ' + this.className + ' was successfully generated. \n${stdout}`);
+        }
     }
 
-    private translateLuisModel = (): void => {
+    private translateLuisModel = async () => {
         console.log('Translating LUIS model...');
 
         let command = `bf luis:translate --in "${ this.luisTranslateInput }" --out "${ this.luisTranslateOutputFolder }" --translatekey "${ this.translateKey }"`;
         command += this.sourceLang? ` --srclang "${ this.sourceLang }"` : '';
         command += ` --tgtlang "${ this.targetLang }" --force --recurse --translate_comments --translate_link_text`;
-
-        execSync(command);
-        console.log('LUIS model successfully translated');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS model successfully translated \n${stdout}`);
+        }
     }
 
-    private versionClone = (): void => {
+    private versionClone = async () => {
         console.log('Cloning LUIS application version...');
 
         let command = `bf luis:version:clone --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --targetVersionId "${ this.targetVersionId }" `;
         command += `--endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }"`;
-
-        execSync(command);
-        console.log('LUIS version successfully cloned');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS version successfully cloned \n${stdout}`);
+        }  
     }
 
-    private exportVersion = (): void => {
+    private exportVersion = async () => {
         console.log('Exporting LUIS application version...');
 
         let command = `bf luis:version:export --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --out "${ this.luisOutputFile }" `;
         command += `--endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --force`;
-
-        execSync(command, {stdio: 'inherit'});
-        console.log('LUIS version successfully exported');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS version successfully exported \n${stdout}`);
+        }
     }
 
-    private importVersion = (): void => {
+    private importVersion = async () => {
         console.log('Importing LUIS application version...');
 
         let command = `bf luis:version:import --appId "${ this.luisAppId }" --versionId "${ this.luisVersionId }" --in "${ this.luisImportFile }" `;
         command += `--endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }"`;
-
-        execSync(command, {stdio: 'inherit'});
-        console.log('LUIS version successfully exported');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS version successfully exported \n${stdout}`);
+        }
     }
 
-    private renameVersion = (): void => {
+    private renameVersion = async () => {
         console.log('Renaming LUIS application version...');
 
         let command = `bf luis:version:rename --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --appId "${ this.luisAppId }" `;
         command += `--versionId "${ this.luisVersionId }" --newVersionId "${ this.newVersionId }"`;
-
-        execSync(command, {stdio: 'inherit'});
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS application renamed successfully \n${stdout}`);
+        }
     }
 
-    private deleteVersion = (): void => {
+    private deleteVersion = async () => {
         console.log('Deleting LUIS application version...');
 
         let command = `bf luis:version:delete --endpoint "${ this.luisEndpoint }" --subscriptionKey "${ this.luisSubscriptionKey }" --appId "${ this.luisAppId }" `;
         command += `--versionId "${ this.luisVersionId }"`;
-
-        execSync(command, {stdio: 'inherit'});
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`LUIS application deleted successfully \n${stdout}`);
+        }
     }
 }
