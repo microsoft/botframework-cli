@@ -4,7 +4,11 @@
  */
 
 import taskLibrary = require('azure-pipelines-task-lib/task');
-import { execSync, spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
+import { Utils } from './utils';
+import { promisify }  from 'util';
+const executeCommand = promisify(exec);
+
 
 export class QnAMakerCommand {
 
@@ -20,9 +24,9 @@ export class QnAMakerCommand {
     private wordAlterationsDTOFileLocation: string;
     private serviceEndpoint: string;
     private qnaQuestion: string;
-    private qnaConvertInput: string;
-    private isAlterationFile: string;
-    private qnaConvertOutput: string;
+    private isAlterationFile: boolean;
+    private qnaConvertFilePathInput: string;
+    private qnaConvertFilePathOutput: string;
     private qnaTranslateInput: string;
     private qnaTranslateOutputFolder: string;
     private qnaTranslateKey: string;
@@ -30,23 +34,24 @@ export class QnAMakerCommand {
     private qnaTargetLang: string;
     private activeLearning: boolean;
     private keyType: string;
+    private utils = new Utils();
 
     constructor() {
         this.qnaMakerSubCommand = taskLibrary.getInput('qnaMakerSubCommand', false) as string;
         this.qnaKey = taskLibrary.getInput('qnaKey', false) as string;
-        this.kbName = taskLibrary.getInput('kbName', false) as string;
-        this.kbDTOFileLocation = taskLibrary.getInput('kbDTOFileLocation', false) as string;
+        this.kbName = taskLibrary.getInput('kbName', false) as string || "";
+        this.kbDTOFileLocation = this.utils.validatePath('kbDTOFileLocation');
         this.publishNewKB = taskLibrary.getBoolInput('publishNewKB', false);
         this.kbId = taskLibrary.getInput('kbId', false) as string;
-        this.feedbackRecordDTOLocation = taskLibrary.getInput('feedbackRecordDTOFileLocation',false) as string;
+        this.feedbackRecordDTOLocation = taskLibrary.getPathInput('feedbackRecordDTOFileLocation',false) as string;
         this.kbHostName = taskLibrary.getInput('kbHostName',false) as string;
         this.kbEndPointKey = taskLibrary.getInput('kbEndPointKey',false) as string;
         this.wordAlterationsDTOFileLocation = taskLibrary.getInput('wordAlterationsDTOFileLocation',false) as string;
         this.serviceEndpoint = taskLibrary.getInput('serviceEndpoint',false) as string;
         this.qnaQuestion = taskLibrary.getInput('qnaQuestion', false) as string;
-        this.qnaConvertInput = taskLibrary.getInput('qnaConvertInput', false) as string;
-        this.isAlterationFile = taskLibrary.getInput('isAlterationFile', false) as string;
-        this.qnaConvertOutput = taskLibrary.getInput('qnaConvertOutput', false) as string;
+        this.isAlterationFile = taskLibrary.getBoolInput('isAlterationFile', false);
+        this.qnaConvertFilePathInput = taskLibrary.getPathInput('qnaConvertFilePathInput', false) as string;
+        this.qnaConvertFilePathOutput = taskLibrary.getPathInput('qnaConvertFilePathOutput', false) as string;
         this.qnaTranslateInput = taskLibrary.getInput('qnaTranslateInput', false) as string;
         this.qnaTranslateOutputFolder = taskLibrary.getInput('qnaTranslateOutputFolder', false) as string;
         this.qnaTranslateKey = taskLibrary.getInput('qnaTranslateKey', false) as string;
@@ -57,205 +62,266 @@ export class QnAMakerCommand {
     }
 
     public executeSubCommand = () => {
-        switch (this.qnaMakerSubCommand) {
-            case 'CreateKB':
-                this.createKnowledgeBase();
-                break;
-            case 'DeleteKB':
-                this.deleteKnowledgeBase();
-                break;
-            case 'PublishKB':
-                this.publishKnowledgeBase();
-                break;
-            case 'ReplaceKB':
-                this.replaceKnowledgeBase();
-                break;
-            case 'UpdateKB':
-                this.updateKnowledgeBase();
-                break;
-            case 'TrainKB':
-                this.traingKnowledgeBase();
-                break;
-            case 'AlterationsReplaceKB':
-                this.replaceAlterations();
-                break;
-            case 'QueryKB':                
-                this.QueryKnowledgeBase();  
-                break;
-            case 'QnAConvert':                
-                this.ConvertQnaFiles();  
-                break;
-            case 'QnATranslate':                
-                this.TranslateQnAModel();  
-                break;
-            case 'EndpointSettingsUpdate':
-                this.updateEndpointSettings();
-                break;
-            case 'EndpointKeysRefresh':
-                this.refreshEndpointKeys();
-                break;
-            default:
-                console.log('No QnA Maker command was selected');
+        try {
+            switch (this.qnaMakerSubCommand) {
+                case 'CreateKB':
+                    this.createKnowledgeBase();
+                    break;
+                case 'DeleteKB':
+                    this.deleteKnowledgeBase();
+                    break;
+                case 'PublishKB':
+                    this.publishKnowledgeBase();
+                    break;
+                case 'ReplaceKB':
+                    this.replaceKnowledgeBase();
+                    break;
+                case 'UpdateKB':
+                    this.updateKnowledgeBase();
+                    break;
+                case 'TrainKB':
+                    this.traingKnowledgeBase();
+                    break;
+                case 'AlterationsReplaceKB':
+                    this.replaceAlterations();
+                    break;
+                case 'QueryKB':
+                    this.QueryKnowledgeBase();
+                    break;
+                case 'QnAConvert':
+                    this.ConvertQnaFiles();
+                    break;
+                case 'QnATranslate':
+                    this.TranslateQnAModel();
+                    break;
+                case 'EndpointSettingsUpdate':
+                    this.updateEndpointSettings();
+                    break;
+                case 'EndpointKeysRefresh':
+                    this.refreshEndpointKeys();
+                    break;
+                default:
+                    console.log('No QnA Maker command was selected');
+            }
+        } catch (error) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, error.message, true);
         }
+
     }
 
-    private publishKnowledgeBase = (newKbId?: string): void => {
+    private publishKnowledgeBase = async (newKbId?: string) => {
         console.log('Publishing QnA knowledgebase');
     
-        let command = `bf qnamaker:kb:publish --kbId ${ newKbId? newKbId: this.kbId } --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:kb:publish --kbId "${ newKbId? newKbId: this.kbId }" --subscriptionKey "${ this.qnaKey }"`;        
+
+        const { stdout, stderr } = await executeCommand(command);
     
-        execSync(command, {stdio: 'inherit'});
-        console.log('QnA knowledgebase succesfully published');
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);            
+        } else {
+            console.log(`QnA knowledgebase succesfully published \n${stdout}`);
+        }
     }
     
-    private createKnowledgeBase = (): void => {
+    private createKnowledgeBase = async () => {
         console.log('Creating QnA knowledgebase');
     
-        let command = `bf qnamaker:kb:create --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:kb:create --in "${ this.kbDTOFileLocation }" --subscriptionKey "${ this.qnaKey }"`;
+
         if (this.kbName) {
-            command += ` --name ${ this.kbName }`;
+            command += ` --name "${ this.kbName }"`;
+        }
+
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);            
+        } else {
+            console.log(`QnA knowledgebase successfully created \n${stdout}`);
         }
     
-        let newKB = execSync(command);
-        console.log('QnA knowledgebase successfully created');
-    
         if (this.publishNewKB) {
-            let ObjKbId = JSON.parse(newKB.toString('utf8'));
+            let ObjKbId = JSON.parse(stdout.toString());
             this.publishKnowledgeBase(ObjKbId.kbId);
         }
     }
     
-    private deleteKnowledgeBase = (): void => {
+    private deleteKnowledgeBase = async () => {
         console.log('Deleting QnA knowledgebase');
 
-        let command = `bf qnamaker:kb:delete --kbId ${ this.kbId } --subscriptionKey ${ this.qnaKey } --force`;
+        let command = `bf qnamaker:kb:delete --kbId "${ this.kbId }" --subscriptionKey "${ this.qnaKey }" --force`;
 
-        execSync(command, {stdio: 'inherit'});
-        console.log('QnA knolewdgebase successfully deleted');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`QnA knolewdgebase successfully deleted \n${stdout}`);
+        }
     }
 
-    private replaceKnowledgeBase = (): void => {
+    private replaceKnowledgeBase = async () => {
         console.log('Replacing QnA knowledgebase');
 
-        let command = `bf qnamaker:kb:replace --kbId ${ this.kbId } --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:kb:replace --kbId "${ this.kbId }" --in "${ this.kbDTOFileLocation }" --subscriptionKey "${ this.qnaKey }"`;
 
-        execSync(command, {stdio: 'inherit'});
-        console.log('QnA knowledgebase successfully replaced');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`QnA knowledgebase successfully replaced \n${stdout}`);
+        }
     }
 
-    private updateKnowledgeBase = (): void => {
+    private updateKnowledgeBase = async () => {
         console.log('Updating QnA knowledgebase');
 
-        let command = `bf qnamaker:kb:update --kbId ${ this.kbId } --in ${ this.kbDTOFileLocation } --subscriptionKey ${ this.qnaKey } --wait`;
+        let command = `bf qnamaker:kb:update --kbId "${ this.kbId }" --in "${ this.kbDTOFileLocation }" --subscriptionKey "${ this.qnaKey }" --wait`;
 
-        execSync(command, {stdio: 'inherit'});
-        console.log('QnA knowledgebase successfully updated');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`QnA knowledgebase successfully updated \n${stdout}`);
+        }
     }
 
-    private traingKnowledgeBase = (): void => {
+    private traingKnowledgeBase = async () => {
         console.log('Updating QnA knowledgebase');
 
-        let command = `bf qnamaker:train --kbId ${ this.kbId } --endpointKey ${this.kbEndPointKey} --hostname ${this.kbHostName} --in ${this.feedbackRecordDTOLocation} --subscriptionKey ${ this.qnaKey }`;
-
-        execSync(command, {stdio: 'inherit'});
-        console.log('QnA knowledgebase successfully trained');
+        let command = `bf qnamaker:train --kbId "${ this.kbId }" --endpointKey "${this.kbEndPointKey}" --hostname "${this.kbHostName}" --in "${this.feedbackRecordDTOLocation}" --subscriptionKey "${ this.qnaKey }"`;
+        
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`QnA knowledgebase successfully trained \n${stdout}`);
+        }
     }
 
-    private replaceAlterations = (): void => {
+    private replaceAlterations = async () => {
         console.log('Replacing Alteration in QnA knowledgebase');
         console.log('Alteration file location:' + this.wordAlterationsDTOFileLocation);
 
-        let command = `bf qnamaker:alterations:replace --in ${ this.wordAlterationsDTOFileLocation } --subscriptionKey ${ this.qnaKey }`;
+        let command = `bf qnamaker:alterations:replace --in "${ this.wordAlterationsDTOFileLocation }" --subscriptionKey "${ this.qnaKey }"`;
+
         if (this.serviceEndpoint) {
-            command += ` --endpoint ${ this.serviceEndpoint }`;
+            command += ` --endpoint  "${ this.serviceEndpoint }"`;
         }
 
-        execSync(command, {stdio: 'inherit'});
-        console.log('Alterations successfully replaced');
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`Alterations successfully replaced \n${stdout}`);
+        }
     }
 
-    private QueryKnowledgeBase = (): void => {
+    private QueryKnowledgeBase = async () => {
         const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
         const QueryOutputFile = `${ rootPath }/QueryResult.json`;
 
-        this.QnAMakerInitConfiguration().then((isconfigured)=>{
-            if (isconfigured) {
-                console.log('Calling for query to the QnA knowledgebase');
+        this.QnAMakerInitConfiguration().then(async () => {
+            console.log('Calling for query to the QnA knowledgebase');
 
-                let command = `bf qnamaker:query --endpointKey ${ this.kbEndPointKey } --hostname ${ this.kbHostName } --kbId ${ this.kbId } --question "${ this.qnaQuestion }" > ${ QueryOutputFile } | cat  ${ QueryOutputFile }`;
-
-                execSync(command, {stdio: 'inherit'});
-                console.log('The QnA knowledgebase answered successfully');
+            let command = `bf qnamaker:query --endpointKey "${ this.kbEndPointKey }" --hostname "${ this.kbHostName }" --kbId "${ this.kbId }" --question "${ this.qnaQuestion }" > "${ QueryOutputFile }" | cat  "${ QueryOutputFile }"`;
+            const { stdout, stderr } = await executeCommand(command);
+    
+            if (stderr) {
+                taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+            } else {
+                console.log(`The QnA knowledgebase answered successfully \n${stdout}`);
             }
         });
     }
 
-    private QnAMakerInitConfiguration(): Promise<boolean>{
-        let init = spawn('bf',['qnamaker:init'], { shell: true });
+    private QnAMakerInitConfiguration = async () => {
+        let child = spawn('bf',['qnamaker:init'], { shell: true });
 
-        console.log('Setting up the QnA knowledgebase config file');
-
-        return new Promise ((resolve, reject) => {
-            init.stderr.on('data',(data) => {
-                let _data: string = "" + data;
-                if(_data.includes('subscription key')){
-                    init.stdin.write(`${ this.qnaKey }`);
-                }else if(_data.includes('knowledgebase ID')){
-                    init.stdin.write(`${ this.kbId }`);
-                }else if(_data.includes('ok?')){
-                    init.stdin.write("yes");
-                    console.log(_data);
-                    init.kill();
-                    resolve(true);
-                }
-            });
-        });
+        for await (const data of child.stderr) {
+            if(data.includes('What is your QnAMaker access/subscription key?')){
+                child.stdin.write(this.qnaKey);
+            }else if(data.includes('What would you like to use as your active knowledgebase ID?')){
+                child.stdin.write(this.kbId);
+            }else if(data.includes('ok?')){
+                child.stdin.write("yes");
+                child.stdin.end();
+            }
+          };
     }
  
-    private updateEndpointSettings = (): void => {
+    private updateEndpointSettings = async () => {
         console.log('Updating Endpoint settings');
 
-        let command = `bf qnamaker:endpointsettings:update --subscriptionKey ${ this.qnaKey } --endpoint "${ this.serviceEndpoint }"`;
+        let command = `bf qnamaker:endpointsettings:update --subscriptionKey "${ this.qnaKey }" --endpoint "${ this.serviceEndpoint }"`;
+
         if (this.activeLearning) {
             command += ` --activelearning`;
         }
 
-        execSync(command, {stdio: 'inherit'});
-        console.log('Endpoint settings successfully updated');
+        const { stdout, stderr } = await executeCommand(command);
+
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`Endpoint settings successfully updated \n${stdout}`);
+        }
     }
 
-    private refreshEndpointKeys = (): void => {
+    private refreshEndpointKeys = async () => {
         const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
         const RefreshedKeys = `${ rootPath }/RefreshedKeys.json`;
         console.log('Refreshing Endpoint keys');
 
-        let command = `bf qnamaker:endpointkeys:refresh --subscriptionKey ${ this.qnaKey } --endpoint "${ this.serviceEndpoint }"`;
-        command += ` --keyType "${ this.keyType }" > ${ RefreshedKeys } | cat  ${ RefreshedKeys }`;
-
-        execSync(command, {stdio: 'inherit'});
-        console.log('Endpoint keys successfully refreshed');
+        let command = `bf qnamaker:endpointkeys:refresh --subscriptionKey "${ this.qnaKey }" --endpoint "${ this.serviceEndpoint }"`;
+        command += ` --keyType "${ this.keyType }" > "${ RefreshedKeys }" | cat  "${ RefreshedKeys }"`;
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`Endpoint keys successfully refreshed \n${stdout}`);
+        }
     }
     
-    private ConvertQnaFiles = (): void => {
+    private ConvertQnaFiles = async () => {
         console.log('Converting QnA files');
 
-        let command = `bf qnamaker:convert --name  ${this.kbName} --in ${this.qnaConvertInput} --out ${this.qnaConvertOutput} --force --recurse`;
+        let command = `bf qnamaker:convert --in "${this.qnaConvertFilePathInput}" --out "${this.qnaConvertFilePathOutput}" --force --recurse`;
+
+        if (this.kbName) {
+            command += `--name  ${this.kbName}`;
+        }
+
         if (this.isAlterationFile) {
             command += ` --alterations`;
         }
+
+        const { stdout, stderr } = await executeCommand(command);
     
-        execSync(command, {stdio: 'inherit'});
-        console.log('QnA files converted successfully');     
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`QnA files converted successfully \n${stdout}`); 
+        }
     }
     
-    private TranslateQnAModel = (): void => {
+    private TranslateQnAModel = async () => {
         console.log('Translationg QnA models');
 
         let command = `bf qnamaker:translate --in "${ this.qnaTranslateInput }" --out "${ this.qnaTranslateOutputFolder }" --translatekey "${ this.qnaTranslateKey }"`;
         command += this.qnaSourceLang? ` --srclang "${ this.qnaSourceLang }"` : '';
         command += ` --tgtlang "${ this.qnaTargetLang }" --force --recurse --translate_comments --translate_link_text`;
-
-        execSync(command, {stdio: 'inherit'});
-        console.log('QnA models translated successfully');      
+        const { stdout, stderr } = await executeCommand(command);
+    
+        if (stderr) {
+            taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
+        } else {
+            console.log(`QnA models translated successfully\n${stdout}`);
+        }
     }
 }
