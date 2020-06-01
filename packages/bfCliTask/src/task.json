@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":59
+        "Release":74
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -344,7 +344,7 @@
             "name": "qnaKey",
             "type": "string",
             "label": "QnA Subscription Key",
-            "required": false,
+            "required": true,
             "groupname": "command",
             "visibleRule": "qnaMakerCommand = TRUE && qnaMakerSubCommand!=QnAConvert && qnaMakerSubCommand!=QnATranslate",
             "helpMarkDown": "Enter you QnAMaker found on the Cognitive Services Azure portal page under 'access keys'"
@@ -354,6 +354,7 @@
             "type": "string",
             "label": "Knowledgebase name",
             "required": false,
+            "defaultValue": "",
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=CreateKB || qnaMakerSubCommand=QnAConvert",
             "helpMarkDown": "Enter a name for your knowledgebase"   
@@ -362,7 +363,7 @@
             "name": "kbId",
             "type": "string",
             "label": "Knowledgebase ID",
-            "required": false,
+            "required": true,
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=QueryKB || qnaMakerSubCommand=DeleteKB || qnaMakerSubCommand=PublishKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB || qnaMakerSubCommand=TrainKB",
             "helpMarkDown": "Enter the ID of the knowledgebase."
@@ -427,7 +428,7 @@
             "name": "kbEndPointKey",
             "type": "string",
             "label": "Specifies the endpoint key for your private QnA service",
-            "required": false,
+            "required": true,
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=TrainKB || qnaMakerSubCommand=QueryKB",
             "helpMarkDown": "Enter the endpoint key for your private QnA service"   
@@ -451,13 +452,13 @@
             "helpMarkDown": "Query to get a prediction for"
         },
         {
-            "name": "qnaConvertInput",
+            "name": "qnaConvertFilePathInput",
             "type": "filepath",
             "label": "Input Files",
-            "required": false,
+            "defaultValue": "",
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=QnAConvert",
-            "helpMarkDown": "Source .qna file(s) or QnA KB JSON file"
+            "helpMarkDown": "Source .qna file(s) or QnA KB JSON file to convert. Empty is the root of the repo (build) which is $(System.DefaultWorkingDirectory)"
         },
         {
             "name": "isAlterationFile",
@@ -470,13 +471,13 @@
             "helpMarkDown": "Indicates if files is QnA Alterations"
         },
         {
-            "name": "qnaConvertOutput",
+            "name": "qnaConvertFilePathOutput",
             "type": "filepath",
             "label": "Output Files",
             "required": false,
             "groupname": "command",
             "visibleRule": "qnaMakerSubCommand=QnAConvert",
-            "helpMarkDown": "Output file or folder name. If not specified stdout will be used as output"
+            "helpMarkDown": "Output file or folder name. If not specified stdout will be used as output. Empty is the root of the repo (build) which is $(System.DefaultWorkingDirectory)"
         },
         {
             "name": "qnaTranslateInput",
@@ -549,7 +550,7 @@
         }
     ],
     "execution": {
-        "Node": {
+        "Node10": {
             "target": "index.js"
         }
     }
