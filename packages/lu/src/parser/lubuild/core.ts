@@ -18,17 +18,20 @@ const Content = require('./../lu/lu')
 const LUOptions = require('./../lu/luOptions')
 const Luis = require('./../luis/luis')
 
-const delayDuration = 1000
 const rateLimitErrorCode = 429
 
 export class LuBuildCore {
   private readonly client: any
   private readonly subscriptionKey: string
   private readonly endpoint: string
+  private readonly retryCount: number
+  private readonly retryDuration: number
 
-  constructor(subscriptionKey: string, endpoint: string) {
+  constructor(subscriptionKey: string, endpoint: string, retryCount: number, retryDuration: number) {
     this.subscriptionKey = subscriptionKey
     this.endpoint = endpoint
+    this.retryCount = retryCount
+    this.retryDuration = retryDuration
 
     // new luis api client
     const creds = new CognitiveServicesCredentials(subscriptionKey)
@@ -37,15 +40,25 @@ export class LuBuildCore {
 
   public async getApplicationList() {
     let apps
-    try {
-      apps = await this.client.apps.list(undefined, undefined)
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        apps = await this.client.apps.list(undefined, undefined)
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          apps = await this.client.apps.list(undefined, undefined)
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
 
     return apps
@@ -53,15 +66,25 @@ export class LuBuildCore {
 
   public async getApplicationInfo(appId: string) {
     let appInfo
-    try {
-      appInfo = await this.client.apps.get(appId)
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        appInfo = await this.client.apps.get(appId)
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          appInfo = await this.client.apps.get(appId)
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
 
     return appInfo
@@ -77,17 +100,26 @@ export class LuBuildCore {
       'Ocp-Apim-Subscription-Key': this.subscriptionKey
     }
 
-    let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
-    let messageData = await response.json()
+    let messageData
+    let retryCount = this.retryCount + 1
+    let error: any
+    while (retryCount > 0) {
+      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
+        let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
+        messageData = await response.json()
 
-    if (messageData.error && messageData.error.code === rateLimitErrorCode.toString()) {
-      await delay(delayDuration)
-      response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
-      messageData = await response.json()
+        if (messageData.error === undefined) break
+
+        error = messageData.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
+      } else {
+        throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
+      }
     }
 
-    if (messageData.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
+    if (retryCount === 0) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
     }
 
     return messageData
@@ -95,15 +127,25 @@ export class LuBuildCore {
 
   public async exportApplication(appId: string, versionId: string) {
     let response
-    try {
-      response = await this.client.versions.exportMethod(appId, versionId)
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        response = await this.client.versions.exportMethod(appId, versionId)
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          response = await this.client.versions.exportMethod(appId, versionId)
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
 
     return response
@@ -169,17 +211,26 @@ export class LuBuildCore {
       'Ocp-Apim-Subscription-Key': this.subscriptionKey
     }
 
-    let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
-    let messageData = await response.json()
+    let messageData
+    let retryCount = this.retryCount + 1
+    let error: any
+    while (retryCount > 0) {
+      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
+        let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
+        messageData = await response.json()
 
-    if (messageData.error && messageData.error.code === rateLimitErrorCode.toString()) {
-      await delay(delayDuration)
-      response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
-      messageData = await response.json()
+        if (messageData.error === undefined) break
+
+        error = messageData.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
+      } else {
+        throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
+      }
     }
 
-    if (messageData.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
+    if (retryCount === 0) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
     }
 
     return messageData
@@ -187,80 +238,126 @@ export class LuBuildCore {
 
   public async listApplicationVersions(appId: string) {
     let appVersions
-    try {
-      appVersions = await this.client.versions.list(appId)
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        appVersions = await this.client.versions.list(appId)
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          appVersions = await this.client.versions.list(appId)
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
 
     return appVersions
   }
 
   public async deleteVersion(appId: string, versionId: string) {
-    try {
-      await this.client.versions.deleteMethod(appId, versionId)
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        await this.client.versions.deleteMethod(appId, versionId)
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          await this.client.versions.deleteMethod(appId, versionId)
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
   }
 
   public async trainApplication(appId: string, versionId: string) {
-    try {
-      await this.client.train.trainVersion(appId, versionId)
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        await this.client.train.trainVersion(appId, versionId)
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          await this.client.train.trainVersion(appId, versionId)
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
   }
 
   public async getTrainingStatus(appId: string, versionId: string) {
     let status
-    try {
-      status = await this.client.train.getStatus(appId, versionId)
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        status = await this.client.train.getStatus(appId, versionId)
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          status = await this.client.train.getStatus(appId, versionId)
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
 
     return status
   }
 
   public async publishApplication(appId: string, versionId: string) {
-    try {
-      await this.client.apps.publish(appId,
-        {
-          versionId,
-          isStaging: false
-        })
-    } catch (e) {
-      if (e.statusCode === rateLimitErrorCode) {
-        await delay(delayDuration)
-        await this.client.apps.publish(appId,
-          {
-            versionId,
-            isStaging: false
-          })
+    let retryCount = this.retryCount + 1
+    let error
+    while (retryCount > 0) {
+      if (error === undefined || error.statusCode === rateLimitErrorCode) {
+        try {
+          await this.client.apps.publish(appId,
+            {
+              versionId,
+              isStaging: false
+            })
+          break
+        } catch (e) {
+          error = e
+          retryCount--
+          if (retryCount > 0) await delay(this.retryDuration)
+        }
       } else {
-        throw e
+        throw error
       }
+    }
+
+    if (retryCount === 0) {
+      throw error
     }
   }
 
