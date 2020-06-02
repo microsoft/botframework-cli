@@ -791,6 +791,19 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
 
+                        let prebuiltEntities = entitiesFound.filter(item => builtInTypes.consolidatedList.includes(item.entity));
+                        prebuiltEntities.forEach(prebuiltEntity => {
+                            if (parsedContent.LUISJsonStructure.prebuiltEntities.findIndex(e => e.name === prebuiltEntity.entity) < 0) {
+                                let errorMsg = `Pattern "${utteranceAndEntities.context.getText()}" has prebuilt entity ${prebuiltEntity.entity}. Please define it explicitly with @ prebuilt ${prebuiltEntity.entity}.`;
+                                let error = BuildDiagnostic({
+                                    message: errorMsg,
+                                    context: utteranceAndEntities.context
+                                })
+
+                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                            }
+                        })
+
                         let newPattern = new helperClass.pattern(utterance, intentName);
                         if (!hashTable[uttHash]) {
                             parsedContent.LUISJsonStructure.patterns.push(newPattern);
@@ -1856,8 +1869,8 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
             if (kvPair[1] === 'enableSections') continue
 
             if (kvPair.length === 4) {
-                if (kvPair[1] === 'enableMergeIntents' && kvPair[3] === 'false') {
-                    enableMergeIntents = false;
+                if (kvPair[1] === 'enableMergeIntents') {
+                    enableMergeIntents = kvPair[3] === 'false' ? false : true;
                     continue;
                 }
 

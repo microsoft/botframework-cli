@@ -1,5 +1,3 @@
-> !# @app.desc = description of my luis application
-
 > !# @qna.pair.source = xyz
 
 <a id = "1"></a>
@@ -8,22 +6,47 @@
 - tell me a joke
 
 **Filters:**
-- dialogName=dia1
+- dialogName=Dia1
 
 ```
-    ha ha ha
+ha ha ha
 ```
 
 **Prompts:**
-- [flight booking](#?-book-flight) `context-only`
+- [flight booking](#2) `context-only`
+
+<a id = "3"></a>
 
 # ? can I book a hotel near space needle
 
 **Filters:**
-- dialogName=dia1
+- dialogName=Dia1
 
 ```
-    of course you can
+of course you can
+```
+
+<a id = "2"></a>
+
+# ? book flight
+
+**Filters:**
+- dialogName=Dia1
+
+```
+I can book flight for you
+```
+
+<a id = "4"></a>
+
+# ? what can you do
+- how can you help
+
+**Filters:**
+- dialogName=Dia1
+
+```
+I can help book flight, book hotel and book train ticket
 ```
 
 > Source: cross training. Please do not edit these directly!
@@ -33,8 +56,8 @@
 - user guide
 
 **Filters:**
-- dialogName=dia1
+- dialogName=Dia1
 
 ```
-intent=DeferToRecognizer_LUIS_dia1
+intent=DeferToRecognizer_LUIS_Dia1
 ```
