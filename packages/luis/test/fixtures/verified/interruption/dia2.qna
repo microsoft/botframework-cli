@@ -4,7 +4,7 @@
 - dialogName=dia2
 
 ```
-    Sure, I can sing song.
+Sure, I can sing song.
 ```
 
 # ? tell a joke
@@ -13,7 +13,7 @@
 - dialogName=dia2
 
 ```
-    ha ha ha
+ha ha ha
 ```
 
 > Source: cross training. Please do not edit these directly!
@@ -22,6 +22,8 @@
 - book a hotel for me
 - user guide
 - tell joke
+- what can you do
+- how can you help
 
 **Filters:**
 - dialogName=dia2

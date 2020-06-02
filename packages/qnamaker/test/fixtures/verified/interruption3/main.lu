@@ -1,5 +1,31 @@
-# dia1_trigger
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> # Intent definitions
+
+## dia1_trigger
 - I want to travel to Seattle
-			
-# dia2_trigger
+
+
+## dia2_trigger
 - book a hotel for me
+
+
+> # Entity definitions
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+
