@@ -6,7 +6,9 @@
 import taskLibrary = require('azure-pipelines-task-lib/task');
 import { spawn, exec } from 'child_process';
 import { Utils } from './utils';
-import { promisify }  from 'util';
+import { promisify } from 'util';
+import fs = require('fs');
+import path = require('path');
 const executeCommand = promisify(exec);
 
 
@@ -221,25 +223,28 @@ export class QnAMakerCommand {
         }
     }
 
-    private QueryKnowledgeBase = async () => {
-        const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
-        const QueryOutputFile = `${ rootPath }/QueryResult.json`;
+    private QueryKnowledgeBase = async () => {        
+        const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory') as string;
 
         this.QnAMakerInitConfiguration().then(async () => {
             console.log('Calling for query to the QnA knowledgebase');
 
-            let command = `bf qnamaker:query --endpointKey "${ this.kbEndPointKey }" --hostname "${ this.kbHostName }" --kbId "${ this.kbId }" --question "${ this.qnaQuestion }" > "${ QueryOutputFile }" | cat  "${ QueryOutputFile }"`;
+            let command = `bf qnamaker:query --endpointKey "${ this.kbEndPointKey }" --hostname "${ this.kbHostName }" --kbId "${ this.kbId }" --question "${ this.qnaQuestion }"`;            
             const { stdout, stderr } = await executeCommand(command);
-    
+
             if (stderr) {
                 taskLibrary.setResult(taskLibrary.TaskResult.Failed, stderr, true);
             } else {
+                var queryResult = JSON.stringify(JSON.parse(stdout));            
+                fs.writeFileSync(path.join(rootPath, 'QueryResult.json'), queryResult);
+
                 console.log(`The QnA knowledgebase answered successfully \n${stdout}`);
             }
         });
     }
 
     private QnAMakerInitConfiguration = async () => {
+        console.log('Setting up QnA Maker configuration');
         let child = spawn('bf',['qnamaker:init'], { shell: true });
 
         for await (const data of child.stderr) {
