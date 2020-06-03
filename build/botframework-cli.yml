@@ -73,6 +73,7 @@ jobs:
 
     - bash: 'jest --coverage && coveralls < coverage/lcov.info'
       displayName: jest --coverage
+      continueOnError: true
 
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
@@ -102,3 +103,11 @@ jobs:
     - script: 'rush report:coverage'
       displayName: 'rush report:coverage'
       enabled: false
+
+    - powershell: |
+       cd ..
+       ls -R
+      displayName: 'Dir workspace'
+      continueOnError: true
+      condition: succeededOrFailed()
+
