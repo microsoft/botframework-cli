@@ -1,5 +1,7 @@
 > !# @app.desc = description of my luis application
 
+[import help](../main/help.qna)
+
 > !# @qna.pair.source = xyz
 <a id = "1"></a>
 
@@ -15,4 +17,9 @@
 # ?can I book a hotel near space needle
 ```
     of course you can
+```
+
+# ? book flight
+```
+I can book flight for you
 ```
