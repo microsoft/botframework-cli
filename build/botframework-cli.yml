@@ -106,7 +106,7 @@ jobs:
 
     - powershell: |
        cd ..
-       ls -R
+       dir /s
       displayName: 'Dir workspace'
       continueOnError: true
       condition: succeededOrFailed()
