@@ -6,9 +6,11 @@
 import taskLibrary = require('azure-pipelines-task-lib/task');
 import { execSync } from "child_process";
 import { SubscriptionHelper } from './subscriptionHelper';
-import { InputValues } from './inputValues';
+import { LuisCommand } from './luisCommand';
+import { QnAMakerCommand } from './qnaMakerCommand';
+import { readFileSync } from 'fs';
 
-const input = new InputValues();
+const rootPath = taskLibrary.getVariable('System.DefaultWorkingDirectory');
 
 const azureLogin = (helper: SubscriptionHelper): void => {
     const userName = helper.getServicePrincipalClientId();
@@ -22,22 +24,66 @@ const azureLogin = (helper: SubscriptionHelper): void => {
     console.log('Successful login');
 }
 
-const createLuisApplication = (): void => {
-    console.log('Creating LUIS Application...');
+const checkInstalledTool = (): boolean => {
+    const output: string = `${ rootPath }/Output.txt`;
+    const command = `bf -v > ${ output }`;
+    let buffer: Buffer;
 
-    let command = `az group create --name "${ input.applicationName }" --subscriptionKey "XXXXXXXXX" --versionId "1.0"`;
-    
+    try {
+        console.log('Checking bf cli installation...');
+
+        execSync(command);
+        buffer = readFileSync(output);
+        const version = buffer.toString('utf-8').trim();
+
+        if (version.substr(0,27) === '@microsoft/botframework-cli') {
+            console.log('bf cli tool version: ' + version);
+            return true;
+        }
+        else {
+            console.log('bf cli tool not installed');
+            return false;
+        }
+    } catch {
+        console.log('bf cli tool not installed');
+        return false;
+    }
+}
+
+const installBfCliTool = (): void => {
+    const command = `npm i -g @microsoft/botframework-cli`;
+
+    console.log('Installing bf cli tool...');
+
     execSync(command);
-    console.log('LUIS Application successfully created');      
+    console.log('bf cli successfully installed');
 }
 
 const run = (): void => {
     const subscription = taskLibrary.getInput('azureSubscription', true) as string;
     const helper = new SubscriptionHelper(subscription);
+    const luisCommand = taskLibrary.getBoolInput('luisCommand', false);
+    const qnaCommand = taskLibrary.getBoolInput('qnaMakerCommand', false);
 
     azureLogin(helper);
 
-    createLuisApplication();
+    try {
+        if (!checkInstalledTool()) {
+            installBfCliTool();
+        }
+
+        if (luisCommand) {
+            const luis = new LuisCommand();
+            luis.executeSubCommand();
+        }
+        if (qnaCommand) {
+            const qna = new QnAMakerCommand();
+            qna.executeSubCommand();
+        }
+    }
+    catch (error) {
+        taskLibrary.setResult(taskLibrary.TaskResult.Failed, error.message, true);
+    }
 }
 
 run();
