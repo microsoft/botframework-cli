@@ -100,14 +100,14 @@ jobs:
        mkdir coverage
    
        # instrument the packages
-       node_modules/.bin/jscover packages packages-cov
+       jscover packages packages-cov
    
        # replace packages with instrumented version
        mv packages packages-orig
        mv packages-cov packages
    
        # run tests
-       node_modules/.bin/mocha -R mocha-lcov-reporter > coverage/coverage.lcov
+       mocha -R mocha-lcov-reporter > coverage/coverage.lcov
    
        # TODO: The paths need to be fixed in the lcov output. See doc at link above.
    
