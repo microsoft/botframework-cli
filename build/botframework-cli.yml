@@ -118,8 +118,8 @@ jobs:
       continueOnError: true
       enabled: false
 
-    - script: 'rush report-coverage -p 2 -v'
-      displayName: 'rush test -p 2 -v'
+    - script: 'rush reportcoverage -p 2 -v'
+      displayName: 'rush reportcoverage -p 2 -v'
       continueOnError: true
     
     - script: 'rush test -p 2 -v'
@@ -146,10 +146,6 @@ jobs:
 
     - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
       displayName: 'Component Detection'
-
-    - script: 'rush report:coverage'
-      displayName: 'rush report:coverage'
-      enabled: false
 
     - script: |
        cd ..

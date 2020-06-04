@@ -31,7 +31,7 @@
     "clean":"rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "coverage": "nyc npm run test",
-    "report:coverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "reportcoverage":"npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
     "doc:readme":"oclif-dev manifest && oclif-dev readme",
     "version": "npm run doc:readme && git add README.md"
