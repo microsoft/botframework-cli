@@ -59,11 +59,26 @@ jobs:
         customCommand: install coveralls --global
 
     - task: Npm@1
+      displayName: 'npm install mocha-lcov-reporter --global'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: install mocha-lcov-reporter --global
+
+    - task: Npm@1
       displayName: 'npm install jest --global'
       inputs:
         command: custom
         verbose: false
         customCommand: install jest --global
+      enabled: false
+
+    - task: Npm@1
+      displayName: 'npm install jscover --global'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: install jscover --global
 
     - script: 'rush update'
       displayName: 'rush update'
@@ -74,6 +89,31 @@ jobs:
     - bash: 'jest --coverage && coveralls < coverage/lcov.info'
       displayName: jest --coverage
       continueOnError: true
+
+    - bash: |
+       # Runs mocha lcov reporter. Ref:
+       # https://www.npmjs.com/package/mocha-lcov-reporter
+   
+       rm -rf coverage
+       rm -rf packages-cov
+       mkdir coverage
+   
+       # instrument the packages
+       node_modules/.bin/jscover packages packages-cov
+   
+       # replace packages with instrumented version
+       mv packages packages-orig
+       mv packages-cov packages
+   
+       # run tests
+       node_modules/.bin/mocha -R mocha-lcov-reporter > coverage/coverage.lcov
+   
+       # TODO: The paths need to be fixed in the lcov output. See doc at link above.
+   
+       # restore original packages
+       rm -rf packages
+       mv packages-orig packages
+      displayName: 'run mocha lcov reporter'
 
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
