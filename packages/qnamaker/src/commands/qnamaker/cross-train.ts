@@ -14,25 +14,29 @@ export default class QnamakerCrossTrain extends Command {
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'luis:cross-train help'}),
     in: flags.string({char: 'i', description: 'source lu and qna files folder'}),
-    out: flags.string({char: 'o', description: 'output folder name. If not specified, the cross trained files will be wrote to cross-trained folder under folder of current command'}),
-    config: flags.string({description: 'path to config file of mapping rules which is relative to folder specified by --in. If not specified, it will read default config.json from the folder specified by --in'}),
+    out: flags.string({char: 'o', description: 'output folder name. If not specified, the cross trained files will be written to cross-trained folder under folder of current command'}),
+    config: flags.string({description: 'path to config file of mapping rules'}),
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
-    rootDialog: flags.string({description: 'rootDialog file path which is relative to folder specified by --in. If --config not specified, cross-trian will automatically construct the config from file system based on root dialog file'})
+    rootDialog: flags.string({description: 'rootDialog file path. If --config not specified, cross-trian will automatically construct the config from file system based on root dialog file'})
   }
 
   async run() {
     try {
       const {flags} = this.parse(QnamakerCrossTrain)
-
-      if (!path.isAbsolute(flags.in)) {
-        flags.in = path.resolve(flags.in)
+      
+      if (!flags.in) {
+        throw new CLIError('Missing input. Please specify a folder with --in flag')
       }
       
-      if (flags.config && flags.config !== '' && !path.isAbsolute(flags.config)) {
-        flags.config = path.join(flags.in, flags.config)
+      flags.in = path.resolve(flags.in)
+      
+      if (flags.config && flags.config !== '') {
+        flags.config = path.resolve(flags.config)
       } else if (flags.rootDialog && flags.rootDialog !== '') {
-        flags.rootDialog = !path.isAbsolute(flags.rootDialog) ? path.join(flags.in, flags.rootDialog) : flags.rootDialog
+        flags.rootDialog = path.resolve(flags.rootDialog)
         flags.config = await crossTrain.generateConfig(flags.in, flags.rootDialog)
+      } else {
+        throw new CLIError('Missing cross train config. Please provide config by --config or automatically construct config with --rootDialog.')
       }
 
       const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config)

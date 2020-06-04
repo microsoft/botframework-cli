@@ -358,7 +358,7 @@ export class Builder {
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
     await delay(delayDuration)
     await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId)
-    this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`)
+    this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...\n`)
     let done = true
     do {
       await delay(delayDuration)
