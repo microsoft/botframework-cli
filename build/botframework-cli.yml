@@ -157,8 +157,8 @@ jobs:
 
     - powershell: |
        Get-ChildItem -Path "$(Agent.HomeDirectory)" -Include "*.coverage" -Recurse 
-       Copy-Item -Destination CodeCoverage
-      displayName: 'Copy .coverage files?'
+       #| Copy-Item -Destination CodeCoverage
+      displayName: 'Check for .coverage files'
       continueOnError: true
       condition: succeededOrFailed()
 
