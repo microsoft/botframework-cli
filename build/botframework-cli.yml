@@ -125,6 +125,7 @@ jobs:
     - script: 'rush coverage -v'
       displayName: 'rush coverage -v'
       continueOnError: true
+      enabled: false
 
     - powershell: 'Get-ChildItem env:* | sort-object name | Format-Table -Autosize -Wrap | Out-String -Width 200'
       displayName: 'Display env vars'
@@ -135,12 +136,21 @@ jobs:
       continueOnError: true
       env:
         COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
+      enabled: false
+    
+    - script: 'rush reportcoverage -v'
+      displayName: 'rush reportcoverage -v'
+      continueOnError: true
+      env:
+        COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
     
     - script: 'rush test -p 2 -v'
       displayName: 'rush test -p 2 -v'
+      enabled: false
     
     - script: 'rush posttest'
       displayName: 'rush posttest'
+      enabled: false
 
     - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
       displayName: 'Version and Pack'
