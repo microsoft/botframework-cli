@@ -2,8 +2,8 @@
     "manifestVersion": 1,
      "id": "bf-cli-task",
      "name": "BotFramework Task",
-     "version": "4.8.0.14",
-     "publisher": "Southworks-Pipelines-Test",
+     "version": "4.8.0.82",
+     "publisher": "Microsoft",
      "targets": [
          {
              "id": "Microsoft.VisualStudio.Services"
