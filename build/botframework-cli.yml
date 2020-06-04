@@ -89,6 +89,7 @@ jobs:
     - bash: 'jest --coverage && coveralls < coverage/lcov.info'
       displayName: jest --coverage
       continueOnError: true
+      enabled: false
 
     - bash: |
        # Runs mocha lcov reporter. Ref:
@@ -114,6 +115,7 @@ jobs:
        rm -rf packages
        mv packages-orig packages
       displayName: 'run mocha lcov reporter'
+      continueOnError: true
 
     - script: 'rush test -p 2 -v'
       displayName: 'rush test'
