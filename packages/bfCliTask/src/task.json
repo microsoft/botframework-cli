@@ -14,7 +14,7 @@
         "Major": 4,
         "Minor": 8,
         "Patch": 0,
-        "Release":14
+        "Release":82
     },
     "instanceNameFormat": "BotFramework Task",
     "groups": [
@@ -24,7 +24,7 @@
             "isExpanded": true
         },
         {
-            "name": "commands",
+            "name": "command",
             "displayName": "Commands",
             "isExpanded": true
         }
@@ -36,33 +36,521 @@
             "label": "Azure Subscription",
             "defaultValue": "",
             "required": true,
-            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment.",
-            "groupname": "azure"
+            "groupname": "azure",
+            "helpMarkDown": "Select the Azure Resource Manager subscription for the deployment."
         },
         {
-            "name": "bfCommand",
+            "name": "luisCommand",
+            "type": "boolean",
+            "label": "LUIS",
+            "required": false,
+            "defaultValue": "true",
+            "groupname": "command",
+            "helpMarkDown": "Check to execute a LUIS command."
+        },
+        {
+            "name": "qnaMakerCommand",
+            "type": "boolean",
+            "label": "QnAMaker",
+            "required": false,
+            "defaultValue": "false",
+            "groupname": "command",
+            "helpMarkDown": "Check to execute a QnAMaker command."
+        },
+        {
+            "name": "luisSubCommand",
             "type": "pickList",
-            "label": "Command",
-            "required": true,
-            "defaultValue": "LUIS",
-            "groupname": "commands",
-            "helpMarkDown": "Select the command to execute.",
+            "label": "LUIS Commands",
+            "required": false,
+            "defaultValue": "",
+            "groupname": "command",
+            "visibleRule": "luisCommand = TRUE",
+            "helpMarkDown": "Select the sub-command to execute.",
             "options": {
-                "LUIS" : "LUIS",
-                "QnaMaker" : "QnaMaker"
-            }       
+                "ApplicationCreate" : "Create",
+                "LuisBuild" : "Build",
+                "LuisTrainRun" : "Train Run",
+                "LuisPublish" : "Publish",
+                "LuisApplicationDelete" : "Delete",
+                "LuisApplicationImport" : "Import",
+                "LuisApplicationRename" : "Rename",
+                "LuisConvert": "Convert",
+                "LuisGenerate": "Generate",
+                "LuisTranslate": "Translate",
+                "LuisVersionClone": "Version Clone",
+                "LuisVersionExport": "Version Export",
+                "LuisVersionImport": "Version Import",
+                "LuisVersionRename": "Version Rename",
+                "LuisVersionDelete": "Version Delete"
+            }
         },
         {
-            "name": "applicationName",
+            "name": "luisSubscriptionKey",
+            "type": "string",
+            "label": "Subscription Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisCommand = TRUE && luisSubCommand!=LuisGenerate && luisSubCommand!=LuisTranslate",
+            "helpMarkDown": "Enter the LUIS cognitive services subscription key."
+        },
+        {
+            "name": "luisApplicationName",
             "type": "string",
             "label": "Application Name",
-            "required": true,
-            "groupname": "commands",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisConvert",
             "helpMarkDown": "Enter a name for the LUIS application."    
+        },
+        {
+            "name": "luisEndpoint",
+            "type": "string",
+            "label": "Endpoint",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationImport || luisSubCommand=LuisApplicationRename  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport || luisSubCommand=LuisVersionImport || luisSubCommand=LuisVersionRename || luisSubCommand=LuisVersionDelete",
+            "helpMarkDown": "Enter the LUIS endpoint hostname."    
+        },
+        {
+            "name": "luisCulture",
+            "type": "string",
+            "label": "Culture",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "en-us",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisConvert",
+            "helpMarkDown": "Enter the culture for the LUIS application (default: en-us)."
+        },
+        {
+            "name": "luisVersionId",
+            "type": "string",
+            "label": "Version Id",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish  || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport  || luisSubCommand=LuisVersionImport || luisSubCommand=LuisVersionRename || luisSubCommand=LuisVersionDelete",
+            "helpMarkDown": "Enter the version Id for the LUIS application."
+        },
+        {
+            "name": "luisAppDescription",
+            "type": "string",
+            "label": "Description",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=ApplicationCreate || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisConvert",
+            "helpMarkDown": "Enter a description for the LUIS application."
+        },
+        {
+            "name": "luisInputFile",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisBuild || luisSubCommand=LuisApplicationImport",
+            "helpMarkDown": "The path to the .lu file or folder"
+        },
+        {
+            "name": "luisBotName",
+            "type": "string",
+            "label": "Bot Name",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisBuild",
+            "helpMarkDown": "Enter the bot name."
+        },
+        {
+            "name": "luisAppId",
+            "type": "string",
+            "label": "AppId",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTrainRun || luisSubCommand=LuisPublish || luisSubCommand=LuisApplicationDelete || luisSubCommand=LuisApplicationRename || luisSubCommand=LuisVersionClone || luisSubCommand=LuisVersionExport || luisSubCommand=LuisVersionImport || luisSubCommand=LuisVersionRename || luisSubCommand=LuisVersionDelete",
+            "helpMarkDown": "Enter the LUIS application id."
+        },
+        {
+            "name": "luisPublishStaging",
+            "type": "boolean",
+            "label": "Production",
+            "required": false,
+            "defaultValue": "false",
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisPublish",
+            "helpMarkDown": "Check to publish the application version to Production slot."
+        },
+        {
+            "name": "luisConvertInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisConvert",
+            "helpMarkDown": "The path to the source .lu file(s) or LUIS application JSON model to convert."
+        },
+        {
+            "name": "luisConvertOutput",
+            "type": "filepath",
+            "label": "Output Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisConvert",
+            "helpMarkDown": "The path to the output file or folder name."
+        },
+        {
+            "name": "luisGenerateInput",
+            "type": "filepath",
+            "label": "Input JSON Model",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisGenerate",
+            "helpMarkDown": "The path to the file containing the LUIS application JSON model."
+        },
+        {
+            "name": "luisGenerateOutput",
+            "type": "filepath",
+            "label": "Output Source Code",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisGenerate",
+            "helpMarkDown": "The path to the output file or folder name."
+        },
+        {
+            "name": "className",
+            "type": "string",
+            "label": "Class Name",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisGenerate",
+            "helpMarkDown": "The name of the autogenerated class (can include namespace)."
+        },
+        {
+            "name": "programmingLanguage",
+            "type": "pickList",
+            "label": "Programming Language",
+            "required": false,
+            "defaultValue": "C#",
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisGenerate",
+            "helpMarkDown": "Select the programming language to generate the source code.",
+            "options": {
+                "CSharp": "C#",
+                "Typescript": "Typescript"
+            }
+        },
+        {
+            "name": "luisTranslateInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The path to the input file(s) to translate."
+        },
+        {
+            "name": "luisTranslateOutputFolder",
+            "type": "filepath",
+            "label": "Output Folder",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The path to the folder where the translated files will be written."
+        },
+        {
+            "name": "translateKey",
+            "type": "string",
+            "label": "Translation Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The key of the Translation Text service endpoint."
+        },
+        {
+            "name": "sourceLang",
+            "type": "string",
+            "label": "Source Language",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "The source's language code. Auto detect if missing."
+        },
+        {
+            "name": "targetLang",
+            "type": "string",
+            "label": "Target Languages",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisTranslate",
+            "helpMarkDown": "A comma separated list of target languages."
+        },
+        {
+            "name": "targetVersionId",
+            "type": "string",
+            "label": "Target Version Id",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisVersionClone",
+            "helpMarkDown": "The id of the version to create."
+        },
+        {
+            "name": "luisOutputFile",
+            "type": "filepath",
+            "label": "Output File",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisVersionExport",
+            "helpMarkDown": "The path to the output file."
+        },
+        {
+            "name": "luisImportFile",
+            "type": "filepath",
+            "label": "Input File",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisVersionImport",
+            "helpMarkDown": "The path to the JSON or .lu input file."
+        },
+        {
+            "name": "newVersionId",
+            "type": "string",
+            "label": "New Version Id",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "luisSubCommand=LuisVersionRename",
+            "helpMarkDown": "The new id of the version."
+        },
+        {
+            "name": "qnaMakerSubCommand",
+            "type": "pickList",
+            "label": "QnA Maker Commands",
+            "required": false,
+            "defaultValue": "",
+            "groupname": "command",
+            "visibleRule": "qnaMakerCommand = TRUE",
+            "helpMarkDown": "Select the sub-command to execute.",
+            "options": {
+                "CreateKB" : "Create",
+                "DeleteKB" : "Delete",
+                "PublishKB" : "Publish",
+                "ReplaceKB" : "Replace",
+                "UpdateKB" : "Update",
+                "TrainKB" : "Train",
+                "QueryKB" : "Query",
+                "QnAConvert" : "Convert",
+                "QnATranslate" : "Translate",
+                "AlterationsReplaceKB" : "Replace Alterations",
+                "EndpointSettingsUpdate" : "Update Endpoint Settings",
+                "EndpointKeysRefresh" : "Refresh Endpoint Keys"
+            }
+        },
+        {
+            "name": "qnaKey",
+            "type": "string",
+            "label": "QnA Subscription Key",
+            "required": true,
+            "groupname": "command",
+            "visibleRule": "qnaMakerCommand = TRUE && qnaMakerSubCommand!=QnAConvert && qnaMakerSubCommand!=QnATranslate",
+            "helpMarkDown": "Enter you QnAMaker found on the Cognitive Services Azure portal page under 'access keys'"
+        },
+        {
+            "name": "kbName",
+            "type": "string",
+            "label": "Knowledgebase name",
+            "required": false,
+            "defaultValue": "",
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=CreateKB || qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Enter a name for your knowledgebase"   
+        },
+        {
+            "name": "kbId",
+            "type": "string",
+            "label": "Knowledgebase ID",
+            "required": true,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QueryKB || qnaMakerSubCommand=DeleteKB || qnaMakerSubCommand=PublishKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB || qnaMakerSubCommand=TrainKB",
+            "helpMarkDown": "Enter the ID of the knowledgebase."
+        },
+        {
+            "name": "kbDTOFileLocation",
+            "type": "filepath",
+            "label": "Knowledgebase DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=CreateKB || qnaMakerSubCommand=ReplaceKB || qnaMakerSubCommand=UpdateKB",
+            "helpMarkDown": "Enter the location of your knowledgebase DTO file"
+        },
+        {
+            "name": "publishNewKB",
+            "type": "boolean",
+            "label": "Publish knowledgebase",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=CreateKB",
+            "helpMarkDown": "Check to publish this knowledgebase after the creation."
+        },
+        {
+            "name": "feedbackRecordDTOFileLocation",
+            "type": "filepath",
+            "label": "FeedbackRecord DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB",
+            "helpMarkDown": "Enter the location of your FeedbackRecord DTO file"
+        },
+        {
+            "name": "wordAlterationsDTOFileLocation",
+            "type": "filepath",
+            "label": "wordAlterations DTO file location",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=AlterationsReplaceKB",
+            "helpMarkDown": "Enter the location of your wordAlterations DTO file"
+        },
+        {
+            "name": "overrideServiceEndpointKB",
+            "type": "boolean",
+            "label": "Override Public Endpoint",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=AlterationsReplaceKB",
+            "helpMarkDown": "Supported Cognitive Services endpoints (protocol and hostname, for example: https://westus.api.cognitive.microsoft.com).."
+        },
+        {
+            "name": "kbHostName",
+            "type": "string",
+            "label": "Specifies the url for your private QnA service",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB || qnaMakerSubCommand=QueryKB",
+            "helpMarkDown": "Enter the url for your private QnA service"   
+        },
+        {
+            "name": "kbEndPointKey",
+            "type": "string",
+            "label": "Specifies the endpoint key for your private QnA service",
+            "required": true,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=TrainKB || qnaMakerSubCommand=QueryKB",
+            "helpMarkDown": "Enter the endpoint key for your private QnA service"   
+        },
+        {
+            "name": "serviceEndpoint",
+            "type": "string",
+            "label": "Cognitive Services endpoint",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "overrideServiceEndpointKB=true || qnaMakerSubCommand=EndpointSettingsUpdate || qnaMakerSubCommand=EndpointKeysRefresh",
+            "helpMarkDown": "Enter the Supported Cognitive Services endpoint"
+        },
+        {
+            "name": "qnaQuestion",
+            "type": "string",
+            "label": "Query to get a prediction for",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QueryKB",
+            "helpMarkDown": "Query to get a prediction for"
+        },
+        {
+            "name": "qnaConvertFilePathInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "defaultValue": "",
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Source .qna file(s) or QnA KB JSON file to convert. Empty is the root of the repo (build) which is $(System.DefaultWorkingDirectory)"
+        },
+        {
+            "name": "isAlterationFile",
+            "type": "boolean",
+            "label": "Is QnA Alterations file",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Indicates if files is QnA Alterations"
+        },
+        {
+            "name": "qnaConvertFilePathOutput",
+            "type": "filepath",
+            "label": "Output Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnAConvert",
+            "helpMarkDown": "Output file or folder name. If not specified stdout will be used as output. Empty is the root of the repo (build) which is $(System.DefaultWorkingDirectory)"
+        },
+        {
+            "name": "qnaTranslateInput",
+            "type": "filepath",
+            "label": "Input Files",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Source .qna file(s) or QnA maker application JSON model"
+        },
+        {
+            "name": "qnaTranslateOutputFolder",
+            "type": "filepath",
+            "label": "Output Folder",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Output folder name. If not specified stdout will be used as output"
+        },
+        {
+            "name": "qnaTranslateKey",
+            "type": "string",
+            "label": "Translation Key",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Machine translation endpoint key"
+        },
+        {
+            "name": "qnaSourceLang",
+            "type": "string",
+            "label": "Source Language",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Source lang code. Auto detect if missing"
+        },
+        {
+            "name": "qnaTargetLang",
+            "type": "string",
+            "label": "Target Languages",
+            "required": false,
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=QnATranslate",
+            "helpMarkDown": "Comma separated list of target languages"
+        },
+        {    
+            "name": "activeLearning",
+            "type": "boolean",
+            "label": "Active Learning",
+            "required": false,
+            "groupname": "command",
+            "defaultValue": "false",
+            "visibleRule": "qnaMakerSubCommand=EndpointSettingsUpdate",
+            "helpMarkDown": "Enable active learning."
+        },
+        {
+            "name": "keyType",
+            "type": "pickList",
+            "label": "Key Type",
+            "required": false,
+            "defaultValue": "Primary Key",
+            "groupname": "command",
+            "visibleRule": "qnaMakerSubCommand=EndpointKeysRefresh",
+            "helpMarkDown": "Select the type of key.",
+            "options": {
+                "PrimaryKey" : "Primary Key",
+                "SecondaryKey" : "Secondary Key"
+            }
         }
     ],
     "execution": {
-        "Node": {
+        "Node10": {
             "target": "index.js"
         }
     }
