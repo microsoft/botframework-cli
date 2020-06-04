@@ -50,6 +50,7 @@
     "test": "mocha",
     "coverage": "nyc npm run test",
     "reportcoverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "report": "nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run clean && npm run build && npm run doc:readme && rimraf oclif.manifest.json",
     "doc:readme": "oclif-dev manifest && oclif-dev readme",
     "version": "oclif-dev manifest"

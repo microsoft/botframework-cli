@@ -23,6 +23,7 @@
     "test": "mocha",
     "coverage": "nyc npm run test",
     "reportcoverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "report": "nyc report --reporter=text-lcov | coveralls",
     "doc": "",
     "doc:readme": "",
     "version": "npm run doc:readme && git add README.md"
