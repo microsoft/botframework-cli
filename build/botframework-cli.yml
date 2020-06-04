@@ -126,16 +126,6 @@ jobs:
       displayName: 'Display env vars'
       continueOnError: true
   
-    - script: 'set COVERALLS_REPO_TOKEN=$(COVERALLS_REPO_TOKEN)'
-      displayName: 'set COVERALLS_REPO_TOKEN'
-      continueOnError: true
-      enabled: false
-    
-    - powershell: 'Get-ChildItem env:* | sort-object name | Format-Table -Autosize -Wrap | Out-String -Width 200'
-      displayName: 'Display env vars'
-      continueOnError: true
-      enabled: false
-
     - script: 'rush report -v'
       displayName: 'rush report -v'
       continueOnError: true
