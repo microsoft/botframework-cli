@@ -118,6 +118,10 @@ jobs:
       continueOnError: true
       enabled: false
 
+    - powershell: 'New-Item -ItemType directory -Path $(Build.SourcesDirectory)/coverage'
+      displayName: 'Create coverage folder'
+      continueOnError: true
+
     - script: 'rush coverage -v'
       displayName: 'rush coverage -v'
       continueOnError: true
