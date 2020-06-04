@@ -16,7 +16,7 @@ jobs:
     variables:
       buildVersion: '4.8.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
-      publisherId: 'Southworks-Pipelines-Test'
+      publisherId: 'Microsoft'
       extensionId: 'bf-cli-task'
       extensionName: 'BotFramework Task'
       version: '4.8.0.$(Build.BuildId)'
@@ -66,7 +66,7 @@ jobs:
     - task: ms-devlabs.vsts-developer-tools-build-tasks.publish-extension-build-task.PublishAzureDevOpsExtension@2
       displayName: 'Publish Extension'
       inputs:
-        connectedServiceName: MarketPlaceConnection
+        connectedServiceName: '$(MarketPlaceConnection)'
         fileType: vsix
         vsixFile: '$(Build.ArtifactStagingDirectory)/$(publisherId).$(extensionId)-$(version).vsix'
         publisherId: '$(publisherId)'
