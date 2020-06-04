@@ -118,8 +118,8 @@ jobs:
       continueOnError: true
       enabled: false
 
-    - script: 'rush reportcoverage -p 2 -v'
-      displayName: 'rush reportcoverage -p 2 -v'
+    - script: 'rush coverage -p 2 -v'
+      displayName: 'rush coverage -p 2 -v'
       continueOnError: true
     
     - script: 'rush test -p 2 -v'
@@ -151,6 +151,19 @@ jobs:
        cd ..
        dir /s
       displayName: 'Dir workspace'
+      continueOnError: true
+      condition: succeededOrFailed()
+      enabled: false
+
+    - powershell: |
+       Get-ChildItem -Path "$(Agent.HomeDirectory)" -Include "*.coverage" -Recurse 
+       Copy-Item -Destination CodeCoverage
+      displayName: 'Copy .coverage files?'
+      continueOnError: true
+      condition: succeededOrFailed()
+
+    - powershell: 'Get-ChildItem .. -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}'
+      displayName: 'Dir workspace except node_modules'
       continueOnError: true
       condition: succeededOrFailed()
 
