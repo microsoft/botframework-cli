@@ -118,14 +118,13 @@ jobs:
       continueOnError: true
       enabled: false
 
-    - script: 'rush reportcoverage -v'
-      displayName: 'rush reportcoverage -v'
+    - script: 'rush coverage -v'
+      displayName: 'rush coverage -v'
       continueOnError: true
     
     - script: 'rush report -v'
       displayName: 'rush report -v'
       continueOnError: true
-      enabled: false
     
     - script: 'rush test -p 2 -v'
       displayName: 'rush test -p 2 -v'
