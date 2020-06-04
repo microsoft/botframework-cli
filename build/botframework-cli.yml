@@ -118,7 +118,7 @@ jobs:
       continueOnError: true
       enabled: false
 
-    - script: 'rush coverage -p 2 -v'
+    - script: 'rush coverage -v'
       displayName: 'rush coverage -p 2 -v'
       continueOnError: true
     
