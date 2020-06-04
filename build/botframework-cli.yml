@@ -116,9 +116,14 @@ jobs:
        mv packages-orig packages
       displayName: 'run mocha lcov reporter'
       continueOnError: true
+      enabled: false
 
+    - script: 'rush report-coverage -p 2 -v'
+      displayName: 'rush test -p 2 -v'
+      continueOnError: true
+    
     - script: 'rush test -p 2 -v'
-      displayName: 'rush test'
+      displayName: 'rush test -p 2 -v'
     
     - script: 'rush posttest'
       displayName: 'rush posttest'
