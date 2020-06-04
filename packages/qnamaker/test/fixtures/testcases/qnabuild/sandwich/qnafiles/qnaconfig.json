@@ -1,0 +1,11 @@
+{
+    "botName": "test",
+    "defaultCulture": "en-us",
+    "out": "./../../../../../../results",
+    "dialog": "multiLanguage",
+    "suffix": "development",
+    "log": true,
+    "models": [
+        "./sandwich2.en-us.qna"
+    ]
+}
