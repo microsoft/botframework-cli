@@ -125,20 +125,19 @@ jobs:
     - script: 'rush coverage -v'
       displayName: 'rush coverage -v'
       continueOnError: true
-      enabled: false
 
     - script: 'rush report -v'
       displayName: 'rush report -v'
       continueOnError: true
       env:
         COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
-      enabled: false
     
     - script: 'rush reportcoverage -v'
       displayName: 'rush reportcoverage -v'
       continueOnError: true
       env:
         COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
+      enabled: false
 
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.StagingDirectory)/coverage'
