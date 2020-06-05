@@ -33,7 +33,8 @@ export class Builder {
     files: string[],
     culture: string,
     suffix: string,
-    region: string) {
+    region: string,
+    schema?: string) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings = new Map<string, Settings>()
     let recognizers = new Map<string, Recognizer>()
@@ -76,12 +77,15 @@ export class Builder {
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
       if (!multiRecognizers.has(fileName)) {
         let multiRecognizerContent = {}
+        let multiRecognizerSchema = schema
         if (fs.existsSync(multiRecognizerPath)) {
-          multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath)).recognizers
+          let multiRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath))
+          multiRecognizerContent = multiRecognizerObject.recognizers
+          multiRecognizerSchema = multiRecognizerSchema || multiRecognizerObject.$schema
           this.handler(`${multiRecognizerPath} loaded\n`)
         }
 
-        multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent))
+        multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent, multiRecognizerSchema as string))
       }
 
       const settingsPath = path.join(fileFolder, `luis.settings.${suffix}.${region}.json`)
@@ -105,7 +109,11 @@ export class Builder {
         this.handler(`${dialogFile} loaded\n`)
       }
 
-      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings.get(fileFolder) as Settings, existingDialogObj)
+      if (existingDialogObj && schema) {
+        existingDialogObj.$schema = schema
+      }
+
+      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings.get(fileFolder) as Settings, existingDialogObj, schema as string)
       recognizers.set(content.name, recognizer)
     }
 
@@ -221,7 +229,7 @@ export class Builder {
     return dialogContents
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, luconfig: string) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, luconfig: string, schema: string) {
     let writeDone = false
 
     let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
@@ -248,7 +256,7 @@ export class Builder {
           }
 
           this.handler(`Writing to ${outFilePath}\n`)
-          await this.writeDialog(content.content, outFilePath, dialogType)
+          await this.writeDialog(content.content, outFilePath, dialogType, schema)
           writeDone = true
         }
       }
@@ -260,7 +268,7 @@ export class Builder {
           }
 
           this.handler(`Writing to ${content.path}\n`)
-          await this.writeDialog(content.content, content.path, dialogType)
+          await this.writeDialog(content.content, content.path, dialogType, schema)
           writeDone = true
         }
       }
@@ -411,7 +419,7 @@ export class Builder {
     }
   }
 
-  async writeDialog(content: string, filePath: string, dialogType: string) {
+  async writeDialog(content: string, filePath: string, dialogType: string, schema: string) {
     await fs.writeFile(filePath, content, 'utf-8')
     const contentObj = JSON.parse(content)
     if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.MultiLanguageRecognizer') {
@@ -427,7 +435,7 @@ export class Builder {
         content = JSON.stringify(existingCRDialog, null, 4)
       } else {
         const recognizers = [fileName + '.lu']
-        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers).save()
+        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema as string).save()
       }
 
       await fs.writeFile(crossTrainedFilePath, content, 'utf-8')

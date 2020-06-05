@@ -7,9 +7,9 @@ import {Settings} from './settings'
 import * as path from 'path'
 
 export class Recognizer {
-  static load(luFile: string, targetFileName: string, dialogPath: string, luisSettings: Settings, existingRecognizer: any): Recognizer {
+  static load(luFile: string, targetFileName: string, dialogPath: string, luisSettings: Settings, existingRecognizer: any, schema: string): Recognizer {
     if (existingRecognizer) {
-      let recognizer = new Recognizer(luFile, targetFileName)
+      let recognizer = new Recognizer(luFile, targetFileName, schema)
       recognizer.dialogPath = dialogPath
       Object.assign(recognizer, existingRecognizer)
       recognizer.setAppId(luisSettings.luis[path.basename(luFile).split('.').join('_')])
@@ -17,33 +17,39 @@ export class Recognizer {
       return recognizer
     }
 
-    let recognizer = new Recognizer(luFile, targetFileName)
+    let recognizer = new Recognizer(luFile, targetFileName, schema)
     recognizer.dialogPath = dialogPath
 
     return recognizer
   }
 
   versionId: string
-  readonly applicationId: string | undefined
-  readonly endpoint: string | undefined
-  readonly endpointKey: string | undefined
+  private readonly applicationId: string | undefined
+  private readonly endpoint: string | undefined
+  private readonly endpointKey: string | undefined
+  private readonly $schema: string
   private appId: string
   private dialogPath: string | undefined
 
-  constructor(private readonly luFile: string, targetFileName: string) {
+  constructor(private readonly luFile: string, targetFileName: string, schema: string) {
     this.appId = ''
     this.applicationId = `=settings.luis.${targetFileName.split('.').join('_').replace(/-/g, '_')}`
     this.endpoint = '=settings.luis.endpoint'
     this.endpointKey = '=settings.luis.endpointKey'
     this.versionId = '0.1'
+    this.$schema = schema
   }
 
   save(): string {
-    let output = {
+    let output: any = {
       $kind: 'Microsoft.LuisRecognizer',
       applicationId: this.applicationId,
       endpoint: this.endpoint,
       endpointKey: this.endpointKey
+    }
+
+    if (this.$schema) {
+      output = {$schema: this.$schema, ...output}
     }
 
     return JSON.stringify(output, null, 4)
