@@ -143,6 +143,19 @@ jobs:
       continueOnError: true
       env:
         COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
+
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(Build.StagingDirectory)/coverage'
+      inputs:
+        SourceFolder: '$(Biuld.SourcesDirectory)/packages'
+        Contents: '*/coverage/**'
+        TargetFolder: '$(Build.StagingDirectory)/coverage'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: coverage'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/coverage'
+        ArtifactName: coverage
     
     - script: 'rush test -p 2 -v'
       displayName: 'rush test -p 2 -v'
@@ -156,17 +169,18 @@ jobs:
       displayName: 'Version and Pack'
 
     - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)/drop'
       inputs:
         SourceFolder: ./.output
         Contents: '**/*.tgz'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
         flattenFolders: true
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
       inputs:
-        artifactName: 'drop'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
+        ArtifactName: drop
 
     - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
       displayName: 'Component Detection'
