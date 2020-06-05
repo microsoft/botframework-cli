@@ -45,7 +45,7 @@ jobs:
         versionSpec: 12.x
 
     - task: Npm@1
-      displayName: 'Install rush'
+      displayName: 'npm install --global @microsoft/rush'
       inputs:
         command: custom
         verbose: false
@@ -84,7 +84,7 @@ jobs:
       displayName: 'rush update'
 
     - script: 'rush build -p 2'
-      displayName: 'rush build'
+      displayName: 'rush build -p 2'
 
     - bash: 'jest --coverage && coveralls < coverage/lcov.info'
       displayName: jest --coverage

@@ -48,7 +48,7 @@
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
-    "coverage": "nyc --reporter=html --reporter=text mocha",
+    "coverage": "nyc mocha",
     "reportcoverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "report": "nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run clean && npm run build && npm run doc:readme && rimraf oclif.manifest.json",
