@@ -127,10 +127,6 @@ jobs:
       continueOnError: true
       enabled: false
 
-    - powershell: 'Get-ChildItem env:* | sort-object name | Format-Table -Autosize -Wrap | Out-String -Width 200'
-      displayName: 'Display env vars'
-      continueOnError: true
-  
     - script: 'rush report -v'
       displayName: 'rush report -v'
       continueOnError: true
@@ -147,7 +143,14 @@ jobs:
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.StagingDirectory)/coverage'
       inputs:
-        SourceFolder: '$(Biuld.SourcesDirectory)/packages'
+        SourceFolder: '$(Build.SourcesDirectory)/coverage'
+        Contents: '**'
+        TargetFolder: '$(Build.StagingDirectory)/coverage'
+
+    - task: CopyFiles@2
+      displayName: 'Copy more Files to: $(Build.StagingDirectory)/coverage'
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)/packages'
         Contents: '*/coverage/**'
         TargetFolder: '$(Build.StagingDirectory)/coverage'
 
