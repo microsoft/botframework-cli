@@ -26,7 +26,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stderr()
     .command(['qnamaker:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`, '--botName', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain('Missing QnAMaker subscription key. Please pass subscription key with --subscriptionKey flag or specify via bf config:set:qnamaker.')
+      expect(ctx.stderr).to.contain('Missing qnamaker subscription key. Please pass subscription key with --subscriptionKey flag or specify via bf config:set:qnamaker --subscriptionKey.')
     })
 
   test
@@ -42,7 +42,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stderr()
     .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag.')
+      expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag or specify via --qnaConfig.')
     })
   
   test

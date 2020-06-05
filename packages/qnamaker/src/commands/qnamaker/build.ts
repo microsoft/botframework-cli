@@ -79,11 +79,11 @@ export default class QnamakerBuild extends Command {
       }
 
       if (!subscriptionKey) {
-        throw new CLIError('Missing QnAMaker subscription key. Please pass subscription key with --subscriptionKey flag or specify via bf config:set:qnamaker.')
+        throw new CLIError('Missing qnamaker subscription key. Please pass subscription key with --subscriptionKey flag or specify via bf config:set:qnamaker --subscriptionKey.')
       }
 
       if (!botName) {
-        throw new CLIError('Missing bot name. Please pass bot name with --botName flag.')
+        throw new CLIError('Missing bot name. Please pass bot name with --botName flag or specify via --qnaConfig.')
       }
 
       if (dialog && dialog !== recognizerType.MULTILANGUAGE && dialog !== recognizerType.CROSSTRAINED) {
