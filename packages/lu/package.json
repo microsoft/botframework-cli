@@ -60,6 +60,7 @@
     "@types/chai": "^4.2.0",
     "@types/lodash": "~4.14.146",
     "@types/mocha": "^5.2.7",
+    "@types/nock": "^11.1.0",
     "@types/node": "^10.14.15",
     "chai": "^4.2.0",
     "mocha": "^6.2.2",
