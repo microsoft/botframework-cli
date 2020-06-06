@@ -55,13 +55,13 @@ class Component {
     public path: string
 
     // Parent components
-    private parents: Component[] = []
+    private readonly parents: Component[] = []
 
     // Child components
-    private children: Component[] = []
+    private readonly children: Component[] = []
 
     // Minimum depth
-    private minDepth: number = 10000
+    private minDepth = 10000
 
     // Position wrt siblings at minimum depth
     private position: number
@@ -75,20 +75,52 @@ class Component {
         this.position = position
     }
 
-    private setChildDepth(component: Component, depth: number, position: number) {
+    // Add a child component
+    public addChild(component: Component): Component {
+        component.parents.push(this)
+        this.children.push(component)
+        return component
+    }
+
+    public sort(): Component[] {
+        this.setChildDepth(0, 0)
+        let sort: Component[] = []
+        let remaining: Component[] = [this]
+        while (remaining.length > 0) {
+            let minDepth = 1000
+            let minPos = 1000
+            let inext = -1
+            for (let i = 0; i < remaining.length; ++i) {
+                let component = remaining[i]
+                if (component.allParentsProcessed()
+                    && (component.minDepth < minDepth
+                        || (component.minDepth === minDepth && component.position < minPos))) {
+                    inext = i
+                    minDepth = component.minDepth
+                    minPos = component.position
+                }
+            }
+            if (inext < 0) {
+                throw new Error('Circular dependencies in packages')
+            }
+            let next = remaining.splice(inext, inext)[0]
+            next.processed = true
+            sort.push(next)
+            for (let child of this.children) {
+                remaining.push(child)
+            }
+        }
+        return sort
+    }
+
+    private setChildDepth(depth: number, position: number) {
         if (depth < this.minDepth) {
             this.minDepth = depth
             this.position = position
         }
         for (let i = 0; i < this.children.length; ++i) {
-            this.setChildDepth(this.children[i], depth + 1, i)
+            this.children[i].setChildDepth(depth + 1, i)
         }
-    }
-
-    // Add a child component
-    public addChild(component: Component) {
-        component.parents.push(this)
-        this.children.push(component)
     }
 
     // Test to see if all parents are processed
@@ -100,16 +132,6 @@ class Component {
         }
         return true
     }
-
-    private sort(remaining: Component[], sort: Component[], processed: Set<Component>) {
-        // Go through remaining and find any with no unprocessed parents
-        let 
-    }
-
-    public topologicalSort(): Component[] {
-        this.setChildDepth(this, 0, 0)
-    }
-
 }
 
 /**
@@ -162,7 +184,7 @@ export default class SchemaMerger {
     private currentKind = ''
 
     // Default JSON serialization options
-    private readonly jsonOptions = {spaces: '  ', EOL: os.EOL}
+    private readonly jsonOptions = { spaces: '  ', EOL: os.EOL }
 
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
@@ -197,6 +219,15 @@ export default class SchemaMerger {
      */
     async mergeSchemas(): Promise<boolean> {
         try {
+            let root = new Component('c:/foo/root.woof', 0)
+            let a = root.addChild(new Component('c:/foo/a.woof', 0))
+            let b = root.addChild(new Component('c:/foo/b.woof', 1))
+            a.addChild(new Component('c:/foo/c.woof', 0))
+            a.addChild(new Component('c:/foo/d.woof', 1))
+            b.addChild(new Component('c:/foo/e.woof', 0))
+            let sort = root.sort()
+            console.log(sort)
+
             let componentPaths: any[] = []
 
             // Delete existing output
@@ -273,7 +304,7 @@ export default class SchemaMerger {
                 .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
                 .sort()
                 .map(kind => {
-                    return {$ref: `#/definitions/${kind}`}
+                    return { $ref: `#/definitions/${kind}` }
                 })
             this.addSchemaDefinitions()
 
@@ -576,7 +607,7 @@ export default class SchemaMerger {
                 let references: string[] = []
                 let name = ppath.basename(path)
                 if (name.endsWith('.csproj')) {
-                    references.push(...await this.expandCSProj(this.setContentRoot(path), true))
+                    references.push(...await this.expandCSProj(this.setContentRoot(path)))
                 } else {
                     if (name === 'packages.config') {
                         if (this.verbose) {
@@ -630,7 +661,7 @@ export default class SchemaMerger {
         if (!this.nugetRoot) {
             this.nugetRoot = ''
             try {
-                const {stdout} = await exec('dotnet nuget locals global-packages --list')
+                const { stdout } = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
                 let start = stdout.indexOf(name)
                 if (start > -1) {
@@ -733,7 +764,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
+                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -936,7 +967,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
+        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
