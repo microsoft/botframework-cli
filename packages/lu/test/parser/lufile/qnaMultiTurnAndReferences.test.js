@@ -71,7 +71,7 @@ describe('QnA document', function() {
             luMerger.Build([new luObj(qnaContent, new luOptions('stdin'))], false, undefined, findLuFiles)
                 .then(res => done(res))
                 .catch(err => {
-                    assert(err.text.includes("line 7:18 - line 7:19"))
+                    assert(err.text.includes("line 9:12 - line 9:15"))
                     done()
                 })
         })
