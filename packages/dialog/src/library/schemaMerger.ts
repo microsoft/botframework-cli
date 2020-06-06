@@ -60,19 +60,21 @@ class Component {
     // Child components
     private readonly children: Component[] = []
 
-    // Minimum depth
-    private minDepth = 10000
+    // Min parent
+    private maxParent: Component | undefined = undefined
 
-    // Position wrt siblings at minimum depth
-    private position: number
+    // Minimum depth
+    private maxDepth = 0
+
+    // Position wrt siblings of maxParent
+    private maxPosition = 0
 
     // Track if processed
     private processed = false
 
-    constructor(path: string, position: number) {
+    constructor(path: string) {
         this.name = ppath.basename(path)
         this.path = path
-        this.position = position
     }
 
     // Add a child component
@@ -82,48 +84,54 @@ class Component {
         return component
     }
 
+    // Return the topological sort of DAG rooted in component.
+    // There is a preference for minimum depth first and for siblings in the order defined.
     public sort(): Component[] {
-        this.setChildDepth(0, 0)
+        this.setDepth()
         let sort: Component[] = []
         let remaining: Component[] = [this]
+        this.processed = true
         while (remaining.length > 0) {
-            let minDepth = 1000
-            let minPos = 1000
+            let maxDepth = 1000
+            let maxPos = 1000
             let inext = -1
             for (let i = 0; i < remaining.length; ++i) {
                 let component = remaining[i]
                 if (component.allParentsProcessed()
-                    && (component.minDepth < minDepth
-                        || (component.minDepth === minDepth && component.position < minPos))) {
+                    && (component.maxDepth < maxDepth
+                        || (component.maxParent === this.maxParent
+                            && component.maxPosition < maxPos))) {
                     inext = i
-                    minDepth = component.minDepth
-                    minPos = component.position
+                    maxDepth = component.maxDepth
+                    maxPos = component.maxPosition
                 }
             }
-            if (inext < 0) {
-                throw new Error('Circular dependencies in packages')
-            }
-            let next = remaining.splice(inext, inext)[0]
-            next.processed = true
+            let next = remaining.splice(inext, 1)[0]
             sort.push(next)
-            for (let child of this.children) {
-                remaining.push(child)
+            for (let child of next.children) {
+                if (!child.processed) {
+                    child.processed = true
+                    remaining.push(child)
+                }
             }
         }
         return sort
     }
 
-    private setChildDepth(depth: number, position: number) {
-        if (depth < this.minDepth) {
-            this.minDepth = depth
-            this.position = position
+    // Set the maxParent/depth/position based on longest path from root.
+    private setDepth(parent?: Component, position?: number) {
+        let newDepth = parent ? parent.maxDepth + 1 : 0
+        if (newDepth > this.maxDepth) {
+            this.maxParent = parent
+            this.maxDepth = newDepth
+            this.maxPosition = position || 0
         }
         for (let i = 0; i < this.children.length; ++i) {
-            this.children[i].setChildDepth(depth + 1, i)
+            this.children[i].setDepth(this, i)
         }
     }
 
-    // Test to see if all parents are processed
+    // Test to see if all parents are processed which means you can be added to sort.
     private allParentsProcessed(): boolean {
         for (let parent of this.parents) {
             if (!parent.processed) {
@@ -219,12 +227,14 @@ export default class SchemaMerger {
      */
     async mergeSchemas(): Promise<boolean> {
         try {
-            let root = new Component('c:/foo/root.woof', 0)
-            let a = root.addChild(new Component('c:/foo/a.woof', 0))
-            let b = root.addChild(new Component('c:/foo/b.woof', 1))
-            a.addChild(new Component('c:/foo/c.woof', 0))
-            a.addChild(new Component('c:/foo/d.woof', 1))
-            b.addChild(new Component('c:/foo/e.woof', 0))
+            let root = new Component('c:/foo/root.woof')
+            let b = root.addChild(new Component('c:/foo/b.woof'))
+            let a = root.addChild(new Component('c:/foo/a.woof'))
+            a.addChild(new Component('c:/foo/c.woof'))
+            let d = a.addChild(new Component('c:/foo/d.woof'))
+            b.addChild(new Component('c:/foo/e.woof'))
+            let f = b.addChild(new Component('c:/foo/f.woof'))
+            d.addChild(f)
             let sort = root.sort()
             console.log(sort)
 
@@ -590,6 +600,7 @@ export default class SchemaMerger {
         return root
     }
 
+    // TODO: Finish building component tree
     // While we collect schema build the tree of project to dependencies
     // Once we have the tree we generate the topological sort where when popping nodes with no parents we prefer by minimal depth and then by sibling order.
     // We also build a map from asset names to the places where that asset is found.
