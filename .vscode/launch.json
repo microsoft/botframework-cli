@@ -245,6 +245,75 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "LUIS Build Simple",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/luis/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/luis/lib/**",
+                "./packages/lu/lib/**"
+            ],
+            "args": [
+                "luis:build",
+                "--luConfig",
+                "luconfig.json",
+                "--authoringKey",
+                "${env:LUIS_AUTHORING_KEY}"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${env:TEMP}/simple.out"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LUIS Convert Sandwich",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/luis/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/luis/lib/**",
+                "./packages/lu/lib/**"
+            ],
+            "args": [
+                "luis:convert",
+                "--in",
+                "en-us/sandwich.en-us.lu",
+                "--name",
+                "sandwich",
+                "-o",
+                "converted.json",
+                "--force"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${env:TEMP}/sandwich.out"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LUIS Convert Simple",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/luis/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/luis/lib/**",
+                "./packages/lu/lib/**"
+            ],
+            "args": [
+                "luis:convert",
+                "--in",
+                "en-us/simple.en-us.lu",
+                "--name",
+                "simple",
+                "-o",
+                "converted.json",
+                "--force"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${env:TEMP}/simple.out"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "LUIS Build DynamicLists",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/lu/bin/run",

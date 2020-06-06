@@ -46,6 +46,72 @@ async function getJSON(uri: string): Promise<any> {
     return JSON.parse(data)
 }
 
+// Build a tree of component (project or package) references in order to compute a topological sort.
+class Component {
+    // Name of component
+    public name: string
+
+    // Path to component
+    public path: string
+
+    // Parent components
+    private parents: Component[] = []
+
+    // Child components
+    private children: Component[] = []
+
+    // Minimum depth
+    private minDepth: number = 10000
+
+    // Position wrt siblings at minimum depth
+    private position: number
+
+    // Track if processed
+    private processed = false
+
+    constructor(path: string, position: number) {
+        this.name = ppath.basename(path)
+        this.path = path
+        this.position = position
+    }
+
+    private setChildDepth(component: Component, depth: number, position: number) {
+        if (depth < this.minDepth) {
+            this.minDepth = depth
+            this.position = position
+        }
+        for (let i = 0; i < this.children.length; ++i) {
+            this.setChildDepth(this.children[i], depth + 1, i)
+        }
+    }
+
+    // Add a child component
+    public addChild(component: Component) {
+        component.parents.push(this)
+        this.children.push(component)
+    }
+
+    // Test to see if all parents are processed
+    private allParentsProcessed(): boolean {
+        for (let parent of this.parents) {
+            if (!parent.processed) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private sort(remaining: Component[], sort: Component[], processed: Set<Component>) {
+        // Go through remaining and find any with no unprocessed parents
+        let 
+    }
+
+    public topologicalSort(): Component[] {
+        this.setChildDepth(this, 0, 0)
+    }
+
+}
+
 /**
  * This class will find and merge component .schema files into a validated custom schema.
  */
@@ -59,22 +125,44 @@ export default class SchemaMerger {
     private readonly error: any
     private readonly debug: boolean | undefined
 
-    // State tracking
+    // Track projects and packags that have been processed
     private readonly projects = new Set()
     private readonly packages = new Set()
+
+    // Root where nuget packages are found
     private nugetRoot = ''
+
+    // Map from root project directory to dependent ComposerAsset patterns
+    private readonly content = new Map<string, string[]>()
+    private currentContent: string[] | undefined
+
+    // Validator for checking schema
     private readonly validator = new Validator()
+
+    // $schema that defines allowed component .schema
     private metaSchemaId = ''
     private metaSchema: any
+
+    // Map from $kind to definition
     private definitions: any = {}
+
+    // Map from $kind to source
     private readonly source: any = {}
+
+    // List of interface $kind
     private readonly interfaces: string[] = []
+
+    // Map from interface to implementations
     private readonly implementations: any = {}
+
+    // Tracking information for errors
     private failed = false
     private readonly missingKinds = new Set()
     private currentFile = ''
     private currentKind = ''
-    private readonly jsonOptions = { spaces: '\t', EOL: os.EOL }
+
+    // Default JSON serialization options
+    private readonly jsonOptions = {spaces: '  ', EOL: os.EOL}
 
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
@@ -185,7 +273,7 @@ export default class SchemaMerger {
                 .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
                 .sort()
                 .map(kind => {
-                    return { $ref: `#/definitions/${kind}` }
+                    return {$ref: `#/definitions/${kind}`}
                 })
             this.addSchemaDefinitions()
 
@@ -454,9 +542,30 @@ export default class SchemaMerger {
                 references.push(this.normalize(ppath.join(path, '**/*.schema')))
                 // Negative pattern to exclude node_modules
                 references.push(`!${this.normalize(ppath.join(path, 'node_modules/**/*.schema'))}`)
+
+                // Track content
+                this.currentContent?.push(this.normalize(ppath.join(path, '/ComposerAssets/**/*')))
             })
         return references
     }
+
+    // Add the package to content and setup the root
+    setContentRoot(path: string): string {
+        let root = ppath.resolve(path)
+        if (!this.packages.has(root)) {
+            this.currentContent = []
+            this.content.set(root, this.currentContent)
+        }
+        return root
+    }
+
+    // While we collect schema build the tree of project to dependencies
+    // Once we have the tree we generate the topological sort where when popping nodes with no parents we prefer by minimal depth and then by sibling order.
+    // We also build a map from asset names to the places where that asset is found.
+    // We can scan that map and identify:
+    // 1) Assets that override other assets--this is informative.
+    // 2) When multiple independent paths override the same child asset.  This implies they should be merged since one of them will be preferred.
+    // 3) When multiple independent paths have the same asset.  This implies something should be renamed.
 
     // Expand package.json, package.config or *.csproj to look for .schema below referenced packages.
     async * expandPackages(paths: string[]): AsyncIterable<string> {
@@ -467,7 +576,7 @@ export default class SchemaMerger {
                 let references: string[] = []
                 let name = ppath.basename(path)
                 if (name.endsWith('.csproj')) {
-                    references.push(...await this.expandCSProj(ppath.resolve(path)))
+                    references.push(...await this.expandCSProj(this.setContentRoot(path), true))
                 } else {
                     if (name === 'packages.config') {
                         if (this.verbose) {
@@ -476,11 +585,14 @@ export default class SchemaMerger {
                         let json = await this.xmlToJSON(path)
                         let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
                         if (packages) {
+                            this.setContentRoot(path)
+                            // TODO: I don't think this is right.  We need to call expandNugetPackages.x
                             walkJSON(json, elt => {
                                 if (elt.package) {
                                     for (let info of elt.package) {
                                         let id = `${info.$.id}.${info.$.version}`
                                         references.push(ppath.join(packages, `${id}/**/*.schema`))
+
                                     }
                                     return true
                                 }
@@ -488,12 +600,13 @@ export default class SchemaMerger {
                             })
                         }
                     } else if (name === 'package.json') {
-                        let children = await this.expandPackageJson(path)
+                        let children = await this.expandPackageJson(this.setContentRoot(path))
                         references = [...references, ...children]
                     } else {
                         throw new Error(`Unknown package type ${path}`)
                     }
                 }
+                this.currentContent = undefined
                 references = references.map(ref => ref.replace(/\\/g, '/'))
                 for (let expandedRef of await glob(references)) {
                     yield this.prettyPath(expandedRef)
@@ -517,7 +630,7 @@ export default class SchemaMerger {
         if (!this.nugetRoot) {
             this.nugetRoot = ''
             try {
-                const { stdout } = await exec('dotnet nuget locals global-packages --list')
+                const {stdout} = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
                 let start = stdout.indexOf(name)
                 if (start > -1) {
@@ -554,6 +667,8 @@ export default class SchemaMerger {
         }
         return result
     }
+
+    // Copy content
 
     /**
      * Merge extension into definition.
@@ -618,7 +733,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
+                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -821,7 +936,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
+        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
