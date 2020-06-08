@@ -60,15 +60,6 @@ class Component {
     // Child components
     private readonly children: Component[] = []
 
-    // Min parent
-    private maxParent: Component | undefined = undefined
-
-    // Minimum depth
-    private maxDepth = 0
-
-    // Position wrt siblings of maxParent
-    private maxPosition = 0
-
     // Track if processed
     private processed = false
 
@@ -85,50 +76,28 @@ class Component {
     }
 
     // Return the topological sort of DAG rooted in component.
-    // There is a preference for minimum depth first and for siblings in the order defined.
+    // Sort has all parents in bread-first order before any child.
     public sort(): Component[] {
-        this.setDepth()
         let sort: Component[] = []
         let remaining: Component[] = [this]
-        this.processed = true
         while (remaining.length > 0) {
-            let maxDepth = 1000
-            let maxPos = 1000
-            let inext = -1
-            for (let i = 0; i < remaining.length; ++i) {
-                let component = remaining[i]
-                if (component.allParentsProcessed()
-                    && (component.maxDepth < maxDepth
-                        || (component.maxParent === this.maxParent
-                            && component.maxPosition < maxPos))) {
-                    inext = i
-                    maxDepth = component.maxDepth
-                    maxPos = component.maxPosition
+            let newRemaining: Component[] = []
+            for (let component of remaining) {
+                if (component.allParentsProcessed()) {
+                    if (!component.processed) {
+                        sort.push(component)
+                        component.processed = true
+                        for (let child of component.children) {
+                            newRemaining.push(child)
+                        }
+                    }
+                } else {
+                    newRemaining.push(component)
                 }
             }
-            let next = remaining.splice(inext, 1)[0]
-            sort.push(next)
-            for (let child of next.children) {
-                if (!child.processed) {
-                    child.processed = true
-                    remaining.push(child)
-                }
-            }
+            remaining = newRemaining
         }
         return sort
-    }
-
-    // Set the maxParent/depth/position based on longest path from root.
-    private setDepth(parent?: Component, position?: number) {
-        let newDepth = parent ? parent.maxDepth + 1 : 0
-        if (newDepth > this.maxDepth) {
-            this.maxParent = parent
-            this.maxDepth = newDepth
-            this.maxPosition = position || 0
-        }
-        for (let i = 0; i < this.children.length; ++i) {
-            this.children[i].setDepth(this, i)
-        }
     }
 
     // Test to see if all parents are processed which means you can be added to sort.
@@ -192,7 +161,7 @@ export default class SchemaMerger {
     private currentKind = ''
 
     // Default JSON serialization options
-    private readonly jsonOptions = { spaces: '  ', EOL: os.EOL }
+    private readonly jsonOptions = {spaces: '  ', EOL: os.EOL}
 
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
@@ -314,7 +283,7 @@ export default class SchemaMerger {
                 .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
                 .sort()
                 .map(kind => {
-                    return { $ref: `#/definitions/${kind}` }
+                    return {$ref: `#/definitions/${kind}`}
                 })
             this.addSchemaDefinitions()
 
@@ -672,7 +641,7 @@ export default class SchemaMerger {
         if (!this.nugetRoot) {
             this.nugetRoot = ''
             try {
-                const { stdout } = await exec('dotnet nuget locals global-packages --list')
+                const {stdout} = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
                 let start = stdout.indexOf(name)
                 if (start > -1) {
@@ -775,7 +744,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
+                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -978,7 +947,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
+        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
