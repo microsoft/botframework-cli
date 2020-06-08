@@ -148,6 +148,8 @@ OPTIONS
   --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
                                          Defaults to current logged in user alias
 
+  --schema=schema                        Schema value set for dialog files                      
+
 EXAMPLE
 
        $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}

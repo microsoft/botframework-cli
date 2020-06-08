@@ -6,16 +6,22 @@
 export class MultiLanguageRecognizer {
   public recognizers: any
   private readonly dialogPath: string
+  private readonly $schema: string
 
-  constructor(dialogPath: string, recognizers: any) {
+  constructor(dialogPath: string, recognizers: any, schema: string) {
     this.dialogPath = dialogPath
     this.recognizers = recognizers
+    this.$schema = schema
   }
 
   save(): string {
-    let output = {
+    let output: any = {
       $kind: 'Microsoft.MultiLanguageRecognizer',
       recognizers: this.recognizers
+    }
+
+    if (this.$schema) {
+      output = {$schema: this.$schema, ...output}
     }
 
     return JSON.stringify(output, null, 4)
