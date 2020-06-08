@@ -607,3 +607,71 @@ describe('qnamaker:build update knowledge base successfully with parameters set 
       expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
     })
 })
+
+describe('qnamaker:build create a new knowledge base successfully with endpoint override', () => {
+  before(function () {
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test.en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('createasync'))
+      .reply(202, {
+        operationId: 'f8c64e2a-aaaa-3a09-8f78-39d7adc76ec5'
+      })
+    
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('operations'))
+      .reply(200, {
+        operationState: 'Succeeded',
+        resourceLocation: 'a/b/f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('knowledgebases'))
+      .reply(204)
+    
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        hostName: 'https://myqnamakerbot.azurewebsites.net'
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .put(uri => uri.includes('alterations'))
+      .reply(204)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'xxxx',
+        secondaryEndpointKey: 'yyyy'
+      })
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--endpoint', 'https://chinaeast2.api.cognitive.azure.cn/qnamaker/v4.0'])
+    .it('should create a new knowledge base successfully with endpoint override', ctx => {
+      expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
+      expect(ctx.stdout).to.contain('Creating qnamaker KB: test(development).en-us.qna...')
+      expect(ctx.stdout).to.contain('Creating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
+      expect(ctx.stdout).to.contain('Publishing finished')
+      expect(ctx.stdout).to.contain('Replacing alterations...')
+      expect(ctx.stdout).to.contain('xxxx')
+      expect(ctx.stdout).to.contain('yyyy')
+    })
+})
