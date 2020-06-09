@@ -20,7 +20,7 @@ export default class LuisCrossTrain extends Command {
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
     rootDialog: flags.string({description: 'RootDialog file path. If --config not specified, cross-trian will automatically construct the config from file system based on root dialog file'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    log: flags.boolean({description: 'Write out log messages to console', default: false})
   }
 
   async run() {

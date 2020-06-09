@@ -148,6 +148,10 @@ OPTIONS
   --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
                                          Defaults to current logged in user alias
 
+  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+
+  --log                                  [default: false] Write out log messages to console
+
 EXAMPLE
 
        $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}
