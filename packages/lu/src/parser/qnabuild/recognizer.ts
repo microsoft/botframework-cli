@@ -7,7 +7,7 @@ import {Settings} from './settings'
 import * as path from 'path'
 
 export class Recognizer {
-  static load(qnaFile: string, targetFileName: string, dialogPath: string, qnaSettings: Settings, existingRecognizer: any, schema: string): Recognizer {
+  static load(qnaFile: string, targetFileName: string, dialogPath: string, qnaSettings: Settings, existingRecognizer: any, schema?: string): Recognizer {
     if (existingRecognizer) {
       let recognizer = new Recognizer(qnaFile, targetFileName, schema)
       recognizer.dialogPath = dialogPath
@@ -27,11 +27,11 @@ export class Recognizer {
   private readonly knowledgeBaseId: string | undefined
   private readonly hostname: string | undefined
   private readonly endpointKey: string | undefined
-  private readonly $schema: string
+  private readonly $schema: string | undefined
   private kbId: string
   private dialogPath: string | undefined
 
-  constructor(private readonly qnaFile: string, targetFileName: string, schema: string) {
+  constructor(private readonly qnaFile: string, targetFileName: string, schema?: string) {
     this.kbId = ''
     this.id = `QnA_${targetFileName.split('.')[0]}`
     this.knowledgeBaseId = `=settings.qna.${targetFileName.split('.').join('_').replace(/-/g, '_')}`

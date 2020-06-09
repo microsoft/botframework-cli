@@ -6,9 +6,9 @@
 export class MultiLanguageRecognizer {
   public recognizers: any
   private readonly dialogPath: string
-  private readonly $schema: string
+  private readonly $schema: string | undefined
 
-  constructor(dialogPath: string, recognizers: any, schema: string) {
+  constructor(dialogPath: string, recognizers: any, schema?: string) {
     this.dialogPath = dialogPath
     this.recognizers = recognizers
     this.$schema = schema

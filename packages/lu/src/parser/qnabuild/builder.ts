@@ -110,7 +110,7 @@ export class Builder {
           existingDialogObj.$schema = schema
         }
 
-        let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj, schema as string)
+        let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj, schema)
         recognizers.set(content.name, recognizer)
         qnaContents.set(content.name, content)
       } else {
@@ -508,7 +508,7 @@ export class Builder {
           content = JSON.stringify(existingCRDialog, null, 4)
         } else {
           let recognizers = [fileName]
-          content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema as string).save()
+          content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema).save()
         }
 
         await fs.writeFile(crossTrainedFilePath, content, 'utf-8')

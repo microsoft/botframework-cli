@@ -7,7 +7,7 @@ import {Settings} from './settings'
 import * as path from 'path'
 
 export class Recognizer {
-  static load(luFile: string, targetFileName: string, dialogPath: string, luisSettings: Settings, existingRecognizer: any, schema: string): Recognizer {
+  static load(luFile: string, targetFileName: string, dialogPath: string, luisSettings: Settings, existingRecognizer: any, schema?: string): Recognizer {
     if (existingRecognizer) {
       let recognizer = new Recognizer(luFile, targetFileName, schema)
       recognizer.dialogPath = dialogPath
@@ -27,11 +27,11 @@ export class Recognizer {
   private readonly applicationId: string | undefined
   private readonly endpoint: string | undefined
   private readonly endpointKey: string | undefined
-  private readonly $schema: string
+  private readonly $schema: string | undefined
   private appId: string
   private dialogPath: string | undefined
 
-  constructor(private readonly luFile: string, targetFileName: string, schema: string) {
+  constructor(private readonly luFile: string, targetFileName: string, schema?: string) {
     this.appId = ''
     this.applicationId = `=settings.luis.${targetFileName.split('.').join('_').replace(/-/g, '_')}`
     this.endpoint = '=settings.luis.endpoint'

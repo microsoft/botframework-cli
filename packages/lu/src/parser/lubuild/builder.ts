@@ -113,7 +113,7 @@ export class Builder {
         existingDialogObj.$schema = schema
       }
 
-      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings.get(fileFolder) as Settings, existingDialogObj, schema as string)
+      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings.get(fileFolder) as Settings, existingDialogObj, schema)
       recognizers.set(content.name, recognizer)
     }
 
@@ -435,7 +435,7 @@ export class Builder {
         content = JSON.stringify(existingCRDialog, null, 4)
       } else {
         const recognizers = [fileName + '.lu']
-        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema as string).save()
+        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema).save()
       }
 
       await fs.writeFile(crossTrainedFilePath, content, 'utf-8')

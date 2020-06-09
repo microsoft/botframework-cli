@@ -40,8 +40,8 @@ export default class QnamakerBuild extends Command {
     dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
     qnaConfig: flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
-    log: flags.boolean({description: 'write out log messages to console', default: false}),
-    schema: flags.string({description: 'Schema value set for dialog files'})
+    log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    schema: flags.string({description: 'Defines $schema for generated .dialog files'})
   }
 
   async run() {
