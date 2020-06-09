@@ -410,18 +410,22 @@ USAGE
   $ bf luis:cross-train
 
 OPTIONS
-  -h, --help               luis:cross-train help
-  -i, --in=in              source lu and qna files folder
+  -h, --help               Luis:cross-train help
+  -i, --in=in              Source lu and qna files folder
 
-  -o, --out=out            output folder name. If not specified, the cross trained files will be written to cross-trained
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be written to cross-trained
                            folder under folder of current command
 
-  --config=config          path to config file of mapping rules
+  --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path. If --config not specified,
+  --rootDialog=rootDialog  RootDialog file path. If --config not specified,
                            cross-trian will automatically construct the config from file system based on root dialog file
+
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+
+  --log                    [default: false] Write out log messages to console
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
