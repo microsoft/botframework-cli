@@ -35,9 +35,9 @@ jobs:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
-        tags: 'Version=$(_version)'
+        tags: |
+         Version=$(_version)
       continueOnError: true
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], 'False'))
 
     - task: NodeTool@0
       displayName: 'Use Node 12.x'
@@ -139,6 +139,13 @@ jobs:
       env:
         CODECOV_TOKEN: $(TokenForCodecov)
 
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with code codecov url'
+      inputs:
+        tags: |
+         https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages
+      continueOnError: true
+  
     - script: 'rush reportcoverage -v'
       displayName: 'rush reportcoverage -v'
       continueOnError: true
