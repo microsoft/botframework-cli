@@ -121,6 +121,7 @@ jobs:
     - powershell: 'New-Item -ItemType directory -Path $(Build.SourcesDirectory)/coverage'
       displayName: 'Create coverage folder'
       continueOnError: true
+      enabled: false
 
     - script: 'rush coverage -v'
       displayName: 'rush coverage -v'
@@ -131,7 +132,13 @@ jobs:
       continueOnError: true
       env:
         COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
-    
+        enabled: false
+
+    - bash: 'bash <(curl -s https://codecov.io/bash)'
+      displayName: 'push coverage report to codecov.io - https://codecov.io/gh/microsoft/botframework-cli/tree/245d2e263f8a4cd5d5d944a83739985e15e34edf'
+      env:
+        CODECOV_TOKEN: $(TokenForCodecov)
+
     - script: 'rush reportcoverage -v'
       displayName: 'rush reportcoverage -v'
       continueOnError: true
@@ -145,9 +152,10 @@ jobs:
         SourceFolder: '$(Build.SourcesDirectory)/coverage'
         Contents: '**'
         TargetFolder: '$(Build.StagingDirectory)/coverage'
+      enabled: false
 
     - task: CopyFiles@2
-      displayName: 'Copy more Files to: $(Build.StagingDirectory)/coverage'
+      displayName: 'Copy Files to: $(Build.StagingDirectory)/coverage'
       inputs:
         SourceFolder: '$(Build.SourcesDirectory)/packages'
         Contents: '*/coverage/**'
