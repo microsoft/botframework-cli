@@ -267,7 +267,7 @@ export function getConfigObject(configContent: any, intentName: string, verbose:
       rootIds: rootLuFiles,
       triggerRules: finalLuConfigObj,
       intentName,
-      verbose: verbose
+      verbose
     }
 
     return crossTrainConfig
