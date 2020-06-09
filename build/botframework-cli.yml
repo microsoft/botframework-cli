@@ -135,7 +135,7 @@ jobs:
         enabled: false
 
     - bash: 'bash <(curl -s https://codecov.io/bash)'
-      displayName: 'push coverage report to codecov.io - https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)'
+      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)'
       env:
         CODECOV_TOKEN: $(TokenForCodecov)
 
