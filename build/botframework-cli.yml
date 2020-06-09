@@ -146,6 +146,13 @@ jobs:
         COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
       enabled: false
 
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Populate Code Coverage tab'
+      inputs:
+        codeCoverageTool: 'cobertura' # Options: cobertura, jaCoCo
+        summaryFileLocation: $(System.DefaultWorkingDirectory)/packages/*/coverage/cobertura-coverage.xml
+      continueOnError: true
+
     - task: CopyFiles@2
       displayName: 'Copy Files to: $(Build.StagingDirectory)/coverage'
       inputs:
