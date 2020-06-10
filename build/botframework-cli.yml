@@ -12,18 +12,6 @@ pr:
   branches:
     include:
      - master
-  paths:
-    include:
-      - '*'
-    exclude:
-      - README.md
-      - specs/*
-      - PortingMap.md
-      - ToolLifetimeSchedule.md
-      - AzureCli.md
-      - CONTRIBUTING.md
-      - LICENSE
-      - PRIVACY.md
 
 jobs:
   - job: CLI
@@ -66,14 +54,6 @@ jobs:
         customCommand: install mocha-lcov-reporter --global
 
     - task: Npm@1
-      displayName: 'npm install jest --global'
-      inputs:
-        command: custom
-        verbose: false
-        customCommand: install jest --global
-      enabled: false
-
-    - task: Npm@1
       displayName: 'npm install jscover --global'
       inputs:
         command: custom
@@ -86,53 +66,8 @@ jobs:
     - script: 'rush build -p 2'
       displayName: 'rush build -p 2'
 
-    - bash: 'jest --coverage && coveralls < coverage/lcov.info'
-      displayName: jest --coverage
-      continueOnError: true
-      enabled: false
-
-    - bash: |
-       # Runs mocha lcov reporter. Ref:
-       # https://www.npmjs.com/package/mocha-lcov-reporter
-   
-       rm -rf coverage
-       rm -rf packages-cov
-       mkdir coverage
-   
-       # instrument the packages
-       jscover packages packages-cov
-   
-       # replace packages with instrumented version
-       mv packages packages-orig
-       mv packages-cov packages
-   
-       # run tests
-       mocha -R mocha-lcov-reporter > coverage/coverage.lcov
-   
-       # TODO: The paths need to be fixed in the lcov output. See doc at link above.
-   
-       # restore original packages
-       rm -rf packages
-       mv packages-orig packages
-      displayName: 'run mocha lcov reporter'
-      continueOnError: true
-      enabled: false
-
-    - powershell: 'New-Item -ItemType directory -Path $(Build.SourcesDirectory)/coverage'
-      displayName: 'Create coverage folder'
-      continueOnError: true
-      enabled: false
-
     - script: 'rush coverage -v'
       displayName: 'rush coverage -v'
-      continueOnError: true
-
-    - script: 'rush report -v'
-      displayName: 'rush report -v'
-      continueOnError: true
-      env:
-        COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
-        enabled: false
 
     - bash: 'bash <(curl -s https://codecov.io/bash)'
       displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)'
@@ -146,13 +81,6 @@ jobs:
          https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages
       continueOnError: true
   
-    - script: 'rush reportcoverage -v'
-      displayName: 'rush reportcoverage -v'
-      continueOnError: true
-      env:
-        COVERALLS_REPO_TOKEN: $(TokenForCoveralls)
-      enabled: false
-
     - task: PublishCodeCoverageResults@1
       displayName: 'Populate Code Coverage tab'
       inputs:
@@ -161,15 +89,7 @@ jobs:
       continueOnError: true
 
     - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.StagingDirectory)/coverage'
-      inputs:
-        SourceFolder: '$(Build.SourcesDirectory)/coverage'
-        Contents: '**'
-        TargetFolder: '$(Build.StagingDirectory)/coverage'
-      enabled: false
-
-    - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.StagingDirectory)/coverage'
+      displayName: 'Copy coverage files to: $(Build.StagingDirectory)/coverage'
       inputs:
         SourceFolder: '$(Build.SourcesDirectory)/packages'
         Contents: '*/coverage/**'
@@ -181,19 +101,14 @@ jobs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/coverage'
         ArtifactName: coverage
     
-    - script: 'rush test -p 2 -v'
-      displayName: 'rush test -p 2 -v'
-      enabled: false
-    
     - script: 'rush posttest'
       displayName: 'rush posttest'
-      enabled: false
 
     - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
       displayName: 'Version and Pack'
 
     - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)/drop'
+      displayName: 'Copy packages to: $(Build.ArtifactStagingDirectory)/drop'
       inputs:
         SourceFolder: ./.output
         Contents: '**/*.tgz'
@@ -209,23 +124,7 @@ jobs:
     - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
       displayName: 'Component Detection'
 
-    - powershell: |
-       Get-ChildItem -Path "$(Agent.HomeDirectory)" -Include "*.coverage" -Recurse 
-       #| Copy-Item -Destination CodeCoverage
-      displayName: 'Check for .coverage files'
-      continueOnError: true
-      condition: succeededOrFailed()
-
     - powershell: 'Get-ChildItem .. -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}'
       displayName: 'Dir workspace except node_modules'
       continueOnError: true
       condition: succeededOrFailed()
-
-    - script: |
-       cd ..
-       dir /s
-      displayName: 'Dir workspace'
-      continueOnError: true
-      condition: succeededOrFailed()
-      enabled: false
-
