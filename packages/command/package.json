@@ -22,8 +22,6 @@
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "coverage": "nyc mocha",
-    "reportcoverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
-    "report": "nyc report --reporter=text-lcov | coveralls",
     "doc": "",
     "doc:readme": "",
     "version": ""

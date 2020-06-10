@@ -14,7 +14,6 @@
     "fs-extra": "^5.0.0",
     "glob": "^7.1.3",
     "intercept-stdout": "^0.1.2",
-    "jasmine": "^3.5.0",
     "latest-version": "^4.0.0",
     "mime-types": "^2.1.18",
     "minimist": "^1.2.0",
@@ -74,8 +73,6 @@
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "coverage": "nyc mocha",
-    "reportcoverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
-    "report": "nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
     "doc:readme": "oclif-dev manifest && oclif-dev readme",
     "version": "npm run doc:readme && git add README.md"

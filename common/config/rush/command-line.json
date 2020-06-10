@@ -44,20 +44,6 @@
     },
     {
       "commandKind": "bulk",
-      "name": "reportcoverage",
-      "summary": "Run tests with coverage and push report to coveralls.io",
-      "enableParallelism": false,
-      "allowWarningsInSuccessfulBuild": true
-    },
-    {
-      "commandKind": "bulk",
-      "name": "report",
-      "summary": "Push coverage report to coveralls.io",
-      "enableParallelism": false,
-      "allowWarningsInSuccessfulBuild": true
-    },
-    {
-      "commandKind": "bulk",
       "name": "doc",
       "summary": "Generate documentation",
       "enableParallelism": true
