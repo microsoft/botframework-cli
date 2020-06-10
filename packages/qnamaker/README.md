@@ -388,7 +388,7 @@ _See code: [src/commands/qnamaker/kb/delete.ts](https://github.com/microsoft/bot
 
 ## `bf qnamaker:kb:export`
 
-Echos a knowledgebase json to stdout
+Echos a knowledgebase in json or qna format to stdout
 
 ```
 USAGE
