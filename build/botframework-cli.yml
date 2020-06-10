@@ -1,5 +1,5 @@
 #
-# Build Botframework-CLI on Windows agent 
+# Build Botframework-CLI on Windows agent
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -23,8 +23,7 @@ jobs:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
-        tags: |
-         Version=$(_version)
+        tags: 'Version=$(_version)'
       continueOnError: true
 
     - task: NodeTool@0
@@ -40,25 +39,12 @@ jobs:
         customCommand: 'install --global @microsoft/rush'
 
     - task: Npm@1
-      displayName: 'npm install coveralls --global'
-      inputs:
-        command: custom
-        verbose: false
-        customCommand: install coveralls --global
-
-    - task: Npm@1
       displayName: 'npm install mocha-lcov-reporter --global'
       inputs:
         command: custom
         verbose: false
         customCommand: install mocha-lcov-reporter --global
-
-    - task: Npm@1
-      displayName: 'npm install jscover --global'
-      inputs:
-        command: custom
-        verbose: false
-        customCommand: install jscover --global
+      enabled: false
 
     - script: 'rush update'
       displayName: 'rush update'
@@ -77,8 +63,7 @@ jobs:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with code codecov url'
       inputs:
-        tags: |
-         https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages
+        tags: 'https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages'
       continueOnError: true
   
     - task: PublishCodeCoverageResults@1
