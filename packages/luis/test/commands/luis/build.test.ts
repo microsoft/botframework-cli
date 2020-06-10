@@ -653,14 +653,14 @@ describe('luis:build update application succeed with parameters set from luconfi
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
         name: 'MyProject(development)-test.en-us.lu',
         id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
       }])
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('apps'))
       .reply(200, {
         name: 'MyProject(development)-test.en-us.lu',
@@ -668,15 +668,15 @@ describe('luis:build update application succeed with parameters set from luconfi
         activeVersion: '0.1'
       })
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('export'))
       .reply(200, existingLuisApp)
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .post(uri => uri.includes('import'))
       .reply(201, '0.2')
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('apps'))
       .reply(200, [
         {
@@ -687,18 +687,18 @@ describe('luis:build update application succeed with parameters set from luconfi
         }
       ])
     
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .delete(uri => uri.includes('apps'))
       .reply(200)
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .post(uri => uri.includes('train'))
       .reply(202, {
         statusId: 2,
         status: 'UpToDate'
       })
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('train'))
       .reply(200, [{
         modelId: '99999',
@@ -709,7 +709,7 @@ describe('luis:build update application succeed with parameters set from luconfi
         }
       }])
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',

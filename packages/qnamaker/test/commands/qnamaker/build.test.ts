@@ -550,7 +550,7 @@ describe('qnamaker:build update knowledge base successfully with parameters set 
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('qnamaker'))
       .reply(200, {
         knowledgebases:
@@ -561,7 +561,7 @@ describe('qnamaker:build update knowledge base successfully with parameters set 
           }]
       })
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('knowledgebases'))
       .reply(200, {
         qnaDocuments: [{
@@ -573,15 +573,15 @@ describe('qnamaker:build update knowledge base successfully with parameters set 
         }]
       })
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .put(uri => uri.includes('knowledgebases'))
       .reply(204)
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .post(uri => uri.includes('knowledgebases'))
       .reply(204)
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
         primaryEndpointKey: 'xxxx',
