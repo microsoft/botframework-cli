@@ -38,14 +38,6 @@ jobs:
         verbose: false
         customCommand: 'install --global @microsoft/rush'
 
-    - task: Npm@1
-      displayName: 'npm install mocha-lcov-reporter --global'
-      inputs:
-        command: custom
-        verbose: false
-        customCommand: install mocha-lcov-reporter --global
-      enabled: false
-
     - script: 'rush update'
       displayName: 'rush update'
 
@@ -61,7 +53,7 @@ jobs:
         CODECOV_TOKEN: $(TokenForCodecov)
 
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-      displayName: 'Tag Build with code codecov url'
+      displayName: 'Tag Build with coverage url'
       inputs:
         tags: 'https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages'
       continueOnError: true
