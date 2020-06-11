@@ -41,6 +41,7 @@ export default class LuisBuild extends Command {
     luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
     deleteOldVersion: flags.boolean({description: 'Delete old version of LUIS application after building new one.'}),
     log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'})
   }
 
@@ -68,7 +69,6 @@ export default class LuisBuild extends Command {
 
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
-      luisBuildFlags.push('endpoint')
 
       let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, schema, endpoint}
         = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)

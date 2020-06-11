@@ -368,6 +368,8 @@ OPTIONS
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
                                    current logged in user alias
 
+  --endpoint                       Luis authoring endpoint for publishing
+
   --schema=schema                  Defines $schema for generated .dialog files
 
 EXAMPLE

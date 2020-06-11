@@ -41,6 +41,7 @@ export default class QnamakerBuild extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
     qnaConfig: flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
     log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'})
   }
 
@@ -68,7 +69,6 @@ export default class QnamakerBuild extends Command {
 
       // Flags override userConfig
       let qnamakerBuildFlags = Object.keys(QnamakerBuild.flags)
-      qnamakerBuildFlags.push('endpoint')
 
       let {inVal, subscriptionKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, log, schema, endpoint}
         = await processFlags(flags, qnamakerBuildFlags, this.config.configDir)
