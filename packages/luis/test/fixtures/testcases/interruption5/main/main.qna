@@ -1,0 +1,15 @@
+[import chitchat](chitchat.qna)
+
+# ?user guide
+
+**Filters:**
+- aa=bb
+
+```
+Here is the [user guide](http://contoso.com/userguide.pdf)
+```
+
+# ?tell joke
+```
+Tell a funny joke
+```

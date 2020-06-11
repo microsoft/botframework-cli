@@ -77,12 +77,8 @@ AT
   : '@' -> pushMode(NEW_ENTITY_MODE)
   ;
 
-IMPORT_DESC
-  : '[' .*? ']'
-  ;
-
-IMPORT_PATH
-  : '(' .*? ')'
+IMPORT
+  : '[' ~[\r\n[\]]*? ']' '(' ~[\r\n()]*? ')'
   ;
 
 FILTER_MARK

@@ -220,6 +220,32 @@ describe('luis:convert negative tests', () => {
             })
         
     })
+
+    it('luis:convert should show ERR message when prebuilt entity in pattern is not explicitly defined', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad4.lu')    
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                .then(res => done(res))
+                .catch(err => {
+                    assert.isTrue(err.text.includes(`[ERROR] line 2:0 - line 2:27: Pattern "- hi {@personName:userName}" has prebuilt entity personName. Please define it explicitly with @ prebuilt personName.`))
+                    done()
+                })
+            })
+        
+    })
+
+    it('luis:convert should show ERR message when entity name contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad5.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 2:0 - line 2:26: Invalid utterance line, entity name @addto*Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        assert.isTrue(err.text.includes('[ERROR] line 4:0 - line 4:20: Invalid entity line, entity name delete$Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
+    })
   })
 
 describe('luis:convert new entity format', () => {

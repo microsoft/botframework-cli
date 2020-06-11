@@ -339,13 +339,13 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --dialog flag is provided, overwrites relevant dialog file
+  -f, --force                      If --out flag is provided, overwrites relevant dialog file
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output file or folder name. If not specified, current directory will be used as
-                                   output
-
+  -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
+                                   ids will be output to console
+                                   
   --authoringKey=authoringKey      LUIS authoring key
 
   --botName=botName                Bot name
@@ -354,11 +354,10 @@ OPTIONS
 
   --deleteOldVersion               Delete old version of LUIS application after building new one.
 
-  --dialog=dialog                  [default: multiLanguage] Write out .dialog files whose recognizer type
-                                   [multiLanguage|crosstrained] is specified by --dialog
+  --dialog=dialog                  [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
-                                   valid if --dialog is set
+                                   valid if --out is set
 
   --log                            write out log messages to console
 
@@ -368,6 +367,8 @@ OPTIONS
 
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
                                    current logged in user alias
+
+  --endpoint                       Luis authoring endpoint for publishing
 
 EXAMPLE
 
@@ -414,17 +415,15 @@ OPTIONS
   -h, --help               luis:cross-train help
   -i, --in=in              source lu and qna files folder
 
-  -o, --out=out            output folder name. If not specified, the cross trained files will be wrote to cross-trained
+  -o, --out=out            output folder name. If not specified, the cross trained files will be written to cross-trained
                            folder under folder of current command
 
-  --config=config          path to config file of mapping rules which is relative to folder specified by --in. If not
-                           specified, it will read default config.json from the folder specified by --in
+  --config=config          path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path which is relative to folder specified by --in. If --config not
-                           specified, cross-trian will automatically construct the config from file system based on root
-                           dialog file
+  --rootDialog=rootDialog  rootDialog file path. If --config not specified,
+                           cross-trian will automatically construct the config from file system based on root dialog file
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_

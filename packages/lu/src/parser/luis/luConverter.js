@@ -99,7 +99,11 @@ const parseUtterancesToLu = function(utterances, luisJSON){
             getEntitiesByPositionList(sortedEntitiesList, tokenizedText);
             updatedText = tokenizedText.join('');
         }
-        if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
+
+        // remove duplicated whitespaces between words inside utterance to make sure they are aligned with the luis portal
+        // as luis portal only keeps one whitespace between words even if you type multiple ones
+        // this will benefit the comparison of lu files that are converted from local and remote luis application
+        if(updatedText) fileContent += '- ' + updatedText.replace(/\s+/g, ' ') + NEWLINE;
     });
     return fileContent
 }

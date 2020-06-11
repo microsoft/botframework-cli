@@ -2,6 +2,7 @@ const EntitySectionContext = require('./generated/LUFileParser').LUFileParser.En
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
+const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
 
 class EntitySection {
     /**
@@ -19,13 +20,23 @@ class EntitySection {
     }
 
     ExtractName(parseTree) {
+        let entityName;
         if (parseTree.entityDefinition().entityLine().entityName()) {
-            return parseTree.entityDefinition().entityLine().entityName().getText().trim();
+            entityName = parseTree.entityDefinition().entityLine().entityName().getText().trim();
         } else {
             this.Errors.push(BuildDiagnostic({
                 message: "Invalid entity line, did you miss entity name after $",
                 context: parseTree.entityDefinition().entityLine()
-            }))     
+            }));
+        }
+
+        if (entityName && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
+            this.Errors.push(BuildDiagnostic({
+                message: `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`,
+                context: parseTree.newEntityDefinition().newEntityLine()
+            }));
+        } else {
+            return entityName;
         }
     }
 

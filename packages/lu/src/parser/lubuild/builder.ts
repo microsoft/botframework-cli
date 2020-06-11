@@ -17,6 +17,7 @@ const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
 const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
+const Luis = require('./../luis/luis')
 const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 const recognizerType = require('./../utils/enums/recognizertypes')
@@ -55,9 +56,11 @@ export class Builder {
 
       let fileContent = ''
       let result
+      let luisObj
       try {
         result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
-        fileContent = result.parseToLuContent()
+        luisObj = new Luis(result)
+        fileContent = luisObj.parseToLuContent()
       } catch (err) {
         if (err.source) {
           err.text = `Invalid LU file ${err.source}: ${err.text}`
@@ -303,7 +306,7 @@ export class Builder {
   async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number, deleteOldVersion: boolean) {
     await delay(delayDuration)
     const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
-    recognizer.versionId = appInfo.activeVersion
+    recognizer.versionId = appInfo.activeVersion || appInfo.endpoints.PRODUCTION.versionId
 
     await delay(delayDuration)
     const existingApp = await luBuildCore.exportApplication(recognizer.getAppId(), recognizer.versionId)
@@ -355,7 +358,7 @@ export class Builder {
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
     await delay(delayDuration)
     await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId)
-    this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`)
+    this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...\n`)
     let done = true
     do {
       await delay(delayDuration)

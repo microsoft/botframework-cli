@@ -32,7 +32,6 @@ export class Builder {
 
   async loadContents(
     files: string[],
-    inputFolder: string,
     botName: string,
     suffix: string,
     region: string,
@@ -43,10 +42,17 @@ export class Builder {
     let qnaContents = new Map<string, string>()
 
     for (const file of files) {
-      const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
+      let fileCulture: string
+      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath
+      } else {
+        fileCulture = culture
+      }
 
       let fileContent = ''
       let result
+      const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
       try {
         result = await qnaBuilderVerbose.build(qnaFiles, true)
 
@@ -62,16 +68,10 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
-      let fileCulture: string
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
-      if (cultureFromPath) {
-        fileCulture = cultureFromPath
-      } else {
-        fileCulture = culture
-      }
 
+      const fileFolder = path.dirname(file)
       if (multiRecognizer === undefined) {
-        const multiRecognizerPath = path.join(inputFolder, `${botName}.qna.dialog`)
+        const multiRecognizerPath = path.join(fileFolder, `${botName}.qna.dialog`)
         let multiRecognizerContent = {}
         if (fs.existsSync(multiRecognizerPath)) {
           multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath)).recognizers
@@ -82,7 +82,7 @@ export class Builder {
       }
 
       if (settings === undefined) {
-        const settingsPath = path.join(inputFolder, `qnamaker.settings.${suffix}.${region}.json`)
+        const settingsPath = path.join(fileFolder, `qnamaker.settings.${suffix}.${region}.json`)
         let settingsContent = {}
         if (fs.existsSync(settingsPath)) {
           settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).qna
@@ -95,7 +95,7 @@ export class Builder {
       const content = new Content(fileContent, new qnaOptions(botName, true, fileCulture, file))
 
       if (!recognizers.has(content.name)) {
-        const dialogFile = path.join(inputFolder, `${content.name}.dialog`)
+        const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
         let existingDialogObj: any
         if (fs.existsSync(dialogFile)) {
           existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
@@ -216,6 +216,13 @@ export class Builder {
     const dialogContents = qnaBuildCore.generateDeclarativeAssets(recognizerValues, multiRecognizer as MultiLanguageRecognizer, settings as Settings)
 
     return dialogContents
+  }
+
+  async getEndpointKeys(subscriptionkey: string, endpoint: string) {
+    const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
+    const endPointKeys = await qnaBuildCore.getEndpointKeys()
+
+    return endPointKeys
   }
 
   async importUrlReference(
