@@ -140,13 +140,15 @@ OPTIONS
 
   --log                                  write out log messages to console
 
-  --luConfig=luConfig                    Path to config for qnamaker build which can contain switches for arguments
+  --qnaConfig=qnaConfig                  Path to config for qnamaker build which can contain switches for arguments
 
   --region=region                        [default: westus] Overrides public endpoint
                                          https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/
 
   --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
                                          Defaults to current logged in user alias
+
+  --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
 
 EXAMPLE
 
