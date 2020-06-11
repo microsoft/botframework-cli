@@ -46,6 +46,18 @@ async function getJSON(uri: string): Promise<any> {
     return JSON.parse(data)
 }
 
+// Convert to the right kind of slash. 
+// ppath.normalize did not do this properly on the mac.
+function normalize(path: string): string {
+    path = ppath.resolve(path)
+    if (ppath.sep === '/') {
+        path = path.replace(/\\/g, ppath.sep)
+    } else {
+        path = path.replace(/\//g, ppath.sep)
+    }
+    return ppath.normalize(path)
+}
+
 // Build a tree of component (project or package) references in order to compute a topological sort.
 class Component {
     // Name of component
@@ -53,6 +65,9 @@ class Component {
 
     // Path to component
     public path: string
+
+    // Explicit patterns
+    public explictPatterns: string[] = []
 
     // Parent components
     private readonly parents: Component[] = []
@@ -100,6 +115,38 @@ class Component {
         return sort
     }
 
+    public patterns(extensions: string[]): string[] {
+        let patterns = this.explictPatterns
+        if (patterns.length === 0 && this.path) {
+            patterns = []
+            let root = ppath.dirname(this.path)
+            for (let extension of extensions) {
+                patterns.push(ppath.join(root, `**/*${extension}`))
+                if (this.path.includes('package.json')) {
+                    patterns.push(`!${ppath.join(root, `node_modules/**/*${extension}`)}`)
+                }
+            }
+        }
+        return patterns
+    }
+
+    // Check to see if this component is a parent of another component
+    public isParent(node: Component): boolean {
+        let found = false
+        for (let child of this.children) {
+            if (child === node) {
+                found = true
+                break
+            } else {
+                if (child.isParent(node)) {
+                    found = true
+                    break
+                }
+            }
+        }
+        return found
+    }
+
     // Test to see if all parents are processed which means you can be added to sort.
     private allParentsProcessed(): boolean {
         for (let parent of this.parents) {
@@ -111,29 +158,38 @@ class Component {
     }
 }
 
+interface PathComponent {
+    path: string
+    component: Component
+}
+
 /**
  * This class will find and merge component .schema files into a validated custom schema.
  */
 export default class SchemaMerger {
     // Input parameters
     private readonly patterns: string[]
-    private readonly output: string
+    private output: string
     private readonly verbose: boolean
     private readonly log: any
     private readonly warn: any
     private readonly error: any
+    private readonly extensions: string[]
     private readonly debug: boolean | undefined
 
-    // Track projects and packags that have been processed
-    private readonly projects = new Set()
+    // Track packages that have been processed
     private readonly packages = new Set()
 
     // Root where nuget packages are found
     private nugetRoot = ''
 
-    // Map from root project directory to dependent ComposerAsset patterns
-    private readonly content = new Map<string, string[]>()
-    private currentContent: string[] | undefined
+    // Component tree
+    private readonly root = new Component('')
+    private readonly parents: Component[] = []
+    private components: Component[] = []
+
+    // Files
+    private readonly files: Map<string, Map<string, PathComponent[]>> = new Map<string, Map<string, PathComponent[]>>()
 
     // Validator for checking schema
     private readonly validator = new Validator()
@@ -166,23 +222,45 @@ export default class SchemaMerger {
     /**
      * Merger to combine copmonent .schema files to make a custom schema.
      * @param patterns Glob patterns for the .schema files to combine.
-     * @param output The output file to create.
+     * @param output The output file to create or empty string to use default.
      * @param verbose True to show files as processed.
      * @param log Logger for informational messages.
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
+     * @param extensions Extensions to analyze for loader.
      * @param debug Generate debug output.
      * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
-    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, debug?: boolean, nugetRoot?: string) {
+    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
-        this.output = output
+        this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, '.schema')) : ''
         this.verbose = verbose
         this.log = log
         this.warn = warn
         this.error = error
+        this.extensions = extensions || ['.schema', '.lu', '.lg', '.qna', '.dialog']
         this.debug = debug
         this.nugetRoot = nugetRoot || ''
+    }
+
+    // Push a child on the current parent and make it the new parent
+    public pushParent(path: string): Component {
+        let component = new Component(path)
+        let child = this.currentParent().addChild(component)
+        this.parents.push(child)
+        this.currentFile = path
+        return component
+    }
+
+    // Pop the current parent
+    public popParent() {
+        this.parents.pop()
+        this.currentFile = this.currentParent().path
+    }
+
+    // Return the current parent
+    public currentParent(): Component {
+        return this.parents[this.parents.length - 1]
     }
 
     /** 
@@ -192,31 +270,27 @@ export default class SchemaMerger {
      * $kind for a property connects to another component.
      * schema:#/definitions/foo will refer to $schema#/definition/foo
      * Does extensive error checking and validation to ensure information is present and consistent.
-     * Returns true if successfull.
+     * Returns true if successful.
      */
     async mergeSchemas(): Promise<boolean> {
         try {
-            let root = new Component('c:/foo/root.woof')
-            let b = root.addChild(new Component('c:/foo/b.woof'))
-            let a = root.addChild(new Component('c:/foo/a.woof'))
-            a.addChild(new Component('c:/foo/c.woof'))
-            let d = a.addChild(new Component('c:/foo/d.woof'))
-            b.addChild(new Component('c:/foo/e.woof'))
-            let f = b.addChild(new Component('c:/foo/f.woof'))
-            d.addChild(f)
-            let sort = root.sort()
-            console.log(sort)
-
-            let componentPaths: any[] = []
+            this.log('Finding component files')
+            await this.expandPackages(await glob(this.patterns.map(p => p.replace(/\\/g, '/'))))
+            this.analyze()
 
             // Delete existing output
-            await fs.remove(this.output)
-            await fs.remove(this.output + '.final')
-            await fs.remove(this.output + '.expanded')
+            await fs.remove(this.output + '.schema')
+            await fs.remove(this.output + '.resources')
+            await fs.remove(this.output + '.schema.final')
+            await fs.remove(this.output + '.schema.expanded')
 
-            this.log(`Finding component .schema files in${os.EOL}  ${this.patterns.join(os.EOL + '  ')}`)
-            for await (const path of this.expandPackages(await glob(this.patterns))) {
-                componentPaths.push(path)
+            // Merge .schema files
+            let componentPaths: string[] = []
+            let schemas = this.files.get('.schema')
+            if (schemas) {
+                for (let path of schemas.values()) {
+                    componentPaths.push(path[0].path)
+                }
             }
 
             if (componentPaths.length === 0) {
@@ -288,7 +362,7 @@ export default class SchemaMerger {
             this.addSchemaDefinitions()
 
             if (!this.failed) {
-                this.currentFile = this.output
+                this.currentFile = this.output + '.schema'
                 this.currentKind = ''
                 let finalDefinitions: any = {}
                 for (let key of Object.keys(this.definitions).sort()) {
@@ -303,7 +377,7 @@ export default class SchemaMerger {
                     definitions: finalDefinitions
                 }
                 if (this.debug) {
-                    await fs.writeJSON(this.output + '.final', finalSchema, this.jsonOptions)
+                    await fs.writeJSON(this.currentFile + '.final', finalSchema, this.jsonOptions)
                 }
 
                 // Convert all remote references to local ones
@@ -311,7 +385,7 @@ export default class SchemaMerger {
                 finalSchema = this.expandAllOf(finalSchema)
                 this.removeId(finalSchema)
                 if (this.debug) {
-                    await fs.writeJSON(this.output + '.expanded', finalSchema, this.jsonOptions)
+                    await fs.writeJSON(this.currentFile + '.expanded', finalSchema, this.jsonOptions)
                 }
 
                 // Final verification
@@ -325,12 +399,27 @@ export default class SchemaMerger {
                         this.log(`Expanding all $ref took ${end} seconds`)
                     }
 
-                    this.log(`Writing ${this.output}`)
-                    await fs.writeJSON(this.output, finalSchema, this.jsonOptions)
+                    this.log(`Writing ${this.currentFile}`)
+                    await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
+
+                    let includes: string[] = []
+                    let excludes: string[] = []
+                    for (let component of this.components) {
+                        if (component.name) {
+                            let path = ppath.relative(ppath.dirname(this.output), ppath.dirname(component.path))
+                            includes.push(path)
+                            if (component.path.includes('package.json')) {
+                                excludes.push(ppath.relative(ppath.dirname(this.output), ppath.join(path, 'node_modules')))
+                            }
+                        }
+                    }
+                    this.currentFile = this.output + '.resources'
+                    this.log(`Writing ${this.currentFile}`)
+                    await fs.writeJSON(this.currentFile, {includes, excludes, extensions: this.extensions}, this.jsonOptions)
                 }
             }
             if (this.failed) {
-                this.error('*** Could not merge component schemas ***')
+                this.error('*** Could not merge components ***')
             }
         } catch (e) {
             this.mergingError(e)
@@ -386,26 +475,69 @@ export default class SchemaMerger {
         }
     }
 
-    // Convert to the right kind of slash. 
-    // ppath.normalize did not do this properly on the mac.
-    normalize(path: string): string {
-        if (ppath.sep === '/') {
-            path = path.replace(/\\/g, ppath.sep)
-        } else {
-            path = path.replace(/\//g, ppath.sep)
+    indent(): string {
+        return '  '.repeat(this.parents.length)
+    }
+
+    // Expand a .nuspec by walking its dependencies
+    async expandNuspec(path: string): Promise<void> {
+        path = normalize(path)
+        if (!this.packages.has(path)) {
+            this.currentFile = path
+            if (await fs.pathExists(path)) {
+                try {
+                    this.packages.add(path)
+                    if (this.verbose) {
+                        this.log(`${this.indent()}Following nuget ${this.prettyPath(path)}`)
+                    }
+                    this.pushParent(path)
+                    let nuspec = await this.xmlToJSON(path)
+                    let dependencies: any[] = []
+                    walkJSON(nuspec, val => {
+                        if (val.dependencies) {
+                            // NOTE: We assume first framework with dependencies has schema files.
+                            for (let groups of val.dependencies) {
+                                if (groups.dependency) {
+                                    // Direct dependencies
+                                    for (let dependency of groups.dependency) {
+                                        dependencies.push(dependency.$)
+                                    }
+                                    break
+                                } else if (groups.group) {
+                                    // Grouped dependencies
+                                    for (let group of groups.group) {
+                                        if (group.dependency) {
+                                            for (let dependency of group.dependency) {
+                                                dependencies.push(dependency.$)
+                                            }
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                            return true
+                        }
+                        return false
+                    })
+                    for (let dependent of dependencies) {
+                        await this.expandNuget(dependent.id, dependent.version)
+                    }
+                } finally {
+                    this.popParent()
+                }
+            } else {
+                this.parsingError('  Could not find nuspec')
+            }
         }
-        return ppath.normalize(path)
     }
 
     // Expand nuget package and all of its dependencies
-    async expandNuget(packageName: string, minVersion: string, root: boolean): Promise<string[]> {
-        let packages: string[] = []
+    async expandNuget(packageName: string, minVersion: string): Promise<void> {
         let pkgPath = ppath.join(this.nugetRoot, packageName)
-        if (!this.projects.has(pkgPath) && !packageName.startsWith('System')) {
-            let oldFile = this.currentFile
+        if (!this.packages.has(pkgPath) && !packageName.startsWith('System')) {
             try {
                 this.currentFile = pkgPath
-                this.projects.add(pkgPath)
+                this.packages.add(pkgPath)
                 let versions: string[] = []
                 if (await fs.pathExists(pkgPath)) {
                     for (let pkgVersion of await fs.readdir(pkgPath)) {
@@ -415,216 +547,243 @@ export default class SchemaMerger {
                     // NOTE: The semver package does not handle more complex nuget range revisions
                     // We get an exception and will ignore those dependencies.
                     let version = nuget.minSatisfying(versions, minVersion)
-                    pkgPath = this.normalize(ppath.join(pkgPath, version || ''))
-                    this.currentFile = pkgPath
-                    packages.push(pkgPath)
-                    if (this.verbose) {
-                        this.log(`  Following nuget ${this.prettyPath(pkgPath)}`)
-                    }
+                    pkgPath = ppath.join(pkgPath, version || '')
                     let nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
-                    if (await fs.pathExists(nuspecPath)) {
-                        let nuspec = await this.xmlToJSON(nuspecPath)
-                        let dependencies: any[] = []
-                        walkJSON(nuspec, val => {
-                            if (val.dependencies) {
-                                // NOTE: We assume first framework with dependencies has schema files.
-                                for (let groups of val.dependencies) {
-                                    if (groups.dependency) {
-                                        // Direct dependencies
-                                        for (let dependency of groups.dependency) {
-                                            dependencies.push(dependency.$)
-                                        }
-                                        break
-                                    } else if (groups.group) {
-                                        // Grouped dependencies
-                                        for (let group of groups.group) {
-                                            if (group.dependency) {
-                                                for (let dependency of group.dependency) {
-                                                    dependencies.push(dependency.$)
-                                                }
-                                                break
-                                            }
-                                        }
-                                    }
-                                }
-                                return true
-                            }
-                            return false
-                        })
-                        for (let dependent of dependencies) {
-                            let dependentPackages = await this.expandNuget(dependent.id, dependent.version, false)
-                            packages = [...packages, ...dependentPackages]
-                        }
-                    }
-                } else if (root) {
+                    await this.expandNuspec(nuspecPath)
+                } else {
                     this.parsingError('  Nuget package does not exist')
                 }
             } catch (e) {
                 this.parsingWarning(e.message)
             } finally {
-                this.currentFile = oldFile
+                this.currentFile = this.currentParent().path
             }
         }
-        return packages
     }
 
     // Expand .csproj packages, nugets and projects
-    async expandCSProj(path: string): Promise<string[]> {
-        let references: string[] = []
-        if (!this.projects[path]) {
-            this.projects[path] = true
-            this.currentFile = this.prettyPath(path)
-            if (this.verbose) {
-                this.log(`  Following ${this.currentFile}`)
-            }
-            references.push(this.normalize(ppath.join(ppath.dirname(path), '/**/*.schema')))
-            let json = await this.xmlToJSON(path)
-            await this.findGlobalNuget()
-            if (this.nugetRoot !== '') {
-                let nugetPackages: any[] = []
+    async expandCSProj(path: string): Promise<void> {
+        path = normalize(path)
+        if (!this.packages[path]) {
+            this.packages[path] = true
+            try {
+                this.currentFile = this.prettyPath(path)
+                if (this.verbose) {
+                    this.log(`${this.indent()}Following ${this.currentFile}`)
+                }
+                this.pushParent(path)
+                let json = await this.xmlToJSON(path)
+
+                // Walk projects
+                let projects: string[] = []
                 walkJSON(json, elt => {
-                    if (elt.PackageReference) {
-                        for (let pkgRef of elt.PackageReference) {
-                            nugetPackages.push(pkgRef.$)
+                    if (elt.ProjectReference) {
+                        for (let ref of elt.ProjectReference) {
+                            let projectPath = ppath.join(ppath.dirname(path), ref.$.Include)
+                            projects.push(projectPath)
                         }
                         return true
                     }
                     return false
                 })
-                for (let pkg of nugetPackages) {
-                    let nugetReferences = await this.expandNuget(pkg.Include, pkg.Version, true)
-                    for (let nuget of nugetReferences) {
-                        references.push(this.normalize(ppath.join(nuget, '**/*.schema')))
+                for (let project of projects) {
+                    await this.expandCSProj(project)
+                }
+
+                // Walk nugets
+                await this.findGlobalNuget()
+                if (this.nugetRoot !== '') {
+                    let nugetPackages: any[] = []
+                    walkJSON(json, elt => {
+                        if (elt.PackageReference) {
+                            for (let pkgRef of elt.PackageReference) {
+                                nugetPackages.push(pkgRef.$)
+                            }
+                            return true
+                        }
+                        return false
+                    })
+                    for (let pkg of nugetPackages) {
+                        await this.expandNuget(pkg.Include, pkg.Version)
                     }
                 }
-            }
-            let projects: string[] = []
-            walkJSON(json, elt => {
-                if (elt.ProjectReference) {
-                    for (let ref of elt.ProjectReference) {
-                        let projectPath = this.normalize(ppath.join(ppath.dirname(path), ref.$.Include))
-                        projects.push(projectPath)
-                    }
-                    return true
-                }
-                return false
-            })
-            for (let project of projects) {
-                references = [...references, ...await this.expandCSProj(project)]
+            } finally {
+                this.popParent()
             }
         }
-        return references
     }
 
-    async walkPackageJson(packagePath: string, basePath: string, visitor: (path: string) => void): Promise<boolean> {
-        let found = this.packages.has(packagePath)
-        let fullPath = ppath.join(packagePath, 'package.json')
-        if (!found && await fs.pathExists(fullPath)) {
-            this.projects.add(packagePath)
-            found = true
-            let pkg = await fs.readJSON(fullPath)
-            visitor(packagePath)
-            if (pkg.dependencies) {
-                for (let dependent of Object.keys(pkg.dependencies)) {
-                    let rootDir = basePath
-                    while (rootDir) {
-                        let dependentPath = ppath.join(rootDir, 'node_modules', dependent)
-                        if (await this.walkPackageJson(dependentPath, basePath, visitor)) {
-                            break;
-                        } else {
-                            rootDir = ppath.dirname(rootDir)
+    async expandPackageJson(path: string): Promise<void> {
+        path = normalize(path)
+        if (!this.packages.has(path)) {
+            try {
+                this.packages.add(path)
+                if (this.verbose) {
+                    this.log(`${this.indent()}Following ${this.prettyPath(path)}`)
+                }
+                let component = this.pushParent(path)
+                let pkg = await fs.readJSON(path)
+                component.name = pkg.name || component.name
+                if (pkg.dependencies) {
+                    for (let dependent of Object.keys(pkg.dependencies)) {
+                        let rootDir = ppath.dirname(path)
+                        // Walk up parent directories to find package
+                        while (rootDir) {
+                            let dependentPath = ppath.join(rootDir, 'node_modules', dependent, 'package.json')
+                            if (await fs.pathExists(dependentPath)) {
+                                await this.expandPackageJson(dependentPath)
+                                break;
+                            } else {
+                                rootDir = ppath.dirname(rootDir)
+                            }
                         }
                     }
                 }
+            } finally {
+                this.popParent()
             }
         }
-        return found
     }
 
-    async expandPackageJson(path: string): Promise<string[]> {
-        let references: string[] = []
-        let basePath = ppath.resolve(ppath.dirname(path))
-        await this.walkPackageJson(basePath, basePath,
-            async path => {
-                if (this.verbose) {
-                    this.log(`  Following ${this.prettyPath(ppath.join(path, 'package.json'))}`)
-                }
-                references.push(this.normalize(ppath.join(path, '**/*.schema')))
-                // Negative pattern to exclude node_modules
-                references.push(`!${this.normalize(ppath.join(path, 'node_modules/**/*.schema'))}`)
-
-                // Track content
-                this.currentContent?.push(this.normalize(ppath.join(path, '/ComposerAssets/**/*')))
-            })
-        return references
-    }
-
-    // Add the package to content and setup the root
-    setContentRoot(path: string): string {
-        let root = ppath.resolve(path)
-        if (!this.packages.has(root)) {
-            this.currentContent = []
-            this.content.set(root, this.currentContent)
-        }
-        return root
-    }
-
-    // TODO: Finish building component tree
-    // While we collect schema build the tree of project to dependencies
-    // Once we have the tree we generate the topological sort where when popping nodes with no parents we prefer by minimal depth and then by sibling order.
-    // We also build a map from asset names to the places where that asset is found.
-    // We can scan that map and identify:
-    // 1) Assets that override other assets--this is informative.
-    // 2) When multiple independent paths override the same child asset.  This implies they should be merged since one of them will be preferred.
-    // 3) When multiple independent paths have the same asset.  This implies something should be renamed.
-
-    // Expand package.json, package.config or *.csproj to look for .schema below referenced packages.
-    async * expandPackages(paths: string[]): AsyncIterable<string> {
+    // Build the component tree and compute the breadth-first topological sort
+    async buildComponentTree(paths: string[]): Promise<void> {
+        this.parents.push(this.root)
         for (let path of paths) {
             if (path.endsWith('.schema')) {
-                yield this.prettyPath(path)
+                this.root.explictPatterns.push(path)
             } else {
-                let references: string[] = []
+                // We expect a package
                 let name = ppath.basename(path)
                 if (name.endsWith('.csproj')) {
-                    references.push(...await this.expandCSProj(this.setContentRoot(path)))
+                    await this.expandCSProj(path)
+                } else if (name.endsWith('.nuspec')) {
+                    // Explicitly added .nuspec
+                    await this.expandNuspec(path)
                 } else {
                     if (name === 'packages.config') {
+                        // Alternative to nuget in .csproj
                         if (this.verbose) {
-                            this.log(`  Following ${this.prettyPath(path)}`)
+                            this.log(`${this.indent()}Following ${this.prettyPath(path)}`)
                         }
+                        this.pushParent(path)
                         let json = await this.xmlToJSON(path)
                         let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
                         if (packages) {
-                            this.setContentRoot(path)
-                            // TODO: I don't think this is right.  We need to call expandNugetPackages.x
+                            let nugets: string[][] = []
                             walkJSON(json, elt => {
                                 if (elt.package) {
                                     for (let info of elt.package) {
-                                        let id = `${info.$.id}.${info.$.version}`
-                                        references.push(ppath.join(packages, `${id}/**/*.schema`))
-
+                                        nugets.push([info.$.id, info.$.version])
                                     }
                                     return true
                                 }
                                 return false
                             })
+                            for (let [pkg, version] of nugets) {
+                                await this.expandNuget(pkg, version)
+                            }
                         }
                     } else if (name === 'package.json') {
-                        let children = await this.expandPackageJson(this.setContentRoot(path))
-                        references = [...references, ...children]
+                        // Node package
+                        await this.expandPackageJson(path)
                     } else {
                         throw new Error(`Unknown package type ${path}`)
                     }
                 }
-                this.currentContent = undefined
-                references = references.map(ref => ref.replace(/\\/g, '/'))
-                for (let expandedRef of await glob(references)) {
-                    yield this.prettyPath(expandedRef)
+            }
+        }
+        this.components = this.root.sort()
+
+        if (!this.output) {
+            // Figure out base app name from first project
+            for (let component of this.components) {
+                if (component.path.endsWith('.csproj')) {
+                    this.output = ppath.basename(component.path, '.csproj')
+                } else if (component.path.endsWith('package.json') || component.path.endsWith('packages.config')) {
+                    this.output = ppath.basename(ppath.dirname(component.path))
+                } else if (component.path.endsWith('.nuspec')) {
+                    this.output = ppath.basename(component.path, '.nuspec')
+                }
+                if (this.output) {
+                    break
                 }
             }
         }
-        return []
+    }
+
+    // Build the component tree and find all resources
+    async expandPackages(paths: string[]): Promise<void> {
+        await this.buildComponentTree(paths)
+        for (let component of this.components) {
+            let patterns = component.patterns(this.extensions).map(e => e.replace(/\\/g, '/'))
+            for (let path of await glob(patterns)) {
+                let ext = ppath.extname(path)
+                let map = this.files.get(ext)
+                if (!map) {
+                    map = new Map<string, PathComponent[]>()
+                    this.files.set(ext, map)
+                }
+                let name = ppath.basename(path)
+                let record = map.get(name)
+                if (!record) {
+                    record = []
+                    map.set(name, record)
+                }
+                record.push({path: ppath.resolve(path), component})
+            }
+        }
+    }
+
+    // Analyze component files to identify:
+    // 1) Multiple definitions of the same file in a component. (Error)
+    // 2) Conflicting definitions of the same file in components without a relationship. (Error)
+    // 3) Overrides. (Informative)
+    analyze() {
+        for (let ext of this.files.values()) {
+            for (let [file, records] of ext.entries()) {
+                let winner = records[0]
+                let same: PathComponent[] = []
+                let override: PathComponent[] = []
+                let conflicts: PathComponent[] = []
+                for (let alt of records) {
+                    if (alt !== winner) {
+                        if (winner.component === alt.component) {
+                            same.push(alt)
+                        } else if (winner.component.isParent(alt.component)) {
+                            override.push(alt)
+                        } else {
+                            conflicts.push(alt)
+                        }
+                    }
+                }
+
+                if (same.length > 0) {
+                    this.failed = true
+                    this.error(`Error Multiple definitions of ${file} in ${winner.component.name}`)
+                    this.error(`  ${winner.path}`)
+                    for (let alt of same) {
+                        this.error(`  ${alt.path}`)
+                    }
+                }
+
+                if (conflicts.length > 0) {
+                    this.failed = true
+                    this.error(`Error Conflicting definitions of ${file}`)
+                    this.error(`  ${winner.component.name}: ${winner.path}`)
+                    for (let alt of conflicts) {
+                        this.error(`  ${alt.component.name}: ${alt.path}`)
+                    }
+                }
+
+                if (override.length > 0 && this.verbose) {
+                    this.log(`Override of ${file} defined in ${winner.component.name}`)
+                    this.log(`  ${winner.path}`)
+                    for (let alt of override) {
+                        this.log(`  ${alt.path}`)
+                    }
+                }
+            }
+        }
     }
 
     // Generate path relative to CWD
@@ -654,7 +813,7 @@ export default class SchemaMerger {
     }
 
     // Convert XML to JSON
-    async xmlToJSON(path: string): Promise<string> {
+    async xmlToJSON(path: string): Promise<any> {
         let xml = (await fs.readFile(path)).toString()
         return new Promise((resolve, reject) =>
             xp.parseString(xml, (err: Error, result: any) => {
@@ -678,8 +837,6 @@ export default class SchemaMerger {
         }
         return result
     }
-
-    // Copy content
 
     /**
      * Merge extension into definition.

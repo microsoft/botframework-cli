@@ -5,7 +5,7 @@
 // tslint:disable:no-console
 // tslint:disable:no-object-literal-type-assertion
 
-import { assert } from 'chai'
+import {assert} from 'chai'
 import * as fs from 'fs-extra'
 import 'mocha'
 import * as os from 'os'
@@ -24,15 +24,33 @@ function countMatches(pattern: string | RegExp, lines: string[]): number {
     return count
 }
 
-async function merge(patterns: string[], output?: string, verbose?: boolean): Promise<[boolean, string[]]> {
+async function merge(patterns: string[], output?: string, verbose?: boolean, noName?: boolean): Promise<[boolean, string[]]> {
     let lines: string[] = []
     let logger = msg => {
         console.log(msg)
         lines.push(msg)
     }
-    let merger = new SchemaMerger(patterns, output || ppath.join(tempDir, 'generated.schema'), verbose || false, logger, logger, logger, false, ppath.join(srcDir, 'nuget'))
+    let merger = new SchemaMerger(patterns, noName ? output || '' : output || ppath.join(tempDir, 'generated.schema'), verbose || false, logger, logger, logger, undefined, false, ppath.join(srcDir, 'nuget'))
     let merged = await merger.mergeSchemas()
     return [merged, lines]
+}
+
+function fixPaths(resources: any) {
+    let fun = (path: string) => path.substring(path.lastIndexOf('dialog') + 7)
+    resources.includes = resources.includes.map(fun)
+    resources.excludes = resources.excludes.map(fun)
+}
+
+async function compareResources(path: string, expected: any): Promise<void> {
+    assert(fs.existsSync(path), 'missing resources')
+    let resources = await fs.readJSON(path)
+    fixPaths(resources)
+    fixPaths(expected)
+    let compare = JSON.stringify(resources) === JSON.stringify(expected)
+    if (!compare) {
+        console.log(`${resources}\n!=\n${expected}`)
+    }
+    assert(compare, 'Resources did not match')
 }
 
 describe('dialog:merge', async () => {
@@ -46,7 +64,7 @@ describe('dialog:merge', async () => {
     it('app.schema', async () => {
         console.log('Start app.schema')
         let [merged, lines] = await merge(['schemas/*.schema'])
-        assert(merged, 'Could not merge schemas')
+        assert(merged, 'Could not merge')
         assert(countMatches(/error|warning/i, lines) === 1, 'Error merging schemas')
         let oracle = await fs.readJSON('schemas/app.schema')
         let generatedPath = ppath.join(tempDir, 'generated.schema')
@@ -135,7 +153,7 @@ describe('dialog:merge', async () => {
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/prompt.schema'])
         assert(!merged, 'Merging should have failed')
         assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
-        assert(countMatches('Redefines prompt', lines) === 1, 'Did not detect duplicate $kind')
+        assert(countMatches('prompt.schema', lines) === 3, 'Did not detect duplicate $kind')
     })
 
     it('missing implementation', async () => {
@@ -151,7 +169,7 @@ describe('dialog:merge', async () => {
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
         let errors = countMatches(/error|warning/i, lines)
         if (errors === 0) {
-            assert(merged, 'Could not merge schemas')
+            assert(merged, 'Could not merge')
         } else {
             assert(!merged, 'Should not have merged schemas')
         }
@@ -164,17 +182,71 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Parsing.*nuget2.schema/, lines) === 1, 'Missing nuget2.schema')
         assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
         assert(countMatches(/Parsing.*project2.schema/, lines) === 1, 'Missing project2.schema')
+        assert(countMatches(/override.lu/, lines) === 6, 'Missing override trace')
+        assert(countMatches(/conflicts.lg/, lines) === 3, 'Missing conflicts')
+        assert(countMatches(/multiple.dialog/, lines) === 3, 'Missing multiple definitions')
     })
 
     it('package.json', async () => {
         console.log('\nStart package.json')
         let [merged, lines] = await merge(['npm/node_modules/root-package/package.json'], undefined, true)
-        assert(merged, 'Could not merge schemas')
+        assert(merged, 'Could not merge')
         assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
         assert(countMatches('root-package.schema', lines) === 1, 'Missing root-package.schema')
         assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
         assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
         assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
+        let path = ppath.join(tempDir, 'generated.resources')
+        await compareResources(path,
+            {
+                includes: [
+                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package',
+                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules\\dependent-package',
+                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\parent-package'
+                ],
+                excludes: [
+                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules',
+                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules\\dependent-package\\node_modules',
+                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\parent-package\\node_modules'
+                ],
+                extensions: [
+                    '.schema',
+                    '.lu',
+                    '.lg',
+                    '.qna',
+                    '.dialog'
+                ]
+            })
+    })
+
+    it('nuspec', async () => {
+        console.log('\nStart nuspec')
+        try {
+            let [merged, lines] = await merge(['nuget\\nuget1\\10.0.1\\nuget1.nuspec'], undefined, true, true)
+            assert(merged, 'Could not merge')
+            assert(fs.existsSync('nuget1.schema'), 'Did not infer output')
+            assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
+            assert(countMatches('nuget1.nuspec', lines) === 2, 'Missing nuget1.nuspec')
+            assert(countMatches('Override', lines) === 1, 'Missing override')
+            await compareResources('nuget1.resources',
+                {
+                    includes: [
+                        'nuget\\nuget1\\10.0.1',
+                        'nuget\\nuget2\\1.0.1'
+                    ],
+                    excludes: [],
+                    extensions: [
+                        '.schema',
+                        '.lu',
+                        '.lg',
+                        '.qna',
+                        '.dialog'
+                    ]
+                })
+        } finally {
+            await fs.remove('nuget1.schema')
+            await fs.remove('nuget1.resources')
+        }
     })
 })
 
