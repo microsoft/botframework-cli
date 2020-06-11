@@ -36,7 +36,7 @@ async function merge(patterns: string[], output?: string, verbose?: boolean, noN
 }
 
 function fixPaths(resources: any) {
-    let fun = (path: string) => path.substring(path.lastIndexOf('dialog') + 7)
+    let fun = (path: string) => path.substring(path.lastIndexOf('dialog') + 7).replace(/\\/g, '/')
     resources.includes = resources.includes.map(fun)
     resources.excludes = resources.excludes.map(fun)
 }
@@ -48,7 +48,7 @@ async function compareResources(path: string, expected: any): Promise<void> {
     fixPaths(expected)
     let compare = JSON.stringify(resources) === JSON.stringify(expected)
     if (!compare) {
-        console.log(`${resources}\n!=\n${expected}`)
+        console.log(`${JSON.stringify(resources)}\n!=\n${JSON.stringify(expected)}`)
     }
     assert(compare, 'Resources did not match')
 }
