@@ -675,3 +675,53 @@ describe('qnamaker:build create a new knowledge base successfully with endpoint 
       expect(ctx.stdout).to.contain('yyyy')
     })
 })
+
+describe('qnamaker:build write dialog assets successfully if schema is specified', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development).en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        qnaDocuments: [{
+          id: 1,
+          source: 'custom editorial',
+          questions: ['how many sandwich types do you have', 'how many tastes do you have'],
+          answer: '25 types',
+          metadata: []
+        }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'xxxx',
+        secondaryEndpointKey: 'yyyy'
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
+    .it('should write dialog assets successfully if schema is specified', async ctx => {      
+      expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.lu.qna.dialog')).to.be.true
+    })
+})
