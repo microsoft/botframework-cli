@@ -7,7 +7,7 @@ import {Command, flags} from '@microsoft/bf-cli-command'
 import SchemaMerger from '../../library/schemaMerger'
 
 export default class DialogMerge extends Command {
-    static description = 'Merge component .schema files into an app.schema.'
+    static description = 'Merge component information into a single app.schema describing .dialog files and app.resources that describes the order to look for assets.'
 
     static args = [
         {name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .schema, .csproj, packages.config or package.json files.'},
@@ -17,7 +17,7 @@ export default class DialogMerge extends Command {
 
     static flags: flags.Input<any> = {
         debug: flags.boolean({char: 'd', description: 'Generate debug files.', hidden: true, default: false}),
-        extension: flags.string({description: 'Extension to include when analyzing resource names.', required: false, multiple: true}),
+        extension: flags.string({description: 'Extension to include when analyzing resource names.', required: false, multiple: true, default: ['.dialog', '.lg', '.lu', '.schema', '.qna']}),
         help: flags.help({char: 'h'}),
         output: flags.string({char: 'o', description: 'Output path and filename for merged schema.', required: false}),
         verbose: flags.boolean({char: 'v', description: 'Show verbose logging of files as they are processed.', default: false}),
@@ -25,7 +25,7 @@ export default class DialogMerge extends Command {
 
     static examples = [
         '$ bf dialog:merge *.csproj',
-        '$ bf dialog:merge libraries/**/*.schema **/*.csproj -o app.schema'
+        '$ bf dialog:merge package.json -o app.schema'
     ]
 
     async run() {
