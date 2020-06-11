@@ -19,6 +19,7 @@ export default class DialogMerge extends Command {
         debug: flags.boolean({char: 'd', description: 'Generate debug files.', hidden: true, default: false}),
         extension: flags.string({description: 'Extension to include when analyzing resource names.', required: false, multiple: true, default: ['.dialog', '.lg', '.lu', '.schema', '.qna']}),
         help: flags.help({char: 'h'}),
+        nugetRoot: flags.string({description: 'Nuget root directory for debugging.', hidden: true}),
         output: flags.string({char: 'o', description: 'Output path and filename for merged schema.', required: false}),
         verbose: flags.boolean({char: 'v', description: 'Show verbose logging of files as they are processed.', default: false}),
     }
@@ -30,7 +31,7 @@ export default class DialogMerge extends Command {
 
     async run() {
         const {argv, flags} = this.parse(DialogMerge)
-        let merger = new SchemaMerger(argv, flags.output, flags.verbose, this.log, this.warn, this.error, flags.extension, flags.debug)
+        let merger = new SchemaMerger(argv, flags.output, flags.verbose, this.log, this.warn, this.error, flags.extension, flags.debug, flags.nugetRoot)
         await merger.mergeSchemas()
     }
 }
