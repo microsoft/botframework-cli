@@ -294,3 +294,67 @@ describe('Section CRUD tests for error import in utterances', () => {
         assert.equal(luresource.Sections[1].Body, '- cancel that')
     });
 });
+
+describe('Section CRUD tests for qna', () => {
+    let luresource = undefined;
+
+    let fileContent = 
+`# ? who is CEO of Microsoft
+- Microsoft CEO
+
+\`\`\`
+Satya Nadella
+\`\`\``;
+
+    let addedFileContent = 
+`# ? what about the weather of Seattle
+- how about the weather of Seattle
+
+\`\`\`
+warm and rainy
+\`\`\``
+    
+    let updatedFileConent = 
+`# ? who is CEO of Facebook
+- Facebook CEO
+
+\`\`\`
+Mark Zuckerberg
+\`\`\``;
+
+    it('add qna section test', () => {
+        luresource = luparser.parse(fileContent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), fileContent);
+        
+        luresource = new SectionOperator(luresource).addSection(addedFileContent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 2);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[1].Body.replace(/\r\n/g,"\n"), addedFileContent);
+    });
+
+    it('update qna section test', () => {
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[0].Id, updatedFileConent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 2);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), updatedFileConent);
+    });
+
+    it('delete qna section test', () => {
+        luresource = new SectionOperator(luresource).deleteSection(luresource.Sections[0].Id);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), addedFileContent);
+    });
+});

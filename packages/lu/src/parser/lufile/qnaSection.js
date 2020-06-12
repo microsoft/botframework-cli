@@ -1,7 +1,7 @@
+const { v4: uuidv4 } = require('uuid');
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const helpers = require('../utils/helpers');
 const QNA_GENERIC_SOURCE = "custom editorial";
 
 class QnaSection {
@@ -24,8 +24,9 @@ class QnaSection {
         this.prompts = result.promptDefinitions;
         this.promptsText = result.promptTextList;
         this.Errors = this.Errors.concat(result.errors);
-        this.Id = this.ExtractAssignedId(parseTree);
+        this.QAPairId = this.ExtractAssignedId(parseTree);
         this.source = this.ExtractSourceInfo(parseTree);
+        this.Id = uuidv4();
     }
 
     ExtractSourceInfo(parseTree) {

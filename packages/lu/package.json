@@ -51,7 +51,8 @@
     "lodash": "^4.17.15",
     "node-fetch": "~2.6.0",
     "semver": "^5.5.1",
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@oclif/test": "^1.2.5",
