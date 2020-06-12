@@ -330,7 +330,7 @@ class LUParser {
                 section.StopLine = stopLine - 1
 
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
-                    LUParser.extractIntentBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
+                    LUParser.extractSectionBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
                 }
             } else {
                 section.StartLine = section.ParseTree.start.line
