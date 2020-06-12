@@ -370,6 +370,8 @@ OPTIONS
 
   --endpoint                       Luis authoring endpoint for publishing
 
+  --schema=schema                  Defines $schema for generated .dialog files
+
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog 
