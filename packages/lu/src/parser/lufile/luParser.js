@@ -304,7 +304,9 @@ class LUParser {
         sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
         const originList = content.split(/\r?\n/)
         sections.forEach(function (section, index) {
-            if (section.SectionType === SectionType.SIMPLEINTENTSECTION || section.SectionType === SectionType.NESTEDINTENTSECTION) {
+            if (section.SectionType === SectionType.SIMPLEINTENTSECTION
+                || section.SectionType === SectionType.NESTEDINTENTSECTION
+                || section.SectionType === SectionType.QNASECTION) {
                 const startLine = section.ParseTree.start.line - 1
                 let stopLine
                 if (index + 1 < sections.length) {
@@ -316,7 +318,13 @@ class LUParser {
                     stopLine = originList.length
                 }
 
-                const destList = originList.slice(startLine + 1, stopLine)
+                let destList
+                if (section.SectionType === SectionType.QNASECTION) {
+                    destList = originList.slice(startLine, stopLine)
+                } else {
+                    destList = originList.slice(startLine + 1, stopLine)
+                }
+
                 section.Body = destList.join(NEWLINE)
                 section.StartLine = startLine
                 section.StopLine = stopLine - 1
@@ -324,22 +332,6 @@ class LUParser {
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
                     LUParser.extractIntentBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
                 }
-            } else if (section.SectionType === SectionType.QNASECTION) {
-                const startLine = section.ParseTree.start.line - 1
-                let stopLine
-                if (index + 1 < sections.length) {
-                    stopLine = sections[index + 1].ParseTree.start.line - 1
-                    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine >= stopLine || originList.Length <= stopLine) {
-                        throw new Error("index out of range.")
-                    }
-                } else {
-                    stopLine = originList.length
-                }
-
-                const destList = originList.slice(startLine, stopLine)
-                section.Body = destList.join(NEWLINE)
-                section.StartLine = startLine
-                section.StopLine = stopLine - 1
             } else {
                 section.StartLine = section.ParseTree.start.line
                 section.StopLine = section.ParseTree.stop.line - 1
