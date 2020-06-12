@@ -26,7 +26,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stderr()
     .command(['qnamaker:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`, '--botName', 'Contoso'])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain('Missing required flag:\n -s, --subscriptionKey SUBSCRIPTIONKEY  QnA maker subscription key')
+      expect(ctx.stderr).to.contain('Missing qnamaker subscription key. Please pass subscription key with --subscriptionKey flag or specify via bf config:set:qnamaker --subscriptionKey.')
     })
 
   test
@@ -42,7 +42,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stderr()
     .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`])
     .it('displays an error if any required input parameters are missing', ctx => {
-      expect(ctx.stderr).to.contain('Missing required flag:\n -b, --botName BOTNAME  Bot name')
+      expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag or specify via --qnaConfig.')
     })
   
   test
@@ -543,5 +543,185 @@ describe('qnamaker:build update knowledge base with multiturn successfully when 
       expect(ctx.stdout).to.contain('Updating to new version')
       expect(ctx.stdout).to.contain('Updating finished')
       expect(ctx.stdout).to.contain('Publishing kb')
+    })
+})
+
+describe('qnamaker:build update knowledge base successfully with parameters set from qna config', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development).en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        qnaDocuments: [{
+          id: 1,
+          source: 'custom editorial',
+          questions: ['how many sandwich types do you have'],
+          answer: '25 types',
+          metadata: []
+        }]
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('knowledgebases'))
+      .reply(204)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'xxxx',
+        secondaryEndpointKey: 'yyyy'
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--qnaConfig', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/qnaconfig.json', '--subscriptionKey', uuidv1()])
+    .it('should update a knowledge base successfully with parameters set from qna config', async ctx => {
+      expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
+      expect(ctx.stdout).to.contain('Updating to new version for kb test(development).en-us.qna')
+      expect(ctx.stdout).to.contain('Updating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
+
+      expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+    })
+})
+
+describe('qnamaker:build create a new knowledge base successfully with endpoint override', () => {
+  before(function () {
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test.en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('createasync'))
+      .reply(202, {
+        operationId: 'f8c64e2a-aaaa-3a09-8f78-39d7adc76ec5'
+      })
+    
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('operations'))
+      .reply(200, {
+        operationState: 'Succeeded',
+        resourceLocation: 'a/b/f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('knowledgebases'))
+      .reply(204)
+    
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        hostName: 'https://myqnamakerbot.azurewebsites.net'
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .put(uri => uri.includes('alterations'))
+      .reply(204)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'xxxx',
+        secondaryEndpointKey: 'yyyy'
+      })
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--endpoint', 'https://chinaeast2.api.cognitive.azure.cn/qnamaker/v4.0'])
+    .it('should create a new knowledge base successfully with endpoint override', ctx => {
+      expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
+      expect(ctx.stdout).to.contain('Creating qnamaker KB: test(development).en-us.qna...')
+      expect(ctx.stdout).to.contain('Creating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
+      expect(ctx.stdout).to.contain('Publishing finished')
+      expect(ctx.stdout).to.contain('Replacing alterations...')
+      expect(ctx.stdout).to.contain('xxxx')
+      expect(ctx.stdout).to.contain('yyyy')
+    })
+})
+
+describe('qnamaker:build write dialog assets successfully if schema is specified', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development).en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        qnaDocuments: [{
+          id: 1,
+          source: 'custom editorial',
+          questions: ['how many sandwich types do you have', 'how many tastes do you have'],
+          answer: '25 types',
+          metadata: []
+        }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'xxxx',
+        secondaryEndpointKey: 'yyyy'
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
+    .it('should write dialog assets successfully if schema is specified', async ctx => {      
+      expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.lu.qna.dialog')).to.be.true
     })
 })

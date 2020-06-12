@@ -32,21 +32,28 @@ export class Builder {
 
   async loadContents(
     files: string[],
-    inputFolder: string,
     botName: string,
     suffix: string,
     region: string,
-    culture: string) {
+    culture: string,
+    schema?: string) {
     let multiRecognizer: any
     let settings: any
     let recognizers = new Map<string, Recognizer>()
     let qnaContents = new Map<string, string>()
 
     for (const file of files) {
-      const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
+      let fileCulture: string
+      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath
+      } else {
+        fileCulture = culture
+      }
 
       let fileContent = ''
       let result
+      const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
       try {
         result = await qnaBuilderVerbose.build(qnaFiles, true)
 
@@ -62,27 +69,24 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
-      let fileCulture: string
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
-      if (cultureFromPath) {
-        fileCulture = cultureFromPath
-      } else {
-        fileCulture = culture
-      }
 
+      const fileFolder = path.dirname(file)
       if (multiRecognizer === undefined) {
-        const multiRecognizerPath = path.join(inputFolder, `${botName}.qna.dialog`)
+        const multiRecognizerPath = path.join(fileFolder, `${botName}.qna.dialog`)
         let multiRecognizerContent = {}
+        let multiRecognizerSchema = schema
         if (fs.existsSync(multiRecognizerPath)) {
-          multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath)).recognizers
+          let multiRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath))
+          multiRecognizerContent = multiRecognizerObject.recognizers
+          multiRecognizerSchema = multiRecognizerSchema || multiRecognizerObject.$schema
           this.handler(`${multiRecognizerPath} loaded\n`)
         }
 
-        multiRecognizer = new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent)
+        multiRecognizer = new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent, multiRecognizerSchema as string)
       }
 
       if (settings === undefined) {
-        const settingsPath = path.join(inputFolder, `qnamaker.settings.${suffix}.${region}.json`)
+        const settingsPath = path.join(fileFolder, `qnamaker.settings.${suffix}.${region}.json`)
         let settingsContent = {}
         if (fs.existsSync(settingsPath)) {
           settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).qna
@@ -95,14 +99,18 @@ export class Builder {
       const content = new Content(fileContent, new qnaOptions(botName, true, fileCulture, file))
 
       if (!recognizers.has(content.name)) {
-        const dialogFile = path.join(inputFolder, `${content.name}.dialog`)
+        const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
         let existingDialogObj: any
         if (fs.existsSync(dialogFile)) {
           existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
           this.handler(`${dialogFile} loaded\n`)
         }
 
-        let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj)
+        if (existingDialogObj && schema) {
+          existingDialogObj.$schema = schema
+        }
+
+        let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj, schema)
         recognizers.set(content.name, recognizer)
         qnaContents.set(content.name, content)
       } else {
@@ -294,7 +302,7 @@ export class Builder {
     return kbToLuContent
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, files: string[]) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, files: string[], schema: string) {
     let writeDone = false
 
     for (const content of contents) {
@@ -307,7 +315,7 @@ export class Builder {
 
       if (force || !fs.existsSync(outFilePath)) {
         this.handler(`Writing to ${outFilePath}\n`)
-        await this.writeDialog(content.content, outFilePath, dialogType, files)
+        await this.writeDialog(content.content, outFilePath, dialogType, files, schema)
         writeDone = true
       }
     }
@@ -473,7 +481,7 @@ export class Builder {
     this.handler(`Publishing finished for kb ${kbName}\n`)
   }
 
-  async writeDialog(content: string, filePath: string, dialogType: string, files: string[]) {
+  async writeDialog(content: string, filePath: string, dialogType: string, files: string[], schema: string) {
     await fs.writeFile(filePath, content, 'utf-8')
     const contentObj = JSON.parse(content)
     if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.MultiLanguageRecognizer') {
@@ -500,7 +508,7 @@ export class Builder {
           content = JSON.stringify(existingCRDialog, null, 4)
         } else {
           let recognizers = [fileName]
-          content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers).save()
+          content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema).save()
         }
 
         await fs.writeFile(crossTrainedFilePath, content, 'utf-8')

@@ -368,6 +368,10 @@ OPTIONS
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
                                    current logged in user alias
 
+  --endpoint                       Luis authoring endpoint for publishing
+
+  --schema=schema                  Defines $schema for generated .dialog files
+
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog 
