@@ -4,6 +4,7 @@
     "deleteOldVersion": true,
     "out": "./../../../../../../results",
     "dialog": "multiLanguage",
+    "endpoint": "https://chinaeast2.api.cognitive.azure.cn",
     "models": [
         "./test.lu"
     ]
