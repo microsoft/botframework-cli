@@ -124,7 +124,7 @@ class LUParser {
             }))
         }
 
-        this.extractIntentBody(sections, content)
+        this.extractSectionBody(sections, content)
 
         return new LUResource(sections, content, errors);
     }
@@ -300,7 +300,7 @@ class LUParser {
      * @param {any[]} sections
      * @param {string} content
      */
-    static extractIntentBody(sections, content) {
+    static extractSectionBody(sections, content) {
         sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
         const originList = content.split(/\r?\n/)
         sections.forEach(function (section, index) {
