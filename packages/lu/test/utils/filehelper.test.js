@@ -52,7 +52,7 @@ describe('utils/filehelper test', () => {
             }
         }
 
-        let configObject = fileHelper.getConfigObject({ id: path.join(__dirname, 'config.json'), content: JSON.stringify(configContent) }, '_Interruption')
+        let configObject = fileHelper.getConfigObject({ id: path.join(__dirname, 'config.json'), content: JSON.stringify(configContent) }, '_Interruption', true)
         assert.equal(configObject.rootIds[0].includes('main.lu'), true)
         assert.equal(configObject.rootIds[1].includes('main.fr-fr.lu'), true)
 

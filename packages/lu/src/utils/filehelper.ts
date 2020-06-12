@@ -218,7 +218,7 @@ export function getParsedObjects(contents: {id: string, content: string}[]) {
   return parsedObjects
 }
 
-export function getConfigObject(configContent: any, intentName: string) {
+export function getConfigObject(configContent: any, intentName: string, verbose: boolean) {
   let finalLuConfigObj = Object.create(null)
   let rootLuFiles: string[] = []
   const configFileDir = path.dirname(configContent.id)
@@ -267,7 +267,7 @@ export function getConfigObject(configContent: any, intentName: string) {
       rootIds: rootLuFiles,
       triggerRules: finalLuConfigObj,
       intentName,
-      verbose: true
+      verbose
     }
 
     return crossTrainConfig
