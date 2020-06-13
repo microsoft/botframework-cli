@@ -84,6 +84,17 @@ describe('luis:generate:cs', () => {
     .it('Generates regex entities correctly', async () => {
       await compareSourceFiles('../../../fixtures/generate/RegexEntities.cs', '../../../fixtures/generate/results/RegexEntities.cs')
     })
+  
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/RegexEntities2.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/RegexEntities2.cs')}`])
+    .it('Generates regex entities with alternative format correctly', async () => {
+      await compareSourceFiles('../../../fixtures/generate/RegexEntities.cs', '../../../fixtures/generate/results/RegexEntities2.cs')
+    })
 
   test
     .stdout()
