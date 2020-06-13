@@ -917,3 +917,43 @@ describe('luis:build create a new application successfully with endpoint overrid
       expect(ctx.stdout).to.contain('publishing finished')
     })
 })
+
+describe('luis:build write dialog assets successfully if schema is specified', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
+    .it('should write dialog assets successfully if schema is specified', async ctx => {
+      expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.en-us.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.lu.qna.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.lu.qna.dialog')).to.be.true
+    })
+})

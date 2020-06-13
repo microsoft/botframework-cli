@@ -40,8 +40,9 @@ export default class QnamakerBuild extends Command {
     dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
     qnaConfig: flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
-    log: flags.boolean({description: 'write out log messages to console', default: false}),
-    endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'})
+    log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
+    schema: flags.string({description: 'Defines $schema for generated .dialog files'})
   }
 
   async run() {
@@ -69,7 +70,7 @@ export default class QnamakerBuild extends Command {
       // Flags override userConfig
       let qnamakerBuildFlags = Object.keys(QnamakerBuild.flags)
 
-      let {inVal, subscriptionKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, log, endpoint}
+      let {inVal, subscriptionKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, log, schema, endpoint}
         = await processFlags(flags, qnamakerBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -121,7 +122,7 @@ export default class QnamakerBuild extends Command {
 
         // load qna contents from qna files
         // load existing recognizers, multiRecogniers and settings or create default ones
-        const loadedResources = await builder.loadContents(files, botName, suffix, region, defaultCulture)
+        const loadedResources = await builder.loadContents(files, botName, suffix, region, defaultCulture, schema)
         qnaContents = loadedResources.qnaContents
         recognizers = loadedResources.recognizers
         multiRecognizer = loadedResources.multiRecognizer
@@ -151,7 +152,7 @@ export default class QnamakerBuild extends Command {
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
-        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, dialog, files)
+        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, dialog, files, schema)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
           this.log('QnA knowledge base endpointKeys:')

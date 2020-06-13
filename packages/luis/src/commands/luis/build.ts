@@ -40,8 +40,9 @@ export default class LuisBuild extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
     deleteOldVersion: flags.boolean({description: 'Delete old version of LUIS application after building new one.'}),
-    log: flags.boolean({description: 'write out log messages to console', default: false}),
-    endpoint: flags.string({description: 'Luis authoring endpoint for publishing'})
+    log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
+    schema: flags.string({description: 'Defines $schema for generated .dialog files'})
   }
 
   async run() {
@@ -69,7 +70,7 @@ export default class LuisBuild extends Command {
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
 
-      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint}
+      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, schema, endpoint}
         = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -121,7 +122,7 @@ export default class LuisBuild extends Command {
 
         // load lu contents from lu files
         // load existing recognizers, multiRecogniers and settings or create default ones
-        const loadedResources = await builder.loadContents(files, defaultCulture, suffix, region)
+        const loadedResources = await builder.loadContents(files, defaultCulture, suffix, region, schema)
         luContents = loadedResources.luContents
         recognizers = loadedResources.recognizers
         multiRecognizers = loadedResources.multiRecognizers
@@ -144,7 +145,7 @@ export default class LuisBuild extends Command {
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
-        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, dialog, luConfig)
+        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, dialog, luConfig, schema)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {
