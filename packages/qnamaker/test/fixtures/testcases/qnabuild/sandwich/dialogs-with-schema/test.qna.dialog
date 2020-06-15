@@ -1,6 +1,7 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
     "$kind": "Microsoft.MultiLanguageRecognizer",
+    "id": "QnA_test",
     "recognizers": {
         "en-us": "test.en-us.qna",
         "": "test.en-us.qna"
