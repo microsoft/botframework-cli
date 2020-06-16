@@ -7,6 +7,8 @@ import {Recognizer} from './recognizer'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
 import * as path from 'path'
+const retCode = require('./../utils/enums/CLI-errors')
+const exception = require('./../utils/exception')
 const Content = require('./../lu/qna')
 const LUOptions = require('./../lu/luOptions')
 const {ServiceBase} = require('./serviceBase')
@@ -22,91 +24,102 @@ export class QnaBuildCore {
   public async getKBList() {
     const response = await this.service.createRequest('/knowledgebases', 'GET')
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    const kbList = JSON.parse(text)
+    if (kbList.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
+
+    return kbList
   }
 
   public async getKB(kbId: string) {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'GET')
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    const kb = JSON.parse(text)
+    if (kb.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
+
+    return kb
   }
 
   public async importKB(kbPayload: any) {
     const response = await this.service.createRequest('/knowledgebases/createasync', 'POST', kbPayload)
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    const status = JSON.parse(text)
+    if (status.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
+
+    return status
   }
 
   public async getOperationStatus(operationId: string) {
     const response = await this.service.createRequest(`/operations/${operationId}`, 'GET')
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    const status = JSON.parse(text)
+    if (status.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
+
+    return status
   }
 
   public async exportKB(kbId: string, environment: string) {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}/${environment}/qna`, 'GET')
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    const kb = JSON.parse(text)
+    if (kb.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
+
+    return kb
   }
 
   public async updateKB(kbId: string, replaceKb: any) {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PATCH', replaceKb)
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    const status = JSON.parse(text)
+    if (status.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
+
+    return status
   }
 
   public async replaceKB(kbId: string, replaceKb: any) {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PUT', replaceKb)
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    if (text) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
   }
 
   public async publishKB(kbId: string) {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'POST')
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    if (text) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
   }
 
   public async replaceAlt(altJson: any) {
     const response = await this.service.createRequest('/alterations', 'PUT', altJson)
     const text = await response.text()
-    try {
-      return JSON.parse(text)
-    } catch {
-      return text
+    if (text) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
     }
+  }
+
+  public async getEndpointKeys() {
+    const response = await this.service.createRequest('/endpointkeys', 'GET')
+    const text = await response.text()
+    const endpointKeys = JSON.parse(text)
+    if (endpointKeys.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    }
+
+    return endpointKeys
   }
 
   public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizer: MultiLanguageRecognizer, settings: Settings)
@@ -138,7 +151,7 @@ export class QnaBuildCore {
         answer: qna.answer,
         source: qna.source,
         questions: qna.questions.slice(),
-        metadata: qna.metadata,
+        metadata: qna.metadata.slice(),
         context: qna.context
       }
     })
@@ -180,7 +193,7 @@ export class QnaBuildCore {
       fileContent += NEWLINE
       if (qnaItem.metadata && qnaItem.metadata.length > 0) {
         fileContent += '**Filters:**' + NEWLINE
-        qnaItem.metadata.forEach((filter: any) => {
+        qnaItem.metadata.sort((a: any, b: any) => (a.name > b.name) ? 1 : -1).forEach((filter: any) => {
           fileContent += '- ' + filter.name + ' = ' + filter.value + NEWLINE
         })
         fileContent += NEWLINE

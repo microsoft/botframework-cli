@@ -10,7 +10,25 @@ const compareLuFiles = async function (file1: string, file2: string) {
   return result === fixtureFile
 }
 
-describe('qnamaker:cross training tests among lu and qna contents', () => {
+describe('qnamaker:cross-train tests for cli parameters', () => {
+  test
+    .stdout()
+    .stderr()
+    .command(['qnamaker:cross-train'])
+    .it('displays an error if --in is not provided', ctx => {
+      expect(ctx.stderr).to.contain('Missing input. Please specify a folder with --in flag')
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['qnamaker:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`])
+    .it('displays an error if config is not provided', ctx => {
+      expect(ctx.stderr).to.contain('Missing cross train config. Please provide config by --config or automatically construct config with --rootDialog.')
+    })
+})
+
+describe('qnamaker:cross-train tests for lu and qna contents', () => {
   after(async function () {
     await fs.remove(path.join(__dirname, './../../../interruptionGen'))
   })
@@ -21,7 +39,8 @@ describe('qnamaker:cross training tests among lu and qna contents', () => {
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`,
       '--intentName', '_Interruption',
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption/mapping_rules.json')}`,
-      '--out', './interruptionGen'])
+      '--out', './interruptionGen',
+      '--force'])
     .it('qnamaker:cross training can get expected result when handling multi locales and duplications', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption/main.qna')).to.be.true
@@ -43,7 +62,9 @@ describe('qnamaker:cross training tests among lu and qna contents', () => {
     .command(['qnamaker:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption2')}`,
       '--intentName', '_Interruption',
-      '--out', './interruptionGen'])
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption2/config.json')}`,
+      '--out', './interruptionGen',
+      '--force'])
     .it('qnamaker:cross training can get expected result when nestedIntentSection is enabled', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption2/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption2/dia1.lu')).to.be.true
@@ -55,7 +76,9 @@ describe('qnamaker:cross training tests among lu and qna contents', () => {
     .command(['qnamaker:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption3')}`,
       '--intentName', '_Interruption',
-      '--out', './interruptionGen'])
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption3/config.json')}`,
+      '--out', './interruptionGen',
+      '--force'])
     .it('qnamaker:cross training can get expected result when multiple dialog invocations occur in same trigger', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption3/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption3/dia1.lu')).to.be.true
@@ -66,15 +89,28 @@ describe('qnamaker:cross training tests among lu and qna contents', () => {
   test
     .stdout()
     .command(['qnamaker:cross-train',
-      '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption4')}`,
+      '--in', './test/fixtures/testcases/interruption4',
       '--intentName', '_Interruption',
       '--out', './interruptionGen',
-      '--rootDialog', 'main/main.dialog'])
+      '--rootDialog', './test/fixtures/testcases/interruption4/main/main.dialog'])
     .it('qnamaker:cross training can get expected result when automatically detecting config based on rootdialog and file system', async () => {
-      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption4/main.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption4/dia1.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia2.lu', './../../fixtures/verified/interruption4/dia2.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia3.lu', './../../fixtures/verified/interruption4/dia3.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia4.lu', './../../fixtures/verified/interruption4/dia4.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main(1).lu', './../../fixtures/verified/interruption4/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1(1).lu', './../../fixtures/verified/interruption4/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia2(1).lu', './../../fixtures/verified/interruption4/dia2.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia3(1).lu', './../../fixtures/verified/interruption4/dia3.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia4(1).lu', './../../fixtures/verified/interruption4/dia4.lu')).to.be.true
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['qnamaker:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
+      '--intentName', '_Interruption',
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
+      '--out', './interruptionGen',
+      '--log'])
+    .it('displays a warning if log is set true', ctx => {
+      expect(ctx.stdout).to.contain('[WARN] line 1:0 - line 1:15: no utterances found for intent definition: "# hotelLocation"')
     })
 })

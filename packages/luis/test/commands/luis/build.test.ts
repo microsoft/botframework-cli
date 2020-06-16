@@ -73,9 +73,7 @@ describe('luis:build cli parameters test', () => {
 })
 
 describe('luis:build create a new application successfully', () => {
-  before(async function () {
-    await fs.ensureDir(path.join(__dirname, './../../../results/'))
-
+  before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -115,13 +113,9 @@ describe('luis:build create a new application successfully', () => {
       })
   })
 
-  after(async function () {
-    await fs.remove(path.join(__dirname, './../../../results/'))
-  })
-
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should create a new application successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
@@ -134,9 +128,7 @@ describe('luis:build create a new application successfully', () => {
 
 describe('luis:build update application succeed when utterances changed', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.utteranceChanged.en-us.lu.json')
-  before(async function () {
-    await fs.ensureDir(path.join(__dirname, './../../../results/'))
-
+  before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -186,13 +178,9 @@ describe('luis:build update application succeed when utterances changed', () => 
       })
   })
 
-  after(async function () {
-    await fs.remove(path.join(__dirname, './../../../results/'))
-  })
-
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances changed', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -205,9 +193,7 @@ describe('luis:build update application succeed when utterances changed', () => 
 
 describe('luis:build update application succeed when utterances added', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.utteranceAdded.en-us.lu.json')
-  before(async function () {
-    await fs.ensureDir(path.join(__dirname, './../../../results/'))
-
+  before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -257,13 +243,9 @@ describe('luis:build update application succeed when utterances added', () => {
       })
   })
 
-  after(async function () {
-    await fs.remove(path.join(__dirname, './../../../results/'))
-  })
-
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances added', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
@@ -276,9 +258,7 @@ describe('luis:build update application succeed when utterances added', () => {
 
 describe('luis:build not update application if no changes', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
-  before(async function () {
-    await fs.ensureDir(path.join(__dirname, './../../../results/'))
-
+  before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -299,13 +279,9 @@ describe('luis:build not update application if no changes', () => {
       .reply(200, existingLuisApp)
   })
 
-  after(async function () {
-    await fs.remove(path.join(__dirname, './../../../results/'))
-  })
-
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should not update a luis application when there are no changes for the coming lu file', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
@@ -343,7 +319,7 @@ describe('luis:build write dialog assets successfully if --dialog set to multiLa
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully when --dialog set to multiLanguage', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.en-us.lu.dialog')).to.be.true
@@ -642,9 +618,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
 
 describe('luis:build not update application if only cases of utterances or patterns are changed', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/case-insensitive/luis/test(development)-case-insensitive.en-us.lu.json')
-  before(async function () {
-    await fs.ensureDir(path.join(__dirname, './../../../results/'))
-
+  before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -665,13 +639,9 @@ describe('luis:build not update application if only cases of utterances or patte
       .reply(200, existingLuisApp)
   })
 
-  after(async function () {
-    await fs.remove(path.join(__dirname, './../../../results/'))
-  })
-
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/case-insensitive/lufiles/case-insensitive.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
     .it('should not update a luis application when only cases of utterances or patterns are different for the coming lu file', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('no changes')
@@ -683,14 +653,14 @@ describe('luis:build update application succeed with parameters set from luconfi
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
         name: 'MyProject(development)-test.en-us.lu',
         id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
       }])
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('apps'))
       .reply(200, {
         name: 'MyProject(development)-test.en-us.lu',
@@ -698,15 +668,15 @@ describe('luis:build update application succeed with parameters set from luconfi
         activeVersion: '0.1'
       })
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('export'))
       .reply(200, existingLuisApp)
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .post(uri => uri.includes('import'))
       .reply(201, '0.2')
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('apps'))
       .reply(200, [
         {
@@ -717,18 +687,18 @@ describe('luis:build update application succeed with parameters set from luconfi
         }
       ])
     
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .delete(uri => uri.includes('apps'))
       .reply(200)
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .post(uri => uri.includes('train'))
       .reply(202, {
         statusId: 2,
         status: 'UpToDate'
       })
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('train'))
       .reply(200, [{
         modelId: '99999',
@@ -739,7 +709,7 @@ describe('luis:build update application succeed with parameters set from luconfi
         }
       }])
 
-    nock('https://westus.api.cognitive.microsoft.com')
+    nock('https://chinaeast2.api.cognitive.azure.cn')
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
@@ -755,7 +725,6 @@ describe('luis:build update application succeed with parameters set from luconfi
     .stdout()
     .command(['luis:build', '--authoringKey', uuidv1(), '--luConfig', './test/fixtures/testcases/lubuild/luconfig/lufiles/luconfig.json', '--log', '--suffix', 'development'])
     .it('should update a luis application when utterances changed', async ctx => {
-      console.log(ctx)
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('creating version=0.2')
       expect(ctx.stdout).to.contain('deleting old version=0.1')
@@ -771,9 +740,7 @@ describe('luis:build update application succeed with parameters set from luconfi
 })
 
 describe('luis:build create a new application successfully with locale set to it-it', () => {
-  before(async function () {
-    await fs.ensureDir(path.join(__dirname, './../../../results/'))
-
+  before(function () {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('apps'))
       .reply(200, [{
@@ -813,13 +780,9 @@ describe('luis:build create a new application successfully with locale set to it
       })
   })
 
-  after(async function () {
-    await fs.remove(path.join(__dirname, './../../../results/'))
-  })
-
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/file-with-personName/personName.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--out', './results', '--defaultCulture', 'it-it'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/file-with-personName/personName.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--defaultCulture', 'it-it'])
     .it('should create a new application successfully for prebuilt entity personName with locale set to it-it', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
@@ -828,5 +791,169 @@ describe('luis:build create a new application successfully with locale set to it
       expect(ctx.stdout).to.contain('publishing version=0.1')
       expect(ctx.stdout).to.contain('publishing finished')
       expect(ctx.stdout.includes('personName is not available for the requested locale: it-it')).to.be.false
+    })
+})
+
+describe('luis:build update application succeed when activeVersion is null', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.utteranceAdded.en-us.lu.json')
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: null,
+        endpoints: {
+          PRODUCTION: {
+            versionId: '0.1'
+          }
+        }
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('import'))
+      .reply(201, '0.2')
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.2',
+        isStaging: true
+      })
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .it('should update a luis application when activeVersion is null', ctx => {
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('creating version=0.2')
+      expect(ctx.stdout).to.contain('training version=0.2')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.2')
+      expect(ctx.stdout).to.contain('publishing version=0.2')
+      expect(ctx.stdout).to.contain('publishing finished')
+    })
+})
+
+describe('luis:build create a new application successfully with endpoint override', () => {
+  before(function () {
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test.en-us.lu',
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('import'))
+      .reply(201, {
+        appId: 'f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.2',
+        isStaging: true
+      })
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--endpoint', 'https://chinaeast2.api.cognitive.azure.cn/'])
+    .it('should create a new application successfully with endpoint override', ctx => {
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('Creating LUIS.ai application')
+      expect(ctx.stdout).to.contain('training version=0.1')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.1')
+      expect(ctx.stdout).to.contain('publishing version=0.1')
+      expect(ctx.stdout).to.contain('publishing finished')
+    })
+})
+
+describe('luis:build write dialog assets successfully if schema is specified', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
+    .it('should write dialog assets successfully if schema is specified', async ctx => {
+      expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.en-us.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich.lu.qna.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.lu.qna.dialog')).to.be.true
     })
 })

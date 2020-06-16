@@ -11,6 +11,7 @@ const srvMan = require('./../../utils/servicemanifest')
 const {ServiceBase} = require('./../../utils/api/serviceBase')
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 
+const configPrefix = 'qnamaker__'
 
 export async function processInputs(flags: any, payload: any, configfile: string, stdin = '') {
   let result: Inputs = {}
@@ -64,4 +65,53 @@ export async function updateQnAMakerConfig(config: any , configfile: string) {
 
 export interface Inputs {
   [key: string]: any
+}
+
+export async function processFlags(flags: any, flagLabels: string[], configDir: string) {
+  let config = filterByAllowedConfigValues(await getUserConfig(configDir), configPrefix)
+  config = config ? filterConfig(config, configPrefix) : config
+  const input: any = {}
+  flagLabels
+    .filter(flag => flag !== 'help')
+    .map((flag: string) => {
+      if (flag === 'in') {
+        // rename property since 'in' is a reserved keyword
+        input[`${flag}Val`] = flags[flag]
+      }
+
+      input[flag] = flags[flag] || (config ? config[configPrefix + flag] : null)
+    })
+  
+  return input
+}
+
+async function getUserConfig (configPath: string) {
+  if (fs.existsSync(path.join(configPath, 'config.json'))) {
+    return fs.readJSON(path.join(configPath, 'config.json'), {throws: false})
+  }
+
+  return {}
+}
+
+function filterByAllowedConfigValues (configObj: any, prefix: string) {
+  const allowedConfigValues = [`${prefix}kbId`, `${prefix}endpoint`, `${prefix}region`, `${prefix}subscriptionKey`]
+  const filtered = Object.keys(configObj)
+  .filter(key => allowedConfigValues.includes(key))
+  .reduce((filteredConfigObj: any, key) => {
+    filteredConfigObj[key] = configObj[key]
+    
+    return filteredConfigObj
+  }, {})
+
+  return filtered
+}
+
+function filterConfig (config: any, prefix: string) {
+  return Object.keys(config)
+    .filter((key: string) => key.startsWith(prefix))
+    .reduce((filteredConfig: any, key: string) => {
+      filteredConfig[key] = config[key]
+
+      return filteredConfig
+    }, {})
 }
