@@ -1,0 +1,34 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> # Intent definitions
+
+## help
+- can I help you
+
+
+> # Entity definitions
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+
+
+
+> Source: cross training. Please do not edit these directly!
+# _Interruption
+- book a hotel for me
+- cancel
+- book a flight for me

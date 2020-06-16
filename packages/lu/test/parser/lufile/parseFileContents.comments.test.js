@@ -6,6 +6,8 @@ var chai = require('chai');
 var assert = chai.assert;
 const parseFileContents = require('./../../../src/parser/lufile/parseFileContents');
 var inputFileContent = `> Definition for greeting intent
+        >
+        > @ ml city
         # Greeting
         - Hi
         - Hello

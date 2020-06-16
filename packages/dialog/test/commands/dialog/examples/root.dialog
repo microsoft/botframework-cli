@@ -1,5 +1,5 @@
 {
-  "$schema": "./app.schema",
+  "$schema": "../schemas/app.schema",
   "$kind": "root",
   "prompt": {
     "$kind": "prompt",

@@ -59,14 +59,15 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      LUIS application Id
+  --authoringKey=authoringKey        LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).
   --endpoint=endpoint                LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com
   --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
   --versionId=versionId              LUIS version Id
 
 EXAMPLE
 
-       $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} 
-  --endpoint {ENDPOINT}
+       $ bf config:set:luis --appId {APPLICATION_ID} --authoringKey {AUTHORING_KEY} --subscriptionKey {SUBSCRIPTION_KEY} 
+  --versionId {VERSION_ID} --endpoint {ENDPOINT}
 ```
 
 _See code: [src/commands/config/set/luis.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/luis.ts)_

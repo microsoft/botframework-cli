@@ -7,6 +7,7 @@ import {LuBuildCore} from './core'
 import {Settings} from './settings'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Recognizer} from './recognizer'
+import {CrossTrainedRecognizer} from './cross-trained-recognizer'
 const path = require('path')
 const fs = require('fs-extra')
 const delay = require('delay')
@@ -16,8 +17,10 @@ const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
 const LuisBuilderVerbose = require('./../luis/luisCollate')
 const LuisBuilder = require('./../luis/luisBuilder')
+const Luis = require('./../luis/luis')
 const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
+const recognizerType = require('./../utils/enums/recognizertypes')
 
 export class Builder {
   private readonly handler: (input: string) => any
@@ -30,7 +33,8 @@ export class Builder {
     files: string[],
     culture: string,
     suffix: string,
-    region: string) {
+    region: string,
+    schema?: string) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings = new Map<string, Settings>()
     let recognizers = new Map<string, Recognizer>()
@@ -41,11 +45,23 @@ export class Builder {
       let fileName: string
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
 
+      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      if (cultureFromPath) {
+        fileCulture = cultureFromPath
+        let fileNameWithCulture = path.basename(file, path.extname(file))
+        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
+      } else {
+        fileCulture = culture
+        fileName = path.basename(file, path.extname(file))
+      }
+
       let fileContent = ''
       let result
+      let luisObj
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, culture)
-        fileContent = result.parseToLuContent()
+        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
+        luisObj = new Luis(result)
+        fileContent = luisObj.parseToLuContent()
       } catch (err) {
         if (err.source) {
           err.text = `Invalid LU file ${err.source}: ${err.text}`
@@ -56,26 +72,20 @@ export class Builder {
       }
 
       this.handler(`${file} loaded\n`)
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
-      if (cultureFromPath) {
-        fileCulture = cultureFromPath
-        let fileNameWithCulture = path.basename(file, path.extname(file))
-        fileName = fileNameWithCulture.substring(0, fileNameWithCulture.length - fileCulture.length - 1)
-      } else {
-        fileCulture = result.culture !== 'en-us' ? result.culture : culture
-        fileName = path.basename(file, path.extname(file))
-      }
 
       const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
       if (!multiRecognizers.has(fileName)) {
         let multiRecognizerContent = {}
+        let multiRecognizerSchema = schema
         if (fs.existsSync(multiRecognizerPath)) {
-          multiRecognizerContent = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath)).recognizers
+          let multiRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath))
+          multiRecognizerContent = multiRecognizerObject.recognizers
+          multiRecognizerSchema = multiRecognizerSchema || multiRecognizerObject.$schema
           this.handler(`${multiRecognizerPath} loaded\n`)
         }
 
-        multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent))
+        multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent, multiRecognizerSchema as string))
       }
 
       const settingsPath = path.join(fileFolder, `luis.settings.${suffix}.${region}.json`)
@@ -99,7 +109,11 @@ export class Builder {
         this.handler(`${dialogFile} loaded\n`)
       }
 
-      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings.get(fileFolder) as Settings, existingDialogObj)
+      if (existingDialogObj && schema) {
+        existingDialogObj.$schema = schema
+      }
+
+      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings.get(fileFolder) as Settings, existingDialogObj, schema)
       recognizers.set(content.name, recognizer)
     }
 
@@ -120,21 +134,31 @@ export class Builder {
     luContents: any[],
     recognizers: Map<string, Recognizer>,
     authoringKey: string,
-    region: string,
+    endpoint: string,
     botName: string,
     suffix: string,
     fallbackLocale: string,
     deleteOldVersion: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
-    settings?: Map<string, Settings>) {
+    settings?: Map<string, Settings>,
+    luisAPITPS?: number,
+    timeBucketOfRequests?: number,
+    retryCount?: number,
+    retryDuration?: number) {
     // luis api TPS which means 5 concurrent transactions to luis api in 1 second
     // can set to other value if switched to a higher TPS(transaction per second) key
-    let luisApiTps = 5
+    let luisApiTps = luisAPITPS || 5
 
     // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
-    let delayDuration = 1100
+    let timeBucket = timeBucketOfRequests || 1100
 
-    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
+    // set retry count for rate limit luis API failure
+    let countForRetry = retryCount || 1
+
+    // set retry duration for rate limit luis API failure
+    let durationForRetry = retryDuration || 1000
+
+    const luBuildCore = new LuBuildCore(authoringKey, endpoint, countForRetry, durationForRetry)
     const apps = await luBuildCore.getApplicationList()
 
     // here we do a while loop to make full use of luis tps capacity
@@ -166,15 +190,15 @@ export class Builder {
         // otherwise create a new application
         if (recognizer.getAppId() && recognizer.getAppId() !== '') {
           // To see if need update the model
-          needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, delayDuration, deleteOldVersion)
+          needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, deleteOldVersion)
         } else {
           // create a new application
-          needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, delayDuration)
+          needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
         }
 
         if (needTrainAndPublish) {
           // train and publish application
-          await this.trainAndPublishApplication(luBuildCore, recognizer, delayDuration)
+          await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket)
         }
 
         // update multiLanguageRecognizer asset
@@ -215,7 +239,7 @@ export class Builder {
     return dialogContents
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string, luconfig: string) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, luconfig: string, schema: string) {
     let writeDone = false
 
     let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
@@ -242,7 +266,7 @@ export class Builder {
           }
 
           this.handler(`Writing to ${outFilePath}\n`)
-          await fs.writeFile(outFilePath, content.content, 'utf-8')
+          await this.writeDialog(content.content, outFilePath, dialogType, schema)
           writeDone = true
         }
       }
@@ -254,7 +278,7 @@ export class Builder {
           }
 
           this.handler(`Writing to ${content.path}\n`)
-          await fs.writeFile(content.path, content.content, 'utf-8')
+          await this.writeDialog(content.content, content.path, dialogType, schema)
           writeDone = true
         }
       }
@@ -263,8 +287,8 @@ export class Builder {
     return writeDone
   }
 
-  async getActiveVersionIds(appNames: string[], authoringKey: string, region: string) {
-    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`)
+  async getActiveVersionIds(appNames: string[], authoringKey: string, region: string, retryCount?: number, retryDuration?: number) {
+    const luBuildCore = new LuBuildCore(authoringKey, `https://${region}.api.cognitive.microsoft.com`, retryCount || 1, retryDuration || 1000)
     const apps = await luBuildCore.getApplicationList()
     let appNameVersionMap = new Map<string, string>()
     for (const appName of appNames) {
@@ -297,12 +321,12 @@ export class Builder {
     return currentApp
   }
 
-  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number, deleteOldVersion: boolean) {
-    await delay(delayDuration)
+  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, deleteOldVersion: boolean) {
+    await delay(timeBucket)
     const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
-    recognizer.versionId = appInfo.activeVersion
+    recognizer.versionId = appInfo.activeVersion || appInfo.endpoints.PRODUCTION.versionId
 
-    await delay(delayDuration)
+    await delay(timeBucket)
     const existingApp = await luBuildCore.exportApplication(recognizer.getAppId(), recognizer.versionId)
 
     // compare models
@@ -315,16 +339,16 @@ export class Builder {
       }
 
       this.handler(`${recognizer.getLuPath()} creating version=${newVersionId}\n`)
-      await delay(delayDuration)
+      await delay(timeBucket)
       await luBuildCore.importNewVersion(recognizer.getAppId(), currentApp, options)
 
       if (deleteOldVersion) {
-        await delay(delayDuration)
+        await delay(timeBucket)
         const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
         for (const versionObj of versionObjs) {
           if (versionObj.version !== newVersionId) {
             this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
-            await delay(delayDuration)
+            await delay(timeBucket)
             await luBuildCore.deleteVersion(recognizer.getAppId(), versionObj.version)
           }
         }
@@ -337,25 +361,25 @@ export class Builder {
     }
   }
 
-  async createApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number) {
+  async createApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number) {
     currentApp.versionId = currentApp.versionId && currentApp.versionId !== '' ? currentApp.versionId : '0.1'
     recognizer.versionId = currentApp.versionId
     this.handler(`Creating LUIS.ai application: ${currentApp.name} version:${currentApp.versionId}\n`)
-    await delay(delayDuration)
+    await delay(timeBucket)
     const response = await luBuildCore.importApplication(currentApp)
     recognizer.setAppId(typeof response === 'string' ? response : response[Object.keys(response)[0]])
     return true
   }
 
-  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, delayDuration: number) {
+  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number) {
     // send train application request
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
-    await delay(delayDuration)
+    await delay(timeBucket)
     await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId)
-    this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...`)
+    this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...\n`)
     let done = true
     do {
-      await delay(delayDuration)
+      await delay(timeBucket)
 
       // get training status to see if training completed
       let trainingStatus = await luBuildCore.getTrainingStatus(recognizer.getAppId(), recognizer.versionId)
@@ -373,7 +397,7 @@ export class Builder {
 
     // publish applications
     this.handler(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
-    await delay(delayDuration)
+    await delay(timeBucket)
     await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId)
     this.handler(`${recognizer.getLuPath()} publishing finished\n`)
   }
@@ -402,6 +426,29 @@ export class Builder {
       const filteredIntents = intents.filter((intent: any) => !emptyIntents.some((emptyIntent: any) => emptyIntent.name === intent.name))
       this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
       app.intents = filteredIntents
+    }
+  }
+
+  async writeDialog(content: string, filePath: string, dialogType: string, schema: string) {
+    await fs.writeFile(filePath, content, 'utf-8')
+    const contentObj = JSON.parse(content)
+    if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.MultiLanguageRecognizer') {
+      const fileName = path.basename(filePath, '.lu.dialog')
+      const crossTrainedFileName = fileName + '.lu.qna.dialog'
+      const crossTrainedFilePath = path.join(path.dirname(filePath), crossTrainedFileName)
+      if (fs.existsSync(crossTrainedFilePath)) {
+        const existingCRDialog = JSON.parse(await fileHelper.getContentFromFile(crossTrainedFilePath))
+        if (!existingCRDialog.recognizers.includes(fileName + '.lu')) {
+          existingCRDialog.recognizers.push(fileName + '.lu')
+        }
+
+        content = JSON.stringify(existingCRDialog, null, 4)
+      } else {
+        const recognizers = [fileName + '.lu']
+        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema).save()
+      }
+
+      await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
     }
   }
 }

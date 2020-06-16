@@ -1,9 +1,10 @@
 {
-    "name": "MyProject",
-    "defaultLanguage": "en-us",
+    "botName": "MyProject",
+    "defaultCulture": "en-us",
     "deleteOldVersion": true,
     "out": "./../../../../../../results",
-    "writeDialogFiles": true,
+    "dialog": "multiLanguage",
+    "endpoint": "https://chinaeast2.api.cognitive.azure.cn",
     "models": [
         "./test.lu"
     ]

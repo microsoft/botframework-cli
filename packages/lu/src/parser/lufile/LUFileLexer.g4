@@ -54,7 +54,7 @@ MODEL_INFO
   ;
 
 COMMENT
-  : WS* '>' ~('\r'|'\n')+ -> skip
+  : WS* '>' ~('\r'|'\n')* -> skip
   ;
 
 QNA
@@ -77,12 +77,8 @@ AT
   : '@' -> pushMode(NEW_ENTITY_MODE)
   ;
 
-IMPORT_DESC
-  : '[' .*? ']'
-  ;
-
-IMPORT_PATH
-  : '(' .*? ')'
+IMPORT
+  : '[' ~[\r\n[\]]*? ']' '(' ~[\r\n()]*? ')'
   ;
 
 FILTER_MARK
@@ -191,7 +187,7 @@ EXPRESSION
   ;
 
 TEXT
-  : ~[ \t\r\n{\\}]+
+  : ~[ \t\r\n\\]+?
   ;
 
 mode ENTITY_MODE;

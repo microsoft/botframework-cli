@@ -2,4 +2,5 @@
 --require source-map-support/register
 --recursive
 --timeout 60000
+--slow 10000
 **/*.test.{ts,js}
