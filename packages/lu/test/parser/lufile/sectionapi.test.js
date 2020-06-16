@@ -9,7 +9,7 @@ const SectionOperator = require('./../../../src/parser/lufile/sectionOperator');
 const LUSectionTypes = require('./../../../src/parser/utils/enums/lusectiontypes');
 const NEWLINE = require('os').EOL;
 
-describe('Section CRUD test', () => {
+describe('Section CRUD tests for intent', () => {
     let luresource = undefined;
     
     it('init section test', () => {
@@ -210,5 +210,87 @@ describe('Section CRUD test', () => {
         assert.equal(luresource.Sections[4].SimpleIntentSections[0].Body, simpleIntentBody1);
         assert.equal(luresource.Sections[4].SimpleIntentSections[1].Body, simpleIntentBody2);
         assert.equal(luresource.Sections[4].Body, nestedIntentBody);
+    });
+});
+
+describe('Section CRUD tests for entity', () => {
+    let luresource = undefined;
+    
+    it('init section test', () => {
+        let fileContent = 
+`@ list BreadEntity =
+    - multiGrainWheat:
+        - multi
+    - rye:
+        - rye
+
+# Greeting
+- hi`;
+
+        luresource = luparser.parse(fileContent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 2);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
+        assert.equal(luresource.Sections[0].Name, 'BreadEntity');
+        assert.equal(luresource.Sections[0].Type, 'list');
+        assert.equal(luresource.Sections[0].ListBody.length, 4);
+        assert.equal(luresource.Sections[0].ListBody[0], '    - multiGrainWheat:');
+        assert.equal(luresource.Sections[0].ListBody[1], '        - multi');
+        assert.equal(luresource.Sections[0].ListBody[2], '    - rye:');
+        assert.equal(luresource.Sections[0].ListBody[3], '        - rye');
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[1].Name, 'Greeting');
+        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap.length, 1);
+        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[0].utterance, 'hi');
+    });
+
+    it('update entity section test', () => {
+        let newFileConent =
+`    - multiGrainWheat:
+        - multi grain
+    - white:
+        - white`;
+
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[0].Id, newFileConent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 2);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.NEWENTITYSECTION);
+        assert.equal(luresource.Sections[0].Name, 'BreadEntity');
+        assert.equal(luresource.Sections[0].Type, 'list');
+        assert.equal(luresource.Sections[0].ListBody.length, 4);
+        assert.equal(luresource.Sections[0].ListBody[0], '    - multiGrainWheat:');
+        assert.equal(luresource.Sections[0].ListBody[1], '        - multi grain');
+        assert.equal(luresource.Sections[0].ListBody[2], '    - white:');
+        assert.equal(luresource.Sections[0].ListBody[3], '        - white');
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[1].Name, 'Greeting');
+        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap.length, 1);
+        assert.equal(luresource.Sections[1].UtteranceAndEntitiesMap[0].utterance, 'hi');
+    });
+});
+
+describe('Section CRUD tests for error import in utterances', () => {
+    let luresource = undefined;
+    
+    it('init section test', () => {
+        let fileContent = 
+`# Greeting
+- hi
+[]
+[
+]
+> @ ml city
+# Cancel
+- cancel that`;
+
+        luresource = luparser.parse(fileContent);
+        assert.equal(luresource.Errors.length, 1);
+        assert.equal(luresource.Errors[0].Message, 'Invalid intent body line, did you miss \'-\' at line begin')
+        assert.equal(luresource.Sections.length, 2);
+        assert.equal(luresource.Sections[0].Body, `- hi${NEWLINE}[]${NEWLINE}[${NEWLINE}]${NEWLINE}> @ ml city`);
+        assert.equal(luresource.Sections[1].Name, 'Cancel')
+        assert.equal(luresource.Sections[1].Body, '- cancel that')
     });
 });

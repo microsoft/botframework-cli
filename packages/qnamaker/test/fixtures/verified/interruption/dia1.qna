@@ -1,0 +1,51 @@
+> !# @qna.pair.source = xyz
+
+<a id = "1"></a>
+
+# ? tell joke
+- tell me a joke
+
+**Filters:**
+- dialogName=dia1
+
+```
+ha ha ha
+```
+
+**Prompts:**
+- [flight booking](#2) `context-only`
+
+<a id = "3"></a>
+
+# ? can I book a hotel near space needle
+
+**Filters:**
+- dialogName=dia1
+
+```
+of course you can
+```
+
+<a id = "2"></a>
+
+# ? book flight
+
+**Filters:**
+- dialogName=dia1
+
+```
+I can book flight for you
+```
+
+> Source: cross training. Please do not edit these directly!
+# ? I need a four star hotel
+- book a flight for me
+- book a train ticket for me
+- user guide
+
+**Filters:**
+- dialogName=dia1
+
+```
+intent=DeferToRecognizer_LUIS_dia1
+```

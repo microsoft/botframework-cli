@@ -8,7 +8,7 @@ const crossTrainer = require('../../../src/parser/cross-train/crossTrainer')
 const NEWLINE = require('os').EOL
 
 describe('luis:cross training tests among lu and qna contents', () => {
-  it('luis:cross training can get expected result when handling multi locales and duplications', () => {
+  it('luis:cross training can get expected result when handling multi locales and duplications', async () => {
     let luContentArray = []
     let qnaContentArray = []
 
@@ -20,7 +20,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         # dia2_trigger
         - book a flight for me
         - book a train ticket for me`,
-      id: 'main.lu'})
+      id: 'Main.lu'})
 
     qnaContentArray.push({
       content:
@@ -37,7 +37,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         \`\`\`
             tell a funny joke
         \`\`\``,
-      id: 'main.qna'}
+      id: 'Main.qna'}
     )
 
     luContentArray.push({
@@ -68,25 +68,21 @@ describe('luis:cross training tests among lu and qna contents', () => {
         - I need a four star hotel
         
         # hotelLocation
-        - can I book a hotel near space needle`,
-      id: 'dia1.lu'}
+        - can I book a hotel near Space Needle`,
+      id: 'Dia1.lu'}
     )
 
     qnaContentArray.push({
       content:
-        `> !# @app.desc = description of my luis application
-        
-        > !# @qna.pair.source = xyz
+        `> !# @qna.pair.source = xyz
         <a id = "1"></a>
         
-        # ?tell joke
+        # ?tell Joke
         - tell me a joke
         
         \`\`\`
             ha ha ha
         \`\`\`
-        **Prompts:**
-        - [flight booking](#?-book-flight) \`context-only\`
         
         # ?can I book a hotel near space needle
         \`\`\`
@@ -122,7 +118,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
         
         # dia4_trigger
         - book a train ticket from Seattle to Portland`,
-      id: 'dia2.lu'}
+      id: 'Dia2.lu'}
     )
 
     qnaContentArray.push({
@@ -185,69 +181,92 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
-    assert.equal(luResult.get('main.lu').Sections[2].Name, 'DeferToRecognizer_QnA_main')
-    assert.equal(luResult.get('main.lu').Sections[2].Body, `- user guide${NEWLINE}- tell joke`)
+    let foundIndex = luResult.get('Main.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_Main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('Main.lu').Sections[foundIndex].Body, `- user guide${NEWLINE}- tell joke`)
 
-    assert.equal(qnaResult.get('main.qna').Sections[2].Answer, 'intent=DeferToRecognizer_LUIS_main')
-    assert.equal(qnaResult.get('main.qna').Sections[2].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('main.qna').Sections[2].FilterPairs[0].value, 'main')
-    assert.equal(qnaResult.get('main.qna').Sections[2].Questions[0], 'book a hotel for me')
-    assert.equal(qnaResult.get('main.qna').Sections[2].Questions[2], 'book a train ticket for me')
+    foundIndex = qnaResult.get('Main.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_Main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].FilterPairs[0].value, 'Main')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].Questions[0], 'book a hotel for me')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].Questions[2], 'book a train ticket for me')
 
-    assert.equal(luResult.get('dia1.lu').Sections[0].ModelInfo, '> !# @app.name = my luis application')
-    assert.equal(luResult.get('dia1.lu').Sections[3].Name, '_Interruption')
-    assert.equal(luResult.get('dia1.lu').Sections[3].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
-    assert.equal(luResult.get('dia1.lu').Sections[4].Name, 'DeferToRecognizer_QnA_dia1')
-    assert.equal(luResult.get('dia1.lu').Sections[4].Body, `- tell joke${NEWLINE}- tell me a joke`)
+    foundIndex = luResult.get('Dia1.lu').Sections.findIndex(s => s.ModelInfo === '> !# @app.name = my luis application')
+    assert.isTrue(foundIndex > -1)
 
-    assert.equal(qnaResult.get('dia1.qna').Sections[0].ModelInfo, '> !# @app.desc = description of my luis application')
-    assert.equal(qnaResult.get('dia1.qna').Sections[1].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('dia1.qna').Sections[1].FilterPairs[0].value, 'dia1')
-    assert.equal(qnaResult.get('dia1.qna').Sections[1].promptsText[0], '[flight booking](#?-book-flight) `context-only`')
-    assert.equal(qnaResult.get('dia1.qna').Sections[3].Questions.join(', '), 'I need a four star hotel, book a flight for me, book a train ticket for me, user guide')
+    foundIndex = luResult.get('Dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('Dia1.lu').Sections[foundIndex].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
+    
+    foundIndex = luResult.get('Dia1.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_Dia1')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('Dia1.lu').Sections[foundIndex].Body, `- tell Joke${NEWLINE}- tell me a joke`)
 
-    assert.equal(luResult.get('dia2.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('dia2.lu').Sections[2].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
-    assert.equal(luResult.get('dia2.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia2')
-    assert.equal(luResult.get('dia2.lu').Sections[3].Body, `- sing song${NEWLINE}- tell a joke`)
+    foundIndex = qnaResult.get('dia1.qna').Sections.findIndex(s => s.FilterPairs && s.FilterPairs[0].key === 'dialogName')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(qnaResult.get('dia1.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia1')
 
-    assert.equal(qnaResult.get('dia2.qna').Sections[0].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('dia2.qna').Sections[0].FilterPairs[0].value, 'dia2')
-    assert.equal(qnaResult.get('dia2.qna').Sections[2].Questions.join(', '), 'book a flight from Seattle to Beijing, book a train ticket from Seattle to Portland, book a hotel for me, user guide, tell joke')
+    foundIndex = qnaResult.get('dia1.qna').Sections.findIndex(s => s.Questions.join(', ') === 'I need a four star hotel, book a flight for me, book a train ticket for me, user guide')
+    assert.isTrue(foundIndex > -1)
 
-    assert.equal(luResult.get('dia3.lu').Sections.length, 3)
-    assert.equal(luResult.get('dia3.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('dia3.lu').Sections[2].Body, `- book a train ticket from Seattle to Portland${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
+    foundIndex = luResult.get('Dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('Dia2.lu').Sections[foundIndex].Name, '_Interruption')
+    assert.equal(luResult.get('Dia2.lu').Sections[foundIndex].Body, `- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
+    
+    foundIndex = luResult.get('Dia2.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_Dia2')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('Dia2.lu').Sections[foundIndex].Body, `- sing song${NEWLINE}- tell a joke`)
 
-    assert.equal(qnaResult.get('dia3.qna').Sections.length, 0)
+    foundIndex = qnaResult.get('dia2.qna').Sections.findIndex(s => s.FilterPairs && s.FilterPairs[0].key === 'dialogName')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(qnaResult.get('dia2.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia2')
 
-    assert.equal(luResult.get('dia4.lu').Sections.length, 3)
-    assert.equal(luResult.get('dia4.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('dia4.lu').Sections[2].Body, `- book a flight from Seattle to Beijing${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
+    foundIndex = qnaResult.get('dia2.qna').Sections.findIndex(s => s.Questions.join(', ') === 'book a flight from Seattle to Beijing, book a train ticket from Seattle to Portland, book a hotel for me, user guide, tell joke')
+    assert.isTrue(foundIndex > -1)
 
-    assert.equal(luResult.get('main.fr-fr.lu').Sections[1].Name, 'DeferToRecognizer_QnA_main')
-    assert.equal(luResult.get('main.fr-fr.lu').Sections[1].Body, `- guide de l'utilisateur`)
+    assert.equal(luResult.get('dia3.lu').Sections.length, 6)
+    foundIndex = luResult.get('dia3.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia3.lu').Sections[foundIndex].Body, `- book a train ticket from Seattle to Portland${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
 
-    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].Answer, 'intent=DeferToRecognizer_LUIS_main')
-    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].FilterPairs[0].value, 'main')
-    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].Questions.length, 1)
-    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[1].Questions[0], 'réserver un hôtel')
+    assert.equal(qnaResult.get('dia3.qna').Sections.length, 1)
+    assert.equal(qnaResult.get('dia3.qna').Sections[0].Answer, 'intent=DeferToRecognizer_LUIS_dia3')
 
+    assert.equal(luResult.get('dia4.lu').Sections.length, 6)
+    foundIndex = luResult.get('dia4.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia4.lu').Sections[foundIndex].Body, `- book a flight from Seattle to Beijing${NEWLINE}- book a hotel for me${NEWLINE}- user guide${NEWLINE}- tell joke${NEWLINE}- sing song${NEWLINE}- tell a joke`)
 
-    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[2].Body, `- guide de l'utilisateur${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
-    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Name, 'DeferToRecognizer_QnA_dia1')
-    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[3].Body, '- raconter la blague')
+    foundIndex = luResult.get('main.fr-fr.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('main.fr-fr.lu').Sections[foundIndex].Body, `- guide de l'utilisateur`)
 
-    assert.equal(qnaResult.get('dia1.fr-fr.qna').Sections[1].Questions.join(', '), 'J\'ai besoin d\'un hôtel quatre étoiles, puis-je réserver un hôtel près de l\'aiguille spatiale, guide de l\'utilisateur')
+    foundIndex = qnaResult.get('main.fr-fr.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].FilterPairs[0].value, 'main')
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].Questions.length, 1)
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].Questions[0], 'réserver un hôtel')
+
+    foundIndex = luResult.get('dia1.fr-fr.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[foundIndex].Body, `- guide de l'utilisateur${NEWLINE}${NEWLINE}> Source: cross training. Please do not edit these directly!`)
+    
+    foundIndex = luResult.get('dia1.fr-fr.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_dia1')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia1.fr-fr.lu').Sections[foundIndex].Body, '- raconter la blague')
+
+    foundIndex = qnaResult.get('dia1.fr-fr.qna').Sections.findIndex(s => s.Questions.join(', ') === 'J\'ai besoin d\'un hôtel quatre étoiles, puis-je réserver un hôtel près de l\'aiguille spatiale, guide de l\'utilisateur')
+    assert.isTrue(foundIndex > -1)
   })
 
-  it('luis:cross training can get expected result when nestedIntentSection is enabled', () => {
+  it('luis:cross training can get expected result when nestedIntentSection is enabled', async () => {
     let luContentArray = []
 
     luContentArray.push({
@@ -292,14 +311,15 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
     const luResult = trainedResult.luResult
 
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, '- book a flight for me')
+    let foundIndex = luResult.get('./dia2/dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[foundIndex].Body, `- book a flight for me`)
   })
 
-  it('luis:cross training can get expected result when multiple dialog invocations occur in same trigger', () => {
+  it('luis:cross training can get expected result when multiple dialog invocations occur in same trigger', async () => {
     let luContentArray = []
 
     luContentArray.push({
@@ -347,20 +367,23 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
     const luResult = trainedResult.luResult
 
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Body, '- book a hotel for me')
+    let foundIndex = luResult.get('./dia1/dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[foundIndex].Body, `- book a hotel for me`)
 
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, '- book a hotel for me')
+    foundIndex = luResult.get('./dia2/dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[foundIndex].Body, '- book a hotel for me')
 
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Body, '- I want to travel to Seattle')
+    foundIndex = luResult.get('./dia3/dia3.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia3/dia3.lu').Sections[foundIndex].Body, '- I want to travel to Seattle')
   })
 
-  it('luis:cross training can get expected result when local intents exist', () => {
+  it('luis:cross training can get expected result when local intents exist', async () => {
     let luContentArray = []
 
     luContentArray.push({
@@ -405,17 +428,19 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
     const luResult = trainedResult.luResult
 
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Body, '- book a hotel for me')
+    let foundIndex = luResult.get('./dia1/dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[foundIndex].Body, `- book a hotel for me`)
 
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, '- I want to travel to Seattle')
+    foundIndex = luResult.get('./dia2/dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[foundIndex].Body, `- I want to travel to Seattle`)
   })
 
-  it('luis:cross training can get expected result when trigger intent or dialog is empty', () => {
+  it('luis:cross training can get expected result when trigger intent or dialog is empty', async () => {
     let luContentArray = []
 
     luContentArray.push({
@@ -469,20 +494,23 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
     const luResult = trainedResult.luResult
 
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[1].Body, `- book a hotel for me${NEWLINE}- cancel`)
+    let foundIndex = luResult.get('./dia1/dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[foundIndex].Body, `- book a hotel for me${NEWLINE}- cancel`)
 
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- cancel`)
+    foundIndex = luResult.get('./dia2/dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[foundIndex].Body, `- I want to travel to Seattle${NEWLINE}- cancel`)
 
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia3/dia3.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me${NEWLINE}- cancel`)
+    foundIndex = luResult.get('./dia3/dia3.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia3/dia3.lu').Sections[foundIndex].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me${NEWLINE}- cancel`)
   })
 
-  it('luis:cross training can get expected result when multi trigger intents point to same lu file', () => {
+  it('luis:cross training can get expected result when multi trigger intents point to same lu file', async () => {
     let luContentArray = []
 
     luContentArray.push({
@@ -532,13 +560,115 @@ describe('luis:cross training tests among lu and qna contents', () => {
       verbose: true
     }
 
-    const trainedResult = crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
     const luResult = trainedResult.luResult
 
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[2].Name, '_Interruption')
-    assert.equal(luResult.get('./dia1/dia1.lu').Sections[2].Body, `- cancel`)
+    let foundIndex = luResult.get('./dia1/dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia1/dia1.lu').Sections[foundIndex].Body, `- cancel`)
 
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Name, '_Interruption')
-    assert.equal(luResult.get('./dia2/dia2.lu').Sections[1].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me`)
+    foundIndex = luResult.get('./dia2/dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('./dia2/dia2.lu').Sections[foundIndex].Body, `- I want to travel to Seattle${NEWLINE}- book a hotel for me`)
+  })
+
+  it('luis:cross training can get expected result when handling patterns', async () => {
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - book a hotel for me
+        - book a hotel for {@personName}
+        - book a hotel for {name}
+        
+        # dia2_trigger
+        - book a flight for me
+        - book a train ticket for me
+        - can you book a flight for {@ personName : userName}
+        
+        @ prebuilt personName`,
+      id: 'main.lu'})
+
+    qnaContentArray.push({
+      content:
+        `# ?user guide
+
+        **Filters:**
+        - aa=bb
+        
+        \`\`\`
+            Here is the [user guide](http://contoso.com/userguide.pdf)
+        \`\`\`
+        
+        # ?tell joke
+        \`\`\`
+            tell a funny joke
+        \`\`\``,
+      id: 'main.qna'}
+    )
+
+    luContentArray.push({
+      content:
+        `> !# @app.name = my luis application
+        
+        # hotelLevel
+        - I need a four star hotel
+        
+        # hotelLocation
+        - can I book a hotel near space needle`,
+      id: 'dia1.lu'}
+    )
+
+    luContentArray.push({
+      content:
+        `# dia3_trigger
+        - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+        
+        # dia4_trigger
+        - book a train ticket from Seattle to Portland`,
+      id: 'dia2.lu'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [
+        'main.lu'
+      ],
+      triggerRules: {
+        'main.lu': {
+          'dia1_trigger': 'dia1.lu',
+          'dia2_trigger': 'dia2.lu'
+        }
+      },
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const luResult = trainedResult.luResult
+    const qnaResult = trainedResult.qnaResult
+
+    let foundIndex = luResult.get('main.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('main.lu').Sections[foundIndex].Body, `- user guide${NEWLINE}- tell joke`)
+
+    foundIndex = qnaResult.get('main.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].FilterPairs[0].value, 'main')
+    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions.length, 3)
+    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions[0], 'book a hotel for me')
+    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions[1], 'book a flight for me')
+    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions[2], 'book a train ticket for me')
+
+
+    foundIndex = luResult.get('dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia1.lu').Sections[foundIndex].Body, `- book a flight for me${NEWLINE}- book a train ticket for me${NEWLINE}- user guide${NEWLINE}- tell joke`)
+
+    foundIndex = luResult.get('dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia2.lu').Sections[foundIndex].Body, `- book a hotel for me${NEWLINE}- book a hotel for {@name}${NEWLINE}- user guide${NEWLINE}- tell joke`)
   })
 })

@@ -17,15 +17,15 @@ const globby = require('globby')
 
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
-  if (stdin) {
-    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
-  } else {
+  if (input) {
     let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
       const opts = new LUOptions(path.resolve(luFiles[i]))
       luObjects.push(new luObject(luContent, opts))
     }
+  } else {
+    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
   }
 
   return luObjects
@@ -218,7 +218,7 @@ export function getParsedObjects(contents: {id: string, content: string}[]) {
   return parsedObjects
 }
 
-export function getConfigObject(configContent: any, intentName: string) {
+export function getConfigObject(configContent: any, intentName: string, verbose: boolean) {
   let finalLuConfigObj = Object.create(null)
   let rootLuFiles: string[] = []
   const configFileDir = path.dirname(configContent.id)
@@ -267,7 +267,7 @@ export function getConfigObject(configContent: any, intentName: string) {
       rootIds: rootLuFiles,
       triggerRules: finalLuConfigObj,
       intentName,
-      verbose: true
+      verbose
     }
 
     return crossTrainConfig

@@ -2,15 +2,13 @@
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
   "rushVersion": "5.19.1",
   "pnpmVersion": "4.8.0",
-  "pnpmOptions": {
-  },
+  "pnpmOptions": {},
   "nodeSupportedVersionRange": ">=10.13.0 <13.0.0",
-
   "projects": [
     {
       "packageName": "@microsoft/bf-cli-command",
       "projectFolder": "packages/command"
-    }, 
+    },
     {
       "packageName": "@microsoft/bf-chatdown",
       "projectFolder": "packages/chatdown"
@@ -50,7 +48,7 @@
     {
       "packageName": "@microsoft/bf-cli-plugins",
       "projectFolder": "packages/plugins"
-    }, 
+    },
     {
       "packageName": "@microsoft/botframework-cli",
       "projectFolder": "packages/cli"

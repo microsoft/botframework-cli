@@ -32,11 +32,15 @@
                 "${env:TEMP}/cli.out"
             ],
             "outFiles": [
-                "C:/Users/chrimc/AppData/Roaming/npm/node_modules/@microsoft/botframework-cli/node_modules/@microsoft/bf-dialog/lib"
+                "${workspaceFolder}/packages/luis/lib/**"
             ],
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
+            "args": [
+                "luis:build",
+                "--luConfig",
+                "${env:TEMP}/sandwich.out/luconfig.json"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}"
         },
         {
             "type": "node",
@@ -50,7 +54,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                ".*"
+                "dialog:merge.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
@@ -70,27 +74,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                ".*dialog:verify.*"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "outputCapture": "std",
-            "outFiles": [
-                "./package/dialog/lib/**"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Dialog Generator Tests",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}/packages/dialog",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-g",
-                ".*dialog:generate.*"
+                "dialog:verify.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
@@ -171,14 +155,91 @@
             ],
             "args": [
                 "dialog:merge",
-                "../libraries/**/*.schema",
+                "libraries/**/*.schema",
                 "-o",
-                "sdk.schema",
-                "--verbose",
-                "-u"
+                "${env:TEMP}/sdk.schema",
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet/schemas"
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "BotBuilder project",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:merge",
+                "tests/Microsoft.Bot.Builder.Dialogs.Declarative.Tests/*.csproj",
+                "-o",
+                "${env:TEMP}/app.schema",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "BotBuilder verify",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:verify",
+                "tests/**/*.dialog",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Bot Builder merge test schema",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:merge",
+                "schemas/*.schema",
+                "-o",
+                "schemas/app.schema",
+                "-d"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/packages/dialog/test/commands/dialog"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Runbot schema",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:merge",
+                "runbot.csproj",
+                "-o",
+                "runbot.schema",
+                "--verbose"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-samples/experimental/generation/runbot/"
         },
         {
             "type": "node",
@@ -193,20 +254,13 @@
             ],
             "args": [
                 "luis:build",
-                "--in",
-                ".",
+                "--luConfig",
+                "luconfig.json",
                 "--authoringKey",
-                "${env:LUIS_AUTHORING_KEY}",
-                "--botName",
-                "sandwich",
-                "--dialog",
-                "--suffix",
-                "${env:USERNAME}",
-                "--out",
-                "."
+                "${env:LUIS_AUTHORING_KEY}"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/sandwich.out/luis"
+            "cwd": "${env:TEMP}/sandwich.out"
         },
         {
             "type": "node",

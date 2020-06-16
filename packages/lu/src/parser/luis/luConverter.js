@@ -99,7 +99,11 @@ const parseUtterancesToLu = function(utterances, luisJSON){
             getEntitiesByPositionList(sortedEntitiesList, tokenizedText);
             updatedText = tokenizedText.join('');
         }
-        if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
+
+        // remove duplicated whitespaces between words inside utterance to make sure they are aligned with the luis portal
+        // as luis portal only keeps one whitespace between words even if you type multiple ones
+        // this will benefit the comparison of lu files that are converted from local and remote luis application
+        if(updatedText) fileContent += '- ' + updatedText.replace(/\s+/g, ' ') + NEWLINE;
     });
     return fileContent
 }
@@ -191,8 +195,7 @@ const parseEntitiesToLu =  function(luisJson){
                 }
                 fileContent += NEWLINE + NEWLINE;
             }
-            fileContent += `@ ml `;
-            fileContent += entity.name.includes(' ') ? `"${entity.name}"` : `${entity.name}`;
+            fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
             fileContent += addRolesAndFeatures(entity);
             fileContent += NEWLINE + NEWLINE;
         } else {
@@ -203,6 +206,10 @@ const parseEntitiesToLu =  function(luisJson){
     fileContent += NEWLINE;
     
     return fileContent
+}
+
+const writeEntityName = function(entityName) {
+    return entityName.includes(' ') ? `"${entityName}"` : `${entityName}`
 }
 
 const parseToLuPrebuiltEntities = function(luisJson){
@@ -367,7 +374,7 @@ const addAppMetaData = function(LUISJSON) {
 const handleNDepthEntity = function(entity) {
     let fileContent = '';
     const BASE_TAB_STOP = 1;
-    fileContent += `@ ${EntityTypeEnum.ML} ${entity.name}`;
+    fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
     fileContent += addRolesAndFeatures(entity);
     fileContent += NEWLINE;
     fileContent += addNDepthChildDefinitions(entity.children, BASE_TAB_STOP, fileContent) + NEWLINE + NEWLINE
@@ -383,15 +390,7 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
     let myFileContent = '';
     (childCollection || []).forEach(child => {
         myFileContent += "".padStart(tabStop * 4, ' ');
-        myFileContent += '- @ ';
-        // find constraint
-        let constraint = (child.features || []).find(feature => feature.isRequired == true);
-        if (constraint !== undefined) {
-            myFileContent += constraint.modelName;
-        } else {
-            myFileContent += EntityTypeEnum.ML;
-        }
-        myFileContent += ` ${child.name}`;
+        myFileContent += `- @ ${getEntityType(child.features)} ${writeEntityName(child.name)}`;
         myFileContent += addRolesAndFeatures(child);
         myFileContent += NEWLINE;
         if (child.children && child.children.length !== 0) {
@@ -399,6 +398,15 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
         }
     });
     return myFileContent;
+}
+const getEntityType = function(features) {
+    // find constraint
+    let constraint = (features || []).find(feature => feature.isRequired == true);
+    if (constraint !== undefined) {
+        return constraint.modelName;
+    } else {
+        return EntityTypeEnum.ML;
+    }
 }
 /**
  * Helper to construt role and features list for an entity
@@ -452,7 +460,7 @@ const addRolesAndFeatures = function(entity) {
 const updateUtterancesList = function (srcCollection, tgtCollection, attribute) {
     (srcCollection || []).forEach(srcItem => {
         let matchInTarget = tgtCollection.find(item => item.intent.name == srcItem.intent);
-        if(matchInTarget.utterances.length === 0) {
+        if(!matchInTarget || matchInTarget.utterances.length === 0) {
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
             return;
         }

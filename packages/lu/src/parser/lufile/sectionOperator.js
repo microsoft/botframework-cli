@@ -27,10 +27,10 @@ class SectionOperator {
       return this.Luresource;
     }
 
-    var startLine = section.StartLine;
-    var stopLine = section.StopLine;
+    const startLine = section.StartLine;
+    const stopLine = section.StopLine;
 
-    var newContent = this.replaceRangeContent(this.Luresource.Content, startLine, stopLine, sectionContent);
+    const newContent = this.replaceRangeContent(this.Luresource.Content, startLine, stopLine, sectionContent);
 
     return luParser.parse(newContent);
   }
@@ -41,10 +41,10 @@ class SectionOperator {
       return this;
     }
 
-    var startLine = section.StartLine;
-    var stopLine = section.StopLine;
+    const startLine = section.StartLine;
+    const stopLine = section.StopLine;
 
-    var newContent = this.replaceRangeContent(this.Luresource.Content, startLine, stopLine, undefined);
+    const newContent = this.replaceRangeContent(this.Luresource.Content, startLine, stopLine, undefined);
 
     return luParser.parse(newContent);
   }

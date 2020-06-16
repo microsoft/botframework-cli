@@ -167,7 +167,7 @@ importSection
     ;
 
 importDefinition
-    : IMPORT_DESC IMPORT_PATH
+    : WS* IMPORT WS*
     ;
 
 qnaSection

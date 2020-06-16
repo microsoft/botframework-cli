@@ -7,6 +7,21 @@ const validateLUISBlob = require('./../../../src/parser/luis/luisValidator')
 var chai = require('chai');
 var assert = chai.assert;
 describe('With helper functions', function () {
+        it('Parsefile correctly handles non nDepth entity references in patterns', function(done) {
+                let luFile = `@ list foo=
+                @ ml operation=
+                    - @foo foo
+                
+                # Test
+                - Pattern {foo}`;
+                parseFile.parseFile(luFile)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.patterns.length, 1)
+                                assert.equal(res.LUISJsonStructure.patterns[0].pattern, "Pattern {foo}");
+                                done()
+                        })
+        })
+
         it('parseFile includes defaults for LUIS app', function(done) {
                 let luFile = `@ simple entity1`;
                 parseFile.parseFile(luFile)
@@ -637,6 +652,20 @@ describe('parseFile correctly parses utterances', function () {
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].startPos, 0);
                                 assert.equal(res.LUISJsonStructure.utterances[0].entities[0].endPos, 6);
                                 assert.equal(res.LUISJsonStructure.entities.length, 1);
+                                done();
+                        })
+                        .catch(err => done(err))
+        })
+
+        it('correctly parses an utterance with single curly bracket', function (done) {
+                let testLUFile = `# test
+                - {userName= vishwac
+                - userName= vishwac}`;
+                parseFile.parseFile(testLUFile, false)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.utterances.length, 2);
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, "{userName= vishwac");
+                                assert.equal(res.LUISJsonStructure.utterances[1].text, "userName= vishwac}");
                                 done();
                         })
                         .catch(err => done(err))

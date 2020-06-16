@@ -1,0 +1,7 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
+    "$kind": "Microsoft.CrossTrainedRecognizerSet",
+    "recognizers": [
+        "sandwich.lu"
+    ]
+}

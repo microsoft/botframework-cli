@@ -51,11 +51,11 @@ export default class QnamakerTranslate extends Command {
           })
         })
       } else {
-        const json = stdin ? stdin : await fileHelper.getContentFromFile(flags.in)
+        const json = flags.in ? await fileHelper.getContentFromFile(flags.in) : stdin
         const qnaM = new QnaMaker(fileHelper.parseJSON(json, 'QnA'))
         const qna = new QnA(qnaM.parseToLuContent())
         const qnaTranslation = await luTranslator.translateQnA(qna, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
-        const key = stdin ? 'stdin' : path.basename(flags.in)
+        const key = flags.in ? path.basename(flags.in) : 'stdin'
         result = {
           [key]: {},
         }

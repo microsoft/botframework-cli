@@ -1,5 +1,6 @@
 const lp = require('./generated/LUFileParser').LUFileParser;
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
+const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
 
 class Visitor {
     /**
@@ -38,6 +39,12 @@ class Visitor {
     static recurselyResolveTokenizedUtterance(tokUtt, entities, errorMsgs, srcUtterance) {
         for (const item of tokUtt) {
             if (item === Object(item)) {
+                let entityName = item.entityName.trim()
+                if (entityName && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
+                    errorMsgs.push(`Invalid utterance line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`);
+                    continue;
+                }
+
                 if (item.entityValue === undefined) {
                     // we have a pattern.any entity
                     const patternStr = item.role ? `{${item.entityName}:${item.role}}` : `{${item.entityName}}`

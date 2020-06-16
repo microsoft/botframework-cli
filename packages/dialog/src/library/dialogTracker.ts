@@ -63,29 +63,25 @@ export class Definition {
     // Path within the dialog that leads to the component definition.
     path?: string
 
-    // $id of the component if present, otherwise undefined.
+    // id of the component if present, otherwise undefined.
     id?: string
 
     // Where this definition is being used.
     usedBy: Definition[]
 
-    // ID of definition being copied from.
-    copy?: string
-
     /**
      * Construct a component definition.
      * @param type The $kind of the component.
-     * @param id The $id of the component if present.
+     * @param id The id of the component if present.
      * @param dialog The dialog that contains the definition. (undefined for forward reference.)
      * @param path The path within the file to the component.
      * @param copy The id of the copied definition.
      */
-    constructor(type?: st.Type, id?: string, dialog?: Dialog, path?: string, copy?: string) {
+    constructor(type?: st.Type, id?: string, dialog?: Dialog, path?: string) {
         this.type = type
         this.id = id
         this.dialog = dialog
         this.path = path
-        this.copy = copy
         this.usedBy = []
     }
 
@@ -168,8 +164,7 @@ export class DialogTracker {
     schema: st.SchemaTracker
 
     /**
-     *
-     * Map from $id to the definition.
+     * Map from id to the definition.
      * If there are more than one, then it is multiply defined.
      * If any of them are missing dialog, then there is a $copy, but no definition.
      */
@@ -198,7 +193,10 @@ export class DialogTracker {
         try {
             const schemaFile = dialog.body.$schema
             if (schemaFile) {
-                let schemaPath = path.join(path.dirname(dialog.file), schemaFile)
+                let schemaPath = schemaFile
+                if (schemaPath.indexOf(':') < 2) {
+                    schemaPath = path.resolve(path.dirname(dialog.file), schemaFile)
+                }
                 let [validator] = await this.schema.getValidator(schemaPath)
                 let validation = validator(dialog.body, dialog.file)
                 if (!validation && validator.errors) {
@@ -213,26 +211,10 @@ export class DialogTracker {
             } else {
                 dialog.errors.push(new Error(`${dialog} does not have a $schema.`))
             }
-            if (dialog.body.$id) {
-                dialog.errors.push(new Error('dialog cannot have $id at the root because it is defined by the filename.'))
-            }
-            // Expand $id to include root dialog
-            walkJSON(dialog.body, '', elt => {
-                if (elt.$id) {
-                    elt.$id = dialog.id() + '#' + elt.$id
-                }
-                return false
-            })
-            dialog.body.$id = dialog.id()
             walkJSON(dialog.body, '', (elt, path) => {
                 if (elt.$kind) {
-                    let def = new Definition(this.schema.typeToType.get(elt.$kind), elt.$id, dialog, path, elt.$copy)
+                    let def = new Definition(this.schema.typeToType.get(elt.$kind), elt.id, dialog, path)
                     this.addDefinition(def)
-                    if (elt.$copy) {
-                        this.addReference(elt.$copy, def)
-                    }
-                } else if (elt.$id || elt.$copy) { // Missing type
-                    this.addDefinition(new Definition(undefined, elt.$id, dialog, path, elt.$copy))
                 }
                 return false
             })
@@ -343,7 +325,7 @@ export class DialogTracker {
         }
     }
 
-    // Definitions that try to define the same $id.
+    // Definitions that try to define the same id.
     * multipleDefinitions(): Iterable<Definition[]> {
         for (let def of this.idToDef.values()) {
             if (def.length > 1) {
@@ -355,7 +337,7 @@ export class DialogTracker {
         }
     }
 
-    // Definitions that are referred to through $copy, but are not defined.
+    // Definitions that are referred to through $kind, but are not defined.
     * missingDefinitions(): Iterable<Definition> {
         for (let defs of this.idToDef.values()) {
             for (let def of defs) {

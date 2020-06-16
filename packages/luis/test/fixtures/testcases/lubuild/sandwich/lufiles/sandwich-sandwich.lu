@@ -9,3 +9,7 @@
 - {money}
 - {Confirmation}
 - {PROPERTYName}
+
+@prebuilt number
+@prebuilt dimension
+@prebuilt money
