@@ -13,9 +13,8 @@
     "**/*.d.ts"
   ],
   "reporter": [
-    "cobertura",
-    "text",
-    "html"
+    "lcov",
+    "text"
   ],
   "all": true,
   "cache": true,

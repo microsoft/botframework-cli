@@ -31,7 +31,7 @@
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "test:functional": "mocha --config ./test/functional/.mocharc.json **/functional/*.test.{js,ts}",
-    "coverage": "nyc mocha",
+    "coverage": "nyc npm run test",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
     "doc:readme": "oclif-dev manifest && oclif-dev readme",
     "version": "npm run doc:readme && git add README.md"

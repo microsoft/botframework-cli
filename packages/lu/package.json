@@ -21,7 +21,7 @@
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
-    "coverage": "nyc mocha",
+    "coverage": "nyc npm run test",
     "doc": "",
     "doc:readme": "",
     "version": "npm run doc:readme && git add README.md"

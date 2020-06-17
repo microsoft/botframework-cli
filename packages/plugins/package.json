@@ -57,7 +57,7 @@
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
-    "coverage": "nyc mocha",
+    "coverage": "nyc npm run test",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
     "doc:readme": "oclif-dev manifest && oclif-dev readme",
     "version": "npm run doc:readme && git add README.md"
