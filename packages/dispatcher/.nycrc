@@ -12,10 +12,11 @@
     "**/coverage/**",
     "**/*.d.ts"
   ],
-  "reporter": [
-    "lcov",
-    "text"
-  ],
+    "reporter": [
+        "html",
+        "lcov",
+        "text"
+    ],
   "all": true,
   "cache": true,
   "extends": "@istanbuljs/nyc-config-typescript",

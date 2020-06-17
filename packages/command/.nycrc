@@ -13,6 +13,7 @@
     "**/*.d.ts"
   ],
   "reporter": [
+    "html",
     "lcov",
     "text"
   ],
