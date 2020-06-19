@@ -322,6 +322,13 @@ warm and rainy
 Mark Zuckerberg
 \`\`\``;
 
+    let insertFileContent =
+`# ? how to greet
+
+\`\`\`
+hello
+\`\`\``
+
     it('add qna section test', () => {
         luresource = luparser.parse(fileContent);
 
@@ -349,12 +356,40 @@ Mark Zuckerberg
         assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), updatedFileConent);
     });
 
+    it('insert qna section at begining test', () => {
+        luresource = new SectionOperator(luresource).insertSection(luresource.Sections[0].Id, insertFileContent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 3);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), insertFileContent);
+        assert.equal(luresource.Sections[1].Body.replace(/\r\n/g,"\n"), updatedFileConent);
+        assert.equal(luresource.Sections[2].Body.replace(/\r\n/g,"\n"), addedFileContent);
+    });
+
     it('delete qna section test', () => {
         luresource = new SectionOperator(luresource).deleteSection(luresource.Sections[0].Id);
 
         assert.equal(luresource.Errors.length, 0);
-        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Sections.length, 2);
         assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
-        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), addedFileContent);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), updatedFileConent);
+        assert.equal(luresource.Sections[1].Body.replace(/\r\n/g,"\n"), addedFileContent);
+    });
+
+    it('insert qna section at middle test', () => {
+        luresource = new SectionOperator(luresource).insertSection(luresource.Sections[1].Id, insertFileContent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 3);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), updatedFileConent);
+        assert.equal(luresource.Sections[1].Body.replace(/\r\n/g,"\n"), insertFileContent);
+        assert.equal(luresource.Sections[2].Body.replace(/\r\n/g,"\n"), addedFileContent);
     });
 });

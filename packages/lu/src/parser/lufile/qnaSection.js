@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
@@ -26,7 +25,6 @@ class QnaSection {
         this.Errors = this.Errors.concat(result.errors);
         this.QAPairId = this.ExtractAssignedId(parseTree);
         this.source = this.ExtractSourceInfo(parseTree);
-        this.Id = uuidv4();
     }
 
     ExtractSourceInfo(parseTree) {

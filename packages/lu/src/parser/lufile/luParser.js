@@ -303,6 +303,7 @@ class LUParser {
     static extractSectionBody(sections, content) {
         sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
         const originList = content.split(/\r?\n/)
+        let qnaSectionIndex = 0
         sections.forEach(function (section, index) {
             if (section.SectionType === SectionType.SIMPLEINTENTSECTION
                 || section.SectionType === SectionType.NESTEDINTENTSECTION
@@ -321,6 +322,8 @@ class LUParser {
                 let destList
                 if (section.SectionType === SectionType.QNASECTION) {
                     destList = originList.slice(startLine, stopLine)
+                    section.Id = qnaSectionIndex
+                    qnaSectionIndex++
                 } else {
                     destList = originList.slice(startLine + 1, stopLine)
                 }
