@@ -10,7 +10,7 @@
   "composites": [],
   "closedLists": [],
   "patternAnyEntities": [],
-  "regex_entities": [
+  "regexEntities": [
     {
       "name": "Part",
       "regexPattern": "kb[0-9]+",
@@ -22,7 +22,7 @@
   ],
   "prebuiltEntities": [],
   "model_features": [],
-  "regex_features": [],
+  "regexFeatures": [],
   "patterns": [],
   "utterances": [],
   "settings": []
