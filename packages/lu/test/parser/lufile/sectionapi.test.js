@@ -392,4 +392,14 @@ hello
         assert.equal(luresource.Sections[1].Body.replace(/\r\n/g,"\n"), insertFileContent);
         assert.equal(luresource.Sections[2].Body.replace(/\r\n/g,"\n"), addedFileContent);
     });
+
+    it('insert qna section at empty file', () => {
+        luresource = luparser.parse('');
+        luresource = new SectionOperator(luresource).insertSection(0, insertFileContent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), insertFileContent + '\n');
+    });
 });

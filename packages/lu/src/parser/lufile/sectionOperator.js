@@ -52,11 +52,11 @@ class SectionOperator {
   insertSection(id, sectionContent) {
     sectionContent = helpers.sanitizeNewLines(sectionContent);
     const section = this.Luresource.Sections.find(u => u.Id === id);
-    if (!section) {
+    if (!section && this.Luresource.Sections.length > 0 ) {
       return this.Luresource;
     }
 
-    const startLine = section.StartLine;
+    const startLine = section ? section.StartLine : 0;
     const newContent = this.replaceRangeContent(this.Luresource.Content, startLine, startLine - 1, sectionContent);
 
     const result = luParser.parse(newContent);
@@ -65,11 +65,6 @@ class SectionOperator {
   }
 
   replaceRangeContent(originString, startLine, stopLine, replaceString) {
-
-    if (!originString) {
-      throw new Error('replace content with error parameters.');
-    }
-
     const originList = originString.split(/\r?\n/);
     let destList = [];
     if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine + 1 || originList.length <= stopLine) {
