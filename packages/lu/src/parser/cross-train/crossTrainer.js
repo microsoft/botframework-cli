@@ -433,7 +433,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   // update qna filters
   let qnaSectionContents = []
   for (const qnaSection of qnaSections) {
-    qnaSection.FilterPairs.push({ key: 'dialogName', value: fileName })
+    qnaSection.FilterPairs.push({ key: 'dialogName', value: `${fileName}.dialog` })
     let qnaSectionContent = ''
     if (qnaSection.source !== QNA_GENERIC_SOURCE) {
       qnaSectionContent += `> !# @qna.pair.source = ${qnaSection.source}${NEWLINE}${NEWLINE}`
@@ -474,7 +474,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
     // construct new question content for qna resource
     let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
-    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}.dialog${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 

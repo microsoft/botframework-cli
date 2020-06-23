@@ -2,7 +2,7 @@
 
 **Filters:**
 - aa=bb
-- dialogName=main
+- dialogName=main.dialog
 
 ```
 Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
@@ -12,7 +12,7 @@ Voici le [guide de l'utilisateur] (http://contoso.com/userguide.pdf)
 # ? réserver un hôtel
 
 **Filters:**
-- dialogName=main
+- dialogName=main.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_main

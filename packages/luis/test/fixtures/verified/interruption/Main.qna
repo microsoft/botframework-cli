@@ -2,7 +2,7 @@
 
 **Filters:**
 - aa=bb
-- dialogName=Main
+- dialogName=Main.dialog
 
 ```
 Here is the [user guide](http://contoso.com/userguide.pdf)
@@ -11,7 +11,7 @@ Here is the [user guide](http://contoso.com/userguide.pdf)
 # ? tell joke
 
 **Filters:**
-- dialogName=Main
+- dialogName=Main.dialog
 
 ```
 Tell a funny joke
@@ -21,7 +21,7 @@ Tell a funny joke
 - how can you help
 
 **Filters:**
-- dialogName=Main
+- dialogName=Main.dialog
 
 ```
 I can help book flight, book hotel and book train ticket
@@ -35,7 +35,7 @@ I can help book flight, book hotel and book train ticket
 - hello
 
 **Filters:**
-- dialogName=Main
+- dialogName=Main.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_Main

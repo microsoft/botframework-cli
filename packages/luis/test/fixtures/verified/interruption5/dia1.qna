@@ -1,7 +1,7 @@
 # ? tell joke
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 ha ha ha
@@ -1010,7 +1010,7 @@ ha ha ha
 - Aren't you feeling happy?
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_dia1
@@ -1025,7 +1025,7 @@ intent=DeferToRecognizer_LUIS_dia1
 - Have you ever met Eliza?
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_dia1

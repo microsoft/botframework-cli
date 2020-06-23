@@ -9,7 +9,7 @@
 - tell a joke
 
 **Filters:**
-- dialogName=dia3
+- dialogName=dia3.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_dia3

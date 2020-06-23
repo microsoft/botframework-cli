@@ -6,7 +6,7 @@
 - tell me a joke
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 ha ha ha
@@ -20,7 +20,7 @@ ha ha ha
 # ? can I book a hotel near space needle
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 of course you can
@@ -31,7 +31,7 @@ of course you can
 # ? book flight
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 I can book flight for you
@@ -44,7 +44,7 @@ I can book flight for you
 - user guide
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_dia1

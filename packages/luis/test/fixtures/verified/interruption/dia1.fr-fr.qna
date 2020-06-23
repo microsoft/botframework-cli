@@ -1,7 +1,7 @@
 # ? raconter la blague
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 ha ha ha
@@ -13,7 +13,7 @@ ha ha ha
 - guide de l'utilisateur
 
 **Filters:**
-- dialogName=dia1
+- dialogName=dia1.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_dia1

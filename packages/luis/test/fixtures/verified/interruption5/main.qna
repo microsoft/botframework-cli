@@ -2,7 +2,7 @@
 
 **Filters:**
 - aa=bb
-- dialogName=main
+- dialogName=main.dialog
 
 ```
 Here is the [user guide](http://contoso.com/userguide.pdf)
@@ -11,7 +11,7 @@ Here is the [user guide](http://contoso.com/userguide.pdf)
 # ? tell joke
 
 **Filters:**
-- dialogName=main
+- dialogName=main.dialog
 
 ```
 Tell a funny joke
@@ -21,7 +21,7 @@ Tell a funny joke
 - more than one item at a time
 
 **Filters:**
-- dialogName=main
+- dialogName=main.dialog
 
 ```
 No, I do not support that yet. But I will let the development team know you are looking for it!
@@ -1031,7 +1031,7 @@ No, I do not support that yet. But I will let the development team know you are 
 - Have you ever met Eliza?
 
 **Filters:**
-- dialogName=main
+- dialogName=main.dialog
 
 ```
 Thank you
@@ -1041,7 +1041,7 @@ Thank you
 # ? book a hotel for me
 
 **Filters:**
-- dialogName=main
+- dialogName=main.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_main

@@ -1,7 +1,7 @@
 # ? sing song
 
 **Filters:**
-- dialogName=dia2
+- dialogName=dia2.dialog
 
 ```
 Sure, I can sing song.
@@ -10,7 +10,7 @@ Sure, I can sing song.
 # ? tell a joke
 
 **Filters:**
-- dialogName=dia2
+- dialogName=dia2.dialog
 
 ```
 ha ha ha
@@ -26,7 +26,7 @@ ha ha ha
 - how can you help
 
 **Filters:**
-- dialogName=dia2
+- dialogName=dia2.dialog
 
 ```
 intent=DeferToRecognizer_LUIS_dia2

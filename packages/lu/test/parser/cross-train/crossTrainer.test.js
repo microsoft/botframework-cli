@@ -192,7 +192,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     foundIndex = qnaResult.get('Main.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_Main')
     assert.isTrue(foundIndex > -1)
     assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].FilterPairs[0].value, 'Main')
+    assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].FilterPairs[0].value, 'Main.dialog')
     assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].Questions[0], 'book a hotel for me')
     assert.equal(qnaResult.get('Main.qna').Sections[foundIndex].Questions[2], 'book a train ticket for me')
 
@@ -209,7 +209,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
 
     foundIndex = qnaResult.get('dia1.qna').Sections.findIndex(s => s.FilterPairs && s.FilterPairs[0].key === 'dialogName')
     assert.isTrue(foundIndex > -1)
-    assert.equal(qnaResult.get('dia1.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia1')
+    assert.equal(qnaResult.get('dia1.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia1.dialog')
 
     foundIndex = qnaResult.get('dia1.qna').Sections.findIndex(s => s.Questions.join(', ') === 'I need a four star hotel, book a flight for me, book a train ticket for me, user guide')
     assert.isTrue(foundIndex > -1)
@@ -225,7 +225,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
 
     foundIndex = qnaResult.get('dia2.qna').Sections.findIndex(s => s.FilterPairs && s.FilterPairs[0].key === 'dialogName')
     assert.isTrue(foundIndex > -1)
-    assert.equal(qnaResult.get('dia2.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia2')
+    assert.equal(qnaResult.get('dia2.qna').Sections[foundIndex].FilterPairs[0].value, 'Dia2.dialog')
 
     foundIndex = qnaResult.get('dia2.qna').Sections.findIndex(s => s.Questions.join(', ') === 'book a flight from Seattle to Beijing, book a train ticket from Seattle to Portland, book a hotel for me, user guide, tell joke')
     assert.isTrue(foundIndex > -1)
@@ -250,7 +250,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     foundIndex = qnaResult.get('main.fr-fr.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_main')
     assert.isTrue(foundIndex > -1)
     assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].FilterPairs[0].value, 'main')
+    assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].FilterPairs[0].value, 'main.dialog')
     assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].Questions.length, 1)
     assert.equal(qnaResult.get('main.fr-fr.qna').Sections[foundIndex].Questions[0], 'réserver un hôtel')
 
@@ -656,7 +656,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     foundIndex = qnaResult.get('main.qna').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_main')
     assert.isTrue(foundIndex > -1)
     assert.equal(qnaResult.get('main.qna').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
-    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].FilterPairs[0].value, 'main')
+    assert.equal(qnaResult.get('main.qna').Sections[foundIndex].FilterPairs[0].value, 'main.dialog')
     assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions.length, 3)
     assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions[0], 'book a hotel for me')
     assert.equal(qnaResult.get('main.qna').Sections[foundIndex].Questions[1], 'book a flight for me')
