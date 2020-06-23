@@ -1,5 +1,5 @@
 {
-  "name": "@microsoft/bf-orchestrator",
+  "name": "@microsoft/bf-orchestrator-cli",
   "description": "Bot Orchestrator",
   "version": "1.0.0",
   "author": "Microsoft",
@@ -15,8 +15,7 @@
     "fs-extra": "~9.0.0",
     "read-text-file": "~1.1.0",
     "tslib": "^1.10.0",
-    "node-7z": "~2.1.1",
-    "azure-storage": "~2.10.3"
+    "node-7z": "~2.1.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
