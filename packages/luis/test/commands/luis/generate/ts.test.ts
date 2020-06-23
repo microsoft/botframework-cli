@@ -96,6 +96,17 @@ describe('luis:generate:ts', () => {
     .it('Generates regex entities correctly', async () => {
       await compareSourceFiles('../../../fixtures/generate/regex-entities.ts', '../../../fixtures/generate/results/regex-entities.ts')
     })
+  
+  test
+    .stdout()
+    .command(['luis:generate:ts',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/RegexEntities2.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/regex-entities2.ts')}`])
+    .it('Generates regex entities with alternative format correctly', async () => {
+      await compareSourceFiles('../../../fixtures/generate/regex-entities.ts', '../../../fixtures/generate/results/regex-entities2.ts')
+    })
 
   test
     .stdout()
