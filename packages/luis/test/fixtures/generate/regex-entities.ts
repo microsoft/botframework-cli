@@ -12,6 +12,9 @@ export interface GeneratedIntents {
 }
 
 export interface GeneratedInstance {
+  Part?: InstanceData[]
+  buy?: InstanceData[]
+  sell?: InstanceData[]
 }
 
 export interface GeneratedEntities {
@@ -22,6 +25,9 @@ export interface GeneratedEntities {
   // Lists
 
   // Regex entities
+  Part?: string[]
+  buy?: string[]
+  sell?: string[]
 
   // Pattern.any
 
