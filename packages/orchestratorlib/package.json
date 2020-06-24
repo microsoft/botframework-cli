@@ -1,0 +1,55 @@
+{
+  "name": "@microsoft/bf-orchestrator",
+  "description": "APIs to interact with BF Orchestrator.",
+  "version": "1.0.0",
+  "author": "Microsoft",
+  "bugs": "https://github.com/microsoft/botframework-cli/issues",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/lib",
+    "/npm-shrinkwrap.json"
+  ],
+  "homepage": "https://github.com/microsoft/botframework-cli",
+  "license": "MIT",
+  "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/orchestratorlib",
+  "scripts": {
+    "postpack": "",
+    "posttest": "tslint -p test -t stylish",
+    "build": "tsc -b",
+    "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
+    "test": "mocha",
+    "coverage": "nyc npm run test",
+    "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "doc": "",
+    "doc:readme": "",
+    "version": "npm run doc:readme && git add README.md"
+  },
+  "dependencies": {
+    "@microsoft/bf-lu": "1.0.0",
+    "@oclif/command": "~1.5.19",
+    "@oclif/config": "~1.13.3",
+    "@oclif/errors": "~1.2.2",
+    "@types/node-fetch": "~2.5.5",
+    "fs-extra": "^8.1.0",
+    "node-fetch": "~2.6.0",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@oclif/test": "^1.2.5",
+    "@oclif/tslint": "^3.1.1",
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.14.15",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "nock": "^11.7.0",
+    "nyc": "^14.1.1",
+    "rimraf": "^2.6.3",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
+  }
+}
