@@ -8,10 +8,10 @@ import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Utility} from '../../utils/utility';
 import {OrchestratorHelper} from '../../utils';
 
-export default class OrchestratorNlr extends Command {
+export default class OrchestratorAdd extends Command {
   static description = 'describe the command here'
 
-  static flags = flags.Input<any> = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
     name: flags.string({char: 'n', description: 'name to print'}),
@@ -22,10 +22,10 @@ export default class OrchestratorNlr extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(Nlr)
+    const {args, flags} = this.parse(OrchestratorAdd)
 
     const name = flags.name ?? 'world'
-    this.log(`hello ${name}`)
+    this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\orchestrator\\add.ts`)
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }

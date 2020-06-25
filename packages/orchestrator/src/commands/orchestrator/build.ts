@@ -1,9 +1,17 @@
-import {Command, flags} from '@oclif/command'
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
 
-export default class Build extends Command {
+import * as path from 'path';
+import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Utility} from '../../utils/utility';
+import {OrchestratorHelper} from '../../utils';
+
+export default class OrchestratorBuild extends Command {
   static description = 'describe the command here'
 
-  static flags = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
     name: flags.string({char: 'n', description: 'name to print'}),

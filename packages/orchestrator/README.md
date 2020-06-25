@@ -9,13 +9,12 @@ This package is intended for Microsoft use only and should be consumed through @
 # Commands
 <!-- commands -->
 * [`bf orchestrator`](#bf-orchestrator)
-* [`bf orchestrator:nlr`](#bf-orchestratornlr)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:evaluate`](#bf-orchestratorevaluate)
-* [`bf orchestrator:finetune`](#bf-orchestratorfinetune)
+* [`bf orchestrator:finetune COMMAND`](#bf-orchestratorfinetune-command)
+* [`bf orchestrator:nlr`](#bf-orchestratornlr)
 * [`bf orchestrator:predict`](#bf-orchestratorpredict)
 * [`bf orchestrator:test`](#bf-orchestratortest)
-* [`bf orchestrator:build`](#bf-orchestratorbuild)
 
 ## `bf orchestrator`
 
@@ -30,23 +29,6 @@ OPTIONS
 ```
 
 _See code: [src\commands\orchestrator\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\index.ts)_
-
-## `bf orchestrator:nlr`
-
-describe the command here
-
-```
-USAGE
-  $ bf orchestrator:nlr
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\orchestrator\nlr.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\nlr.ts)_
-
 
 ## `bf orchestrator:create`
 
@@ -104,7 +86,7 @@ OPTIONS
 
 _See code: [src\commands\orchestrator\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\evaluate.ts)_
 
-## `bf orchestrator:finetune`
+## `bf orchestrator:finetune COMMAND`
 
 Manage Orchestrator fine tuning.
 
@@ -145,6 +127,23 @@ EXAMPLE
 ```
 
 _See code: [src\commands\orchestrator\finetune.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\finetune.ts)_
+
+## `bf orchestrator:nlr`
+
+describe the command here
+
+```
+USAGE
+  $ bf orchestrator:nlr
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src\commands\orchestrator\nlr.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\nlr.ts)_
+
 
 ## `bf orchestrator:predict`
 
@@ -190,22 +189,4 @@ OPTIONS
 ```
 
 _See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\test.ts)_
-
-
-## `bf orchestrator:build`
-
-describe the command here
-
-```
-USAGE
-  $ bf orchestrator:build
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\build.ts)_
 <!-- commandsstop -->
-
