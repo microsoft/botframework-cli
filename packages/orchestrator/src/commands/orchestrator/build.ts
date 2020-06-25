@@ -22,7 +22,7 @@ export default class OrchestratorBuild extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(Build)
+    const {args, flags} = this.parse(OrchestratorBuild)
 
     const name = flags.name ?? 'world'
     this.log(`hello ${name} from D:\\src\\botframework-cli\\packages\\orchestrator\\src\\commands\\build.ts`)

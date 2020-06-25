@@ -11,7 +11,7 @@ import {OrchestratorHelper} from '../../utils';
 export default class OrchestratorNlr extends Command {
   static description = 'describe the command here'
 
-  static flags = flags.Input<any> = {
+  static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
     // flag with a value (-n, --name=VALUE)
     name: flags.string({char: 'n', description: 'name to print'}),
@@ -22,7 +22,7 @@ export default class OrchestratorNlr extends Command {
   static args = [{name: 'file'}]
 
   async run() {
-    const {args, flags} = this.parse(Nlr)
+    const {args, flags} = this.parse(OrchestratorNlr)
 
     const name = flags.name ?? 'world'
     this.log(`hello ${name}`)
