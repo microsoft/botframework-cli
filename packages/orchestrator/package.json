@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
+  "main": "index.ts",
   "dependencies": {
     "@microsoft/bf-cli-command": "4.8.0",
     "@microsoft/bf-lu": "4.8.0",
@@ -41,7 +42,8 @@
   "binary": {
     "module_name": "oc_node_authoring",
     "module_path": "build/Release/",
-    "host": "https://bfsmodelsscratch.blob.core.windows.net/models/"
+    "host": "https://bfsmodelsscratch.blob.core.windows.net/models/",
+    "package_name": "oc_node_authoring-v0.1.0-node-v72-win32-x64.tar.gz"
   },
   "engines": {
     "node": ">=8.0.0"

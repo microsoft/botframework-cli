@@ -5,4 +5,5 @@
 /lib
 /tmp
 /yarn.lock
+build
 node_modules
