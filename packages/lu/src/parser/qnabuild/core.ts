@@ -6,6 +6,7 @@
 import {Recognizer} from './recognizer'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
+import {CrossTrainedRecognizer} from './cross-trained-recognizer'
 import * as path from 'path'
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
@@ -122,7 +123,7 @@ export class QnaBuildCore {
     return endpointKeys
   }
 
-  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizer: MultiLanguageRecognizer, settings: Settings)
+  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizer: MultiLanguageRecognizer, settings: Settings, crosstrainedRecognizer?: CrossTrainedRecognizer)
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
@@ -138,6 +139,11 @@ export class QnaBuildCore {
     if (settings) {
       const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
       contents.push(settingsContent)
+    }
+
+    if (crosstrainedRecognizer) {
+      const crosstrainedContent = new Content(crosstrainedRecognizer.save(), new LUOptions(path.basename(crosstrainedRecognizer.getDialogPath()), true, '', crosstrainedRecognizer.getDialogPath()))
+      contents.push(crosstrainedContent)
     }
 
     return contents

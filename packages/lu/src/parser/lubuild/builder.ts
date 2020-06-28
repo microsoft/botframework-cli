@@ -89,7 +89,7 @@ export class Builder {
           err.text = `Invalid LU file ${file}: ${err.text}`
         }
         throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
-      } 
+      }
 
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
       if (!multiRecognizers.has(fileName)) {
@@ -261,7 +261,7 @@ export class Builder {
     }
 
     let crosstrainedRecognizerValues: CrossTrainedRecognizer[] = []
-    if (dialogType === 'crosstrained' && crosstrainedRecognizers) {
+    if (dialogType === recognizerType.CROSSTRAINED && crosstrainedRecognizers) {
       crosstrainedRecognizerValues = Array.from(crosstrainedRecognizers.values())
     }
 
