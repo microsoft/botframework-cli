@@ -4,3 +4,4 @@
  */
 
 export default {}
+var addon = require('bindings')('oc_node');
