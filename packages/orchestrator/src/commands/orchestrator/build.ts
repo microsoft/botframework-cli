@@ -5,6 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {LabelResolverHelper} from '../../utils/labelresolver';
 import {Utility} from '../../utils/utility';
 import {OrchestratorHelper} from '../../utils';
 
@@ -32,7 +33,7 @@ export default class OrchestratorBuild extends Command {
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }
-
+/*
     this.log('Create Orchestrator..')
     const orchestrator = new oc.Orchestrator();
 
@@ -45,15 +46,19 @@ export default class OrchestratorBuild extends Command {
 
     this.log('Creating labeler..');
     let labeler = orchestrator.createLabelResolver(); 
-    
+    */
+
+    let nlrPath = flags.model;
+    if (!nlrPath || nlrPath.length == 0) {
+      nlrPath = 'D:\\src\\TScience\\Orchestrator\\oc\\dep\\model';
+    }
+    const labelResolver = await LabelResolverHelper.createAsync(nlrPath);
     const example = { 
         label: 'travel', 
         text: 'book a flight to miami.',
         };
     
-    this.log('Adding example..');
-    var val = labeler.addExample(example);
-    if (val == true)
+    if (labelResolver.addExample(example) == true)
     {
       this.log('Added example!');
     }
@@ -62,7 +67,7 @@ export default class OrchestratorBuild extends Command {
       label: 'schedule', 
       text: 'when is my next appointment?',
       };
-    val = labeler.addExample(example2);
+    let val = labelResolver.addExample(example2);
     if (val == true)
     {
         this.log('Added example2!');
@@ -71,19 +76,19 @@ export default class OrchestratorBuild extends Command {
         label: 'greeting', 
         text: 'hello there!',
         };
-    val = labeler.addExample(example3);
+    val = labelResolver.addExample(example3);
     if (val == true)
     {
       this.log('Added example3!');
     }
 
 
-    var results = labeler.score("hey");
-    this.log(util.inspect(results, true, null, true /* enable colors */));
-    var snapshot = labeler.createSnapshot();
+    var results = labelResolver.score("hey");
+    this.log(util.inspect(results, true, null, true));
+    var snapshot = labelResolver.createSnapshot();
     this.log('Created snapshot!');
     this.log('Going to create labeler #2');
-    let labeler2 = orchestrator.createLabelResolver(snapshot); 
+    let labeler2 = LabelResolverHelper.createWithSnapshot(snapshot); 
     this.log('Created Labeler #2.');
 
 
@@ -92,19 +97,19 @@ export default class OrchestratorBuild extends Command {
     //
     console.log('Getting examples')
     let examples = labeler2.getExamples();
-    console.log(util.inspect(examples, true, null, true /* enable colors */));
+    console.log(util.inspect(examples, true, null, true));
     // 
     // Remove Example
     //
     labeler2.removeExample(example3);
     examples = labeler2.getExamples();
-    console.log(util.inspect(examples, true, null, true /* enable colors */));
+    console.log(util.inspect(examples, true, null, true));
 
     //
     // Get Labels
     //
     var labels = labeler2.getLabels();
-    console.log(util.inspect(labels, true, null, true /* enable colors */));
+    console.log(util.inspect(labels, true, null, true));
 
   }
 }
