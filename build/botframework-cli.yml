@@ -20,7 +20,6 @@ jobs:
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
       Commit: $[ coalesce( variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'] ) ]
 
-
     steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
@@ -28,7 +27,6 @@ jobs:
         tags: 'Version=$(_version)'
       continueOnError: true
 
-    steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
