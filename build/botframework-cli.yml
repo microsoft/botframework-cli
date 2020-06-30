@@ -55,7 +55,7 @@ jobs:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with coverage url'
       inputs:
-        tags: 'https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages'
+        tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(system.pullRequest.sourceCommitId)'
       continueOnError: true
   
     - task: PublishCodeCoverageResults@1
