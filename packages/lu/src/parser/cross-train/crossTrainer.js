@@ -439,8 +439,8 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
       qnaSectionContent += `> !# @qna.pair.source = ${qnaSection.source}${NEWLINE}${NEWLINE}`
     }
 
-    if (qnaSection.Id) {
-      qnaSectionContent += `<a id = "${qnaSection.Id}"></a>${NEWLINE}${NEWLINE}`
+    if (qnaSection.QAPairId) {
+      qnaSectionContent += `<a id = "${qnaSection.QAPairId}"></a>${NEWLINE}${NEWLINE}`
     }
 
     qnaSectionContent += `# ? ${Array.from(new Set(qnaSection.Questions)).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- ${qnaSection.FilterPairs.map(f => f.key + '=' + f.value).join(NEWLINE + '- ')}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}${qnaSection.Answer}${NEWLINE}\`\`\``

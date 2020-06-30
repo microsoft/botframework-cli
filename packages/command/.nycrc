@@ -13,8 +13,9 @@
     "**/*.d.ts"
   ],
   "reporter": [
-    "text",
-    "html"
+    "html",
+    "lcov",
+    "text"
   ],
   "all": true,
   "cache": true,
