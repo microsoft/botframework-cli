@@ -18,7 +18,7 @@ jobs:
     variables:
       buildVersion: '4.10.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
-      ThisCommit: $[ coalesce( variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'] ) ]
+      thisCommit: $[ coalesce( variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'] ) ]
 
     steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
@@ -49,14 +49,14 @@ jobs:
       displayName: 'rush coverage -v'
 
     - bash: 'bash <(curl -s https://codecov.io/bash)'
-      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli/commit/$(ThisCommit)'
+      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli/commit/$(thisCommit)'
       env:
         CODECOV_TOKEN: $(TokenForCodecov)
 
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with coverage url'
       inputs:
-        tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(ThisCommit)'
+        tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(thisCommit)'
       continueOnError: true
   
     - task: PublishCodeCoverageResults@1
