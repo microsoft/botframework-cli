@@ -18,12 +18,24 @@ jobs:
     variables:
       buildVersion: '4.10.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
+      Commit: $[ coalesce( variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'] ) ]
+
 
     steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
         tags: 'Version=$(_version)'
+      continueOnError: true
+
+    steps:
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with version number'
+      inputs:
+        tags: |
+         Build.SourceVersion=$(Build.SourceVersion)
+         System.PullRequest.SourceCommitId=$(System.PullRequest.SourceCommitId)
+         Commit=$(Commit)
       continueOnError: true
 
     - task: NodeTool@0
@@ -53,10 +65,18 @@ jobs:
         CODECOV_TOKEN: $(TokenForCodecov)
 
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-      displayName: 'Tag Build with coverage url'
+      displayName: 'Tag Build with coverage url (PR)'
       inputs:
-        tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(system.pullRequest.sourceCommitId)'
+        tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(System.PullRequest.SourceCommitId)'
       continueOnError: true
+      condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with coverage url (non-PR)'
+      inputs:
+        tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)'
+      continueOnError: true
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
   
     - task: PublishCodeCoverageResults@1
       displayName: 'Populate Code Coverage tab'
