@@ -12,18 +12,6 @@ pr:
   branches:
     include:
      - master
-  paths:
-    include:
-      - '*'
-    exclude:
-      - README.md
-      - specs/*
-      - PortingMap.md
-      - ToolLifetimeSchedule.md
-      - AzureCli.md
-      - CONTRIBUTING.md
-      - LICENSE
-      - PRIVACY.md
 
 jobs:
   - job: CLI
@@ -37,7 +25,6 @@ jobs:
       inputs:
         tags: 'Version=$(_version)'
       continueOnError: true
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], 'False'))
 
     - task: NodeTool@0
       displayName: 'Use Node 12.x'
@@ -45,7 +32,7 @@ jobs:
         versionSpec: 12.x
 
     - task: Npm@1
-      displayName: 'Install rush'
+      displayName: 'npm install --global @microsoft/rush'
       inputs:
         command: custom
         verbose: false
@@ -55,10 +42,41 @@ jobs:
       displayName: 'rush update'
 
     - script: 'rush build -p 2'
-      displayName: 'rush build'
+      displayName: 'rush build -p 2'
 
-    - script: 'rush test -p 2 -v'
-      displayName: 'rush test'
+    - script: 'rush coverage -v'
+      displayName: 'rush coverage -v'
+
+    - bash: 'bash <(curl -s https://codecov.io/bash)'
+      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)'
+      env:
+        CODECOV_TOKEN: $(TokenForCodecov)
+
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with coverage url'
+      inputs:
+        tags: 'https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages'
+      continueOnError: true
+  
+    - task: PublishCodeCoverageResults@1
+      displayName: 'Populate Code Coverage tab'
+      inputs:
+        codeCoverageTool: 'cobertura' # Options: cobertura, jaCoCo
+        summaryFileLocation: $(System.DefaultWorkingDirectory)/packages/*/coverage/cobertura-coverage.xml
+      continueOnError: true
+
+    - task: CopyFiles@2
+      displayName: 'Copy coverage files to: $(Build.StagingDirectory)/coverage'
+      inputs:
+        SourceFolder: '$(Build.SourcesDirectory)/packages'
+        Contents: '*/coverage/**'
+        TargetFolder: '$(Build.StagingDirectory)/coverage'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: coverage'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/coverage'
+        ArtifactName: coverage
     
     - script: 'rush posttest'
       displayName: 'rush posttest'
@@ -67,21 +85,23 @@ jobs:
       displayName: 'Version and Pack'
 
     - task: CopyFiles@2
-      displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+      displayName: 'Copy packages to: $(Build.ArtifactStagingDirectory)/drop'
       inputs:
         SourceFolder: ./.output
         Contents: '**/*.tgz'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
         flattenFolders: true
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
       inputs:
-        artifactName: 'drop'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
+        ArtifactName: drop
 
     - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
       displayName: 'Component Detection'
 
-    - script: 'rush report:coverage'
-      displayName: 'rush report:coverage'
-      enabled: false
+    - powershell: 'Get-ChildItem .. -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}'
+      displayName: 'Dir workspace except node_modules'
+      continueOnError: true
+      condition: succeededOrFailed()
