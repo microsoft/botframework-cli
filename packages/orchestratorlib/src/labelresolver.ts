@@ -4,7 +4,6 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError} from '@microsoft/bf-cli-command';
 import * as path from 'path';
 import {Utility} from './utility';
 
@@ -12,6 +11,10 @@ const oc = require('bindings')('oc_node');
 
 export class LabelResolverHelper {
   public static Orchestrator: any;
+
+  public static testTest(testStr: string) {
+    Utility.writeToConsole("TEST TEST " + testStr);
+  }
 
   public static async createAsync(nlrPath: string) {
     try {

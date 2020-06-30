@@ -10,3 +10,5 @@ node_modules
 **/java_generated
 
 results
+build
+node_modules

@@ -30,11 +30,7 @@
   },
   "dependencies": {
     "@microsoft/bf-lu": "1.0.0",
-    "@oclif/command": "~1.5.19",
-    "@oclif/config": "~1.13.3",
-    "@oclif/errors": "~1.2.2",
     "@types/node-fetch": "~2.5.5",
-    "fs-extra": "^8.1.0",
     "node-fetch": "~2.6.0",
     "tslib": "^1.10.0",
     "bindings": "^1.2.1",

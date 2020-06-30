@@ -6,6 +6,10 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {LabelResolverHelper} from '../../utils/labelresolver';
+//import {Utility} from '@microsoft/bf-orchestrator';
+
+//import {LabelResolverHelper} from '@microsoft/bf-orchestrator';
+
 import {Utility} from '../../utils/utility';
 import {OrchestratorHelper} from '../../utils';
 
@@ -23,7 +27,7 @@ export default class OrchestratorBuild extends Command {
     force: flags.boolean({char: 'f'}),
   }
 
-  static args = [{name: 'file'}]
+  static args = [{name: 'file'}];
 
   async run() {
     const {args, flags} = this.parse(OrchestratorBuild)
@@ -33,25 +37,12 @@ export default class OrchestratorBuild extends Command {
     if (args.file && flags.force) {
       this.log(`you input --force and --file: ${args.file}`)
     }
-/*
-    this.log('Create Orchestrator..')
-    const orchestrator = new oc.Orchestrator();
-
-    this.log('Loading NLR..')
-    const load_result = await orchestrator.load('D:\\src\\TScience\\Orchestrator\\oc\\dep\\model'); // Return boolean, separate load.
-    if (load_result === false)
-    {
-      this.log('Loading NLR failed!!');
-    }
-
-    this.log('Creating labeler..');
-    let labeler = orchestrator.createLabelResolver(); 
-    */
-
+    
     let nlrPath = flags.model;
     if (!nlrPath || nlrPath.length == 0) {
       nlrPath = 'D:\\src\\TScience\\Orchestrator\\oc\\dep\\model';
     }
+
     const labelResolver = await LabelResolverHelper.createAsync(nlrPath);
     const example = { 
         label: 'travel', 

@@ -19,7 +19,8 @@
     "node-7z": "~2.1.1",
     "bindings": "^1.2.1",
     "node-addon-api": "^3.0.0",
-    "node-pre-gyp": "^0.15.0"
+    "node-pre-gyp": "^0.15.0",
+    "@microsoft/bf-orchestrator": "^1.0.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",

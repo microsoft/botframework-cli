@@ -3,5 +3,12 @@
  * Licensed under the MIT License.
  */
 
-export default {}
 var addon = require('bindings')('oc_node');
+
+import { LabelResolverHelper } from "./labelresolver";
+import { Utility } from './utility';
+
+export default {
+    LabelResolverHelper,
+    Utility
+};
