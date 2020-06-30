@@ -12,6 +12,7 @@
     "traceResolution": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false
 },
   "include": [
     "src/**/*.ts",
