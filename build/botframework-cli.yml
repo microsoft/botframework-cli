@@ -52,7 +52,7 @@ jobs:
       displayName: 'rush coverage -v'
 
     - bash: 'bash <(curl -s https://codecov.io/bash)'
-      displayName: 'push coverage report to codecov.io - 'https://codecov.io/github/microsoft/botframework-cli'
+      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli'
       env:
         CODECOV_TOKEN: $(TokenForCodecov)
 
