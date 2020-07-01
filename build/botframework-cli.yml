@@ -57,7 +57,7 @@ jobs:
         CODECOV_TOKEN: $(TokenForCodecov)
 
     - powershell: |
-        # Check if Build.SourceVersion exists in Github
+        # If commit Build.SourceVersion exists in Github, we can show a nicer codecov.io URL
         $result = $(git rev-list HEAD..$(Build.SourceVersion) 2>&1);
         if ($result -like "*fatal*") { $Url = "https://codecov.io/github/microsoft/botframework-cli" }
         else { $Url = "https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)" };
@@ -69,7 +69,6 @@ jobs:
       inputs:
         tags: '$(CodecovUrl)'
       continueOnError: true
-      condition: and(succeeded(), eq(variables['CommitExists'], 'true'))
   
     - task: PublishCodeCoverageResults@1
       displayName: 'Populate Code Coverage tab'
