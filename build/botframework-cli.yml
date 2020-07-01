@@ -18,7 +18,6 @@ jobs:
     variables:
       buildVersion: '4.10.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
-      thisCommit: $[ coalesce( variables['System.PullRequest.SourceCommitId'], variables['Build.SourceVersion'] ) ]
 
     steps:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
@@ -26,12 +25,6 @@ jobs:
       inputs:
         tags: 'Version=$(_version)'
       continueOnError: true
-
-    - powershell: |
-        $result = $(git rev-list HEAD..$(Build.SourceVersion) 2>&1);
-        if ($result -like "*fatal*") {Write-Host "##vso[task.setvariable variable=CommitExists;]$false"}
-        else {Write-Host "##vso[task.setvariable variable=CommitExists;]$true"};
-      displayName: 'Verify commit exists'
 
     - powershell: |
         Get-ChildItem env:* | sort-object name | Format-Table -Autosize -Wrap | Out-String -Width 120
@@ -59,14 +52,22 @@ jobs:
       displayName: 'rush coverage -v'
 
     - bash: 'bash <(curl -s https://codecov.io/bash)'
-      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli'
+      displayName: 'push coverage report to codecov.io - 'https://codecov.io/github/microsoft/botframework-cli'
       env:
         CODECOV_TOKEN: $(TokenForCodecov)
+
+    - powershell: |
+        # Check if Build.SourceVersion exists in Github
+        $result = $(git rev-list HEAD..$(Build.SourceVersion) 2>&1);
+        if ($result -like "*fatal*") { $Url = "https://codecov.io/github/microsoft/botframework-cli" }
+        else { $Url = "https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)" };
+        Write-Host "##vso[task.setvariable variable=CodecovUrl;]$Url"
+      displayName: 'Set CodecovUrl'
 
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with coverage url'
       inputs:
-        tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(thisCommit)'
+        tags: '$(CodecovUrl)'
       continueOnError: true
       condition: and(succeeded(), eq(variables['CommitExists'], 'true'))
   
