@@ -2,7 +2,7 @@
 # Build Botframework-CLI on Windows agent
 #
 
-# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber).
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
 name: $(Build.BuildId)
 
 pool:
@@ -68,7 +68,7 @@ jobs:
       inputs:
         tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(thisCommit)'
       continueOnError: true
-      condition: and(succeeded(), eq(variables['CommitExists'], "true"))
+      condition: and(succeeded(), eq(variables['CommitExists'], 'true'))
   
     - task: PublishCodeCoverageResults@1
       displayName: 'Populate Code Coverage tab'
