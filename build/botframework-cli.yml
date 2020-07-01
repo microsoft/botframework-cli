@@ -28,6 +28,12 @@ jobs:
       continueOnError: true
 
     - powershell: |
+        $result = $(git rev-list HEAD..$(Build.SourceVersion) 2>&1);
+        if ($result -like "*fatal*") {Write-Host "##vso[task.setvariable variable=CommitExists;]$false"}
+        else {Write-Host "##vso[task.setvariable variable=CommitExists;]$true"};
+      displayName: 'Verify commit exists'
+
+    - powershell: |
         Get-ChildItem env:* | sort-object name | Format-Table -Autosize -Wrap | Out-String -Width 120
       displayName: 'Get environment vars'
 
@@ -62,7 +68,7 @@ jobs:
       inputs:
         tags: 'https://codecov.io/github/microsoft/botframework-cli/commit/$(thisCommit)'
       continueOnError: true
-      condition: and(succeeded(), in(variables['Build.Reason'], 'PullRequest', 'IndividualCI', 'BatchedCI'))
+      condition: and(succeeded(), eq(variables['CommitExists'], "true"))
   
     - task: PublishCodeCoverageResults@1
       displayName: 'Populate Code Coverage tab'
