@@ -16,7 +16,7 @@
   "license": "MIT",
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/orchestratorlib",
   "scripts": {
-    "postinstall": "node-pre-gyp install",
+    "install": "node-pre-gyp install",
     "postpack": "",
     "posttest": "tslint -p test -t stylish",
     "build": "tsc -b",
