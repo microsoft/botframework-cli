@@ -26,10 +26,6 @@ jobs:
         tags: 'Version=$(_version)'
       continueOnError: true
 
-    - powershell: |
-        Get-ChildItem env:* | sort-object name | Format-Table -Autosize -Wrap | Out-String -Width 120
-      displayName: 'Get environment vars'
-
     - task: NodeTool@0
       displayName: 'Use Node 12.x'
       inputs:
