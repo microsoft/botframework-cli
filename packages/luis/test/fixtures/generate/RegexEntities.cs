@@ -27,10 +27,18 @@ namespace Luis
 
         public class _Entities
         {
+            // Regex entities
+            public string[] Part;
+            public string[] buy;
+            public string[] sell;
+
 
             // Instance
             public class _Instance
             {
+                public InstanceData[] Part;
+                public InstanceData[] buy;
+                public InstanceData[] sell;
             }
             [JsonProperty("$instance")]
             public _Instance _instance;

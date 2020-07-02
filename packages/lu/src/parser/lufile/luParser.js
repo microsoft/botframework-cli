@@ -124,7 +124,7 @@ class LUParser {
             }))
         }
 
-        this.extractIntentBody(sections, content)
+        this.extractSectionBody(sections, content)
 
         return new LUResource(sections, content, errors);
     }
@@ -300,11 +300,14 @@ class LUParser {
      * @param {any[]} sections
      * @param {string} content
      */
-    static extractIntentBody(sections, content) {
+    static extractSectionBody(sections, content) {
         sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
         const originList = content.split(/\r?\n/)
+        let qnaSectionIndex = 0
         sections.forEach(function (section, index) {
-            if (section.SectionType === SectionType.SIMPLEINTENTSECTION || section.SectionType === SectionType.NESTEDINTENTSECTION) {
+            if (section.SectionType === SectionType.SIMPLEINTENTSECTION
+                || section.SectionType === SectionType.NESTEDINTENTSECTION
+                || section.SectionType === SectionType.QNASECTION) {
                 const startLine = section.ParseTree.start.line - 1
                 let stopLine
                 if (index + 1 < sections.length) {
@@ -316,13 +319,21 @@ class LUParser {
                     stopLine = originList.length
                 }
 
-                const destList = originList.slice(startLine + 1, stopLine)
+                let destList
+                if (section.SectionType === SectionType.QNASECTION) {
+                    destList = originList.slice(startLine, stopLine)
+                    section.Id = qnaSectionIndex
+                    qnaSectionIndex++
+                } else {
+                    destList = originList.slice(startLine + 1, stopLine)
+                }
+
                 section.Body = destList.join(NEWLINE)
                 section.StartLine = startLine
                 section.StopLine = stopLine - 1
 
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
-                    LUParser.extractIntentBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
+                    LUParser.extractSectionBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
                 }
             } else {
                 section.StartLine = section.ParseTree.start.line
