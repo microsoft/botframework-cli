@@ -37,9 +37,8 @@ npm i -g @microsoft/botframework-cli@rc
 ```
 
 # Production Release
-Once RC is stable the production release will set the tag of a selected version to be the latest.
-Version should be manually entered.
-No new build is needed.
+Once RC is stable the production release will switch the tag from rc to latest.
+No new build is needed. Only re tagging latest RC
 
 This means developers could install the cli by running
 
