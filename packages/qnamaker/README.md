@@ -12,6 +12,7 @@ This package is intended for Microsoft use only and should be consumed through @
 - [Working with .qna files][2]
 - [Machine translating .qna content][3]
 - [using qnamaker:build][4]
+- [ChitChat dataset][5]
 
 # Commands
 <!-- commands -->
@@ -149,6 +150,10 @@ OPTIONS
                                          Defaults to current logged in user alias
                    
   --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
+  
+  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+
+  --log                                  [default: false] Write out log messages to console  
 
   --schema=schema                        Defines $schema for generated .dialog files
   
@@ -654,3 +659,4 @@ _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/bot
 [2]:./docs/working-with-qna.md
 [3]:./docs/translate-command.md
 [4]:./docs/using-qnamaker-build.md
+[5]:./docs/chit-chat-dataset.md

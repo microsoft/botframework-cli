@@ -39,7 +39,8 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`,
       '--intentName', '_Interruption',
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption/mapping_rules.json')}`,
-      '--out', './interruptionGen'])
+      '--out', './interruptionGen',
+      '--force'])
     .it('luis:cross training can get expected result when handling multi locales and duplications', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/Main.lu', './../../fixtures/verified/interruption/Main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/Main.qna', './../../fixtures/verified/interruption/Main.qna')).to.be.true
@@ -62,7 +63,8 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption2')}`,
       '--intentName', '_Interruption',
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption2/config.json')}`,
-      '--out', './interruptionGen'])
+      '--out', './interruptionGen',
+      '--force'])
     .it('luis:cross training can get expected result when nestedIntentSection is enabled', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption2/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption2/dia1.lu')).to.be.true
@@ -75,7 +77,8 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption3')}`,
       '--intentName', '_Interruption',
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption3/config.json')}`,
-      '--out', './interruptionGen'])
+      '--out', './interruptionGen',
+      '--force'])
     .it('luis:cross training can get expected result when multiple dialog invocations occur in same trigger', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption3/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption3/dia1.lu')).to.be.true
@@ -89,7 +92,8 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--in', './test/fixtures/testcases/interruption4',
       '--intentName', '_Interruption',
       '--out', './interruptionGen',
-      '--rootDialog', './test/fixtures/testcases/interruption4/main/main.dialog'])
+      '--rootDialog', './test/fixtures/testcases/interruption4/main/main.dialog',
+      '--force'])
     .it('luis:cross training can get expected result when automatically detecting config based on rootdialog and file system', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption4/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption4/dia1.lu')).to.be.true
@@ -106,9 +110,22 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
       '--out', './interruptionGen'])
     .it('luis:cross training can split large DeferToLUIS QA pair into smaller ones when it has more than 1000 questions', async () => {
-      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption5/main.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption5/main.qna')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption5/dia1.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption5/dia1.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main(1).lu', './../../fixtures/verified/interruption5/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main(1).qna', './../../fixtures/verified/interruption5/main.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1(1).lu', './../../fixtures/verified/interruption5/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1(1).qna', './../../fixtures/verified/interruption5/dia1.qna')).to.be.true
+    })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['luis:cross-train',
+    '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption6')}`,
+    '--intentName', '_Interruption',
+    '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption6/mapping_rules.json')}`,
+    '--out', './interruptionGen',
+    '--log'])
+    .it('displays a warning if log is set true', ctx => {
+      expect(ctx.stdout).to.contain('[WARN] line 1:0 - line 1:15: no utterances found for intent definition: "# hotelLocation"')
     })
 })
