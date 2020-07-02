@@ -63,9 +63,20 @@ export class LuBuildCore {
   }
 
   public async exportApplication(appId: string, versionId: string) {
-    const response = await this.client.versions.exportMethod(appId, versionId)
+    const url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/' + versionId + '/export?format=json'
+    const headers = {
+      'Content-Type': 'application/json',
+      'Ocp-Apim-Subscription-Key': this.subscriptionKey
+    }
 
-    return response
+    const response = await fetch(url, {method: 'GET', headers})
+    const messageData = await response.json()
+
+    if (messageData.error) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
+    }
+
+    return messageData
   }
 
   public compareApplications(currentApp: any, existingApp: any) {
