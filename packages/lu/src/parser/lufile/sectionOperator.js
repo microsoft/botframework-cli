@@ -49,15 +49,25 @@ class SectionOperator {
     return luParser.parse(newContent);
   }
 
-  replaceRangeContent(originString, startLine, stopLine, replaceString) {
-
-    if (!originString) {
-      throw new Error('replace content with error parameters.');
+  insertSection(id, sectionContent) {
+    sectionContent = helpers.sanitizeNewLines(sectionContent);
+    const section = this.Luresource.Sections.find(u => u.Id === id);
+    if (!section && this.Luresource.Sections.length > 0 ) {
+      return this.Luresource;
     }
 
+    const startLine = section ? section.StartLine : 0;
+    const newContent = this.replaceRangeContent(this.Luresource.Content, startLine, startLine - 1, sectionContent);
+
+    const result = luParser.parse(newContent);
+
+    return result;
+  }
+
+  replaceRangeContent(originString, startLine, stopLine, replaceString) {
     const originList = originString.split(/\r?\n/);
     let destList = [];
-    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.length <= stopLine) {
+    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine + 1 || originList.length <= stopLine) {
       throw new Error("index out of range.");
     }
 
