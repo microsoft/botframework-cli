@@ -1606,7 +1606,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:kb:export`
 
-Echos a knowledgebase json to stdout
+Echos a knowledgebase in json or qna format to stdout
 
 ```
 USAGE
