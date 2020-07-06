@@ -48,14 +48,22 @@ jobs:
       displayName: 'rush coverage -v'
 
     - bash: 'bash <(curl -s https://codecov.io/bash)'
-      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)'
+      displayName: 'push coverage report to codecov.io - https://codecov.io/github/microsoft/botframework-cli'
       env:
         CODECOV_TOKEN: $(TokenForCodecov)
+
+    - powershell: |
+        # If commit Build.SourceVersion exists in Github, we can show a nicer codecov.io URL
+        $result = $(git rev-list HEAD..$(Build.SourceVersion) 2>&1);
+        if ($result -like "*fatal*") { $Url = "https://codecov.io/github/microsoft/botframework-cli" }
+        else { $Url = "https://codecov.io/github/microsoft/botframework-cli/commit/$(Build.SourceVersion)" };
+        Write-Host "##vso[task.setvariable variable=CodecovUrl;]$Url"
+      displayName: 'Set CodecovUrl'
 
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with coverage url'
       inputs:
-        tags: 'https://codecov.io/gh/microsoft/botframework-cli/tree/$(Build.SourceVersion)/packages'
+        tags: '$(CodecovUrl)'
       continueOnError: true
   
     - task: PublishCodeCoverageResults@1
