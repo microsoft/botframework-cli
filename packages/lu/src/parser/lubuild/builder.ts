@@ -288,30 +288,31 @@ export class Builder {
       writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
     }
 
-    if (out) {
-      for (const content of writeContents) {
-        const outFilePath = path.join(path.resolve(out), path.basename(content.path))
-        if (force || !fs.existsSync(outFilePath)) {
-          if (!fs.existsSync(path.dirname(outFilePath))) {
-            fs.mkdirSync(path.dirname(outFilePath))
-          }
-
-          this.handler(`Writing to ${outFilePath}\n`)
-          await fs.writeFile(outFilePath, content.content, 'utf-8')
-          writeDone = true
-        }
+    for (const content of writeContents) {
+      let outFilePath
+      if (out) {
+        outFilePath = path.join(path.resolve(out), path.basename(content.path))
+      } else {
+        outFilePath = content.path
       }
-    } else {
-      for (const content of writeContents) {
-        if (force || !fs.existsSync(content.path)) {
-          if (!fs.existsSync(path.dirname(content.path))) {
-            fs.mkdirSync(path.dirname(content.path))
-          }
 
-          this.handler(`Writing to ${content.path}\n`)
-          await fs.writeFile(content.path, content.content, 'utf-8')
-          writeDone = true
+      let fileExists = fs.existsSync(outFilePath)
+      if (fileExists && outFilePath.endsWith('.lu.qna.dialog')) {
+        let existingCTRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(outFilePath))
+        let currentCTRecognizerObject = JSON.parse(content.content)
+        let ctRecognizerToBeMerged = existingCTRecognizerObject.recognizers.filter((r: string) => !currentCTRecognizerObject.recognizers.includes(r))
+        currentCTRecognizerObject.recognizers = currentCTRecognizerObject.recognizers.concat(ctRecognizerToBeMerged)
+        content.content = JSON.stringify(currentCTRecognizerObject, null, 4)
+      }
+
+      if (force || !fs.existsSync(outFilePath)) {
+        if (!fs.existsSync(path.dirname(outFilePath))) {
+          fs.mkdirSync(path.dirname(outFilePath))
         }
+
+        this.handler(`Writing to ${outFilePath}\n`)
+        await fs.writeFile(outFilePath, content.content, 'utf-8')
+        writeDone = true
       }
     }
 

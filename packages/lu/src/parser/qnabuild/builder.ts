@@ -344,7 +344,16 @@ export class Builder {
         outFilePath = content.path
       }
 
-      if (force || !fs.existsSync(outFilePath)) {
+      let fileExists = fs.existsSync(outFilePath)
+      if (fileExists && outFilePath.endsWith('.lu.qna.dialog')) {
+        let existingCTRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(outFilePath))
+        let currentCTRecognizerObject = JSON.parse(content.content)
+        let ctRecognizerToBeMerged = existingCTRecognizerObject.recognizers.filter((r: string) => !currentCTRecognizerObject.recognizers.includes(r))
+        currentCTRecognizerObject.recognizers = currentCTRecognizerObject.recognizers.concat(ctRecognizerToBeMerged)
+        content.content = JSON.stringify(currentCTRecognizerObject, null, 4)
+      }
+
+      if (force || !fileExists) {
         this.handler(`Writing to ${outFilePath}\n`)
         await fs.writeFile(outFilePath, content.content, 'utf-8')
         writeDone = true
