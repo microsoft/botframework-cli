@@ -172,7 +172,7 @@ Rush and pnpm are newer tools and not all that popular outside of Microsoft, why
 ### Steps to create a new plugin
 
     1. Build the project
-    2. Inside the packages folder(https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
+    2. Inside the packages folder (https://github.com/microsoft/botframework-cli/tree/master/packages) run 'npx oclif plugin <plugin-name>'
     3. Follow the wizard and set the prompts:
     
       ? npm package: @microsoft/bf-<plugin-name>
@@ -195,8 +195,15 @@ Rush and pnpm are newer tools and not all that popular outside of Microsoft, why
         "@microsoft/bf-cli-command": "1.0.0",
         ...
       }   
+      
+    5. Update rush.json (https://github.com/microsoft/botframework-cli/tree/master/rush.json) with the newly created package info
     
-    5. Update and build again
+      {
+         "packageName": "<package name>",
+         "projectFolder": "packages/<plugin>"
+      }
+    
+    6. Run rush update and rush build again
 
 ### Steps to create a new command
     1. Inside the plugin folder run 'npx oclif command <command-name>'. 
