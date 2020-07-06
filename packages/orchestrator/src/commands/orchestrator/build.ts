@@ -6,15 +6,15 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {LabelResolverHelper} from '../../utils/labelresolver';
-//import {Utility} from '@microsoft/bf-orchestrator';
-
+const Utility: any = require('@microsoft/bf-orchestrator').Utility;
+const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
 //import {LabelResolverHelper} from '@microsoft/bf-orchestrator';
 
-import {Utility} from '../../utils/utility';
+//import {Utility} from '../../utils/utility';
 import {OrchestratorHelper} from '../../utils';
 
-const oc = require('bindings')('oc_node');
-const util = require('util')
+//const oc = require('bindings')('oc_node');
+//const util = require('util')
 
 export default class OrchestratorBuild extends Command {
   static description = 'describe the command here'
@@ -43,6 +43,9 @@ export default class OrchestratorBuild extends Command {
       nlrPath = 'D:\\src\\TScience\\Orchestrator\\oc\\dep\\model';
     }
 
+    
+    Utility.testTestTest("BOO YOU");
+/*
     const labelResolver = await LabelResolverHelper.createAsync(nlrPath);
     const example = { 
         label: 'travel', 
@@ -101,6 +104,6 @@ export default class OrchestratorBuild extends Command {
     //
     var labels = labeler2.getLabels();
     console.log(util.inspect(labels, true, null, true));
-
+*/
   }
 }

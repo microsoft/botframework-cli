@@ -1,14 +1,21 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "importHelpers": true,
+    "sourceMap": true,
     "module": "commonjs",
-    "outDir": "lib",
-    "rootDir": "src",
+    "outDir": "./lib",
+    "pretty": true,
+    "rootDirs": [
+      "./src"
+    ],
     "strict": true,
     "target": "es2017"
   },
   "include": [
-    "src/**/*"
+    "./src/**/*"
   ]
 }

@@ -17,9 +17,6 @@
     "read-text-file": "~1.1.0",
     "tslib": "^1.10.0",
     "node-7z": "~2.1.1",
-    "bindings": "^1.2.1",
-    "node-addon-api": "^3.0.0",
-    "node-pre-gyp": "^0.15.0",
     "@microsoft/bf-orchestrator": "1.0.0"
   },
   "devDependencies": {
@@ -39,12 +36,6 @@
     "rimraf": "^3.0.2",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
-  },
-  "binary": {
-    "module_name": "oc_node_authoring",
-    "module_path": "build/Release/",
-    "host": "https://bfsmodelsscratch.blob.core.windows.net/models/",
-    "package_name": "oc_node_authoring-v0.1.0-node-v72-win32-x64.tar.gz"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -70,7 +61,6 @@
   "repository": "microsoft/botframework-cli",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "install": "node-pre-gyp install",
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "tsc -b && oclif-dev manifest && oclif-dev readme",

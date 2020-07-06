@@ -7,7 +7,7 @@
 import * as path from 'path';
 import {Utility} from './utility';
 
-const oc = require('bindings')('oc_node');
+const oc = require('oc_node_authoring/oc_node_authoring.node');
 
 export class LabelResolverHelper {
   public static Orchestrator: any;
@@ -15,7 +15,7 @@ export class LabelResolverHelper {
   public static testTest(testStr: string) {
     Utility.writeToConsole("TEST TEST " + testStr);
   }
-
+/*
   public static async createAsync(nlrPath: string) {
     try {
       if (nlrPath) {
@@ -42,5 +42,5 @@ export class LabelResolverHelper {
 
   public static createWithSnapshot(snapshot: any) {
     return LabelResolverHelper.Orchestrator.createLabelResolver(snapshot);
-  }
+  }*/
 }
