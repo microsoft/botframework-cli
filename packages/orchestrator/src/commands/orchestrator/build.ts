@@ -5,16 +5,10 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {LabelResolverHelper} from '../../utils/labelresolver';
-const Utility: any = require('@microsoft/bf-orchestrator').Utility;
-const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
-//import {LabelResolverHelper} from '@microsoft/bf-orchestrator';
-
-//import {Utility} from '../../utils/utility';
+import {LabelResolverHelper, Utility} from '@microsoft/bf-orchestrator';
 import {OrchestratorHelper} from '../../utils';
 
-//const oc = require('bindings')('oc_node');
-//const util = require('util')
+const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
 
 export default class OrchestratorBuild extends Command {
   static description = 'describe the command here'
@@ -44,8 +38,8 @@ export default class OrchestratorBuild extends Command {
     }
 
     
-    Utility.testTestTest("BOO YOU");
-/*
+    await LabelResolverHelper.createAsync(nlrPath);
+
     const labelResolver = await LabelResolverHelper.createAsync(nlrPath);
     const example = { 
         label: 'travel', 
@@ -78,7 +72,7 @@ export default class OrchestratorBuild extends Command {
 
 
     var results = labelResolver.score("hey");
-    this.log(util.inspect(results, true, null, true));
+    Utility.writeToConsole(JSON.stringify(results));
     var snapshot = labelResolver.createSnapshot();
     this.log('Created snapshot!');
     this.log('Going to create labeler #2');
@@ -91,19 +85,17 @@ export default class OrchestratorBuild extends Command {
     //
     console.log('Getting examples')
     let examples = labeler2.getExamples();
-    console.log(util.inspect(examples, true, null, true));
+    
     // 
     // Remove Example
     //
     labeler2.removeExample(example3);
     examples = labeler2.getExamples();
-    console.log(util.inspect(examples, true, null, true));
-
+    
     //
     // Get Labels
     //
     var labels = labeler2.getLabels();
-    console.log(util.inspect(labels, true, null, true));
-*/
+
   }
 }

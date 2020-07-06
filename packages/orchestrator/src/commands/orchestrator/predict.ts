@@ -7,7 +7,7 @@ import * as path from 'path';
 
 // import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 import {Command, flags} from '@microsoft/bf-cli-command';
-import {Utility} from '../../utils/utility';
+import {Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorPredict extends Command {
   static description: string = 'Returns score of given utterance using previously created orchestrator examples';

@@ -6,7 +6,7 @@
 import * as path from 'path';
 
 import {Command, flags} from '@microsoft/bf-cli-command';
-import {Utility} from '../../utils/utility';
+import {Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorEvaluate extends Command {
   static description: string = 'Create orchestrator evaluation report from .lu/.qna files';

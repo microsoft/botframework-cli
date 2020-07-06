@@ -6,7 +6,7 @@
 import {CLIError} from '@microsoft/bf-cli-command';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import {Utility} from './utility';
+import {Utility} from '@microsoft/bf-orchestrator';
 const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
 const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;

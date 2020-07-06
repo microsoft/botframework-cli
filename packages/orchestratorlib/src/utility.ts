@@ -6,9 +6,6 @@
 export class Utility {
   public static toPrintDebuggingLogToConsole: boolean = true;
   
-  static testTestTest(input: string) {
-    console.log("TESTTESTTEST " + input);
-  }
   public static jsonstringify(input: any): string {
     return JSON.stringify(input, null, 4);
   }

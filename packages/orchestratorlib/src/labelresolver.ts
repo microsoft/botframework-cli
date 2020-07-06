@@ -12,10 +12,6 @@ const oc = require('oc_node_authoring/oc_node_authoring.node');
 export class LabelResolverHelper {
   public static Orchestrator: any;
 
-  public static testTest(testStr: string) {
-    Utility.writeToConsole("TEST TEST " + testStr);
-  }
-/*
   public static async createAsync(nlrPath: string) {
     try {
       if (nlrPath) {
@@ -42,5 +38,5 @@ export class LabelResolverHelper {
 
   public static createWithSnapshot(snapshot: any) {
     return LabelResolverHelper.Orchestrator.createLabelResolver(snapshot);
-  }*/
+  }
 }

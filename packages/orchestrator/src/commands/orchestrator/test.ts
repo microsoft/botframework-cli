@@ -7,7 +7,7 @@ import * as path from 'path';
 
 // import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
 import {Command, flags} from '@microsoft/bf-cli-command';
-import {Utility} from '../../utils/utility';
+import {Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorTest extends Command {
   static description: string = 'Run orchestrator test evaluation using given test file';
