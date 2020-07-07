@@ -63,6 +63,9 @@ class Component {
     // Name of component
     public name: string
 
+    // Version of component
+    public version: string
+
     // Path to component
     public path: string
 
@@ -78,9 +81,10 @@ class Component {
     // Track if processed
     private processed = false
 
-    constructor(path: string) {
-        this.name = ppath.basename(path)
-        this.path = path
+    constructor(path?: string, name?: string, version?: string) {
+        this.path = path || ''
+        this.name = name || ''
+        this.version = version || ''
     }
 
     // Add a child component
@@ -184,7 +188,7 @@ export default class SchemaMerger {
     private nugetRoot = ''
 
     // Component tree
-    private readonly root = new Component('')
+    private readonly root = new Component()
     private readonly parents: Component[] = []
     private components: Component[] = []
 
@@ -244,8 +248,8 @@ export default class SchemaMerger {
     }
 
     // Push a child on the current parent and make it the new parent
-    public pushParent(path: string): Component {
-        let component = new Component(path)
+    public pushParent(path: string, name?: string, version?: string): Component {
+        let component = new Component(path, name, version)
         let child = this.currentParent().addChild(component)
         this.parents.push(child)
         this.currentFile = path
@@ -285,11 +289,11 @@ export default class SchemaMerger {
             await fs.remove(this.output + '.schema.expanded')
 
             // Merge .schema files
-            let componentPaths: string[] = []
+            let componentPaths: PathComponent[] = []
             let schemas = this.files.get('.schema')
             if (schemas) {
                 for (let path of schemas.values()) {
-                    componentPaths.push(path[0].path)
+                    componentPaths.push(path[0])
                 }
             }
 
@@ -299,15 +303,16 @@ export default class SchemaMerger {
             this.log('Parsing component .schema files')
             for (let componentPath of componentPaths) {
                 try {
-                    this.currentFile = componentPath
+                    let path = componentPath.path
+                    this.currentFile = path
                     if (this.verbose) {
-                        this.log(`Parsing ${componentPath}`)
+                        this.log(`Parsing ${path}`)
                     }
-                    let component = await fs.readJSON(componentPath)
+                    let component = await fs.readJSON(path)
                     if (component.definitions && component.definitions.component) {
                         this.parsingWarning('Skipping merged schema')
                     } else {
-                        this.relativeToAbsoluteRefs(component, componentPath)
+                        this.relativeToAbsoluteRefs(component, path)
 
                         // Pick up meta-schema from first .dialog file
                         if (!this.metaSchema) {
@@ -318,7 +323,7 @@ export default class SchemaMerger {
                             if (this.verbose) {
                                 this.log(`  Using ${this.metaSchemaId} to define components`)
                             }
-                            this.currentFile = componentPath
+                            this.currentFile = path
                             this.validateSchema(component)
                         } else if (component.$schema !== this.metaSchemaId) {
                             this.parsingWarning(`Component schema ${component.$schema} does not match ${this.metaSchemaId}`)
@@ -326,10 +331,16 @@ export default class SchemaMerger {
                             this.validateSchema(component)
                         }
                         delete component.$schema
-
-                        let filename = ppath.basename(componentPath)
+                        if (componentPath.component.name && componentPath.component.version) {
+                            // Only include versioned components
+                            component.$package = {
+                                name: componentPath.component.name,
+                                version: componentPath.component.version
+                            }
+                        }
+                        let filename = ppath.basename(path)
                         let kind = filename.substring(0, filename.lastIndexOf('.'))
-                        let fullPath = ppath.resolve(componentPath)
+                        let fullPath = ppath.resolve(path)
                         if (this.source[kind] && this.source[kind] !== fullPath) {
                             this.parsingError(`Redefines ${kind} from ${this.source[kind]}`)
                         }
@@ -490,8 +501,9 @@ export default class SchemaMerger {
                     if (this.verbose) {
                         this.log(`${this.indent()}Following nuget ${this.prettyPath(path)}`)
                     }
-                    this.pushParent(path)
                     let nuspec = await this.xmlToJSON(path)
+                    let md = nuspec?.package?.metadata[0]
+                    this.pushParent(path, md.id[0], md.version[0])
                     let dependencies: any[] = []
                     walkJSON(nuspec, val => {
                         if (val.dependencies) {
@@ -621,8 +633,8 @@ export default class SchemaMerger {
                 if (this.verbose) {
                     this.log(`${this.indent()}Following ${this.prettyPath(path)}`)
                 }
-                let component = this.pushParent(path)
                 let pkg = await fs.readJSON(path)
+                let component = this.pushParent(path, pkg.name, pkg.version)
                 component.name = pkg.name || component.name
                 if (pkg.dependencies) {
                     for (let dependent of Object.keys(pkg.dependencies)) {
@@ -665,8 +677,8 @@ export default class SchemaMerger {
                         if (this.verbose) {
                             this.log(`${this.indent()}Following ${this.prettyPath(path)}`)
                         }
-                        this.pushParent(path)
                         let json = await this.xmlToJSON(path)
+                        this.pushParent(path)
                         let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
                         if (packages) {
                             let nugets: string[][] = []

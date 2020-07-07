@@ -166,6 +166,21 @@ describe('dialog:merge', async () => {
 
     it('csproj', async () => {
         console.log('\nStart csproj')
+        let [merged, lines] = await merge(['projects/project3/project3.csproj'], undefined, true)
+        let errors = countMatches(/error|warning/i, lines)
+        assert(errors === 0, 'Should not have got errors')
+        assert(merged, 'Could not merge')
+        assert(countMatches(/Following.*project3/, lines) === 1, 'Did not follow project1')
+        assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
+        assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
+        let schema = await fs.readJSON(ppath.join(tempDir, 'generated.schema'))
+        let nuget3 = schema.definitions.nuget3?.$package
+        assert(nuget3?.name === 'nuget3', 'Did not generate $package.name')
+        assert(nuget3?.version === '1.0.0', 'Did not generate $package.version')
+    })
+
+    it('csproj-errors', async () => {
+        console.log('\nStart csproj')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
         let errors = countMatches(/error|warning/i, lines)
         if (errors === 0) {
@@ -196,6 +211,15 @@ describe('dialog:merge', async () => {
         assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
         assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
         assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
+
+        let schema = await fs.readJSON(ppath.join(tempDir, 'generated.schema'))
+        let dependent = schema.definitions['dependent-package']?.$package
+        assert(dependent?.name === 'dependent-package', 'Incorrect dependent-package $package.name')
+        assert(dependent?.version === '1.0.0', 'Incorrext dependent-package $package.version')
+        let parent = schema.definitions['parent-package']?.$package
+        assert(parent?.name === 'parent-package', 'Incorrect parent-package $package.name')
+        assert(parent?.version === '1.0.0', 'Incorrext parent-package $package.version')
+
         let path = ppath.join(tempDir, 'generated.resources')
         await compareResources(path,
             {
@@ -226,7 +250,7 @@ describe('dialog:merge', async () => {
             assert(merged, 'Could not merge')
             assert(fs.existsSync('nuget1.schema'), 'Did not infer output')
             assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
-            assert(countMatches('nuget1.nuspec', lines) === 2, 'Missing nuget1.nuspec')
+            assert(countMatches('nuget1.nuspec', lines) === 1, 'Missing nuget1.nuspec')
             assert(countMatches('Override', lines) === 1, 'Missing override')
             await compareResources('nuget1.resources',
                 {
