@@ -3,8 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import { LabelResolverHelper } from './labelresolver'
+import { LabelResolver } from './labelresolver'
+import { Orchestrator } from './orchestrator'
+import { OrchestratorHelper } from './orchestratorhelper'
 import { Utility } from './utility'
-export { LabelResolverHelper, Utility }
+export { LabelResolver, Orchestrator, OrchestratorHelper, Utility }
 
-export default LabelResolverHelper
+export default Orchestrator

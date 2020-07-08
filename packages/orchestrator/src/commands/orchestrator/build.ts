@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {LabelResolverHelper, Utility} from '@microsoft/bf-orchestrator';
+import {LabelResolver, Utility, Orchestrator} from '@microsoft/bf-orchestrator';
 import {OrchestratorHelper} from '../../utils';
 
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
@@ -37,10 +37,7 @@ export default class OrchestratorBuild extends Command {
       nlrPath = 'D:\\src\\TScience\\Orchestrator\\oc\\dep\\model';
     }
 
-    
-    await LabelResolverHelper.createAsync(nlrPath);
-
-    const labelResolver = await LabelResolverHelper.createAsync(nlrPath);
+    const labelResolver = await Orchestrator.createLabelResolverAsync(nlrPath);
     const example = { 
         label: 'travel', 
         text: 'book a flight to miami.',
@@ -76,7 +73,7 @@ export default class OrchestratorBuild extends Command {
     var snapshot = labelResolver.createSnapshot();
     this.log('Created snapshot!');
     this.log('Going to create labeler #2');
-    let labeler2 = LabelResolverHelper.createWithSnapshot(snapshot); 
+    let labeler2 = LabelResolver.createWithSnapshot(snapshot); 
     this.log('Created Labeler #2.');
 
 

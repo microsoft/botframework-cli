@@ -9,7 +9,7 @@ import {Utility} from './utility';
 
 const oc = require('oc_node_authoring/oc_node_authoring.node');
 
-export class LabelResolverHelper {
+export class LabelResolver {
   public static Orchestrator: any;
 
   public static async createAsync(nlrPath: string) {
@@ -22,21 +22,21 @@ export class LabelResolverHelper {
       }
 
       Utility.writeToConsole('Creating Orchestrator..');
-      LabelResolverHelper.Orchestrator = new oc.Orchestrator();
+      LabelResolver.Orchestrator = new oc.Orchestrator();
 
       Utility.writeToConsole('Loading NLR..');
-      if (await LabelResolverHelper.Orchestrator.load(nlrPath) === false) {
+      if (await LabelResolver.Orchestrator.load(nlrPath) === false) {
         Utility.writeToConsole('Loading NLR failed!!');
       }
 
       Utility.writeToConsole('Creating labeler..');
-      return LabelResolverHelper.Orchestrator.createLabelResolver();
+      return LabelResolver.Orchestrator.createLabelResolver();
     } catch (error) {
       throw new Error(error);
     }
   }
 
   public static createWithSnapshot(snapshot: any) {
-    return LabelResolverHelper.Orchestrator.createLabelResolver(snapshot);
+    return LabelResolver.Orchestrator.createLabelResolver(snapshot);
   }
 }
