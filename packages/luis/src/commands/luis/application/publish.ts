@@ -4,7 +4,8 @@
  */
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import fetch from 'node-fetch'
+
+import Application from './../../../api/application'
 
 const utils = require('../../../utils/index')
 
@@ -49,13 +50,7 @@ export default class LuisApplicationPublish extends Command {
     }
 
     try {
-      let url = endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/publish'
-      const headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey
-      }
-      const response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(applicationPublishObject)})
-      const messageData = await response.json()
+      const messageData = await Application.publish({subscriptionKey, appId, endpoint}, applicationPublishObject)
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)

@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationImport extends Command {
@@ -41,23 +43,11 @@ export default class LuisApplicationImport extends Command {
     const appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
     if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
 
-    // const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     const options: any = {}
     if (name) options.appName = name
 
     try {
-      // const response = await client.apps.importMethod(JSON.parse(appJSON), options)
-
-      name = name ? '?appName=' + name : ''
-      let url = endpoint + '/luis/authoring/v3.0-preview/apps/import' + name
-      const headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey
-      }
-      const response = await fetch(url, {method: 'POST', headers, body: appJSON})
-      const messageData = await response.json()
-
+      const messageData = await Application.import({subscriptionKey, endpoint}, appJSON, name)
       if (messageData.error) {
         throw new CLIError(messageData.error.message)
       }
@@ -67,7 +57,7 @@ export default class LuisApplicationImport extends Command {
 
       if (flags.save) {
         const config = {
-          appId: response.body,
+          appId: messageData,
           endpoint,
           subscriptionKey
         }

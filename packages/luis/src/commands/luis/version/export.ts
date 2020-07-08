@@ -4,7 +4,8 @@
  */
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import fetch from 'node-fetch'
+
+import Version from './../../../api/version'
 
 const utils = require('../../../utils/index')
 
@@ -43,14 +44,7 @@ export default class LuisVersionExport extends Command {
     utils.validateRequiredProps(requiredProps)
 
     try {
-      let url = endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/' + versionId + '/export?format=json'
-      const headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey
-      }
-
-      const response = await fetch(url, {method: 'GET', headers})
-      const messageData = await response.json()
+      const messageData = await Version.export({subscriptionKey, endpoint, appId}, versionId)
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)

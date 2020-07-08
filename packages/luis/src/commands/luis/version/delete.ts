@@ -5,6 +5,7 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Version from './../../../api/version'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionDelete extends Command {
@@ -38,12 +39,12 @@ export default class LuisVersionDelete extends Command {
     const requiredProps = {appId, versionId, endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     try {
-      await client.versions.deleteMethod(appId, versionId)
-      const output = flags.json ? JSON.stringify({Status: 'Success', version: versionId}, null, 2) : `Successfully deleted version ${versionId}`
-      this.log(output)
+      const result = await Version.delete({subscriptionKey, endpoint, appId}, versionId)
+      if (result.code === 'Success') {
+        const output = flags.json ? JSON.stringify({Status: 'Success', version: versionId}, null, 2) : `Successfully deleted version ${versionId}`
+        this.log(output)
+      }
     } catch (err) {
       throw new CLIError(`Failed to delete app version: ${err}`)
     }

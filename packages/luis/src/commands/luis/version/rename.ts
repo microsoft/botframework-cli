@@ -5,6 +5,7 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Version from './../../../api/version'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionRename extends Command {
@@ -40,12 +41,8 @@ export default class LuisVersionRename extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId, versionId, newVersionId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
-    const versionUpdateObject = {version: newVersionId}
-
     try {
-      await client.versions.update(appId, versionId, versionUpdateObject)
+      await Version.rename({subscriptionKey, endpoint, appId}, versionId, newVersionId)
       const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : 'App version successfully renamed'
       this.log(output)
     } catch (err) {
