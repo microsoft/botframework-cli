@@ -96,6 +96,23 @@ describe('Model as feature definitions', function () {
                 .catch(err => done(err))
         });
 
+        it('Phrase lists marked as disabled for all models is handled correctly', function(done) {
+            let luFile = `
+@ phraselist pl1(interchangeable) 
+@ pl1 disabled, disabledForAllModels
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'pl1');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
+                    assert.equal(res.LUISJsonStructure.model_features[0].activated, false);
+                    assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
+                })
+                .catch(err => done(err))
+        })
+
         it('Phrase list marked as interchangeable can be added as a feature to an intent', function(done) {
             let luFile = `
                 > phrase list as feature to intent (also applicable to entities)
