@@ -109,6 +109,7 @@ describe('Model as feature definitions', function () {
                     assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
                     assert.equal(res.LUISJsonStructure.model_features[0].activated, false);
                     assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
+                    done();
                 })
                 .catch(err => done(err))
         })
