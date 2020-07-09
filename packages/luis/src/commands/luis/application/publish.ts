@@ -22,8 +22,8 @@ export default class LuisApplicationPublish extends Command {
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: '(required) Version to publish (defaults to config:LUIS:versionId)'}),
-    staging: flags.boolean({description: 'Publishes application version to Staging slot, otherwise publish to production (default: false)'}),
-    direct: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production (default: false)'})
+    staging: flags.boolean({description: 'Publishes application version to Staging slot, otherwise publish to production', default: false}),
+    direct: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production', default: false})
   }
 
   async run() {

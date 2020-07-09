@@ -43,10 +43,11 @@ export default {
   },
 
   async import(
-    param: EndpointParameters, appJSON: any, name = '') {
-    name = name ? '?appName=' + name : ''
+    param: EndpointParameters, 
+    appJSON: any, 
+    name = '') {
+    name = name ? `?appName=${name}` : ''
     let url = buildUrl(param.endpoint) + `/import${name}`
-
     return http.post(url, param.subscriptionKey, appJSON)
   },
 
@@ -69,13 +70,13 @@ export default {
 
   async query(
     param: EndpointParameters,
-    slotName: string,
+    slotName = 'production',
     query: string,
     log: true,
     show_all = false,
     timezone = '') {
     let url = param.endpoint +
-    `/luis/prediction/v3.0/apps/${param.appId}/slots/${slotName}/predict?verbose=false&log=${log}&show-all-intents=${show_all}]`
+    `/luis/prediction/v3.0/apps/${param.appId}/slots/${slotName}/predict?verbose=false&log=${log}&show-all-intents=${show_all}`
 
     let body: any = {query}
 

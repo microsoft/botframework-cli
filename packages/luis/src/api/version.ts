@@ -16,7 +16,7 @@ export default {
   async delete(
     param: EndpointParameters,
     versionId: string) {
-    let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}`
+    let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/`
 
     return http.delete(url, param.subscriptionKey)
   },
