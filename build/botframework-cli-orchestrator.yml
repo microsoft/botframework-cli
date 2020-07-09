@@ -22,30 +22,12 @@ jobs:
       continueOnError: true
       condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], 'False'))
 
-    - task: DownloadBuildArtifacts@0
-      displayName: 'Download Artifacts from Orchestrator-.NET-Desktop-signed'
-      inputs:
-        buildType: specific
-        project: '6d527033-e720-40e2-8e39-c804959c6dcd'
-        pipeline: 928
-        artifactName: drop
-        downloadPath: '$(System.ArtifactsDirectory)/orchestrator'
-
     - powershell: |
        pushd ..
        Get-ChildItem -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}
       displayName: 'Dir workspace 1 except node-modules (takes 3 minutes)'
       errorActionPreference: continue
       continueOnError: true
-      condition: succeededOrFailed()
-
-    - task: CopyFiles@2
-      displayName: 'Copy Orchestrator artifacts to packages/orchestrator/lib/commands/orchestrator/netcoreapp3.1'
-      inputs:
-        SourceFolder: '$(System.ArtifactsDirectory)/orchestrator/drop'
-        Contents: '**'
-        TargetFolder: '$(Build.SourcesDirectory)/packages/orchestrator/lib/commands/orchestrator'
-        flattenFolders: false
       condition: succeededOrFailed()
 
     - powershell: |
