@@ -40,7 +40,6 @@ export default {
     subscriptionKey: string) {
     setSubscriptionKey(subscriptionKey)
     const response = await fetch(url, {method: 'DELETE', headers})
-    
     return isJSON(response) ? response.json() : {code: 'Success'}
   }
 }

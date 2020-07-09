@@ -43,8 +43,8 @@ export default {
   },
 
   async import(
-    param: EndpointParameters, 
-    appJSON: any, 
+    param: EndpointParameters,
+    appJSON: any,
     name = '') {
     name = name ? `?appName=${name}` : ''
     let url = buildUrl(param.endpoint) + `/import${name}`

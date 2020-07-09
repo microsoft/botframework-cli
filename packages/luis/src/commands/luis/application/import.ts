@@ -43,7 +43,6 @@ export default class LuisApplicationImport extends Command {
     const appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
     if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
 
-
     try {
       let messageData = await Application.import({subscriptionKey, endpoint}, JSON.parse(appJSON), name)
 
