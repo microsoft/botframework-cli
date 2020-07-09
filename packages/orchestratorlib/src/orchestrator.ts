@@ -8,25 +8,48 @@ import * as path from 'path';
 import {Utility} from './utility';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {OrchestratorAdd} from './add';
+import {OrchestratorBuild} from './build';
+import {OrchestratorCreate} from './create';
+import {OrchestratorEvaluate} from './evaluate';
+import {OrchestratorFineTune} from './finetune';
+import {OrchestratorNlr} from './nlr';
+import {OrchestratorPredict} from './predict';
+import {OrchestratorTest} from './test';
 
 export class Orchestrator {
   public static LabelResolver: any;
 
-  public static async createLabelResolverAsync(nlrPath: string) {
-    try {
-      if (nlrPath) {
-        nlrPath = path.resolve(nlrPath);
-      }
+  public static async createAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorCreate.runAsync(nlrPath, inputPath, outputPath, isDebug);
+  }
 
-      if (nlrPath.length === 0) {
-        throw new Error('Please provide path to Orchestrator model');
-      }
+  public static async addAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorAdd.runAsync(nlrPath, inputPath, outputPath, isDebug);
+  }
 
-      Orchestrator.LabelResolver = await LabelResolver.createAsync(nlrPath);
-      return Orchestrator.LabelResolver;
-    } catch (error) {
-      throw new Error(error);
-    }
+  public static async buildAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorBuild.runAsync(nlrPath, inputPath, outputPath, isDebug);
+  }
+
+  public static async evaluateAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorEvaluate.runAsync(nlrPath, inputPath, outputPath, isDebug);
+  }
+
+  public static async fineTuneAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorFineTune.runAsync(nlrPath, inputPath, outputPath, isDebug);
+  }
+
+  public static async NlrAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorNlr.runAsync(nlrPath, inputPath, outputPath, isDebug);
+  }
+
+  public static async predictAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorPredict.runAsync(nlrPath, inputPath, outputPath, isDebug);
+  }
+
+  public static async testAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {
+    await OrchestratorTest.runAsync(nlrPath, inputPath, outputPath, isDebug);
   }
 
   public static createSnapshot(input: string, output: string) {

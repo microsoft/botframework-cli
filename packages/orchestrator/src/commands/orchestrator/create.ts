@@ -5,8 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {Utility} from '@microsoft/bf-orchestrator';
-import {OrchestratorHelper} from '../../utils';
+import {Orchestrator} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator example file from .lu/.qna files, which represent bot modules';
@@ -38,6 +37,13 @@ export default class OrchestratorCreate extends Command {
     }
     const debug: boolean = flags.debug;
 
+    try {
+      await Orchestrator.createAsync(nlrPath, input, output, debug);
+    } catch (error) {
+      throw (new CLIError(error));
+    }
+
+    /*
     const tsvFilePath: string = path.join(output, 'create.tsv');
     let tsvContent: string = '';
 
@@ -58,22 +64,7 @@ export default class OrchestratorCreate extends Command {
     if (nlrPath) {
       args += ` --model ${nlrPath}`;
     }
-
-    // TO-DO: figure out rush package dependency with regard to oclif folder structure
-    // require("dotnet-3.1") statement works only for local package install
-    // process.argv= [process.argv[0], process.argv[1], __dirname + '/netcoreapp3.1/OrchestratorCli.dll', ...process.argv.slice(2)]
-    // require("dotnet-3.1")
-    try {
-      const command: string = 'dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + args;
-      if (debug) {
-        const loggingMessage: string = `create.ts: command = ${command}`;
-        const loggingMessageCodified: string = Utility.debuggingLog(loggingMessage);
-        this.log(loggingMessageCodified);
-      }
-      require('child_process').execSync(command, {stdio: [0, 1, 2]});
-    } catch (error) {
-      return 1;
-    }
+    */
 
     return 0;
   }

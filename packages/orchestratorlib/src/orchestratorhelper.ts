@@ -3,12 +3,38 @@
  * Licensed under the MIT License.
  */
 
+import * as path from 'path';
+import * as fs from 'fs-extra';
 import {Utility} from './utility';
+
+const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
 const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
 const processedFiles: string[] = [];
 
 export class OrchestratorHelper {
+  public static isDirectory(path: string): boolean {
+    try {
+      const stats: fs.Stats = fs.statSync(path);
+      return stats.isDirectory();
+    } catch {
+      return false;
+    }
+  }
+
+  public static readFile(filePath: string): string {
+    return ReadText.readSync(filePath);
+  }
+
+  public static writeToFile(filePath: string, content: string): string {
+    fs.writeFileSync(filePath, content);
+    return filePath;
+  }
+
+  public static deleteFile(filePath: string)  {
+    fs.unlinkSync(filePath);
+  }
+
   public static createDteContent(utterancesLabelsMap: any) {
     const labelUtteranceMap: { [label: string]: string} = {};
     // eslint-disable-next-line guard-for-in
@@ -35,21 +61,79 @@ export class OrchestratorHelper {
     return tsvContent;
   }
 
-  static async parseBluFile(bluFileContent: string, utterancesLabelsMap: any) {
-    const lines: string[] = bluFileContent.split('\n');
+  public static async getUtteranceLabelsMap(
+    filePath: string,
+    hierarchical: boolean = false)  {
+    const utterancesLabelsMap: any = {};
+    let tsvContent: string = '';
+
+    if (OrchestratorHelper.isDirectory(filePath)) {
+      await OrchestratorHelper.iterateInputFolder(filePath, utterancesLabelsMap, hierarchical);
+    } else {
+      await OrchestratorHelper.processFile(filePath, path.basename(filePath), utterancesLabelsMap, hierarchical);
+    }
+
+    return utterancesLabelsMap;
+  }
+
+  static async processFile(
+    filePath: string,
+    fileName: string,
+    utterancesLabelsMap: any,
+    hierarchical: boolean) {
+    const ext: string = path.extname(filePath);
+    if (ext === '.lu') {
+      Utility.writeToConsole(`Processing ${filePath}...`);
+      await OrchestratorHelper.parseLuFile(
+        filePath,
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utterancesLabelsMap);
+    } else if (ext === '.qna') {
+      Utility.writeToConsole(`Processing ${filePath}...`);
+      await OrchestratorHelper.parseQnaFile(
+        filePath,
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utterancesLabelsMap);
+    } else if (ext === '.json') {
+      Utility.writeToConsole(`Processing ${filePath}...\n`);
+      OrchestratorHelper.getIntentsUtterances(
+        fs.readJsonSync(filePath),
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utterancesLabelsMap);
+    } else if (ext === '.tsv' || ext === '.txt') {
+      OrchestratorHelper.parseTsvFile(
+        filePath,
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utterancesLabelsMap);
+    } else if (ext === '.blu') {
+      OrchestratorHelper.parseBluFile(
+        filePath,
+        utterancesLabelsMap);
+    } else {
+      throw new Error(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
+    }
+  }
+
+  static async parseBluFile(bluFile: string, utterancesLabelsMap: any) {
+    const lines: string[] = OrchestratorHelper.readFile(bluFile).split('\n');
     if (lines.length === 0) {
       return;
     }
     OrchestratorHelper.tryParseLabelUtteranceTsv(lines, utterancesLabelsMap, true);
   }
 
-  static async parseLuFile(luObject: any, luSearchFn: any, hierarchicalLabel: string, utterancesLabelsMap: any) {
-    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], luSearchFn);
+  static async parseLuFile(luFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
+    const fileContents: string = OrchestratorHelper.readFile(luFile);
+    const luObject: any = {
+      content: fileContents,
+      id: luFile,
+    };
+    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
     OrchestratorHelper.getIntentsUtterances(luisObject, hierarchicalLabel, utterancesLabelsMap);
   }
 
-  static async parseTsvFile(tsvFileContent: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
-    const lines: string[] = tsvFileContent.split('\n');
+  static async parseTsvFile(tsvFile: string, hierarchicalLabel: string, utterancesLabelsMap: any) {
+    const lines: string[] = OrchestratorHelper.readFile(tsvFile).split('\n');
     if (lines.length === 0) {
       return;
     }
@@ -112,8 +196,9 @@ export class OrchestratorHelper {
       (header.indexOf('Text') > 0 || header.indexOf('Utterance') > 0);
   }
 
-  static async parseQnaFile(qnaFileContent: string, label: string, utterancesLabelsMap: any) {
-    const lines: string[] = qnaFileContent.split('\n');
+  static async parseQnaFile(qnaFile: string, label: string, utterancesLabelsMap: any) {
+    const fileContents: string = OrchestratorHelper.readFile(qnaFile);
+    const lines: string[] = fileContents.split('\n');
     if (lines.length === 0) {
       return;
     }
@@ -129,7 +214,33 @@ export class OrchestratorHelper {
     if (qnaObject) {
       OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utterancesLabelsMap);
     } else {
-      throw new Error(`Failed parsing qna content ${qnaFileContent}`);
+      throw new Error(`Failed parsing qna file ${qnaFile}`);
+    }
+  }
+
+  static async iterateInputFolder(
+    folderPath: string,
+    utterancesLabelsMap: any,
+    hierarchical: boolean) {
+    const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv', '.txt', '.blu'];
+    const items: string[] = fs.readdirSync(folderPath);
+    for (const item of items) {
+      const currentItemPath: string = path.join(folderPath, item);
+      const isDirectory: boolean = fs.lstatSync(currentItemPath).isDirectory();
+
+      if (isDirectory) {
+        // eslint-disable-next-line no-await-in-loop
+        await OrchestratorHelper.iterateInputFolder(currentItemPath, utterancesLabelsMap, hierarchical);
+      } else {
+        const ext: string = path.extname(item);
+        if (processedFiles.includes(currentItemPath)) {
+          continue;
+        }
+        if (supportedFileFormats.indexOf(ext) > -1) {
+          // eslint-disable-next-line no-await-in-loop
+          await OrchestratorHelper.processFile(currentItemPath, item, utterancesLabelsMap, hierarchical);
+        }
+      }
     }
   }
 
@@ -203,5 +314,28 @@ export class OrchestratorHelper {
     if (!labelExists) {
       labels.push(newLabel);
     }
+  }
+
+  static findLuFiles(srcId: string, idsToFind: string[]) {
+    const baseDir: string = path.dirname(srcId);
+    const retPayload: any[] = [];
+    (idsToFind || []).forEach((ask: any)  => {
+      const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.join(baseDir, ask.filePath);
+      const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
+      if (!processedFiles.includes(resourceToFind)) {
+        processedFiles.push(resourceToFind);
+      }
+      if (fileContent) {
+        retPayload.push({
+          content: fileContent,
+          options: {
+            id: ask.filePath,
+          },
+        });
+      } else {
+        throw new Error(`Content not found for ${resourceToFind}.`);
+      }
+    });
+    return retPayload;
   }
 }
