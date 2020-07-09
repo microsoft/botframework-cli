@@ -38,7 +38,7 @@ export default class OrchestratorCreate extends Command {
     const debug: boolean = flags.debug;
 
     try {
-      await Orchestrator.createAsync(nlrPath, input, output, debug);
+      await Orchestrator.createAsync(nlrPath, input, path.join(output, 'orchestrator.blu'), debug);
     } catch (error) {
       throw (new CLIError(error));
     }

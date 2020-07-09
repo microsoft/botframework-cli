@@ -11,10 +11,20 @@ import {OrchestratorHelper} from './orchestratorhelper';
 import Orchestrator from '.';
 
 export class OrchestratorCreate {
-  public static async runAsync(nlrPath: string, inputPath: string, outputPath: string, debug: boolean = false) {  
+  public static async runAsync(nlrPath: string, inputPath: string, outputPath: string, isDebug: boolean = false) {  
     if (!nlrPath || nlrPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
+
+    if (!inputPath || inputPath.length === 0) {
+      throw new Error('Please provide path to input file/folder');
+    }
+
+    if (!outputPath || outputPath.length === 0) {
+      throw new Error('Please provide output path');
+    }
+
+    Utility.toPrintDebuggingLogToConsole = isDebug;
 
     nlrPath = path.resolve(nlrPath);
 
@@ -27,9 +37,15 @@ export class OrchestratorCreate {
       for (const label of labels) {
         var success = labelResolver.addExample({ label: label, text: utterance});
         if (success) {
-          console.log(`Added { label: ${label}, text: ${utterance}}`);
+          Utility.debuggingLog(`Added { label: ${label}, text: ${utterance}}`);
         }
       }
     }
+
+    var snapshot = labelResolver.createSnapshot();
+    var snapshotJson = JSON.stringify(snapshot);
+    Utility.debuggingLog(snapshot);
+
+    OrchestratorHelper.writeToFile(outputPath, snapshot);
   }
 }
