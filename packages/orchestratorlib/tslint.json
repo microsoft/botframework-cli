@@ -1,5 +1,5 @@
 {
-  "extends": "@oclif/tslint",
+  "extends": "tslint:recommended",
   "linterOptions": {
     "exclude": [
         "src/**/**.js"
