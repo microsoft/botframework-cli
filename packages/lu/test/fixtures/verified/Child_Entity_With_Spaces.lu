@@ -210,31 +210,31 @@
 
 > # Phrase list definitions
 
-@ phraselist ToppingDescriptor(interchangeable) = 
+@ phraselist ToppingDescriptor(interchangeable) disabledForAllModels = 
 	- pepperoni,ham,pineapples,sausage,salami,bacon,chicken,onion,sauce,chili,pepperonis,sausages,anchovies,peperoni,mozzerella,sun dried tomatos,tomatos,tomato,basil,olives,tomatoe,eggplant,pesto,oregano,zuccini,alfredo sauce,alfredo,white sauce,parmesean,mozzarella,mozzarella cheese,butter,anchovie,canadian bacon,bacon strips,grilled chicken,italian sausage,green peppers,bbq sauce,parmesan cheese,pizza sauce,jalapeno peppers,jalapenos,jalapeno,jalapeño,hot pepper,chili pepper,meatball,meatballs,mushroom,mushrooms,pesto sauce
 
-@ phraselist SizeDescriptor(interchangeable) = 
+@ phraselist SizeDescriptor(interchangeable) disabledForAllModels = 
 	- large,small,medium,individual,personal,xlarge,extra large,family,party size,large family
 
-@ phraselist QuantityDescriptor(interchangeable) = 
+@ phraselist QuantityDescriptor(interchangeable) disabledForAllModels = 
 	- one,two,three,four,five,six,eight,seven,ten,nine,1,2,3,4,5,6,7,8,9,10,11,twelve,12,13,14,15
 
-@ phraselist ModifierDescriptor(interchangeable) = 
+@ phraselist ModifierDescriptor(interchangeable) disabledForAllModels = 
 	- with,without,extra,with extra,no,add,remove,replace,hold the,more of,needs,just,with some,need,substitute,instead of,not want,except,leave off,replace with,do not want,dont want,don't want
 
-@ phraselist ScopeDescriptor(interchangeable) = 
+@ phraselist ScopeDescriptor(interchangeable) disabledForAllModels = 
 	- half,on half,one one half,on the other half,the other half,on one,on one of them,half with,1/2,other half,one side,on the other side,the other side,other side,half and half,half & half
 
-@ phraselist CrustDescriptor(interchangeable) = 
+@ phraselist CrustDescriptor(interchangeable) disabledForAllModels = 
 	- original,pan,thin,pan crust,original crust,thin crust,thick crust,stuffed crust,deep dish,deep dish crust,thin 'n crispy
 
-@ phraselist RemoveDescriptor(interchangeable) = 
+@ phraselist RemoveDescriptor(interchangeable) disabledForAllModels = 
 	- without,remove,no,with no,substitute,hold,hold the,replace,instead of,leave off,not want,dont want,do not want,except
 
-@ phraselist AddDescriptor(interchangeable) = 
+@ phraselist AddDescriptor(interchangeable) disabledForAllModels = 
 	- with,with extra,extra,add extra,add,with more,some,just,needs,replaced with
 
-@ phraselist SideOrderDescriptor(interchangeable) = 
+@ phraselist SideOrderDescriptor(interchangeable) disabledForAllModels = 
 	- a side of,with a side of,side of,on the side
 
 @ phraselist GreetingDescriptor(interchangeable) enabledForAllModels = 

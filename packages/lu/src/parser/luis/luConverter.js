@@ -335,9 +335,13 @@ const handlePhraseLists = function(collection) {
         fileContent += entity.name.includes(' ') ? `"${entity.name}"` : `${entity.name}`;
         fileContent += `${(entity.mode ? `(interchangeable)` : ``)}`;
         if (entity.activated !== undefined && !entity.activated) flags += `disabled`;
-        if (entity.enabledForAllModels !== undefined && entity.enabledForAllModels) {
-            flags += (flags !== '') ? `, enabledForAllModels` : `enabledForAllModels`;
-        }
+        if (entity.enabledForAllModels !== undefined) {
+            if (entity.enabledForAllModels === true) {
+                flags += (flags !== '') ? `, enabledForAllModels` : `enabledForAllModels`;
+            } else {
+                flags += (flags !== '') ? `, disabledForAllModels` : `disabledForAllModels`;
+            }
+        } 
         if (flags !== '') fileContent += ` ${flags}`;
         if (entity.words && entity.words !== '') {
             fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
