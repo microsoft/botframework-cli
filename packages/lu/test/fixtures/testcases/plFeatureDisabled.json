@@ -1,0 +1,3204 @@
+{
+  "luis_schema_version": "7.0.0",
+  "intents": [
+    {
+      "name": "GetWeather",
+      "features": []
+    },
+    {
+      "name": "None",
+      "features": []
+    }
+  ],
+  "entities": [
+    {
+      "name": "weather-request",
+      "children": [
+        {
+          "name": "GeographicPoi",
+          "children": [],
+          "features": [
+            {
+              "modelName": "geographyV2",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "Country",
+          "children": [],
+          "features": [
+            {
+              "modelName": "geographyV2",
+              "isRequired": false
+            },
+            {
+              "featureName": "CountryPL",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "ConditionDescription",
+          "children": [],
+          "features": [
+            {
+              "featureName": "ConditionDescriptionPL",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "ConditionTemperature",
+          "children": [],
+          "features": [
+            {
+              "featureName": "ConditionTemperaturePL",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "CurrentLocation",
+          "children": [],
+          "features": [
+            {
+              "featureName": "CurrentLocationPL",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "TimeRange",
+          "children": [],
+          "features": [
+            {
+              "modelName": "datetimeV2",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "City",
+          "children": [],
+          "features": [
+            {
+              "modelName": "geographyV2",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "State",
+          "children": [],
+          "features": [
+            {
+              "modelName": "StatesList",
+              "isRequired": false
+            }
+          ]
+        },
+        {
+          "name": "SpatialRelation",
+          "children": [],
+          "features": [
+            {
+              "featureName": "SpatialRelationPL",
+              "isRequired": false
+            }
+          ]
+        }
+      ],
+      "roles": [],
+      "features": []
+    }
+  ],
+  "hierarchicals": [],
+  "composites": [],
+  "closedLists": [
+    {
+      "name": "StatesList",
+      "subLists": [
+        {
+          "canonicalForm": "AL",
+          "list": [
+            "Alabama"
+          ]
+        },
+        {
+          "canonicalForm": "AK",
+          "list": [
+            "Alaska"
+          ]
+        },
+        {
+          "canonicalForm": "AZ",
+          "list": [
+            "Arizona"
+          ]
+        },
+        {
+          "canonicalForm": "AR",
+          "list": [
+            "Arkansas"
+          ]
+        },
+        {
+          "canonicalForm": "CA",
+          "list": [
+            "California"
+          ]
+        },
+        {
+          "canonicalForm": "CO",
+          "list": [
+            "Colorado"
+          ]
+        },
+        {
+          "canonicalForm": "CT",
+          "list": [
+            "Conneticut",
+            "Connecticut"
+          ]
+        },
+        {
+          "canonicalForm": "DE",
+          "list": [
+            "Delaware"
+          ]
+        },
+        {
+          "canonicalForm": "FL",
+          "list": [
+            "Florida"
+          ]
+        },
+        {
+          "canonicalForm": "GA",
+          "list": [
+            "Georgia"
+          ]
+        },
+        {
+          "canonicalForm": "HI",
+          "list": [
+            "Hawaii"
+          ]
+        },
+        {
+          "canonicalForm": "ID",
+          "list": [
+            "Idaho"
+          ]
+        },
+        {
+          "canonicalForm": "IL",
+          "list": [
+            "Illinois"
+          ]
+        },
+        {
+          "canonicalForm": "IN",
+          "list": [
+            "Indiana"
+          ]
+        },
+        {
+          "canonicalForm": "IA",
+          "list": [
+            "Iowa"
+          ]
+        },
+        {
+          "canonicalForm": "KS",
+          "list": [
+            "Kansas"
+          ]
+        },
+        {
+          "canonicalForm": "KY",
+          "list": [
+            "Kentucky"
+          ]
+        },
+        {
+          "canonicalForm": "LA",
+          "list": [
+            "Louisiana"
+          ]
+        },
+        {
+          "canonicalForm": "ME",
+          "list": [
+            "Maine"
+          ]
+        },
+        {
+          "canonicalForm": "MD",
+          "list": [
+            "Maryland"
+          ]
+        },
+        {
+          "canonicalForm": "MA",
+          "list": [
+            "Mass",
+            "Massachusetts"
+          ]
+        },
+        {
+          "canonicalForm": "MI",
+          "list": [
+            "Michigan"
+          ]
+        },
+        {
+          "canonicalForm": "MN",
+          "list": [
+            "Minnesota",
+            "Minn"
+          ]
+        },
+        {
+          "canonicalForm": "MS",
+          "list": [
+            "Miss",
+            "Missisippi"
+          ]
+        },
+        {
+          "canonicalForm": "MO",
+          "list": [
+            "Missouri"
+          ]
+        },
+        {
+          "canonicalForm": "MT",
+          "list": [
+            "Montana"
+          ]
+        },
+        {
+          "canonicalForm": "NE",
+          "list": [
+            "Nebraska"
+          ]
+        },
+        {
+          "canonicalForm": "NV",
+          "list": [
+            "Nevada"
+          ]
+        },
+        {
+          "canonicalForm": "NH",
+          "list": [
+            "New Hampshire"
+          ]
+        },
+        {
+          "canonicalForm": "NJ",
+          "list": [
+            "New Jersey"
+          ]
+        },
+        {
+          "canonicalForm": "NM",
+          "list": [
+            "New Mexico"
+          ]
+        },
+        {
+          "canonicalForm": "NY",
+          "list": [
+            "New York"
+          ]
+        },
+        {
+          "canonicalForm": "NC",
+          "list": [
+            "North Carolina"
+          ]
+        },
+        {
+          "canonicalForm": "ND",
+          "list": [
+            "North Dakota"
+          ]
+        },
+        {
+          "canonicalForm": "OH",
+          "list": [
+            "Ohio"
+          ]
+        },
+        {
+          "canonicalForm": "OK",
+          "list": [
+            "Oklahoma"
+          ]
+        },
+        {
+          "canonicalForm": "OR",
+          "list": [
+            "Oregon"
+          ]
+        },
+        {
+          "canonicalForm": "PA",
+          "list": [
+            "Pennsylvania",
+            "Penn"
+          ]
+        },
+        {
+          "canonicalForm": "RI",
+          "list": [
+            "Rhode Island"
+          ]
+        },
+        {
+          "canonicalForm": "SC",
+          "list": [
+            "South Carolina"
+          ]
+        },
+        {
+          "canonicalForm": "SD",
+          "list": [
+            "South Dakota"
+          ]
+        },
+        {
+          "canonicalForm": "TN",
+          "list": [
+            "Tenn",
+            "Tennessee"
+          ]
+        },
+        {
+          "canonicalForm": "TX",
+          "list": [
+            "Texas"
+          ]
+        },
+        {
+          "canonicalForm": "UT",
+          "list": [
+            "Utah"
+          ]
+        },
+        {
+          "canonicalForm": "VT",
+          "list": [
+            "Vermont"
+          ]
+        },
+        {
+          "canonicalForm": "VA",
+          "list": [
+            "Virginia"
+          ]
+        },
+        {
+          "canonicalForm": "WA",
+          "list": [
+            "Washington"
+          ]
+        },
+        {
+          "canonicalForm": "WV",
+          "list": [
+            "West Virginia"
+          ]
+        },
+        {
+          "canonicalForm": "WI",
+          "list": [
+            "Wisconsin"
+          ]
+        },
+        {
+          "canonicalForm": "WY",
+          "list": [
+            "Wyoming"
+          ]
+        },
+        {
+          "canonicalForm": "DC",
+          "list": [
+            "District of Colombia",
+            "District of Columbia"
+          ]
+        },
+        {
+          "canonicalForm": "FSM",
+          "list": [
+            "Federated states of micronesia"
+          ]
+        },
+        {
+          "canonicalForm": "USVI",
+          "list": [
+            "U.S. Virgin Islands",
+            "Virgin Islands",
+            "Virgin Islands of America"
+          ]
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "prebuiltEntities": [
+    {
+      "name": "datetimeV2",
+      "roles": []
+    },
+    {
+      "name": "geographyV2",
+      "roles": []
+    },
+    {
+      "name": "temperature",
+      "roles": []
+    }
+  ],
+  "utterances": [
+    {
+      "text": "a long long time ago we went to new mexico",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "do you remember the summer of 15 wow what a scorcher",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "give me the forecast for san pedro river preserve",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 48,
+          "children": [
+            {
+              "entity": "GeographicPoi",
+              "startPos": 25,
+              "endPos": 48,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "how cold will it get in tajikistan around oct. eleventh?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 54,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 4,
+              "endPos": 7,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 24,
+              "endPos": 33,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 35,
+              "endPos": 54,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "how's the weather in munchique national natural park",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 10,
+          "endPos": 51,
+          "children": [
+            {
+              "entity": "GeographicPoi",
+              "startPos": 21,
+              "endPos": 51,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "humidity in netawaka wi",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 22,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 0,
+              "endPos": 7,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 12,
+              "endPos": 19,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 21,
+              "endPos": 22,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "i can't do anything when it's too hot",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "i need a table at a restaurant in montserrat",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "i need the weather for 7/13/2036 in gwynedd valley",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 49,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 23,
+              "endPos": 31,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 36,
+              "endPos": 49,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "i need the weather in hubbardston, will it be chillier?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 53,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 22,
+              "endPos": 32,
+              "children": []
+            },
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 46,
+              "endPos": 53,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "i need the weather in nd in three hundred fifty one days",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 55,
+          "children": [
+            {
+              "entity": "State",
+              "startPos": 22,
+              "endPos": 23,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 25,
+              "endPos": 55,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "i want to book a restaurant in 40 weeks in iowa.",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "i want to eat in wallis and futuna and get a blizzard",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 2,
+          "endPos": 52,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 17,
+              "endPos": 33,
+              "children": []
+            },
+            {
+              "entity": "ConditionDescription",
+              "startPos": 45,
+              "endPos": 52,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it chillier here",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 18,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 6,
+              "endPos": 13,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 15,
+              "endPos": 18,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it chilly in ecola state park at 2 pm",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 39,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 6,
+              "endPos": 11,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 16,
+              "endPos": 31,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 36,
+              "endPos": 39,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it cloudy in turkmenistan",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 27,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 6,
+              "endPos": 11,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 16,
+              "endPos": 27,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it cold here?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 14,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 6,
+              "endPos": 9,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 11,
+              "endPos": 14,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it cold in vigus tn",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 21,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 6,
+              "endPos": 9,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 14,
+              "endPos": 18,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 20,
+              "endPos": 21,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it colder in istanbul, turkey or amarillo, greece?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 51,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 6,
+              "endPos": 11,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 16,
+              "endPos": 23,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 26,
+              "endPos": 31,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 36,
+              "endPos": 43,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 46,
+              "endPos": 51,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it going to be colder in bonnie",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 33,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 18,
+              "endPos": 23,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 28,
+              "endPos": 33,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it going to be warmer in central cebu protected landscape",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 59,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 18,
+              "endPos": 23,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 28,
+              "endPos": 59,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it going to be windy on 8/8/2032 in north charleston mt",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 57,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 18,
+              "endPos": 22,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 27,
+              "endPos": 34,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 39,
+              "endPos": 54,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 56,
+              "endPos": 57,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it hot in the current location?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 32,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 6,
+              "endPos": 8,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 17,
+              "endPos": 32,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it humid in humboldt bay national wildlife refuge",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 51,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 6,
+              "endPos": 10,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 15,
+              "endPos": 51,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it rainy in greely center?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 27,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 6,
+              "endPos": 10,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 15,
+              "endPos": 27,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is it warm here now?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 18,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 6,
+              "endPos": 9,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 11,
+              "endPos": 14,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 16,
+              "endPos": 18,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is the weather chilly in pintura",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 31,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 15,
+              "endPos": 20,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 25,
+              "endPos": 31,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "is the weather going to be hotter in ri in one year",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 7,
+          "endPos": 50,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 27,
+              "endPos": 32,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 37,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 40,
+              "endPos": 50,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "need a table now somewhere nearby petit manan national wildlife refuge",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "need weather for 1 pm in russell gardens or close-by",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 5,
+          "endPos": 51,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 17,
+              "endPos": 20,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 25,
+              "endPos": 39,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 44,
+              "endPos": 51,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me if it is cold in federated states of micronesia",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 54,
+          "children": []
+        }
+      ]
+    },
+    {
+      "text": "tell me if it will hail in kyrgyzstan",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 36,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 19,
+              "endPos": 22,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 27,
+              "endPos": 36,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me if it will it be windy in grizzled squirrel wildlife sanctuary",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 69,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 25,
+              "endPos": 29,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 34,
+              "endPos": 69,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather for oct. the 26th in rosewood heights.",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 56,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 24,
+              "endPos": 36,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 41,
+              "endPos": 56,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast 1 hour from now in big thicket national preserve",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 76,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 29,
+              "endPos": 43,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 48,
+              "endPos": 76,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast for close by my current location",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 60,
+          "children": [
+            {
+              "entity": "SpatialRelation",
+              "startPos": 33,
+              "endPos": 40,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 45,
+              "endPos": 60,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast for eight a.m. in reminderville, fl",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 63,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 33,
+              "endPos": 42,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 47,
+              "endPos": 59,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 62,
+              "endPos": 63,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast for finland",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 39,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 33,
+              "endPos": 39,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast for fort yargo state park",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 53,
+          "children": [
+            {
+              "entity": "GeographicPoi",
+              "startPos": 33,
+              "endPos": 53,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast for france",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 38,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 33,
+              "endPos": 38,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast for roseburg, iowa",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 46,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 33,
+              "endPos": 40,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 43,
+              "endPos": 46,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "tell me the weather forecast within the same area of pocomoke river state park",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 77,
+          "children": [
+            {
+              "entity": "SpatialRelation",
+              "startPos": 40,
+              "endPos": 48,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 53,
+              "endPos": 77,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "want to eat somewhere cold in the neighboring antlers region on aug. 22",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 70,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 22,
+              "endPos": 25,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 34,
+              "endPos": 44,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 46,
+              "endPos": 52,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 64,
+              "endPos": 70,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "weather in malaysia",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 18,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 11,
+              "endPos": 18,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "weather in parc national de nech sar",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 35,
+          "children": [
+            {
+              "entity": "GeographicPoi",
+              "startPos": 11,
+              "endPos": 35,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what country do you like to visit most",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "what is the foreast for spain at east glacier park at one pm",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 59,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 24,
+              "endPos": 28,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 33,
+              "endPos": 49,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 54,
+              "endPos": 59,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the forecast for chillier conditions at calipuy national reservation",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 75,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 25,
+              "endPos": 32,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 48,
+              "endPos": 75,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the forecast for nv for first day of sukkot",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 50,
+          "children": [
+            {
+              "entity": "State",
+              "startPos": 25,
+              "endPos": 26,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 32,
+              "endPos": 50,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the forecast for orienta for hotter weather",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 42,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 25,
+              "endPos": 31,
+              "children": []
+            },
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 37,
+              "endPos": 42,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the forecast for papua new guinea for lunch for rainfall",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 63,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 25,
+              "endPos": 40,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 46,
+              "endPos": 50,
+              "children": []
+            },
+            {
+              "entity": "ConditionDescription",
+              "startPos": 56,
+              "endPos": 63,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the forecast for roulo for foggy conditions on february the eighteenth, 2018",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 83,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 25,
+              "endPos": 29,
+              "children": []
+            },
+            {
+              "entity": "ConditionDescription",
+              "startPos": 35,
+              "endPos": 39,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 55,
+              "endPos": 83,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the forecast for uganda at yom ha'atzmaut for chilly weather close from",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 78,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 25,
+              "endPos": 30,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 35,
+              "endPos": 48,
+              "children": []
+            },
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 54,
+              "endPos": 59,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 69,
+              "endPos": 78,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the forecast in 23 hours and seventeen seconds at this current spot",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 74,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 21,
+              "endPos": 53,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 63,
+              "endPos": 74,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the overcast forecast within the same area of rio grande nature center state park for fifteen o'clock",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 108,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 12,
+              "endPos": 19,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 41,
+              "endPos": 49,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 51,
+              "endPos": 88,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 94,
+              "endPos": 108,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the sd forecast for oct. 6th, 2037 for hot weather at belle vernon",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 73,
+          "children": [
+            {
+              "entity": "State",
+              "startPos": 12,
+              "endPos": 13,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 28,
+              "endPos": 41,
+              "children": []
+            },
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 47,
+              "endPos": 49,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 62,
+              "endPos": 73,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather at 5 am on the farallon islands?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 50,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 23,
+              "endPos": 26,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 35,
+              "endPos": 50,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather for eight o'clock in laos that is within walking distance",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 76,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 24,
+              "endPos": 36,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 41,
+              "endPos": 44,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 54,
+              "endPos": 76,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather forecast for agate fossil beds national monument",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 67,
+          "children": [
+            {
+              "entity": "GeographicPoi",
+              "startPos": 33,
+              "endPos": 67,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather forecast for danvers",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 39,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 33,
+              "endPos": 39,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather forecast for deaver, sc on may 10th",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 54,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 33,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 41,
+              "endPos": 42,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 47,
+              "endPos": 54,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather forecast for one am. in west athens, benin",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 61,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 33,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 44,
+              "endPos": 54,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 57,
+              "endPos": 61,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather forecast for papua new guinea",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 20,
+          "endPos": 48,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 33,
+              "endPos": 48,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather forecast here",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 32,
+          "children": [
+            {
+              "entity": "CurrentLocation",
+              "startPos": 29,
+              "endPos": 32,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather in weidman will it be warm",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 45,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 23,
+              "endPos": 29,
+              "children": []
+            },
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 42,
+              "endPos": 45,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather nearby bermuda a week from now",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 49,
+          "children": [
+            {
+              "entity": "SpatialRelation",
+              "startPos": 20,
+              "endPos": 25,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 27,
+              "endPos": 33,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 35,
+              "endPos": 49,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what is the weather not far from upper klamath national wildlife refuge?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 12,
+          "endPos": 70,
+          "children": [
+            {
+              "entity": "SpatialRelation",
+              "startPos": 20,
+              "endPos": 31,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 33,
+              "endPos": 70,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will it be like feb. the twentieth in colorado",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 10,
+          "endPos": 50,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 21,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 43,
+              "endPos": 50,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will the weather be at six o'clock in the virgin islands?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 60,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 28,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 47,
+              "endPos": 60,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will the weather be in battle lake?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 38,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 28,
+              "endPos": 38,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will the weather be in sche-phoksundo-nationalpark on leif erikson day?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 74,
+          "children": [
+            {
+              "entity": "GeographicPoi",
+              "startPos": 28,
+              "endPos": 54,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 59,
+              "endPos": 74,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will the weather be like 1 minute from now within the same area of my current location",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 90,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 30,
+              "endPos": 46,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 59,
+              "endPos": 67,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 75,
+              "endPos": 90,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will the weather be like nine years from now in eastport el salvador",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 72,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 30,
+              "endPos": 48,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 53,
+              "endPos": 60,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 62,
+              "endPos": 72,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will the weather be on the keeling islands on aug. third, 2037?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 66,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 32,
+              "endPos": 46,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 51,
+              "endPos": 66,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what will the weather be this afternoon in brilliant mi?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 14,
+          "endPos": 54,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 25,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 43,
+              "endPos": 51,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 53,
+              "endPos": 54,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what's the forecast for sweden at 9 a.m.",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 39,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 24,
+              "endPos": 29,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 34,
+              "endPos": 39,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what's the weather in humarock?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 29,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 22,
+              "endPos": 29,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what's the weather in nigeria?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 28,
+          "children": [
+            {
+              "entity": "Country",
+              "startPos": 22,
+              "endPos": 28,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what's the weather in ransom canyon?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 34,
+          "children": [
+            {
+              "entity": "City",
+              "startPos": 22,
+              "endPos": 34,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what's the weather like at nationaal park bạch mã",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 48,
+          "children": [
+            {
+              "entity": "GeographicPoi",
+              "startPos": 27,
+              "endPos": 48,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "what's the weather this week in distant bartholomew's cobble?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 11,
+          "endPos": 59,
+          "children": [
+            {
+              "entity": "TimeRange",
+              "startPos": 19,
+              "endPos": 27,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 32,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 40,
+              "endPos": 59,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be chilly at 0 pm in guam",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 32,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 16,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 21,
+              "endPos": 24,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 29,
+              "endPos": 32,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be cloudy in lenzburg, papua new guinea",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 46,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 11,
+              "endPos": 16,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 21,
+              "endPos": 28,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 31,
+              "endPos": 46,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be cold in haiti?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 23,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 14,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 19,
+              "endPos": 23,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be colder in tallgrass prairie national preserve?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 55,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 16,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 21,
+              "endPos": 55,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be colder in texas?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 25,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 16,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 21,
+              "endPos": 25,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be freezing 4 hours from now in tonga",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 44,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 18,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 20,
+              "endPos": 35,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 40,
+              "endPos": 44,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be freezing on jul. 7, 2038 in vananda alaska?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 52,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 18,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 20,
+              "endPos": 34,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 39,
+              "endPos": 45,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 47,
+              "endPos": 52,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be hotter in hungary on february the 16th?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 48,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 16,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 21,
+              "endPos": 27,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 32,
+              "endPos": 48,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be hotter neighboring me on august eighteenth, 2025?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 58,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 16,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 18,
+              "endPos": 28,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 30,
+              "endPos": 31,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 36,
+              "endPos": 58,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be sunny on march 1, 2026 in forty fort?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 46,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 11,
+              "endPos": 15,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 20,
+              "endPos": 32,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 37,
+              "endPos": 46,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be temperate in the current place?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 40,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 19,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 28,
+              "endPos": 40,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be temperate in west liberty mh?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 38,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 19,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 24,
+              "endPos": 35,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 37,
+              "endPos": 38,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be warm in chicamocha national park?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 42,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 14,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 19,
+              "endPos": 42,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be warmer near here on jan. the fifteenth?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 48,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 11,
+              "endPos": 16,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 18,
+              "endPos": 26,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 28,
+              "endPos": 48,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be windy at 4 pm in ny?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 29,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 11,
+              "endPos": 15,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 20,
+              "endPos": 23,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 28,
+              "endPos": 29,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be windy here on dec. 16th?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 33,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 11,
+              "endPos": 15,
+              "children": []
+            },
+            {
+              "entity": "CurrentLocation",
+              "startPos": 17,
+              "endPos": 20,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 22,
+              "endPos": 33,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it be windy in john day?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 27,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 11,
+              "endPos": 15,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 20,
+              "endPos": 27,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it get chillier in north creek forest?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 41,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 12,
+              "endPos": 19,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 24,
+              "endPos": 41,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will it rain in blissfield namibia nine hours 1 minute and one second from now?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 77,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 8,
+              "endPos": 11,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 16,
+              "endPos": 25,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 27,
+              "endPos": 33,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 35,
+              "endPos": 77,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will the weather be freezing in tennessee?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 9,
+          "endPos": 40,
+          "children": [
+            {
+              "entity": "ConditionTemperature",
+              "startPos": 20,
+              "endPos": 27,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 32,
+              "endPos": 40,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will there be a blizzard in neighboring niobrara valley preserve",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 63,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 16,
+              "endPos": 23,
+              "children": []
+            },
+            {
+              "entity": "SpatialRelation",
+              "startPos": 28,
+              "endPos": 38,
+              "children": []
+            },
+            {
+              "entity": "GeographicPoi",
+              "startPos": 40,
+              "endPos": 63,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will there be a snowstorm on september the first in bechtelsville georgia?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 72,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 16,
+              "endPos": 24,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 29,
+              "endPos": 47,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 52,
+              "endPos": 64,
+              "children": []
+            },
+            {
+              "entity": "Country",
+              "startPos": 66,
+              "endPos": 72,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will there be rain next year in new hampshire?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 44,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 14,
+              "endPos": 17,
+              "children": []
+            },
+            {
+              "entity": "TimeRange",
+              "startPos": 19,
+              "endPos": 27,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 32,
+              "endPos": 44,
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "will there be wind in hornitos dc?",
+      "intent": "GetWeather",
+      "entities": [
+        {
+          "entity": "weather-request",
+          "startPos": 0,
+          "endPos": 32,
+          "children": [
+            {
+              "entity": "ConditionDescription",
+              "startPos": 14,
+              "endPos": 17,
+              "children": []
+            },
+            {
+              "entity": "City",
+              "startPos": 22,
+              "endPos": 29,
+              "children": []
+            },
+            {
+              "entity": "State",
+              "startPos": 31,
+              "endPos": 32,
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "versionId": "0.1",
+  "name": "WeatherStudy-working",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "phraselists": [
+    {
+      "name": "ConditionTemperaturePL",
+      "mode": true,
+      "words": "warm,temperate,freezing,chilly,hot,chillier,colder,cold,hotter,warmer,cooler,drier,milder",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "CurrentLocationPL",
+      "mode": true,
+      "words": "here,current spot,current place,current location,current position",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "ConditionDescriptionPL",
+      "mode": true,
+      "words": "wind,foggy,blizzard,windy,overcast,rainy,sunny,rain,snow,humid,hail,humidity,cloudy,snowstorm,snowfall,fog,cloud,stormy,clouds,mist",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "SpatialRelationPL",
+      "mode": true,
+      "words": "not far from,within walking distance,within the same area,close by,near,near here,nearby,neighboring,distant,far away,close-by,close from",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "CountryPL",
+      "mode": true,
+      "words": "nigeria,usa,uk,france,benin,canada,australia,india,ghana,canadian,europe,germany,zealand,japan,italy,spain,ireland,china,switzerland,africa,belgium,brazil,sweden,european,greece,denmark,poland,austria,turkey,finland,norway,netherlands,portugal,mexico,hungary,cyprus,bulgaria,romania,israel,croatia,slovenia,czech republic,lithuania,ukraine,estonia,latvia,slovakia,iceland,chile,malta,luxembourg,albania,egypt,peru,morocco,colombia,uruguay,new zealand,singapore,malaysia,belarus,ecuador,liechtenstein,honduras,pakistan,venezuela,costa rica,jordan,lebanon,kenya,thailand,indonesia,guatemala,sri lanka,bangladesh,kuwait,tunisia,jamaica,nepal,saudi arabia,philippines,cambodia,panama,oman,ethiopia,uganda,mauritius,nicaragua,bahrain,qatar,paraguay,bolivia,mongolia,uzbekistan,algeria,el salvador,zambia,mozambique,cameroon,namibia,senegal,botswana,malawi,mauritania,angola,eritrea,gabon,burundi,togo,liberia,sudan,sierra leone,somalia,mali,zimbabwe,rwanda,lesotho,swaziland,madagascar,azerbaijan,burkina faso,guinea,djibouti,haiti,yemen,guyana,kazakhstan,belize,barbados,armenia,papua new guinea,dominican republic,iraq,turkmenistan,maldives,bhutan,suriname,seychelles,kyrgyzstan,georgia,cuba,dominica,united arab emirates,argentina,tajikistan,grenada,afghanistan,tonga,comoros,equatorial guinea,san marino,bermuda,vanuatu,solomon islands,tuvalu,kiribati,nauru,chad,gambia,cayman islands,anguilla,palau,montserrat,cook islands,marshall islands,niue,fiji,guam,gibraltar,american samoa,myanmar,aruba,trinidad and tobago,bahamas,tokelau,norfolk island,guinea-bissau,central african republic,falkland islands,antigua and barbuda,saint lucia,united kingdom,christmas island,iran,northern mariana islands,turks and caicos islands,reunion,cocos islands,antarctica,tanzania,saint kitts and nevis,united states,russia,vietnam,moldova,libya,syria,laos,bouvet island,korea,south korea,brunei,serbia,saint vincent and the grenadines,bosnia and herzegovina,british indian ocean territory,montenegro,north korea,micronesia,arabia,lybia,saudi,moscow,u.s.,asia,middle east,dubai,saudia,french,iranian,london,rome,saudis,afganistan,isreal,new york,iranians,uae,amsterdam,swiss,caribbean,mid east",
+      "activated": true,
+      "enabledForAllModels": false
+    }
+  ],
+  "regex_features": [],
+  "patterns": [],
+  "settings": []
+}

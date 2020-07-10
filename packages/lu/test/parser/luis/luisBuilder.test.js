@@ -59,5 +59,11 @@ assert.isTrue(luisObject.validate())
         assert.deepEqual(luisObject.entities[0].roles, ['firstName', 'lastName']);
     });
 
+    it('PL with enabledForAllModels = false is handled correctly', async () => {
+        let testJSON = require('../../fixtures/testcases/plFeatureDisabled.json');
+        const luisObject = LUISBuilder.fromJson(testJSON).parseToLU();
+        assert.equal(luisObject.content.includes('disabledForAllModels'), true);
+    })
+
     
 });
