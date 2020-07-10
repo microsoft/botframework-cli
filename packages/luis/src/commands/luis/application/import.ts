@@ -41,10 +41,11 @@ export default class LuisApplicationImport extends Command {
 
     inVal = inVal ? inVal.trim() : flags.in
 
-    const appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
+    let appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
     if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
 
     try {
+      appJSON = await this.formatInput(appJSON, name)
       let messageData = await Application.import({subscriptionKey, endpoint}, JSON.parse(appJSON), name)
 
       if (messageData.error) {
@@ -86,12 +87,17 @@ export default class LuisApplicationImport extends Command {
     await utils.writeUserConfig(userConfig, configDir)
   }
 
-  async formatInput(inputContent: string) {
-    let result = inputContent;
+  async formatInput(inputContent: string, name: string) {
+    let result = inputContent
     try {
       JSON.parse(inputContent)
+      /*tslint:disable: no-unused*/
     } catch (error) {
-      result = await Luis.fromLUAsync([inputContent])
+      let LuisObject = await Luis.fromContentAsync(inputContent)
+      if (!LuisObject.name) {
+        LuisObject.name = name
+      }
+      result = JSON.stringify(LuisObject)
     }
     return result
   }
