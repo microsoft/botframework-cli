@@ -43,7 +43,7 @@ describe('dialog:merge', async () => {
         process.chdir(srcDir)
     })
 
-    it('app.schema', async () => {
+    xit('app.schema', async () => {
         console.log('Start app.schema')
         let [merged, lines] = await merge(['schemas/*.schema'])
         assert(merged, 'Could not merge schemas')

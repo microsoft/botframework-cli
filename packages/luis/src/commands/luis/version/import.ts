@@ -4,7 +4,9 @@
  */
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import fetch from 'node-fetch'
+
+const Luis = require('@microsoft/bf-lu').V2.LuisBuilder
+import Version from './../../../api/version'
 const utils = require('../../../utils/index')
 
 export default class LuisVersionImport extends Command {
@@ -18,7 +20,7 @@ export default class LuisVersionImport extends Command {
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'Version to export (defaults to config:LUIS:versionId)'}),
+    versionId: flags.string({description: 'Version to import (defaults to config:LUIS:versionId)'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
     in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'}),
@@ -30,7 +32,6 @@ export default class LuisVersionImport extends Command {
     const flagLabels = Object.keys(LuisVersionImport.flags)
     const configDir = this.config.configDir
     const stdin = await this.readStdin()
-    const options: any = {}
 
     let {appId, versionId, endpoint, subscriptionKey, inVal} = await utils.processInputs(flags, flagLabels, configDir)
 
@@ -39,24 +40,12 @@ export default class LuisVersionImport extends Command {
 
     inVal = inVal ? inVal.trim() : flags.in
 
-    const appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
+    let appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
     if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
 
-    if (versionId) options.versionId = versionId
-
-    // const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     try {
-      // const response = await client.versions.importMethod(appId, JSON.parse(appJSON), options)
-
-      versionId = versionId ? '?versionId=' + versionId : ''
-      let url = endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/import' + versionId
-      const headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey
-      }
-      const response = await fetch(url, {method: 'POST', headers, body: appJSON})
-      const messageData = await response.json()
+      appJSON = await this.formatInput(appJSON, versionId)
+      const messageData = await Version.import({subscriptionKey, endpoint, appId}, JSON.parse(appJSON), versionId)
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)
@@ -69,4 +58,19 @@ export default class LuisVersionImport extends Command {
     }
   }
 
+  async formatInput(inputContent: string, versionId: string) {
+    let result = inputContent
+    try {
+      JSON.parse(inputContent)
+      /*tslint:disable: no-unused*/
+    } catch (error) {
+      let LuisObject = await Luis.fromContentAsync(inputContent)
+      if (!LuisObject.name) {
+        LuisObject.name = `version_${versionId}_app`
+      }
+
+      result = JSON.stringify(LuisObject)
+    }
+    return result
+  }
 }
