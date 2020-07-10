@@ -7,6 +7,7 @@ import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
 import Application from './../../../api/application'
 
+const Luis = require('@microsoft/bf-lu').V2.LuisBuilder
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationImport extends Command {
@@ -85,4 +86,13 @@ export default class LuisApplicationImport extends Command {
     await utils.writeUserConfig(userConfig, configDir)
   }
 
+  async formatInput(inputContent: string) {
+    let result = inputContent;
+    try {
+      JSON.parse(inputContent)
+    } catch (error) {
+      result = await Luis.fromLUAsync([inputContent])
+    }
+    return result
+  }
 }
