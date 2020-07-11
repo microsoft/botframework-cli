@@ -34,7 +34,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                "dialog:merge.*"
+                "dialog:merge.*csproj.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
@@ -195,8 +195,7 @@
                 "dialog:merge",
                 "schemas/*.schema",
                 "-o",
-                "schemas/app.schema",
-                "-d"
+                "schemas/app.schema"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/packages/dialog/test/commands/dialog"

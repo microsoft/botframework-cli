@@ -31,7 +31,7 @@ async function merge(patterns: string[], output?: string, verbose?: boolean, noN
         lines.push(msg)
     }
     let merger = new SchemaMerger(patterns, noName ? output || '' : output || ppath.join(tempDir, 'generated.schema'), verbose || false, logger, logger, logger, undefined, false, ppath.join(srcDir, 'nuget'))
-    let merged = await merger.mergeSchemas()
+    let merged = await merger.merge()
     return [merged, lines]
 }
 
