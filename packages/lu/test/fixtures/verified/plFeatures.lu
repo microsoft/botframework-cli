@@ -29,7 +29,7 @@
 
 > # Phrase list definitions
 
-@ phraselist phraselist1(interchangeable) = 
+@ phraselist phraselist1(interchangeable) disabledForAllModels = 
 	- who,why,where,what
 
 

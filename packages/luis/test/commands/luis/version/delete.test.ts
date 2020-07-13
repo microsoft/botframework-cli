@@ -38,7 +38,7 @@ describe('luis:version:delete', () => {
 
   test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
-  .delete(uri => uri.includes('version'))
+  .delete(uri => uri.includes('versions'))
   .reply(200)
   )
   .stdout()

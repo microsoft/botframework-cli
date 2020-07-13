@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationList extends Command {
@@ -29,20 +31,14 @@ export default class LuisApplicationList extends Command {
     const {flags} = this.parse(LuisApplicationList)
     const flagLabels = Object.keys(LuisApplicationList.flags)
     const configDir = this.config.configDir
-    const options: any = {}
 
     let {endpoint, subscriptionKey, force, out, skip, take} = await utils.processInputs(flags, flagLabels, configDir)
 
     const requiredProps = {endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
-    if (skip) options.skip = parseInt(skip, 10)
-    if (take) options.take = parseInt(take, 10)
-
     try {
-      const appList = await client.apps.list(options, undefined)
+      const appList = await Application.list({subscriptionKey, endpoint}, skip, take)
       if (out) {
         const writtenFilePath: string = await utils.writeToFile(out, appList, force)
         this.log(`\nList successfully written to file: ${writtenFilePath}`)

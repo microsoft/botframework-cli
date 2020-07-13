@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Train from './../../../api/train'
+
 const utils = require('../../../utils/index')
 
 export default class LuisTrainRun extends Command {
@@ -34,10 +36,8 @@ export default class LuisTrainRun extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId, versionId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     try {
-      const trainingRequestStatus = await client.train.trainVersion(appId, versionId)
+      const trainingRequestStatus = await Train.train({subscriptionKey, endpoint, appId}, versionId)
       if (trainingRequestStatus) {
         await utils.writeToConsole(trainingRequestStatus)
         const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : '\nTraining request successfully issued'
@@ -49,7 +49,7 @@ export default class LuisTrainRun extends Command {
           this.log('checking training status...')
         }
 
-        return this.checkTrainingStatus(client, appId, versionId, flags.json)
+        return this.checkTrainingStatus({subscriptionKey, endpoint, appId}, versionId, flags.json)
       }
     } catch (err) {
       throw new CLIError(`Failed to issue training request: ${err}`)
@@ -61,9 +61,9 @@ export default class LuisTrainRun extends Command {
     return new Promise((resolve: any) => setTimeout(resolve, ms))
   }
 
-  async checkTrainingStatus(client: any, appId: string, versionId: string, jsonOutput: boolean) {
+  async checkTrainingStatus(params: any, versionId: string, jsonOutput: boolean) {
     try {
-      const trainingStatusData = await client.train.getStatus(appId, versionId)
+      const trainingStatusData = await Train.getStatus(params, versionId)
       const inProgress = trainingStatusData.filter((model: any) => {
         if (model.details && model.details.status) {
           return model.details.status === 'InProgress' || model.details.status === 'Queued'
@@ -71,7 +71,7 @@ export default class LuisTrainRun extends Command {
       })
       if (inProgress.length > 0) {
         await this.timeout(1000)
-        await this.checkTrainingStatus(client, appId, versionId, jsonOutput)
+        await this.checkTrainingStatus(params, versionId, jsonOutput)
       } else {
         let completionMssg = ''
         trainingStatusData.map((model: any) => {

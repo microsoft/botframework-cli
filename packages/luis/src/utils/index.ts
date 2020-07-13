@@ -3,9 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
-import {LUISRuntimeClient} from '@azure/cognitiveservices-luis-runtime'
-import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {CLIError, utils} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
@@ -47,17 +44,6 @@ const createConfigFile = async (configPath: string) => {
 const writeUserConfig = async (userconfig: any, configPath: string) => {
   await fs.mkdirp(configPath)
   await fs.writeFile(path.join(configPath, 'config.json'), JSON.stringify(userconfig, null, 2))
-}
-
-const getLUISClient = (subscriptionKey: string, endpoint: string, runtime: boolean) => {
-  const authoringKey = subscriptionKey
-  const creds = new CognitiveServicesCredentials(authoringKey)
-
-  const luisClient = runtime ?
-    new LUISRuntimeClient(creds, endpoint) :
-    new LUISAuthoringClient(creds, endpoint)
-
-  return luisClient
 }
 
 const isDirectory = (path: string): boolean => {
@@ -124,7 +110,6 @@ const writeToFile = async (outputLocation: string, content: any, force: boolean)
 
 module.exports.createConfigFile = createConfigFile
 module.exports.getInputFromFile = getInputFromFile
-module.exports.getLUISClient = getLUISClient
 module.exports.getUserConfig = getUserConfig
 module.exports.processInputs = processInputs
 module.exports.validateRequiredProps = validateRequiredProps

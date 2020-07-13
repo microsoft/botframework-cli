@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationAssignazureaccount extends Command {
@@ -36,21 +38,14 @@ export default class LuisApplicationAssignazureaccount extends Command {
     const requiredProps = {appId, endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
 
-    const appJSON = {
-      azureSubscriptionId: flags.azureSubscriptionId,
-      resourceGroup: flags.resourceGroup,
-      accountName: flags.accountName,
-    }
-
     try {
-      let url = endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/azureaccounts'
-      const headers = {
-        Authorization: 'Bearer ' + flags.armToken,
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey
-      }
-      const response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(appJSON)})
-      const messageData = await response.json()
+      const messageData = await Application.assignAzureAccount(
+        {appId, endpoint, subscriptionKey},
+        flags.armToken,
+        flags.azureSubscriptionId,
+        flags.resourceGroup,
+        flags.accountName
+      )
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)

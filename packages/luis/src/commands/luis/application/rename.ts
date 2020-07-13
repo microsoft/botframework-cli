@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationRename extends Command {
@@ -40,16 +42,14 @@ export default class LuisApplicationRename extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
-    const applicationUpdateObject = {name, description}
-
     try {
-      const appUpdateStatus = await client.apps.update(appId, applicationUpdateObject)
+      const appUpdateStatus = await Application.rename({subscriptionKey, endpoint, appId}, name, description)
+
       if (appUpdateStatus.code === 'Success') {
         const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : 'App successfully renamed'
         this.log(output)
       }
+
     } catch (err) {
       throw new CLIError(`Failed to rename app: ${err}`)
     }

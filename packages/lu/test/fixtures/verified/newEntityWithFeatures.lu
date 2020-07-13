@@ -46,7 +46,7 @@
 
 > # Phrase list definitions
 
-@ phraselist profileDefinition(interchangeable) = 
+@ phraselist profileDefinition(interchangeable) disabledForAllModels = 
 	- I'm,my,I am
 
 
