@@ -249,7 +249,7 @@ export default class SchemaMerger {
     private currentKind = ''
 
     // Default JSON serialization options
-    private readonly jsonOptions = {spaces: '  ', EOL: os.EOL}
+    private readonly jsonOptions = { spaces: '  ', EOL: os.EOL }
 
     /**
      * Merger to combine component .schema and .uischema files to make a custom schema.
@@ -275,26 +275,6 @@ export default class SchemaMerger {
         this.nugetRoot = nugetRoot || ''
     }
 
-    // Push a child on the current parent and make it the new parent
-    private pushParent(path: string, name?: string, version?: string): Component {
-        let component = new Component(path, name, version)
-        let child = this.currentParent().addChild(component)
-        this.parents.push(child)
-        this.currentFile = path
-        return component
-    }
-
-    // Pop the current parent
-    private popParent() {
-        this.parents.pop()
-        this.currentFile = this.currentParent().path
-    }
-
-    // Return the current parent
-    private currentParent(): Component {
-        return this.parents[this.parents.length - 1]
-    }
-
     /** 
      * Verify and merge component .schema and .uischema together into a single .schema and .uischema.
      * Also ensures that for C# all declarative assets are output to <project>/Generated/<component>.
@@ -316,6 +296,26 @@ export default class SchemaMerger {
         return !this.failed
     }
 
+    // Push a child on the current parent and make it the new parent
+    private pushParent(path: string, name?: string, version?: string): Component {
+        let component = new Component(path, name, version)
+        let child = this.currentParent().addChild(component)
+        this.parents.push(child)
+        this.currentFile = path
+        return component
+    }
+
+    // Pop the current parent
+    private popParent() {
+        this.parents.pop()
+        this.currentFile = this.currentParent().path
+    }
+
+    // Return the current parent
+    private currentParent(): Component {
+        return this.parents[this.parents.length - 1]
+    }
+
     /** 
      * Merge component schemas together into a single self-contained .schema file.
      * $role of implements(interface) hooks up defintion to interface.
@@ -325,7 +325,7 @@ export default class SchemaMerger {
      * Does extensive error checking and validation to ensure information is present and consistent.
      */
     private async mergeSchemas(): Promise<any> {
-        let finalSchema: any = undefined
+        let fullSchema: any
 
         // Delete existing output
         await fs.remove(this.output + '.schema')
@@ -411,7 +411,7 @@ export default class SchemaMerger {
             .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
             .sort()
             .map(kind => {
-                return {$ref: `#/definitions/${kind}`}
+                return { $ref: `#/definitions/${kind}` }
             })
         this.addSchemaDefinitions()
 
@@ -422,7 +422,7 @@ export default class SchemaMerger {
             for (let key of Object.keys(this.definitions).sort()) {
                 finalDefinitions[key] = this.definitions[key]
             }
-            finalSchema = {
+            let finalSchema: any = {
                 $schema: this.metaSchemaId,
                 type: 'object',
                 title: 'Component kinds',
@@ -447,17 +447,16 @@ export default class SchemaMerger {
             if (!this.failed) {
                 // Verify all refs work
                 let start = process.hrtime()
-                await parser.dereference(clone(finalSchema))
+                fullSchema = await parser.dereference(clone(finalSchema))
                 let end = process.hrtime(start)[1] / 1000000000
                 if (this.verbose) {
                     this.log(`Expanding all $ref took ${end} seconds`)
                 }
-
                 this.log(`Writing ${this.currentFile}`)
                 await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
             }
         }
-        return finalSchema
+        return fullSchema
     }
 
     /** 
@@ -512,10 +511,14 @@ export default class SchemaMerger {
                             this.parsingError(e)
                         }
                     }
-                    
-                    // Verify
-                    // 1) Kind exists in schema
-                    // 2) Properties are recursively found in schema
+
+                    let kindDef = schema.definitions[kindName]
+                    if (!kindDef) {
+                        this.error(`${kindName} does not exist in schema`)
+                    } else if (locale[kindName].formOptions) {
+                        // Verify properties exist
+
+                    }
                 }
                 if (!this.failed) {
                     for (let prop in result) {
@@ -526,6 +529,48 @@ export default class SchemaMerger {
                 }
             }
         }
+    }
+
+    // {type: object, properties: {}}
+    // Definition of a property can be:
+    // 1) {type: object, properties: {}}
+    // 2) {type: array, items: bool | {}}
+    // 3) {anyOf: [definitions]}
+    // Given a ui property name
+    // 1) Get that property name directly or from anyof with $ref
+    // If ui definition has properties then type must be object
+
+    // Given schema properties object and ui schema properties object, check to ensure 
+    // each ui schema property exists in schema
+    private validateProperties(path: string, schema: any, uiProps: object): void {
+        for (let [prop, uiProp] of Object.entries(uiProps)) {
+            let newPath = `${path}.${prop}`
+            let newSchema = this.propertyDefinition(schema, prop)
+            if (!newSchema) {
+                this.uiError(path)
+            } else if (uiProp.properties) {
+                this.validateProperties(newPath, newSchema, uiProp.properties)
+            }
+        }
+    }
+
+    // Return the schema definition for property or undefined if none
+    private propertyDefinition(schema: any, property: string): any {
+        if (typeof schema === 'object') {
+            if (schema.type === 'object') {
+                return schema.properties[property]
+            } else if (schema.type === 'array') {
+                return this.propertyDefinition(schema.items, property)
+            } else if (schema.anyOf) {
+                for (let choice of schema.anyOf) {
+                    let def = this.propertyDefinition(choice, property)
+                    if (def) {
+                        return def
+                    }
+                }
+            }
+        }
+        return
     }
 
     // Validate against component schema
@@ -839,7 +884,7 @@ export default class SchemaMerger {
                     record = []
                     map.set(name, record)
                 }
-                record.push({path: ppath.resolve(path), component})
+                record.push({ path: ppath.resolve(path), component })
             }
         }
     }
@@ -910,7 +955,7 @@ export default class SchemaMerger {
         if (!this.nugetRoot) {
             this.nugetRoot = ''
             try {
-                const {stdout} = await exec('dotnet nuget locals global-packages --list')
+                const { stdout } = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
                 let start = stdout.indexOf(name)
                 if (start > -1) {
@@ -1011,7 +1056,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
+                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -1214,7 +1259,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     private addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
+        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
@@ -1398,6 +1443,12 @@ export default class SchemaMerger {
         } else {
             this.error(`Error ${msg}`)
         }
+        this.failed = true
+    }
+
+    // Generic error message
+    private uiError(path: string): void {
+        this.error(`Error ${path} does not exist in schema`)
         this.failed = true
     }
 }
