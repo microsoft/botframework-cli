@@ -68,7 +68,6 @@ class LUParser {
             } else {
                 nestedIntentSections.forEach(section => {
                     let emptyIntentSection = new SimpleIntentSection();
-                    emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
                     emptyIntentSection.Name = section.Name;
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
                     let error = BuildDiagnostic({
