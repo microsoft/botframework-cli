@@ -2,14 +2,15 @@ const NestedIntentSectionContext = require('./generated/LUFileParser').LUFilePar
 const SimpleIntentSection = require('./simpleIntentSection');
 const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const NEWLINE = require('os').EOL;
+const BaseSection = require('./baseSection');
 
-class NestedIntentSection {
+class NestedIntentSection  extends BaseSection {
     /**
      * 
      * @param {NestedIntentSectionContext} parseTree 
      */
     constructor(parseTree, content) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.NESTEDINTENTSECTION;
         this.Name = this.ExtractName(parseTree);
         this.Body = this.ExtractBody(parseTree, content);
@@ -22,6 +23,8 @@ class NestedIntentSection {
         }
         
         this.Id = `${this.SectionType}_${this.Name}`;
+        this.StartLine = parseTree.start.line - 1;
+        this.StopLine = parseTree.stop.line - 1;
     }
 
     ExtractName(parseTree) {

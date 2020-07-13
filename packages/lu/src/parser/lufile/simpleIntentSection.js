@@ -6,14 +6,15 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const NEWLINE = require('os').EOL;
+const BaseSection = require('./baseSection');
 
-class SimpleIntentSection {
+class SimpleIntentSection  extends BaseSection {
     /**
      * 
      * @param {SimpleIntentSectionContext} parseTree 
      */
     constructor(parseTree, content) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.SIMPLEINTENTSECTION;
         this.UtteranceAndEntitiesMap = [];
         this.Entities = [];
@@ -30,6 +31,8 @@ class SimpleIntentSection {
             this.Errors = this.Errors.concat(result.errors);
             this.Id = `${this.SectionType}_${this.Name}`;
             this.Body = this.ExtractBody(parseTree, content)
+            this.StartLine = parseTree.start.line - 1;
+            this.StopLine = parseTree.stop.line - 1;
         }
     }
 

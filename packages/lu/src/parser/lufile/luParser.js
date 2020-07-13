@@ -17,19 +17,37 @@ const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const NEWLINE = require('os').EOL;
 
 class LUParser {
+
     /**
-     * @param {string} text
+     * 
+     * @param {string} text 
+     * @param {LUResource} luResource 
      */
-    static parse(text) {
+    static parseWithRef(text, luResource) {
         if (text === undefined || text === '') {
             return new LUResource([], '', []);
         }
 
-        let sections = [];
-        let content = text;
+        const sectionEnabled = luResource ? this.isSectionEnabled(luResource.Sections) : undefined;
+
+        return this.parse(text, sectionEnabled);
+    }
+
+    /**
+     * @param {string} text
+     */
+    static parse(text, sectionEnabled) {
+        if (text === undefined || text === '') {
+            return new LUResource([], '', []);
+        }
 
         let {fileContent, errors} = this.getFileContent(text);
 
+        return this.extractFileContent(fileContent, text, errors, sectionEnabled);
+    }
+
+    static extractFileContent(fileContent, content, errors, sectionEnabled) {
+        let sections = [];
         try {
             let modelInfoSections = this.extractModelInfoSections(fileContent);
             modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
@@ -41,7 +59,7 @@ class LUParser {
         }
 
         try {
-            let isSectionEnabled = this.isSectionEnabled(sections);
+            let isSectionEnabled = sectionEnabled === undefined ?  this.isSectionEnabled(sections) : sectionEnabled;
 
             let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
             nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
@@ -301,17 +319,16 @@ class LUParser {
      * @param {string} content
      */
     static extractSectionBody(sections, content) {
-        sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
         const originList = content.split(/\r?\n/)
         let qnaSectionIndex = 0
         sections.forEach(function (section, index) {
             if (section.SectionType === SectionType.SIMPLEINTENTSECTION
                 || section.SectionType === SectionType.NESTEDINTENTSECTION
                 || section.SectionType === SectionType.QNASECTION) {
-                const startLine = section.ParseTree.start.line - 1
+                const startLine = section.startLine;
                 let stopLine
                 if (index + 1 < sections.length) {
-                    stopLine = sections[index + 1].ParseTree.start.line - 1
+                    stopLine = sections[index + 1].StartLine - 1
                     if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine >= stopLine || originList.Length <= stopLine) {
                         throw new Error("index out of range.")
                     }
@@ -335,9 +352,6 @@ class LUParser {
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
                     LUParser.extractSectionBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
                 }
-            } else {
-                section.StartLine = section.ParseTree.start.line
-                section.StopLine = section.ParseTree.stop.line - 1
             }
         })
     }

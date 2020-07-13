@@ -3,7 +3,7 @@ const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const QNA_GENERIC_SOURCE = "custom editorial";
 
-class QnaSection {
+class QnaSection extends BaseSection {
     /**
      * 
      * @param {QnaSectionContext} parseTree 
@@ -25,6 +25,8 @@ class QnaSection {
         this.Errors = this.Errors.concat(result.errors);
         this.QAPairId = this.ExtractAssignedId(parseTree);
         this.source = this.ExtractSourceInfo(parseTree);
+        this.StartLine = parseTree.start.line - 1;
+        this.StopLine = parseTree.stop.line - 1;
     }
 
     ExtractSourceInfo(parseTree) {
