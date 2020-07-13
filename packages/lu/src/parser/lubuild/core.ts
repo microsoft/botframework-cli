@@ -373,32 +373,6 @@ export class LuBuildCore {
     }
   }
 
-  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>, crosstrainedRecognizers: Array<CrossTrainedRecognizer>)
-    : Array<any> {
-    let contents = new Array<any>()
-    for (const recognizer of recognizers) {
-      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
-      contents.push(content)
-    }
-
-    for (const multiRecognizer of multiRecognizers) {
-      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
-      contents.push(multiLangContent)
-    }
-
-    for (const setting of settings) {
-      const settingsContent = new Content(setting.save(), new LUOptions(path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath()))
-      contents.push(settingsContent)
-    }
-
-    for (const crosstrainedRecognizer of crosstrainedRecognizers) {
-      const crosstrainedContent = new Content(crosstrainedRecognizer.save(), new LUOptions(path.basename(crosstrainedRecognizer.getDialogPath()), true, '', crosstrainedRecognizer.getDialogPath()))
-      contents.push(crosstrainedContent)
-    }
-
-    return contents
-  }
-
   private updateVersionValue(versionId: string) {
     let numberVersionId = parseFloat(versionId)
     if (isNaN(numberVersionId)) {

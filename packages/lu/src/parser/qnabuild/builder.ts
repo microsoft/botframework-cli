@@ -22,6 +22,7 @@ const Content = require('./../lu/qna')
 const KB = require('./../qna/qnamaker/kb')
 const NEWLINE = require('os').EOL
 const recognizerType = require('./../utils/enums/recognizertypes')
+const LUOptions = require('./../lu/luOptions')
 
 export class Builder {
   private readonly handler: (input: string) => any
@@ -37,11 +38,11 @@ export class Builder {
     region: string,
     culture: string,
     schema?: string) {
-    let multiRecognizer: any
+    let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings: any
     let recognizers = new Map<string, Recognizer>()
-    let qnaContents = new Map<string, string>()
-    let crosstrainedRecognizer: any
+    let qnaContents = new Map<string, any>()
+    let crosstrainedRecognizers = new Map<string, CrossTrainedRecognizer>()
 
     for (const file of files) {
       let fileCulture: string
@@ -57,10 +58,9 @@ export class Builder {
       }
 
       const fileFolder = path.dirname(file)
-
-      if (crosstrainedRecognizer === undefined) {
-        const crossTrainedFileName = fileName + '.lu.qna.dialog'
-        const crossTrainedRecognizerPath = path.join(fileFolder, crossTrainedFileName)
+      const crossTrainedFileName = fileName + '.lu.qna.dialog'
+      const crossTrainedRecognizerPath = path.join(fileFolder, crossTrainedFileName)
+      if (!crosstrainedRecognizers.has(fileName)) {
         let crosstrainedRecognizerContent = []
         let crosstrainedRecognizerSchema = schema
         if (fs.existsSync(crossTrainedRecognizerPath)) {
@@ -70,7 +70,7 @@ export class Builder {
           this.handler(`${crossTrainedRecognizerPath} loaded\n`)
         }
 
-        crosstrainedRecognizer = new CrossTrainedRecognizer(crossTrainedRecognizerPath, crosstrainedRecognizerContent, crosstrainedRecognizerSchema as string)
+        crosstrainedRecognizers.set(fileName, new CrossTrainedRecognizer(crossTrainedRecognizerPath, crosstrainedRecognizerContent, crosstrainedRecognizerSchema as string))
       }
 
       let fileContent = ''
@@ -93,8 +93,8 @@ export class Builder {
         throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
-      if (multiRecognizer === undefined) {
-        const multiRecognizerPath = path.join(fileFolder, `${botName}.qna.dialog`)
+      const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
+      if (!multiRecognizers.has(fileName)) {
         let multiRecognizerContent = {}
         let multiRecognizerSchema = schema
         if (fs.existsSync(multiRecognizerPath)) {
@@ -104,7 +104,7 @@ export class Builder {
           this.handler(`${multiRecognizerPath} loaded\n`)
         }
 
-        multiRecognizer = new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent, multiRecognizerSchema as string)
+        multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent, multiRecognizerSchema as string))
       }
 
       if (settings === undefined) {
@@ -118,32 +118,33 @@ export class Builder {
         settings = new Settings(settingsPath, settingsContent)
       }
 
-      const content = new Content(fileContent, new qnaOptions(botName, true, fileCulture, file))
+      const dialogName = `${fileName}.${fileCulture}.qna`
+      const dialogFile = path.join(fileFolder, dialogName)
+      let existingDialogObj: any
+      if (fs.existsSync(dialogFile)) {
+        existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
+        this.handler(`${dialogFile} loaded\n`)
+      }
 
-      if (!recognizers.has(content.name)) {
-        const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
-        let existingDialogObj: any
-        if (fs.existsSync(dialogFile)) {
-          existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
-          this.handler(`${dialogFile} loaded\n`)
-        }
+      if (existingDialogObj && schema) {
+        existingDialogObj.$schema = schema
+      }
 
-        if (existingDialogObj && schema) {
-          existingDialogObj.$schema = schema
-        }
-
-        let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj, schema)
-        recognizers.set(content.name, recognizer)
-        qnaContents.set(content.name, content)
+      let recognizer = Recognizer.load(file, dialogName, dialogFile, settings, existingDialogObj, schema)
+      recognizers.set(dialogName, recognizer)
+      
+      if (!qnaContents.has(fileCulture)) {
+        let contentPerbotName = new Content(fileContent, new qnaOptions(botName, true, fileCulture, file))
+        qnaContents.set(fileCulture, contentPerbotName)
       } else {
-        // merge contents of qna files with same name
-        let existingContent: any = qnaContents.get(content.name)
-        existingContent.content = `${existingContent.content}${NEWLINE}${NEWLINE}${content.content}`
-        qnaContents.set(content.name, existingContent)
+        // merge contents of qna files with same culture
+        let existingContent: any = qnaContents.get(fileCulture)
+        existingContent.content = `${existingContent.content}${NEWLINE}${NEWLINE}${fileContent}`
+        qnaContents.set(fileCulture, existingContent)
       }
     }
 
-    return {qnaContents: [...qnaContents.values()], recognizers, multiRecognizer, settings, crosstrainedRecognizer}
+    return {qnaContents: [...qnaContents.values()], recognizers, multiRecognizers, settings, crosstrainedRecognizers}
   }
 
   async build(
@@ -154,9 +155,9 @@ export class Builder {
     botName: string,
     suffix: string,
     fallbackLocale: string,
-    multiRecognizer?: MultiLanguageRecognizer,
+    multiRecognizers?: Map<string, MultiLanguageRecognizer>,
     settings?: Settings,
-    crosstrainedRecognizer?: CrossTrainedRecognizer,
+    crosstrainedRecognizers?: Map<string, CrossTrainedRecognizer>,
     dialogType?: string) {
     // qna api TPS which means concurrent transactions to qna maker api in 1 second
     let qnaApiTps = 3
@@ -164,95 +165,134 @@ export class Builder {
     // set qna maker call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
     let delayDuration = 1100
 
-    const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
-    const kbs = (await qnaBuildCore.getKBList()).knowledgebases
+    //default returned recognizer values
+    let recognizerValues: Recognizer[] = []
 
-    // here we do a while loop to make full use of qna tps capacity
-    while (qnaContents.length > 0) {
-      // get a number(set by qnaApiTps) of contents for each loop
-      const subQnaContents = qnaContents.splice(0, qnaApiTps)
+    let multiRecognizerValues: MultiLanguageRecognizer[] = []
 
-      // concurrently handle applications
-      await Promise.all(subQnaContents.map(async content => {
-        // init current kb object from qna content
-        const qnaObj = await this.initQnaFromContent(content, botName, suffix)
-        let currentKB = qnaObj.kb
-        let currentAlt = qnaObj.alterations
-        let culture = content.language as string
+    let settingsValue: any
 
-        // get recognizer
-        let recognizer = recognizers.get(content.name) as Recognizer
+    let crosstrainedRecognizerValues: CrossTrainedRecognizer[] = []
 
-        let hostName = ''
+    // filter if all qna contents are emtty
+    let isAllQnAEmpty = fileHelper.isAllFilesSectionEmpty(qnaContents)
 
-        // find if there is a matched name with current kb under current authoring key
-        if (!recognizer.getKBId()) {
-          for (let kb of kbs) {
-            if (kb.name === currentKB.name) {
-              recognizer.setKBId(kb.id)
-              hostName = kb.hostName
-              break
+    if (!isAllQnAEmpty) {
+      const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
+      const kbs = (await qnaBuildCore.getKBList()).knowledgebases
+
+      // here we do a while loop to make full use of qna tps capacity
+      while (qnaContents.length > 0) {
+        // get a number(set by qnaApiTps) of contents for each loop
+        const subQnaContents = qnaContents.splice(0, qnaApiTps)
+
+        // concurrently handle applications
+        await Promise.all(subQnaContents.map(async content => {
+          // init current kb object from qna content
+          const qnaObj = await this.initQnaFromContent(content, botName, suffix)
+          let currentKB = qnaObj.kb
+          let currentAlt = qnaObj.alterations
+          let culture = content.language as string
+
+          let hostName = ''
+
+          // get recognizer
+          let recognizersOfContentCulture = []
+          for (let [dialogFileName, recognizer] of recognizers) {
+            const fileNameSplit = dialogFileName.split('.')
+            if (fileNameSplit[fileNameSplit.length - 2] === culture) {
+              // find if there is a matched name with current kb under current authoring key
+              if (!recognizer.getKBId()) {
+                for (let kb of kbs) {
+                  if (kb.name === currentKB.name) {
+                    recognizer.setKBId(kb.id)
+                    hostName = kb.hostName
+                    break
+                  }
+                }
+              }
+
+              recognizersOfContentCulture.push(recognizer)
             }
           }
-        }
 
-        let needPublish = false
+          let needPublish = false
 
-        // compare models to update the model if a match found
-        // otherwise create a new kb
-        if (recognizer.getKBId() && recognizer.getKBId() !== '') {
-          // To see if need update the model
-          needPublish = await this.updateKB(currentKB, qnaBuildCore, recognizer, delayDuration)
-        } else {
-          // create a new kb
-          needPublish = await this.createKB(currentKB, qnaBuildCore, recognizer, delayDuration)
-        }
-
-        if (needPublish) {
-          // train and publish kb
-          await this.publishKB(qnaBuildCore, recognizer, currentKB.name, delayDuration)
-        }
-
-        if (hostName === '') hostName = (await qnaBuildCore.getKB(recognizer.getKBId())).hostName
-
-        hostName += '/qnamaker'
-
-        // update alterations if there are
-        if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
-          this.handler('Replacing alterations...\n')
-          await qnaBuildCore.replaceAlt(currentAlt)
-        }
-
-        // update multiLanguageRecognizer asset
-        if (multiRecognizer) {
-          multiRecognizer.recognizers[culture] = path.basename(recognizer.getDialogPath(), '.dialog')
-          if (culture.toLowerCase() === fallbackLocale.toLowerCase()) {
-            multiRecognizer.recognizers[''] = path.basename(recognizer.getDialogPath(), '.dialog')
+          // compare models to update the model if a match found
+          // otherwise create a new kb
+          let recognizerWithKBId = recognizersOfContentCulture.find((r: Recognizer) => r.getKBId() !== '')
+          if (recognizerWithKBId !== undefined) {
+            // To see if need update the model
+            needPublish = await this.updateKB(currentKB, qnaBuildCore, recognizerWithKBId, delayDuration)
+          } else {
+            // create a new kb
+            needPublish = await this.createKB(currentKB, qnaBuildCore, recognizersOfContentCulture, delayDuration)
           }
-        }
 
-        if (crosstrainedRecognizer) {
-          if (!crosstrainedRecognizer.recognizers.includes(botName + '.qna')) {
-            crosstrainedRecognizer.recognizers.push(botName + '.qna')
+          const publishRecognizer = recognizerWithKBId || recognizersOfContentCulture[0]
+
+          if (needPublish) {
+            // train and publish kb
+            await this.publishKB(qnaBuildCore, publishRecognizer, currentKB.name, delayDuration)
           }
-        }
 
-        // update settings asset
-        if (settings) {
-          settings.qna[content.name.split('.').join('_').replace(/-/g, '_')] = recognizer.getKBId()
-          settings.qna.hostname = hostName
-        }
-      }))
+          if (hostName === '') hostName = (await qnaBuildCore.getKB(publishRecognizer.getKBId())).hostName
+
+          hostName += '/qnamaker'
+
+          // update alterations if there are
+          if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
+            this.handler('Replacing alterations...\n')
+            await qnaBuildCore.replaceAlt(currentAlt)
+          }
+
+          for (const recognizer of recognizersOfContentCulture) {
+            // update multiLanguageRecognizer asset
+            const dialogName = path.basename(recognizer.getDialogPath(),`.${culture}.qna.dialog`)
+            const dialogFileName = path.basename(recognizer.getDialogPath(), '.dialog')
+            if (multiRecognizers && multiRecognizers.has(dialogName)) {
+              let multiRecognizer = multiRecognizers.get(dialogName) as MultiLanguageRecognizer
+              multiRecognizer.recognizers[culture] = dialogFileName
+              if (culture.toLowerCase() === fallbackLocale.toLowerCase()) {
+                multiRecognizer.recognizers[''] = dialogFileName
+              }
+            }
+
+            if (crosstrainedRecognizers && crosstrainedRecognizers.has(dialogName)) {
+              let crosstrainedRecognizer = crosstrainedRecognizers.get(dialogName) as CrossTrainedRecognizer
+              if (!crosstrainedRecognizer.recognizers.includes(dialogName + '.qna')) {
+                crosstrainedRecognizer.recognizers.push(dialogName + '.qna')
+              }
+            }
+
+            // update settings asset
+            if (settings) {
+              settings.qna[dialogFileName.split('.').join('_').replace(/-/g, '_')] = recognizer.getKBId()
+              settings.qna.hostname = hostName
+            }
+          }
+        }))
+      }
+
+      // write dialog assets 
+      if (recognizers) {
+        recognizerValues = Array.from(recognizers.values())
+      }
+
+      if (multiRecognizers) {
+        multiRecognizerValues = Array.from(multiRecognizers.values())
+      }
+      
+      if (settings) {
+        settingsValue = settings as Settings
+      }
     }
 
-    // write dialog assets
-    let recognizerValues: Recognizer[] = []
-    if (recognizers) {
-      recognizerValues = Array.from(recognizers.values())
+    if (dialogType === recognizerType.CROSSTRAINED && crosstrainedRecognizers) {
+      crosstrainedRecognizerValues = Array.from(crosstrainedRecognizers.values())
     }
 
-    crosstrainedRecognizer = dialogType === recognizerType.CROSSTRAINED ? crosstrainedRecognizer : undefined
-    const dialogContents = qnaBuildCore.generateDeclarativeAssets(recognizerValues, multiRecognizer as MultiLanguageRecognizer, settings as Settings, crosstrainedRecognizer)
+    const dialogContents = this.generateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingsValue, crosstrainedRecognizerValues)
 
     return dialogContents
   }
@@ -363,6 +403,32 @@ export class Builder {
     return writeDone
   }
 
+  generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings, crosstrainedRecognizers: Array<CrossTrainedRecognizer>)
+    : Array<any> {
+    let contents = new Array<any>()
+    for (const recognizer of recognizers) {
+      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
+      contents.push(content)
+    }
+
+    for (const multiRecognizer of multiRecognizers) {
+      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
+      contents.push(multiLangContent)
+    }
+
+    if(settings) {
+      const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
+      contents.push(settingsContent)
+    }
+
+    for (const crosstrainedRecognizer of crosstrainedRecognizers) {
+      const crosstrainedContent = new Content(crosstrainedRecognizer.save(), new LUOptions(path.basename(crosstrainedRecognizer.getDialogPath()), true, '', crosstrainedRecognizer.getDialogPath()))
+      contents.push(crosstrainedContent)
+    }
+
+    return contents
+  }
+
   async initQnaFromContent(content: any, botName: string, suffix: string) {
     let currentQna = await qnaMakerBuilder.fromContent(content.content)
     if (!currentQna.kb.name) currentQna.kb.name = `${botName}(${suffix}).${content.language}.qna`
@@ -395,7 +461,7 @@ export class Builder {
     }
   }
 
-  async createKB(currentKB: any, qnaBuildCore: QnaBuildCore, recognizer: Recognizer, delayDuration: number) {
+  async createKB(currentKB: any, qnaBuildCore: QnaBuildCore, recognizers: Recognizer[], delayDuration: number) {
     this.handler(`Creating qnamaker KB: ${currentKB.name}...\n`)
     await delay(delayDuration)
     const emptyKBJson = {
@@ -406,18 +472,21 @@ export class Builder {
     }
     let response = await qnaBuildCore.importKB(emptyKBJson)
     let operationId = response.operationId
+    let kbId = ''
 
     try {
       const opResult = await this.getKBOperationStatus(qnaBuildCore, operationId, delayDuration)
-      recognizer.setKBId(opResult.resourceLocation.split('/')[2])
+      kbId = opResult.resourceLocation.split('/')[2]
       await delay(delayDuration)
-      await qnaBuildCore.replaceKB(recognizer.getKBId(), currentKB)
+      await qnaBuildCore.replaceKB(kbId, currentKB)
 
       this.handler(`Creating finished for kb ${currentKB.name}\n`)
     } catch (err) {
       err.text = `Creating knowledge base failed: \n${err.text}`
       throw err
     }
+
+    recognizers.forEach((recogizer: Recognizer) => recogizer.setKBId(kbId))
 
     return true
   }

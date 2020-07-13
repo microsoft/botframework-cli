@@ -3,15 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import {Recognizer} from './recognizer'
-import {MultiLanguageRecognizer} from './multi-language-recognizer'
-import {Settings} from './settings'
-import {CrossTrainedRecognizer} from './cross-trained-recognizer'
-import * as path from 'path'
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
-const Content = require('./../lu/qna')
-const LUOptions = require('./../lu/luOptions')
 const {ServiceBase} = require('./serviceBase')
 const NEWLINE = require('os').EOL
 
@@ -121,32 +114,6 @@ export class QnaBuildCore {
     }
 
     return endpointKeys
-  }
-
-  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizer: MultiLanguageRecognizer, settings: Settings, crosstrainedRecognizer?: CrossTrainedRecognizer)
-    : Array<any> {
-    let contents = new Array<any>()
-    for (const recognizer of recognizers) {
-      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
-      contents.push(content)
-    }
-
-    if (multiRecognizer) {
-      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
-      contents.push(multiLangContent)
-    }
-
-    if (settings) {
-      const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
-      contents.push(settingsContent)
-    }
-
-    if (crosstrainedRecognizer) {
-      const crosstrainedContent = new Content(crosstrainedRecognizer.save(), new LUOptions(path.basename(crosstrainedRecognizer.getDialogPath()), true, '', crosstrainedRecognizer.getDialogPath()))
-      contents.push(crosstrainedContent)
-    }
-
-    return contents
   }
 
   public isKBEqual(kbA: any, kbB: any): boolean {

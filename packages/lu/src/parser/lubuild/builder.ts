@@ -36,7 +36,7 @@ export class Builder {
     region: string,
     schema?: string) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
-    let settings = new Map<string, Settings>()
+    let settings: any
     let recognizers = new Map<string, Recognizer>()
     let luContents: Array<any> = []
     let crosstrainedRecognizers = new Map<string, CrossTrainedRecognizer>()
@@ -44,7 +44,6 @@ export class Builder {
     for (const file of files) {
       let fileCulture: string
       let fileName: string
-      const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
 
       let cultureFromPath = fileHelper.getCultureFromPath(file)
       if (cultureFromPath) {
@@ -75,6 +74,7 @@ export class Builder {
       let fileContent = ''
       let result
       let luisObj
+      const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
       try {
         result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
         luisObj = new Luis(result)
@@ -105,15 +105,15 @@ export class Builder {
         multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent, multiRecognizerSchema as string))
       }
 
-      const settingsPath = path.join(fileFolder, `luis.settings.${suffix}.${region}.json`)
-      if (!settings.has(fileFolder)) {
+      if (settings === undefined) {
+        const settingsPath = path.join(fileFolder, `luis.settings.${suffix}.${region}.json`)
         let settingsContent = {}
         if (fs.existsSync(settingsPath)) {
           settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).luis
           this.handler(`${settingsPath} loaded\n`)
         }
 
-        settings.set(fileFolder, new Settings(settingsPath, settingsContent))
+        settings = new Settings(settingsPath, settingsContent)
       }
 
       const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
@@ -130,7 +130,7 @@ export class Builder {
         existingDialogObj.$schema = schema
       }
 
-      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings.get(fileFolder) as Settings, existingDialogObj, schema)
+      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj, schema)
       recognizers.set(content.name, recognizer)
     }
 
@@ -157,7 +157,7 @@ export class Builder {
     fallbackLocale: string,
     deleteOldVersion: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
-    settings?: Map<string, Settings>,
+    settings?: Settings,
     crosstrainedRecognizers?: Map<string, CrossTrainedRecognizer>,
     dialogType?: string,
     luisAPITPS?: number,
@@ -177,95 +177,104 @@ export class Builder {
     // set retry duration for rate limit luis API failure
     let durationForRetry = retryDuration || 1000
 
-    const luBuildCore = new LuBuildCore(authoringKey, endpoint, countForRetry, durationForRetry)
-    const apps = await luBuildCore.getApplicationList()
-
-    // here we do a while loop to make full use of luis tps capacity
-    while (luContents.length > 0) {
-      // get a number(set by luisApiTps) of contents for each loop
-      const subLuContents = luContents.splice(0, luisApiTps)
-
-      // concurrently handle applications
-      await Promise.all(subLuContents.map(async content => {
-        // init current application object from lu content
-        let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
-
-        // get recognizer
-        let recognizer = recognizers.get(content.name) as Recognizer
-
-        // find if there is a matched name with current app under current authoring key
-        if (!recognizer.getAppId()) {
-          for (let app of apps) {
-            if (app.name === currentApp.name) {
-              recognizer.setAppId(app.id)
-              break
-            }
-          }
-        }
-
-        let needTrainAndPublish = false
-
-        // compare models to update the model if a match found
-        // otherwise create a new application
-        if (recognizer.getAppId() && recognizer.getAppId() !== '') {
-          // To see if need update the model
-          needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, deleteOldVersion)
-        } else {
-          // create a new application
-          needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
-        }
-
-        if (needTrainAndPublish) {
-          // train and publish application
-          await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket)
-        }
-
-        // update multiLanguageRecognizer asset
-        if (multiRecognizers && multiRecognizers.has(content.id)) {
-          let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
-          multiRecognizer.recognizers[currentApp.culture] = path.basename(recognizer.getDialogPath(), '.dialog')
-          if (currentApp.culture.toLowerCase() === fallbackLocale.toLowerCase()) {
-            multiRecognizer.recognizers[''] = path.basename(recognizer.getDialogPath(), '.dialog')
-          }
-        }
-
-        if (crosstrainedRecognizers && crosstrainedRecognizers.has(content.id)) {
-          let crosstrainedRecognizer = crosstrainedRecognizers.get(content.id) as CrossTrainedRecognizer
-          if (!crosstrainedRecognizer.recognizers.includes(content.id + '.lu')) {
-            crosstrainedRecognizer.recognizers.push(content.id + '.lu')
-          }
-        }
-
-        // update settings asset
-        if (settings && settings.has(path.dirname(content.path))) {
-          let setting = settings.get(path.dirname(content.path)) as Settings
-          setting.luis[content.name.split('.').join('_').replace(/-/g, '_')] = recognizer.getAppId()
-        }
-      }))
-    }
-
-    // write dialog assets
+    //default returned recognizer values
     let recognizerValues: Recognizer[] = []
-    if (recognizers) {
-      recognizerValues = Array.from(recognizers.values())
-    }
 
     let multiRecognizerValues: MultiLanguageRecognizer[] = []
-    if (multiRecognizers) {
-      multiRecognizerValues = Array.from(multiRecognizers.values())
-    }
 
-    let settingValues: Settings[] = []
-    if (settings) {
-      settingValues = Array.from(settings.values())
-    }
+    let settingsValue: any
 
     let crosstrainedRecognizerValues: CrossTrainedRecognizer[] = []
+
+    // filter if all lu contents are emtty
+    let isAllLuEmpty = fileHelper.isAllFilesSectionEmpty(luContents)
+
+    if (!isAllLuEmpty) {
+      const luBuildCore = new LuBuildCore(authoringKey, endpoint, countForRetry, durationForRetry)
+      const apps = await luBuildCore.getApplicationList()
+
+      // here we do a while loop to make full use of luis tps capacity
+      while (luContents.length > 0) {
+        // get a number(set by luisApiTps) of contents for each loop
+        const subLuContents = luContents.splice(0, luisApiTps)
+
+        // concurrently handle applications
+        await Promise.all(subLuContents.map(async content => {
+          // init current application object from lu content
+          let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
+
+          // get recognizer
+          let recognizer = recognizers.get(content.name) as Recognizer
+
+          // find if there is a matched name with current app under current authoring key
+          if (!recognizer.getAppId()) {
+            for (let app of apps) {
+              if (app.name === currentApp.name) {
+                recognizer.setAppId(app.id)
+                break
+              }
+            }
+          }
+
+          let needTrainAndPublish = false
+
+          // compare models to update the model if a match found
+          // otherwise create a new application
+          if (recognizer.getAppId() && recognizer.getAppId() !== '') {
+            // To see if need update the model
+            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, deleteOldVersion)
+          } else {
+            // create a new application
+            needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
+          }
+
+          if (needTrainAndPublish) {
+            // train and publish application
+            await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket)
+          }
+
+          // update multiLanguageRecognizer asset
+          if (multiRecognizers && multiRecognizers.has(content.id)) {
+            let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
+            multiRecognizer.recognizers[currentApp.culture] = path.basename(recognizer.getDialogPath(), '.dialog')
+            if (currentApp.culture.toLowerCase() === fallbackLocale.toLowerCase()) {
+              multiRecognizer.recognizers[''] = path.basename(recognizer.getDialogPath(), '.dialog')
+            }
+          }
+
+          if (crosstrainedRecognizers && crosstrainedRecognizers.has(content.id)) {
+            let crosstrainedRecognizer = crosstrainedRecognizers.get(content.id) as CrossTrainedRecognizer
+            if (!crosstrainedRecognizer.recognizers.includes(content.id + '.lu')) {
+              crosstrainedRecognizer.recognizers.push(content.id + '.lu')
+            }
+          }
+
+          // update settings asset
+          if (settings) {
+            settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = recognizer.getAppId()
+          }
+        }))
+      }
+
+      // write dialog assets
+      if (recognizers) {
+        recognizerValues = Array.from(recognizers.values())
+      }
+      
+      if (multiRecognizers) {
+        multiRecognizerValues = Array.from(multiRecognizers.values())
+      }
+      
+      if (settings) {
+        settingsValue = settings as Settings
+      }
+    }
+    
     if (dialogType === recognizerType.CROSSTRAINED && crosstrainedRecognizers) {
       crosstrainedRecognizerValues = Array.from(crosstrainedRecognizers.values())
     }
 
-    const dialogContents = luBuildCore.generateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingValues, crosstrainedRecognizerValues)
+    const dialogContents = this.generateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingsValue, crosstrainedRecognizerValues)
 
     return dialogContents
   }
@@ -432,6 +441,32 @@ export class Builder {
     await delay(timeBucket)
     await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId)
     this.handler(`${recognizer.getLuPath()} publishing finished\n`)
+  }
+
+  generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings, crosstrainedRecognizers: Array<CrossTrainedRecognizer>)
+    : Array<any> {
+    let contents = new Array<any>()
+    for (const recognizer of recognizers) {
+      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
+      contents.push(content)
+    }
+
+    for (const multiRecognizer of multiRecognizers) {
+      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
+      contents.push(multiLangContent)
+    }
+
+    if(settings) {
+      const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
+      contents.push(settingsContent)
+    }
+
+    for (const crosstrainedRecognizer of crosstrainedRecognizers) {
+      const crosstrainedContent = new Content(crosstrainedRecognizer.save(), new LUOptions(path.basename(crosstrainedRecognizer.getDialogPath()), true, '', crosstrainedRecognizer.getDialogPath()))
+      contents.push(crosstrainedContent)
+    }
+
+    return contents
   }
 
   mergeSettingsContent(settingsPath: string, contents: any[]) {

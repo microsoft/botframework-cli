@@ -4,13 +4,15 @@
  */
 
 import {readTextFile} from './textfilereader'
+import Lu = require('../parser/lu/lu')
 const exception = require('./../parser/utils/exception')
 const retCode = require('./../parser/utils/enums/CLI-errors')
 const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
-const luObject = require('./../parser/lu/lu')
 const LUOptions = require('./../parser/lu/luOptions')
+const luParser = require('./../lufile/luParser')
+const LUSectionTypes = require('./../utils/enums/lusectiontypes')
 const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/
@@ -22,10 +24,10 @@ export async function getLuObjects(stdin: string, input: string | undefined, rec
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
       const opts = new LUOptions(path.resolve(luFiles[i]))
-      luObjects.push(new luObject(luContent, opts))
+      luObjects.push(new Lu(luContent, opts))
     }
   } else {
-    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
+    luObjects.push(new Lu(stdin, new LUOptions('stdin')))
   }
 
   return luObjects
@@ -212,7 +214,7 @@ async function getConfigFile(input: string): Promise<string> {
 export function getParsedObjects(contents: {id: string, content: string}[]) {
   const parsedObjects = contents.map(content => {
     const opts = new LUOptions(content.id)
-    return new luObject(content.content, opts)
+    return new Lu(content.content, opts)
   })
 
   return parsedObjects
@@ -305,4 +307,17 @@ export function getCultureFromPath(file: string): string | null {
   default:
     return null
   }
+}
+
+export function isAllFilesSectionEmpty(contents: Lu[]): boolean {
+  let isAllFilesSectionEmpty = true
+  for (const content of contents) {
+    let resource = luParser.parse(content.content)
+    if (resource.Sections.filter((s: any) => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
+      isAllFilesSectionEmpty = false
+      break
+    }
+  }
+
+  return isAllFilesSectionEmpty
 }
