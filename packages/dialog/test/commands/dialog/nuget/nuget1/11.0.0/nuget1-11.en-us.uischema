@@ -1,5 +1,5 @@
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/06f1f16a49f00b84914e9ad99c815afb23318a17/schemas/ui/v1.0/ui.schema",
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
     "form": {
         "description": "nuget1-11",
         "subtitle": "From nuget1-11"

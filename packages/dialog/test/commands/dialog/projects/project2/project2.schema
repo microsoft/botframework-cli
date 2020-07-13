@@ -1,6 +1,56 @@
 {
-    "$schema": "https://raw.githubusercontent.com/microsoft/botframework-sdk/master/schemas/component/component.schema",
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
     "$role": [],
     "title": "Some node",
-    "description": "Definition."
+    "description": "Definition.",
+    "properties": {
+        "project2Object": {
+            "type": "object",
+            "properties": {
+                "subproject2Object": {
+                    "type": "string"
+                }
+            }
+        },
+        "project2EmptyArray": {
+            "type": "array",
+            "items": true
+        },
+        "project2Array": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "subproject2Array": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "project2AnyOf": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "anyOf1": {
+                            "type": "object",
+                            "properties": {
+                                "subproject2AnyOf1": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "anyOf2": {
+                            "type": "object",
+                            "properties": {
+                                "subproject2AnyOf2": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    }
 }
