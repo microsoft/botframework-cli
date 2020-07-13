@@ -40,10 +40,6 @@ module.exports = {
       let destFileIds = Object.values(triggerRules).flatMap(x => Object.values(x)).flatMap(y => y).map(x => x.toLowerCase())
 
       luObjectArray = luObjectArray.filter(x => triggerFileIds.includes(x.id.toLowerCase()) || destFileIds.includes(x.id.toLowerCase()))
-      qnaObjectArray = qnaObjectArray.filter(x => {
-        const luFileId = x.id.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.QnAFile + '$'), helpers.FileExtTypeEnum.LUFile)
-        return triggerFileIds.includes(luFileId) || destFileIds.includes(luFileId)
-      })
 
       // parse lu content to LUResource object
       let luFileIdToResourceMap = await parseAndValidateContent(luObjectArray, verbose)
@@ -350,16 +346,19 @@ const extractIntentUtterances = function(resource, intentName) {
  */
 const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName) {
   try {
-    for (const luObjectId of Array.from(luFileIdToResourceMap.keys())) {
-      let qnaObjectId = luObjectId.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
-      let fileName = path.basename(luObjectId, path.extname(luObjectId))
-      const culture = fileHelper.getCultureFromPath(luObjectId)
+    for (const qnaObjectId of Array.from(qnaFileIdToResourceMap.keys())) {
+      let luObjectId = qnaObjectId.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.QnAFile + '$'), helpers.FileExtTypeEnum.LUFile)
+      let fileName = path.basename(qnaObjectId, path.extname(qnaObjectId))
+      const culture = fileHelper.getCultureFromPath(qnaObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
-      qnaObjectId = Array.from(qnaFileIdToResourceMap.keys()).find(x => x.toLowerCase() === qnaObjectId)
-      if (qnaObjectId) {
+      luObjectId = Array.from(luFileIdToResourceMap.keys()).find(x => x.toLowerCase() === luObjectId)
+      if (luObjectId) {
         const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName)
         luFileIdToResourceMap.set(luObjectId, luResource)
+        qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
+      } else {
+        let qnaResource = qnaAddMetaData(qnaFileIdToResourceMap.get(qnaObjectId), fileName)
         qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
       }
     }
@@ -431,6 +430,34 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   }
 
   // update qna filters
+  trainedQnaResource = qnaAddMetaData(qnaResource, fileName)
+
+  // remove utterances with curly brackets
+  const utterancesWithoutPatterns = utterances.filter(i => /{([^}]+)}/g.exec(i) === null)
+
+  // remove utterances which are duplicated with local qna questions
+  let questionsOfLowerCase = questions.map(q => q.toLowerCase())
+  let dedupedUtterances = utterancesWithoutPatterns.filter(u => !questionsOfLowerCase.includes(u.toLowerCase()))
+
+  // add utterances from lu file to corresponding qna file with question set to all utterances
+  // split large QA pair to multiple smaller ones to overcome the limit that the maximum number of questions per answer is 300
+  while (dedupedUtterances.length > 0) {
+    let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
+    // construct new question content for qna resource
+    let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
+    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
+  }
+
+  return { luResource: trainedLuResource, qnaResource: trainedQnaResource }
+}
+
+const qnaAddMetaData = function (qnaResource, fileName) {
+  let resultQnaResource = qnaResource
+  // extract qna sections
+  const qnaSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.QNASECTION)
+
+  // update qna filters
   let qnaSectionContents = []
   for (const qnaSection of qnaSections) {
     qnaSection.FilterPairs.push({ key: 'dialogName', value: fileName })
@@ -458,27 +485,10 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
     if (modelInforContent && modelInforContent !== '') qnaContents = NEWLINE + qnaContents
 
-    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
+    resultQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
   }
 
-  // remove utterances with curly brackets
-  const utterancesWithoutPatterns = utterances.filter(i => /{([^}]+)}/g.exec(i) === null)
-
-  // remove utterances which are duplicated with local qna questions
-  let questionsOfLowerCase = questions.map(q => q.toLowerCase())
-  let dedupedUtterances = utterancesWithoutPatterns.filter(u => !questionsOfLowerCase.includes(u.toLowerCase()))
-
-  // add utterances from lu file to corresponding qna file with question set to all utterances
-  // split large QA pair to multiple smaller ones to overcome the limit that the maximum number of questions per answer is 300
-  while (dedupedUtterances.length > 0) {
-    let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
-    // construct new question content for qna resource
-    let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
-    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
-    trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
-  }
-
-  return { luResource: trainedLuResource, qnaResource: trainedQnaResource }
+  return resultQnaResource
 }
 
 /**
