@@ -39,6 +39,7 @@ export class Builder {
     let settings = new Map<string, Settings>()
     let recognizers = new Map<string, Recognizer>()
     let luContents: Array<any> = []
+    let crosstrainedRecognizers = new Map<string, CrossTrainedRecognizer>()
 
     for (const file of files) {
       let fileCulture: string
@@ -55,6 +56,22 @@ export class Builder {
         fileName = path.basename(file, path.extname(file))
       }
 
+      const fileFolder = path.dirname(file)
+      const crossTrainedFileName = fileName + '.lu.qna.dialog'
+      const crossTrainedRecognizerPath = path.join(fileFolder, crossTrainedFileName)
+      if (!crosstrainedRecognizers.has(fileName)) {
+        let crosstrainedRecognizerContent = []
+        let crosstrainedRecognizerSchema = schema
+        if (fs.existsSync(crossTrainedRecognizerPath)) {
+          let crosstrainedRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(crossTrainedRecognizerPath))
+          crosstrainedRecognizerContent = crosstrainedRecognizerObject.recognizers
+          crosstrainedRecognizerSchema = crosstrainedRecognizerSchema || crosstrainedRecognizerObject.$schema
+          this.handler(`${crossTrainedRecognizerPath} loaded\n`)
+        }
+
+        crosstrainedRecognizers.set(fileName, new CrossTrainedRecognizer(crossTrainedRecognizerPath, crosstrainedRecognizerContent, crosstrainedRecognizerSchema as string))
+      }
+
       let fileContent = ''
       let result
       let luisObj
@@ -62,18 +79,18 @@ export class Builder {
         result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
         luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
+        this.handler(`${file} loaded\n`)
       } catch (err) {
+        if (err.errCode === retCode.errorCode.EMPTY_CONTENT) continue
+
         if (err.source) {
           err.text = `Invalid LU file ${err.source}: ${err.text}`
         } else {
           err.text = `Invalid LU file ${file}: ${err.text}`
         }
-        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
-      this.handler(`${file} loaded\n`)
-
-      const fileFolder = path.dirname(file)
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
       if (!multiRecognizers.has(fileName)) {
         let multiRecognizerContent = {}
@@ -127,7 +144,7 @@ export class Builder {
       throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Files with same name and locale are found.'))
     }
 
-    return {luContents, recognizers, multiRecognizers, settings}
+    return {luContents, recognizers, multiRecognizers, settings, crosstrainedRecognizers}
   }
 
   async build(
@@ -141,6 +158,8 @@ export class Builder {
     deleteOldVersion: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
     settings?: Map<string, Settings>,
+    crosstrainedRecognizers?: Map<string, CrossTrainedRecognizer>,
+    dialogType?: string,
     luisAPITPS?: number,
     timeBucketOfRequests?: number,
     retryCount?: number,
@@ -210,6 +229,13 @@ export class Builder {
           }
         }
 
+        if (crosstrainedRecognizers && crosstrainedRecognizers.has(content.id)) {
+          let crosstrainedRecognizer = crosstrainedRecognizers.get(content.id) as CrossTrainedRecognizer
+          if (!crosstrainedRecognizer.recognizers.includes(content.id + '.lu')) {
+            crosstrainedRecognizer.recognizers.push(content.id + '.lu')
+          }
+        }
+
         // update settings asset
         if (settings && settings.has(path.dirname(content.path))) {
           let setting = settings.get(path.dirname(content.path)) as Settings
@@ -234,12 +260,17 @@ export class Builder {
       settingValues = Array.from(settings.values())
     }
 
-    const dialogContents = luBuildCore.generateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingValues)
+    let crosstrainedRecognizerValues: CrossTrainedRecognizer[] = []
+    if (dialogType === recognizerType.CROSSTRAINED && crosstrainedRecognizers) {
+      crosstrainedRecognizerValues = Array.from(crosstrainedRecognizers.values())
+    }
+
+    const dialogContents = luBuildCore.generateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingValues, crosstrainedRecognizerValues)
 
     return dialogContents
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string, dialogType: string, luconfig: string, schema: string) {
+  async writeDialogAssets(contents: any[], force: boolean, out: string, luconfig: string) {
     let writeDone = false
 
     let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
@@ -257,30 +288,31 @@ export class Builder {
       writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
     }
 
-    if (out) {
-      for (const content of writeContents) {
-        const outFilePath = path.join(path.resolve(out), path.basename(content.path))
-        if (force || !fs.existsSync(outFilePath)) {
-          if (!fs.existsSync(path.dirname(outFilePath))) {
-            fs.mkdirSync(path.dirname(outFilePath))
-          }
-
-          this.handler(`Writing to ${outFilePath}\n`)
-          await this.writeDialog(content.content, outFilePath, dialogType, schema)
-          writeDone = true
-        }
+    for (const content of writeContents) {
+      let outFilePath
+      if (out) {
+        outFilePath = path.join(path.resolve(out), path.basename(content.path))
+      } else {
+        outFilePath = content.path
       }
-    } else {
-      for (const content of writeContents) {
-        if (force || !fs.existsSync(content.path)) {
-          if (!fs.existsSync(path.dirname(content.path))) {
-            fs.mkdirSync(path.dirname(content.path))
-          }
 
-          this.handler(`Writing to ${content.path}\n`)
-          await this.writeDialog(content.content, content.path, dialogType, schema)
-          writeDone = true
+      let fileExists = fs.existsSync(outFilePath)
+      if (fileExists && outFilePath.endsWith('.lu.qna.dialog')) {
+        let existingCTRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(outFilePath))
+        let currentCTRecognizerObject = JSON.parse(content.content)
+        let ctRecognizerToBeMerged = existingCTRecognizerObject.recognizers.filter((r: string) => !currentCTRecognizerObject.recognizers.includes(r))
+        currentCTRecognizerObject.recognizers = currentCTRecognizerObject.recognizers.concat(ctRecognizerToBeMerged)
+        content.content = JSON.stringify(currentCTRecognizerObject, null, 4)
+      }
+
+      if (force || !fs.existsSync(outFilePath)) {
+        if (!fs.existsSync(path.dirname(outFilePath))) {
+          fs.mkdirSync(path.dirname(outFilePath))
         }
+
+        this.handler(`Writing to ${outFilePath}\n`)
+        await fs.writeFile(outFilePath, content.content, 'utf-8')
+        writeDone = true
       }
     }
 
@@ -426,29 +458,6 @@ export class Builder {
       const filteredIntents = intents.filter((intent: any) => !emptyIntents.some((emptyIntent: any) => emptyIntent.name === intent.name))
       this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
       app.intents = filteredIntents
-    }
-  }
-
-  async writeDialog(content: string, filePath: string, dialogType: string, schema: string) {
-    await fs.writeFile(filePath, content, 'utf-8')
-    const contentObj = JSON.parse(content)
-    if (dialogType === recognizerType.CROSSTRAINED && contentObj.$kind === 'Microsoft.MultiLanguageRecognizer') {
-      const fileName = path.basename(filePath, '.lu.dialog')
-      const crossTrainedFileName = fileName + '.lu.qna.dialog'
-      const crossTrainedFilePath = path.join(path.dirname(filePath), crossTrainedFileName)
-      if (fs.existsSync(crossTrainedFilePath)) {
-        const existingCRDialog = JSON.parse(await fileHelper.getContentFromFile(crossTrainedFilePath))
-        if (!existingCRDialog.recognizers.includes(fileName + '.lu')) {
-          existingCRDialog.recognizers.push(fileName + '.lu')
-        }
-
-        content = JSON.stringify(existingCRDialog, null, 4)
-      } else {
-        const recognizers = [fileName + '.lu']
-        content = new CrossTrainedRecognizer(crossTrainedFilePath, recognizers, schema).save()
-      }
-
-      await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
     }
   }
 }

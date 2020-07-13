@@ -6,6 +6,7 @@
 import {Recognizer} from './recognizer'
 import {MultiLanguageRecognizer} from './multi-language-recognizer'
 import {Settings} from './settings'
+import {CrossTrainedRecognizer} from './cross-trained-recognizer'
 import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import * as path from 'path'
@@ -372,7 +373,7 @@ export class LuBuildCore {
     }
   }
 
-  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
+  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>, crosstrainedRecognizers: Array<CrossTrainedRecognizer>)
     : Array<any> {
     let contents = new Array<any>()
     for (const recognizer of recognizers) {
@@ -388,6 +389,11 @@ export class LuBuildCore {
     for (const setting of settings) {
       const settingsContent = new Content(setting.save(), new LUOptions(path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath()))
       contents.push(settingsContent)
+    }
+
+    for (const crosstrainedRecognizer of crosstrainedRecognizers) {
+      const crosstrainedContent = new Content(crosstrainedRecognizer.save(), new LUOptions(path.basename(crosstrainedRecognizer.getDialogPath()), true, '', crosstrainedRecognizer.getDialogPath()))
+      contents.push(crosstrainedContent)
     }
 
     return contents

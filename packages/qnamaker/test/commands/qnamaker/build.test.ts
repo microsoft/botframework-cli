@@ -317,6 +317,41 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to cro
     })
 })
 
+describe('qnamaker:build write crosstrained recognizer asset successfully if qna file is empty and --dialog set to crosstrained', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development).en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'xxxx',
+        secondaryEndpointKey: 'yyyy'
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/empty-file/qnafiles/empty.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write crosstrained recognizer asset successfully when qna file is empty and --dialog set to crosstrained', async ctx => {
+      expect(await compareFiles('./../../../results/empty.lu.qna.dialog', './../../fixtures/testcases/qnabuild/empty-file/dialogs/empty.lu.qna.dialog')).to.be.true
+    })
+})
+
 describe('qnamaker:build write dialog assets successfully with multi locales', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
