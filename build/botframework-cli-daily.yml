@@ -24,17 +24,16 @@ jobs:
     steps:
     - bash: |
         short_hash=`git rev-parse --short=7 HEAD`  ## At least 7 digits, more if needed for uniqueness
-        buildVersion= "4.10.0-dev.${short_hash}"
         echo "Full git hash:  $(Build.SourceVersion)"
         echo "Short git hash: $short_hash"
-        echo "##vso[task.setvariable variable=buildVersion]$buildVersion"  ## Store variable for subsequent steps
+        echo "##vso[task.setvariable variable=buildVersion]$short_hash"  ## Store variable for subsequent steps
       workingDirectory: $(Build.SourcesDirectory)
       displayName: Set Build Version
 
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
-        tags: 'Version=$(buildVersion)'
+        tags: 'Version=4.10.0-dev.$(short_hash)'
       continueOnError: true
 
     - task: NodeTool@0
@@ -58,7 +57,7 @@ jobs:
     - script: 'rush test'
       displayName: 'rush test'
 
-    - script: 'node ./common/scripts/version-and-pack.js --version $(buildVersion)'
+    - script: 'node ./common/scripts/version-and-pack.js --version 4.10.0-dev.$(short_hash)'
       displayName: 'Version and Pack'
 
     - task: CopyFiles@2
