@@ -1,0 +1,79 @@
+{
+  "nuget3": {
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+    "form": {
+      "description": "Nuget3",
+      "label": "Project3",
+      "order": [
+        "*"
+      ],
+      "properties": {
+        "Object": {
+          "description": "This is Object",
+          "label": "Project3",
+          "order": [
+            "*"
+          ],
+          "properties": {
+            "subObject": {
+              "label": "Project3",
+              "description": "This is subObject"
+            }
+          }
+        },
+        "SimpleArray": {
+          "description": "This is SimpleArray",
+          "label": "Project3"
+        },
+        "Array": {
+          "description": "This is Array",
+          "label": "Project3",
+          "order": [
+            "*"
+          ],
+          "properties": {
+            "subArray": {
+              "description": "This is subArray",
+              "label": "Project3"
+            }
+          }
+        },
+        "AnyOf": {
+          "description": "This is AnyOf",
+          "label": "Project3",
+          "order": [
+            "*"
+          ],
+          "properties": {
+            "anyOf1": {
+              "description": "This is anyOf1",
+              "label": "Project3",
+              "order": [
+                "*"
+              ],
+              "properties": {
+                "subAnyOf1": {
+                  "description": "This is subAnyOf1",
+                  "label": "Project3"
+                }
+              }
+            },
+            "anyOf2": {
+              "description": "This is anyOf2",
+              "label": "Project3",
+              "order": [
+                "*"
+              ],
+              "properties": {
+                "subAnyOf2": {
+                  "description": "This is subAnyOf2",
+                  "label": "Project3"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

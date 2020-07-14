@@ -24,13 +24,18 @@ function countMatches(pattern: string | RegExp, lines: string[]): number {
     return count
 }
 
-async function merge(patterns: string[], output?: string, verbose?: boolean, noName?: boolean): Promise<[boolean, string[]]> {
+async function merge(patterns: string[], output?: string, verbose?: boolean): Promise<[boolean, string[]]> {
     let lines: string[] = []
     let logger = msg => {
         console.log(msg)
         lines.push(msg)
     }
-    let merger = new SchemaMerger(patterns, noName ? output || '' : output || ppath.join(tempDir, 'generated.schema'), verbose || false, logger, logger, logger, undefined, false, ppath.join(srcDir, 'nuget'))
+    let merger = new SchemaMerger(patterns,
+        output ? ppath.join(tempDir, output) : '',
+        verbose || false,
+        logger, logger, logger,
+        undefined, false,
+        ppath.join(srcDir, 'nuget'))
     let merged = await merger.merge()
     return [merged, lines]
 }
@@ -39,6 +44,42 @@ function fixPaths(resources: any) {
     let fun = (path: string) => path.substring(path.lastIndexOf('dialog') + 7).replace(/\\/g, '/')
     resources.includes = resources.includes.map(fun)
     resources.excludes = resources.excludes.map(fun)
+}
+
+async function compareToOracle(name: string): Promise<object> {
+    let generatedPath = ppath.join(tempDir, name)
+    let generated = await fs.readJSON(generatedPath)
+    let oraclePath = ppath.join('oracles', name)
+    let oracle = await fs.readJSON(oraclePath)
+    let oracles = JSON.stringify(oracle)
+    let generateds = JSON.stringify(generated)
+    if (oracles !== generateds) {
+        console.log(`Oracle   : ${oracles.length}`)
+        console.log(`Generated: ${generateds.length}`)
+        let max = oracles.length
+        if (max > generateds.length) {
+            max = generateds.length
+        }
+        let idx: number
+        for (idx = 0; idx < max; ++idx) {
+            if (oracles[idx] !== generateds[idx]) {
+                break;
+            }
+        }
+        let start = idx - 40
+        if (start < 0) {
+            start = 0
+        }
+        let end = idx + 40
+        if (end > max) {
+            end = max
+        }
+        console.log(`Oracle   : ${oracles.substring(start, end)}`)
+        console.log(`Generated: ${generateds.substring(start, end)}`)
+        assert(false,
+            `${ppath.resolve(generatedPath)} does not match oracle ${ppath.resolve(oraclePath)}`)
+    }
+    return generated
 }
 
 async function compareResources(path: string, expected: any): Promise<void> {
@@ -63,47 +104,17 @@ describe('dialog:merge', async () => {
 
     it('app.schema', async () => {
         console.log('Start app.schema')
-        let [merged, lines] = await merge(['schemas/*.schema'])
+        let [merged, lines] = await merge(['schemas/*.schema'], 'app.schema')
         assert(merged, 'Could not merge')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Error merging schemas')
-        let oracle = await fs.readJSON('schemas/app.schema')
-        let generatedPath = ppath.join(tempDir, 'generated.schema')
-        let generated = await fs.readJSON(generatedPath)
-        let oracles = JSON.stringify(oracle)
-        let generateds = JSON.stringify(generated)
-        if (oracles !== generateds) {
-            console.log(`Oracle   : ${oracles.length}`)
-            console.log(`Generated: ${generateds.length}`)
-            let max = oracles.length
-            if (max > generateds.length) {
-                max = generateds.length
-            }
-            let idx: number
-            for (idx = 0; idx < max; ++idx) {
-                if (oracles[idx] !== generateds[idx]) {
-                    break;
-                }
-            }
-            let start = idx - 40
-            if (start < 0) {
-                start = 0
-            }
-            let end = idx + 40
-            if (end > max) {
-                end = max
-            }
-            console.log(`Oracle   : ${oracles.substring(start, end)}`)
-            console.log(`Generated: ${generateds.substring(start, end)}`)
-            assert(false,
-                `Schema ${ppath.resolve(generatedPath)} does not match ${ppath.resolve('schemas/app.schema')}`)
-        }
+        assert(countMatches(/error|warning/i, lines) === 0, 'Error merging schemas')
+        await compareToOracle('app.schema')
     })
 
     it('bad json', async () => {
         console.log('\nStart bad json')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/badJson.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
         assert(countMatches('Unexpected token', lines) === 1, 'Did not detect bad JSON')
     })
 
@@ -111,7 +122,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart schema mismatch')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/schemaMismatch.schema'])
         assert(merged, 'Merging failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
         assert(countMatches('does not match', lines) === 1, 'Did not detect schema mismatch')
     })
 
@@ -119,7 +130,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart no allof')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/allof.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
         assert(countMatches('allOf', lines) === 1, 'Did not detect allOf in schema')
     })
 
@@ -127,7 +138,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart missing extends')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingExtends.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
         assert(countMatches('it is not included', lines) === 1, 'Did not detect missing extends in schema')
     })
 
@@ -135,7 +146,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart missing schema reference')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingSchemaRef.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
         assert(countMatches('does not exist', lines) === 1, 'Did not detect missing schema ref')
     })
 
@@ -143,7 +154,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart bad role')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/badRole.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 3, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
         assert(countMatches('is not valid for component', lines) === 1, 'Did not detect bad component $role')
         assert(countMatches('is not valid in properties/foo', lines) === 1, 'Did not detect bad property $role')
     })
@@ -152,7 +163,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart duplicate $kind')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/prompt.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
         assert(countMatches('prompt.schema', lines) === 3, 'Did not detect duplicate $kind')
     })
 
@@ -160,27 +171,25 @@ describe('dialog:merge', async () => {
         console.log('\nStart missing implementation')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingImplementation.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
         assert(countMatches('no implementations', lines) === 1, 'Did not detect missing implementations')
     })
 
     it('csproj', async () => {
         console.log('\nStart csproj')
-        let [merged, lines] = await merge(['projects/project3/project3.csproj'], undefined, true)
+        let [merged, lines] = await merge(['projects/project3/project3.csproj'], 'project3.schema', true)
         let errors = countMatches(/error|warning/i, lines)
         assert(errors === 0, 'Should not have got errors')
         assert(merged, 'Could not merge')
         assert(countMatches(/Following.*project3/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
         assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
-        let schema = await fs.readJSON(ppath.join(tempDir, 'generated.schema'))
-        let nuget3 = schema.definitions.nuget3?.$package
-        assert(nuget3?.name === 'nuget3', 'Did not generate $package.name')
-        assert(nuget3?.version === '1.0.0', 'Did not generate $package.version')
+        await compareToOracle('project3.schema')
+        await compareToOracle('project3.en-us.uischema')
     })
 
     it('csproj-errors', async () => {
-        console.log('\nStart csproj')
+        console.log('\nStart csproj-errors')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
         let errors = countMatches(/error|warning/i, lines)
         if (errors === 0) {
@@ -197,28 +206,21 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Parsing.*nuget2.schema/, lines) === 1, 'Missing nuget2.schema')
         assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
         assert(countMatches(/Parsing.*project2.schema/, lines) === 1, 'Missing project2.schema')
-        assert(countMatches(/override.lu/, lines) === 6, 'Missing override trace')
         assert(countMatches(/conflicts.lg/, lines) === 3, 'Missing conflicts')
         assert(countMatches(/multiple.dialog/, lines) === 3, 'Missing multiple definitions')
     })
 
     it('package.json', async () => {
         console.log('\nStart package.json')
-        let [merged, lines] = await merge(['npm/node_modules/root-package/package.json'], undefined, true)
+        let [merged, lines] = await merge(['npm/node_modules/root-package/package.json'], 'root-package.schema', true)
         assert(merged, 'Could not merge')
         assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
         assert(countMatches('root-package.schema', lines) === 1, 'Missing root-package.schema')
         assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
         assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
         assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
-
-        let schema = await fs.readJSON(ppath.join(tempDir, 'generated.schema'))
-        let dependent = schema.definitions['dependent-package']?.$package
-        assert(dependent?.name === 'dependent-package', 'Incorrect dependent-package $package.name')
-        assert(dependent?.version === '1.0.0', 'Incorrext dependent-package $package.version')
-        let parent = schema.definitions['parent-package']?.$package
-        assert(parent?.name === 'parent-package', 'Incorrect parent-package $package.name')
-        assert(parent?.version === '1.0.0', 'Incorrext parent-package $package.version')
+        await compareToOracle('root-package.schema')
+        await compareToOracle('root-package.uischema')
 
         let path = ppath.join(tempDir, 'generated.resources')
         await compareResources(path,
@@ -246,7 +248,7 @@ describe('dialog:merge', async () => {
     it('nuspec', async () => {
         console.log('\nStart nuspec')
         try {
-            let [merged, lines] = await merge(['nuget\\nuget1\\10.0.1\\nuget1.nuspec'], undefined, true, true)
+            let [merged, lines] = await merge(['nuget\\nuget1\\10.0.1\\nuget1.nuspec'], undefined, true)
             assert(merged, 'Could not merge')
             assert(fs.existsSync('nuget1.schema'), 'Did not infer output')
             assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')

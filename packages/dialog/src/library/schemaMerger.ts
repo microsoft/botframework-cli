@@ -363,7 +363,9 @@ export default class SchemaMerger {
                     this.relativeToAbsoluteRefs(component, path)
                     if (component.$ref) {
                         // Expand top-level $ref to support testing
-
+                        let ref = await getJSON(component.$ref)
+                        component = {...ref, ...component}
+                        delete component.$ref
                     }
 
                     // Pick up meta-schema from first .dialog file
@@ -529,7 +531,7 @@ export default class SchemaMerger {
                         }
                     }
 
-                    let kindDef = schema.definitions[kindName]
+                    let kindDef = schema?.definitions[kindName]
                     if (!kindDef) {
                         this.uiError(kindName)
                     } else {

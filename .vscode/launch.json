@@ -34,7 +34,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                "dialog:merge.*csproj.*"
+                ".*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
