@@ -2,6 +2,8 @@ const ImportSectionContext = require('./generated/LUFileParser').LUFileParser.Im
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
 class ImportSection extends BaseSection {
     /**
@@ -16,8 +18,9 @@ class ImportSection extends BaseSection {
         this.Description = result.description;
         this.Path = result.path;
         this.Id = `${this.SectionType}_${this.Path}`;
-        this.StartLine = parseTree.start.line - 1;
-        this.StopLine = parseTree.stop.line - 1;
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 
     ExtractDescriptionAndPath(parseTree) {

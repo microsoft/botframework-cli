@@ -25,14 +25,23 @@ class SectionOperator {
       throw new Error(`Section with id: ${newResource.Id} exists.`);
     }
 
+    this.Luresource.Content = this.Luresource.Content !== '' ? `${this.Luresource.Content}${NEWLINE}${sectionContent}` : sectionContent;
+
+    const offset = this.Luresource.Content.split(/\r?\n/).length;
     const newSection = newResource.Sections[0];
-    this.adjustRangeForAddTemplate(newSection);
+    this.adjustRangeForAddTemplate(newSection, offset);
+
+    // adjust error range
+    newResource.Errors.forEach(u => {
+      u.Range.Start.Line += offset;
+      u.Range.End.Line += offset;
+      this.Luresource.Errors.push(u);
+    });
 
     this.Luresource.Sections.push(newSection);
-    this.Luresource.Errors.push(...newResource.Errors);
-    this.Luresource.Content = this.Luresource.Content !== '' ? `${this.Luresource.Content}${NEWLINE}${sectionContent}` : sectionContent;
-    // todo : adjust startline
+    
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
+
     return this.Luresource;
   }
 
@@ -49,8 +58,38 @@ class SectionOperator {
       return this.Luresource;
     }
 
-    // TODO: handler errors
-    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, section.StartLine, section.StopLine, sectionContent);
+    const startLine =  section.Range.Start.Line;
+    const endLine = section.Range.End.Line;
+
+    // remove the original errors.
+    let index = -1;
+    while ((index = this.Luresource.Errors.findIndex(u => 
+      (u.Range.Start.Line >= startLine && u.Range.Start.Line <= endLine) 
+      || (u.Range.End.Line >= startLine && u.Range.End.Line <= endLine))
+      ) >= 0) {
+        this.Luresource.Errors.splice(index, 1);
+      }
+    
+    // adjust current errors
+    const newLineRange = newResource.Sections[0].Range.End.Line - newResource.Sections[0].Range.Start.Line;
+    const originalRange = endLine - startLine;
+    const originalOffset = newLineRange - originalRange;
+    this.Luresource.Errors.forEach(u => {
+      if (u.Range.Start.Line > endLine) {
+        u.Range.Start.Line += originalOffset;
+        u.Range.End.Line += originalOffset;
+      }
+    });
+    
+    const offset = this.Luresource.Sections[sectionIndex].Range.Start.Line - newResource.Sections[0].Range.Start.Line;
+    // append the new errors
+    newResource.Errors.forEach(u => {
+      u.Range.Start.Line += offset;
+      u.Range.End.Line += offset;
+      this.Luresource.Errors.push(u);
+    });
+
+    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, section.Range.Start.Line, section.Range.End.Line, sectionContent);
     this.adjustRangeForUpdateSection(this.Luresource.Sections[sectionIndex], newResource.Sections[0]);
     return this.Luresource;
   }
@@ -62,10 +101,29 @@ class SectionOperator {
     }
 
     const section = this.Luresource.Sections[sectionIndex];
+    const startLine =  section.Range.Start.Line;
+    const endLine = section.Range.End.Line;
+    
+    // remove the original errors.
+    let index = -1;
+    while ((index = this.Luresource.Errors.findIndex(u => 
+      (u.Range.Start.Line >= startLine && u.Range.Start.Line <= endLine) 
+      || (u.Range.End.Line >= startLine && u.Range.End.Line <= endLine))
+      ) >= 0) {
+        this.Luresource.Errors.splice(index, 1);
+      }
+    
+      // adjust original errors
+      const offset = endLine - startLine;
+      this.Luresource.Errors.forEach(u => {
+        if (u.Range.Start.Line > endLine) {
+          u.Range.Start.Line -= offset;
+          u.Range.End.Line -= offset;
+        }
+      });
 
     this.Luresource.Sections.splice(sectionIndex, 1);
-    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, section.StartLine, section.StopLine, undefined);
-    // todo:handler errors
+    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, startLine, endLine, undefined);
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
     return this.Luresource;
   }
@@ -85,37 +143,52 @@ class SectionOperator {
     const newSection = newResource.Sections[0];
 
     this.Luresource.Sections.splice(sectionIndex >= 0 ? sectionIndex : 0, 0, newSection);
-    // todo error handler
+    
+    // adjust original errors
+    const offset = sectionIndex >= 0 ? this.Luresource.Sections[sectionIndex].Range.End.Line : 0;
+    const rangOffset = newSection.End.Line - newSection.Start.Line;
+    this.Luresource.Errors.forEach(u => {
+      if (u.Range.Start.Line > offset) {
+        u.Range.Start.Line += rangOffset;
+        u.Range.End.Line += rangOffset;
+      }
+    });
 
-    const startLine = sectionIndex >= 0 ? this.Luresource.Sections[sectionIndex].StartLine : 0;
+    // append the new errors
+    newResource.Errors.forEach(u => {
+      u.Range.Start.Line += offset;
+      u.Range.End.Line += offset;
+      this.Luresource.Errors.push(u);
+    });
+
+    const startLine = sectionIndex >= 0 ? this.Luresource.Sections[sectionIndex].Range.Start.Line : 0;
     this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, startLine, startLine - 1, sectionContent);
     this.adjustRangeForInsertSection(newSection);
     
     return this.Luresource;
   }
 
-  adjustRangeForAddTemplate(newSection) {
-    const lineLength = newSection.StopLine - newSection.StartLine;
-    const offset = this.Luresource.Sections[this.Luresource.Sections.length - 1].StopLine;
-    newSection.StartLine += offset + 1;
-    newSection.StopLine += offset + lineLength + 1;
+  adjustRangeForAddTemplate(newSection, offset) {
+    const lineLength = newSection.Range.End.Line - newSection.Range.Start.Line;
+    newSection.Range.Start.Line += offset;
+    newSection.Range.End.Line += offset + lineLength;
   }
 
   adjustRangeForUpdateSection(oldSection, newSection) {
-    const newRange = newSection.StopLine - newSection.StartLine;
-    const oldRange = oldSection.StopLine - oldSection.StartLine;
+    const newRange = newSection.Range.End.Line - newSection.Range.Start.Line;
+    const oldRange = oldSection.Range.End.Line - oldSection.Range.Start.Line;
 
     const lineOffset = newRange - oldRange;
 
     let hasFound = false;
     for (let i = 0; i < this.Luresource.Sections.length; i++) {
         if (hasFound) {
-            this.Luresource.Sections[i].StartLine += lineOffset;
-            this.Luresource.Sections[i].StopLine += lineOffset;
+            this.Luresource.Sections[i].Range.Start.Line += lineOffset;
+            this.Luresource.Sections[i].Range.End.Line += lineOffset;
         } else if (this.Luresource.Sections[i].Id === oldSection.Id) {
             hasFound = true;
-            newSection.StartLine = oldSection.StartLine;
-            newSection.StopLine = oldSection.StopLine + lineOffset;
+            newSection.Range.Start.Line = oldSection.Range.Start.Line;
+            newSection.Range.End.Line = oldSection.Range.End.Line + lineOffset;
             this.Luresource.Sections[i] = newSection;
         }
     }
@@ -124,17 +197,17 @@ class SectionOperator {
 
   adjustRangeForInsertSection(newSection) {
     // TODO handler if the section if the first section
-    const lineOffset = newSection.StopLine - newSection.StartLine;
+    const lineOffset = newSection.Range.End.Line - newSection.Range.Start.Line;
 
     let hasFound = false;
     for (let i = 0; i < this.Luresource.Sections.length; i++) {
         if (hasFound) {
-            this.Luresource.Sections[i].StartLine += lineOffset;
-            this.Luresource.Sections[i].StopLine += lineOffset;
+            this.Luresource.Sections[i].Range.Start.Line += lineOffset;
+            this.Luresource.Sections[i].Range.End.Line += lineOffset;
         } else if (this.Luresource.Sections[i].Id === newSection.Id) {
             hasFound = true;
-            this.Luresource.Sections[i].StartLine +=  this.Luresource.Sections[i-1].StopLine;
-            this.Luresource.Sections[i].StopLine += this.Luresource.Sections[i-1].StopLine;
+            this.Luresource.Sections[i].Range.Start.Line +=  this.Luresource.Sections[i-1].Range.End.Line;
+            this.Luresource.Sections[i].Range.End.Line += this.Luresource.Sections[i-1].Range.End.Line;
         }
     }
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);

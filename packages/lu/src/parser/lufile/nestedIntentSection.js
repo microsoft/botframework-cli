@@ -3,6 +3,8 @@ const SimpleIntentSection = require('./simpleIntentSection');
 const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const NEWLINE = require('os').EOL;
 const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
 class NestedIntentSection  extends BaseSection {
     /**
@@ -23,8 +25,9 @@ class NestedIntentSection  extends BaseSection {
         }
         
         this.Id = `${this.SectionType}_${this.Name}`;
-        this.StartLine = parseTree.start.line - 1;
-        this.StopLine = parseTree.stop.line - 1;
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 
     ExtractName(parseTree) {
@@ -32,8 +35,8 @@ class NestedIntentSection  extends BaseSection {
     }
 
     ExtractBody(parseTree, content) {
-        const startLine = parseTree.start.line - 1
-        const stopLine = parseTree.stop.line - 1
+        const startLine = this.Range.Start.Line;
+        const stopLine = this.Range.End.Line;
         const originList = content.split(/\r?\n/)
         if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.Length <= stopLine) {
             throw new Error("index out of range.")

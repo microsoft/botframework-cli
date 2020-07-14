@@ -1,4 +1,4 @@
-class c {
+class LUResource {
   /**
    * @param {any[]} sections
    * @param {string} content

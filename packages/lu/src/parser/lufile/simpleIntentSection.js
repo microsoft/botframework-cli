@@ -7,6 +7,8 @@ const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const NEWLINE = require('os').EOL;
 const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
 class SimpleIntentSection  extends BaseSection {
     /**
@@ -31,8 +33,9 @@ class SimpleIntentSection  extends BaseSection {
             this.Errors = this.Errors.concat(result.errors);
             this.Id = `${this.SectionType}_${this.Name}`;
             this.Body = this.ExtractBody(parseTree, content)
-            this.StartLine = parseTree.start.line - 1;
-            this.StopLine = parseTree.stop.line - 1;
+            const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+            const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+            this.Range = new Range(startPosition, stopPosition);
         }
     }
 

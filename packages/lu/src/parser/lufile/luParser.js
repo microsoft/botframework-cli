@@ -72,7 +72,7 @@ class LUParser {
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: emptyIntentSection.ParseTree,
+                        range: emptyIntentSection.Range,
                         severity: DiagnosticSeverity.WARN
                     })
 
@@ -324,16 +324,17 @@ class LUParser {
             if (section.SectionType === SectionType.SIMPLEINTENTSECTION
                 || section.SectionType === SectionType.NESTEDINTENTSECTION
                 || section.SectionType === SectionType.QNASECTION) {
-                const startLine = section.startLine;
+                const startLine = section.Range.Start.Line;
                 let stopLine
                 if (index + 1 < sections.length) {
-                    stopLine = sections[index + 1].StartLine - 1
+                    stopLine = sections[index + 1].Range.Start.Line - 1
                     if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine >= stopLine || originList.Length <= stopLine) {
                         throw new Error("index out of range.")
                     }
                 } else {
                     stopLine = originList.length
                 }
+                section.Range.End.Line = stopLine - 1
 
                 let destList
                 if (section.SectionType === SectionType.QNASECTION) {
@@ -345,8 +346,6 @@ class LUParser {
                 }
 
                 section.Body = destList.join(NEWLINE)
-                section.StartLine = startLine
-                section.StopLine = stopLine - 1
 
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
                     LUParser.extractSectionBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))

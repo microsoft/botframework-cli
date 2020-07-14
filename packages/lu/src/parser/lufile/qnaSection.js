@@ -2,6 +2,9 @@ const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSe
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const QNA_GENERIC_SOURCE = "custom editorial";
+const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
 class QnaSection extends BaseSection {
     /**
@@ -9,7 +12,7 @@ class QnaSection extends BaseSection {
      * @param {QnaSectionContext} parseTree 
      */
     constructor(parseTree) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.QNASECTION;
         this.Questions = [this.ExtractQuestion(parseTree)];
         let result = this.ExtractMoreQuestions(parseTree);
@@ -25,8 +28,9 @@ class QnaSection extends BaseSection {
         this.Errors = this.Errors.concat(result.errors);
         this.QAPairId = this.ExtractAssignedId(parseTree);
         this.source = this.ExtractSourceInfo(parseTree);
-        this.StartLine = parseTree.start.line - 1;
-        this.StopLine = parseTree.stop.line - 1;
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 
     ExtractSourceInfo(parseTree) {

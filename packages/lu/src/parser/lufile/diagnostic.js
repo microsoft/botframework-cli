@@ -9,7 +9,6 @@ class Diagnostic {
     }
 
     toString() {
-        // ignore error range if source is "inline"
         if (this.Range === undefined) {
             return `[${DiagnosticSeverity[this.Severity]}] ${this.Message.toString()}`;
         }
@@ -78,8 +77,11 @@ const BuildDiagnostic =function(parameter) {
     const severity = parameter.severity === undefined ? DiagnosticSeverity.ERROR : parameter.severity;
 
     let range;
+    const rangeInput = parameters.range;
     const context = parameter.context;
-    if (context !== undefined) {
+    if (rangeInput !== undefined) {
+        range = rangeInput;
+    } else if (context !== undefined) {
         const startPosition = new Position(context.start.line, context.start.column);
         const stopPosition = new Position(context.stop.line, context.stop.column + context.stop.text.length);
         range = new Range(startPosition, stopPosition);

@@ -1,6 +1,8 @@
 const ModelInfoSectionContext = require('./generated/LUFileParser').LUFileParser.ModelInfoSectionContext;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
 class LUModelInfo  extends BaseSection {
     /**
@@ -13,8 +15,9 @@ class LUModelInfo  extends BaseSection {
         this.ModelInfo = parseTree.modelInfoDefinition().getText();
         this.Errors = [];
         this.Id = `${this.SectionType}_${this.ModelInfo}`;
-        this.StartLine = parseTree.start.line - 1;
-        this.StopLine = parseTree.stop.line - 1;
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 }
 

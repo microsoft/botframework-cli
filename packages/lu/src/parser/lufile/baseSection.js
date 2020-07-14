@@ -1,11 +1,18 @@
 class BaseSection {
-    constructor(errors, sectionType, id, startLine, stopLine, body) {
-        this.Errors = errors || [];
-        this.SectionType = sectionType || '';
-        this.Id = id || '';
-        this.StartLine = startLine || 0;
-        this.StopLine = stopLine || 0;
-        this.Body = body || '';
+    constructor(parameters) {
+        this.Errors = [];
+        this.SectionType = '';
+        this.Id = '';
+        this.Body = '';
+        this.Range;
+
+        if (parameters) {
+            this.Errors = parameters.Errors || [];
+            this.SectionType = parameters.SectionType || '';
+            this.Id = parameters.Id || '';
+            this.Body = parameters.Body || '';
+            this.Range = parameters.Range;
+        }
     }
 }
 
