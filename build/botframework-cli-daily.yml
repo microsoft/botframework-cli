@@ -20,9 +20,7 @@ schedules:
 
 jobs:
   - job: CLI
-    variables:
-      buildDate: $(Get-Date -Format yyyyMMdd)
-
+  
     steps:
     - bash: |
         short_hash=`git rev-parse --short=7 HEAD`  ## At least 7 digits, more if needed for uniqueness
@@ -31,6 +29,10 @@ jobs:
         echo "##vso[task.setvariable variable=short_hash]$short_hash"  ## Store variable for subsequent steps
       workingDirectory: $(Build.SourcesDirectory)
       displayName: Set Build Version
+
+    - powershell: |
+        date = (Get-Date).ToString("yyyyMMdd")
+        echo "##vso[task.setvariable variable=buildDate]$date"  ## Store variable for subsequent steps
 
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
