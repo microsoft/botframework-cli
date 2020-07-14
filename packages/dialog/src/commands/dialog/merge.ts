@@ -10,7 +10,7 @@ export default class DialogMerge extends Command {
     static description = 'Merge <kind>.schema and <kind>.uischema definitions from a project and its dependencies into a single <project>.schema for describing .dialog files and a <project>.uischema for describing how Composer shows them.  For C#, ensures all declarative resources are included in the project.'
 
     static args = [
-        {name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .csproj, packages.config or package.json files.'},
+        {name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .csproj, .nuspec or package.json files.'},
     ]
 
     static strict = false

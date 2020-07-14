@@ -789,6 +789,26 @@ export default class SchemaMerger {
                         }
                         return false
                     })
+                    if (nugetPackages.length === 0) {
+                        // Try packages.config
+                        let configPath = ppath.join(ppath.dirname(path), 'packages.config')
+                        if (await fs.pathExists(configPath)) {
+                            this.currentFile = this.prettyPath(configPath)
+                            if (this.verbose) {
+                                this.log(`${this.indent()}Following ${this.currentFile}`)
+                            }
+                            let config = await this.xmlToJSON(configPath)
+                            walkJSON(config, elt => {
+                                if (elt.packages?.package) {
+                                    for (let info of elt.packages.package) {
+                                        nugetPackages.push({Include: info.$.id, Version: info.$.version})
+                                    }
+                                    return true
+                                }
+                                return false
+                            })
+                        }
+                    }
                     for (let pkg of nugetPackages) {
                         await this.expandNuget(pkg.Include, pkg.Version)
                     }
@@ -846,30 +866,7 @@ export default class SchemaMerger {
                     // Explicitly added .nuspec
                     await this.expandNuspec(path)
                 } else {
-                    if (name === 'packages.config') {
-                        // Alternative to nuget in .csproj
-                        if (this.verbose) {
-                            this.log(`${this.indent()}Following ${this.prettyPath(path)}`)
-                        }
-                        let json = await this.xmlToJSON(path)
-                        this.pushParent(path)
-                        let packages = await this.findParentDirectory(ppath.dirname(path), 'packages')
-                        if (packages) {
-                            let nugets: string[][] = []
-                            walkJSON(json, elt => {
-                                if (elt.package) {
-                                    for (let info of elt.package) {
-                                        nugets.push([info.$.id, info.$.version])
-                                    }
-                                    return true
-                                }
-                                return false
-                            })
-                            for (let [pkg, version] of nugets) {
-                                await this.expandNuget(pkg, version)
-                            }
-                        }
-                    } else if (name === 'package.json') {
+                    if (name === 'package.json') {
                         // Node package
                         await this.expandPackageJson(path)
                     } else {

@@ -40,12 +40,6 @@ async function merge(patterns: string[], output?: string, verbose?: boolean): Pr
     return [merged, lines]
 }
 
-function fixPaths(resources: any) {
-    let fun = (path: string) => path.substring(path.lastIndexOf('dialog') + 7).replace(/\\/g, '/')
-    resources.includes = resources.includes.map(fun)
-    resources.excludes = resources.excludes.map(fun)
-}
-
 async function compareToOracle(name: string): Promise<object> {
     let generatedPath = ppath.join(tempDir, name)
     let generated = await fs.readJSON(generatedPath)
@@ -80,18 +74,6 @@ async function compareToOracle(name: string): Promise<object> {
             `${ppath.resolve(generatedPath)} does not match oracle ${ppath.resolve(oraclePath)}`)
     }
     return generated
-}
-
-async function compareResources(path: string, expected: any): Promise<void> {
-    assert(fs.existsSync(path), 'missing resources')
-    let resources = await fs.readJSON(path)
-    fixPaths(resources)
-    fixPaths(expected)
-    let compare = JSON.stringify(resources) === JSON.stringify(expected)
-    if (!compare) {
-        console.log(`${JSON.stringify(resources)}\n!=\n${JSON.stringify(expected)}`)
-    }
-    assert(compare, 'Resources did not match')
 }
 
 describe('dialog:merge', async () => {
@@ -213,6 +195,16 @@ describe('dialog:merge', async () => {
         assert(countMatches(/nokind does not exist/i, lines) === 1, 'Missing nokind')
         assert(countMatches(/nonExistentProperty/i, lines) === 4, 'Wrong number of non-existent properties')
         assert(countMatches(/order.nonExistentOrder/i, lines) === 2, 'Wrong number of non-existent orders')
+    })
+
+    it('csproj-config', async () => {
+        console.log('\nStart csproj-config')
+        let [merged, lines] = await merge(['projects/project5/project5.csproj'], 'project5.schema', true)
+        assert(merged, 'Merging should succeed')
+        assert(countMatches(/error|warning/i, lines) === 0, 'Wrong number of errors or warnings')
+        assert(countMatches(/packages.config/i, lines) === 1, 'Missing packages.config')
+        await compareToOracle('project5.schema')
+        await compareToOracle('project5.en-us.uischema')
     })
 
     it('package.json', async () => {
