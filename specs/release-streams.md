@@ -10,12 +10,12 @@ Use the [Typescript Team](https://www.npmjs.com/package/typescript) as inspirati
 # Versioning
 
 The versioning will be as follow:
-* -dev.<7-digit-commit-SHA>
+* -dev.<yyyyMMdd>.<7-digit-commit-SHA>
 * -rc.{Number}
 
 # Daily Builds
 Copying what the typescript team does, all our NPM packages would be pushed with the next tag to NPM on a daily basis at 12am . 
-(Build)[https://github.com/microsoft/botframework-cli/blob/master/build/botframework-cli-daily.yml] will be done from master. And triggered only once a day. (Release)[https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=mine&definitionId=7] will be triggered on every time a new build is available.
+[Build](https://github.com/microsoft/botframework-cli/blob/master/build/botframework-cli-daily.yml) will be done from master. And triggered only once a day. [Release](https://fuselabs.visualstudio.com/SDK_Public/_release?_a=releases&view=mine&definitionId=7) will be triggered on every time a new build is available.
 
 ```
 npm publish [<tarball>|<folder>] --tag next 
