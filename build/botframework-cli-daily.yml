@@ -1,0 +1,72 @@
+#
+# Build Botframework-CLI daily bits on Windows agent
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+
+pool:
+  name: Hosted Windows 2019 with VS2019
+
+schedules:
+- cron: "0 7 * * *"
+  displayName: Daily midnight build (UTC Time)
+  branches:
+    include:
+    - master
+
+jobs:
+  - job: CLI
+    variables:
+      buildVersion: '4.10.0-dev.$(Build.SourceVersion)'
+      _version: ${{coalesce(variables.version, variables.buildVersion)}}
+
+    steps:
+    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
+      displayName: 'Tag Build with version number'
+      inputs:
+        tags: 'Version=$(_version)'
+      continueOnError: true
+
+    - task: NodeTool@0
+      displayName: 'Use Node 12.x'
+      inputs:
+        versionSpec: 12.x
+
+    - task: Npm@1
+      displayName: 'npm install --global @microsoft/rush'
+      inputs:
+        command: custom
+        verbose: false
+        customCommand: 'install --global @microsoft/rush'
+
+    - script: 'rush update'
+      displayName: 'rush update'
+
+    - script: 'rush build -p 2'
+      displayName: 'rush build -p 2'
+
+    - script: 'rush test'
+      displayName: 'rush test'
+
+    - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
+      displayName: 'Version and Pack'
+
+    - task: CopyFiles@2
+      displayName: 'Copy packages to: $(Build.ArtifactStagingDirectory)/drop'
+      inputs:
+        SourceFolder: ./.output
+        Contents: '**/*.tgz'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
+        flattenFolders: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
+        ArtifactName: drop
+
+    - powershell: 'Get-ChildItem .. -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}'
+      displayName: 'Dir workspace except node_modules'
+      continueOnError: true
+      condition: succeededOrFailed()
