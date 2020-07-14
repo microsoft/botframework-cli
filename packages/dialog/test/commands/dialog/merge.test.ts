@@ -166,6 +166,13 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Following.*project3/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
         assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
+        assert(countMatches(/Copying/i, lines) === 7, 'Wrong number of copies')
+        assert(countMatches(/Copying.*nuget3.lg/i, lines) === 1, 'Did not copy .lg')
+        assert(countMatches(/Copying.*nuget3.lu/i, lines) === 1, 'Did not copy .lu')
+        assert(countMatches(/Copying.*nuget3.qna/i, lines) === 1, 'Did not copy .qna')
+        assert(countMatches(/Copying.*nuget3.*uischema/i, lines) === 2, 'Did not copy .uischema')
+        assert(countMatches(/Copying.*nuget3.schema/i, lines) === 1, 'Did not copy .schema')
+        assert(await fs.pathExists(ppath.join(tempDir, 'generated', 'nuget3', 'assets', 'nuget3.qna')), 'Did not copy directory')
         await compareToOracle('project3.schema')
         await compareToOracle('project3.en-us.uischema')
     })
@@ -174,7 +181,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart csproj-errors')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
         assert(!merged, 'Merging should faile')
-        assert(countMatches(/error|warning/i, lines) === 5, 'Wrong number of errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 6, 'Wrong number of errors or warnings')
         assert(countMatches(/Following.*project1/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget1.*10.0.1/, lines) === 1, 'Did not follow nuget1')
         assert(countMatches(/Following.*project2/, lines) === 1, 'Did not follow project2')
@@ -221,16 +228,25 @@ describe('dialog:merge', async () => {
     })
 
     it('nuspec', async () => {
+        // This is more complicated because it is also testing the output name inference
+        // which ends up in the directory where the command is run from
         console.log('\nStart nuspec')
+        let path = ppath.join(tempDir, 'nuget1/')
+        await fs.copy('nuget\\nuget1\\10.0.1\\', path)
+        await fs.copyFile('schemas\\packageBase.json', ppath.join(path, 'packageBase.json'))
+        await fs.copyFile(ppath.join(path, 'nuget1-10.schema.local'), ppath.join(path, 'nuget1-10.schema'))
+        let cwd = process.cwd()
         try {
-            let [merged, lines] = await merge(['nuget\\nuget1\\10.0.1\\nuget1.nuspec'], undefined, true)
+            process.chdir(path)
+            let [merged, lines] = await merge(['nuget1.nuspec'], undefined, true)
             assert(merged, 'Could not merge')
-            assert(fs.existsSync('nuget1.schema') && fs.existsSync('nuget1.en-us.uischema'), 'Did not infer output')
+            assert(fs.existsSync('nuget1.schema')
+                && fs.existsSync('nuget1.en-us.uischema'),
+                'Did not infer output')
             assert(countMatches(/error|warning/i, lines) === 0, 'Wrong number of errors or warnings')
             assert(countMatches('nuget1.nuspec', lines) === 1, 'Missing nuget1.nuspec')
         } finally {
-            await fs.remove('nuget1.schema')
-            await fs.remove('nuget1.en-us.uischema')
+            process.chdir(cwd)
         }
     })
 })

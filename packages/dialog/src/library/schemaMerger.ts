@@ -179,6 +179,11 @@ class Component {
         return found
     }
 
+    // Test to see if component is a C# project
+    public isCSProject(): boolean {
+        return this.path.endsWith('.csproj')
+    }
+
     // Test to see if all parents are processed which means you can be added to sort.
     private allParentsProcessed(): boolean {
         for (let parent of this.parents) {
@@ -292,6 +297,8 @@ export default class SchemaMerger {
             let schema = await this.mergeSchemas()
             this.log('')
             await this.mergeUISchemas(schema)
+            this.log('')
+            await this.copyAssets()
         } catch (e) {
             this.mergingError(e)
         }
@@ -353,9 +360,7 @@ export default class SchemaMerger {
             try {
                 let path = componentPath.path
                 this.currentFile = path
-                if (this.verbose) {
-                    this.log(`Parsing ${path}`)
-                }
+                this.vlog(`Parsing ${path}`)
                 let component = await fs.readJSON(path)
                 if (component.definitions && component.definitions.component) {
                     this.parsingWarning('Skipping merged schema')
@@ -374,9 +379,7 @@ export default class SchemaMerger {
                         this.currentFile = this.metaSchemaId
                         this.metaSchema = await getJSON(component.$schema)
                         this.validator.addSchema(this.metaSchema, 'componentSchema')
-                        if (this.verbose) {
-                            this.log(`  Using ${this.metaSchemaId} to define components`)
-                        }
+                        this.vlog(`  Using ${this.metaSchemaId} to define components`)
                         this.currentFile = path
                         this.validateSchema(component)
                     } else if (component.$schema !== this.metaSchemaId) {
@@ -460,9 +463,7 @@ export default class SchemaMerger {
                 let start = process.hrtime()
                 fullSchema = await parser.dereference(clone(finalSchema))
                 let end = process.hrtime(start)[1] / 1000000000
-                if (this.verbose) {
-                    this.log(`Expanding all $ref took ${end} seconds`)
-                }
+                this.vlog(`Expanding all $ref took ${end} seconds`)
                 this.log(`Writing ${this.currentFile}`)
                 await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
             }
@@ -493,19 +494,17 @@ export default class SchemaMerger {
                     }
 
                     // Merge together definitions for the same kind
-                    if (this.verbose && componentPaths.length > 1) {
-                        this.log(`Merging into ${kindName}.${localeName}`)
+                    if (componentPaths.length > 1) {
+                        this.vlog(`Merging into ${kindName}.${localeName}`)
                     }
                     for (let componentPath of componentPaths.reverse()) {
                         try {
                             let path = componentPath.path
                             this.currentFile = path
-                            if (this.verbose) {
-                                if (componentPaths.length > 1) {
-                                    this.log(`  Merging ${this.currentFile}`)
-                                } else {
-                                    this.log(`Parsing ${this.currentFile}`)
-                                }
+                            if (componentPaths.length > 1) {
+                                this.vlog(`  Merging ${this.currentFile}`)
+                            } else {
+                                this.vlog(`Parsing ${this.currentFile}`)
                             }
                             let component = await fs.readJSON(path)
 
@@ -515,9 +514,7 @@ export default class SchemaMerger {
                                 this.currentFile = this.metaUISchemaId
                                 this.metaUISchema = await getJSON(component.$schema)
                                 this.validator.addSchema(this.metaUISchema, 'UISchema')
-                                if (this.verbose) {
-                                    this.log(`  Using ${this.metaUISchemaId} to define .uischema`)
-                                }
+                                this.vlog(`  Using ${this.metaUISchemaId} to define .uischema`)
                                 this.currentFile = path
                                 this.validateUISchema(component)
                             } else if (component.$schema !== this.metaUISchemaId) {
@@ -544,6 +541,39 @@ export default class SchemaMerger {
                         this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
                         this.log(`Writing ${this.currentFile}`)
                         await fs.writeJSON(this.currentFile, result[locale], this.jsonOptions)
+                    }
+                }
+            }
+        }
+    }
+
+    // For C# copy all assets into generated/<package>/
+    private async copyAssets(): Promise<void> {
+        if (!this.failed) {
+            let isCS = false
+            for (let component of this.components) {
+                if (component.path.endsWith('.csproj') || component.path.endsWith('.nuspec')) {
+                    isCS = true
+                    break
+                }
+            }
+            if (isCS) {
+                let generatedPath = ppath.join(ppath.dirname(this.output), 'generated')
+                this.log(`Copying C# package assets to ${generatedPath}`)
+                for (let files of this.files.values()) {
+                    for (let componentPaths of files.values()) {
+                        for (let componentPath of componentPaths) {
+                            let component = componentPath.component
+                            let path = componentPath.path
+                            if (!component.isCSProject()) {
+                                // Copy package files to output
+                                let relativePath = ppath.relative(ppath.dirname(component.path), path)
+                                let outputPath = ppath.join(generatedPath, componentPath.component.name, relativePath)
+                                this.vlog(`Copying ${path} to ${outputPath}`)
+                                await fs.ensureDir(ppath.dirname(outputPath))
+                                await fs.copyFile(path, outputPath)
+                            }
+                        }
                     }
                 }
             }
@@ -672,9 +702,7 @@ export default class SchemaMerger {
             if (await fs.pathExists(path)) {
                 try {
                     this.packages.add(path)
-                    if (this.verbose) {
-                        this.log(`${this.indent()}Following nuget ${this.prettyPath(path)}`)
-                    }
+                    this.vlog(`${this.indent()}Following nuget ${this.prettyPath(path)}`)
                     let nuspec = await this.xmlToJSON(path)
                     let md = nuspec?.package?.metadata[0]
                     this.pushParent(path, md.id[0], md.version[0])
@@ -754,9 +782,7 @@ export default class SchemaMerger {
             this.packages[path] = true
             try {
                 this.currentFile = this.prettyPath(path)
-                if (this.verbose) {
-                    this.log(`${this.indent()}Following ${this.currentFile}`)
-                }
+                this.vlog(`${this.indent()}Following ${this.currentFile}`)
                 this.pushParent(path)
                 let json = await this.xmlToJSON(path)
 
@@ -794,9 +820,7 @@ export default class SchemaMerger {
                         let configPath = ppath.join(ppath.dirname(path), 'packages.config')
                         if (await fs.pathExists(configPath)) {
                             this.currentFile = this.prettyPath(configPath)
-                            if (this.verbose) {
-                                this.log(`${this.indent()}Following ${this.currentFile}`)
-                            }
+                            this.vlog(`${this.indent()}Following ${this.currentFile}`)
                             let config = await this.xmlToJSON(configPath)
                             walkJSON(config, elt => {
                                 if (elt.packages?.package) {
@@ -824,9 +848,7 @@ export default class SchemaMerger {
         if (!this.packages.has(path)) {
             try {
                 this.packages.add(path)
-                if (this.verbose) {
-                    this.log(`${this.indent()}Following ${this.prettyPath(path)}`)
-                }
+                this.vlog(`${this.indent()}Following ${this.prettyPath(path)}`)
                 let pkg = await fs.readJSON(path)
                 let component = this.pushParent(path, pkg.name, pkg.version)
                 component.name = pkg.name || component.name
@@ -884,7 +906,7 @@ export default class SchemaMerger {
                     this.output = ppath.basename(component.path, '.csproj')
                 } else if (component.path.endsWith('.nuspec')) {
                     this.output = ppath.basename(component.path, '.nuspec')
-                } else if (component.path.endsWith('package.json') || component.path.endsWith('packages.config')) {
+                } else if (component.path.endsWith('package.json')) {
                     this.output = ppath.basename(ppath.dirname(component.path))
                 }
                 if (this.output) {
@@ -1409,6 +1431,12 @@ export default class SchemaMerger {
     // Check to see if a kind is an interface.
     private isInterface(kind: string): boolean {
         return this.interfaces.includes(kind)
+    }
+
+    private vlog(msg: string): void {
+        if (this.verbose) {
+            this.log(msg)
+        }
     }
 
     // Report missing component.

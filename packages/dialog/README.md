@@ -36,23 +36,23 @@ _See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframew
 
 ## `bf dialog:merge PATTERNS`
 
-Merge component information into an app.schema and app.resources that describes the order to look for assets.
+Merge <kind>.schema and <kind>[.<locale>].uischema definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources are included in the same location.
 
 ```
 USAGE
   $ bf dialog:merge PATTERNS
 
 ARGUMENTS
-  PATTERNS  Any number of glob regex patterns to match .schema, .csproj, packages.config or package.json files.
+  PATTERNS  Any number of glob regex patterns to match .csproj, .nuspec or package.json files.
 
 OPTIONS
   -h, --help             show CLI help
-  -o, --output=output    Output path and filename for merged schema.
+  -o, --output=output    Output path and filename for merged .schema and .uischema.  Defaults to first project name.
   -v, --verbose          Show verbose logging of files as they are processed.
-  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna] Extension to include when analyzing resource names.
+  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource for C#.
 
 EXAMPLES
-  $ bf dialog:merge *.csproj
+  $ bf dialog:merge myProject.csproj plugins/*.nuspec
   $ bf dialog:merge package.json -o app.schema
 ```
 
