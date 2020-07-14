@@ -19,7 +19,6 @@ jobs:
   - job: CLI
 
     steps:
-
     - script: |
         set shortSHA= %commitNumber:~0,7%
         set buildVersion: '4.10.0-dev.$(shortSHA)'
@@ -28,7 +27,7 @@ jobs:
     - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
       displayName: 'Tag Build with version number'
       inputs:
-        tags: 'Version=$(_version)'
+        tags: 'Version=$(buildVersion)'
       continueOnError: true
 
     - task: NodeTool@0
@@ -52,7 +51,7 @@ jobs:
     - script: 'rush test'
       displayName: 'rush test'
 
-    - script: 'node ./common/scripts/version-and-pack.js --version $(_version)'
+    - script: 'node ./common/scripts/version-and-pack.js --version $(buildVersion)'
       displayName: 'Version and Pack'
 
     - task: CopyFiles@2
