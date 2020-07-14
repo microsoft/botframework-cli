@@ -106,9 +106,9 @@ export default class QnamakerBuild extends Command {
 
       let qnaContents: any[] = []
       let recognizers = new Map<string, any>()
-      let multiRecognizer: any
+      let multiRecognizers = new Map<string, any>()
       let settings: any
-      let crosstrainedRecognizer: any
+      let crosstrainedRecognizers = new Map<string, any>()
       
       if ((inVal && inVal !== '') || files.length > 0) {
         if (log) this.log('Loading files...\n')
@@ -127,24 +127,24 @@ export default class QnamakerBuild extends Command {
         const loadedResources = await builder.loadContents(files, botName, suffix, region, defaultCulture, schema)
         qnaContents = loadedResources.qnaContents
         recognizers = loadedResources.recognizers
-        multiRecognizer = loadedResources.multiRecognizer
+        multiRecognizers = loadedResources.multiRecognizers
         settings = loadedResources.settings
-        crosstrainedRecognizer = loadedResources.crosstrainedRecognizer
+        crosstrainedRecognizers = loadedResources.crosstrainedRecognizers
       } else {
         // load qna content from stdin and create default recognizer, multiRecognier and settings
         if (log) this.log('Load qna content from stdin\n')
-        const content = new Content(flags.stdin, new qnaOptions(botName, true, defaultCulture, path.join(process.cwd(), 'stdin')))
+        const content = new Content(flags.stdin, new qnaOptions('stdin', true, defaultCulture, path.join(process.cwd(), 'stdin')))
         qnaContents.push(content)
-        multiRecognizer = new MultiLanguageRecognizer(path.join(process.cwd(), `${botName}.qna.dialog`), {})
+        multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), `stdin.qna.dialog`), {}))
         settings = new Settings(path.join(process.cwd(), `qnamaker.settings.${suffix}.${region}.json`), {})
         const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings, {})
         recognizers.set(content.name, recognizer)
-        crosstrainedRecognizer = new CrosstrainedRecognizer(path.join(process.cwd(), `${botName}.lu.qna.dialog`), {})
+        crosstrainedRecognizers.set('stdin', new CrosstrainedRecognizer(path.join(process.cwd(), `stdin.lu.qna.dialog`), {}))
       }
 
       // update or create and then publish qnamaker kb based on loaded resources
       if (log) this.log('Handling qnamaker knowledge bases...')
-      const dialogContents = await builder.build(qnaContents, recognizers, subscriptionKey, endpoint, botName, suffix, fallbackLocale, multiRecognizer, settings, crosstrainedRecognizer, dialog)
+      const dialogContents = await builder.build(qnaContents, recognizers, subscriptionKey, endpoint, botName, suffix, fallbackLocale, multiRecognizers, settings, crosstrainedRecognizers, dialog)
 
       // get endpointKeys
       const endpointKeysInfo = await builder.getEndpointKeys(subscriptionKey, endpoint)

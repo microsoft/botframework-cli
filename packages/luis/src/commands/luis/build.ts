@@ -107,8 +107,8 @@ export default class LuisBuild extends Command {
       let luContents: any[] = []
       let recognizers = new Map<string, any>()
       let multiRecognizers = new Map<string, any>()
-      let settings = new Map<string, any>()
-      let crosstrainedRecognizers = new Map<string, string>()
+      let settings: any
+      let crosstrainedRecognizers = new Map<string, any>()
 
       if ((inVal && inVal !== '') || files.length > 0) {
         if (log) this.log('Loading files...\n')
@@ -136,7 +136,7 @@ export default class LuisBuild extends Command {
         const content = new Content(flags.stdin, new LUOptions('stdin', true, defaultCulture, path.join(process.cwd(), 'stdin')))
         luContents.push(content)
         multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
-        settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {}))
+        settings = new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {})
         const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
         recognizers.set(content.name, recognizer)
         crosstrainedRecognizers.set('stdin', new CrosstrainedRecognizer(path.join(process.cwd(), 'stdin.lu.qna.dialog'), {}))
