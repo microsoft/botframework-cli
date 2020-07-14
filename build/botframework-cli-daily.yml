@@ -27,7 +27,8 @@ jobs:
         echo "Full git hash:  $(Build.SourceVersion)"
         echo "Short git hash: $short_hash"
         echo "##vso[task.setvariable variable=short_hash]$short_hash"  ## Store variable for subsequent steps
-        echo "##vso[task.setvariable variable=buildDate]$(Date:yyyyMMdd)"  ## Store variable for subsequent steps
+        dateStr = (Get-Date).ToString('yyyy-MM-dd') 
+        echo "##vso[task.setvariable variable=buildDate]dateStr"
       workingDirectory: $(Build.SourcesDirectory)
       displayName: Set Build Version
 
