@@ -21,7 +21,7 @@ schedules:
 jobs:
   - job: CLI
     variables:
-    buildDate: $(Get-Date -Format yyyyMMdd)
+      buildDate: $(Get-Date -Format yyyyMMdd)
 
     steps:
     - bash: |
