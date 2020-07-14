@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationQuery extends Command {
@@ -45,32 +47,12 @@ export default class LuisApplicationQuery extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId, query}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint, true)
-    const options: any = {}
-
     let slotName = 'production'
 
     if (staging) slotName = 'staging'
 
-    if (verbose) {
-      options.verbose = verbose
-    }
-
-    if (log) {
-      options.log = log
-    }
-
-    const predictionRequest: any = {query}
-
-    if (timezoneOffset) {
-      const options: any = {
-        datetimeReference: timezoneOffset
-      }
-      predictionRequest.options = options
-    }
-
     try {
-      const predictionData = await client.prediction.getSlotPrediction(appId, slotName, predictionRequest, options)
+      const predictionData = await Application.query({subscriptionKey, endpoint, appId}, slotName, query, log, verbose, timezoneOffset)
       this.log(`${JSON.stringify(predictionData, null, 2)}`)
     } catch (err) {
       throw new CLIError(`Failed to fetch prediction data: ${err}`)

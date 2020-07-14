@@ -48,6 +48,7 @@ const INTENTTYPE = 'intent';
 const PLCONSTS = {
     DISABLED : 'disabled',
     ENABLEDFORALLMODELS: 'enabledforallmodels',
+    DISABLEDFORALLMODELS: 'disabledforallmodels',
     INTERCHANGEABLE: '(interchangeable)'
 };
 const parseFileContentsModule = {
@@ -1042,7 +1043,7 @@ const validateAndGetRoles = function(parsedContent, roles, line, entityName, ent
             let roleFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.roles.includes(role) || item.name === role);
             if (roleFound !== undefined) {
                 // PL entities use roles for things like interchangeable, disabled, enabled for all models. There are really not 'dupes'.
-                let hasBadNonPLRoles = (roleFound.roles || []).filter(item => item.toLowerCase() !== PLCONSTS.INTERCHANGEABLE && item.toLowerCase() !== PLCONSTS.ENABLEDFORALLMODELS && item.toLowerCase() !== PLCONSTS.DISABLED);
+                let hasBadNonPLRoles = (roleFound.roles || []).filter(item => item.toLowerCase() !== PLCONSTS.INTERCHANGEABLE && item.toLowerCase() !== PLCONSTS.ENABLEDFORALLMODELS && item.toLowerCase() !== PLCONSTS.DISABLED && item.toLowerCase() !== PLCONSTS.DISABLEDFORALLMODELS);
                 if (hasBadNonPLRoles.length !== 0) {
                     let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}". Prior definition - '@ ${roleFound.type} ${roleFound.name}${roleFound.roles.length > 0 ? ` hasRoles ${roleFound.roles.join(',')}` : ``}'`;
                     let error = BuildDiagnostic({
@@ -1377,6 +1378,8 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                 isPLEnabled = false;
             } else if (item.toLowerCase() === PLCONSTS.ENABLEDFORALLMODELS) {
                 isPLEnabledForAllModels = true;
+            } else if (item.toLowerCase() === PLCONSTS.DISABLEDFORALLMODELS) {
+                isPLEnabledForAllModels = false;
             } else if (item.toLowerCase() === PLCONSTS.INTERCHANGEABLE) {
                 entityName += item;
             } else {
@@ -1817,8 +1820,8 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
         for (const qna of qnas) {
-            if (qna.Id) {
-                qna.Id = parseInt(qna.Id);
+            if (qna.QAPairId) {
+                qna.QAPairId = parseInt(qna.QAPairId);
             } 
             let questions = qna.Questions;
             // detect if any question is a reference
@@ -1844,7 +1847,7 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
                     context.prompts.push(new qnaPrompt(prompt.displayText, prompt.linkedQuestion, undefined, contextOnly, idx));
                 })
             }
-            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.Id || 0, answer.trim(), qna.source, questions, metadata, context));
+            parsedContent.qnaJsonStructure.qnaList.push(new qnaListObj(qna.QAPairId || 0, answer.trim(), qna.source, questions, metadata, context));
         }
     }
 }

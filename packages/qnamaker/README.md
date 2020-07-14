@@ -12,6 +12,7 @@ This package is intended for Microsoft use only and should be consumed through @
 - [Working with .qna files][2]
 - [Machine translating .qna content][3]
 - [using qnamaker:build][4]
+- [ChitChat dataset][5]
 
 # Commands
 <!-- commands -->
@@ -396,7 +397,7 @@ _See code: [src/commands/qnamaker/kb/delete.ts](https://github.com/microsoft/bot
 
 ## `bf qnamaker:kb:export`
 
-Echos a knowledgebase json to stdout
+Echos a knowledgebase in json or qna format to stdout
 
 ```
 USAGE
@@ -658,3 +659,4 @@ _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/bot
 [2]:./docs/working-with-qna.md
 [3]:./docs/translate-command.md
 [4]:./docs/using-qnamaker-build.md
+[5]:./docs/chit-chat-dataset.md
