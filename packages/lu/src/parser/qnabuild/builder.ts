@@ -197,7 +197,7 @@ export class Builder {
           let hostName = ''
 
           // get recognizer
-          let recognizersOfContentCulture = []
+          let recognizersOfContentCulture: Recognizer[] = []
           for (let [dialogFileName, recognizer] of recognizers) {
             const fileNameSplit = dialogFileName.split('.')
             if (fileNameSplit[fileNameSplit.length - 2] === culture) {

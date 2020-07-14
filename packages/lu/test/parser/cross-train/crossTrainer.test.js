@@ -5,6 +5,7 @@
 
 const assert = require('chai').assert
 const crossTrainer = require('../../../src/parser/cross-train/crossTrainer')
+const sectionTypes = require('../../../src/parser/utils/enums/lusectiontypes')
 const NEWLINE = require('os').EOL
 
 describe('luis:cross training tests among lu and qna contents', () => {
@@ -686,5 +687,215 @@ describe('luis:cross training tests among lu and qna contents', () => {
     foundIndex = luResult.get('dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
     assert.isTrue(foundIndex > -1)
     assert.equal(luResult.get('dia2.lu').Sections[foundIndex].Body, `- book a hotel for me${NEWLINE}- book a hotel for {@name}${NEWLINE}- user guide${NEWLINE}- tell joke`)
+  })
+
+  it('luis:cross training can get expected result when all lu files are empty', async () => {
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content: `> this is comments`,
+      id: 'main.lu'})
+
+    qnaContentArray.push({
+      content:
+        `# ?user guide
+
+        **Filters:**
+        - aa=bb
+        
+        \`\`\`
+            Here is the [user guide](http://contoso.com/userguide.pdf)
+        \`\`\`
+        
+        # ?tell joke
+        \`\`\`
+            tell a funny joke
+        \`\`\``,
+      id: 'main.qna'}
+    )
+
+    luContentArray.push({
+      content: `> !# @app.name = my luis application`,
+      id: 'dia1.lu'}
+    )
+
+    qnaContentArray.push({
+      content:
+        `> !# @qna.pair.source = xyz
+        <a id = "1"></a>
+        
+        # ?tell Joke
+        - tell me a joke
+        
+        \`\`\`
+            ha ha ha
+        \`\`\`
+        
+        # ?can I book a hotel near space needle
+        \`\`\`
+            of course you can
+        \`\`\``,
+      id: 'dia1.qna'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [],
+      triggerRules: {},
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const luResult = trainedResult.luResult
+    const qnaResult = trainedResult.qnaResult
+
+    assert.equal(luResult.get('main.lu').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+
+    assert.equal(qnaResult.get('main.qna').Sections.length, 2)
+    assert.equal(qnaResult.get('main.qna').Sections[0].FilterPairs[1].key, 'dialogName')
+    assert.equal(qnaResult.get('main.qna').Sections[0].FilterPairs[1].value, 'main')
+    assert.equal(qnaResult.get('main.qna').Sections[1].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('main.qna').Sections[1].FilterPairs[0].value, 'main')
+
+    assert.equal(luResult.get('dia1.lu').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+
+    assert.equal(qnaResult.get('dia1.qna').Sections.length, 2)
+    assert.equal(qnaResult.get('dia1.qna').Sections[0].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('dia1.qna').Sections[0].FilterPairs[0].value, 'dia1')
+    assert.equal(qnaResult.get('dia1.qna').Sections[1].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('dia1.qna').Sections[1].FilterPairs[0].value, 'dia1')
+  })
+
+  it('luis:cross training can get expected result when all qna files are empty', async () => {
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - book a hotel for me
+        
+        # dia2_trigger
+        - book a flight for me
+        - book a train ticket for me`,
+      id: 'main.lu'})
+
+    qnaContentArray.push({
+      content: `> this is comment`,
+      id: 'main.qna'}
+    )
+
+    luContentArray.push({
+      content:
+        `> !# @app.name = my luis application
+        
+        # hotelLevel
+        - I need a four star hotel
+        
+        # hotelLocation
+        - can I book a hotel near Space Needle`,
+      id: 'dia1.lu'}
+    )
+
+    qnaContentArray.push({
+      content: ``,
+      id: 'dia1.qna'}
+    )
+
+    luContentArray.push({
+      content:
+        `# bookFlight
+        - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+        
+        # bookTrain
+        - book a train ticket from Seattle to Portland`,
+      id: 'dia2.lu'}
+    )
+
+    qnaContentArray.push({
+      content:``,
+      id: 'dia2.qna'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [
+        'main.lu'
+      ],
+      triggerRules: {
+        'main.lu': {
+          'dia1_trigger': 'dia1.lu',
+          'dia2_trigger': 'dia2.lu'
+        }
+      },
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const luResult = trainedResult.luResult
+    const qnaResult = trainedResult.qnaResult
+
+    assert.isTrue(luResult.get('main.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_main') === -1)
+    assert.equal(qnaResult.get('main.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+
+    let foundIndex = luResult.get('dia1.lu').Sections.findIndex(s => s.ModelInfo === '> !# @app.name = my luis application')
+    assert.isTrue(foundIndex > -1)
+
+    foundIndex = luResult.get('dia1.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia1.lu').Sections[foundIndex].Body, `- book a flight for me${NEWLINE}- book a train ticket for me`)
+    
+    assert.isTrue(luResult.get('dia1.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_dia1') === -1)
+
+    assert.equal(qnaResult.get('dia1.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+
+    foundIndex = luResult.get('dia2.lu').Sections.findIndex(s => s.Name === '_Interruption')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('dia2.lu').Sections[foundIndex].Body, `- book a hotel for me`)
+    
+    assert.isTrue(luResult.get('dia2.lu').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_dia2') === -1)
+
+    assert.equal(qnaResult.get('dia2.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+  })
+
+  it('luis:cross training can get expected result when all lu and qna files are empty', async () => {
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content: `> this is comment`,
+      id: 'main.lu'})
+
+    qnaContentArray.push({
+      content: `> this is comment`,
+      id: 'main.qna'}
+    )
+
+    luContentArray.push({
+      content: `> !# @app.name = my luis application`,
+      id: 'dia1.lu'}
+    )
+
+    qnaContentArray.push({
+      content: `> this is comment`,
+      id: 'dia1.qna'}
+    )
+
+    let crossTrainConfig = {
+      rootIds: [],
+      triggerRules: {},
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const luResult = trainedResult.luResult
+    const qnaResult = trainedResult.qnaResult
+
+    assert.equal(luResult.get('main.lu').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+    assert.equal(qnaResult.get('main.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+    assert.equal(luResult.get('dia1.lu').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+    assert.equal(qnaResult.get('dia1.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
   })
 })
