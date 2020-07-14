@@ -114,7 +114,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart bad json')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/badJson.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('Unexpected token', lines) === 1, 'Did not detect bad JSON')
     })
 
@@ -122,7 +122,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart schema mismatch')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/schemaMismatch.schema'])
         assert(merged, 'Merging failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('does not match', lines) === 1, 'Did not detect schema mismatch')
     })
 
@@ -130,7 +130,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart no allof')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/allof.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('allOf', lines) === 1, 'Did not detect allOf in schema')
     })
 
@@ -138,7 +138,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart missing extends')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingExtends.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('it is not included', lines) === 1, 'Did not detect missing extends in schema')
     })
 
@@ -146,7 +146,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart missing schema reference')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingSchemaRef.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('does not exist', lines) === 1, 'Did not detect missing schema ref')
     })
 
@@ -154,7 +154,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart bad role')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/badRole.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 2, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 2, 'Wrong number of errors or warnings')
         assert(countMatches('is not valid for component', lines) === 1, 'Did not detect bad component $role')
         assert(countMatches('is not valid in properties/foo', lines) === 1, 'Did not detect bad property $role')
     })
@@ -163,7 +163,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart duplicate $kind')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/prompt.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('prompt.schema', lines) === 3, 'Did not detect duplicate $kind')
     })
 
@@ -171,7 +171,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart missing implementation')
         let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingImplementation.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('no implementations', lines) === 1, 'Did not detect missing implementations')
     })
 
@@ -191,12 +191,8 @@ describe('dialog:merge', async () => {
     it('csproj-errors', async () => {
         console.log('\nStart csproj-errors')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
-        let errors = countMatches(/error|warning/i, lines)
-        if (errors === 0) {
-            assert(merged, 'Could not merge')
-        } else {
-            assert(!merged, 'Should not have merged schemas')
-        }
+        assert(!merged, 'Merging should faile')
+        assert(countMatches(/error|warning/i, lines) === 5, 'Wrong number of errors or warnings')
         assert(countMatches(/Following.*project1/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget1.*10.0.1/, lines) === 1, 'Did not follow nuget1')
         assert(countMatches(/Following.*project2/, lines) === 1, 'Did not follow project2')
@@ -206,15 +202,24 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Parsing.*nuget2.schema/, lines) === 1, 'Missing nuget2.schema')
         assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
         assert(countMatches(/Parsing.*project2.schema/, lines) === 1, 'Missing project2.schema')
-        assert(countMatches(/conflicts.lg/, lines) === 3, 'Missing conflicts')
         assert(countMatches(/multiple.dialog/, lines) === 3, 'Missing multiple definitions')
+    })
+
+    it('csproj-uierrors', async () => {
+        console.log('\nStart csproj-uierrors')
+        let [merged, lines] = await merge(['projects/project4/project4.csproj'], 'project4.schema', true)
+        assert(!merged, 'Merging should fail')
+        assert(countMatches(/error|warning/i, lines) === 7, 'Wrong number of errors or warnings')
+        assert(countMatches(/nokind does not exist/i, lines) === 1, 'Missing nokind')
+        assert(countMatches(/nonExistentProperty/i, lines) === 4, 'Wrong number of non-existent properties')
+        assert(countMatches(/order.nonExistentOrder/i, lines) === 2, 'Wrong number of non-existent orders')
     })
 
     it('package.json', async () => {
         console.log('\nStart package.json')
         let [merged, lines] = await merge(['npm/node_modules/root-package/package.json'], 'root-package.schema', true)
         assert(merged, 'Could not merge')
-        assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 0, 'Wrong number of errors or warnings')
         assert(countMatches('root-package.schema', lines) === 1, 'Missing root-package.schema')
         assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
         assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
@@ -251,7 +256,7 @@ describe('dialog:merge', async () => {
             let [merged, lines] = await merge(['nuget\\nuget1\\10.0.1\\nuget1.nuspec'], undefined, true)
             assert(merged, 'Could not merge')
             assert(fs.existsSync('nuget1.schema'), 'Did not infer output')
-            assert(countMatches(/error|warning/i, lines) === 0, 'Extra errors or warnings')
+            assert(countMatches(/error|warning/i, lines) === 0, 'Wrong number of errors or warnings')
             assert(countMatches('nuget1.nuspec', lines) === 1, 'Missing nuget1.nuspec')
             assert(countMatches('Override', lines) === 1, 'Missing override')
             await compareResources('nuget1.resources',

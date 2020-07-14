@@ -536,6 +536,7 @@ export default class SchemaMerger {
                         this.uiError(kindName)
                     } else {
                         this.validateProperties(kindName, kindDef, locale[kindName].form?.properties)
+                        this.validateProperties(`${kindName}.order`, kindDef, locale[kindName].form?.order)
                     }
                 }
                 if (!this.failed) {
@@ -568,10 +569,14 @@ export default class SchemaMerger {
                     let newPath = `${path}.${prop}`
                     let newSchema = this.propertyDefinition(schema, prop)
                     if (!newSchema) {
-                        this.uiError(path)
-                    } else if (uiProp.properties) {
-                        this.validateProperties(newPath + '.order', newSchema, uiProp.order)
-                        this.validateProperties(newPath, newSchema, uiProp.properties)
+                        this.uiError(newPath)
+                    } else {
+                        if (uiProp.properties) {
+                            this.validateProperties(newPath, newSchema, uiProp.properties)
+                        }
+                        if (uiProp.order) {
+                            this.validateProperties(newPath + '.order', newSchema, uiProp.order)
+                        }
                     }
                 }
             }
@@ -1289,7 +1294,7 @@ export default class SchemaMerger {
             if (val.allOf && Array.isArray(val.allOf)) {
                 for (let child of val.allOf) {
                     if (child.$ref) {
-                        let ref:any = ptr.get(bundle, child.$ref)
+                        let ref: any = ptr.get(bundle, child.$ref)
                         for (let prop in ref) {
                             if (!child.hasOwnProperty(prop)) {
                                 child[prop] = clone(ref[prop])
@@ -1325,7 +1330,7 @@ export default class SchemaMerger {
                 if (!val.$schema) {
                     if (val.$ref) {
                         val = clone(val)
-                        let ref:any = ptr.get(schema, val.$ref)
+                        let ref: any = ptr.get(schema, val.$ref)
                         for (let prop in ref) {
                             if (!val[prop]) {
                                 val[prop] = ref[prop]
