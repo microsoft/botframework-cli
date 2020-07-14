@@ -8,36 +8,6 @@
         "*"
       ],
       "properties": {
-        "Object": {
-          "description": "This is Object",
-          "label": "Project3",
-          "order": [
-            "*"
-          ],
-          "properties": {
-            "subObject": {
-              "label": "Project3",
-              "description": "This is subObject"
-            }
-          }
-        },
-        "SimpleArray": {
-          "description": "This is SimpleArray",
-          "label": "Project3"
-        },
-        "Array": {
-          "description": "This is Array",
-          "label": "Project3",
-          "order": [
-            "*"
-          ],
-          "properties": {
-            "subArray": {
-              "description": "This is subArray",
-              "label": "Project3"
-            }
-          }
-        },
         "AnyOf": {
           "description": "This is AnyOf",
           "label": "Project3",
@@ -72,6 +42,36 @@
               }
             }
           }
+        },
+        "Array": {
+          "description": "This is Array",
+          "label": "Project3",
+          "order": [
+            "*"
+          ],
+          "properties": {
+            "subArray": {
+              "description": "This is subArray",
+              "label": "Project3"
+            }
+          }
+        },
+        "Object": {
+          "description": "This is Object",
+          "label": "Project3",
+          "order": [
+            "*"
+          ],
+          "properties": {
+            "subObject": {
+              "description": "This is subObject",
+              "label": "Project3"
+            }
+          }
+        },
+        "SimpleArray": {
+          "description": "This is SimpleArray",
+          "label": "Project3"
         }
       }
     }

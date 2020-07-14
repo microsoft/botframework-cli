@@ -232,6 +232,7 @@ describe('dialog:merge', async () => {
         // which ends up in the directory where the command is run from
         console.log('\nStart nuspec')
         let path = ppath.join(tempDir, 'nuget1/')
+        await fs.ensureDir(path)
         await fs.copy('nuget\\nuget1\\10.0.1\\', path)
         await fs.copyFile('schemas\\packageBase.json', ppath.join(path, 'packageBase.json'))
         await fs.copyFile(ppath.join(path, 'nuget1-10.schema.local'), ppath.join(path, 'nuget1-10.schema'))

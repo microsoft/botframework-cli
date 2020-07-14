@@ -18,3 +18,6 @@ echo.
 
 echo *** root-package
 call node %ds% dialog:merge npm/node_modules/root-package/package.json -o oracles/root-package --verbose
+
+rem remove copied assets
+rd /s /q oracles\generated

@@ -73,7 +73,11 @@ function mergeObjects(obj1: any, obj2: any): any {
     }
     merger(obj1)
     merger(obj2)
-    return target
+    let finalTarget = {}
+    for (let key of Object.keys(target).sort()) {
+        finalTarget[key] = target[key]
+    }
+    return finalTarget
 }
 
 function fileBase(filename: string): string {

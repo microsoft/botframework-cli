@@ -8,36 +8,6 @@
         "Object"
       ],
       "properties": {
-        "Object": {
-          "description": "This is Object",
-          "label": "Nuget3 en-us",
-          "order": [
-            "subObject"
-          ],
-          "properties": {
-            "subObject": {
-              "label": "Nuget3 en-us",
-              "description": "This is subObject"
-            }
-          }
-        },
-        "SimpleArray": {
-          "description": "This is SimpleArray",
-          "label": "Nuget3 en-us"
-        },
-        "Array": {
-          "description": "This is Array",
-          "label": "Nuget3 en-us",
-          "order": [
-            "subArray"
-          ],
-          "properties": {
-            "subArray": {
-              "description": "This is subArray",
-              "label": "Nuget3 en-us"
-            }
-          }
-        },
         "AnyOf": {
           "description": "This is AnyOf",
           "label": "Nuget3 en-us",
@@ -72,6 +42,36 @@
               }
             }
           }
+        },
+        "Array": {
+          "description": "This is Array",
+          "label": "Nuget3 en-us",
+          "order": [
+            "subArray"
+          ],
+          "properties": {
+            "subArray": {
+              "description": "This is subArray",
+              "label": "Nuget3 en-us"
+            }
+          }
+        },
+        "Object": {
+          "description": "This is Object",
+          "label": "Nuget3 en-us",
+          "order": [
+            "subObject"
+          ],
+          "properties": {
+            "subObject": {
+              "description": "This is subObject",
+              "label": "Nuget3 en-us"
+            }
+          }
+        },
+        "SimpleArray": {
+          "description": "This is SimpleArray",
+          "label": "Nuget3 en-us"
         }
       }
     }
