@@ -540,12 +540,12 @@ export default class SchemaMerger {
                         this.validateProperties(`${kindName}.order`, kindDef, locale[kindName].form?.order)
                     }
                 }
-                if (!this.failed) {
-                    for (let locale in result) {
-                        this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
-                        this.log(`Writing ${this.currentFile}`)
-                        await fs.writeJSON(this.currentFile, result[locale], this.jsonOptions)
-                    }
+            }
+            if (!this.failed) {
+                for (let locale in result) {
+                    this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
+                    this.log(`Writing ${this.currentFile}`)
+                    await fs.writeJSON(this.currentFile, result[locale], this.jsonOptions)
                 }
             }
         }
