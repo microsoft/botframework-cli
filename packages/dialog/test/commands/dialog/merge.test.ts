@@ -226,28 +226,6 @@ describe('dialog:merge', async () => {
         assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
         await compareToOracle('root-package.schema')
         await compareToOracle('root-package.uischema')
-
-        let path = ppath.join(tempDir, 'generated.resources')
-        await compareResources(path,
-            {
-                includes: [
-                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package',
-                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules\\dependent-package',
-                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\parent-package'
-                ],
-                excludes: [
-                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules',
-                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules\\dependent-package\\node_modules',
-                    '..\\..\\..\\..\\source\\repos\\botframework-cli\\packages\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\parent-package\\node_modules'
-                ],
-                extensions: [
-                    '.schema',
-                    '.lu',
-                    '.lg',
-                    '.qna',
-                    '.dialog'
-                ]
-            })
     })
 
     it('nuspec', async () => {
@@ -255,28 +233,12 @@ describe('dialog:merge', async () => {
         try {
             let [merged, lines] = await merge(['nuget\\nuget1\\10.0.1\\nuget1.nuspec'], undefined, true)
             assert(merged, 'Could not merge')
-            assert(fs.existsSync('nuget1.schema'), 'Did not infer output')
+            assert(fs.existsSync('nuget1.schema') && fs.existsSync('nuget1.en-us.uischema'), 'Did not infer output')
             assert(countMatches(/error|warning/i, lines) === 0, 'Wrong number of errors or warnings')
             assert(countMatches('nuget1.nuspec', lines) === 1, 'Missing nuget1.nuspec')
-            assert(countMatches('Override', lines) === 1, 'Missing override')
-            await compareResources('nuget1.resources',
-                {
-                    includes: [
-                        'nuget\\nuget1\\10.0.1',
-                        'nuget\\nuget2\\1.0.1'
-                    ],
-                    excludes: [],
-                    extensions: [
-                        '.schema',
-                        '.lu',
-                        '.lg',
-                        '.qna',
-                        '.dialog'
-                    ]
-                })
         } finally {
             await fs.remove('nuget1.schema')
-            await fs.remove('nuget1.resources')
+            await fs.remove('nuget1.en-us.uischema')
         }
     })
 })

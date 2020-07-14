@@ -885,6 +885,8 @@ export default class SchemaMerger {
             for (let component of this.components) {
                 if (component.path.endsWith('.csproj')) {
                     this.output = ppath.basename(component.path, '.csproj')
+                } else if (component.path.endsWith('.nuspec')) {
+                    this.output = ppath.basename(component.path, '.nuspec')
                 } else if (component.path.endsWith('package.json') || component.path.endsWith('packages.config')) {
                     this.output = ppath.basename(ppath.dirname(component.path))
                 }
