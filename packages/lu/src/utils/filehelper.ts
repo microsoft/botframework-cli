@@ -11,8 +11,8 @@ const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
 const LUOptions = require('./../parser/lu/luOptions')
-const luParser = require('./../lufile/luParser')
-const LUSectionTypes = require('./../utils/enums/lusectiontypes')
+const luParser = require('./../parser/lufile/luParser')
+const LUSectionTypes = require('./../parser/utils/enums/lusectiontypes')
 const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/

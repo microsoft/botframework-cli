@@ -93,7 +93,7 @@ export class Builder {
         throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
-      const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
+      const multiRecognizerPath = path.join(fileFolder, `${fileName}.qna.dialog`)
       if (!multiRecognizers.has(fileName)) {
         let multiRecognizerContent = {}
         let multiRecognizerSchema = schema
@@ -119,7 +119,7 @@ export class Builder {
       }
 
       const dialogName = `${fileName}.${fileCulture}.qna`
-      const dialogFile = path.join(fileFolder, dialogName)
+      const dialogFile = path.join(fileFolder, dialogName + '.dialog')
       let existingDialogObj: any
       if (fs.existsSync(dialogFile)) {
         existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
@@ -388,9 +388,9 @@ export class Builder {
       if (fileExists && outFilePath.endsWith('.lu.qna.dialog')) {
         let existingCTRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(outFilePath))
         let currentCTRecognizerObject = JSON.parse(content.content)
-        let ctRecognizerToBeMerged = existingCTRecognizerObject.recognizers.filter((r: string) => !currentCTRecognizerObject.recognizers.includes(r))
-        currentCTRecognizerObject.recognizers = currentCTRecognizerObject.recognizers.concat(ctRecognizerToBeMerged)
-        content.content = JSON.stringify(currentCTRecognizerObject, null, 4)
+        let ctRecognizerToBeMerged = currentCTRecognizerObject.recognizers.filter((r: string) => !existingCTRecognizerObject.recognizers.includes(r))
+        existingCTRecognizerObject.recognizers = existingCTRecognizerObject.recognizers.concat(ctRecognizerToBeMerged)
+        content.content = JSON.stringify(existingCTRecognizerObject, null, 4)
       }
 
       if (force || !fileExists) {
