@@ -1,0 +1,15 @@
+{
+  "dependent-package": {
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+    "form": {
+      "description": "root-package"
+    }
+  },
+  "parent-package": {
+    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+    "form": {
+      "description": "parent-package",
+      "subtitle": "From parent-package"
+    }
+  }
+}

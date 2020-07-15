@@ -13,9 +13,12 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-* [`bf dialog`](#bf-dialog)
-* [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
-* [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
+- [@microsoft/bf-dialog](#microsoftbf-dialog)
+- [Relevant docs](#relevant-docs)
+- [Commands](#commands)
+  - [`bf dialog`](#bf-dialog)
+  - [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
+  - [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
 
 ## `bf dialog`
 
@@ -33,23 +36,24 @@ _See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframew
 
 ## `bf dialog:merge PATTERNS`
 
-Merge component .schema files into an app.schema.
+Merge <kind>.schema and <kind>[.<locale>].uischema definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources are included in the same location.
 
 ```
 USAGE
   $ bf dialog:merge PATTERNS
 
 ARGUMENTS
-  PATTERNS  Any number of glob regex patterns to match .schema, .csproj, or package.json files.
+  PATTERNS  Any number of glob regex patterns to match .csproj, .nuspec or package.json files.
 
 OPTIONS
-  -h, --help           show CLI help
-  -o, --output=output  [default: app.schema] Output path and filename for merged schema.
-  -v, --verbose        Show verbose logging of files as they are processed.
+  -h, --help             show CLI help
+  -o, --output=output    Output path and filename for merged .schema and .uischema.  Defaults to first project name.
+  -v, --verbose          Show verbose logging of files as they are processed.
+  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource for C#.
 
 EXAMPLES
-  $ bf dialog:merge *.csproj
-  $ bf dialog:merge libraries/**/*.schema **/*.csproj -o app.schema
+  $ bf dialog:merge myProject.csproj plugins/*.nuspec
+  $ bf dialog:merge package.json -o app.schema
 ```
 
 _See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/merge.ts)_
