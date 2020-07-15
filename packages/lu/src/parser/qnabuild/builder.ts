@@ -132,7 +132,7 @@ export class Builder {
 
       let recognizer = Recognizer.load(file, dialogName, dialogFile, settings, existingDialogObj, schema)
       recognizers.set(dialogName, recognizer)
-      
+
       if (!qnaContents.has(fileCulture)) {
         let contentPerbotName = new Content(fileContent, new qnaOptions(botName, true, fileCulture, file))
         qnaContents.set(fileCulture, contentPerbotName)
@@ -248,7 +248,7 @@ export class Builder {
 
           for (const recognizer of recognizersOfContentCulture) {
             // update multiLanguageRecognizer asset
-            const dialogName = path.basename(recognizer.getDialogPath(),`.${culture}.qna.dialog`)
+            const dialogName = path.basename(recognizer.getDialogPath(), `.${culture}.qna.dialog`)
             const dialogFileName = path.basename(recognizer.getDialogPath(), '.dialog')
             if (multiRecognizers && multiRecognizers.has(dialogName)) {
               let multiRecognizer = multiRecognizers.get(dialogName) as MultiLanguageRecognizer
@@ -274,7 +274,7 @@ export class Builder {
         }))
       }
 
-      // write dialog assets 
+      // write dialog assets
       if (recognizers) {
         recognizerValues = Array.from(recognizers.values())
       }
@@ -282,7 +282,7 @@ export class Builder {
       if (multiRecognizers) {
         multiRecognizerValues = Array.from(multiRecognizers.values())
       }
-      
+
       if (settings) {
         settingsValue = settings as Settings
       }
@@ -416,7 +416,7 @@ export class Builder {
       contents.push(multiLangContent)
     }
 
-    if(settings) {
+    if (settings) {
       const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
       contents.push(settingsContent)
     }

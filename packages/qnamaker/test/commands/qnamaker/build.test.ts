@@ -263,8 +263,8 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to mul
       expect(ctx.stdout).to.contain('yyyy')
       
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
     })
 })
 
@@ -310,10 +310,11 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to cro
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when --dialog set to qnamaker', async ctx => {
+    .it('should write dialog assets successfully when --dialog set to crosstrained', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.lu.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.true
     })
 })
 
@@ -420,9 +421,11 @@ describe('qnamaker:build write dialog assets successfully with multi locales', (
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multi-locales/qnafiles', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully with multi locales', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/multi-locales/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.fr-fr.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.fr-fr.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/Foo.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/Foo.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/Foo.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/Foo.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/weather.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/weather.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/weather.fr-fr.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/weather.fr-fr.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/weather.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/weather.qna.dialog')).to.be.true
     })
 })
 
@@ -638,8 +641,8 @@ describe('qnamaker:build update knowledge base successfully with parameters set 
       expect(ctx.stdout).to.contain('Publishing kb')
 
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
     })
 })
 
@@ -755,8 +758,8 @@ describe('qnamaker:build write dialog assets successfully if schema is specified
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
     .it('should write dialog assets successfully if schema is specified', async ctx => {      
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.lu.qna.dialog')).to.be.true
     })
 })

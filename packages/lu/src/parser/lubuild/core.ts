@@ -3,20 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import {Recognizer} from './recognizer'
-import {MultiLanguageRecognizer} from './multi-language-recognizer'
-import {Settings} from './settings'
-import {CrossTrainedRecognizer} from './cross-trained-recognizer'
 import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
-import * as path from 'path'
 import fetch from 'node-fetch'
 
 const delay = require('delay')
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
-const Content = require('./../lu/lu')
-const LUOptions = require('./../lu/luOptions')
 const Luis = require('./../luis/luis')
 
 const rateLimitErrorCode = 429

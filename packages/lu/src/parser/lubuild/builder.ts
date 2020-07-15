@@ -260,16 +260,16 @@ export class Builder {
       if (recognizers) {
         recognizerValues = Array.from(recognizers.values())
       }
-      
+
       if (multiRecognizers) {
         multiRecognizerValues = Array.from(multiRecognizers.values())
       }
-      
+
       if (settings) {
         settingsValue = settings as Settings
       }
     }
-    
+
     if (dialogType === recognizerType.CROSSTRAINED && crosstrainedRecognizers) {
       crosstrainedRecognizerValues = Array.from(crosstrainedRecognizers.values())
     }
@@ -456,7 +456,7 @@ export class Builder {
       contents.push(multiLangContent)
     }
 
-    if(settings) {
+    if (settings) {
       const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
       contents.push(settingsContent)
     }
