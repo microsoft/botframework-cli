@@ -14,6 +14,8 @@ const LUErrorListener = require('./luErrorListener');
 const SectionType = require('./../utils/enums/lusectiontypes');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 const NEWLINE = require('os').EOL;
 
 class LUParser {
@@ -69,6 +71,8 @@ class LUParser {
                 nestedIntentSections.forEach(section => {
                     let emptyIntentSection = new SimpleIntentSection();
                     emptyIntentSection.Name = section.Name;
+                    const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, 100))
+                    emptyIntentSection.Range = range;
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
                     let error = BuildDiagnostic({
                         message: errorMsg,
@@ -334,7 +338,7 @@ class LUParser {
                 } else {
                     stopLine = originList.length
                 }
-                section.Range.End.Line = stopLine - 1
+                section.Range.End.Line = stopLine;
 
                 let destList
                 if (section.SectionType === SectionType.QNASECTION) {

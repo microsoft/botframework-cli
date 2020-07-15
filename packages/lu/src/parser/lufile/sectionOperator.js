@@ -25,9 +25,10 @@ class SectionOperator {
       throw new Error(`Section with id: ${newResource.Id} exists.`);
     }
 
+    const offset = this.Luresource.Content.split(/\r?\n/).length;
+
     this.Luresource.Content = this.Luresource.Content !== '' ? `${this.Luresource.Content}${NEWLINE}${sectionContent}` : sectionContent;
 
-    const offset = this.Luresource.Content.split(/\r?\n/).length;
     const newSection = newResource.Sections[0];
     this.adjustRangeForAddSection(newSection, offset);
     this.adjustRangeForErrors(newResource.Errors, offset);
@@ -66,7 +67,7 @@ class SectionOperator {
     this.adjustRangeForErrors(newResource.Errors, offset);
     this.Luresource.Errors.push(...newResource.Errors);
 
-    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, oldSection.Range.Start.Line, oldSection.Range.End.Line, sectionContent);
+    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, oldSection.Range.Start.Line - 1, oldSection.Range.End.Line - 1, sectionContent);
     this.adjustRangeForUpdateSection(oldSection, newSection);
 
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
@@ -87,7 +88,7 @@ class SectionOperator {
     this.adjustRangeForErrors(this.Luresource.Errors, startLine - endLine, endLine);
 
     this.Luresource.Sections.splice(sectionIndex, 1);
-    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, startLine, endLine, undefined);
+    this.Luresource.Content = this.replaceRangeContent(this.Luresource.Content, startLine - 1, endLine - 1, undefined);
 
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
     return this.Luresource;
@@ -147,23 +148,27 @@ class SectionOperator {
           u.Range.End.Line += offset;
         });
       } else if (startLine >= 0 && (endLine === undefined || endLine < startLine)) {
-        if (u.Range.Start.Line >= startLine) {
-          u.Range.Start.Line += offset;
-          u.Range.End.Line += offset;
-        }
+        errors.forEach(u => {
+          if (u.Range.Start.Line >= startLine) {
+            u.Range.Start.Line += offset;
+            u.Range.End.Line += offset;
+          }
+        });
       } else if (startLine >= 0 && endLine >= startLine) {
-        if (u.Range.Start.Line >= startLine && u.Range.End.Line <= endLine) {
-          u.Range.Start.Line += offset;
-          u.Range.End.Line += offset;
-        }
+        errors.forEach(u => {
+          if (u.Range.Start.Line >= startLine && u.Range.End.Line <= endLine) {
+            u.Range.Start.Line += offset;
+            u.Range.End.Line += offset;
+          }
+        });
       }
     }
   }
 
   adjustRangeForAddSection(newSection, offset) {
     const lineLength = newSection.Range.End.Line - newSection.Range.Start.Line;
-    newSection.Range.Start.Line += offset;
-    newSection.Range.End.Line += offset + lineLength;
+    newSection.Range.Start.Line = offset + 1;
+    newSection.Range.End.Line = offset + lineLength + 1;
   }
 
   adjustRangeForUpdateSection(oldSection, newSection) {
@@ -206,7 +211,7 @@ class SectionOperator {
   replaceRangeContent(originString, startLine, stopLine, replaceString) {
     const originList = originString.split(/\r?\n/);
     let destList = [];
-    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine + 1 || originList.length <= stopLine) {
+    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine + 1) {
       throw new Error("index out of range.");
     }
 

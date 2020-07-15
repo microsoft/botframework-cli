@@ -77,7 +77,7 @@ const BuildDiagnostic =function(parameter) {
     const severity = parameter.severity === undefined ? DiagnosticSeverity.ERROR : parameter.severity;
 
     let range;
-    const rangeInput = parameters.range;
+    const rangeInput = parameter.range;
     const context = parameter.context;
     if (rangeInput !== undefined) {
         range = rangeInput;
