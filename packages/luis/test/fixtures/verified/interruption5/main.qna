@@ -1038,6 +1038,8 @@ Thank you
 ```
 
 > Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
 # ? book a hotel for me
 
 **Filters:**
