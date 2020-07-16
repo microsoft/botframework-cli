@@ -13,8 +13,8 @@ steps:
   displayName: Get formatted date
 
 - bash: |
-    version = `$(version)`
-    _version = `$(_version)`
+    version = `echo $(version)`
+    _version = `echo $(_version)`
     echo "version:  $version"
     echo "_version:  $_version"
     buildVersion= ${[ coalesce($(version), $(_version).$(buildDate).$(short_hash)) ]}
