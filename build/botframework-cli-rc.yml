@@ -1,0 +1,23 @@
+#
+# Build Botframework-CLI RC bits on Windows agent
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+
+pool:
+  name: Hosted Windows 2019 with VS2019
+
+pr: none
+trigger: none
+
+variables:
+  NodeVersion: 10.x
+#  version: define this in Azure, settable at queue time
+
+stages:
+- stage: Build
+  jobs:
+  - job:
+    steps:
+    - template: botframework-cli-build-test.yml
