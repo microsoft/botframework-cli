@@ -71,6 +71,7 @@ class LUParser {
                 nestedIntentSections.forEach(section => {
                     let emptyIntentSection = new SimpleIntentSection();
                     emptyIntentSection.Name = section.Name;
+                    emptyIntentSection.Id = `${emptyIntentSection.SectionType}_${emptyIntentSection.Name}`
                     const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, 100))
                     emptyIntentSection.Range = range;
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
