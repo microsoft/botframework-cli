@@ -229,10 +229,10 @@ export class Builder {
             needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
           }
 
-        if (needTrainAndPublish) {
-          // train and publish application
-          await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket, isStaging)
-        }
+          if (needTrainAndPublish) {
+            // train and publish application
+            await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket, isStaging)
+          }
 
           // update multiLanguageRecognizer asset
           if (multiRecognizers && multiRecognizers.has(content.id)) {
