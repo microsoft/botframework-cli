@@ -108,21 +108,21 @@ describe('luis:build create a new application successfully', () => {
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('publish'))
       .reply(201, {
-        versionId: '0.2',
+        versionId: '0.1',
         isStaging: true
       })
   })
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--isStaging'])
     .it('should create a new application successfully', ctx => {
       expect(ctx.stdout).to.contain('Handling applications...')
       expect(ctx.stdout).to.contain('Creating LUIS.ai application')
       expect(ctx.stdout).to.contain('training version=0.1')
       expect(ctx.stdout).to.contain('waiting for training for version=0.1')
       expect(ctx.stdout).to.contain('publishing version=0.1')
-      expect(ctx.stdout).to.contain('publishing finished')
+      expect(ctx.stdout).to.contain('publishing finished for Staging slot')
     })
 })
 
@@ -174,7 +174,7 @@ describe('luis:build update application succeed when utterances changed', () => 
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
   })
 
@@ -239,7 +239,7 @@ describe('luis:build update application succeed when utterances added', () => {
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
   })
 
@@ -477,14 +477,14 @@ describe('luis:build create multiple applications successfully when input is a f
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
     
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
 
     nock('https://westus.api.cognitive.microsoft.com')
@@ -597,7 +597,7 @@ describe('luis:build update dialog assets successfully when dialog assets exist'
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
   })
 
@@ -737,7 +737,7 @@ describe('luis:build update application succeed with parameters set from luconfi
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
   })
 
@@ -800,7 +800,7 @@ describe('luis:build create a new application successfully with locale set to it
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
   })
 
@@ -871,7 +871,7 @@ describe('luis:build update application succeed when activeVersion is null', () 
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
   })
 
@@ -925,7 +925,7 @@ describe('luis:build create a new application successfully with endpoint overrid
       .post(uri => uri.includes('publish'))
       .reply(201, {
         versionId: '0.2',
-        isStaging: true
+        isStaging: false
       })
   })
 

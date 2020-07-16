@@ -156,6 +156,7 @@ export class Builder {
     suffix: string,
     fallbackLocale: string,
     deleteOldVersion: boolean,
+    isStaging: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
     settings?: Settings,
     crosstrainedRecognizers?: Map<string, CrossTrainedRecognizer>,
@@ -228,10 +229,10 @@ export class Builder {
             needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
           }
 
-          if (needTrainAndPublish) {
-            // train and publish application
-            await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket)
-          }
+        if (needTrainAndPublish) {
+          // train and publish application
+          await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket, isStaging)
+        }
 
           // update multiLanguageRecognizer asset
           if (multiRecognizers && multiRecognizers.has(content.id)) {
@@ -412,7 +413,7 @@ export class Builder {
     return true
   }
 
-  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number) {
+  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, isStaging: boolean) {
     // send train application request
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
     await delay(timeBucket)
@@ -439,8 +440,8 @@ export class Builder {
     // publish applications
     this.handler(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
     await delay(timeBucket)
-    await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId)
-    this.handler(`${recognizer.getLuPath()} publishing finished\n`)
+    await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId, isStaging)
+    this.handler(`${recognizer.getLuPath()} publishing finished for ${isStaging ? 'Staging' : 'Production'} slot\n`)
   }
 
   generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings, crosstrainedRecognizers: Array<CrossTrainedRecognizer>)

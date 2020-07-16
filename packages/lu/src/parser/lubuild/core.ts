@@ -339,7 +339,7 @@ export class LuBuildCore {
     return status
   }
 
-  public async publishApplication(appId: string, versionId: string) {
+  public async publishApplication(appId: string, versionId: string, isStaging: boolean) {
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
@@ -348,7 +348,7 @@ export class LuBuildCore {
           await this.client.apps.publish(appId,
             {
               versionId,
-              isStaging: false
+              isStaging
             })
           break
         } catch (e) {
