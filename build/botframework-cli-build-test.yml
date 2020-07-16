@@ -15,8 +15,8 @@ steps:
 - bash: |
     version = $(echo "$(version)")
     _version = $(echo "$(_version)")
-    echo "version:  $version"
-    echo "_version:  $_version"
+    echo "version:  $(version)"
+    echo "_version:  $(_version)"
     buildVersion= ${[ coalesce($(version), $(_version).$(buildDate).$(short_hash)) ]}
     [  -z "$version" ] && buildVersion=$_version.$(buildDate).$(short_hash) || $version
     echo "##vso[task.setvariable variable=buildVersion]$buildVersion"  ## Store variable for subsequent steps
