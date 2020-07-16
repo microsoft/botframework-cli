@@ -5,16 +5,23 @@ steps:
     echo "Short git hash: $short_hash"
     echo "##vso[task.setvariable variable=short_hash]$short_hash"  ## Store variable for subsequent steps
   workingDirectory: $(Build.SourcesDirectory)
-  displayName: Set Build Version
+  displayName: Get commit number
 
 - powershell: |
     $date = (Get-Date).ToString("yyyyMMdd")
     echo "##vso[task.setvariable variable=buildDate]$date"  ## Store variable for subsequent steps
+  displayName: Get formatted date
+
+- script: |
+    buildVersion= ${{ coalesce(variables.version, variables._version.$(buildDate).$(short_hash)) }}
+    echo "##vso[task.setvariable variable=buildVersion]$buildVersion"  ## Store variable for subsequent steps
+  workingDirectory: $(Build.SourcesDirectory)
+  displayName: Define Build Version
 
 - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
   displayName: 'Tag Build with version number'
   inputs:
-    tags: 'Version=${{coalesce(variables.version, variables._version.$(buildDate).$(short_hash))}}'
+    tags: 'Version=$(buildVersion)'
   continueOnError: true
 
 - task: NodeTool@0
@@ -38,7 +45,7 @@ steps:
 - script: 'rush test'
   displayName: 'rush test'
 
-- script: 'node ./common/scripts/version-and-pack.js --version ${{coalesce(variables.version, variables._version.$(buildDate).$(short_hash))}}'
+- script: 'node ./common/scripts/version-and-pack.js --version $(buildVersion)'
   displayName: 'Version and Pack'
 
 - task: CopyFiles@2
