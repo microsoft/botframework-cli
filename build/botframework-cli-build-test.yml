@@ -13,6 +13,8 @@ steps:
   displayName: Get formatted date
 
 - bash: |
+    echo "version:  $(version)"
+    echo "_version:  $(_version)"
     buildVersion= ${[ coalesce(variables.version, variables._version.$(buildDate).$(short_hash)) ]}
     echo "##vso[task.setvariable variable=buildVersion]$buildVersion"  ## Store variable for subsequent steps
   workingDirectory: $(Build.SourcesDirectory)
