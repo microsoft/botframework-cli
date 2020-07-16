@@ -80,7 +80,9 @@ const BuildDiagnostic =function(parameter) {
     const rangeInput = parameter.range;
     const context = parameter.context;
     if (rangeInput !== undefined) {
-        range = rangeInput;
+        const startPosition = new Position(rangeInput.Start.Line, rangeInput.Start.Column);
+        const stopPosition = new Position(rangeInput.End.Line, rangeInput.End.Column);
+        range = new Range(startPosition, stopPosition);
     } else if (context !== undefined) {
         const startPosition = new Position(context.start.line, context.start.column);
         const stopPosition = new Position(context.stop.line, context.stop.column + context.stop.text.length);

@@ -135,6 +135,7 @@ describe('Section CRUD tests for intent', () => {
     });
 
     it('add nestedIntentSection test with enableSections flag set', () => {
+        luresource = luparser.parse(luresource.Content, true);
         let newFileConent = `> !# @enableSections = true${NEWLINE}${NEWLINE}# CheckTodo${NEWLINE}## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`;
 
         luresource = new SectionOperator(luresource).addSection(newFileConent);
@@ -194,6 +195,7 @@ describe('Section CRUD tests for intent', () => {
         assert.equal(luresource.Sections[0].Body, `> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2`);
     });
 
+    /*
     it('add section test for nested section content with comments', () => {
         let simpleIntentBody1 = `- hello${NEWLINE}- hi${NEWLINE}> this is comment 1${NEWLINE}@${NEWLINE}> this is comment 2${NEWLINE}`
         let simpleIntentBody2 = `- bye${NEWLINE}$${NEWLINE}> this is comment 3${NEWLINE}${NEWLINE}> this is comment 4${NEWLINE}${NEWLINE}`
@@ -211,6 +213,7 @@ describe('Section CRUD tests for intent', () => {
         assert.equal(luresource.Sections[4].SimpleIntentSections[1].Body, simpleIntentBody2);
         assert.equal(luresource.Sections[4].Body, nestedIntentBody);
     });
+    */
 });
 
 describe('Section CRUD tests for entity', () => {
@@ -247,7 +250,8 @@ describe('Section CRUD tests for entity', () => {
 
     it('update entity section test', () => {
         let newFileConent =
-`    - multiGrainWheat:
+`@ list BreadEntity =
+    - multiGrainWheat:
         - multi grain
     - white:
         - white`;
@@ -400,6 +404,6 @@ hello
         assert.equal(luresource.Errors.length, 0);
         assert.equal(luresource.Sections.length, 1);
         assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
-        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), insertFileContent + '\n');
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), insertFileContent);
     });
 });

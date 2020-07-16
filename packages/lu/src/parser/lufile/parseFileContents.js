@@ -369,7 +369,7 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
  * @param {String} srcItemName 
  * @param {String} tgtFeatureType 
  * @param {String} tgtFeatureName 
- * @param {String} line 
+ * @param {Range} range 
  */
 const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureType, tgtFeatureName, range) {
     switch(srcItemType) {
@@ -1036,7 +1036,7 @@ const validateAndGetRoles = function(parsedContent, roles, range, entityName, en
     if(parsedContent.LUISJsonStructure.flatListOfEntityAndRoles) {
         // Duplicate entity names are not allowed
         // Entity name cannot be same as a role name
-        verifyUniqueEntityName(parsedContent, entityName, entityType, line);
+        verifyUniqueEntityName(parsedContent, entityName, entityType, range);
 
         newRoles.forEach(role => {
             let roleFound = parsedContent.LUISJsonStructure.flatListOfEntityAndRoles.find(item => item.roles.includes(role) || item.name === role);
@@ -1213,7 +1213,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         
         // Get current tab level
         let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces !== undefined ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : 0) || (groupsFound.groups.leadingTabs !== undefined ? groupsFound.groups.leadingTabs.length : 0);
-        if (defLine === line.start.line + 1) {
+        if (defLine === range.Start.Line + 1) {
             // remember the tab level at the first line of child definition
             baseTabLevel = tabLevel;
             // Push the ID of the parent since we are proessing the first child entity
@@ -1268,10 +1268,10 @@ const pushNDepthChild = function(entity, childEntityName, context, childFeatures
  * @param {Object} parsedContent 
  * @param {String} entityName 
  * @param {String} entityType 
- * @param {Object} line 
+ * @param {Object} range 
  * @param {Boolean} checkTypesAlignment
  */
-const verifyUniqueEntityName = function(parsedContent, entityName, entityType, line, checkTypesAlignment) {
+const verifyUniqueEntityName = function(parsedContent, entityName, entityType, range, checkTypesAlignment) {
     // Duplicate entity names are not allowed
     // Entity name cannot be same as a role name
     let matchType = "";
@@ -1293,7 +1293,7 @@ const verifyUniqueEntityName = function(parsedContent, entityName, entityType, l
         let errorMsg = `${matchType} Prior definition - '@ ${entityFound.type} ${entityFound.name}${entityFound.roles.length > 0 ? ` hasRoles ${entityFound.roles.join(',')}` : ``}'`;
         let error = BuildDiagnostic({
             message: errorMsg,
-            context: line
+            range: range
         })
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }

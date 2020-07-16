@@ -322,17 +322,18 @@ class LUParser {
      * @param {string} content
      */
     static extractSectionBody(sections, content) {
+        sections.sort((a, b) => a.Range.Start.Line - b.Range.Start.Line)
         const originList = content.split(/\r?\n/)
         let qnaSectionIndex = 0
         sections.forEach(function (section, index) {
             if (section.SectionType === SectionType.SIMPLEINTENTSECTION
                 || section.SectionType === SectionType.NESTEDINTENTSECTION
                 || section.SectionType === SectionType.QNASECTION) {
-                const startLine = section.Range.Start.Line;
+                const startLine = section.Range.Start.Line - 1;
                 let stopLine
                 if (index + 1 < sections.length) {
                     stopLine = sections[index + 1].Range.Start.Line - 1
-                    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine >= stopLine || originList.Length <= stopLine) {
+                    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine) {
                         throw new Error("index out of range.")
                     }
                 } else {
