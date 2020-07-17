@@ -35,8 +35,8 @@ class NestedIntentSection  extends BaseSection {
     }
 
     ExtractBody(parseTree, content) {
-        const startLine = parseTree.start.line;
-        const stopLine = parseTree.stop.line;
+        const startLine = parseTree.start.line - 1;
+        const stopLine = parseTree.stop.line - 1;
         const originList = content.split(/\r?\n/)
         if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.Length <= stopLine) {
             throw new Error("index out of range.")

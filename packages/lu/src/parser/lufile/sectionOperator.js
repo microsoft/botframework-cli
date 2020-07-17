@@ -50,7 +50,7 @@ class SectionOperator {
     }
 
     const oldSection = this.Luresource.Sections[sectionIndex];
-    const newResource = luParser.parseWithRef(sectionContent, this.Luresourcehis);
+    const newResource = luParser.parseWithRef(sectionContent, this.Luresource);
     if (!newResource) {
       return this.Luresource;
     }
@@ -114,7 +114,7 @@ class SectionOperator {
       return this.addSection(sectionContent);
     }
 
-    const newResource = luParser.parseWithRef(sectionContent, this.Luresourcehis);
+    const newResource = luParser.parseWithRef(sectionContent, this.Luresource);
     if (!newResource) {
       return this.Luresource;
     }
