@@ -1,5 +1,5 @@
 #
-# Build Botframework-CLI daily bits on Windows agent
+# Build Botframework-CLI Azure DevOps bits on Windows agent
 #
 
 # "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
@@ -11,13 +11,6 @@ pool:
 pr: none
 trigger: none
 
-schedules:
-- cron: "0 7 * * *"
-  displayName: Daily midnight build (UTC Time)
-  branches:
-    include:
-    - master
-
 variables:
   _version: '4.10.0-dev'
 #  version: define this in Azure, settable at queue time
@@ -25,6 +18,6 @@ variables:
 stages:
 - stage: Build
   jobs:
-  - job: Build and Test
+  - job:
     steps:
     - template: botframework-cli-build-test.yml
