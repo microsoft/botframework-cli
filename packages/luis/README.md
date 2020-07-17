@@ -372,6 +372,8 @@ OPTIONS
 
   --schema=schema                  Defines $schema for generated .dialog files
 
+  --isStaging                      Publish luis application to staging slot if set. Default to production slot
+
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog 

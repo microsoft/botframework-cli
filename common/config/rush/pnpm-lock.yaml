@@ -51,7 +51,7 @@ dependencies:
   https-proxy-agent: 2.2.4
   intercept-stdout: 0.1.2
   is-ci: 2.0.0
-  json-ptr: 1.2.0
+  json-ptr: 1.3.1
   json-schema-merge-allof: 0.7.0
   latest-version: 4.0.0
   lodash: 4.17.15
@@ -59,10 +59,8 @@ dependencies:
   mime-types: 2.1.26
   minimist: 1.2.0
   nock: 11.9.1
-  npm-package-walker: 4.0.5
   nyc: 14.1.1
   os: 0.1.1
-  package-json: 6.5.0
   pascal-case: 2.0.1
   path: 0.12.7
   please-upgrade-node: 3.2.0
@@ -3639,10 +3637,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
-  /json-ptr/1.2.0:
+  /json-ptr/1.3.1:
     dev: false
     resolution:
-      integrity: sha512-wkqozzmmyu+vtazHF11uvIDbLsgkE4juY41QoXgKYSy166KQalyc72PqveII21f8UWKtYN7btUXg16vya+9xnw==
+      integrity: sha512-RoTHczqQoT2UsJINUvyMEHAHxGDq6c4/xXHwA29iArQMGIv6pFqLsOJMeagtnY78vsp5k/+9JcvmKKLsbuDRBQ==
   /json-schema-compare/0.2.2:
     dependencies:
       lodash: 4.17.15
@@ -6644,7 +6642,7 @@ packages:
       get-json: 1.0.1
       get-uri: 3.0.2
       globby: 11.0.0
-      json-ptr: 1.2.0
+      json-ptr: 1.3.1
       json-schema-merge-allof: 0.7.0
       json-schema-ref-parser: 8.0.0
       mocha: 6.2.2
@@ -6664,7 +6662,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-8wXsJY2yxUDDROsf37LzAqPu7JdAPSnukcYxnKm+gK96P8wbu02tFnnqNyfclJpwFyBGLog8R931BWp6O5SaXg==
+      integrity: sha512-GZ5UbbR1y0ayFNaRVmDaxEzeS4xmOT2ri2SbFM+nyg8BRmOD1fnKzf2GO9bT6/b4VcwbaYop08ANlHtLI80k2w==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6958,7 +6956,7 @@ specifiers:
   https-proxy-agent: ^2.2.1
   intercept-stdout: ^0.1.2
   is-ci: 2.0.0
-  json-ptr: ~1.2.0
+  json-ptr: ~1.3.0
   json-schema-merge-allof: ~0.7.0
   latest-version: ^4.0.0
   lodash: ^4.17.15
@@ -6966,10 +6964,8 @@ specifiers:
   mime-types: ^2.1.18
   minimist: ^1.2.0
   nock: ^11.7.0
-  npm-package-walker: ~4.0.5
   nyc: ^14.1.1
   os: ~0.1.1
-  package-json: ~6.5.0
   pascal-case: ^2.0.1
   path: ^0.12.7
   please-upgrade-node: ^3.0.1
