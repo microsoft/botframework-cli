@@ -70,7 +70,7 @@ export default class QnamakerBuild extends Command {
       // Flags override userConfig
       let qnamakerBuildFlags = Object.keys(QnamakerBuild.flags)
 
-      let {inVal, subscriptionKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, log, schema, endpoint}
+      let {inVal, subscriptionKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, log, endpoint, schema}
         = await processFlags(flags, qnamakerBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
