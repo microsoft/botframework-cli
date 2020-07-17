@@ -732,6 +732,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
             if (enableMergeIntents) {
                 let mergedIntentSection = section.SimpleIntentSections[0];
                 mergedIntentSection.Name = section.Name;
+                mergedIntentSection.Range = section.Range;
                 for (let idx = 1; idx < section.SimpleIntentSections.length; idx++) {
                     mergedIntentSection.UtteranceAndEntitiesMap = mergedIntentSection.UtteranceAndEntitiesMap.concat(section.SimpleIntentSections[idx].UtteranceAndEntitiesMap);
                     mergedIntentSection.Entities = mergedIntentSection.Entities.concat(section.SimpleIntentSections[idx].Entities);
@@ -1145,7 +1146,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
                         handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.Range);
                         break;
                     case EntityTypeEnum.PATTERNANY:
-                        handlePatternAny(parsedContent, entityName, entityRoles);
+                        handlePatternAny(parsedContent, entityName, entityRoles, entity.Range);
                         break;
                     case EntityTypeEnum.PREBUILT:
                         handlePrebuiltEntity(parsedContent, 'prebuilt', entityName, entityRoles, locale, log, entity.Range);
