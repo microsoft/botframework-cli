@@ -8,6 +8,8 @@ ha ha ha
 ```
 
 > Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
 # ? can I book a hotel near space needle
 - user guide
 - Can I add multiple items?
@@ -1017,6 +1019,8 @@ intent=DeferToRecognizer_LUIS_dia1
 ```
 
 > Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
 # ? Feeling chipper?
 - Somebody's cheerful.
 - Feeling cheerful?
