@@ -142,8 +142,8 @@ class SectionOperator {
       let index = -1;
 
       while ((index = errors.findIndex(u =>
-        (u.Range.Start.Line >= startLine && u.Range.Start.Line <= endLine)
-        || (u.Range.End.Line >= startLine && u.Range.End.Line <= endLine))) >= 0) {
+        u.Range && ((u.Range.Start.Line >= startLine && u.Range.Start.Line <= endLine)
+        || (u.Range.End.Line >= startLine && u.Range.End.Line <= endLine)))) >= 0) {
         this.Luresource.Errors.splice(index, 1);
       }
     }
@@ -153,24 +153,28 @@ class SectionOperator {
     if (errors) {
       if (startLine === undefined && endLine === undefined) {
         errors.forEach(u => {
-          u.Range.Start.Line += offset;
-          u.Range.End.Line += offset;
+          this.adjustErrorRange(u, offset);
         });
       } else if (startLine >= 0 && (endLine === undefined || endLine < startLine)) {
         errors.forEach(u => {
           if (u.Range.Start.Line >= startLine) {
-            u.Range.Start.Line += offset;
-            u.Range.End.Line += offset;
+            this.adjustErrorRange(u, offset);
           }
         });
       } else if (startLine >= 0 && endLine >= startLine) {
         errors.forEach(u => {
           if (u.Range.Start.Line >= startLine && u.Range.End.Line <= endLine) {
-            u.Range.Start.Line += offset;
-            u.Range.End.Line += offset;
+            this.adjustErrorRange(u, offset);
           }
         });
       }
+    }
+  }
+  
+  adjustErrorRange(error, offset) {
+    if (error && error.Range) {
+      error.Range.Start.Line += offset;
+      error.Range.End.Line += offset;
     }
   }
 
@@ -181,15 +185,17 @@ class SectionOperator {
   }
 
   adjustSectionRange(section, offset) {
-    if (section.SectionType === LUSectionTypes.NESTEDINTENTSECTION && section.SimpleIntentSections) {
-      section.SimpleIntentSections.forEach(k => {
-        k.Range.Start.Line += offset;
-        k.Range.End.Line += offset;
-      });
+    if (section) {
+      if (section.SimpleIntentSections && section.SectionType === LUSectionTypes.NESTEDINTENTSECTION && section.SimpleIntentSections) {
+        section.SimpleIntentSections.forEach(k => {
+          k.Range.Start.Line += offset;
+          k.Range.End.Line += offset;
+        });
+      }
+  
+      section.Range.Start.Line += offset;
+      section.Range.End.Line += offset;
     }
-
-    section.Range.Start.Line += offset;
-    section.Range.End.Line += offset;
   }
 
   adjustRangeForDeleteSection(index, offset) {
