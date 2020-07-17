@@ -881,24 +881,21 @@ export default class SchemaMerger {
     private async buildComponentTree(paths: string[]): Promise<void> {
         this.parents.push(this.root)
         for (let path of paths) {
-            if (path.endsWith('.schema')) {
+            // We expect a package
+            let name = ppath.basename(path)
+            if (name.endsWith('.csproj')) {
+                // C# project
+                await this.expandCSProj(path)
+            } else if (name.endsWith('.nuspec')) {
+                // Explicitly added .nuspec to support out of project scenarios
+                await this.expandNuspec(path)
+            } else if (name === 'package.json') {
+                // Node package
+                await this.expandPackageJson(path)
+            } else if (this.extensions.includes(ppath.extname(name))) {
                 this.root.explictPatterns.push(path)
             } else {
-                // We expect a package
-                let name = ppath.basename(path)
-                if (name.endsWith('.csproj')) {
-                    await this.expandCSProj(path)
-                } else if (name.endsWith('.nuspec')) {
-                    // Explicitly added .nuspec
-                    await this.expandNuspec(path)
-                } else {
-                    if (name === 'package.json') {
-                        // Node package
-                        await this.expandPackageJson(path)
-                    } else {
-                        throw new Error(`Unknown package type ${path}`)
-                    }
-                }
+                throw new Error(`Unknown package type or extension ${path}`)
             }
         }
         this.components = this.root.sort()
