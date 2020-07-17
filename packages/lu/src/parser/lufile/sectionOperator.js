@@ -1,8 +1,8 @@
 const luParser = require('./luParser');
 const helpers = require('./../utils/helpers');
-const { exists } = require('fs');
 const NEWLINE = require('os').EOL;
 const LUSectionTypes = require('../utils/enums/lusectiontypes');
+const {cloneDeep} = require('lodash');
 
 class SectionOperator {
 
@@ -10,7 +10,7 @@ class SectionOperator {
    * @param {LUResource} luresource 
    */
   constructor(luresource) {
-    this.Luresource = luresource;
+    this.Luresource = cloneDeep(luresource);
   }
 
   // After CRUD, section Ids will keep same unless you change section name.
