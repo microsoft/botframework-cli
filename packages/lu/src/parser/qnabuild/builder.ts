@@ -74,6 +74,7 @@ export class Builder {
       }
 
       const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
+      this.handler(`${file} loaded\n`)
 
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.qna.dialog`)
       if (!multiRecognizers.has(fileName)) {
@@ -120,7 +121,7 @@ export class Builder {
         qnaContents.set(fileCulture, contentPerCulture)
         qnaObjects.set(fileCulture, qnaFiles)
       } else {
-        // merge contents of qna files with same name
+        // merge contents of qna files with same culture
         qnaObjects.get(fileCulture)?.push(...qnaFiles)
       }
     }
@@ -582,6 +583,8 @@ export class Builder {
         content.content = mergedContent
         contents.set(name, content)
       } catch (err) {
+        if (err.errCode === retCode.errorCode.EMPTY_CONTENT) continue
+
         if (err.source) {
           err.text = `Invalid QnA file ${err.source}: ${err.text}`
         } else {
