@@ -3,10 +3,20 @@
  * Licensed under the MIT License.
  */
 
+import { IMathematicsHelper } from "../mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../mathematics_helper/MathematicsHelper";
+
+import { IDictionaryStringIdGenericArray } from "../../data_structure/IDictionaryStringIdGenericArray";
+import { IDictionaryStringIdGenericValue } from "../../data_structure/IDictionaryStringIdGenericValue";
+
+import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
 // tslint:disable: max-line-length
 export class BinaryConfusionMatrix {
+
+    public static readonly MathematicsHelperObject: IMathematicsHelper =
+        MathematicsHelper.GetMathematicsHelperObject();
+
     //
     // Initialize an BinaryConfusionMatrix object.
     //
@@ -40,10 +50,10 @@ export class BinaryConfusionMatrix {
     protected ratioCell22: number = 0;
 
     constructor(
-        total: number,
-        cell11: number,
-        row1: number,
-        column1: number,
+        total: number = 0,
+        cell11: number = 0,
+        row1: number = 0,
+        column1: number = 0,
         potentialRow1: number = 0,
         potentialRow2: number = 0,
         throwIfNotProper: boolean = true) {
@@ -52,12 +62,12 @@ export class BinaryConfusionMatrix {
         // cells defined below:
         //
         //                            || Predicted Positive | Predicted Negative |
-        // ----------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
         //     Ground - True Positive || True Positive      | False Nagative     | Ground - True Positive
-        // ----------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
         //     Ground - True Negative || False Positive     | True Nagative      | Ground - True Negative
-        // ----------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------
         //                            || Predicted Positive | Predicted Negative | Total
         //
         this.total = total;
@@ -81,17 +91,87 @@ export class BinaryConfusionMatrix {
             this.getThrowIfNotProper());
     }
 
+    public addToTruePositives(value: number = 1, recalculate: boolean = true) {
+        this.addToCell11(value, recalculate);
+    }
+    public addToFalseNegatives(value: number = 1, recalculate: boolean = true) {
+        this.addToCell12(value, recalculate);
+    }
+    public addToFalsePositives(value: number = 1, recalculate: boolean = true) {
+        this.addToCell21(value, recalculate);
+    }
+    public addToTrueNegatives(value: number = 1, recalculate: boolean = true) {
+        this.addToCell22(value, recalculate);
+    }
+
+    public addToCell11(value: number = 1, recalculate: boolean = true) {
+        this.total += value;
+        this.cell11 += value;
+        this.row1 += value;
+        this.column1 += value;
+        if (recalculate) {
+            this.calculateDerivedCells();
+        }
+    }
+    public addToCell12(value: number = 1, recalculate: boolean = true) {
+        this.total += value;
+        this.row1 += value;
+        this.column2 += value;
+        if (recalculate) {
+            this.calculateDerivedCells();
+        }
+    }
+    public addToCell21(value: number = 1, recalculate: boolean = true) {
+        this.total += value;
+        this.row2 += value;
+        this.column1 += value;
+        if (recalculate) {
+            this.calculateDerivedCells();
+        }
+    }
+    public addToCell22(value: number = 1, recalculate: boolean = true) {
+        this.total += value;
+        this.row2 += value;
+        this.column2 += value;
+        if (recalculate) {
+            this.calculateDerivedCells();
+        }
+    }
+
+    public addToPotentialRow1(value: number = 1, recalculate: boolean = true) {
+        this.potentialRow1 += value;
+        if (recalculate) {
+            this.calculateDerivedCells();
+        }
+    }
+    public addToPotentialRow2(value: number = 1, recalculate: boolean = true) {
+        this.potentialRow2 += value;
+        if (recalculate) {
+            this.calculateDerivedCells();
+        }
+    }
+
+    public addFrom(other: BinaryConfusionMatrix) {
+        this.total += other.total;
+        this.cell11 += other.cell11;
+        this.row1 += other.row1;
+        this.column1 += other.column1;
+        this.potentialRow1 += other.potentialRow1;
+        this.potentialRow2 += other.potentialRow2;
+        this.calculateDerivedCells();
+    }
+
     public moveFromPredictedNegativeToPositive(
         groundTruthIsPositive: boolean,
         createNewBinaryConfusionMatrix: boolean = true,
         value: number = 1): BinaryConfusionMatrix {
+        if (groundTruthIsPositive) {
+            this.cell11 += value;
+        }
+        this.column1 += value;
+        this.calculateDerivedCells();
         const binaryConfusionMatrix: BinaryConfusionMatrix =
             createNewBinaryConfusionMatrix ? this.clone() : this;
-        if (groundTruthIsPositive) {
-            binaryConfusionMatrix.cell11 += value;
-        }
-        binaryConfusionMatrix.column1 += value;
-        binaryConfusionMatrix.calculateDerivedCells();
         return binaryConfusionMatrix;
     }
 
@@ -101,19 +181,19 @@ export class BinaryConfusionMatrix {
         this.cell12 = this.row1 - this.cell11;
         this.cell21 = this.column1 - this.cell11;
         this.cell22 = this.total - this.cell11 - this.cell12 - this.cell21;
-        this.expectedCell11 = MathematicsHelper.safeDivide(this.row1 * this.column1, this.total);
-        this.expectedCell12 = MathematicsHelper.safeDivide(this.row1 * this.column2, this.total);
-        this.expectedCell21 = MathematicsHelper.safeDivide(this.row2 * this.column1, this.total);
-        this.expectedCell22 = MathematicsHelper.safeDivide(this.row2 * this.column2, this.total);
+        this.expectedCell11 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row1 * this.column1, this.total);
+        this.expectedCell12 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row1 * this.column2, this.total);
+        this.expectedCell21 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row2 * this.column1, this.total);
+        this.expectedCell22 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row2 * this.column2, this.total);
         this.isProper = this.validate(this.throwIfNotProper);
-        this.ratioCell11 = MathematicsHelper.safeDivide(this.cell11, this.total);
-        this.ratioRow1 = MathematicsHelper.safeDivide(this.row1, this.total);
-        this.ratioColumn1 = MathematicsHelper.safeDivide(this.column1, this.total);
-        this.ratioRow2 = MathematicsHelper.safeDivide(this.row2, this.total);
-        this.ratioColumn2 = MathematicsHelper.safeDivide(this.column2, this.total);
-        this.ratioCell12 = MathematicsHelper.safeDivide(this.cell12, this.total);
-        this.ratioCell21 = MathematicsHelper.safeDivide(this.cell21, this.total);
-        this.ratioCell22 = MathematicsHelper.safeDivide(this.cell22, this.total);
+        this.ratioCell11 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.cell11, this.total);
+        this.ratioRow1 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row1, this.total);
+        this.ratioColumn1 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.column1, this.total);
+        this.ratioRow2 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row2, this.total);
+        this.ratioColumn2 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.column2, this.total);
+        this.ratioCell12 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.cell12, this.total);
+        this.ratioCell21 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.cell21, this.total);
+        this.ratioCell22 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.cell22, this.total);
     }
 
     public getTotal(): number {
@@ -268,8 +348,7 @@ export class BinaryConfusionMatrix {
     }
 
     public validate(throwIfNotProper: boolean = true) {
-        let isProper: boolean;
-        isProper = false;
+        let isProper: boolean = false;
         if (this.cell11 < 0) {
             throw new Error("this.cell11 < 0");
         }
@@ -440,7 +519,7 @@ export class BinaryConfusionMatrix {
         //
         // Retrieve the ratio of positives vs. negatives in the confusion matrix.
         //
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getPositives(),
             this.getNegatives());
     }
@@ -448,7 +527,7 @@ export class BinaryConfusionMatrix {
         //
         // Retrieve the ratio of negatives vs. positives in the confusion matrix.
         //
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getNegatives(),
             this.getPositives());
     }
@@ -470,7 +549,7 @@ export class BinaryConfusionMatrix {
         //
         // Retrieve the precision in the confusion matrix.
         //
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getTruePositives(),
             this.getTruePositives() + this.getFalsePositives());
     }
@@ -478,7 +557,7 @@ export class BinaryConfusionMatrix {
         //
         // Retrieve the precision in the confusion matrix.
         //
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getTruePositives(),
             this.getPositives());
     }
@@ -486,7 +565,7 @@ export class BinaryConfusionMatrix {
         //
         // Retrieve the precision in the confusion matrix.
         //
-        return 2 * MathematicsHelper.safeDivide(
+        return 2 * BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getPrecision() * this.getRecall(),
             this.getPrecision() + this.getRecall());
     }
@@ -498,8 +577,8 @@ export class BinaryConfusionMatrix {
         return this.getPositives();
     }
 
-    public getBasicMetrics(): { [id: string]: number; } {
-        const metrics: { [id: string]: number; } = {};
+    public getBasicMetrics(): { [id: string]: number } {
+        const metrics: { [id: string]: number } = {};
         metrics.positives = this.getPositives();
         metrics.negatives = this.getNegatives();
         metrics.positiveRatio = this.getPositiveRatio();
@@ -545,108 +624,108 @@ export class BinaryConfusionMatrix {
     }
 
     public getTruePositiveRate(): number {
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getTruePositives(), this.getPositives());
     }
     public getTrueNegativeRate(): number {
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getTrueNegatives(), this.getNegatives());
     }
     public getPositivePredictiveValue(): number {
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getTruePositives(), (this.getTruePositives() + this.getFalsePositives()));
     }
     public getNegativePredictiveValue(): number {
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getTrueNegatives(), (this.getTrueNegatives() + this.getFalseNegatives()));
     }
     public getFalsePositiveRate(): number {
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getFalsePositives(), this.getNegatives());
     }
     public getFalseDiscoveryRate(): number {
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getFalsePositives(), (this.getFalsePositives() + this.getTruePositives()));
     }
     public getFalseNegativeRate(): number {
-        return MathematicsHelper.safeDivide(
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
             this.getFalseNegatives(), this.getPositives());
     }
 
     public getTruePositiveOverTotalRate(): number {
-        return MathematicsHelper.safeDivide(this.getTruePositives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTruePositives(), this.getTotal());
     }
     public getTrueNegativeOverTotalRate(): number {
-        return MathematicsHelper.safeDivide(this.getTrueNegatives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTrueNegatives(), this.getTotal());
     }
     public getFalsePositiveOverTotalRate(): number {
-        return MathematicsHelper.safeDivide(this.getFalsePositives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalsePositives(), this.getTotal());
     }
     public getFalseNegativeOverTotalRate(): number {
-        return MathematicsHelper.safeDivide(this.getFalseNegatives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalseNegatives(), this.getTotal());
     }
 
     public getTruePositiveOverExplicitTotalRate(explicitTotal: number = 0): number {
         if (explicitTotal <= 0) {
             explicitTotal = this.getTotal();
         }
-        return MathematicsHelper.safeDivide(this.getTruePositives(), explicitTotal);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTruePositives(), explicitTotal);
     }
     public getTrueNegativeOverExplicitTotalRate(explicitTotal: number = 0): number {
         if (explicitTotal <= 0) {
             explicitTotal = this.getTotal();
         }
-        return MathematicsHelper.safeDivide(this.getTrueNegatives(), explicitTotal);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTrueNegatives(), explicitTotal);
     }
     public getFalsePositiveOverExplicitTotalRate(explicitTotal: number = 0): number {
         if (explicitTotal <= 0) {
             explicitTotal = this.getTotal();
         }
-        return MathematicsHelper.safeDivide(this.getFalsePositives(), explicitTotal);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalsePositives(), explicitTotal);
     }
     public getFalseNegativeOverExplicitTotalRate(explicitTotal: number = 0): number {
         if (explicitTotal <= 0) {
             explicitTotal = this.getTotal();
         }
-        return MathematicsHelper.safeDivide(this.getFalseNegatives(), explicitTotal);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalseNegatives(), explicitTotal);
     }
 
     public getConditionPositiveRate(): number {
-        return MathematicsHelper.safeDivide(this.getPositives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getPositives(), this.getTotal());
     }
     public getConditionNegativeRate(): number {
-        return MathematicsHelper.safeDivide(this.getNegatives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getNegatives(), this.getTotal());
     }
     public getPredictedPositiveRate(): number {
-        return MathematicsHelper.safeDivide(this.getPredictedPositives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getPredictedPositives(), this.getTotal());
     }
     public getPredictedNegativeRate(): number {
-        return MathematicsHelper.safeDivide(this.getPredictedNegatives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getPredictedNegatives(), this.getTotal());
     }
 
     public getConditionPositiveCaughtRate(explicitTotalPositives: number = -1): number {
         if (explicitTotalPositives <= 0) {
             explicitTotalPositives = this.getPositives();
         }
-        return MathematicsHelper.safeDivide(this.getTruePositives(), explicitTotalPositives);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTruePositives(), explicitTotalPositives);
     }
     public getConditionPositiveMissedRate(explicitTotalPositives: number = -1): number {
         if (explicitTotalPositives <= 0) {
             explicitTotalPositives = this.getPositives();
         }
-        return MathematicsHelper.safeDivide(this.getFalseNegatives(), explicitTotalPositives);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalseNegatives(), explicitTotalPositives);
     }
     public getConditionNegativeCaughtRate(explicitTotalNegatives: number = -1): number {
         if (explicitTotalNegatives <= 0) {
             explicitTotalNegatives = this.getNegatives();
         }
-        return MathematicsHelper.safeDivide(this.getTrueNegatives(), explicitTotalNegatives);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTrueNegatives(), explicitTotalNegatives);
     }
     public getConditionNegativeMissedRate(explicitTotalNegatives: number = -1): number {
         if (explicitTotalNegatives <= 0) {
             explicitTotalNegatives = this.getNegatives();
         }
-        return MathematicsHelper.safeDivide(this.getFalsePositives(), explicitTotalNegatives);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalsePositives(), explicitTotalNegatives);
     }
 
     public getConditionPositiveDecidedRate(explicitTotalPositives: number = -1): number {
@@ -666,19 +745,19 @@ export class BinaryConfusionMatrix {
         if (explicitTotal <= 0) {
             explicitTotal = this.getTotal();
         }
-        return MathematicsHelper.safeDivide(this.getPredictedPositives(), explicitTotal);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getPredictedPositives(), explicitTotal);
     }
     public getPredictedNegativeDecidedRate(explicitTotal: number = -1): number {
         if (explicitTotal <= 0) {
             explicitTotal = this.getTotal();
         }
-        return MathematicsHelper.safeDivide(this.getPredictedNegatives(), explicitTotal);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getPredictedNegatives(), explicitTotal);
     }
     public getTotalDecidedRate(explicitTotal: number = -1): number {
         if (explicitTotal <= 0) {
             explicitTotal = this.getTotal();
         }
-        return MathematicsHelper.safeDivide((this.getPredictedPositives() + this.getPredictedNegatives()), explicitTotal);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((this.getPredictedPositives() + this.getPredictedNegatives()), explicitTotal);
     }
     public getTotalUnDecidedRate(explicitTotal: number = -1): number {
         return (1 - this.getTotalDecidedRate(explicitTotal));
@@ -732,12 +811,12 @@ export class BinaryConfusionMatrix {
     }
 
     public getAccuracy(): number {
-        return MathematicsHelper.safeDivide((this.getTruePositives() + this.getTrueNegatives()), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((this.getTruePositives() + this.getTrueNegatives()), this.getTotal());
     }
     // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- public getF1Score(): number {
     // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----     double truePositiveFactor = (2 * this.getTruePositives());
     // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----     return
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----         MathematicsHelper.safeDivide(
+    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----         BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
     // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----             truePositiveFactor,
     // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----             (truePositiveFactor + this.getFalsePositives() + this.getFalseNegatives()));
     // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- }
@@ -764,32 +843,32 @@ export class BinaryConfusionMatrix {
     }
 
     public getFalseOmissionRate(): number {
-        return MathematicsHelper.safeDivide(this.getFalseNegatives(), (this.getFalseNegatives() + this.getTrueNegatives()));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalseNegatives(), (this.getFalseNegatives() + this.getTrueNegatives()));
     }
     public getPrevalence(): number {
-        return MathematicsHelper.safeDivide(this.getPositives(), this.getTotal());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getPositives(), this.getTotal());
     }
     public getTruePositiveRateOverFalsePositiveRate(): number {
-        return MathematicsHelper.safeDivide(this.getTruePositiveRate(), this.getFalsePositiveRate());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTruePositiveRate(), this.getFalsePositiveRate());
     }
     public getPositiveLikelihoodRatio(): number {
         return this.getTruePositiveRateOverFalsePositiveRate();
     }
     public getFalseNegativeRateOverTrueNegativeRate(): number {
-        return MathematicsHelper.safeDivide(this.getFalseNegativeRate(), this.getTrueNegativeRate());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalseNegativeRate(), this.getTrueNegativeRate());
     }
     public getNegativeLikelihoodRatio(): number {
         return this.getFalseNegativeRateOverTrueNegativeRate();
     }
     public getDiagnosticOddsRatio(): number {
-        return MathematicsHelper.safeDivide(this.getPositiveLikelihoodRatio(), this.getNegativeLikelihoodRatio());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getPositiveLikelihoodRatio(), this.getNegativeLikelihoodRatio());
     }
 
     public getFMeasure(fMeasureBeta: number = 1): number {
         const beta2: number = fMeasureBeta * fMeasureBeta;
         const precision: number = this.getPrecision();
         const recall: number = this.getRecall();
-        return MathematicsHelper.safeDivide(((1 + beta2) * (precision * recall)), ((beta2 * precision) + recall));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(((1 + beta2) * (precision * recall)), ((beta2 * precision) + recall));
     }
     public getF1Measure(): number {
         return this.getFMeasure(1);
@@ -815,29 +894,29 @@ export class BinaryConfusionMatrix {
     }
 
     public getRisk(): number {
-        return MathematicsHelper.safeDivide(this.getTruePositives(), this.getPredictedPositives());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTruePositives(), this.getPredictedPositives());
     }
     public getRiskPredictedNegative(): number {
-        return MathematicsHelper.safeDivide(this.getFalseNegatives(), this.getPredictedNegatives());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getFalseNegatives(), this.getPredictedNegatives());
     }
     public getOdds(): number {
-        return MathematicsHelper.safeDivide(this.getTruePositives(), this.getFalsePositives());
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTruePositives(), this.getFalsePositives());
     }
     public getOddsRatio(): number {
-        return MathematicsHelper.safeDivide(MathematicsHelper.safeDivide(this.getTruePositives(), this.getFalsePositives()), MathematicsHelper.safeDivide(this.getTrueNegatives(), this.getFalseNegatives()));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTruePositives(), this.getFalsePositives()), BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.getTrueNegatives(), this.getFalseNegatives()));
     }
     public getRelativeRisk(): number {
-        return MathematicsHelper.safeDivide((this.getRisk()), (this.getRiskPredictedNegative()));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((this.getRisk()), (this.getRiskPredictedNegative()));
     }
 
     public getWeightOfEvidence(): number {
-        return MathematicsHelper.safeLog(this.getOdds()) * 100;
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeLog(this.getOdds()) * 100;
     }
 
     public getPositiveNegativePotentialRatio(): number {
         const negativePotential: number = this.getPotentialNegatives();
         const positivePotential: number = this.getPotentialPositives();
-        const R: number = ((negativePotential === 0) ? 1 : MathematicsHelper.safeDivide(positivePotential, negativePotential));
+        const R: number = ((negativePotential === 0) ? 1 : BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(positivePotential, negativePotential));
         return R;
     }
 
@@ -853,7 +932,7 @@ export class BinaryConfusionMatrix {
 
     public getPE(): number {
         const trueNegatives: number = this.getTrueNegatives();
-        return MathematicsHelper.safeDivide((trueNegatives - this.getFalseNegatives()), (this.getFalsePositives() + trueNegatives));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((trueNegatives - this.getFalseNegatives()), (this.getFalsePositives() + trueNegatives));
     }
     public getPETruePositiveExtreme(): number {
         return 1;
@@ -873,7 +952,7 @@ export class BinaryConfusionMatrix {
     public getPEWorst(): number {
         const R: number = this.getPositiveNegativePotentialRatio();
         const fraudRate: number = this.getFraudRate();
-        return MathematicsHelper.safeDivide(-(fraudRate * R), (1 - fraudRate));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(-(fraudRate * R), (1 - fraudRate));
     }
     public getPEAlwaysReject(): number {
         return 0;
@@ -881,7 +960,7 @@ export class BinaryConfusionMatrix {
     public getPEAlwaysApprove(): number {
         const R: number = this.getPositiveNegativePotentialRatio();
         const fraudRate: number = this.getFraudRate();
-        return MathematicsHelper.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate));
     }
     public getPERandomBaseline(): number {
         const R: number = this.getPositiveNegativePotentialRatio();
@@ -895,7 +974,7 @@ export class BinaryConfusionMatrix {
         if ((rejectRate < 0) || (rejectRate > 1)) {
             rejectRate = fraudRate;
         }
-        return ((1 - rejectRate) * (1 - (MathematicsHelper.safeDivide(fraudRate, (1 - fraudRate) * R))));
+        return ((1 - rejectRate) * (1 - (BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(fraudRate, (1 - fraudRate) * R))));
     }
 
     public getOPE(): number {
@@ -905,7 +984,7 @@ export class BinaryConfusionMatrix {
         const falseNegatives: number = this.getFalseNegatives();
         const numerator: number = ((trueNegatives - falsePositives) + (truePositives - falseNegatives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getOPETruePositiveExtreme(): number {
         return 1;
@@ -928,17 +1007,17 @@ export class BinaryConfusionMatrix {
     public getOPEAlwaysReject(): number {
         const R: number = this.getPositiveNegativePotentialRatio();
         const fraudRate: number = this.getFraudRate();
-        return MathematicsHelper.safeDivide(-(1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(-(1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
     }
     public getOPEAlwaysApprove(): number {
         const R: number = this.getPositiveNegativePotentialRatio();
         const fraudRate: number = this.getFraudRate();
-        return MathematicsHelper.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
     }
     public getOPERandomBaseline(): number {
         const R: number = this.getPositiveNegativePotentialRatio();
         const fraudRate: number = this.getFraudRate();
-        const term: number = MathematicsHelper.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
+        const term: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
         return (-((2 * fraudRate) - 1) * term);
     }
     public getOPEGenericRandomBaseline(
@@ -948,7 +1027,7 @@ export class BinaryConfusionMatrix {
         if ((rejectRate < 0) || (rejectRate > 1)) {
             rejectRate = fraudRate;
         }
-        const term: number = MathematicsHelper.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
+        const term: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((1 - fraudRate - (fraudRate * R)), (1 - fraudRate + (fraudRate * R)));
         return (-((2 * rejectRate) - 1) * term);
     }
 
@@ -961,15 +1040,15 @@ export class BinaryConfusionMatrix {
         const trueNegatives: number = this.getTrueNegatives();
         let falsePositives: number = this.getFalsePositives();
         const falseNegatives: number = this.getFalseNegatives();
-        const chargeBackRate: number = MathematicsHelper.safeDivide(falseNegatives, (falseNegatives + trueNegatives)); // ---- this.getChargeBackRate();
-        const falsePositiveRate: number = MathematicsHelper.safeDivide(falsePositives, (falsePositives + trueNegatives)); // ---- this.getFalsePositiveRate();
-        const truePositiveDiminishingFactor: number = A * Math.exp(-alpha * (MathematicsHelper.safeDivide((chargeBackRate), (1 - chargeBackRate))));
-        const falsePositiveAmplifyingFactor: number = B * Math.exp(-beta * MathematicsHelper.safeDivide((falsePositiveRate), (1 - falsePositiveRate)));
+        const chargeBackRate: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(falseNegatives, (falseNegatives + trueNegatives)); // ---- this.getChargeBackRate();
+        const falsePositiveRate: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(falsePositives, (falsePositives + trueNegatives)); // ---- this.getFalsePositiveRate();
+        const truePositiveDiminishingFactor: number = A * Math.exp(-alpha * (BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((chargeBackRate), (1 - chargeBackRate))));
+        const falsePositiveAmplifyingFactor: number = B * Math.exp(-beta * BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((falsePositiveRate), (1 - falsePositiveRate)));
         truePositives *= truePositiveDiminishingFactor;
         falsePositives *= falsePositiveAmplifyingFactor;
         const numerator: number = ((trueNegatives - falsePositives) + (truePositives - falseNegatives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getOPEsharpRandomBaseline(
         alpha: number = 1,
@@ -982,15 +1061,15 @@ export class BinaryConfusionMatrix {
         const trueNegatives: number = (1 - fraudRate) * (1 - fraudRate); // ---- this.getTrueNegatives();
         let falsePositives: number = fraudRate * (1 - fraudRate); // ---- this.getFalsePositives();
         const falseNegatives: number = R * (fraudRate * (1 - fraudRate)); // ---- this.getFalseNegatives();
-        const chargeBackRate: number = MathematicsHelper.safeDivide(falseNegatives, (falseNegatives + trueNegatives)); // ---- MathematicsHelper.safeDivide((R * fraudRate), (1 - fraudRate - (R * fraudRate))); // ---- MathematicsHelper.safeDivide((R * (fraudRate * (1 - fraudRate))), ((R * (fraudRate * (1 - fraudRate))) + ((1-fraudRate) * (1-fraudRate)))); // ---- this.getChargeBackRate();
-        const falsePositiveRate: number = MathematicsHelper.safeDivide(falsePositives, (falsePositives + trueNegatives)); // ---- fraudRate; // ---- MathematicsHelper.safeDivide(((fraudRate * (1 - fraudRate))), (((fraudRate * (1 - fraudRate))) + ((1 - fraudRate) * (1 - fraudRate)))); // ---- this.getFalsePositiveRate();
-        const truePositiveDiminishingFactor: number = A * Math.exp(-alpha * (MathematicsHelper.safeDivide((chargeBackRate), (1 - chargeBackRate))));
-        const falsePositiveAmplifyingFactor: number = B * Math.exp(-beta * (MathematicsHelper.safeDivide((falsePositiveRate), (1 - falsePositiveRate))));
+        const chargeBackRate: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(falseNegatives, (falseNegatives + trueNegatives)); // ---- BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((R * fraudRate), (1 - fraudRate - (R * fraudRate))); // ---- BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((R * (fraudRate * (1 - fraudRate))), ((R * (fraudRate * (1 - fraudRate))) + ((1-fraudRate) * (1-fraudRate)))); // ---- this.getChargeBackRate();
+        const falsePositiveRate: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(falsePositives, (falsePositives + trueNegatives)); // ---- fraudRate; // ---- BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(((fraudRate * (1 - fraudRate))), (((fraudRate * (1 - fraudRate))) + ((1 - fraudRate) * (1 - fraudRate)))); // ---- this.getFalsePositiveRate();
+        const truePositiveDiminishingFactor: number = A * Math.exp(-alpha * (BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((chargeBackRate), (1 - chargeBackRate))));
+        const falsePositiveAmplifyingFactor: number = B * Math.exp(-beta * (BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((falsePositiveRate), (1 - falsePositiveRate))));
         truePositives *= truePositiveDiminishingFactor;
         falsePositives *= falsePositiveAmplifyingFactor;
         const numerator: number = ((trueNegatives - falsePositives) + (truePositives - falseNegatives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getOPEsharpGenericRandomBaseline(
         rejectRate: number = -1,
@@ -1007,15 +1086,15 @@ export class BinaryConfusionMatrix {
         const trueNegatives: number = (1 - rejectRate) * (1 - fraudRate); // ---- (1 - fraudRate) * (1 - fraudRate); // ---- this.getTrueNegatives();
         let falsePositives: number = rejectRate * (1 - fraudRate); // ---- fraudRate * (1 - fraudRate); // ---- this.getFalsePositives();
         const falseNegatives: number = R * (fraudRate * (1 - rejectRate)); // ---- R * (fraudRate * (1 - fraudRate)); // ---- this.getFalseNegatives();
-        const chargeBackRate: number = MathematicsHelper.safeDivide(falseNegatives, (falseNegatives + trueNegatives)); // ---- MathematicsHelper.safeDivide((R * fraudRate), (1 - fraudRate - (R * fraudRate))); // ---- MathematicsHelper.safeDivide((R * (fraudRate * (1 - fraudRate))), ((R * (fraudRate * (1 - fraudRate))) + ((1-fraudRate) * (1-fraudRate)))); // ---- this.getChargeBackRate();
-        const falsePositiveRate: number = MathematicsHelper.safeDivide(falsePositives, (falsePositives + trueNegatives)); // ---- fraudRate; // ---- MathematicsHelper.safeDivide(((fraudRate * (1 - fraudRate))), (((fraudRate * (1 - fraudRate))) + ((1 - fraudRate) * (1 - fraudRate)))); // ---- this.getFalsePositiveRate();
-        const truePositiveDiminishingFactor: number = A * Math.exp(-alpha * (MathematicsHelper.safeDivide((chargeBackRate), (1 - chargeBackRate))));
-        const falsePositiveAmplifyingFactor: number = B * Math.exp(-beta * (MathematicsHelper.safeDivide((falsePositiveRate), (1 - falsePositiveRate))));
+        const chargeBackRate: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(falseNegatives, (falseNegatives + trueNegatives)); // ---- BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((R * fraudRate), (1 - fraudRate - (R * fraudRate))); // ---- BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((R * (fraudRate * (1 - fraudRate))), ((R * (fraudRate * (1 - fraudRate))) + ((1-fraudRate) * (1-fraudRate)))); // ---- this.getChargeBackRate();
+        const falsePositiveRate: number = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(falsePositives, (falsePositives + trueNegatives)); // ---- fraudRate; // ---- BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(((fraudRate * (1 - fraudRate))), (((fraudRate * (1 - fraudRate))) + ((1 - fraudRate) * (1 - fraudRate)))); // ---- this.getFalsePositiveRate();
+        const truePositiveDiminishingFactor: number = A * Math.exp(-alpha * (BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((chargeBackRate), (1 - chargeBackRate))));
+        const falsePositiveAmplifyingFactor: number = B * Math.exp(-beta * (BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((falsePositiveRate), (1 - falsePositiveRate))));
         truePositives *= truePositiveDiminishingFactor;
         falsePositives *= falsePositiveAmplifyingFactor;
         const numerator: number = ((trueNegatives - falsePositives) + (truePositives - falseNegatives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
 
     public getNetPE(): number {
@@ -1056,7 +1135,7 @@ export class BinaryConfusionMatrix {
         const falseNegatives: number = this.getFalseNegatives();
         const numerator: number = ((trueNegatives - falsePositives) + (truePositives - falseNegatives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getOPEPrime(): number {
         const truePositives: number = 0; // ----  this.getDiagonalCellsSum();
@@ -1065,7 +1144,7 @@ export class BinaryConfusionMatrix {
         const falseNegatives: number = this.getFalseNegatives();
         const numerator: number = ((trueNegatives - falsePositives) + (truePositives - falseNegatives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getOLR(): number {
         const truePositives: number = this.getTruePositives();
@@ -1074,7 +1153,7 @@ export class BinaryConfusionMatrix {
         const falseNegatives: number = this.getFalseNegatives();
         const numerator: number = ((falsePositives) + (falseNegatives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getOGR(): number {
         const truePositives: number = this.getTruePositives();
@@ -1083,16 +1162,16 @@ export class BinaryConfusionMatrix {
         const falseNegatives: number = this.getFalseNegatives();
         const numerator: number = ((trueNegatives) + (truePositives));
         const denominator: number = ((trueNegatives + falsePositives) + (truePositives + falseNegatives));
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
 
     public getInverseDocumentFrequencyRaw(): number {
         const numerator: number = this.getTotal();
         const denominator: number = this.getPositives();
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getInverseDocumentFrequency(): number {
-        return MathematicsHelper.safeLog(this.getInverseDocumentFrequencyRaw()); // ---- NOTE: better to use the smooth version as it's possible that positives can be zero!
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeLog(this.getInverseDocumentFrequencyRaw()); // ---- NOTE: better to use the smooth version as it's possible that positives can be zero!
     }
     public getInverseDocumentFrequencyUnary(): number {
         return ((this.getPositives() > 0) && (this.getTotal() > 0)) ? 1 : 0;
@@ -1100,29 +1179,29 @@ export class BinaryConfusionMatrix {
     public getInverseDocumentFrequencySmooth(): number {
         const inverseDocumentFrequencyRaw: number =
             this.getInverseDocumentFrequencyRaw();
-        return MathematicsHelper.safeLog(1 + inverseDocumentFrequencyRaw);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeLog(1 + inverseDocumentFrequencyRaw);
     }
     public getInverseDocumentFrequencyMax(explicitMaxPositives: number = -1): number {
         if (explicitMaxPositives <= 0) {
             return this.getInverseDocumentFrequency();
         }
-        return MathematicsHelper.safeLog(MathematicsHelper.safeDivide(explicitMaxPositives, (1 + this.getPositives())));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeLog(BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(explicitMaxPositives, (1 + this.getPositives())));
     }
     public getInverseDocumentFrequencyProbabilistic(): number {
         const denominator: number = this.getPositives();
         const numerator: number = this.getTotal() - denominator;
-        return MathematicsHelper.safeLog(MathematicsHelper.safeDivide(numerator, denominator));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeLog(BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator));
     }
 
     public getJaccardCoefficient(): number {
         const denominator: number = this.getTruePositives() + this.getFalsePositives() + this.getFalseNegatives();
         const numerator: number = this.getTruePositives();
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getSimpleMatchingCoefficient(): number {
         const denominator: number = this.getTotal();
         const numerator: number = this.getTruePositives();
-        return MathematicsHelper.safeDivide(numerator, denominator);
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator);
     }
     public getJaccardDenominatorMinCoefficient(): number {
         const positives: number = this.getPositives();
@@ -1132,7 +1211,7 @@ export class BinaryConfusionMatrix {
             denominator = predictedPositives;
         }
         const numerator: number = this.getTruePositives();
-        return MathematicsHelper.safeLog(MathematicsHelper.safeDivide(numerator, denominator));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeLog(BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator));
     }
     public getJaccardDenominatorMaxCoefficient(): number {
         const positives: number = this.getPositives();
@@ -1142,7 +1221,7 @@ export class BinaryConfusionMatrix {
             denominator = predictedPositives;
         }
         const numerator: number = this.getTruePositives();
-        return MathematicsHelper.safeLog(MathematicsHelper.safeDivide(numerator, denominator));
+        return BinaryConfusionMatrix.MathematicsHelperObject.safeLog(BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(numerator, denominator));
     }
 
     public getMetrics(
@@ -1156,8 +1235,8 @@ export class BinaryConfusionMatrix {
         beta: number = 1,
         A: number = 1,
         B: number = 1,
-        explicitMaxPositives: number = -1): { [id: string]: number; } {
-        const metrics: { [id: string]: number; } = {};
+        explicitMaxPositives: number = -1): { [id: string]: number } {
+        const metrics: { [id: string]: number } = {};
         const metricNames: string[] =
             this.getMetricNames();
         const metricValues: number[] =
@@ -1177,6 +1256,14 @@ export class BinaryConfusionMatrix {
             metrics[metricNames[i]] = metricValues[i];
         }
         return metrics;
+    }
+    public getMetricNameMap(): IDictionaryStringIdGenericValue<number> {
+        const metricNames: string[] =
+            this.getMetricNames();
+        const metricNameMap: IDictionaryStringIdGenericValue<number> =
+            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(
+            metricNames);
+        return metricNameMap;
     }
     public getMetricNames(): string[] {
         const metricNames: string[] = [
@@ -1380,7 +1467,7 @@ export class BinaryConfusionMatrix {
         A: number = 1,
         B: number = 1,
         explicitMaxPositives: number = -1): number[] {
-        const metrics: number[] = [
+        const metricValues: number[] = [
             this.getTotal(),
             this.getCell11(),
             this.getRow1(),
@@ -1566,6 +1653,6 @@ export class BinaryConfusionMatrix {
             B,
             explicitMaxPositives,
         ];
-        return metrics;
+        return metricValues;
     }
 }
