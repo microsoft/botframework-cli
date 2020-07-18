@@ -3,14 +3,17 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
+const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
-class NewEntitySection {
+class NewEntitySection  extends BaseSection {
     /**
      * 
      * @param {NewEntitySectionContext} parseTree 
      */
     constructor(parseTree) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.NEWENTITYSECTION;
         this.Errors = []
         this.Name = this.ExtractName(parseTree);
@@ -21,6 +24,9 @@ class NewEntitySection {
         this.RegexDefinition = this.ExtractRegexDefinition(parseTree);
         this.ListBody = this.ExtractSynonymsOrPhraseList(parseTree);
         this.Id = `${this.SectionType}_${this.Name}`;
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 
     ExtractName(parseTree) {
