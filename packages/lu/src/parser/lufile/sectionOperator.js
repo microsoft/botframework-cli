@@ -1,8 +1,9 @@
 const luParser = require('./luParser');
 const helpers = require('./../utils/helpers');
 const NEWLINE = require('os').EOL;
+const LUResource = require('./luResource');
 const LUSectionTypes = require('../utils/enums/lusectiontypes');
-const {cloneDeep} = require('lodash');
+const {cloneDeepWith, cloneDeep, isFunction} = require('lodash');
 
 class SectionOperator {
 
@@ -10,7 +11,10 @@ class SectionOperator {
    * @param {LUResource} luresource 
    */
   constructor(luresource) {
-    this.Luresource = cloneDeep(luresource);
+    const {Sections, Errors, Content } = cloneDeepWith(luresource, (value) => {
+      return isFunction(value) ? undfined: cloneDeep(value);
+    });
+    this.Luresource = new LUResource(Sections, Content, Errors);
   }
 
   // After CRUD, section Ids will keep same unless you change section name.
@@ -38,7 +42,9 @@ class SectionOperator {
     this.Luresource.Errors.push(...newResource.Errors);
 
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
-
+    if (this.Luresource.hashATNConfig) {
+      console.log('----------------------------');
+    }
     return this.Luresource;
   }
 
@@ -75,6 +81,9 @@ class SectionOperator {
     this.adjustRangeForUpdateSection(sectionIndex, newResource.Sections);
 
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
+    if (this.Luresource.hashATNConfig) {
+      console.log('----------------------------');
+    }
     return this.Luresource;
   }
 
@@ -97,6 +106,9 @@ class SectionOperator {
     const offset = endLine - startLine + 1;
     this.adjustRangeForDeleteSection(sectionIndex, offset);
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
+    if (this.Luresource.hashATNConfig) {
+      console.log('----------------------------');
+    }
     return this.Luresource;
   }
 
@@ -134,6 +146,9 @@ class SectionOperator {
     this.adjustRangeForInsertSection(sectionIndex, newResource.Sections);
 
     luParser.extractSectionBody(this.Luresource.Sections, this.Luresource.Content);
+    if (this.Luresource.hashATNConfig) {
+      console.log('----------------------------');
+    }
     return this.Luresource;
   }
 
