@@ -115,8 +115,8 @@ export class MathematicsHelper implements IMathematicsHelper {
     }
 
     public getL1Regularized(weight: number, l1Regularization: number): number {
-        if (weight > 0) { return l1Regularization }
-        if (weight < 0) { return -l1Regularization }
+        if (weight > 0) { return l1Regularization; }
+        if (weight < 0) { return -l1Regularization; }
         return 0;
     }
     public getL2Regularized(weight: number, l2Regularization: number): number {
