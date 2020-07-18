@@ -783,10 +783,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                         utterance = handleAtForPattern(utterance, entitiesFound, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles);
                         let mixedEntity = entitiesFound.filter(item => item.type != LUISObjNameEnum.PATTERNANYENTITY);
                         if (mixedEntity.length !== 0) {
-                            let errorMsg = `Utterance "${utteranceAndEntities.context.getText()}" has mix of entites with labelled values and ones without. Please update utterance to either include labelled values for all entities or remove labelled values from all entities.`;
+                            let errorMsg = `Utterance "${utteranceAndEntities.contextText}" has mix of entites with labelled values and ones without. Please update utterance to either include labelled values for all entities or remove labelled values from all entities.`;
                             let error = BuildDiagnostic({
                                 message: errorMsg,
-                                context: utteranceAndEntities.context
+                                range: utteranceAndEntities.range
                             })
 
                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -795,10 +795,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                         let prebuiltEntities = entitiesFound.filter(item => builtInTypes.consolidatedList.includes(item.entity));
                         prebuiltEntities.forEach(prebuiltEntity => {
                             if (parsedContent.LUISJsonStructure.prebuiltEntities.findIndex(e => e.name === prebuiltEntity.entity) < 0) {
-                                let errorMsg = `Pattern "${utteranceAndEntities.context.getText()}" has prebuilt entity ${prebuiltEntity.entity}. Please define it explicitly with @ prebuilt ${prebuiltEntity.entity}.`;
+                                let errorMsg = `Pattern "${utteranceAndEntities.contextText}" has prebuilt entity ${prebuiltEntity.entity}. Please define it explicitly with @ prebuilt ${prebuiltEntity.entity}.`;
                                 let error = BuildDiagnostic({
                                     message: errorMsg,
-                                    context: utteranceAndEntities.context
+                                    range: utteranceAndEntities.range
                                 })
 
                                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -865,7 +865,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                     let errorMsg = `Utterance "${utterance}" has invalid reference to Phrase List entity "${nonAllowedPhrseListEntityInUtterance.name}". Phrase list entities cannot be given an explicit labelled value.`;
                                     let error = BuildDiagnostic({
                                         message: errorMsg,
-                                        context: utteranceAndEntities.context
+                                        range: utteranceAndEntities.range
                                     });
 
                                     throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -897,7 +897,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                             let errorMsg = `${entity.entity} has been defined as a LIST entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
                                             let error = BuildDiagnostic({
                                                 message: errorMsg,
-                                                context: utteranceAndEntities.context
+                                                range: utteranceAndEntities.range
                                             });
 
                                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -911,7 +911,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                             let errorMsg = `${entity.entity} has been defined as a PREBUILT entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
                                             let error = BuildDiagnostic({
                                                 message: errorMsg,
-                                                context: utteranceAndEntities.context
+                                                range: utteranceAndEntities.range
                                             });
 
                                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -925,7 +925,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                                             let errorMsg = `${entity.entity} has been defined as a Regex entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
                                             let error = BuildDiagnostic({
                                                 message: errorMsg,
-                                                context: utteranceAndEntities.context
+                                                range: utteranceAndEntities.range
                                             });
 
                                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -966,10 +966,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                         }
                         entitiesFound.forEach(item => {
                             if (item.startPos > item.endPos) {
-                                let errorMsg = `No labelled value found for entity: "${item.entity}" in utterance: "${utteranceAndEntities.context.getText()}"`;
+                                let errorMsg = `No labelled value found for entity: "${item.entity}" in utterance: "${utteranceAndEntities.contextText}"`;
                                 let error = BuildDiagnostic({
                                     message: errorMsg,
-                                    context: utteranceAndEntities.context
+                                    range: utteranceAndEntities.range
                                 })
 
                                 throw (new exception(retCode.errorCode.MISSING_LABELLED_VALUE, error.toString(), [error]));
