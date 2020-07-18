@@ -6,10 +6,11 @@
 import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 import { SoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
+import { IMathematicsHelper } from "../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
 
+import { IConfusionMatrix } from "../../../mathematics/confusion_matrix/IConfusionMatrix";
 import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
-
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
 import { ThresholdReporter } from "../report/ThresholdReporter";
@@ -24,13 +25,16 @@ import { Utility } from "../../../utility/Utility";
 
 export class CrossValidator extends AbstractBaseEvaluator {
 
+    public static readonly MathematicsHelperObject: IMathematicsHelper =
+        MathematicsHelper.GetMathematicsHelperObject();
+
     public static defaultNumberOfCrossValidationFolds: number = 5;
 
     protected numberOfCrossValidationFolds: number =
         CrossValidator.defaultNumberOfCrossValidationFolds;
 
     protected labelsCachedAfterCrossValidation: string[] = [];
-    protected labelMapCachedAfterCrossValidation: { [id: string]: number; } = {};
+    protected labelMapCachedAfterCrossValidation: { [id: string]: number } = {};
     protected numberLabelsCachedAfterCrossValidation: number = -1;
     protected numberFeaturesCachedAfterCrossValidation: number = -1;
     protected intentsCachedAfterCrossValidation: string[] = [];
@@ -230,22 +234,24 @@ export class CrossValidator extends AbstractBaseEvaluator {
         const confusionMatrixCrossValidation: ConfusionMatrix =
             this.crossValidationResultCachedAfterCrossValidation.confusionMatrixCrossValidation;
         const confusionMatrixMetricStructure: {
-            "confusionMatrix": ConfusionMatrix,
-            "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
-            "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrix; },
-            "macroAverageMetrics": { "averagePrecision": number,
-                                     "averageRecall": number,
-                                     "averageF1Score": number,
-                                     "support": number },
-            "microAverageMetrics": { "accuracy": number,
-                                     "truePositives": number,
-                                     "support": number },
-            "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                             "weightedAverageRecall": number,
-                                             "weightedAverageF1Score": number,
-                                             "support": number } } =
-            ConfusionMatrix.generateConfusionMatrixMetricStructure(
-                confusionMatrixCrossValidation);
+            "confusionMatrix": IConfusionMatrix,
+            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
+            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "macroAverageMetrics": {
+                "averagePrecision": number,
+                "averageRecall": number,
+                "averageF1Score": number,
+                "support": number },
+            "microAverageMetrics": {
+                "accuracy": number,
+                "truePositives": number,
+                "support": number },
+            "weightedMacroAverageMetrics": {
+                "weightedAveragePrecision": number,
+                "weightedAverageRecall": number,
+                "weightedAverageF1Score": number,
+                "support": number } } =
+            confusionMatrixCrossValidation.generateConfusionMatrixMetricStructure();
         Utility.debuggingLog(
            `confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
            `${confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
@@ -295,7 +301,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
 
     public crossValidate(
         labels: string[],
-        labelMap: { [id: string]: number; },
+        labelMap: { [id: string]: number },
         numberLabels: number,
         numberFeatures: number,
         intents: string[],
@@ -519,7 +525,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
                     learner.predict([instanceFeatureIndexArray])[0];
                 predictions.push(prediction);
                 const argMax: { "indexMax": number, "max": number } =
-                    MathematicsHelper.getIndexOnFirstMaxEntry(prediction);
+                    CrossValidator.MathematicsHelperObject.getIndexOnFirstMaxEntry(prediction);
                 const predictionLabelIndex: number =
                     argMax.indexMax;
                 predictionLabelIndexes.push(predictionLabelIndex);

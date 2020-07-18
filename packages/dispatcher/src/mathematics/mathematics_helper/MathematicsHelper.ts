@@ -3,17 +3,25 @@
  * Licensed under the MIT License.
  */
 
+import { IMathematicsHelper } from "./IMathematicsHelper";
+
 import { Utility } from "../../utility/Utility";
 
-export class MathematicsHelper {
+export class MathematicsHelper implements IMathematicsHelper {
 
     public static epsilon: number = Utility.epsilon;
     public static epsilonUp: number = 1 - MathematicsHelper.epsilon;
 
+    public static readonly mathematicsHelperObject: IMathematicsHelper = new MathematicsHelper();
+
+    public static GetMathematicsHelperObject(): IMathematicsHelper {
+        return MathematicsHelper.mathematicsHelperObject;
+    }
+
     // ---- NOTE-REFERENCE ---- https://en.wikipedia.org/wiki/Softmax_function
-    public static softmaxSingleFunction(inputs: number[], index: number): number {
+    public softmaxSingleFunction(inputs: number[], index: number): number {
         const max: number =
-            MathematicsHelper.getIndexOnFirstMaxEntry(inputs).max;
+            this.getIndexOnFirstMaxEntry(inputs).max;
         const inputShifts: number[] =
             inputs.map((entry: number) => entry - max);
         const inputShiftExps: number[] =
@@ -23,13 +31,13 @@ export class MathematicsHelper {
                 (accumulation: number, entry: number) => accumulation + entry, 0);
         return inputShiftExps[index] / inputShiftExpsSum;
     }
-    public static smoothArgmaxApproximationSingleFunction(inputs: number[], index: number): number {
-        return MathematicsHelper.softmaxSingleFunction(inputs, index);
+    public smoothArgmaxApproximationSingleFunction(inputs: number[], index: number): number {
+        return this.softmaxSingleFunction(inputs, index);
     }
     // ---- NOTE-REFERENCE ---- https://en.wikipedia.org/wiki/Softmax_function
-    public static softmaxFunction(inputs: number[]): number[] {
+    public softmaxFunction(inputs: number[]): number[] {
         const max: number =
-            MathematicsHelper.getIndexOnFirstMaxEntry(inputs).max;
+            this.getIndexOnFirstMaxEntry(inputs).max;
         const inputShifts: number[] =
             inputs.map((entry: number) => entry - max);
         const inputShiftExps: number[] =
@@ -39,14 +47,14 @@ export class MathematicsHelper {
                 (accumulation: number, entry: number) => accumulation + entry, 0);
         return inputShiftExps.map((entry: number) => entry / inputShiftExpsSum);
     }
-    public static smoothArgmaxApproximationFunction(inputs: number[]): number[] {
-        return MathematicsHelper.softmaxFunction(inputs);
+    public smoothArgmaxApproximationFunction(inputs: number[]): number[] {
+        return this.softmaxFunction(inputs);
     }
 
     // ---- NOTE-REFERENCE ---- https://en.wikipedia.org/wiki/LogSumExp
-    public static logsumexpStrictConvexSingleFunction(inputs: number[]): number {
+    public logsumexpStrictConvexSingleFunction(inputs: number[]): number {
         let max: number =
-            MathematicsHelper.getIndexOnFirstMaxEntry(inputs).max;
+            this.getIndexOnFirstMaxEntry(inputs).max;
         if (max < 0) {
             max = 0;
         }
@@ -58,15 +66,15 @@ export class MathematicsHelper {
         const inputShiftExpsSum: number =
             inputShiftExps.reduce(
                 (accumulation: number, entry: number) => accumulation + entry, 0);
-        return max + Math.log(inputShiftExpsSum);
+        return max + this.safeLog(inputShiftExpsSum);
     }
-    public static smoothMaxApproximationStrictConvexFunction(inputs: number[]): number {
-        return MathematicsHelper.logsumexpStrictConvexSingleFunction(inputs);
+    public smoothMaxApproximationStrictConvexFunction(inputs: number[]): number {
+        return this.logsumexpStrictConvexSingleFunction(inputs);
     }
     // ---- NOTE-REFERENCE ---- https://en.wikipedia.org/wiki/LogSumExp
-    public static logsumexpSingleFunction(inputs: number[]): number {
+    public logsumexpSingleFunction(inputs: number[]): number {
         const max: number =
-            MathematicsHelper.getIndexOnFirstMaxEntry(inputs).max;
+            this.getIndexOnFirstMaxEntry(inputs).max;
         const inputShifts: number[] =
             inputs.map((entry: number) => entry - max);
         const inputShiftExps: number[] =
@@ -74,47 +82,47 @@ export class MathematicsHelper {
         const inputShiftExpsSum: number =
             inputShiftExps.reduce(
                 (accumulation: number, entry: number) => accumulation + entry, 0);
-        return max + Math.log(inputShiftExpsSum);
+        return max + this.safeLog(inputShiftExpsSum);
     }
-    public static smoothMaxApproximationFunction(inputs: number[]): number {
-        return MathematicsHelper.logsumexpSingleFunction(inputs);
+    public smoothMaxApproximationFunction(inputs: number[]): number {
+        return this.logsumexpSingleFunction(inputs);
     }
 
-    public static sigmoidLogisticGradientFunction(input: number): number {
-        const logisticValue = MathematicsHelper.sigmoidLogisticFunction(input);
+    public sigmoidLogisticGradientFunction(input: number): number {
+        const logisticValue: number = this.sigmoidLogisticFunction(input);
         return logisticValue * (1 - logisticValue);
     }
 
-    public static sigmoidLogisticFunction(input: number): number {
+    public sigmoidLogisticFunction(input: number): number {
         return 1 / (1 + Math.exp(-input));
     }
-    public static sigmoidHyperbolicTangentFunction(input: number): number {
+    public sigmoidHyperbolicTangentFunction(input: number): number {
         const exponent: number = Math.exp(input);
         const exponentNegative: number = Math.exp(-input);
         return (exponent - exponentNegative) / (exponent + exponentNegative);
     }
-    public static sigmoidArctangentFunction(input: number): number {
+    public sigmoidArctangentFunction(input: number): number {
         return Math.atan(input);
     }
-    public static sigmoidGudermannianFunction(input: number): number {
+    public sigmoidGudermannianFunction(input: number): number {
         return 2 * Math.atan(Math.tanh(input / 2));
     }
-    public static sigmoidGeneralizedLogisticFunction(input: number, alpha: number = 1): number {
+    public sigmoidGeneralizedLogisticFunction(input: number, alpha: number = 1): number {
         return Math.pow(1 + Math.exp(-input), -alpha);
     }
-    public static sigmoidAlgebraicFunction(input: number): number {
+    public sigmoidAlgebraicFunction(input: number): number {
         return input / Math.sqrt(1 + input * input);
     }
 
-    public static getL1Regularized(weight: number, l1Regularization: number): number {
-        if (weight > 0) { return l1Regularization; }
-        if (weight < 0) { return -l1Regularization; }
+    public getL1Regularized(weight: number, l1Regularization: number): number {
+        if (weight > 0) { return l1Regularization }
+        if (weight < 0) { return -l1Regularization }
         return 0;
     }
-    public static getL2Regularized(weight: number, l2Regularization: number): number {
+    public getL2Regularized(weight: number, l2Regularization: number): number {
         return (weight * l2Regularization);
     }
-    public static getL1l2RegularizedWeightOptimizedSparse(
+    public getL1l2RegularizedWeightOptimizedSparse(
         weight: number,
         l1Regularization: number,
         l2Regularization: number): number {
@@ -136,7 +144,7 @@ export class MathematicsHelper {
         weight -= regularized;
         return weight;
     }
-    public static getL1l2RegularizedWeightOptimizedDense(
+    public getL1l2RegularizedWeightOptimizedDense(
         weight: number,
         l1Regularization: number,
         l2Regularization: number): number {
@@ -158,16 +166,10 @@ export class MathematicsHelper {
 
     /*
      *  return:
-     *      softmaxVectors: number[][]:
+     *      softmaxVectors: number[][]
      *  update:
-     *      matrixWeightGradientDenseArrays:
-     *          Each row represents a dense feature gradient vector for a label.
-     *          Row length is equal to #features.
-     *          Dimension: L X F, L: #features, F: #features.
-     *      biasVectorDenseValueArray:
-     *          A bias vector, each element is for a label.
-     *          #biases is equal to #labels.
-     *          Dimension: L, L: #labels.
+     *      matrixWeightDenseArrays
+     *      biasVectorDenseValueArray
      *  input:
      *      instanceGroundTruthPositiveLabelIndexes:
      *          Each element is a label index.
@@ -180,9 +182,9 @@ export class MathematicsHelper {
      *              fall in the feature range [0, #features).
      *          Dimension: N X iF, N: #instances, iF: indefinite #features.
      *      matrixWeightDenseArrays:
-     *          Each row represents a dense feature, float weigh vector for a label.
+     *          Each row represents a dense feature, floating-point weight vector for a label.
      *          Row length is equal to #features.
-     *          Dimension: L X F, L: #features, F: #features.
+     *          Dimension: L x F, L: #labels, F: #features.
      *      biasVectorDenseValueArray:
      *          A bias vector, each element is for a label.
      *          #biases is equal to #labels.
@@ -197,8 +199,17 @@ export class MathematicsHelper {
      *          The begin index for a mini batch.
      *      instanceFeatureVectorIndexEnd:
      *          The end index for a mini batch.
+     *  internal data structure:
+     *      matrixWeightGradientDenseArrays:
+     *          Each row represents a dense feature gradient vector for a label.
+     *          Row length is equal to #features.
+     *          Dimension: L x F, L: #labels, F: #features.
+     *      biasVectorGradientDenseValueArray:
+     *          Each element represents a bias-term gradient for a label.
+     *          #biases is equal to #labels.
+     *          Dimension: L, L: #labels.
      */
-    public static softmaxLogLossGradientUpdate(
+    public softmaxLogLossGradientUpdate(
         instanceGroundTruthPositiveLabelIndexes: number[],
         instanceFeatureVectorSparseIndexArrays: number[][],
         matrixWeightDenseArrays: number[][],
@@ -228,7 +239,7 @@ export class MathematicsHelper {
             Utility.debuggingThrow(
                 `biasVectorDenseValueArray is empty`);
         }
-        const softmaxVectors: number[][] = MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+        const softmaxVectors: number[][] = this.matrixVectorProductSoftmaxSparseIndexes(
             instanceFeatureVectorSparseIndexArrays,
             matrixWeightDenseArrays,
             biasVectorDenseValueArray,
@@ -238,9 +249,9 @@ export class MathematicsHelper {
         const numberLabels: number = matrixWeightDenseArrays.length;
         // const numberFeatures: number = matrixWeightDenseArrays[0].length;
         const matrixWeightGradientDenseArrays: number[][] =
-            MathematicsHelper.matrixNewLikeWithZeroCells(matrixWeightDenseArrays);
+            this.matrixNewLikeWithZeroCells(matrixWeightDenseArrays);
         const biasVectorGradientDenseValueArray: number[] =
-            MathematicsHelper.vectorNewLikeWithZeroElements(biasVectorDenseValueArray);
+            this.vectorNewLikeWithZeroElements(biasVectorDenseValueArray);
         let instanceFeatureVectorIndex =
             instanceFeatureVectorIndexBegin;
         for (let instance: number = 0; instance < numberInstances; instance++) {
@@ -251,7 +262,7 @@ export class MathematicsHelper {
             const softmaxVector: number[] =
                 softmaxVectors[instance];
             /* ---- NOTE-FOR-REFERENCE ---- the loop for calculating gradients.
-            for (let label = 0; label < numberLabels; label++) {
+            for (let label: number = 0; label < numberLabels; label++) {
                 const probability: number = softmaxVector[label];
                 const labelWeightGradientDenseArray: number[] =
                     matrixWeightGradientDenseArrays[label];
@@ -291,7 +302,7 @@ export class MathematicsHelper {
                         }
                     }
                 }
-                for (let label = 0; label < instanceLabel; label++) {
+                for (let label: number = 0; label < instanceLabel; label++) {
                     // ---- NOTE: un-looping for optimizing the gradient computation process.
                     const probability: number = softmaxVector[label];
                     const labelWeightGradientDenseArray: number[] =
@@ -311,7 +322,7 @@ export class MathematicsHelper {
                         }
                     }
                 }
-                for (let label = instanceLabel + 1; label < numberLabels; label++) {
+                for (let label: number = instanceLabel + 1; label < numberLabels; label++) {
                     // ---- NOTE: un-looping for optimizing the gradient computation process.
                     const probability: number = softmaxVector[label];
                     const labelWeightGradientDenseArray: number[] =
@@ -337,24 +348,24 @@ export class MathematicsHelper {
         const factorConstant: number =
             learningRate / numberInstances;
         if ((l1Regularization > 0) || (l2Regularization > 0)) {
-            MathematicsHelper.matrixDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
+            this.matrixDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
                 matrixWeightDenseArrays,
                 matrixWeightGradientDenseArrays,
                 factorConstant,
                 l1Regularization,
                 l2Regularization);
-            MathematicsHelper.vectorDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
+            this.vectorDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
                 biasVectorDenseValueArray,
                 biasVectorGradientDenseValueArray,
                 factorConstant,
                 l1Regularization,
                 l2Regularization);
         } else {
-            MathematicsHelper.matrixDenseSubtractScaledFrom(
+            this.matrixDenseSubtractScaledFrom(
                 matrixWeightDenseArrays,
                 matrixWeightGradientDenseArrays,
                 factorConstant);
-            MathematicsHelper.vectorDenseSubtractScaledFrom(
+            this.vectorDenseSubtractScaledFrom(
                 biasVectorDenseValueArray,
                 biasVectorGradientDenseValueArray,
                 factorConstant);
@@ -362,11 +373,11 @@ export class MathematicsHelper {
         return softmaxVectors;
     }
 
-    public static logLoss(
+    public logLoss(
         probabilityVector: number[],
         instanceGroundTruthPositiveLabelIndex: number): number {
         let probability = probabilityVector[instanceGroundTruthPositiveLabelIndex];
-        probability = MathematicsHelper.clipValue(probability);
+        probability = this.clipValue(probability);
         if (!probability || (probability <= 0)) {
             Utility.debuggingThrow(
                 `probability=${probability}, instanceGroundTruthPositiveLabelIndex=${instanceGroundTruthPositiveLabelIndex}`);
@@ -374,14 +385,14 @@ export class MathematicsHelper {
         const loss: number = Math.log(probability);
         return -loss;
     }
-    public static logLossGeneric(
+    public logLossGeneric(
         probabilityVector: number[],
         labelVector: number[]): number {
         let loss: number = 0;
         for (let i: number = 0; i < labelVector.length; i++) {
             const label = labelVector[i];
             let probability = probabilityVector[i];
-            probability = MathematicsHelper.clipValue(probability);
+            probability = this.clipValue(probability);
             if (!probability || (probability <= 0)) {
                 Utility.debuggingThrow(
                     `probability=${probability}, labelVector=${labelVector}, probabilityVector=${probabilityVector}`);
@@ -393,28 +404,28 @@ export class MathematicsHelper {
         return -loss;
     }
 
-    public static softmaxLogLoss(
+    public softmaxLogLoss(
         softmaxVectors: number[][],
         instanceGroundTruthPositiveLabelIndexes: number[]): number {
         let softmaxLogLossSum: number = 0;
         for (let i: number = 0; i < softmaxVectors.length; i++) {
             softmaxLogLossSum +=
-                MathematicsHelper.logLoss(softmaxVectors[i], instanceGroundTruthPositiveLabelIndexes[i]);
+                this.logLoss(softmaxVectors[i], instanceGroundTruthPositiveLabelIndexes[i]);
         }
         return softmaxLogLossSum / softmaxVectors.length;
     }
-    public static softmaxLogLossGeneric(
+    public softmaxLogLossGeneric(
         softmaxVectors: number[][],
         labelVectors: number[][]): number {
         let softmaxLogLossSum: number = 0;
         for (let i: number = 0; i < softmaxVectors.length; i++) {
             softmaxLogLossSum +=
-                MathematicsHelper.logLossGeneric(softmaxVectors[i], labelVectors[i]);
+                this.logLossGeneric(softmaxVectors[i], labelVectors[i]);
         }
         return softmaxLogLossSum / softmaxVectors.length;
     }
 
-    public static matrixVectorProductSoftmaxSparseIndexesValues(
+    public matrixVectorProductSoftmaxSparseIndexesValues(
         instanceFeatureVectorSparseIndexArrays: number[][],
         instanceFeatureVectorSparseValueArrays: number[][],
         matrixWeightDenseArrays: number[][],
@@ -469,7 +480,7 @@ export class MathematicsHelper {
             const instanceFeatureVectorSparseValueArray: number[] =
                 instanceFeatureVectorSparseValueArrays[i];
             const matrixVectorProduct: number[] =
-                MathematicsHelper.matrixVectorProductSparseIndexesValues(
+                this.matrixVectorProductSparseIndexesValues(
                     instanceFeatureVectorSparseIndexArray,
                     instanceFeatureVectorSparseValueArray,
                     matrixWeightDenseArrays,
@@ -485,7 +496,7 @@ export class MathematicsHelper {
             Utility.debuggingLog(
                 `i=${i}, matrixVectorProduct=${matrixVectorProduct}`);
             const softmaxVector: number[] =
-                MathematicsHelper.softmaxFunction(matrixVectorProduct);
+                this.softmaxFunction(matrixVectorProduct);
             softmaxVectors[indexSoftmaxVectors++] =
                 softmaxVector;
         }
@@ -506,9 +517,9 @@ export class MathematicsHelper {
      *              fall in the feature range [0, #features).
      *          Dimension: N X iF, N: #instances, iF: indefinite #features.
      *      matrixWeightDenseArrays:
-     *          Each row represents a dense feature, float weigh vector for a label.
+     *          Each row represents a dense feature, floating-point weight vector for a label.
      *          Row length is equal to #features.
-     *          Dimension: L X F, L: #features, F: #features.
+     *          Dimension: L x F, L: #labels, F: #features.
      *      biasVectorDenseValueArray:
      *          A bias vector, each element is for a label.
      *          #biases is equal to #labels.
@@ -518,7 +529,7 @@ export class MathematicsHelper {
      *      instanceFeatureVectorIndexEnd:
      *          The end index for a mini batch.
      */
-    public static matrixVectorProductSoftmaxSparseIndexes(
+    public matrixVectorProductSoftmaxSparseIndexes(
         instanceFeatureVectorSparseIndexArrays: number[][],
         matrixWeightDenseArrays: number[][],
         biasVectorDenseValueArray: number[],
@@ -560,33 +571,59 @@ export class MathematicsHelper {
             const instanceFeatureVectorSparseIndexArray: number[] =
                 instanceFeatureVectorSparseIndexArrays[i];
             const matrixVectorProduct: number[] =
-                MathematicsHelper.matrixVectorProductSparseIndexes(
+                this.matrixVectorProductSparseIndexes(
                     instanceFeatureVectorSparseIndexArray,
                     matrixWeightDenseArrays,
                     biasVectorDenseValueArray);
             const softmaxVector: number[] =
-                MathematicsHelper.softmaxFunction(matrixVectorProduct);
+                this.softmaxFunction(matrixVectorProduct);
             softmaxVectors[indexSoftmaxVectors++] =
                 softmaxVector;
         }
         return softmaxVectors;
     }
-    public static matrixVectorProductSoftmaxDenseValues(
-        vectorDenseValueArrays: number[][],
+    /*
+     *  return:
+     *      softmaxVectors:
+     *          Each row is a softmax vector for an input instance.
+     *          #rows is equivalent to #labels.
+     *          Dimension: N X L, N: #instances, L: #labels.
+     *  inputs:
+     *      instanceFeatureVectorDenseValueArrays:
+     *          Each row represents a dense feature value vector for an input instance.
+     *          #rows is the number of input instances
+     *          #columns is the number of dense features for that row/instance.
+     *              There is no limit to the length of each row should be equal to the number of features.
+     *          Dimension: N X F, N: #instances, F: #features.
+     *      matrixWeightDenseArrays:
+     *          Each row represents a dense feature, floating-point weight vector for a label.
+     *          Row length is equal to #features.
+     *          Dimension: L x F, L: #labels, F: #features.
+     *      biasVectorDenseValueArray:
+     *          A bias vector, each element is for a label.
+     *          #biases is equal to #labels.
+     *          Dimension: L, L: #labels.
+     *      instanceFeatureVectorIndexBegin:
+     *          The begin index for a mini batch.
+     *      instanceFeatureVectorIndexEnd:
+     *          The end index for a mini batch.
+     */
+    public matrixVectorProductSoftmaxDenseValues(
+        instanceFeatureVectorDenseValueArrays: number[][],
         matrixWeightDenseArrays: number[][],
         biasVectorDenseValueArray: number[],
         instanceFeatureVectorIndexBegin: number = 0,
         instanceFeatureVectorIndexEnd: number = 0): number[][] {
-        if (Utility.isEmptyNumberArrays(vectorDenseValueArrays)) {
+        if (Utility.isEmptyNumberArrays(instanceFeatureVectorDenseValueArrays)) {
             Utility.debuggingThrow(
-                "vectorDenseValueArrays is empty.");
+                "instanceFeatureVectorDenseValueArrays is empty.");
         }
         if (Utility.isEmptyNumberArrays(matrixWeightDenseArrays)) {
             Utility.debuggingThrow(
                 "matrixWeightDenseArrays is empty.");
         }
         const numberVectors =
-            vectorDenseValueArrays.length;
+            instanceFeatureVectorDenseValueArrays.length;
         if (numberVectors <= 0) {
             Utility.debuggingThrow(
                 `numberVectors is empty`);
@@ -610,22 +647,22 @@ export class MathematicsHelper {
             new Array<number[]>(numberSoftmaxVectors);
         let indexSoftmaxVectors: number = 0;
         for (let i: number = instanceFeatureVectorIndexBegin; i < instanceFeatureVectorIndexEnd; i++) {
-            const vectorDenseValueArray: number[] =
-                vectorDenseValueArrays[i];
+            const instanceFeatureVectorDenseValueArray: number[] =
+                instanceFeatureVectorDenseValueArrays[i];
             const matrixVectorProduct: number[] =
-                MathematicsHelper.matrixVectorProductDenseValues(
-                    vectorDenseValueArray,
+                this.matrixVectorProductDenseValues(
+                    instanceFeatureVectorDenseValueArray,
                     matrixWeightDenseArrays,
                     biasVectorDenseValueArray);
             const softmaxVector: number[] =
-                MathematicsHelper.softmaxFunction(matrixVectorProduct);
+                this.softmaxFunction(matrixVectorProduct);
             softmaxVectors[indexSoftmaxVectors++] =
                 softmaxVector;
         }
         return softmaxVectors;
     }
 
-    public static matrixVectorProductSparseIndexesValues(
+    public matrixVectorProductSparseIndexesValues(
         instanceFeatureVectorSparseIndexArray: number[],
         instanceFeatureVectorSparseValueArray: number[],
         matrixWeightDenseArrays: number[][],
@@ -633,44 +670,44 @@ export class MathematicsHelper {
         const lengthRowMatrix: number =
             matrixWeightDenseArrays.length;
         const matrixVectorProduct: number[] =
-            MathematicsHelper.vectorNewWithZeroElements(lengthRowMatrix);
-        return MathematicsHelper.matrixVectorProductSparseIndexesValuesTo(
+            this.vectorNewWithZeroElements(lengthRowMatrix);
+        return this.matrixVectorProductSparseIndexesValuesTo(
             matrixVectorProduct,
             instanceFeatureVectorSparseIndexArray,
             instanceFeatureVectorSparseValueArray,
             matrixWeightDenseArrays,
             biasVectorDenseValueArray);
     }
-    public static matrixVectorProductSparseIndexes(
+    public matrixVectorProductSparseIndexes(
         instanceFeatureVectorSparseIndexArray: number[],
         matrixWeightDenseArrays: number[][],
         biasVectorDenseValueArray: number[]): number[] {
         const lengthRowMatrix: number =
             matrixWeightDenseArrays.length;
         const matrixVectorProduct: number[] =
-            MathematicsHelper.vectorNewWithZeroElements(lengthRowMatrix);
-        return MathematicsHelper.matrixVectorProductSparseIndexesTo(
+            this.vectorNewWithZeroElements(lengthRowMatrix);
+        return this.matrixVectorProductSparseIndexesTo(
             matrixVectorProduct,
             instanceFeatureVectorSparseIndexArray,
             matrixWeightDenseArrays,
             biasVectorDenseValueArray);
     }
-    public static matrixVectorProductDenseValues(
+    public matrixVectorProductDenseValues(
         vectorDenseValueArray: number[],
         matrixWeightDenseArrays: number[][],
         biasVectorDenseValueArray: number[]): number[] {
         const lengthRowMatrix: number =
             matrixWeightDenseArrays.length;
         const matrixVectorProduct: number[] =
-            MathematicsHelper.vectorNewWithZeroElements(lengthRowMatrix);
-        return MathematicsHelper.matrixVectorProductDenseValuesTo(
+            this.vectorNewWithZeroElements(lengthRowMatrix);
+        return this.matrixVectorProductDenseValuesTo(
             matrixVectorProduct,
             vectorDenseValueArray,
             matrixWeightDenseArrays,
             biasVectorDenseValueArray);
     }
 
-    public static matrixVectorProductSparseIndexesValuesTo(
+    public matrixVectorProductSparseIndexesValuesTo(
         matrixVectorProduct: number[],
         instanceFeatureVectorSparseIndexArray: number[],
         instanceFeatureVectorSparseValueArray: number[],
@@ -687,7 +724,7 @@ export class MathematicsHelper {
                 biasVectorDenseValue = biasVectorDenseValueArray[row];
             }
             const dotProduct: number =
-                MathematicsHelper.dotProductSparseIndexesValues(
+                this.dotProductSparseIndexesValues(
                     instanceFeatureVectorSparseIndexArray,
                     instanceFeatureVectorSparseValueArray,
                     matrixWeightDenseArray,
@@ -697,7 +734,7 @@ export class MathematicsHelper {
         }
         return matrixVectorProduct;
     }
-    public static matrixVectorProductSparseIndexesTo(
+    public matrixVectorProductSparseIndexesTo(
         matrixVectorProduct: number[],
         instanceFeatureVectorSparseIndexArray: number[],
         matrixWeightDenseArrays: number[][],
@@ -713,7 +750,7 @@ export class MathematicsHelper {
                 biasVectorDenseValue = biasVectorDenseValueArray[row];
             }
             const dotProduct: number =
-                MathematicsHelper.dotProductSparseIndexes(
+                this.dotProductSparseIndexes(
                     instanceFeatureVectorSparseIndexArray,
                     matrixWeightDenseArray,
                     biasVectorDenseValue);
@@ -722,7 +759,7 @@ export class MathematicsHelper {
         }
         return matrixVectorProduct;
     }
-    public static matrixVectorProductDenseValuesTo(
+    public matrixVectorProductDenseValuesTo(
         matrixVectorProduct: number[],
         vectorDenseValueArray: number[],
         matrixWeightDenseArrays: number[][],
@@ -738,7 +775,7 @@ export class MathematicsHelper {
                 biasVectorDenseValue = biasVectorDenseValueArray[row];
             }
             const dotProduct: number =
-                MathematicsHelper.dotProductDenseValues(
+                this.dotProductDenseValues(
                     vectorDenseValueArray,
                     matrixWeightDenseArray,
                     biasVectorDenseValue);
@@ -748,7 +785,7 @@ export class MathematicsHelper {
         return matrixVectorProduct;
     }
 
-    public static vectorMatrixProductSparseIndexesValues(
+    public vectorMatrixProductSparseIndexesValues(
         instanceFeatureVectorSparseIndexArray: number[],
         instanceFeatureVectorSparseValueArray: number[],
         matrixWeightDenseArrays: number[][],
@@ -758,15 +795,15 @@ export class MathematicsHelper {
         const lengthColumnMatrix: number =
             matrixWeightDenseArrays[0].length;
         const vectorMatrixProduct: number[] =
-            MathematicsHelper.vectorNewWithZeroElements(lengthColumnMatrix);
-        return MathematicsHelper.vectorMatrixProductSparseIndexesValuesTo(
+            this.vectorNewWithZeroElements(lengthColumnMatrix);
+        return this.vectorMatrixProductSparseIndexesValuesTo(
             vectorMatrixProduct,
             instanceFeatureVectorSparseIndexArray,
             instanceFeatureVectorSparseValueArray,
             matrixWeightDenseArrays,
             biasVectorDenseValueArray);
     }
-    public static vectorMatrixProductSparseIndexes(
+    public vectorMatrixProductSparseIndexes(
         instanceFeatureVectorSparseIndexArray: number[],
         matrixWeightDenseArrays: number[][],
         biasVectorDenseValueArray: number[]): number[] {
@@ -775,14 +812,14 @@ export class MathematicsHelper {
         const lengthColumnMatrix: number =
             matrixWeightDenseArrays[0].length;
         const vectorMatrixProduct: number[] =
-            MathematicsHelper.vectorNewWithZeroElements(lengthColumnMatrix);
-        return MathematicsHelper.vectorMatrixProductSparseIndexesTo(
+            this.vectorNewWithZeroElements(lengthColumnMatrix);
+        return this.vectorMatrixProductSparseIndexesTo(
             vectorMatrixProduct,
             instanceFeatureVectorSparseIndexArray,
             matrixWeightDenseArrays,
             biasVectorDenseValueArray);
     }
-    public static vectorMatrixProductDenseValues(
+    public vectorMatrixProductDenseValues(
         vectorDenseValueArray: number[],
         matrixWeightDenseArrays: number[][],
         biasVectorDenseValueArray: number[]): number[] {
@@ -791,15 +828,15 @@ export class MathematicsHelper {
         const lengthColumnMatrix: number =
             matrixWeightDenseArrays[0].length;
         const vectorMatrixProduct: number[] =
-            MathematicsHelper.vectorNewWithZeroElements(lengthColumnMatrix);
-        return MathematicsHelper.vectorMatrixProductDenseValuesTo(
+            this.vectorNewWithZeroElements(lengthColumnMatrix);
+        return this.vectorMatrixProductDenseValuesTo(
             vectorMatrixProduct,
             vectorDenseValueArray,
             matrixWeightDenseArrays,
             biasVectorDenseValueArray);
     }
 
-    public static vectorMatrixProductSparseIndexesValuesTo(
+    public vectorMatrixProductSparseIndexesValuesTo(
         vectorMatrixProduct: number[],
         instanceFeatureVectorSparseIndexArray: number[],
         instanceFeatureVectorSparseValueArray: number[],
@@ -813,19 +850,19 @@ export class MathematicsHelper {
             const vectorSparseIndex: number = instanceFeatureVectorSparseIndexArray[i];
             const vectorSparseValue: number = instanceFeatureVectorSparseValueArray[i];
             const matrixWeightDenseArray: number[] = matrixWeightDenseArrays[vectorSparseIndex];
-            MathematicsHelper.vectorDenseAddScaledTo(
+            this.vectorDenseAddScaledTo(
                 vectorMatrixProduct,
                 matrixWeightDenseArray,
                 vectorSparseValue);
         }
         if (!Utility.isEmptyNumberArray(biasVectorDenseValueArray)) {
-            MathematicsHelper.vectorDenseAddTo(
+            this.vectorDenseAddTo(
                 vectorMatrixProduct,
                 biasVectorDenseValueArray);
         }
         return vectorMatrixProduct;
     }
-    public static vectorMatrixProductSparseIndexesTo(
+    public vectorMatrixProductSparseIndexesTo(
         vectorMatrixProduct: number[],
         instanceFeatureVectorSparseIndexArray: number[],
         matrixWeightDenseArrays: number[][],
@@ -837,19 +874,19 @@ export class MathematicsHelper {
         for (const vectorSparseIndex of instanceFeatureVectorSparseIndexArray) {
             const vectorSparseValue: number = 1;
             const matrixWeightDenseArray: number[] = matrixWeightDenseArrays[vectorSparseIndex];
-            MathematicsHelper.vectorDenseAddScaledTo(
+            this.vectorDenseAddScaledTo(
                 vectorMatrixProduct,
                 matrixWeightDenseArray,
                 vectorSparseValue);
         }
         if (!Utility.isEmptyNumberArray(biasVectorDenseValueArray)) {
-            MathematicsHelper.vectorDenseAddTo(
+            this.vectorDenseAddTo(
                 vectorMatrixProduct,
                 biasVectorDenseValueArray);
         }
         return vectorMatrixProduct;
     }
-    public static vectorMatrixProductDenseValuesTo(
+    public vectorMatrixProductDenseValuesTo(
         vectorMatrixProduct: number[],
         vectorDenseValueArray: number[],
         matrixWeightDenseArrays: number[][],
@@ -861,20 +898,47 @@ export class MathematicsHelper {
         for (let row: number = 0; row < lengthRowMatrix; row++) {
             const vectorDenseValue: number = vectorDenseValueArray[row];
             const matrixWeightDenseArray: number[] = matrixWeightDenseArrays[row];
-            MathematicsHelper.vectorDenseAddScaledTo(
+            this.vectorDenseAddScaledTo(
                 vectorMatrixProduct,
                 matrixWeightDenseArray,
                 vectorDenseValue);
         }
         if (!Utility.isEmptyNumberArray(biasVectorDenseValueArray)) {
-            MathematicsHelper.vectorDenseAddTo(
+            this.vectorDenseAddTo(
+                vectorMatrixProduct,
+                biasVectorDenseValueArray);
+        }
+        return vectorMatrixProduct;
+    }
+    public vectorMatrixProductPartialDenseValuesTo( // ---- TODO
+        vectorMatrixProduct: number[],
+        vectorDenseValueArray: number[],
+        matrixWeightDenseArrays: number[][],
+        offsetDenseValueArray: number = 0,
+        offsetMatrixWeightDenseArrays: number = 0,
+        length: number = 0,
+        biasVectorDenseValueArray: number[] = []): number[] {
+        const lengthRowMatrix: number =
+            matrixWeightDenseArrays.length;
+        // const lengthColumnMatrix: number =
+        //     matrixWeightDenseArrays[0].length;
+        for (let row: number = 0; row < lengthRowMatrix; row++) {
+            const vectorDenseValue: number = vectorDenseValueArray[row];
+            const matrixWeightDenseArray: number[] = matrixWeightDenseArrays[row];
+            this.vectorDenseAddScaledTo(
+                vectorMatrixProduct,
+                matrixWeightDenseArray,
+                vectorDenseValue);
+        }
+        if (!Utility.isEmptyNumberArray(biasVectorDenseValueArray)) {
+            this.vectorDenseAddTo(
                 vectorMatrixProduct,
                 biasVectorDenseValueArray);
         }
         return vectorMatrixProduct;
     }
 
-    public static dotProductSparseIndexesValues(
+    public dotProductSparseIndexesValues(
         sparseIndexArray: number[],
         sparseValueArray: number[],
         weights: number[],
@@ -886,7 +950,7 @@ export class MathematicsHelper {
                 0);
         return (dotProduct + weightBias);
     }
-    public static dotProductSparseIndexes(
+    public dotProductSparseIndexes(
         sparseIndexArray: number[],
         weights: number[],
         weightBias: number = 0): number {
@@ -897,7 +961,7 @@ export class MathematicsHelper {
                 0);
         return (dotProduct + weightBias);
     }
-    public static dotProductDenseValues(
+    public dotProductDenseValues(
         denseValueArray: number[],
         weights: number[],
         weightBias: number = 0): number {
@@ -907,8 +971,28 @@ export class MathematicsHelper {
         }
         return (dotProduct + weightBias);
     }
+    public dotProductPartialDenseValues( // ---- TODO
+        denseValueArray: number[],
+        weights: number[],
+        offsetDenseValueArray: number = 0,
+        offsetWeights: number = 0,
+        length: number = 0,
+        weightBias: number = 0): number {
+        if (length === 0) {
+            length = denseValueArray.length;
+        }
+        let dotProduct: number = 0;
+        let indexDenseValueArray: number = offsetDenseValueArray;
+        let indexWeights: number = offsetWeights;
+        for (let i: number = 0; i < length; i++) {
+            dotProduct += denseValueArray[indexDenseValueArray] * weights[indexWeights];
+            indexDenseValueArray++;
+            indexWeights++;
+        }
+        return (dotProduct + weightBias);
+    }
 
-    public static matrixDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
+    public matrixDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
         denseValueArray0: number[][],
         denseValueArray1: number[][],
         constant: number,
@@ -921,7 +1005,7 @@ export class MathematicsHelper {
                 const adjustment: number = denseValueArray1[row][column];
                 denseValueArray0[row][column] -= (constant * adjustment);
                 if (adjustment !== 0) {
-                    denseValueArray0[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
+                    denseValueArray0[row][column] = this.getL1l2RegularizedWeightOptimizedSparse(
                         denseValueArray0[row][column],
                         l1Regularization,
                         l2Regularization);
@@ -930,7 +1014,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static matrixDenseSubtractScaledFromAndL1l2RegularizedDenseTo(
+    public matrixDenseSubtractScaledFromAndL1l2RegularizedDenseTo(
         denseValueArray0: number[][],
         denseValueArray1: number[][],
         constant: number,
@@ -943,7 +1027,7 @@ export class MathematicsHelper {
                 const adjustment: number = denseValueArray1[row][column];
                 denseValueArray0[row][column] -= (constant * adjustment);
                 if (adjustment !== 0) {
-                    denseValueArray0[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
+                    denseValueArray0[row][column] = this.getL1l2RegularizedWeightOptimizedDense(
                         denseValueArray0[row][column],
                         l1Regularization,
                         l2Regularization);
@@ -952,7 +1036,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
+    public vectorDenseSubtractScaledFromAndL1l2RegularizedSparseTo(
         denseValueArray0: number[],
         denseValueArray1: number[],
         constant: number,
@@ -962,7 +1046,7 @@ export class MathematicsHelper {
             const adjustment: number = denseValueArray1[i];
             denseValueArray0[i] -= (constant * adjustment);
             if (adjustment !== 0) {
-                denseValueArray0[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
+                denseValueArray0[i] = this.getL1l2RegularizedWeightOptimizedSparse(
                     denseValueArray0[i],
                     l1Regularization,
                     l2Regularization);
@@ -970,7 +1054,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseSubtractScaledFromAndL1l2RegularizedDenseTo(
+    public vectorDenseSubtractScaledFromAndL1l2RegularizedDenseTo(
         denseValueArray0: number[],
         denseValueArray1: number[],
         constant: number,
@@ -980,7 +1064,7 @@ export class MathematicsHelper {
             const adjustment: number = denseValueArray1[i];
             denseValueArray0[i] -= (constant * adjustment);
             if (adjustment !== 0) {
-                denseValueArray0[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
+                denseValueArray0[i] = this.getL1l2RegularizedWeightOptimizedDense(
                     denseValueArray0[i],
                     l1Regularization,
                     l2Regularization);
@@ -989,7 +1073,7 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
-    public static matrixDenseL1l2RegularizedSparseTo(
+    public matrixDenseL1l2RegularizedSparseTo(
         denseValueArray: number[][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][] {
@@ -997,7 +1081,7 @@ export class MathematicsHelper {
         const columns: number = denseValueArray[0].length;
         for (let row: number = 0; row < rows; row++) {
             for (let column: number = 0; column < columns; column++) {
-                denseValueArray[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
+                denseValueArray[row][column] = this.getL1l2RegularizedWeightOptimizedSparse(
                     denseValueArray[row][column],
                     l1Regularization,
                     l2Regularization);
@@ -1005,7 +1089,7 @@ export class MathematicsHelper {
         }
         return denseValueArray;
     }
-    public static matrixDenseL1l2RegularizedDenseTo(
+    public matrixDenseL1l2RegularizedDenseTo(
         denseValueArray: number[][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][] {
@@ -1013,7 +1097,7 @@ export class MathematicsHelper {
         const columns: number = denseValueArray[0].length;
         for (let row: number = 0; row < rows; row++) {
             for (let column: number = 0; column < columns; column++) {
-                denseValueArray[row][column] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
+                denseValueArray[row][column] = this.getL1l2RegularizedWeightOptimizedDense(
                     denseValueArray[row][column],
                     l1Regularization,
                     l2Regularization);
@@ -1022,24 +1106,24 @@ export class MathematicsHelper {
         return denseValueArray;
     }
 
-    public static vectorDenseL1l2RegularizedSparseTo(
+    public vectorDenseL1l2RegularizedSparseTo(
         denseValueArray: number[],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
         for (let i: number = 0; i < denseValueArray.length; i++) {
-            denseValueArray[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
+            denseValueArray[i] = this.getL1l2RegularizedWeightOptimizedSparse(
                 denseValueArray[i],
                 l1Regularization,
                 l2Regularization);
         }
         return denseValueArray;
     }
-    public static vectorDenseL1l2RegularizedDenseTo(
+    public vectorDenseL1l2RegularizedDenseTo(
         denseValueArray: number[],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
         for (let i: number = 0; i < denseValueArray.length; i++) {
-            denseValueArray[i] = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
+            denseValueArray[i] = this.getL1l2RegularizedWeightOptimizedDense(
                 denseValueArray[i],
                 l1Regularization,
                 l2Regularization);
@@ -1047,377 +1131,377 @@ export class MathematicsHelper {
         return denseValueArray;
     }
 
-    public static tensor4dDenseAssignRandomTo(
+    public tensor4dDenseAssignRandomTo(
         denseValueArray0: number[][][][]): number[][][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseAssignRandomTo(
+            this.tensor3dDenseAssignRandomTo(
                 denseValueArray0[row]);
         }
         return denseValueArray0;
     }
 
-    public static tensor4dDenseAssignConstantTo(
+    public tensor4dDenseAssignConstantTo(
         denseValueArray0: number[][][][],
         constant: number): number[][][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseAssignConstantTo(
+            this.tensor3dDenseAssignConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor4dDenseAddConstantTo(
+    public tensor4dDenseAddConstantTo(
         denseValueArray0: number[][][][],
         constant: number): number[][][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseAddConstantTo(
+            this.tensor3dDenseAddConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor4dDenseMultiplyConstantTo(
+    public tensor4dDenseMultiplyConstantTo(
         denseValueArray0: number[][][][],
         constant: number): number[][][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseMultiplyConstantTo(
+            this.tensor3dDenseMultiplyConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor4dDenseSubtractConstantFrom(
+    public tensor4dDenseSubtractConstantFrom(
         denseValueArray0: number[][][][],
         constant: number): number[][][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseSubtractConstantFrom(
+            this.tensor3dDenseSubtractConstantFrom(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor4dDenseDivideConstantFrom(
+    public tensor4dDenseDivideConstantFrom(
         denseValueArray0: number[][][][],
         constant: number): number[][][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseDivideConstantFrom(
+            this.tensor3dDenseDivideConstantFrom(
                 denseValueArray0[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-
-    public static tensor4dDenseAssignTo(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][]): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseAssignTo(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseAddTo(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][]): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseAddTo(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseMultiplyTo(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][]): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseMultiplyTo(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseSubtractFrom(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][]): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseSubtractFrom(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseDivideFrom(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][]): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseDivideFrom(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-
-    public static tensor4dDenseAssignScaledTo(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][],
-        constant: number): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseAssignScaledTo(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseAddScaledTo(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][],
-        constant: number): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseAddScaledTo(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseMultiplyScaledTo(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][],
-        constant: number): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseMultiplyScaledTo(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseSubtractScaledFrom(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][],
-        constant: number): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseSubtractScaledFrom(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static tensor4dDenseDivideScaledFrom(
-        denseValueArray0: number[][][][],
-        denseValueArray1: number[][][][],
-        constant: number): number[][][][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.tensor3dDenseDivideScaledFrom(
-                denseValueArray0[row],
-                denseValueArray1[row],
                 constant);
         }
         return denseValueArray0;
     }
 
-    public static tensor3dDenseAssignRandomTo(
+    public tensor4dDenseAssignTo(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][]): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseAssignTo(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseAddTo(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][]): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseAddTo(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseMultiplyTo(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][]): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseMultiplyTo(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseSubtractFrom(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][]): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseSubtractFrom(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseDivideFrom(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][]): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseDivideFrom(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+
+    public tensor4dDenseAssignScaledTo(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][],
+        constant: number): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseAssignScaledTo(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseAddScaledTo(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][],
+        constant: number): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseAddScaledTo(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseMultiplyScaledTo(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][],
+        constant: number): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseMultiplyScaledTo(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseSubtractScaledFrom(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][],
+        constant: number): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseSubtractScaledFrom(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public tensor4dDenseDivideScaledFrom(
+        denseValueArray0: number[][][][],
+        denseValueArray1: number[][][][],
+        constant: number): number[][][][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.tensor3dDenseDivideScaledFrom(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+
+    public tensor3dDenseAssignRandomTo(
         denseValueArray0: number[][][]): number[][][] {
         const rows: number = denseValueArray0.length;
         const columns: number = denseValueArray0[0].length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseAssignRandomTo(
+            this.matrixDenseAssignRandomTo(
                 denseValueArray0[row]);
         }
         return denseValueArray0;
     }
 
-    public static tensor3dDenseAssignConstantTo(
+    public tensor3dDenseAssignConstantTo(
         denseValueArray0: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseAssignConstantTo(
+            this.matrixDenseAssignConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseAddConstantTo(
+    public tensor3dDenseAddConstantTo(
         denseValueArray0: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseAddConstantTo(
+            this.matrixDenseAddConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseMultiplyConstantTo(
+    public tensor3dDenseMultiplyConstantTo(
         denseValueArray0: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseMultiplyConstantTo(
+            this.matrixDenseMultiplyConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseSubtractConstantFrom(
+    public tensor3dDenseSubtractConstantFrom(
         denseValueArray0: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseSubtractConstantFrom(
+            this.matrixDenseSubtractConstantFrom(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseDivideConstantFrom(
+    public tensor3dDenseDivideConstantFrom(
         denseValueArray0: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseDivideConstantFrom(
+            this.matrixDenseDivideConstantFrom(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
 
-    public static tensor3dDenseAssignTo(
+    public tensor3dDenseAssignTo(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][]): number[][][] {
         const rows: number = denseValueArray0.length;
         const columns: number = denseValueArray0[0].length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseAssignTo(
+            this.matrixDenseAssignTo(
                 denseValueArray0[row],
                 denseValueArray1[row]);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseAddTo(
+    public tensor3dDenseAddTo(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][]): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseAddTo(
+            this.matrixDenseAddTo(
                 denseValueArray0[row],
                 denseValueArray1[row]);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseMultiplyTo(
+    public tensor3dDenseMultiplyTo(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][]): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseMultiplyTo(
+            this.matrixDenseMultiplyTo(
                 denseValueArray0[row],
                 denseValueArray1[row]);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseSubtractFrom(
+    public tensor3dDenseSubtractFrom(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][]): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseSubtractFrom(
+            this.matrixDenseSubtractFrom(
                 denseValueArray0[row],
                 denseValueArray1[row]);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseDivideFrom(
+    public tensor3dDenseDivideFrom(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][]): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseDivideFrom(
+            this.matrixDenseDivideFrom(
                 denseValueArray0[row],
                 denseValueArray1[row]);
         }
         return denseValueArray0;
     }
 
-    public static tensor3dDenseAssignScaledTo(
+    public tensor3dDenseAssignScaledTo(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseAssignScaledTo(
+            this.matrixDenseAssignScaledTo(
                 denseValueArray0[row],
                 denseValueArray1[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseAddScaledTo(
+    public tensor3dDenseAddScaledTo(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseAddScaledTo(
+            this.matrixDenseAddScaledTo(
                 denseValueArray0[row],
                 denseValueArray1[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseMultiplyScaledTo(
+    public tensor3dDenseMultiplyScaledTo(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseMultiplyScaledTo(
+            this.matrixDenseMultiplyScaledTo(
                 denseValueArray0[row],
                 denseValueArray1[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseSubtractScaledFrom(
+    public tensor3dDenseSubtractScaledFrom(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseSubtractScaledFrom(
+            this.matrixDenseSubtractScaledFrom(
                 denseValueArray0[row],
                 denseValueArray1[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static tensor3dDenseDivideScaledFrom(
+    public tensor3dDenseDivideScaledFrom(
         denseValueArray0: number[][][],
         denseValueArray1: number[][][],
         constant: number): number[][][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.matrixDenseDivideScaledFrom(
+            this.matrixDenseDivideScaledFrom(
                 denseValueArray0[row],
                 denseValueArray1[row],
                 constant);
@@ -1425,195 +1509,195 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
-    public static matrixDenseAssignRandomTo(
+    public matrixDenseAssignRandomTo(
         denseValueArray0: number[][]): number[][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseAssignRandomTo(
+            this.vectorDenseAssignRandomTo(
                 denseValueArray0[row]);
         }
         return denseValueArray0;
     }
 
-    public static matrixDenseAssignConstantTo(
+    public matrixDenseAssignConstantTo(
         denseValueArray0: number[][],
         constant: number): number[][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseAssignConstantTo(
+            this.vectorDenseAssignConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static matrixDenseAddConstantTo(
+    public matrixDenseAddConstantTo(
         denseValueArray0: number[][],
         constant: number): number[][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseAddConstantTo(
+            this.vectorDenseAddConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static matrixDenseMultiplyConstantTo(
+    public matrixDenseMultiplyConstantTo(
         denseValueArray0: number[][],
         constant: number): number[][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseMultiplyConstantTo(
+            this.vectorDenseMultiplyConstantTo(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static matrixDenseSubtractConstantFrom(
+    public matrixDenseSubtractConstantFrom(
         denseValueArray0: number[][],
         constant: number): number[][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseSubtractConstantFrom(
+            this.vectorDenseSubtractConstantFrom(
                 denseValueArray0[row],
                 constant);
         }
         return denseValueArray0;
     }
-    public static matrixDenseDivideConstantFrom(
+    public matrixDenseDivideConstantFrom(
         denseValueArray0: number[][],
         constant: number): number[][] {
         const rows: number = denseValueArray0.length;
         for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseDivideConstantFrom(
+            this.vectorDenseDivideConstantFrom(
                 denseValueArray0[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-
-    public static matrixDenseAssignTo(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][]): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseAssignTo(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseAddTo(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][]): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseAddTo(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseMultiplyTo(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][]): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseMultiplyTo(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseSubtractFrom(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][]): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseSubtractFrom(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseDivideFrom(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][]): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseDivideFrom(
-                denseValueArray0[row],
-                denseValueArray1[row]);
-        }
-        return denseValueArray0;
-    }
-
-    public static matrixDenseAssignScaledTo(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][],
-        constant: number): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseAssignScaledTo(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseAddScaledTo(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][],
-        constant: number): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseAddScaledTo(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseMultiplyScaledTo(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][],
-        constant: number): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseMultiplyScaledTo(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseSubtractScaledFrom(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][],
-        constant: number): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseSubtractScaledFrom(
-                denseValueArray0[row],
-                denseValueArray1[row],
-                constant);
-        }
-        return denseValueArray0;
-    }
-    public static matrixDenseDivideScaledFrom(
-        denseValueArray0: number[][],
-        denseValueArray1: number[][],
-        constant: number): number[][] {
-        const rows: number = denseValueArray0.length;
-        for (let row: number = 0; row < rows; row++) {
-            MathematicsHelper.vectorDenseDivideScaledFrom(
-                denseValueArray0[row],
-                denseValueArray1[row],
                 constant);
         }
         return denseValueArray0;
     }
 
-    public static vectorDenseAssignRandomTo(
+    public matrixDenseAssignTo(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][]): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseAssignTo(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseAddTo(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][]): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseAddTo(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseMultiplyTo(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][]): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseMultiplyTo(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseSubtractFrom(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][]): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseSubtractFrom(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseDivideFrom(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][]): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseDivideFrom(
+                denseValueArray0[row],
+                denseValueArray1[row]);
+        }
+        return denseValueArray0;
+    }
+
+    public matrixDenseAssignScaledTo(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][],
+        constant: number): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseAssignScaledTo(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseAddScaledTo(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][],
+        constant: number): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseAddScaledTo(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseMultiplyScaledTo(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][],
+        constant: number): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseMultiplyScaledTo(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseSubtractScaledFrom(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][],
+        constant: number): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseSubtractScaledFrom(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+    public matrixDenseDivideScaledFrom(
+        denseValueArray0: number[][],
+        denseValueArray1: number[][],
+        constant: number): number[][] {
+        const rows: number = denseValueArray0.length;
+        for (let row: number = 0; row < rows; row++) {
+            this.vectorDenseDivideScaledFrom(
+                denseValueArray0[row],
+                denseValueArray1[row],
+                constant);
+        }
+        return denseValueArray0;
+    }
+
+    public vectorDenseAssignRandomTo(
         denseValueArray0: number[]): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
             denseValueArray0[i] =  Utility.getRandomNumber();
@@ -1621,7 +1705,7 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
-    public static vectorDenseAssignConstantTo(
+    public vectorDenseAssignConstantTo(
         denseValueArray0: number[],
         constant: number): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1629,7 +1713,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseAddConstantTo(
+    public vectorDenseAddConstantTo(
         denseValueArray0: number[],
         constant: number): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1637,7 +1721,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseMultiplyConstantTo(
+    public vectorDenseMultiplyConstantTo(
         denseValueArray0: number[],
         constant: number): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1645,7 +1729,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseSubtractConstantFrom(
+    public vectorDenseSubtractConstantFrom(
         denseValueArray0: number[],
         constant: number): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1653,7 +1737,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseDivideConstantFrom(
+    public vectorDenseDivideConstantFrom(
         denseValueArray0: number[],
         constant: number): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1662,7 +1746,7 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
-    public static vectorDenseAssignTo(
+    public vectorDenseAssignTo(
         denseValueArray0: number[],
         denseValueArray1: number[]): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1670,7 +1754,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseAddTo(
+    public vectorDenseAddTo(
         denseValueArray0: number[],
         denseValueArray1: number[]): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1678,7 +1762,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseMultiplyTo(
+    public vectorDenseMultiplyTo(
         denseValueArray0: number[],
         denseValueArray1: number[]): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1686,7 +1770,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseSubtractFrom(
+    public vectorDenseSubtractFrom(
         denseValueArray0: number[],
         denseValueArray1: number[]): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1694,7 +1778,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseDivideFrom(
+    public vectorDenseDivideFrom(
         denseValueArray0: number[],
         denseValueArray1: number[]): number[] {
         for (let i: number = 0; i < denseValueArray0.length; i++) {
@@ -1703,7 +1787,7 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
-    public static vectorDenseAssignScaledTo(
+    public vectorDenseAssignScaledTo(
         denseValueArray0: number[],
         denseValueArray1: number[],
         constant: number): number[] {
@@ -1712,7 +1796,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseAddScaledTo(
+    public vectorDenseAddScaledTo(
         denseValueArray0: number[],
         denseValueArray1: number[],
         constant: number): number[] {
@@ -1721,7 +1805,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseMultiplyScaledTo(
+    public vectorDenseMultiplyScaledTo(
         denseValueArray0: number[],
         denseValueArray1: number[],
         constant: number): number[] {
@@ -1730,7 +1814,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseSubtractScaledFrom(
+    public vectorDenseSubtractScaledFrom(
         denseValueArray0: number[],
         denseValueArray1: number[],
         constant: number): number[] {
@@ -1739,7 +1823,7 @@ export class MathematicsHelper {
         }
         return denseValueArray0;
     }
-    public static vectorDenseDivideScaledFrom(
+    public vectorDenseDivideScaledFrom(
         denseValueArray0: number[],
         denseValueArray1: number[],
         constant: number): number[] {
@@ -1749,7 +1833,7 @@ export class MathematicsHelper {
         return denseValueArray0;
     }
 
-    public static vectorSparseAssignRandomTo(
+    public vectorSparseAssignRandomTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[]): [number[], number[]] {
         for (let i: number = 0; i < sparseValueArray0.length; i++) {
@@ -1758,7 +1842,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, sparseValueArray0];
     }
 
-    public static vectorSparseAssignConstantTo(
+    public vectorSparseAssignConstantTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1767,7 +1851,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseAddConstantTo(
+    public vectorSparseAddConstantTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1776,7 +1860,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseMultiplyConstantTo(
+    public vectorSparseMultiplyConstantTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1785,7 +1869,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseSubtractConstantFrom(
+    public vectorSparseSubtractConstantFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1794,7 +1878,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseDivideConstantFrom(
+    public vectorSparseDivideConstantFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1804,114 +1888,293 @@ export class MathematicsHelper {
         return [sparseIndexArray0, sparseValueArray0];
     }
 
-    public static vectorSparseAssignTo(
+    public vectorSparseAssignTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[]): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] = sparseValueArray1[i];
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseIndexArray1) {
+            sparseIndexArray0.push(x);
+        }
+        for (const x of sparseValueArray1) {
+            sparseValueArray0.push(x);
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseAddTo(
+    public vectorSparseAddTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[]): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] += sparseValueArray1[i];
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            if (value !== 0) { // ---- NOTE ---- should not be zero anyway as it's sparse structure!
+                if (sparseArrayMap.has(index)) {
+                    sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) + value);
+                } else {
+                    sparseArrayMap.set(index, value);
+                }
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseMultiplyTo(
+    public vectorSparseMultiplyTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[]): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] *= sparseValueArray1[i];
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            if (sparseArrayMap.has(index)) {
+                sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) * value);
+            // ---- NOTE ---- multiply to 0 is still 0 ---- } else {
+            // ---- NOTE ---- multiply to 0 is still 0 ----     sparseArrayMap.set(index, value);
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseSubtractFrom(
+    public vectorSparseSubtractFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[]): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] -= sparseValueArray1[i];
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            if (value !== 0) { // ---- NOTE ---- should not be zero anyway as it's sparse structure!
+                if (sparseArrayMap.has(index)) {
+                    sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) - value);
+                } else {
+                    sparseArrayMap.set(index, -value);
+                }
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseDivideFrom(
+    public vectorSparseDivideFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[]): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] /= sparseValueArray1[i];
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            if (value !== 0) { // ---- NOTE ---- should not be zero anyway as it's sparse structure!
+                if (sparseArrayMap.has(index)) {
+                    sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) / value);
+                // ---- NOTE ---- 0 divided is still 0 ---- } else {
+                // ---- NOTE ---- 0 divided is still 0 ----     sparseArrayMap.set(index, value);
+                }
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
 
-    public static vectorSparseAssignScaledTo(
+    public vectorSparseAssignScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[],
         constant: number): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] = (constant * sparseValueArray1[i]);
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseIndexArray1) {
+            sparseIndexArray0.push(x);
+        }
+        for (const x of sparseValueArray1) {
+            sparseValueArray0.push(constant * x);
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseAddScaledTo(
+    public vectorSparseAddScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[],
         constant: number): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] += (constant * sparseValueArray1[i]);
+        if (constant === 0) { // ---- NOTE ---- no effect if constant is zero
+            return [sparseIndexArray0, sparseValueArray0];
+        }
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            if (value !== 0) { // ---- NOTE ---- should not be zero anyway as it's sparse structure!
+                const scaledValue: number = constant * value;
+                if (sparseArrayMap.has(index)) {
+                    sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) + scaledValue);
+                } else {
+                    sparseArrayMap.set(index, scaledValue);
+                }
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseMultiplyScaledTo(
+    public vectorSparseMultiplyScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[],
         constant: number): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] *= (constant * sparseValueArray1[i]);
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            const scaledValue: number = constant * value;
+            if (sparseArrayMap.has(index)) {
+                sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) * scaledValue);
+            // ---- NOTE ---- multiply to 0 is still 0 ---- } else {
+            // ---- NOTE ---- multiply to 0 is still 0 ----     sparseArrayMap.set(index, scaledValue);
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseSubtractScaledFrom(
+    public vectorSparseSubtractScaledFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[],
         constant: number): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] -= (constant * sparseValueArray1[i]);
+        if (constant === 0) { // ---- NOTE ---- no effect if constant is zero
+            return [sparseIndexArray0, sparseValueArray0];
+        }
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            if (value !== 0) { // ---- NOTE ---- should not be zero anyway as it's sparse structure!
+                const scaledValue: number = constant * value;
+                if (sparseArrayMap.has(index)) {
+                    sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) - scaledValue);
+                } else {
+                    sparseArrayMap.set(index, -scaledValue);
+                }
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
-    public static vectorSparseDivideScaledFrom(
+    public vectorSparseDivideScaledFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         sparseIndexArray1: number[],
         sparseValueArray1: number[],
         constant: number): [number[], number[]] {
-        for (let i: number = 0; i < sparseValueArray0.length; i++) {
-            sparseValueArray0[i] /= (constant * sparseValueArray1[i]);
+        if (constant === 0) { // ---- NOTE ---- divided by 0 is not a good idea ----
+            return [sparseIndexArray0, sparseValueArray0];
+        }
+        const sparseArrayMap: Map<number, number> =
+            Utility.sparseArrayPairToMap(sparseIndexArray0, sparseValueArray0);
+        for (let i: number = 0; i < sparseIndexArray1.length; i++) {
+            const index: number = sparseIndexArray1[i];
+            const value: number = sparseValueArray1[i];
+            if (value !== 0) { // ---- NOTE ---- should not be zero anyway as it's sparse structure!
+                const scaledValue: number = constant * value;
+                if (sparseArrayMap.has(index)) {
+                    sparseArrayMap.set(index, (sparseArrayMap.get(index) as number) / scaledValue);
+                // ---- NOTE ---- 0 divided is still 0 ---- } else {
+                // ---- NOTE ---- 0 divided is still 0 ----      sparseArrayMap.set(index, scaledValue);
+                }
+            }
+        }
+        sparseIndexArray0.length = 0;
+        sparseValueArray0.length = 0;
+        for (const x of sparseArrayMap.entries()) {
+            const key: number = x[0];
+            const value: number = x[1];
+            if (value !== 0) {
+                sparseIndexArray0.push(key);
+                sparseValueArray0.push(value);
+            }
         }
         return [sparseIndexArray0, sparseValueArray0];
     }
 
-    public static vectorSparseIndexDenseArrayAssignRandomTo(
+    public vectorSparseIndexDenseArrayAssignRandomTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[]): [number[], number[]] {
         for (const index of sparseIndexArray0) {
@@ -1920,7 +2183,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorSparseIndexDenseArrayAssignConstantTo(
+    public vectorSparseIndexDenseArrayAssignConstantTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1929,7 +2192,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayAddConstantTo(
+    public vectorSparseIndexDenseArrayAddConstantTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1938,7 +2201,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayMultiplyConstantTo(
+    public vectorSparseIndexDenseArrayMultiplyConstantTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1947,7 +2210,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArraySubtractConstantFrom(
+    public vectorSparseIndexDenseArraySubtractConstantFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1956,7 +2219,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayDivideConstantFrom(
+    public vectorSparseIndexDenseArrayDivideConstantFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         constant: number): [number[], number[]] {
@@ -1966,7 +2229,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorSparseIndexDenseArrayAssignTo(
+    public vectorSparseIndexDenseArrayAssignTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[]): [number[], number[]] {
@@ -1975,7 +2238,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayAddTo(
+    public vectorSparseIndexDenseArrayAddTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[]): [number[], number[]] {
@@ -1984,7 +2247,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayMultiplyTo(
+    public vectorSparseIndexDenseArrayMultiplyTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[]): [number[], number[]] {
@@ -1993,7 +2256,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArraySubtractFrom(
+    public vectorSparseIndexDenseArraySubtractFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[]): [number[], number[]] {
@@ -2002,7 +2265,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayDivideFrom(
+    public vectorSparseIndexDenseArrayDivideFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[]): [number[], number[]] {
@@ -2012,7 +2275,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorSparseIndexDenseArrayAssignScaledTo(
+    public vectorSparseIndexDenseArrayAssignScaledTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[],
@@ -2022,7 +2285,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayAddScaledTo(
+    public vectorSparseIndexDenseArrayAddScaledTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[],
@@ -2032,7 +2295,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayMultiplyScaledTo(
+    public vectorSparseIndexDenseArrayMultiplyScaledTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[],
@@ -2042,7 +2305,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArraySubtractScaledFrom(
+    public vectorSparseIndexDenseArraySubtractScaledFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[],
@@ -2052,7 +2315,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseIndexDenseArrayDivideScaledFrom(
+    public vectorSparseIndexDenseArrayDivideScaledFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         denseValueArray1: number[],
@@ -2063,7 +2326,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorIndependentSparseIndexDenseArrayAssignTo(
+    public vectorIndependentSparseIndexDenseArrayAssignTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2075,7 +2338,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArrayAddTo(
+    public vectorIndependentSparseIndexDenseArrayAddTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2087,7 +2350,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArrayMultiplyTo(
+    public vectorIndependentSparseIndexDenseArrayMultiplyTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2099,7 +2362,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArraySubtractFrom(
+    public vectorIndependentSparseIndexDenseArraySubtractFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2111,7 +2374,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArrayDivideFrom(
+    public vectorIndependentSparseIndexDenseArrayDivideFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2124,7 +2387,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorIndependentSparseIndexDenseArrayAssignScaledTo(
+    public vectorIndependentSparseIndexDenseArrayAssignScaledTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2137,7 +2400,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArrayAddScaledTo(
+    public vectorIndependentSparseIndexDenseArrayAddScaledTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2150,7 +2413,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArrayMultiplyScaledTo(
+    public vectorIndependentSparseIndexDenseArrayMultiplyScaledTo(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2163,7 +2426,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArraySubtractScaledFrom(
+    public vectorIndependentSparseIndexDenseArraySubtractScaledFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2176,7 +2439,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseIndexDenseArrayDivideScaledFrom(
+    public vectorIndependentSparseIndexDenseArrayDivideScaledFrom(
         sparseIndexArray0: number[],
         denseValueArray0: number[],
         sparseIndexArray1: number[],
@@ -2190,7 +2453,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorSparseMapDenseArrayAssignRandomTo(
+    public vectorSparseMapDenseArrayAssignRandomTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[]): [number[], number[]] {
@@ -2200,7 +2463,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorSparseMapDenseArrayAssignConstantTo(
+    public vectorSparseMapDenseArrayAssignConstantTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2210,7 +2473,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayAddConstantTo(
+    public vectorSparseMapDenseArrayAddConstantTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2220,7 +2483,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayMultiplyConstantTo(
+    public vectorSparseMapDenseArrayMultiplyConstantTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2230,7 +2493,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArraySubtractConstantFrom(
+    public vectorSparseMapDenseArraySubtractConstantFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2240,7 +2503,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayDivideConstantFrom(
+    public vectorSparseMapDenseArrayDivideConstantFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2251,7 +2514,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorSparseMapDenseArrayAssignTo(
+    public vectorSparseMapDenseArrayAssignTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2261,7 +2524,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayAddTo(
+    public vectorSparseMapDenseArrayAddTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2271,7 +2534,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayMultiplyTo(
+    public vectorSparseMapDenseArrayMultiplyTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2281,7 +2544,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArraySubtractFrom(
+    public vectorSparseMapDenseArraySubtractFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2291,7 +2554,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayDivideFrom(
+    public vectorSparseMapDenseArrayDivideFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2302,7 +2565,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorSparseMapDenseArrayAssignScaledTo(
+    public vectorSparseMapDenseArrayAssignScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2313,7 +2576,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayAddScaledTo(
+    public vectorSparseMapDenseArrayAddScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2324,7 +2587,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayMultiplyScaledTo(
+    public vectorSparseMapDenseArrayMultiplyScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2335,7 +2598,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArraySubtractScaledFrom(
+    public vectorSparseMapDenseArraySubtractScaledFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2346,7 +2609,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorSparseMapDenseArrayDivideScaledFrom(
+    public vectorSparseMapDenseArrayDivideScaledFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2358,7 +2621,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorIndependentSparseMapDenseArrayAssignTo(
+    public vectorIndependentSparseMapDenseArrayAssignTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2372,7 +2635,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArrayAddTo(
+    public vectorIndependentSparseMapDenseArrayAddTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2386,7 +2649,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArrayMultiplyTo(
+    public vectorIndependentSparseMapDenseArrayMultiplyTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2400,7 +2663,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArraySubtractFrom(
+    public vectorIndependentSparseMapDenseArraySubtractFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2414,7 +2677,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArrayDivideFrom(
+    public vectorIndependentSparseMapDenseArrayDivideFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2429,7 +2692,7 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static vectorIndependentSparseMapDenseArrayAssignScaledTo(
+    public vectorIndependentSparseMapDenseArrayAssignScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2444,7 +2707,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArrayAddScaledTo(
+    public vectorIndependentSparseMapDenseArrayAddScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2459,7 +2722,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArrayMultiplyScaledTo(
+    public vectorIndependentSparseMapDenseArrayMultiplyScaledTo(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2474,7 +2737,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArraySubtractScaledFrom(
+    public vectorIndependentSparseMapDenseArraySubtractScaledFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2489,7 +2752,7 @@ export class MathematicsHelper {
         }
         return [sparseIndexArray0, denseValueArray0];
     }
-    public static vectorIndependentSparseMapDenseArrayDivideScaledFrom(
+    public vectorIndependentSparseMapDenseArrayDivideScaledFrom(
         sparseIndexArray0: number[],
         sparseValueArray0: number[],
         denseValueArray0: number[],
@@ -2505,229 +2768,229 @@ export class MathematicsHelper {
         return [sparseIndexArray0, denseValueArray0];
     }
 
-    public static tensor4dNewLikeWithRandomCells(
+    public tensor4dNewLikeWithRandomCells(
         tensor4d: number[][][][]): number[][][][] {
-        return MathematicsHelper.tensor4dNewWithRandomCells(
+        return this.tensor4dNewWithRandomCells(
             tensor4d.length,
             tensor4d[0].length,
             tensor4d[0][0].length,
             tensor4d[0][0][0].length);
     }
-    public static tensor4dNewLikeWithRandomCellsScaled(
+    public tensor4dNewLikeWithRandomCellsScaled(
         tensor4d: number[][][][],
         scale: number = 1): number[][][][] {
-        return MathematicsHelper.tensor4dNewWithRandomCellsScaled(
+        return this.tensor4dNewWithRandomCellsScaled(
             tensor4d.length,
             tensor4d[0].length,
             tensor4d[0][0].length,
             tensor4d[0][0][0].length,
             scale);
     }
-    public static tensor4dNewLikeWithZeroCells(
+    public tensor4dNewLikeWithZeroCells(
         tensor4d: number[][][][]): number[][][][] {
-        return MathematicsHelper.tensor4dNewWithZeroCells(
+        return this.tensor4dNewWithZeroCells(
             tensor4d.length,
             tensor4d[0].length,
             tensor4d[0][0].length,
             tensor4d[0][0][0].length);
     }
-    public static tensor4dNewLikeWithConstantCells(
+    public tensor4dNewLikeWithConstantCells(
         tensor4d: number[][][][],
         constant: number = 1): number[][][][] {
-        return MathematicsHelper.tensor4dNewWithConstantCells(
+        return this.tensor4dNewWithConstantCells(
             tensor4d.length,
             tensor4d[0].length,
             tensor4d[0][0].length,
             tensor4d[0][0][0].length,
             constant);
     }
-    public static tensor4dNewLikeWithScaledCells(
+    public tensor4dNewLikeWithScaledCells(
         tensor4d: number[][][][],
         scale: number = 1): number[][][][] {
-        return MathematicsHelper.tensor4dNewWithScaledCells(tensor4d, scale);
+        return this.tensor4dNewWithScaledCells(tensor4d, scale);
     }
-    public static tensor4dNewLikeWithL1l2RegularizedSparseCells(
+    public tensor4dNewLikeWithL1l2RegularizedSparseCells(
         tensor4d: number[][][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][][] {
-        return MathematicsHelper.tensor4dNewWithL1l2RegularizedSparseCells(
+        return this.tensor4dNewWithL1l2RegularizedSparseCells(
             tensor4d,
             l1Regularization,
             l2Regularization);
     }
-    public static tensor4dNewLikeWithL1l2RegularizedDenseCells(
+    public tensor4dNewLikeWithL1l2RegularizedDenseCells(
         tensor4d: number[][][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][][] {
-        return MathematicsHelper.tensor4dNewWithL1l2RegularizedDenseCells(
+        return this.tensor4dNewWithL1l2RegularizedDenseCells(
             tensor4d,
             l1Regularization,
             l2Regularization);
     }
 
-    public static tensor3dNewLikeWithRandomCells(
+    public tensor3dNewLikeWithRandomCells(
         tensor3d: number[][][]): number[][][] {
-        return MathematicsHelper.tensor3dNewWithRandomCells(
+        return this.tensor3dNewWithRandomCells(
             tensor3d.length,
             tensor3d[0].length,
             tensor3d[0][0].length);
     }
-    public static tensor3dNewLikeWithRandomCellsScaled(
+    public tensor3dNewLikeWithRandomCellsScaled(
         tensor3d: number[][][],
         scale: number = 1): number[][][] {
-        return MathematicsHelper.tensor3dNewWithRandomCellsScaled(
+        return this.tensor3dNewWithRandomCellsScaled(
             tensor3d.length,
             tensor3d[0].length,
             tensor3d[0][0].length,
             scale);
     }
-    public static tensor3dNewLikeWithZeroCells(
+    public tensor3dNewLikeWithZeroCells(
         tensor3d: number[][][]): number[][][] {
-        return MathematicsHelper.tensor3dNewWithZeroCells(
+        return this.tensor3dNewWithZeroCells(
             tensor3d.length,
             tensor3d[0].length,
             tensor3d[0][0].length);
     }
-    public static tensor3dNewLikeWithConstantCells(
+    public tensor3dNewLikeWithConstantCells(
         tensor3d: number[][][],
         constant: number = 1): number[][][] {
-        return MathematicsHelper.tensor3dNewWithConstantCells(
+        return this.tensor3dNewWithConstantCells(
             tensor3d.length,
             tensor3d[0].length,
             tensor3d[0][0].length,
             constant);
     }
-    public static tensor3dNewLikeWithScaledCells(
+    public tensor3dNewLikeWithScaledCells(
         tensor3d: number[][][],
         scale: number = 1): number[][][] {
-        return MathematicsHelper.tensor3dNewWithScaledCells(tensor3d, scale);
+        return this.tensor3dNewWithScaledCells(tensor3d, scale);
     }
-    public static tensor3dNewLikeWithL1l2RegularizedSparseCells(
+    public tensor3dNewLikeWithL1l2RegularizedSparseCells(
         tensor3d: number[][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][] {
-        return MathematicsHelper.tensor3dNewWithL1l2RegularizedSparseCells(
+        return this.tensor3dNewWithL1l2RegularizedSparseCells(
             tensor3d,
             l1Regularization,
             l2Regularization);
     }
-    public static tensor3dNewLikeWithL1l2RegularizedDenseCells(
+    public tensor3dNewLikeWithL1l2RegularizedDenseCells(
         tensor3d: number[][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][] {
-        return MathematicsHelper.tensor3dNewWithL1l2RegularizedDenseCells(
+        return this.tensor3dNewWithL1l2RegularizedDenseCells(
             tensor3d,
             l1Regularization,
             l2Regularization);
     }
 
-    public static matrixNewLikeWithRandomCells(
+    public matrixNewLikeWithRandomCells(
         matrix: number[][]): number[][] {
-        return MathematicsHelper.matrixNewWithRandomCells(matrix.length, matrix[0].length);
+        return this.matrixNewWithRandomCells(matrix.length, matrix[0].length);
     }
-    public static matrixNewLikeWithRandomCellsScaled(
+    public matrixNewLikeWithRandomCellsScaled(
         matrix: number[][],
         scale: number = 1): number[][] {
-        return MathematicsHelper.matrixNewWithRandomCellsScaled(matrix.length, matrix[0].length, scale);
+        return this.matrixNewWithRandomCellsScaled(matrix.length, matrix[0].length, scale);
     }
-    public static matrixNewLikeWithZeroCells(
+    public matrixNewLikeWithZeroCells(
         matrix: number[][]): number[][] {
-        return MathematicsHelper.matrixNewWithZeroCells(matrix.length, matrix[0].length);
+        return this.matrixNewWithZeroCells(matrix.length, matrix[0].length);
     }
-    public static matrixNewLikeWithConstantCells(
+    public matrixNewLikeWithConstantCells(
         matrix: number[][],
         constant: number = 1): number[][] {
-        return MathematicsHelper.matrixNewWithConstantCells(matrix.length, matrix[0].length, constant);
+        return this.matrixNewWithConstantCells(matrix.length, matrix[0].length, constant);
     }
-    public static matrixNewLikeWithScaledCells(
+    public matrixNewLikeWithScaledCells(
         matrix: number[][],
         scale: number = 1): number[][] {
-        return MathematicsHelper.matrixNewWithScaledCells(matrix, scale);
+        return this.matrixNewWithScaledCells(matrix, scale);
     }
-    public static matrixNewLikeWithL1l2RegularizedSparseCells(
+    public matrixNewLikeWithL1l2RegularizedSparseCells(
         matrix: number[][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][] {
-        return MathematicsHelper.matrixNewWithL1l2RegularizedSparseCells(
+        return this.matrixNewWithL1l2RegularizedSparseCells(
             matrix,
             l1Regularization,
             l2Regularization);
     }
-    public static matrixNewLikeWithL1l2RegularizedDenseCells(
+    public matrixNewLikeWithL1l2RegularizedDenseCells(
         matrix: number[][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][] {
-        return MathematicsHelper.matrixNewWithL1l2RegularizedDenseCells(
+        return this.matrixNewWithL1l2RegularizedDenseCells(
             matrix,
             l1Regularization,
             l2Regularization);
     }
 
-    public static vectorNewLikeWithRandomElements(
+    public vectorNewLikeWithRandomElements(
         vector: number[]): number[] {
-        return MathematicsHelper.vectorNewWithRandomElements(vector.length);
+        return this.vectorNewWithRandomElements(vector.length);
     }
-    public static vectorNewLikeWithRandomElementsScaled(
+    public vectorNewLikeWithRandomElementsScaled(
         vector: number[],
         scale: number = 1): number[] {
-        return MathematicsHelper.vectorNewWithRandomElementsScaled(vector.length, scale);
+        return this.vectorNewWithRandomElementsScaled(vector.length, scale);
     }
-    public static vectorNewLikeWithZeroElements(
+    public vectorNewLikeWithZeroElements(
         vector: number[]): number[] {
-        return MathematicsHelper.vectorNewWithZeroElements(vector.length);
+        return this.vectorNewWithZeroElements(vector.length);
     }
-    public static vectorNewLikeWithConstantElements(
+    public vectorNewLikeWithConstantElements(
         vector: number[],
         constant: number = 1): number[] {
-        return MathematicsHelper.vectorNewWithConstantElements(vector.length, constant);
+        return this.vectorNewWithConstantElements(vector.length, constant);
     }
-    public static vectorNewLikeWithScaledElements(
+    public vectorNewLikeWithScaledElements(
         vector: number[],
         scale: number = 1): number[] {
-        return MathematicsHelper.vectorNewWithScaledElements(vector, scale);
+        return this.vectorNewWithScaledElements(vector, scale);
     }
-    public static vectorNewLikeWithL1l2RegularizedSparseElements(
+    public vectorNewLikeWithL1l2RegularizedSparseElements(
         vector: number[],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
-        return MathematicsHelper.vectorNewWithL1l2RegularizedSparseElements(
+        return this.vectorNewWithL1l2RegularizedSparseElements(
             vector,
             l1Regularization,
             l2Regularization);
     }
-    public static vectorNewLikeWithL1l2RegularizedDenseElements(
+    public vectorNewLikeWithL1l2RegularizedDenseElements(
         vector: number[],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
-        return MathematicsHelper.vectorNewWithL1l2RegularizedDenseElements(
+        return this.vectorNewWithL1l2RegularizedDenseElements(
             vector,
             l1Regularization,
             l2Regularization);
     }
 
-    public static tensor4dNewWithRandomCells(
+    public tensor4dNewWithRandomCells(
         rows: number,
         columns: number,
         dimension3ds: number,
         dimension4ds: number): number[][][][] {
         const tensor4d: number[][][][] = new Array<number[][][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor4d[row] = MathematicsHelper.tensor3dNewWithRandomCells(
+        for (let row: number = 0; row < rows; row++) {
+            tensor4d[row] = this.tensor3dNewWithRandomCells(
                 columns,
                 dimension3ds,
                 dimension4ds);
         }
         return tensor4d;
     }
-    public static tensor4dNewWithRandomCellsScaled(
+    public tensor4dNewWithRandomCellsScaled(
         rows: number,
         columns: number,
         dimension3ds: number,
         dimension4ds: number,
         scale: number = 1): number[][][][] {
         const tensor4d: number[][][][] = new Array<number[][][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor4d[row] = MathematicsHelper.tensor3dNewWithRandomCellsScaled(
+        for (let row: number = 0; row < rows; row++) {
+            tensor4d[row] = this.tensor3dNewWithRandomCellsScaled(
                 columns,
                 dimension3ds,
                 dimension4ds,
@@ -2735,29 +2998,29 @@ export class MathematicsHelper {
         }
         return tensor4d;
     }
-    public static tensor4dNewWithZeroCells(
+    public tensor4dNewWithZeroCells(
         rows: number,
         columns: number,
         dimension3ds: number,
         dimension4ds: number): number[][][][] {
         const tensor4d: number[][][][] = new Array<number[][][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor4d[row] = MathematicsHelper.tensor3dNewWithZeroCells(
+        for (let row: number = 0; row < rows; row++) {
+            tensor4d[row] = this.tensor3dNewWithZeroCells(
                 columns,
                 dimension3ds,
                 dimension4ds);
         }
         return tensor4d;
     }
-    public static tensor4dNewWithConstantCells(
+    public tensor4dNewWithConstantCells(
         rows: number,
         columns: number,
         dimension3ds: number,
         dimension4ds: number,
         constant: number = 1): number[][][][] {
         const tensor4d: number[][][][] = new Array<number[][][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor4d[row] = MathematicsHelper.tensor3dNewWithConstantCells(
+        for (let row: number = 0; row < rows; row++) {
+            tensor4d[row] = this.tensor3dNewWithConstantCells(
                 columns,
                 dimension3ds,
                 dimension4ds,
@@ -2765,38 +3028,38 @@ export class MathematicsHelper {
         }
         return tensor4d;
     }
-    public static tensor4dNewWithScaledCells(
+    public tensor4dNewWithScaledCells(
         existingTensor4d: number[][][][],
         scale: number = 1): number[][][][] {
         const rows: number = existingTensor4d.length;
         const tensor4d: number[][][][] = new Array<number[][][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor4d[row] = MathematicsHelper.tensor3dNewWithScaledCells(existingTensor4d[row], scale);
+        for (let row: number = 0; row < rows; row++) {
+            tensor4d[row] = this.tensor3dNewWithScaledCells(existingTensor4d[row], scale);
         }
         return tensor4d;
     }
-    public static tensor4dNewWithL1l2RegularizedSparseCells(
+    public tensor4dNewWithL1l2RegularizedSparseCells(
         existingTensor4d: number[][][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][][] {
         const rows: number = existingTensor4d.length;
         const tensor4d: number[][][][] = new Array<number[][][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor4d[row] = MathematicsHelper.tensor3dNewWithL1l2RegularizedSparseCells(
+        for (let row: number = 0; row < rows; row++) {
+            tensor4d[row] = this.tensor3dNewWithL1l2RegularizedSparseCells(
                 existingTensor4d[row],
                 l1Regularization,
                 l2Regularization);
         }
         return tensor4d;
     }
-    public static tensor4dNewWithL1l2RegularizedDenseCells(
+    public tensor4dNewWithL1l2RegularizedDenseCells(
         existingTensor4d: number[][][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][][] {
         const rows: number = existingTensor4d.length;
         const tensor4d: number[][][][] = new Array<number[][][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor4d[row] = MathematicsHelper.tensor3dNewWithL1l2RegularizedDenseCells(
+        for (let row: number = 0; row < rows; row++) {
+            tensor4d[row] = this.tensor3dNewWithL1l2RegularizedDenseCells(
                 existingTensor4d[row],
                 l1Regularization,
                 l2Regularization);
@@ -2804,80 +3067,80 @@ export class MathematicsHelper {
         return tensor4d;
     }
 
-    public static tensor3dNewWithRandomCells(
+    public tensor3dNewWithRandomCells(
         rows: number,
         columns: number,
         dimension3ds: number): number[][][] {
         const tensor3d: number[][][] = new Array<number[][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor3d[row] = MathematicsHelper.matrixNewWithRandomCells(columns, dimension3ds);
+        for (let row: number = 0; row < rows; row++) {
+            tensor3d[row] = this.matrixNewWithRandomCells(columns, dimension3ds);
         }
         return tensor3d;
     }
-    public static tensor3dNewWithRandomCellsScaled(
+    public tensor3dNewWithRandomCellsScaled(
         rows: number,
         columns: number,
         dimension3ds: number,
         scale: number = 1): number[][][] {
         const tensor3d: number[][][] = new Array<number[][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor3d[row] = MathematicsHelper.matrixNewWithRandomCellsScaled(columns, dimension3ds, scale);
+        for (let row: number = 0; row < rows; row++) {
+            tensor3d[row] = this.matrixNewWithRandomCellsScaled(columns, dimension3ds, scale);
         }
         return tensor3d;
     }
-    public static tensor3dNewWithZeroCells(
+    public tensor3dNewWithZeroCells(
         rows: number,
         columns: number,
         dimension3ds: number): number[][][] {
         const tensor3d: number[][][] = new Array<number[][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor3d[row] = MathematicsHelper.matrixNewWithZeroCells(columns, dimension3ds);
+        for (let row: number = 0; row < rows; row++) {
+            tensor3d[row] = this.matrixNewWithZeroCells(columns, dimension3ds);
         }
         return tensor3d;
     }
-    public static tensor3dNewWithConstantCells(
+    public tensor3dNewWithConstantCells(
         rows: number,
         columns: number,
         dimension3ds: number,
         constant: number = 1): number[][][] {
         const tensor3d: number[][][] = new Array<number[][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor3d[row] = MathematicsHelper.matrixNewWithConstantCells(columns, dimension3ds, constant);
+        for (let row: number = 0; row < rows; row++) {
+            tensor3d[row] = this.matrixNewWithConstantCells(columns, dimension3ds, constant);
         }
         return tensor3d;
     }
-    public static tensor3dNewWithScaledCells(
+    public tensor3dNewWithScaledCells(
         existingTensor3d: number[][][],
         scale: number = 1): number[][][] {
         const rows: number = existingTensor3d.length;
         const tensor3d: number[][][] = new Array<number[][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor3d[row] = MathematicsHelper.matrixNewWithScaledCells(existingTensor3d[row], scale);
+        for (let row: number = 0; row < rows; row++) {
+            tensor3d[row] = this.matrixNewWithScaledCells(existingTensor3d[row], scale);
         }
         return tensor3d;
     }
-    public static tensor3dNewWithL1l2RegularizedSparseCells(
+    public tensor3dNewWithL1l2RegularizedSparseCells(
         existingTensor3d: number[][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][] {
         const rows: number = existingTensor3d.length;
         const tensor3d: number[][][] = new Array<number[][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor3d[row] = MathematicsHelper.matrixNewWithL1l2RegularizedSparseCells(
+        for (let row: number = 0; row < rows; row++) {
+            tensor3d[row] = this.matrixNewWithL1l2RegularizedSparseCells(
                 existingTensor3d[row],
                 l1Regularization,
                 l2Regularization);
         }
         return tensor3d;
     }
-    public static tensor3dNewWithL1l2RegularizedDenseCells(
+    public tensor3dNewWithL1l2RegularizedDenseCells(
         existingTensor3d: number[][][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][][] {
         const rows: number = existingTensor3d.length;
         const tensor3d: number[][][] = new Array<number[][]>(rows);
-        for (let row = 0; row < rows; row++) {
-            tensor3d[row] = MathematicsHelper.matrixNewWithL1l2RegularizedDenseCells(
+        for (let row: number = 0; row < rows; row++) {
+            tensor3d[row] = this.matrixNewWithL1l2RegularizedDenseCells(
                 existingTensor3d[row],
                 l1Regularization,
                 l2Regularization);
@@ -2885,76 +3148,76 @@ export class MathematicsHelper {
         return tensor3d;
     }
 
-    public static matrixNewWithRandomCells(
+    public matrixNewWithRandomCells(
         rows: number,
         columns: number): number[][] {
         const matrix: number[][] = new Array<number[]>(rows);
-        for (let row = 0; row < rows; row++) {
-            matrix[row] = MathematicsHelper.vectorNewWithRandomElements(columns);
+        for (let row: number = 0; row < rows; row++) {
+            matrix[row] = this.vectorNewWithRandomElements(columns);
         }
         return matrix;
     }
-    public static matrixNewWithRandomCellsScaled(
+    public matrixNewWithRandomCellsScaled(
         rows: number,
         columns: number,
         scale: number = 1): number[][] {
         const matrix: number[][] = new Array<number[]>(rows);
-        for (let row = 0; row < rows; row++) {
-            matrix[row] = MathematicsHelper.vectorNewWithRandomElementsScaled(columns, scale);
+        for (let row: number = 0; row < rows; row++) {
+            matrix[row] = this.vectorNewWithRandomElementsScaled(columns, scale);
         }
         return matrix;
     }
-    public static matrixNewWithZeroCells(
+    public matrixNewWithZeroCells(
         rows: number,
         columns: number): number[][] {
         const matrix: number[][] = new Array<number[]>(rows);
-        for (let row = 0; row < rows; row++) {
-            matrix[row] = MathematicsHelper.vectorNewWithZeroElements(columns);
+        for (let row: number = 0; row < rows; row++) {
+            matrix[row] = this.vectorNewWithZeroElements(columns);
         }
         return matrix;
     }
-    public static matrixNewWithConstantCells(
+    public matrixNewWithConstantCells(
         rows: number,
         columns: number,
         constant: number = 1): number[][] {
         const matrix: number[][] = new Array<number[]>(rows);
-        for (let row = 0; row < rows; row++) {
-            matrix[row] = MathematicsHelper.vectorNewWithConstantElements(columns, constant);
+        for (let row: number = 0; row < rows; row++) {
+            matrix[row] = this.vectorNewWithConstantElements(columns, constant);
         }
         return matrix;
     }
-    public static matrixNewWithScaledCells(
+    public matrixNewWithScaledCells(
         existingMatrix: number[][],
         scale: number = 1): number[][] {
         const rows: number = existingMatrix.length;
         const matrix: number[][] = new Array<number[]>(rows);
-        for (let row = 0; row < rows; row++) {
-            matrix[row] = MathematicsHelper.vectorNewWithScaledElements(existingMatrix[row], scale);
+        for (let row: number = 0; row < rows; row++) {
+            matrix[row] = this.vectorNewWithScaledElements(existingMatrix[row], scale);
         }
         return matrix;
     }
-    public static matrixNewWithL1l2RegularizedSparseCells(
+    public matrixNewWithL1l2RegularizedSparseCells(
         existingMatrix: number[][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][] {
         const rows: number = existingMatrix.length;
         const matrix: number[][] = new Array<number[]>(rows);
-        for (let row = 0; row < rows; row++) {
-            matrix[row] = MathematicsHelper.vectorNewWithL1l2RegularizedSparseElements(
+        for (let row: number = 0; row < rows; row++) {
+            matrix[row] = this.vectorNewWithL1l2RegularizedSparseElements(
                 existingMatrix[row],
                 l1Regularization,
                 l2Regularization);
         }
         return matrix;
     }
-    public static matrixNewWithL1l2RegularizedDenseCells(
+    public matrixNewWithL1l2RegularizedDenseCells(
         existingMatrix: number[][],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[][] {
         const rows: number = existingMatrix.length;
         const matrix: number[][] = new Array<number[]>(rows);
-        for (let row = 0; row < rows; row++) {
-            matrix[row] = MathematicsHelper.vectorNewWithL1l2RegularizedDenseElements(
+        for (let row: number = 0; row < rows; row++) {
+            matrix[row] = this.vectorNewWithL1l2RegularizedDenseElements(
                 existingMatrix[row],
                 l1Regularization,
                 l2Regularization);
@@ -2962,7 +3225,7 @@ export class MathematicsHelper {
         return matrix;
     }
 
-    public static vectorNewWithRandomElements(
+    public vectorNewWithRandomElements(
         length: number): number[] {
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
@@ -2970,7 +3233,7 @@ export class MathematicsHelper {
         }
         return vector;
     }
-    public static vectorNewWithRandomElementsScaled(
+    public vectorNewWithRandomElementsScaled(
         length: number,
         scale: number = 1): number[] {
         const vector: number[] = new Array<number>(length);
@@ -2979,7 +3242,7 @@ export class MathematicsHelper {
         }
         return vector;
     }
-    public static vectorNewWithZeroElements(
+    public vectorNewWithZeroElements(
         length: number): number[] {
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
@@ -2987,7 +3250,7 @@ export class MathematicsHelper {
         }
         return vector;
     }
-    public static vectorNewWithConstantElements(
+    public vectorNewWithConstantElements(
         length: number,
         constant: number = 1): number[] {
         const vector: number[] = new Array<number>(length);
@@ -2996,7 +3259,7 @@ export class MathematicsHelper {
         }
         return vector;
     }
-    public static vectorNewWithScaledElements(
+    public vectorNewWithScaledElements(
         existingVector: number[],
         scale: number = 1): number[] {
         const length: number = existingVector.length;
@@ -3006,14 +3269,14 @@ export class MathematicsHelper {
         }
         return vector;
     }
-    public static vectorNewWithL1l2RegularizedSparseElements(
+    public vectorNewWithL1l2RegularizedSparseElements(
         existingVector: number[],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
         const length: number = existingVector.length;
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
-            const regularized: number = MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(
+            const regularized: number = this.getL1l2RegularizedWeightOptimizedSparse(
                 existingVector[i],
                 l1Regularization,
                 l2Regularization);
@@ -3021,14 +3284,14 @@ export class MathematicsHelper {
         }
         return vector;
     }
-    public static vectorNewWithL1l2RegularizedDenseElements(
+    public vectorNewWithL1l2RegularizedDenseElements(
         existingVector: number[],
         l1Regularization: number = 0.01,
         l2Regularization: number = 0.01): number[] {
         const length: number = existingVector.length;
         const vector: number[] = new Array<number>(length);
         for (let i: number = 0; i < length; i++) {
-            const regularized: number = MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(
+            const regularized: number = this.getL1l2RegularizedWeightOptimizedDense(
                 existingVector[i],
                 l1Regularization,
                 l2Regularization);
@@ -3037,14 +3300,57 @@ export class MathematicsHelper {
         return vector;
     }
 
-    public static getIndexOnFirstMaxEntryOnArray(
+    public getIndexesOnMaxEntriesOnArray(
+        inputArray: Float32Array | Int32Array | Uint8Array):
+        { "indexesMax": number[], "max": number } {
+        if (Utility.isEmptyNumberF32I32U8Array(inputArray)) {
+            Utility.debuggingThrow("inputArray is empty");
+        }
+        let indexesMax: number[] = [0];
+        let max: number = inputArray[0];
+        for (let i: number = 1; i < inputArray.length; i++) {
+            const inputCurrent: number = inputArray[i];
+            if (inputCurrent > max) {
+                max = inputCurrent;
+                indexesMax = [i];
+                continue;
+            }
+            if (inputCurrent === max) {
+                indexesMax.push(i);
+            }
+        }
+        return { indexesMax, max };
+    }
+    public getIndexesOnMaxEntries(
+        inputArray: number[]):
+        { "indexesMax": number[], "max": number } {
+        if (Utility.isEmptyNumberArray(inputArray)) {
+            Utility.debuggingThrow("inputArray is empty");
+        }
+        let indexesMax: number[] = [0];
+        let max: number = inputArray[0];
+        for (let i: number = 1; i < inputArray.length; i++) {
+            const inputCurrent: number = inputArray[i];
+            if (inputCurrent > max) {
+                max = inputCurrent;
+                indexesMax = [i];
+                continue;
+            }
+            if (inputCurrent === max) {
+                indexesMax.push(i);
+            }
+        }
+        return { indexesMax, max };
+    }
+
+    public getIndexOnFirstMaxEntryOnArray(
         inputArray: Float32Array | Int32Array | Uint8Array):
         { "indexMax": number, "max": number } {
         if (Utility.isEmptyNumberF32I32U8Array(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMax: number = 0;
-        let max = inputArray[0];
+        let max: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent > max) {
@@ -3054,14 +3360,14 @@ export class MathematicsHelper {
         }
         return { indexMax,  max };
     }
-    public static getIndexOnLastMaxEntryOnArray(
+    public getIndexOnLastMaxEntryOnArray(
         inputArray: Float32Array | Int32Array | Uint8Array):
         { "indexMax": number, "max": number } {
         if (Utility.isEmptyNumberF32I32U8Array(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMax: number = 0;
-        let max = inputArray[0];
+        let max: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent >= max) {
@@ -3071,14 +3377,14 @@ export class MathematicsHelper {
         }
         return { indexMax, max };
     }
-    public static getIndexOnFirstMaxEntry(
+    public getIndexOnFirstMaxEntry(
         inputArray: number[]):
         { "indexMax": number, "max": number } {
         if (Utility.isEmptyNumberArray(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMax: number = 0;
-        let max = inputArray[0];
+        let max: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent > max) {
@@ -3088,14 +3394,14 @@ export class MathematicsHelper {
         }
         return { indexMax, max };
     }
-    public static getIndexOnLastMaxEntry(
+    public getIndexOnLastMaxEntry(
         inputArray: number[]):
         { "indexMax": number, "max": number } {
         if (Utility.isEmptyNumberArray(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMax: number = 0;
-        let max = inputArray[0];
+        let max: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent >= max) {
@@ -3106,14 +3412,57 @@ export class MathematicsHelper {
         return { indexMax, max };
     }
 
-    public static getIndexOnFirstMinEntryOnArray(
+    public getIndexesOnMinEntriesOnArray(
+        inputArray: Float32Array | Int32Array | Uint8Array):
+        { "indexesMin": number[], "min": number } {
+        if (Utility.isEmptyNumberF32I32U8Array(inputArray)) {
+            Utility.debuggingThrow("inputArray is empty");
+        }
+        let indexesMin: number[] = [0];
+        let min: number = inputArray[0];
+        for (let i: number = 1; i < inputArray.length; i++) {
+            const inputCurrent: number = inputArray[i];
+            if (inputCurrent < min) {
+                min = inputCurrent;
+                indexesMin = [i];
+                continue;
+            }
+            if (inputCurrent === min) {
+                indexesMin.push(i);
+            }
+        }
+        return { indexesMin, min };
+    }
+    public getIndexesOnMinEntries(
+        inputArray: number[]):
+        { "indexesMin": number[], "min": number } {
+        if (Utility.isEmptyNumberArray(inputArray)) {
+            Utility.debuggingThrow("inputArray is empty");
+        }
+        let indexesMin: number[] = [0];
+        let min: number = inputArray[0];
+        for (let i: number = 1; i < inputArray.length; i++) {
+            const inputCurrent: number = inputArray[i];
+            if (inputCurrent < min) {
+                min = inputCurrent;
+                indexesMin = [i];
+                continue;
+            }
+            if (inputCurrent === min) {
+                indexesMin.push(i);
+            }
+        }
+        return { indexesMin, min };
+    }
+
+    public getIndexOnFirstMinEntryOnArray(
         inputArray: Float32Array | Int32Array | Uint8Array):
         { "indexMin": number, "min": number } {
         if (Utility.isEmptyNumberF32I32U8Array(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMin: number = 0;
-        let min = inputArray[0];
+        let min: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent < min) {
@@ -3123,14 +3472,14 @@ export class MathematicsHelper {
         }
         return { indexMin, min };
     }
-    public static getIndexOnLastMinEntryOnArray(
+    public getIndexOnLastMinEntryOnArray(
         inputArray: Float32Array | Int32Array | Uint8Array):
         { "indexMin": number, "min": number } {
         if (Utility.isEmptyNumberF32I32U8Array(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMin: number = 0;
-        let min = inputArray[0];
+        let min: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent <= min) {
@@ -3140,14 +3489,14 @@ export class MathematicsHelper {
         }
         return { indexMin, min };
     }
-    public static getIndexOnFirstMinEntry(
+    public getIndexOnFirstMinEntry(
         inputArray: number[]):
         { "indexMin": number, "min": number } {
         if (Utility.isEmptyNumberArray(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMin: number = 0;
-        let min = inputArray[0];
+        let min: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent < min) {
@@ -3157,14 +3506,14 @@ export class MathematicsHelper {
         }
         return { indexMin, min };
     }
-    public static getIndexOnLastMinEntry(
+    public getIndexOnLastMinEntry(
         inputArray: number[]):
         { "indexMin": number, "min": number } {
         if (Utility.isEmptyNumberArray(inputArray)) {
             Utility.debuggingThrow("inputArray is empty");
         }
         let indexMin: number = 0;
-        let min = inputArray[0];
+        let min: number = inputArray[0];
         for (let i: number = 1; i < inputArray.length; i++) {
             const inputCurrent: number = inputArray[i];
             if (inputCurrent <= min) {
@@ -3175,13 +3524,13 @@ export class MathematicsHelper {
         return { indexMin, min };
     }
 
-    public static safeDivide(numerator: number, denominator: number): number {
+    public safeDivide(numerator: number, denominator: number): number {
         if (numerator === 0) {
             return 0;
         }
-        return numerator / denominator;
+        return (numerator / denominator);
     }
-    public static safeLog(value: number): number {
+    public safeLog(value: number): number {
         if (value < 0) {
             return Number.NaN;
         }
@@ -3191,7 +3540,7 @@ export class MathematicsHelper {
         return Math.log(value);
     }
 
-    public static clipValue(value: number): number {
+    public clipValue(value: number): number {
         if (value <= 0) {
             return MathematicsHelper.epsilon;
         }

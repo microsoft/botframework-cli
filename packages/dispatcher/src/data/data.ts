@@ -290,13 +290,13 @@ export abstract class Data {
     public getFeaturizerLabels(): string[] {
         return this.getFeaturizer().getLabels();
     }
-    public getFeaturizerLabelMap(): { [id: string]: number; } {
+    public getFeaturizerLabelMap(): { [id: string]: number } {
         return this.getFeaturizer().getLabelMap();
     }
     public getFeaturizerFeatures(): string[] {
         return this.getFeaturizer().getFeatures();
     }
-    public getFeaturizerFeatureMap(): { [id: string]: number; } {
+    public getFeaturizerFeatureMap(): { [id: string]: number } {
         return this.getFeaturizer().getFeatureMap();
     }
 

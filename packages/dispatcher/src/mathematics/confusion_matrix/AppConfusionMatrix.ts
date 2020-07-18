@@ -27,7 +27,7 @@ export function mainConfusionMatrixFunction(
     revisedTextColumnIndex: number,
     lineIndexToStart: number): {
         "labels": string[],
-        "labelMap": { [id: string]: number; },
+        "labelMap": { [id: string]: number },
         "binaryConfusionMatrices": BinaryConfusionMatrix[],
         "confusionMatrix": ConfusionMatrix } {
     // -----------------------------------------------------------------------
@@ -39,9 +39,9 @@ export function mainConfusionMatrixFunction(
     }
     // -----------------------------------------------------------------------
     let labels: string[] = [];
-    let labelMap: { [id: string]: number; } = {};
+    let labelMap: { [id: string]: number } = {};
     if (!Utility.isEmptyString(labelFilename)) {
-        const labelsAndLabelMap: { "stringArray": string[], "stringMap": { [id: string]: number; } } =
+        const labelsAndLabelMap: { "stringArray": string[], "stringMap": { [id: string]: number } } =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArrayFile(labelFilename);
         labels = labelsAndLabelMap.stringArray;
         labelMap = labelsAndLabelMap.stringMap;
@@ -90,7 +90,7 @@ export function mainConfusionMatrixFunction(
         if (label === predictedLabel) {
             numberMatches++;
         }
-        confusionMatrix.addInstance(label, predictedLabel);
+        confusionMatrix.addInstanceByLabel(label, predictedLabel);
     }
     // -----------------------------------------------------------------------
     Utility.debuggingLog(
@@ -103,7 +103,7 @@ export function mainConfusionMatrixFunction(
     Utility.debuggingLog(
         "labels=" + confusionMatrix.getLabels());
     Utility.debuggingLog(
-        Utility.JSONstringify(confusionMatrix.getLabelMap()));
+        Utility.jsonStringify(confusionMatrix.getLabelMap()));
     Utility.debuggingLog(
         "rows=" + confusionMatrix.getConfusionMatrixRows());
     Utility.debuggingLog(
@@ -246,9 +246,9 @@ export function mainConfusionMatrix(): void {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${Utility.JSONstringify(args)}`);
+        `args=${Utility.jsonStringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
+        `unknownArgs=${Utility.jsonStringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -302,7 +302,7 @@ export function mainConfusionMatrix(): void {
     // -----------------------------------------------------------------------
     const mainConfusionMatrixFunctionResult: {
         "labels": string[],
-        "labelMap": { [id: string]: number; },
+        "labelMap": { [id: string]: number },
         "confusionMatrix": ConfusionMatrix } = mainConfusionMatrixFunction(
         scoreFilename,
         labelFilename,
@@ -326,24 +326,24 @@ export function mainConfusionMatrix(): void {
 
 export function exampleFunctionConfusionMatrix(): void {
     const labels: string[] = [ "label0", "label1", "label2" ];
-    const labelMap: { [id: string]: number; } = { };
+    const labelMap: { [id: string]: number } = { };
     labelMap.label0 = 0;
     labelMap.label1 = 1;
     labelMap.label2 = 2;
     const confusionMatrix = new ConfusionMatrix(labels, labelMap);
-    confusionMatrix.addInstance("label0", "label0");
-    confusionMatrix.addInstance("label0", "label1");
-    confusionMatrix.addInstance("label0", "label2");
-    confusionMatrix.addInstance("label1", "label0");
-    confusionMatrix.addInstance("label1", "label1");
-    confusionMatrix.addInstance("label1", "label2");
-    confusionMatrix.addInstance("label2", "label0");
-    confusionMatrix.addInstance("label2", "label1");
-    confusionMatrix.addInstance("label2", "label2");
+    confusionMatrix.addInstanceByLabel("label0", "label0");
+    confusionMatrix.addInstanceByLabel("label0", "label1");
+    confusionMatrix.addInstanceByLabel("label0", "label2");
+    confusionMatrix.addInstanceByLabel("label1", "label0");
+    confusionMatrix.addInstanceByLabel("label1", "label1");
+    confusionMatrix.addInstanceByLabel("label1", "label2");
+    confusionMatrix.addInstanceByLabel("label2", "label0");
+    confusionMatrix.addInstanceByLabel("label2", "label1");
+    confusionMatrix.addInstanceByLabel("label2", "label2");
     Utility.debuggingLog(
         "labels=" + confusionMatrix.getLabels());
     Utility.debuggingLog(
-        Utility.JSONstringify(confusionMatrix.getLabelMap()));
+        Utility.jsonStringify(confusionMatrix.getLabelMap()));
     Utility.debuggingLog(
         "rows=" + confusionMatrix.getConfusionMatrixRows());
     Utility.debuggingLog(

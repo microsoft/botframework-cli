@@ -82,9 +82,9 @@ export function mainPredictor(): void {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${Utility.JSONstringify(args)}`);
+        `args=${Utility.jsonStringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
+        `unknownArgs=${Utility.jsonStringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -146,7 +146,7 @@ export function mainPredictor(): void {
         featurizerNullable as NgramSubwordFeaturizer;
     // -------------------------------------------------------------------
     const labels: string[] = featurizer.getLabels();
-    const labelMap: { [id: string]: number; } = featurizer.getLabelMap();
+    const labelMap: { [id: string]: number } = featurizer.getLabelMap();
     // const numberLabels: number = featurizer.getNumberLabels();
     // const numberFeatures: number = featurizer.getNumberFeatures();
     // -----------------------------------------------------------------------

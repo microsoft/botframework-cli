@@ -19,6 +19,9 @@ import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtili
 
 import { Utility } from "../../../utility/Utility";
 
+const NumberOfLabelsPerBatchToReport: number = 8;
+const EnableDebuggingInstrumentation: boolean = false;
+
 export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
 
     protected instancePredictedScoreArrays: number[][] = [];
@@ -28,7 +31,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
     protected instanceWeights: number[] = [];
 
     protected targetLabelBatchesToReport: string[][] = [];
-    protected numberOfLabelsPerBatch: number = 8;
+    protected numberOfLabelsPerBatch: number = NumberOfLabelsPerBatchToReport;
     protected explicitTotal: number = -1;
     protected explicitTotalPositives: number = -1;
     protected explicitTotalNegatives: number = -1;
@@ -47,9 +50,9 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
         modelNullable: SoftmaxRegressionSparse|null,
         featurizerNullable: NgramSubwordFeaturizer|null,
         labels: string[],
-        labelMap: { [id: string]: number; },
+        labelMap: { [id: string]: number },
         targetLabelBatchesToReport: string[][] = [],
-        numberOfLabelsPerBatch: number = 8,
+        numberOfLabelsPerBatch: number = NumberOfLabelsPerBatchToReport,
         explicitTotal: number = -1,
         explicitTotalPositives: number = -1,
         explicitTotalNegatives: number = -1,
@@ -165,11 +168,12 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
     }
 
     public reportToDataArrays(): string[][] {
-        const report: Array<Array<{
+        const reportResults: Array<Array<{
             "targetLabel": string,
             "scoreThresholds": number[],
             "binaryConfusionMatrices": BinaryConfusionMatrix[],
             "metricNames": string[],
+            "metricNameMap": IDictionaryStringIdGenericValue<number>,
             "metricValues": number[][],
         }>> = this.report(
             this.targetLabelBatchesToReport,
@@ -185,14 +189,31 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
             this.A,
             this.B,
             this.explicitMaxPositives);
+        let cell11MetricIndexForDebugInstrumentation: number = -1;
+        let ratioCell11MetricIndexForDebugInstrumentation: number = -1;
+        let cell11MetricIndexInOutputArrayForDebugInstrumentation: number = -1;
+        let ratioCell11MetricIndexInOutputArrayForDebugInstrumentation: number = -1;
         const outputEvaluationReportDataArrayHeader: string[] = [];
         const outputEvaluationReportDataArrays: string[][] = [];
-        for (const reportPerBatch of report) {
-            for (const reportPerLabel of reportPerBatch) {
-                const tarrgetLabel: string = reportPerLabel.targetLabel;
-                const scoreThresholds: number[] = reportPerLabel.scoreThresholds;
-                const metricNames: string[] = reportPerLabel.metricNames;
-                const metricValues: number[][] = reportPerLabel.metricValues;
+        for (const reportResultsPerBatch of reportResults) {
+            for (const reportResultPerLabel of reportResultsPerBatch) {
+                const tarrgetLabel: string = reportResultPerLabel.targetLabel;
+                const scoreThresholds: number[] = reportResultPerLabel.scoreThresholds;
+                const metricNames: string[] = reportResultPerLabel.metricNames;
+                const metricNameMap: IDictionaryStringIdGenericValue<number> = reportResultPerLabel.metricNameMap;
+                const metricValues: number[][] = reportResultPerLabel.metricValues;
+                if (EnableDebuggingInstrumentation) { // ---- NOTE-DEBUG-INSTRUMENTATION ----
+                    // const binaryConfusionMatrices: BinaryConfusionMatrix[] =
+                    //     reportResultPerLabel.binaryConfusionMatrices;
+                    cell11MetricIndexForDebugInstrumentation =
+                        metricNameMap.Cell11;
+                    ratioCell11MetricIndexForDebugInstrumentation =
+                        metricNameMap.RatioCell11;
+                    cell11MetricIndexInOutputArrayForDebugInstrumentation =
+                        cell11MetricIndexForDebugInstrumentation + 2;
+                    ratioCell11MetricIndexInOutputArrayForDebugInstrumentation =
+                        ratioCell11MetricIndexForDebugInstrumentation + 2;
+                }
                 if (Utility.isEmptyStringArray(outputEvaluationReportDataArrayHeader)) {
                     outputEvaluationReportDataArrayHeader.push("TargetLabel");
                     outputEvaluationReportDataArrayHeader.push("ScoreThreshold");
@@ -201,8 +222,8 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                     }
                     outputEvaluationReportDataArrays.push(outputEvaluationReportDataArrayHeader);
                 }
-                const numberInstancs: number = scoreThresholds.length;
-                for (let indexInstance: number = 0; indexInstance < numberInstancs; indexInstance++) {
+                const numberInstances: number = scoreThresholds.length;
+                for (let indexInstance: number = 0; indexInstance < numberInstances; indexInstance++) {
                     const outputEvaluationReportDataArray: string[] = [];
                     const scoreThreshold: number = scoreThresholds[indexInstance];
                     const metricValueArray: number[] = metricValues[indexInstance];
@@ -212,6 +233,26 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                         outputEvaluationReportDataArray.push(metricValue.toString());
                     }
                     outputEvaluationReportDataArrays.push(outputEvaluationReportDataArray);
+                    if (EnableDebuggingInstrumentation) { // ---- NOTE-DEBUG-INSTRUMENTATION ----
+                        const cell1MetricValue: number =
+                            metricValueArray[cell11MetricIndexForDebugInstrumentation];
+                        const ratioCell1MetricValue: number =
+                            metricValueArray[ratioCell11MetricIndexForDebugInstrumentation];
+                        const cell1MetricValueInString: string =
+                            outputEvaluationReportDataArray[cell11MetricIndexInOutputArrayForDebugInstrumentation];
+                        const ratioCell1MetricValueInString: string =
+                            outputEvaluationReportDataArray[ratioCell11MetricIndexInOutputArrayForDebugInstrumentation];
+                        if (cell1MetricValue > 0) {
+                            Utility.debuggingLog(
+                                `cell1MetricValue=${cell1MetricValue}`);
+                            Utility.debuggingLog(
+                                `cell1MetricValueInString=${cell1MetricValueInString}`);
+                            Utility.debuggingLog(
+                                `ratioCell1MetricValue=${ratioCell1MetricValue}`);
+                            Utility.debuggingLog(
+                                `ratioCell1MetricValueInString=${ratioCell1MetricValueInString}`);
+                        }
+                    }
                 }
             }
         }
@@ -219,7 +260,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
     }
     public report(
         targetLabelBatchesToReport: string[][] = [],
-        numberOfLabelsPerBatch: number = 8,
+        numberOfLabelsPerBatch: number = NumberOfLabelsPerBatchToReport,
         explicitTotal: number = -1,
         explicitTotalPositives: number = -1,
         explicitTotalNegatives: number = -1,
@@ -235,6 +276,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
             "scoreThresholds": number[],
             "binaryConfusionMatrices": BinaryConfusionMatrix[],
             "metricNames": string[],
+            "metricNameMap": IDictionaryStringIdGenericValue<number>,
             "metricValues": number[][],
         }>> {
         this.validate();
@@ -243,7 +285,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
         if (Utility.isEmptyStringArrays(targetLabelBatchesToReport)) {
             targetLabelBatchesToReport = [];
             if (numberOfLabelsPerBatch <= 0) {
-                numberOfLabelsPerBatch = 8;
+                numberOfLabelsPerBatch = NumberOfLabelsPerBatchToReport;
             }
             let numberLabelBatches: number = Math.floor(numberLabels / numberOfLabelsPerBatch);
             if ((numberLabelBatches * numberOfLabelsPerBatch) < numberLabels) {
@@ -264,21 +306,25 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                 }
             }
         }
-        const labelMap: { [id: string]: number; } = this.getLabelMap();
+        const labelMap: { [id: string]: number } = this.getLabelMap();
+        let metricNames: string[] = [];
+        let metricNameMap: IDictionaryStringIdGenericValue<number> = {};
         const numberInstances: number = this.instanceGroudTruthLabelIds.length;
-        const report: Array<Array<{
+        const reportResults: Array<Array<{
             "targetLabel": string,
             "scoreThresholds": number[],
             "binaryConfusionMatrices": BinaryConfusionMatrix[],
             "metricNames": string[],
+            "metricNameMap": IDictionaryStringIdGenericValue<number>,
             "metricValues": number[][],
         }>> = [];
         for (const targetLabelsPerBatchToReport of targetLabelBatchesToReport) {
-            const reportPerBatch: Array<{
+            const reportResultsPerBatch: Array<{
                 "targetLabel": string,
                 "scoreThresholds": number[],
                 "binaryConfusionMatrices": BinaryConfusionMatrix[],
                 "metricNames": string[],
+                "metricNameMap": IDictionaryStringIdGenericValue<number>,
                 "metricValues": number[][],
             }> = [];
             for (const targetLabel of targetLabelsPerBatchToReport) {
@@ -288,23 +334,31 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                     Utility.debuggingThrow(
                         `targetLabel|${targetLabel}| is not defined.`);
                 }
-                const targetLabelIndexScores: number[] = this.instancePredictedScoreArrays.map(
+                let targetLabelIndexScores: number[] = this.instancePredictedScoreArrays.map(
                     (scoreArray) => scoreArray[targetLabelIndex]);
                 const targetLabelPositives: number = this.instanceGroudTruthLabelIds.reduce(
                     (total, instanceGroudTruthLabelId) =>
                     (instanceGroudTruthLabelId === targetLabelIndex ? total + 1 : total), 0);
-                const orderSequence: number[] = ListArrayUtility.sortGenerateOrderSequence(
+                let orderSequence: number[] = ListArrayUtility.sortGenerateOrderSequence(
                     targetLabelIndexScores);
+                {
+                    orderSequence = orderSequence.reverse();
+                    targetLabelIndexScores = targetLabelIndexScores.reverse();
+                }
                 const binaryConfusionMatrixBase: BinaryConfusionMatrix = new BinaryConfusionMatrix(
                     numberInstances,
                     0,
                     targetLabelPositives,
                     0);
+                if (Utility.isEmptyStringArray(metricNames)) {
+                    metricNames = binaryConfusionMatrixBase.getMetricNames();
+                }
+                if (DictionaryMapUtility.isEmptyStringIdGenericValueDictionary(metricNameMap)) {
+                    metricNameMap = binaryConfusionMatrixBase.getMetricNameMap();
+                }
                 const binaryConfusionMatrices: BinaryConfusionMatrix[] = orderSequence.map(
                     (instanceIndex) => binaryConfusionMatrixBase.moveFromPredictedNegativeToPositive(
                         this.instanceGroudTruthLabelIds[instanceIndex] === targetLabelIndex));
-                const metricNames: string[] =
-                    binaryConfusionMatrixBase.getMetricNames();
                 const metricValues: number[][] =
                     binaryConfusionMatrices.map((binaryConfusionMatrix) => binaryConfusionMatrix.getMetricValues(
                         explicitTotal,
@@ -318,17 +372,46 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                         A,
                         B,
                         explicitMaxPositives));
-                reportPerBatch.push({
+                if (EnableDebuggingInstrumentation) { // ---- NOTE-DEBUG-INSTRUMENTATION ----
+                    const totalMetricIndex: number =
+                        metricNameMap.Total;
+                    const cell11MetricIndex: number =
+                        metricNameMap.Cell11;
+                    const ratioCell11MetricIndex: number =
+                        metricNameMap.RatioCell11;
+                    const totalMatricValues: number[] =
+                        metricValues.map((x: number[]) => x[totalMetricIndex]);
+                    const cell11MatricValues: number[] =
+                        metricValues.map((x: number[]) => x[cell11MetricIndex]);
+                    const ratioCell11MatricValues: number[] =
+                        metricValues.map((x: number[]) => x[ratioCell11MetricIndex]);
+                    Utility.debuggingLog(
+                        `cell11MatricValues=${cell11MatricValues}`);
+                    Utility.debuggingLog(
+                        `ratioCell11MatricValues=${ratioCell11MatricValues}`);
+                    Utility.debuggingLog(
+                        `totalMatricValues=${totalMatricValues}`);
+                }
+                const reportResultPerLabel: {
+                    "targetLabel": string,
+                    "scoreThresholds": number[],
+                    "binaryConfusionMatrices": BinaryConfusionMatrix[],
+                    "metricNames": string[],
+                    "metricNameMap": IDictionaryStringIdGenericValue<number>,
+                    "metricValues": number[][],
+                } = {
                     targetLabel,
                     scoreThresholds: targetLabelIndexScores,
                     binaryConfusionMatrices,
                     metricNames,
+                    metricNameMap,
                     metricValues,
-                });
+                };
+                reportResultsPerBatch.push(reportResultPerLabel);
             }
-            report.push(reportPerBatch);
+            reportResults.push(reportResultsPerBatch);
         }
-        return report;
+        return reportResults;
     }
 
     public validate(): void {
@@ -395,7 +478,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                 predictedLabelColumnIndex,
                 revisedTextColumnIndex,
                 lineIndexToStart);
-        const labelMap: { [id: string]: number; } =
+        const labelMap: { [id: string]: number } =
             this.getLabelMap();
         const numberInstances: number = scoreDataStructure.labels.length;
         for (let i = 0; i < numberInstances; i++) {
