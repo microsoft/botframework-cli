@@ -20,7 +20,6 @@ const qnaMakerBuilder = require('./../qna/qnamaker/qnaMakerBuilder')
 const qnaOptions = require('./../lu/qnaOptions')
 const Content = require('./../lu/qna')
 const KB = require('./../qna/qnamaker/kb')
-const NEWLINE = require('os').EOL
 const recognizerType = require('./../utils/enums/recognizertypes')
 
 export class Builder {
@@ -40,7 +39,8 @@ export class Builder {
     let multiRecognizer: any
     let settings: any
     let recognizers = new Map<string, Recognizer>()
-    let qnaContents = new Map<string, string>()
+    let qnaContents = new Map<string, any>()
+    let qnaObjects = new Map<string, any[]>()
 
     for (const file of files) {
       let fileCulture: string
@@ -51,22 +51,7 @@ export class Builder {
         fileCulture = culture
       }
 
-      let fileContent = ''
-      let result
       const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
-      try {
-        result = await qnaBuilderVerbose.build(qnaFiles, true)
-
-        // construct qna content without file and url references
-        fileContent = result.parseToQnAContent()
-      } catch (err) {
-        if (err.source) {
-          err.text = `Invalid QnA file ${err.source}: ${err.text}`
-        } else {
-          err.text = `Invalid QnA file ${file}: ${err.text}`
-        }
-        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
-      }
 
       this.handler(`${file} loaded\n`)
 
@@ -96,7 +81,7 @@ export class Builder {
         settings = new Settings(settingsPath, settingsContent)
       }
 
-      const content = new Content(fileContent, new qnaOptions(botName, true, fileCulture, file))
+      const content = new Content('', new qnaOptions(botName, true, fileCulture, file))
 
       if (!recognizers.has(content.name)) {
         const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
@@ -113,13 +98,14 @@ export class Builder {
         let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj, schema)
         recognizers.set(content.name, recognizer)
         qnaContents.set(content.name, content)
+        qnaObjects.set(content.name, qnaFiles)
       } else {
         // merge contents of qna files with same name
-        let existingContent: any = qnaContents.get(content.name)
-        existingContent.content = `${existingContent.content}${NEWLINE}${NEWLINE}${content.content}`
-        qnaContents.set(content.name, existingContent)
+        qnaObjects.get(content.name)?.push(...qnaFiles)
       }
     }
+
+    await this.resolveMergedQnAContentIds(qnaContents, qnaObjects)
 
     return {qnaContents: [...qnaContents.values()], recognizers, multiRecognizer, settings}
   }
@@ -512,6 +498,25 @@ export class Builder {
         }
 
         await fs.writeFile(crossTrainedFilePath, content, 'utf-8')
+      }
+    }
+  }
+
+  async resolveMergedQnAContentIds(contents: Map<string, any>, objects: Map<string, any[]>) {
+    for (const [name, content] of contents) {
+      let qnaObjects = objects.get(name)
+      try {
+        let result = await qnaBuilderVerbose.build(qnaObjects, true)
+        let mergedContent = result.parseToQnAContent()
+        content.content = mergedContent
+        contents.set(name, content)
+      } catch (err) {
+        if (err.source) {
+          err.text = `Invalid QnA file ${err.source}: ${err.text}`
+        } else {
+          err.text = `Invalid QnA file ${content.path}: ${err.text}`
+        }
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
     }
   }

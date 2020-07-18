@@ -38,6 +38,8 @@ I can book flight for you
 ```
 
 > Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
 # ? I need a four star hotel
 - book a flight for me
 - book a train ticket for me
