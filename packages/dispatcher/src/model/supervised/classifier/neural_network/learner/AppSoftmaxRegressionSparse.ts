@@ -55,15 +55,18 @@ export class AppSoftmaxRegressionSparse {
                 textColumnIndex,
                 weightColumnIndex,
                 lineIndexToStart);
-        const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
+        const intentsUtterancesWeights: {
+            "intents": string[],
+            "utterances": string[],
+            "weights": number[] } =
             featurizer.getIntentsUtterancesWeights();
         const labels: string[] =
             featurizer.getLabels();
-        const labelMap: { [id: string]: number; } =
+        const labelMap: { [id: string]: number } =
             featurizer.getLabelMap();
         const features: string[] =
             featurizer.getFeatures();
-        const featureMap: { [id: string]: number; } =
+        const featureMap: { [id: string]: number } =
             featurizer.getFeatureMap();
         // -------------------------------------------------------------------
         const numberFeatures: number = featurizer.getNumberFeatures(); // ==== featurizer.getNumberHashingFeatures();
@@ -85,7 +88,9 @@ export class AppSoftmaxRegressionSparse {
             // ---------------------------------------------------------------
             {
                 // -----------------------------------------------------------
-                const intentUtteranceSparseIndexArrays =
+                const intentUtteranceSparseIndexArrays: {
+                    "intentLabelIndexArray": number[],
+                    "utteranceFeatureIndexArrays": number[][] } =
                     featurizer.createIntentUtteranceSparseIndexArrays(
                         intentsUtterancesWeights);
                 const intentLabelIndexArray: number[] =

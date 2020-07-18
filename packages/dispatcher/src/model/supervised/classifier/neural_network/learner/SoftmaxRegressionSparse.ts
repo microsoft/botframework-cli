@@ -3,11 +3,15 @@
  * Licensed under the MIT License.
  */
 
+import { IMathematicsHelper } from "../../../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../../../mathematics/mathematics_helper/MathematicsHelper";
 
 import { Utility } from "../../../../../utility/Utility";
 
 export class SoftmaxRegressionSparse {
+
+    public static readonly MathematicsHelperObject: IMathematicsHelper =
+        MathematicsHelper.GetMathematicsHelperObject();
 
     protected modelWeights: number[][] = [];
     protected modelBiases: number[] = [];
@@ -27,10 +31,10 @@ export class SoftmaxRegressionSparse {
             this.modelWeights =
                 new Array<number[]>(numberOutputUnits);
             this.modelBiases =
-                MathematicsHelper.vectorNewWithConstantElements(numberOutputUnits, 0);
+                SoftmaxRegressionSparse.MathematicsHelperObject.vectorNewWithConstantElements(numberOutputUnits, 0);
             for (let i = 0; i < numberOutputUnits; i++) {
                 this.modelWeights[i] =
-                    MathematicsHelper.vectorNewWithConstantElements(numberInputUnits, 0);
+                    SoftmaxRegressionSparse.MathematicsHelperObject.vectorNewWithConstantElements(numberInputUnits, 0);
             }
         }
         this.l1Regularization = l1Regularization;
@@ -83,16 +87,19 @@ export class SoftmaxRegressionSparse {
         const logLossVectorAfterEpoch: number[] = new Array<number>();
         const logLossVectorInGradientUpdate: number[] = new Array<number>();
         for (let epoch: number = 0; epoch < epochs; epoch++) {
-            const softmaxVectors: number[][] = MathematicsHelper.softmaxLogLossGradientUpdate(
-                groundTruthPositiveLabelIndexes,
-                featureVectorSparseIndexArrays,
-                this.modelWeights,
-                this.modelBiases,
-                learningRate,
-                this.l1Regularization,
-                this.l2Regularization);
+            const softmaxVectors: number[][] =
+                SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLossGradientUpdate(
+                    groundTruthPositiveLabelIndexes,
+                    featureVectorSparseIndexArrays,
+                    this.modelWeights,
+                    this.modelBiases,
+                    learningRate,
+                    this.l1Regularization,
+                    this.l2Regularization,
+                    0,
+                    0);
             if (toCalculateOverallLossInGradientUpdate) {
-                const logLossInGradientUpdate: number = MathematicsHelper.softmaxLogLoss(
+                const logLossInGradientUpdate: number = SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLoss(
                     softmaxVectors,
                     groundTruthPositiveLabelIndexes);
                 Utility.debuggingLog(
@@ -104,11 +111,13 @@ export class SoftmaxRegressionSparse {
             if (toCalculateOverallLossAfterEpoch) {
                 // -----------------------------------------------------------
                 const softmaxVectorsAfterGradientUpdate: number[][] =
-                    MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
-                    featureVectorSparseIndexArrays,
-                    this.modelWeights,
-                    this.modelBiases);
-                const logLossAfterEpoch: number = MathematicsHelper.softmaxLogLoss(
+                    SoftmaxRegressionSparse.MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
+                        featureVectorSparseIndexArrays,
+                        this.modelWeights,
+                        this.modelBiases,
+                        0,
+                        0);
+                const logLossAfterEpoch: number = SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLoss(
                     softmaxVectorsAfterGradientUpdate,
                     groundTruthPositiveLabelIndexes);
                 Utility.debuggingLog(
@@ -197,20 +206,22 @@ export class SoftmaxRegressionSparse {
                 //     `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
                 //     `, miniBatchSize=${miniBatchSize}` +
                 //     `, numberInstances=${numberInstances}`);
-                const softmaxVectors: number[][] = MathematicsHelper.softmaxLogLossGradientUpdate(
-                    groundTruthPositiveLabelIndexes,
-                    featureVectorSparseIndexArrays,
-                    this.modelWeights,
-                    this.modelBiases,
-                    learningRate,
-                    this.l1Regularization,
-                    this.l2Regularization,
-                    miniBatchIndexBegin,
-                    miniBatchIndexEnd);
+                const softmaxVectors: number[][] =
+                    SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLossGradientUpdate(
+                        groundTruthPositiveLabelIndexes,
+                        featureVectorSparseIndexArrays,
+                        this.modelWeights,
+                        this.modelBiases,
+                        learningRate,
+                        this.l1Regularization,
+                        this.l2Regularization,
+                        miniBatchIndexBegin,
+                        miniBatchIndexEnd);
                 if (toCalculateOverallLossInGradientUpdate) {
-                    const logLossInGradientUpdate: number = MathematicsHelper.softmaxLogLoss(
-                        softmaxVectors,
-                        groundTruthPositiveLabelIndexes);
+                    const logLossInGradientUpdate: number =
+                        SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLoss(
+                            softmaxVectors,
+                            groundTruthPositiveLabelIndexes);
                     // Utility.debuggingLog(
                     //     `B-epoch=${epoch}/${epochs}` +
                     //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
@@ -222,13 +233,16 @@ export class SoftmaxRegressionSparse {
                 }
                 if (toCalculateOverallLossAfterGradientUpdate) {
                     const softmaxVectorsAfterGradientUpdate: number[][] =
-                        MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+                        SoftmaxRegressionSparse.MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                             featureVectorSparseIndexArrays,
                             this.modelWeights,
-                            this.modelBiases);
-                    const logLossAfterGradientUpdate: number = MathematicsHelper.softmaxLogLoss(
-                        softmaxVectorsAfterGradientUpdate,
-                        groundTruthPositiveLabelIndexes);
+                            this.modelBiases,
+                            0,
+                            0);
+                    const logLossAfterGradientUpdate: number =
+                        SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLoss(
+                            softmaxVectorsAfterGradientUpdate,
+                            groundTruthPositiveLabelIndexes);
                     // Utility.debuggingLog(
                     //     `C-epoch=${epoch}/${epochs}` +
                     //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
@@ -257,11 +271,13 @@ export class SoftmaxRegressionSparse {
             if (toCalculateOverallLossAfterEpoch) {
                 // -----------------------------------------------------------
                 const softmaxVectorsAfterGradientUpdate: number[][] =
-                    MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+                    SoftmaxRegressionSparse.MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                         featureVectorSparseIndexArrays,
                         this.modelWeights,
-                        this.modelBiases);
-                const logLossAfterEpoch: number = MathematicsHelper.softmaxLogLoss(
+                        this.modelBiases,
+                        0,
+                        0);
+                const logLossAfterEpoch: number = SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLoss(
                     softmaxVectorsAfterGradientUpdate,
                     groundTruthPositiveLabelIndexes);
                 Utility.debuggingLog(
@@ -295,10 +311,13 @@ export class SoftmaxRegressionSparse {
     }
 
     public predict(featureVectorSparseIndexArrays: number[][]): number[][] {
-        const softmaxVectors: number[][] = MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
-            featureVectorSparseIndexArrays,
-            this.modelWeights,
-            this.modelBiases);
+        const softmaxVectors: number[][] =
+            SoftmaxRegressionSparse.MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
+                featureVectorSparseIndexArrays,
+                this.modelWeights,
+                this.modelBiases,
+                0,
+                0);
         return softmaxVectors;
     }
 

@@ -17,7 +17,7 @@ export function exampleFunctionNgramSubwordFeaturizer(): void {
     Utility.debuggingLog(result);
     Utility.debuggingLog("hashing code = " + Utility.getPositiveStringHashCode(input));
     assert.throws(() => {
-        Utility.debuggingLog("hashing index = " + featurizer.getHashingFeatureIndex(input)); },
+        Utility.debuggingLog(`hashing index = ${featurizer.getHashingFeatureIndex(input)}`); },
         `featurizer.getNumberHashingFeatures()=${featurizer.getNumberHashingFeatures()}`);
 }
 
