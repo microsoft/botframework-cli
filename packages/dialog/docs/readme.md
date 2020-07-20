@@ -22,7 +22,7 @@ For examples look at these files:
 - [Recognizer.schema](../test/schemas/Recognizer.schema) includes `$role:"implements(IRecognizer)"` which extends the `IRecognizer` definition when merged.
 - [root.schema](../test/schemas/root.schema) is a schema file that includes `$kind:"IRecognizer"` in order to make use of the `IRecognizer` place holder.  The `$role: []` ensures that this is available as a top-level object.
 - [app.schema](../test/schemas/app.schema) was created by this tool shows how all of these definitions are merged together. In particular if you look at `IRecognizer` you will see the definition that includes a string, or the complete definition of `Recognizer`.
-- [nuget3.en-us.uischema](../test/commands/dialog/projects/project3/nuget3.en-us.uischema) shows an example component .uischema file.
+- [nuget3.component1.en-us.uischema](../test/commands/dialog/projects/project3/nuget3.component1.en-us.uischema) shows an example component .uischema file.
 - [project3.en-us.uischema](../test/commands/dialog/oracles/project3.en-us.uischema) shows a merged .uischema file.
 
 [root.dialog](../test/examples/root.dialog) Shows how you could use the resulting schema to enter in JSON schema and get intellisense.

@@ -24,7 +24,7 @@ function countMatches(pattern: string | RegExp, lines: string[]): number {
     return count
 }
 
-async function merge(patterns: string[], output?: string, verbose?: boolean): Promise<[boolean, string[]]> {
+async function merge(patterns: string[], output?: string, verbose?: boolean, schemaPath?: string): Promise<[boolean, string[]]> {
     let lines: string[] = []
     let logger = msg => {
         console.log(msg)
@@ -34,16 +34,19 @@ async function merge(patterns: string[], output?: string, verbose?: boolean): Pr
         output ? ppath.join(tempDir, output) : '',
         verbose || false,
         logger, logger, logger,
-        undefined, false,
+        undefined, 
+        schemaPath ? ppath.join(tempDir, schemaPath) : undefined, 
+        false,
         ppath.join(srcDir, 'nuget'))
     let merged = await merger.merge()
     return [merged, lines]
 }
 
-async function compareToOracle(name: string): Promise<object> {
+// NOTE: If you update dialog:merge functionality you need to execute the makeOracles.cmd to update them
+async function compareToOracle(name: string, oraclePath?: string): Promise<object> {
     let generatedPath = ppath.join(tempDir, name)
     let generated = await fs.readJSON(generatedPath)
-    let oraclePath = ppath.join('oracles', name)
+    oraclePath = oraclePath ? ppath.join(tempDir, oraclePath) : ppath.join('oracles', name)
     let oracle = await fs.readJSON(oraclePath)
     let oracles = JSON.stringify(oracle)
     let generateds = JSON.stringify(generated)
@@ -160,18 +163,17 @@ describe('dialog:merge', async () => {
     it('csproj', async () => {
         console.log('\nStart csproj')
         let [merged, lines] = await merge(['projects/project3/project3.csproj'], 'project3.schema', true)
-        let errors = countMatches(/error|warning/i, lines)
-        assert(errors === 0, 'Should not have got errors')
+        assert(countMatches(/error|warning/i, lines) === 0, 'Should not have got errors')
         assert(merged, 'Could not merge')
         assert(countMatches(/Following.*project3/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
-        assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
+        assert(countMatches(/Parsing.*nuget3.component1.schema/, lines) === 1, 'Missing nuget3.component1.schema')
         assert(countMatches(/Copying/i, lines) === 7, 'Wrong number of copies')
         assert(countMatches(/Copying.*nuget3.lg/i, lines) === 1, 'Did not copy .lg')
         assert(countMatches(/Copying.*nuget3.lu/i, lines) === 1, 'Did not copy .lu')
         assert(countMatches(/Copying.*nuget3.qna/i, lines) === 1, 'Did not copy .qna')
-        assert(countMatches(/Copying.*nuget3.*uischema/i, lines) === 2, 'Did not copy .uischema')
-        assert(countMatches(/Copying.*nuget3.schema/i, lines) === 1, 'Did not copy .schema')
+        assert(countMatches(/Copying.*nuget3.component1.*uischema/i, lines) === 2, 'Did not copy .uischema')
+        assert(countMatches(/Copying.*nuget3.component1.schema/i, lines) === 1, 'Did not copy .schema')
         assert(await fs.pathExists(ppath.join(tempDir, 'generated', 'nuget3', 'assets', 'nuget3.qna')), 'Did not copy directory')
         await compareToOracle('project3.schema')
         await compareToOracle('project3.en-us.uischema')
@@ -181,7 +183,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart csproj-errors')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
         assert(!merged, 'Merging should faile')
-        assert(countMatches(/error|warning/i, lines) === 6, 'Wrong number of errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 4, 'Wrong number of errors or warnings')
         assert(countMatches(/Following.*project1/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget1.*10.0.1/, lines) === 1, 'Did not follow nuget1')
         assert(countMatches(/Following.*project2/, lines) === 1, 'Did not follow project2')
@@ -189,7 +191,7 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
         assert(countMatches(/Parsing.*nuget1-10.schema/, lines) === 1, 'Missing project1.schema')
         assert(countMatches(/Parsing.*nuget2.schema/, lines) === 1, 'Missing nuget2.schema')
-        assert(countMatches(/Parsing.*nuget3.schema/, lines) === 1, 'Missing nuget3.schema')
+        assert(countMatches(/Parsing.*nuget3.component1.schema/, lines) === 1, 'Missing nuget3.component1.schema')
         assert(countMatches(/Parsing.*project2.schema/, lines) === 1, 'Missing project2.schema')
         assert(countMatches(/multiple.dialog/, lines) === 3, 'Missing multiple definitions')
     })
@@ -198,10 +200,11 @@ describe('dialog:merge', async () => {
         console.log('\nStart csproj-uierrors')
         let [merged, lines] = await merge(['projects/project4/project4.csproj'], 'project4.schema', true)
         assert(!merged, 'Merging should fail')
-        assert(countMatches(/error|warning/i, lines) === 7, 'Wrong number of errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 14, 'Wrong number of errors or warnings')
         assert(countMatches(/nokind does not exist/i, lines) === 1, 'Missing nokind')
-        assert(countMatches(/nonExistentProperty/i, lines) === 4, 'Wrong number of non-existent properties')
-        assert(countMatches(/order.nonExistentOrder/i, lines) === 2, 'Wrong number of non-existent orders')
+        assert(countMatches(/nonExistentProperty/i, lines) === 8, 'Wrong number of non-existent properties')
+        assert(countMatches(/order.nonExistentOrder/i, lines) === 4, 'Wrong number of non-existent orders')
+        assert(countMatches(/missing \$schema/i, lines) === 1, 'Did not find missing schema')
     })
 
     it('csproj-config', async () => {
@@ -249,6 +252,18 @@ describe('dialog:merge', async () => {
         } finally {
             process.chdir(cwd)
         }
+    })
+
+    it('csproj -schema', async () => {
+        console.log('\nStart csproj')
+        let [merged, lines] = await merge(['projects/project3/project3.csproj'], 'project3.schema', false)
+        assert(countMatches(/error|warning/i, lines) === 0, 'Should not have got errors')
+        assert(merged, 'Could not merge')
+        let [merged2, lines2] = await merge(['projects/project3/project3.csproj'], 'project3-schema.schema', true, 'project3.schema')
+        assert(countMatches(/error|warning/i, lines2) === 0, 'Should not have got errors')
+        assert(countMatches(/using merged schema/i, lines2) === 1, 'Should use merged schema')
+        assert(merged2, 'Could not merge')
+        await compareToOracle('project3-schema.en-us.uischema', 'project3.en-us.uischema')
     })
 })
 

@@ -13,12 +13,9 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-- [@microsoft/bf-dialog](#microsoftbf-dialog)
-- [Relevant docs](#relevant-docs)
-- [Commands](#commands)
-  - [`bf dialog`](#bf-dialog)
-  - [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
-  - [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
+* [`bf dialog`](#bf-dialog)
+* [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
+* [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
 
 ## `bf dialog`
 
@@ -48,6 +45,7 @@ ARGUMENTS
 OPTIONS
   -h, --help             show CLI help
   -o, --output=output    Output path and filename for merged .schema and .uischema.  Defaults to first project name.
+  -s, --schema=schema    Path to merged .schema file to use if merging .uischema only.
   -v, --verbose          Show verbose logging of files as they are processed.
   --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource for C#.
 
