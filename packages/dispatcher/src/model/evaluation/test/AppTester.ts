@@ -116,9 +116,9 @@ export async function mainTester(): Promise<void> {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${Utility.JSONstringify(args)}`);
+        `args=${Utility.jsonStringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
+        `unknownArgs=${Utility.jsonStringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -180,7 +180,7 @@ export async function mainTester(): Promise<void> {
     const featurizer: NgramSubwordFeaturizer =
         tester.getFeaturizer();
     // Utility.debuggingLog(
-    //     `featurizer.getLabelMap()=${Utility.JSONstringify(featurizer.getLabelMap())}`);
+    //     `featurizer.getLabelMap()=${Utility.jsonStringify(featurizer.getLabelMap())}`);
     // -----------------------------------------------------------------------
     let intentsUtterancesWeights: {
         "intents": string[],

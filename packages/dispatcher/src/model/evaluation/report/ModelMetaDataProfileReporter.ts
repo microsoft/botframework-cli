@@ -29,7 +29,7 @@ export class ModelMetaDataProfileReporter extends AbstractBaseModelFeaturizerEva
         modelNullable: SoftmaxRegressionSparse|null,
         featurizerNullable: NgramSubwordFeaturizer|null,
         labels: string[],
-        labelMap: { [id: string]: number; }) {
+        labelMap: { [id: string]: number }) {
         super(
             modelFilename,
             featurizerFilename,

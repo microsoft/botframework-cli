@@ -5,9 +5,9 @@ class LUResource {
    * @param {any[]} errors
    */
   constructor(sections, content, errors) {
-    this.Sections = sections;
+    this.Sections = sections || [];
     this.Content = content;
-    this.Errors = errors;
+    this.Errors = errors || [];
   }
 }
 

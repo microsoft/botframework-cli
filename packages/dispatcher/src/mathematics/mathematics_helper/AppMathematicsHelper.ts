@@ -3,21 +3,26 @@
  * Licensed under the MIT License.
  */
 
+import { IMathematicsHelper } from "./IMathematicsHelper";
 import { MathematicsHelper } from "./MathematicsHelper";
 
 import { Utility } from "../../utility/Utility";
+
+const MathematicsHelperObject: IMathematicsHelper =
+    MathematicsHelper.GetMathematicsHelperObject();
 
 export function exampleFunctionMathematicsHelper(): void {
     // -----------------------------------------------------------------------
     const numerator = 1;
     const denominator = 2;
     Utility.debuggingLog(
-        MathematicsHelper.safeDivide(numerator, denominator));
-    Utility.debuggingLog(MathematicsHelper.safeLog(
-        MathematicsHelper.safeDivide(numerator, denominator)));
+        MathematicsHelperObject.safeDivide(numerator, denominator));
+    Utility.debuggingLog(
+        MathematicsHelperObject.safeLog(
+            MathematicsHelperObject.safeDivide(numerator, denominator)));
     // -----------------------------------------------------------------------
     const inputValue: number = 0.5;
-    const inputValueSigmoid: number = MathematicsHelper.sigmoidLogisticFunction(inputValue);
+    const inputValueSigmoid: number = MathematicsHelperObject.sigmoidLogisticFunction(inputValue);
     Utility.debuggingLog(inputValueSigmoid);
     // -----------------------------------------------------------------------
 }
@@ -27,12 +32,13 @@ export function exampleFunctionMathematicsHelperSoftmax(): void {
     const numerator = 1;
     const denominator = 2;
     Utility.debuggingLog(
-        MathematicsHelper.safeDivide(numerator, denominator));
-    Utility.debuggingLog(MathematicsHelper.safeLog(
-        MathematicsHelper.safeDivide(numerator, denominator)));
+        MathematicsHelperObject.safeDivide(numerator, denominator));
+    Utility.debuggingLog(
+        MathematicsHelperObject.safeLog(
+            MathematicsHelperObject.safeDivide(numerator, denominator)));
     // -----------------------------------------------------------------------
     const inputValue: number = 0.5;
-    const inputValueSigmoid: number = MathematicsHelper.sigmoidLogisticFunction(inputValue);
+    const inputValueSigmoid: number = MathematicsHelperObject.sigmoidLogisticFunction(inputValue);
     Utility.debuggingLog(inputValueSigmoid);
     // -----------------------------------------------------------------------
     /*

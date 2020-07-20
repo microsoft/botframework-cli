@@ -135,8 +135,8 @@ describe('Section CRUD tests for intent', () => {
     });
 
     it('add nestedIntentSection test with enableSections flag set', () => {
-        let newFileConent = `> !# @enableSections = true${NEWLINE}${NEWLINE}# CheckTodo${NEWLINE}## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`;
-
+        let newFileConent = `# CheckTodo${NEWLINE}## CheckUnreadTodo${NEWLINE}- check my unread todo${NEWLINE}- show my unread todos${NEWLINE}${NEWLINE}@ simple todoTitle${NEWLINE}${NEWLINE}## CheckDeletedTodo${NEWLINE}- check my deleted todo${NEWLINE}- show my deleted todos${NEWLINE}${NEWLINE}@ simple todoSubject`;
+        luresource = luparser.parse(luresource.Content + NEWLINE + '> !# @enableSections = true');
         luresource = new SectionOperator(luresource).addSection(newFileConent);
 
         assert.equal(luresource.Errors.length, 0);
@@ -247,7 +247,8 @@ describe('Section CRUD tests for entity', () => {
 
     it('update entity section test', () => {
         let newFileConent =
-`    - multiGrainWheat:
+`@ list BreadEntity =
+    - multiGrainWheat:
         - multi grain
     - white:
         - white`;
@@ -400,6 +401,6 @@ hello
         assert.equal(luresource.Errors.length, 0);
         assert.equal(luresource.Sections.length, 1);
         assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
-        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), insertFileContent + '\n');
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), insertFileContent);
     });
 });
