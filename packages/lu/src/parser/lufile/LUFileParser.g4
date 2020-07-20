@@ -135,15 +135,15 @@ entityDefinition
     ;
     
 entityLine
-    : WS* DOLLAR (entityName COLON_MARK entityType)?
+    : WS* DOLLAR entityName? COLON_MARK? entityType?
     ;
 
 entityName
-    : (ENTITY_TEXT|WS)*
+    : (ENTITY_TEXT|WS)+
     ;
 
 entityType
-    : (compositeEntityIdentifier|regexEntityIdentifier|ENTITY_TEXT|COLON_MARK|WS)*
+    : (compositeEntityIdentifier|regexEntityIdentifier|ENTITY_TEXT|COLON_MARK|WS)+
     ;
 
 compositeEntityIdentifier
