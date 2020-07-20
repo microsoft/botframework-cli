@@ -6,6 +6,7 @@
 import { AppSoftmaxRegressionSparse } from "../neural_network/learner/AppSoftmaxRegressionSparse";
 import { SoftmaxRegressionSparse } from "../neural_network/learner/SoftmaxRegressionSparse";
 
+import { IMathematicsHelper } from "../../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../../mathematics/mathematics_helper/MathematicsHelper";
 
 import { ConfusionMatrix } from "../../../../mathematics/confusion_matrix/ConfusionMatrix";
@@ -13,6 +14,9 @@ import { ConfusionMatrix } from "../../../../mathematics/confusion_matrix/Confus
 import { Utility } from "../../../../utility/Utility";
 
 export class AutoActiveLearner {
+
+    public static readonly MathematicsHelperObject: IMathematicsHelper =
+        MathematicsHelper.GetMathematicsHelperObject();
 
     public static defaultDoAutoActiveLearning: boolean = false;
     public static defaultAalLimitInitialNumberOfInstancesPerCategory: number = 10;
@@ -116,7 +120,7 @@ export class AutoActiveLearner {
 
     public learn(
         labels: string[],
-        labelMap: { [id: string]: number; },
+        labelMap: { [id: string]: number },
         numberLabels: number,
         numberFeatures: number,
         labelIndexArray: number[],
@@ -212,7 +216,7 @@ export class AutoActiveLearner {
                 //     `, prediction=` +
                 //     `${prediction}`);
                 const argMax: { "indexMax": number, "max": number } =
-                    MathematicsHelper.getIndexOnFirstMaxEntry(prediction);
+                    AutoActiveLearner.MathematicsHelperObject.getIndexOnFirstMaxEntry(prediction);
                 const predictionLabelId: number =
                     argMax.indexMax;
                 confusionMatrixCurrentIteration.addInstanceByLabelIndex(

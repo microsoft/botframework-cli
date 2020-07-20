@@ -67,7 +67,11 @@ class SimpleIntentSection  extends BaseSection {
                     }))
                 };
                 if (utteranceAndEntities !== undefined) {
-                    utteranceAndEntities.context = normalIntentStr;
+                    utteranceAndEntities.contextText = normalIntentStr.getText();
+                    const startPosition = new Position(normalIntentStr.start.line, normalIntentStr.start.column);
+                    const stopPosition = new Position(normalIntentStr.stop.line, normalIntentStr.stop.column + normalIntentStr.stop.text.length);
+                    utteranceAndEntities.range = new Range(startPosition, stopPosition);
+                    
                     utteranceAndEntitiesMap.push(utteranceAndEntities);
                     utteranceAndEntities.errorMsgs.forEach(errorMsg => errors.push(BuildDiagnostic({
                         message: errorMsg,

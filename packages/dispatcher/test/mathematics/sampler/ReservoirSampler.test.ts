@@ -381,7 +381,7 @@ describe("Test Suite - mathematics/sampler/ReservoirSampler", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
-        const labelMap: { [id: string]: number; } = sampler.getLabelMap();
+        const labelMap: { [id: string]: number } = sampler.getLabelMap();
         Utility.debuggingLog(
             `labelMap=${labelMap}`);
     });
@@ -390,7 +390,7 @@ describe("Test Suite - mathematics/sampler/ReservoirSampler", () => {
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();
         sampler.addInstance("label0", "label0 - utterance 0");
-        const instances: { [id: string]: string[]; } = sampler.getInstances();
+        const instances: { [id: string]: string[] } = sampler.getInstances();
         Utility.debuggingLog(
             `instances=${instances}`);
     });
