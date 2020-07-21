@@ -85,7 +85,7 @@ const resolveMultiTurnReferences = function(qnaList) {
             let qnaId = qnaList.find(x => x.id === prompt.qnaId || x.id === parseInt(prompt.qnaId));
             if (!qnaId) {
                 // find by question match
-                qnaId = qnaList.find(x => x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace(/-/g, ' ').trim()))
+                qnaId = qnaList.find(x => x.source.trim() !== 'crosstrained' && (x.questions.includes(prompt.qnaId) || x.questions.includes(prompt.qnaId.replace(/-/g, ' ').trim())))
             }
             if (qnaId === undefined) {
                 throw (new exception(retCode.INVALID_INPUT, `[ERROR]: Cannot find follow up prompt definition for '- [${prompt.displayText}](#?${prompt.qnaId}).`));

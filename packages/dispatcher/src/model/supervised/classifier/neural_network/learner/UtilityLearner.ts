@@ -7,11 +7,15 @@ import { SoftmaxRegressionSparse } from "./SoftmaxRegressionSparse";
 
 import { NgramSubwordFeaturizer } from "../../../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
+import { IMathematicsHelper } from "../../../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../../../mathematics/mathematics_helper/MathematicsHelper";
 
 import { Utility } from "../../../../../utility/Utility";
 
 export class LearnerUtility {
+
+    public static readonly MathematicsHelperObject: IMathematicsHelper =
+        MathematicsHelper.GetMathematicsHelperObject();
 
     public static exampleFunctionPredictAndEvaluateTestDataset(
         featurizer: NgramSubwordFeaturizer,
@@ -57,7 +61,7 @@ export class LearnerUtility {
             const predictionsDataArray: number[][] =
                 predictions;
             const predictionLabelIndexMax: { "indexMax": number, "max": number } =
-                MathematicsHelper.getIndexOnFirstMaxEntry(predictionsDataArray[0]);
+                LearnerUtility.MathematicsHelperObject.getIndexOnFirstMaxEntry(predictionsDataArray[0]);
             const predictionLabelIndex: number =
                 predictionLabelIndexMax.indexMax;
             const predictionLabel: string =
@@ -126,7 +130,7 @@ export class LearnerUtility {
             const predictionsDataArray: number[][] =
                 predictions;
             const predictionLabelIndexMax: { "indexMax": number, "max": number } =
-                MathematicsHelper.getIndexOnFirstMaxEntry(predictionsDataArray[0]);
+                LearnerUtility.MathematicsHelperObject.getIndexOnFirstMaxEntry(predictionsDataArray[0]);
             const predictionLabelIndex: number =
                 predictionLabelIndexMax.indexMax;
             const predictionLabel: string =

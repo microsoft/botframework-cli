@@ -5,10 +5,11 @@
 
 import { SoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
+import { IMathematicsHelper } from "../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
 
+import { IConfusionMatrix } from "../../../mathematics/confusion_matrix/IConfusionMatrix";
 import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
-
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
 import { ThresholdReporter } from "../report/ThresholdReporter";
@@ -25,8 +26,11 @@ import { Utility } from "../../../utility/Utility";
 
 export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
 
+    public static readonly MathematicsHelperObject: IMathematicsHelper =
+        MathematicsHelper.GetMathematicsHelperObject();
+
     protected labels: string[] = [];
-    protected labelMap: { [id: string]: number; } = {};
+    protected labelMap: { [id: string]: number } = {};
 
     protected intents: string[] = [];
     protected utterances: string[] = [];
@@ -169,22 +173,24 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
         const confusionMatrixPrediction: ConfusionMatrix =
             predictionResult.confusionMatrixPrediction;
         const confusionMatrixMetricStructure: {
-            "confusionMatrix": ConfusionMatrix,
-            "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
-            "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrix; },
-            "macroAverageMetrics": { "averagePrecision": number,
-                                     "averageRecall": number,
-                                     "averageF1Score": number,
-                                     "support": number },
-            "microAverageMetrics": { "accuracy": number,
-                                     "truePositives": number,
-                                     "support": number },
-            "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                             "weightedAverageRecall": number,
-                                             "weightedAverageF1Score": number,
-                                             "support": number } } =
-            ConfusionMatrix.generateConfusionMatrixMetricStructure(
-                confusionMatrixPrediction);
+            "confusionMatrix": IConfusionMatrix,
+            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
+            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "macroAverageMetrics": {
+                "averagePrecision": number,
+                "averageRecall": number,
+                "averageF1Score": number,
+                "support": number },
+            "microAverageMetrics": {
+                "accuracy": number,
+                "truePositives": number,
+                "support": number },
+            "weightedMacroAverageMetrics": {
+                "weightedAveragePrecision": number,
+                "weightedAverageRecall": number,
+                "weightedAverageF1Score": number,
+                "support": number } } =
+            confusionMatrixPrediction.generateConfusionMatrixMetricStructure();
         Utility.debuggingLog(
            `confusionMatrixPrediction.getMicroAverageMetrics()=` +
            `${confusionMatrixPrediction.getMicroAverageMetrics()}` +
@@ -253,7 +259,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             this.getFeaturizer();
         // -------------------------------------------------------------------
         const labels: string[] = this.getLabels();
-        const labelMap: { [id: string]: number; } = this.getLabelMap();
+        const labelMap: { [id: string]: number } = this.getLabelMap();
         // const numberLabels: number = featurizer.getNumberLabels();
         // const numberFeatures: number = featurizer.getNumberFeatures();
         // -------------------------------------------------------------------
@@ -270,7 +276,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             const prediction: number[] = predictions[0];
             // ---------------------------------------------------------------
             const argMax: { "indexMax": number, "max": number } =
-                MathematicsHelper.getIndexOnFirstMaxEntry(prediction);
+                Predictor.MathematicsHelperObject.getIndexOnFirstMaxEntry(prediction);
             const predictionLabelIndex: number =
                 argMax.indexMax;
             let groundTruthLabelIndex: number = labelMap[intent];

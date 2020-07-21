@@ -42,7 +42,8 @@ export default class LuisBuild extends Command {
     deleteOldVersion: flags.boolean({description: 'Delete old version of LUIS application after building new one.'}),
     log: flags.boolean({description: 'Write out log messages to console', default: false}),
     endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
-    schema: flags.string({description: 'Defines $schema for generated .dialog files'})
+    schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
+    isStaging: flags.boolean({description: 'Publish luis application to staging slot if set. Default to production slot', default: false})
   }
 
   async run() {
@@ -70,7 +71,7 @@ export default class LuisBuild extends Command {
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
 
-      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, schema, endpoint}
+      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging}
         = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -140,7 +141,7 @@ export default class LuisBuild extends Command {
 
       // update or create and then train and publish luis applications based on loaded resources
       if (log) this.log('Handling applications...')
-      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, deleteOldVersion, multiRecognizers, settings)
+      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, deleteOldVersion, isStaging, multiRecognizers, settings)
 
       // write dialog assets based on config
       if (out) {

@@ -474,7 +474,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
     // construct new question content for qna resource
     let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
-    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}> !# @qna.pair.source = crosstrained${NEWLINE}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 

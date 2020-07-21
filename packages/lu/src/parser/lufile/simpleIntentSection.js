@@ -6,14 +6,17 @@ const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const NEWLINE = require('os').EOL;
+const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
-class SimpleIntentSection {
+class SimpleIntentSection  extends BaseSection {
     /**
      * 
      * @param {SimpleIntentSectionContext} parseTree 
      */
     constructor(parseTree, content) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.SIMPLEINTENTSECTION;
         this.UtteranceAndEntitiesMap = [];
         this.Entities = [];
@@ -30,6 +33,9 @@ class SimpleIntentSection {
             this.Errors = this.Errors.concat(result.errors);
             this.Id = `${this.SectionType}_${this.Name}`;
             this.Body = this.ExtractBody(parseTree, content)
+            const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+            const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+            this.Range = new Range(startPosition, stopPosition);
         }
     }
 
@@ -61,7 +67,11 @@ class SimpleIntentSection {
                     }))
                 };
                 if (utteranceAndEntities !== undefined) {
-                    utteranceAndEntities.context = normalIntentStr;
+                    utteranceAndEntities.contextText = normalIntentStr.getText();
+                    const startPosition = new Position(normalIntentStr.start.line, normalIntentStr.start.column);
+                    const stopPosition = new Position(normalIntentStr.stop.line, normalIntentStr.stop.column + normalIntentStr.stop.text.length);
+                    utteranceAndEntities.range = new Range(startPosition, stopPosition);
+                    
                     utteranceAndEntitiesMap.push(utteranceAndEntities);
                     utteranceAndEntities.errorMsgs.forEach(errorMsg => errors.push(BuildDiagnostic({
                         message: errorMsg,

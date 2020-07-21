@@ -94,7 +94,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
             featurizer.getIntentsUtterancesWeights();
         Utility.debuggingLog(
-            `intentsUtterancesWeights=${Utility.JSONstringify(intentsUtterancesWeights)}`);
+            `intentsUtterancesWeights=${Utility.jsonStringify(intentsUtterancesWeights)}`);
     });
 
     it("Test.0200 getLabels()", function() {
@@ -116,7 +116,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
-        const labelMap: { [id: string]: number; } =
+        const labelMap: { [id: string]: number } =
             featurizer.getLabelMap();
         const numberLabels: number =
             DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap);
@@ -144,7 +144,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
-        const featureMap: { [id: string]: number; } =
+        const featureMap: { [id: string]: number } =
             featurizer.getFeatureMap();
         const numberFeatures: number =
             DictionaryMapUtility.getStringIdGenericValueDictionaryLength(featureMap);

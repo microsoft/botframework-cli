@@ -14,22 +14,42 @@ const LUErrorListener = require('./luErrorListener');
 const SectionType = require('./../utils/enums/lusectiontypes');
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 const NEWLINE = require('os').EOL;
 
 class LUParser {
+
     /**
-     * @param {string} text
+     * 
+     * @param {string} text 
+     * @param {LUResource} luResource 
      */
-    static parse(text) {
+    static parseWithRef(text, luResource) {
         if (text === undefined || text === '') {
             return new LUResource([], '', []);
         }
 
-        let sections = [];
-        let content = text;
+        const sectionEnabled = luResource ? this.isSectionEnabled(luResource.Sections) : undefined;
+
+        return this.parse(text, sectionEnabled);
+    }
+
+    /**
+     * @param {string} text
+     */
+    static parse(text, sectionEnabled) {
+        if (text === undefined || text === '') {
+            return new LUResource([], '', []);
+        }
 
         let {fileContent, errors} = this.getFileContent(text);
 
+        return this.extractFileContent(fileContent, text, errors, sectionEnabled);
+    }
+
+    static extractFileContent(fileContent, content, errors, sectionEnabled) {
+        let sections = [];
         try {
             let modelInfoSections = this.extractModelInfoSections(fileContent);
             modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
@@ -41,7 +61,7 @@ class LUParser {
         }
 
         try {
-            let isSectionEnabled = this.isSectionEnabled(sections);
+            let isSectionEnabled = sectionEnabled === undefined ?  this.isSectionEnabled(sections) : sectionEnabled;
 
             let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
             nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
@@ -50,12 +70,21 @@ class LUParser {
             } else {
                 nestedIntentSections.forEach(section => {
                     let emptyIntentSection = new SimpleIntentSection();
-                    emptyIntentSection.ParseTree = section.ParseTree.nestedIntentNameLine();
                     emptyIntentSection.Name = section.Name;
+                    emptyIntentSection.Id = `${emptyIntentSection.SectionType}_${emptyIntentSection.Name}`
+                    
+                    // get the end character index
+                    const firstLine = content.split(/\r?\n/)[0];
+                    let endCharacter = section.Name.length + 2;
+                    if (firstLine.includes(section.Name)) {
+                        endCharacter = firstLine.length;
+                    }
+                    const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, endCharacter))
+                    emptyIntentSection.Range = range;
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
                     let error = BuildDiagnostic({
                         message: errorMsg,
-                        context: emptyIntentSection.ParseTree,
+                        range: emptyIntentSection.Range,
                         severity: DiagnosticSeverity.WARN
                     })
 
@@ -301,23 +330,24 @@ class LUParser {
      * @param {string} content
      */
     static extractSectionBody(sections, content) {
-        sections.sort((a, b) => a.ParseTree.start.line - b.ParseTree.start.line)
+        sections.sort((a, b) => a.Range.Start.Line - b.Range.Start.Line)
         const originList = content.split(/\r?\n/)
         let qnaSectionIndex = 0
         sections.forEach(function (section, index) {
             if (section.SectionType === SectionType.SIMPLEINTENTSECTION
                 || section.SectionType === SectionType.NESTEDINTENTSECTION
                 || section.SectionType === SectionType.QNASECTION) {
-                const startLine = section.ParseTree.start.line - 1
+                const startLine = section.Range.Start.Line - 1;
                 let stopLine
                 if (index + 1 < sections.length) {
-                    stopLine = sections[index + 1].ParseTree.start.line - 1
-                    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine >= stopLine || originList.Length <= stopLine) {
+                    stopLine = sections[index + 1].Range.Start.Line - 1
+                    if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine) {
                         throw new Error("index out of range.")
                     }
                 } else {
                     stopLine = originList.length
                 }
+                section.Range.End.Line = stopLine;
 
                 let destList
                 if (section.SectionType === SectionType.QNASECTION) {
@@ -329,15 +359,10 @@ class LUParser {
                 }
 
                 section.Body = destList.join(NEWLINE)
-                section.StartLine = startLine
-                section.StopLine = stopLine - 1
 
                 if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
                     LUParser.extractSectionBody(section.SimpleIntentSections, originList.slice(0, stopLine).join(NEWLINE))
                 }
-            } else {
-                section.StartLine = section.ParseTree.start.line
-                section.StopLine = section.ParseTree.stop.line - 1
             }
         })
     }
