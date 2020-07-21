@@ -122,7 +122,10 @@ export class Builder {
         qnaObjects.set(fileCulture, qnaFiles)
       } else {
         // merge contents of qna files with same culture
-        qnaObjects.get(fileCulture)?.push(...qnaFiles)
+        let qnaObject = qnaObjects.get(fileCulture)
+        if (qnaObject !== undefined) {
+          qnaObject.push(...qnaFiles)
+        }
       }
     }
 
