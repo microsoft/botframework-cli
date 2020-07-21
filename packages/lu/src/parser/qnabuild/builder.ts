@@ -315,9 +315,10 @@ export class Builder {
       kbId = await this.createUrlKB(qnaBuildCore, url, kbName)
     }
 
-    const kbJson = await qnaBuildCore.exportKB(kbId, 'Prod')
+    const kbJson = await qnaBuildCore.exportKB(kbId, 'Test')
     const kb = new KB(kbJson)
     const kbToLuContent = kb.parseToLuContent()
+    await qnaBuildCore.deleteKB(kbId)
 
     return kbToLuContent
   }
@@ -350,9 +351,10 @@ export class Builder {
       kbId = await this.createFileKB(qnaBuildCore, fileName, fileUri, kbName)
     }
 
-    const kbJson = await qnaBuildCore.exportKB(kbId, 'Prod')
+    const kbJson = await qnaBuildCore.exportKB(kbId, 'Test')
     const kb = new KB(kbJson)
     const kbToLuContent = kb.parseToLuContent()
+    await qnaBuildCore.deleteKB(kbId)
 
     return kbToLuContent
   }

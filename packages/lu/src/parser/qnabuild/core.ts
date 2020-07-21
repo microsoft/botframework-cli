@@ -116,6 +116,14 @@ export class QnaBuildCore {
     return endpointKeys
   }
 
+  public async deleteKB(kbId: string) {
+    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'DELETE')
+    const text = await response.text()
+    if (text) {
+      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    }
+  }
+
   public isKBEqual(kbA: any, kbB: any): boolean {
     const qnaListA = kbA.qnaList
     const qnaListAToCompare = qnaListA.map((qna: any) => {
