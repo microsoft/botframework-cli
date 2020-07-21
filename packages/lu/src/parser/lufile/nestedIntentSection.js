@@ -15,7 +15,7 @@ class NestedIntentSection  extends BaseSection {
         super();
         this.SectionType = LUSectionTypes.NESTEDINTENTSECTION;
         this.Name = this.ExtractName(parseTree);
-        this.Body = this.ExtractBody(parseTree, content);
+        this.Body = '';
         this.SimpleIntentSections = this.ExtractSimpleIntentSections(parseTree, content);
         this.Errors = [];
         if (this.SimpleIntentSections && this.SimpleIntentSections.length > 0) {
@@ -32,23 +32,6 @@ class NestedIntentSection  extends BaseSection {
 
     ExtractName(parseTree) {
         return parseTree.nestedIntentNameLine().nestedIntentName().getText().trim();
-    }
-
-    ExtractBody(parseTree, content) {
-        const startLine = parseTree.start.line - 1;
-        const stopLine = parseTree.stop.line - 1;
-        const originList = content.split(/\r?\n/)
-        if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.Length <= stopLine) {
-            throw new Error("index out of range.")
-        }
-
-        if (startLine < stopLine) {
-            const destList = originList.slice(startLine + 1, stopLine + 1)
-            
-            return destList.join(NEWLINE)
-        } else {
-            return ''
-        }
     }
 
     ExtractSimpleIntentSections(parseTree, content) {
