@@ -347,6 +347,7 @@ export default class SchemaMerger {
         }
 
         // Delete existing output
+        let outputPath = ppath.resolve(this.output + '.schema')
         await fs.remove(this.output + '.schema')
         await fs.remove(this.output + '.schema.final')
         await fs.remove(this.output + '.schema.expanded')
@@ -354,8 +355,12 @@ export default class SchemaMerger {
         let componentPaths: PathComponent[] = []
         let schemas = this.files.get('.schema')
         if (schemas) {
-            for (let path of schemas.values()) {
-                componentPaths.push(path[0])
+            for (let pathComponents of schemas.values()) {
+                // Just take first definition if multiple ones
+                let pathComponent = pathComponents[0]
+                if (pathComponent.path !== outputPath) {
+                    componentPaths.push(pathComponent)
+                }
             }
         }
 
@@ -595,7 +600,8 @@ export default class SchemaMerger {
                         for (let componentPath of componentPaths) {
                             let component = componentPath.component
                             let path = componentPath.path
-                            if (!component.isCSProject()) {
+                            // Don't copy .schema/.uischema so that we don't pick-up in project
+                            if (!component.isCSProject() && !path.endsWith('.schema') && !path.endsWith('.uischema')) {
                                 // Copy package files to output
                                 let relativePath = ppath.relative(ppath.dirname(component.path), path)
                                 let outputPath = ppath.join(generatedPath, componentPath.component.name, relativePath)
@@ -754,7 +760,6 @@ export default class SchemaMerger {
                                             for (let dependency of group.dependency) {
                                                 dependencies.push(dependency.$)
                                             }
-                                            break
                                         }
                                     }
                                 }
@@ -794,8 +799,12 @@ export default class SchemaMerger {
                     pkgPath = ppath.join(pkgPath, version || '')
                     let nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
                     await this.expandNuspec(nuspecPath)
-                } else {
-                    this.parsingError('  Nuget package does not exist')
+                } else if (this.debug) {
+                    // Ignore any missing dependencies assuming they are from a target framework like this:
+                    // <group targetFramework=".NETFramework4.0">
+                    //   <dependency id="Microsoft.Diagnostics.Tracing.EventSource.Redist" version = "1.1.28" />
+                    // </group>
+                    this.parsingWarning('Missing package')
                 }
             } catch (e) {
                 this.parsingWarning(e.message)
