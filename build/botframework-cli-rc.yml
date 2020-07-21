@@ -13,13 +13,13 @@ trigger: none
 
 variables:
 - template: botframework-cli-version.yml  # Template reference
-- name: _version
-  value: ${{ join(variables.releaseVersion,'-rc') }}
 #  version: define this in Azure, settable at queue time
 
 stages:
 - stage: Build
   jobs:
   - job:
+    variables:
+      _version: ${{ join(variables.releaseVersion,'-rc') }}
     steps:
     - template: botframework-cli-build-test.yml
