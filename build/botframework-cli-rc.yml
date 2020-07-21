@@ -20,6 +20,6 @@ stages:
   jobs:
   - job:
     variables:
-      _version: ${{ join(releaseVersion,'-rc') }}
+      _version: $(variables.releaseVersion)
     steps:
     - template: botframework-cli-build-test.yml
