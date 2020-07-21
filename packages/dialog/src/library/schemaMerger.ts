@@ -268,7 +268,7 @@ export default class SchemaMerger {
      */
     public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
-        this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, '.schema')) : ''
+        this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
         this.verbose = verbose
         this.log = log
         this.warn = warn
@@ -544,6 +544,7 @@ export default class SchemaMerger {
                             } else {
                                 this.validateUISchema(component)
                             }
+                            delete component.$schema
                             locale[kindName] = mergeObjects(locale[kindName], component)
                         } catch (e) {
                             this.parsingError(e)
@@ -560,10 +561,11 @@ export default class SchemaMerger {
                 }
             }
             if (!this.failed) {
-                for (let locale in result) {
+                for (let locale of Object.keys(result)) {
+                    let uischema = {$schema: this.metaUISchemaId, ...result[locale]}
                     this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
                     this.log(`Writing ${this.currentFile}`)
-                    await fs.writeJSON(this.currentFile, result[locale], this.jsonOptions)
+                    await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
                 }
             }
         }
@@ -774,8 +776,8 @@ export default class SchemaMerger {
                 } finally {
                     this.popParent()
                 }
-            } else {
-                this.parsingError('  Could not find nuspec')
+            } else if (this.debug) {
+                this.parsingWarning('  Could not find nuspec')
             }
         }
     }
