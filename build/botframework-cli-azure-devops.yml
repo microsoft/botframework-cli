@@ -12,7 +12,8 @@ pr: none
 trigger: none
 
 variables:
-  _version: '4.10.0-dev'
+- template: botframework-cli-version.yml  # Template reference
+  _version: ${{ join(variables.releaseVersion,'-devops') }}
 #  version: define this in Azure, settable at queue time
 
 stages:
