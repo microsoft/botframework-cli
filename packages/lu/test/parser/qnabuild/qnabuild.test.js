@@ -43,6 +43,10 @@ describe('builder: importUrlOrFileReference function return lu content from file
       })
   })
 
+  nock('https://westus.api.cognitive.microsoft.com')
+    .delete(uri => uri.includes('knowledgebases'))
+    .reply(200)
+
   it('should return lu content from file successfully', async () => {
     const builder = new Builder()
     const luContent = await builder.importFileReference(
@@ -97,6 +101,10 @@ describe('builder: importUrlOrFileReference function return lu content from url 
           metadata: []
         }]
       })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .delete(uri => uri.includes('knowledgebases'))
+      .reply(200)
   })
 
   it('should return lu content from url successfully', async () => {
