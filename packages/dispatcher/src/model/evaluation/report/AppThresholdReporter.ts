@@ -131,9 +131,9 @@ export function mainThresholdReporter(): void {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${Utility.JSONstringify(args)}`);
+        `args=${Utility.jsonStringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
+        `unknownArgs=${Utility.jsonStringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
@@ -196,9 +196,9 @@ export function mainThresholdReporter(): void {
         `lineIndexToStart=${lineIndexToStart}`);
     // -----------------------------------------------------------------------
     let labels: string[] = [];
-    let labelMap: { [id: string]: number; } = {};
+    let labelMap: { [id: string]: number } = {};
     if (!Utility.isEmptyString(labelFilename)) {
-        const labelsAndLabelMap: { "stringArray": string[], "stringMap": { [id: string]: number; } } =
+        const labelsAndLabelMap: { "stringArray": string[], "stringMap": { [id: string]: number } } =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArrayFile(labelFilename);
         labels = labelsAndLabelMap.stringArray;
         labelMap = labelsAndLabelMap.stringMap;

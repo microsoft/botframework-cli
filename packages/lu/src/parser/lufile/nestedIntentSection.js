@@ -2,14 +2,17 @@ const NestedIntentSectionContext = require('./generated/LUFileParser').LUFilePar
 const SimpleIntentSection = require('./simpleIntentSection');
 const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const NEWLINE = require('os').EOL;
+const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
-class NestedIntentSection {
+class NestedIntentSection  extends BaseSection {
     /**
      * 
      * @param {NestedIntentSectionContext} parseTree 
      */
     constructor(parseTree, content) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.NESTEDINTENTSECTION;
         this.Name = this.ExtractName(parseTree);
         this.Body = this.ExtractBody(parseTree, content);
@@ -22,6 +25,9 @@ class NestedIntentSection {
         }
         
         this.Id = `${this.SectionType}_${this.Name}`;
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 
     ExtractName(parseTree) {
@@ -29,8 +35,8 @@ class NestedIntentSection {
     }
 
     ExtractBody(parseTree, content) {
-        const startLine = parseTree.start.line - 1
-        const stopLine = parseTree.stop.line - 1
+        const startLine = parseTree.start.line - 1;
+        const stopLine = parseTree.stop.line - 1;
         const originList = content.split(/\r?\n/)
         if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.Length <= stopLine) {
             throw new Error("index out of range.")

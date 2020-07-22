@@ -22,7 +22,7 @@ export abstract class AbstractBaseModelFeaturizerEvaluator extends AbstractBaseE
     protected featurizerNullable: NgramSubwordFeaturizer|null = null;
 
     protected labels: string[] = [];
-    protected labelMap: { [id: string]: number; } = {};
+    protected labelMap: { [id: string]: number } = {};
 
     constructor(
         modelFilename: string,
@@ -30,7 +30,7 @@ export abstract class AbstractBaseModelFeaturizerEvaluator extends AbstractBaseE
         modelNullable: SoftmaxRegressionSparse|null,
         featurizerNullable: NgramSubwordFeaturizer|null,
         labels: string[],
-        labelMap: { [id: string]: number; }) {
+        labelMap: { [id: string]: number }) {
         super();
         if (!Utility.isEmptyString(modelFilename)) {
             this.modelNullable = this.deserializeModel(modelFilename);
@@ -100,7 +100,7 @@ export abstract class AbstractBaseModelFeaturizerEvaluator extends AbstractBaseE
         }
         return this.labels;
     }
-    public getLabelMap(): { [id: string]: number; } {
+    public getLabelMap(): { [id: string]: number } {
         if (DictionaryMapUtility.isEmptyStringIdGenericValueDictionary(this.labelMap)) {
             Utility.debuggingThrow("this.labelMap is empty");
         }

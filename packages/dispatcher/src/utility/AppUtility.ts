@@ -23,7 +23,7 @@ export function exampleFunctionUtilityWithFilename(
     Utility.debuggingLog(`linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
     const labels: string[] = [ "label0", "label1", "label2" ];
-    const labelMap: { [id: string]: number; } = {};
+    const labelMap: { [id: string]: number } = {};
     labelMap.label0 = 0;
     labelMap.label1 = 1;
     labelMap.label2 = 2;
@@ -110,9 +110,9 @@ export function exampleFunctionUtility(): void {
     const args: any = parsedKnownArgs[0];
     const unknownArgs: any = parsedKnownArgs[1];
     Utility.debuggingLog(
-        `args=${Utility.JSONstringify(args)}`);
+        `args=${Utility.jsonStringify(args)}`);
     Utility.debuggingLog(
-        `unknownArgs=${Utility.JSONstringify(unknownArgs)}`);
+        `unknownArgs=${Utility.jsonStringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
     Utility.toPrintDebuggingLogToConsole = debugFlag;
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
