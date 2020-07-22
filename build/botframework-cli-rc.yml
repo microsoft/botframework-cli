@@ -20,8 +20,6 @@ stages:
   jobs:
   - job:
     steps:
-    - bash: |
-      _version=`echo "${{ variables.releaseVersion }}"`
-      echo "##vso[task.setvariable variable=_version]${_version}-rc"  ## Store variable for subsequent steps
-    displayName: Release version
+    - bash: echo "##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-rc"  ## Store variable for subsequent steps
+    - script: echo '##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-rc'
     - template: botframework-cli-build-test.yml
