@@ -22,6 +22,5 @@ stages:
     steps:
     - bash: |
       _version=`echo "${{ variables.releaseVersion }}"`
-      echo "_version:  $_version"
       echo "##vso[task.setvariable variable=_version]${_version}-rc"  ## Store variable for subsequent steps
     - template: botframework-cli-build-test.yml
