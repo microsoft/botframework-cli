@@ -12,15 +12,16 @@ pr: none
 trigger: none
 
 variables:
-- template: botframework-cli-version.yml  # Template reference
+- template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
 #  version: define this in Azure, settable at queue time
 
 stages:
 - stage: Build
   jobs:
   - job:
-    variables:
-      release: ${{ variables.releaseVersion }}
-      _version: $[join(variables['release'],'-rc')]
     steps:
+    - bash: |
+      _version=`echo "${{ variables.releaseVersion }}"`
+      echo "_version:  $_version"
+      echo "##vso[task.setvariable variable=_version]${_version}-rc"  ## Store variable for subsequent steps
     - template: botframework-cli-build-test.yml
