@@ -74,11 +74,10 @@ class LUParser {
                     emptyIntentSection.Id = `${emptyIntentSection.SectionType}_${emptyIntentSection.Name}`
                     
                     // get the end character index
-                    const firstLine = content.split(/\r?\n/)[0];
+                    // this is default value
+                    // it will be reset in function extractSectionBody()
                     let endCharacter = section.Name.length + 2;
-                    if (firstLine.includes(section.Name)) {
-                        endCharacter = firstLine.length;
-                    }
+                   
                     const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, endCharacter))
                     emptyIntentSection.Range = range;
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`

@@ -38,6 +38,7 @@ class NestedIntentSection  extends BaseSection {
         let simpleIntentSections = [];
         for(const subIntentDefinition of parseTree.nestedIntentBodyDefinition().subIntentDefinition()) {
             let simpleIntentSection = new SimpleIntentSection(subIntentDefinition.simpleIntentSection(), content);
+            simpleIntentSection.Range.Start.Character = 0
             simpleIntentSections.push(simpleIntentSection);
         }
 
