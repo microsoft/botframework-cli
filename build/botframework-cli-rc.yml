@@ -20,7 +20,6 @@ stages:
   jobs:
   - job:
     variables:
-      _version: ${{ variables.releaseVersion }}
+      _version: ${{ join(${{ variables.releaseVersion }},parameters.myArray) }} 
     steps:
-    - script: echo My favorite vegetable is ${{ variables.releaseVersion }}.
     - template: botframework-cli-build-test.yml
