@@ -102,8 +102,8 @@ describe('qnamaker:build create a new knowledge base successfully', () => {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -117,8 +117,8 @@ describe('qnamaker:build create a new knowledge base successfully', () => {
       expect(ctx.stdout).to.contain('Publishing kb')
       expect(ctx.stdout).to.contain('Publishing finished')
       expect(ctx.stdout).to.contain('Replacing alterations...')
-      expect(ctx.stdout).to.contain('xxxx')
-      expect(ctx.stdout).to.contain('yyyy')
+      expect(ctx.stdout).to.contain('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
+      expect(ctx.stdout).to.contain('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
     })
 })
 
@@ -158,8 +158,8 @@ describe('qnamaker:build update knowledge base succeed when qa changed', () => {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -202,8 +202,8 @@ describe('qnamaker:build not update knowledge if no changes', () => {
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -246,8 +246,8 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to mul
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -259,12 +259,12 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to mul
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully when --dialog set to multiLanguage', async ctx => {
-      expect(ctx.stdout).to.contain('xxxx')
-      expect(ctx.stdout).to.contain('yyyy')
+      expect(ctx.stdout).to.contain('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
+      expect(ctx.stdout).to.contain('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
       
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
     })
 })
 
@@ -298,8 +298,8 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to cro
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -310,10 +310,46 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to cro
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when --dialog set to qnamaker', async ctx => {
+    .it('should write dialog assets successfully when --dialog set to crosstrained', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.lu.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.true
+    })
+})
+
+describe('qnamaker:build write crosstrained recognizer asset successfully if qna file is empty and --dialog set to crosstrained', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development).en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/empty-file/qnafiles/empty.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write crosstrained recognizer asset successfully when qna file is empty and --dialog set to crosstrained', async ctx => {
+      expect(await compareFiles('./../../../results/empty.lu.qna.dialog', './../../fixtures/testcases/qnabuild/empty-file/dialogs/empty.lu.qna.dialog')).to.be.true
     })
 })
 
@@ -371,8 +407,8 @@ describe('qnamaker:build write dialog assets successfully with multi locales', (
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -385,9 +421,11 @@ describe('qnamaker:build write dialog assets successfully with multi locales', (
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multi-locales/qnafiles', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
     .it('should write dialog assets successfully with multi locales', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/multi-locales/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.fr-fr.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.fr-fr.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/Foo.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/Foo.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/Foo.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/Foo.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/weather.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/weather.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/weather.fr-fr.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/weather.fr-fr.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/weather.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/weather.qna.dialog')).to.be.true
     })
 })
 
@@ -419,8 +457,8 @@ describe('qnamaker:build not update knowledge base if only cases are changed', (
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -477,8 +515,8 @@ describe('qnamaker:build create a new knowledge base with multiturn qna successf
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -530,8 +568,8 @@ describe('qnamaker:build update knowledge base with multiturn successfully when 
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -584,8 +622,8 @@ describe('qnamaker:build update knowledge base successfully with parameters set 
     nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -603,8 +641,8 @@ describe('qnamaker:build update knowledge base successfully with parameters set 
       expect(ctx.stdout).to.contain('Publishing kb')
 
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
     })
 })
 
@@ -656,8 +694,8 @@ describe('qnamaker:build create a new knowledge base successfully with endpoint 
     nock('https://chinaeast2.api.cognitive.azure.cn')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -671,8 +709,8 @@ describe('qnamaker:build create a new knowledge base successfully with endpoint 
       expect(ctx.stdout).to.contain('Publishing kb')
       expect(ctx.stdout).to.contain('Publishing finished')
       expect(ctx.stdout).to.contain('Replacing alterations...')
-      expect(ctx.stdout).to.contain('xxxx')
-      expect(ctx.stdout).to.contain('yyyy')
+      expect(ctx.stdout).to.contain('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
+      expect(ctx.stdout).to.contain('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
     })
 })
 
@@ -706,8 +744,8 @@ describe('qnamaker:build write dialog assets successfully if schema is specified
     nock('https://westus.api.cognitive.microsoft.com')
       .get(uri => uri.includes('endpointkeys'))
       .reply(200, {
-        primaryEndpointKey: 'xxxx',
-        secondaryEndpointKey: 'yyyy'
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
       })
   })
 
@@ -720,8 +758,8 @@ describe('qnamaker:build write dialog assets successfully if schema is specified
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
     .it('should write dialog assets successfully if schema is specified', async ctx => {      
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
-      expect(await compareFiles('./../../../results/test.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.en-us.qna.dialog')).to.be.true
-      expect(await compareFiles('./../../../results/test.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/test.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.lu.qna.dialog')).to.be.true
     })
 })

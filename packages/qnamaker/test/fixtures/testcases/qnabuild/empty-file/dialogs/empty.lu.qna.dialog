@@ -1,6 +1,4 @@
 {
     "$kind": "Microsoft.CrossTrainedRecognizerSet",
-    "recognizers": [
-        "sandwich2.qna"
-    ]
+    "recognizers": []
 }
