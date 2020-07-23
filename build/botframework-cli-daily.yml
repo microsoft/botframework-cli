@@ -19,7 +19,7 @@ schedules:
     - master
 
 variables:
-  _version: '4.10.0-dev'
+- template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
 #  version: define this in Azure, settable at queue time
 
 stages:
@@ -27,4 +27,5 @@ stages:
   jobs:
   - job: Build and Test
     steps:
+    - script: echo '##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-dev
     - template: botframework-cli-build-test.yml
