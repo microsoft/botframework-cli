@@ -20,5 +20,5 @@ stages:
   jobs:
   - job:
     steps:
-    - script: echo `##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-rc`
+    - script: echo '##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-rc
     - template: botframework-cli-build-test.yml
