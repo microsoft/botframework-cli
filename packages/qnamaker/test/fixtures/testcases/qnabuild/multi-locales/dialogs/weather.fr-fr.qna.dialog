@@ -1,0 +1,7 @@
+{
+    "$kind": "Microsoft.QnAMakerRecognizer",
+    "id": "QnA_weather",
+    "knowledgeBaseId": "=settings.qna.weather_fr_fr_qna",
+    "hostname": "=settings.qna.hostname",
+    "endpointKey": "=settings.qna.endpointKey"
+}
