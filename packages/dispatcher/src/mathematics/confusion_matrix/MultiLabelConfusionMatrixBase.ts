@@ -12,7 +12,8 @@ import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility"
 import { Utility } from "../../utility/Utility";
 
 export abstract class MultiLabelConfusionMatrixBase
-extends ConfusionMatrixBase implements IMultiLabelConfusionMatrix {
+extends ConfusionMatrixBase
+implements IMultiLabelConfusionMatrix {
 
     protected binaryConfusionMatrices: BinaryConfusionMatrix[] = [];
 
