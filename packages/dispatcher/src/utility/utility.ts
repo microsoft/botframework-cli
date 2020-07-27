@@ -1975,6 +1975,7 @@ export class Utility {
         // Utility.debuggingLog(
         //     `Utility.dumpFile(): filename=${filename}`);
         try {
+            fs.mkdirSync(path.dirname(filename), {recursive: true});
             fs.writeFileSync(filename, content, encoding);
         } catch (error) {
           // ---- NOTE ---- An error occurred
