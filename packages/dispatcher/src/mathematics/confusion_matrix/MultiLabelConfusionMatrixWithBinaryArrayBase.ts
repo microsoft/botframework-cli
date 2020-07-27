@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
+// import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
 import { MultiLabelConfusionMatrixBase } from "./MultiLabelConfusionMatrixBase";
 import { ConfusionMatrixBase } from "./ConfusionMatrixBase";
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";

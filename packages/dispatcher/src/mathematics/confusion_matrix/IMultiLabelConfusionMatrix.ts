@@ -11,6 +11,10 @@ export interface IMultiLabelConfusionMatrix extends IConfusionMatrix {
         groundTrueLabelIds: number[],
         predictedLabelIds: number[],
         value: number): void;
+    addInstanceByLabels(
+        groundTrueLabels: string[],
+        predictedLabels: string[],
+        value: number): void;
 
     validateLabelIds(
         labelIds: number[],

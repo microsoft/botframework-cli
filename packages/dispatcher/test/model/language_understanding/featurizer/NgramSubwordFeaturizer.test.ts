@@ -265,7 +265,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             featurizer.getFeatureIndex(feature);
         Utility.debuggingLog(
             `featureIndex=${featureIndex}`);
-        assert.ok(featureIndex === 1,
+        assert.ok(featureIndex === 2158,
             `featureIndex=${featureIndex}`);
     });
     it("Test.0504 getFeatureIndex()", function() {
