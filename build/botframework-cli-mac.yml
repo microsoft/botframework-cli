@@ -26,7 +26,7 @@ pr:
       - PRIVACY.md
 
 variables:
-  _version: '1.0.0'
+  version: '1.0.0'
 #  version: define this in Azure, settable at queue time
 
 stages:
