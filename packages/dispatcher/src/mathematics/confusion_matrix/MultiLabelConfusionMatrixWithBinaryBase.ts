@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
+// import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
 import { MultiLabelConfusionMatrixBase } from "./MultiLabelConfusionMatrixBase";
 import { ConfusionMatrixBase } from "./ConfusionMatrixBase";
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
@@ -36,5 +36,20 @@ extends MultiLabelConfusionMatrixBase {
 
     public getBinaryConfusionMatrix(): BinaryConfusionMatrix {
         return this.binaryConfusionMatrix;
+    }
+
+    public getTotal(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): number {
+        if (Utility.isEmptyArray(binaryConfusionMatrices)) {
+            binaryConfusionMatrices =
+                this.getBinaryConfusionMatrices();
+        }
+        let binaryConfusionMatrix: BinaryConfusionMatrix =
+            this.getBinaryConfusionMatrix();
+        if (!Utility.isEmptyArray(binaryConfusionMatrices) && (binaryConfusionMatrices.length > 0)) {
+            binaryConfusionMatrix = binaryConfusionMatrices[0];
+        }
+        const total: number =
+            binaryConfusionMatrix.getTotal();
+        return total;
     }
 }
