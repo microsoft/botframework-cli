@@ -32,6 +32,6 @@ variables:
 stages:
 - stage: Build
   jobs:
-  - job: Build and Test
+  - job:
     steps:
     - template: botframework-cli-build-test.yml
