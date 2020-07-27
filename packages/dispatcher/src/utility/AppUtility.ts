@@ -3,11 +3,46 @@
  * Licensed under the MIT License.
  */
 
+import * as readline from "readline";
+
 import { ArgumentParser } from "argparse";
 
 import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
 
 import { Utility } from "./Utility";
+
+export function exampleFunctionReadline(): void {
+    const interactive: readline.Interface = readline.createInterface(process.stdin, process.stdout);
+    const prefix: string = " > ";
+    interactive.on("line", (line: string) => {
+        switch (line.trim()) {
+        case "hello":
+            // eslint-disable-next-line no-console
+            // tslint:disable-next-line: no-console
+            console.log("world!");
+            break;
+        default:
+            // eslint-disable-next-line no-console
+            // tslint:disable-next-line: no-console
+            console.log("Say what? I might have heard `" + line.trim() + "`");
+            break;
+        }
+        interactive.setPrompt(prefix);
+        interactive.prompt();
+        }).on("close", () => {
+        // eslint-disable-next-line no-console
+        // tslint:disable-next-line: no-console
+        console.log("Have a great day!");
+        // eslint-disable-next-line no-process-exit
+        process.exit(0);
+    });
+    // eslint-disable-next-line no-console
+    // tslint:disable-next-line: no-console
+    console.log(prefix + "Good to see you. Try typing stuff.");
+    // eslint-disable-next-line no-constant-condition
+    interactive.setPrompt(prefix);
+    interactive.prompt();
+}
 
 export function exampleFunctionUtilityWithFilename(
     filename: string,
@@ -133,4 +168,5 @@ export function exampleFunctionUtility(): void {
 
 if (require.main === module) {
     exampleFunctionUtility();
+    // exampleFunctionReadline();
 }

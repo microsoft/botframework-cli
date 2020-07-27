@@ -41,10 +41,11 @@ function getTestingConfusionMatrix(): ConfusionMatrix {
         "columns=" + confusionMatrix.getConfusionMatrixColumns());
     Utility.debuggingLog(
         "total=" + confusionMatrix.getConfusionMatrixTotal());
-    const binaryConfusionMatrices = confusionMatrix.getBinaryConfusionMatrices();
+    const binaryConfusionMatrices: BinaryConfusionMatrix[] =
+        confusionMatrix.getBinaryConfusionMatrices();
     const confusionMatrixLabels: string[] = confusionMatrix.getLabels();
     for (let i = 0; i < binaryConfusionMatrices.length; i++) {
-        const binaryConfusionMatrix = binaryConfusionMatrices[i];
+        const binaryConfusionMatrix: BinaryConfusionMatrix = binaryConfusionMatrices[i];
         const label: string = confusionMatrixLabels[i];
         Utility.debuggingLog(
             label + ":" + i + ", precision = " + binaryConfusionMatrix.getPrecision());
@@ -52,6 +53,8 @@ function getTestingConfusionMatrix(): ConfusionMatrix {
             label + ":" + i + ", recall    = " + binaryConfusionMatrix.getRecall());
         Utility.debuggingLog(
             label + ":" + i + ", F1        = " + binaryConfusionMatrix.getF1Score());
+        Utility.debuggingLog(
+            label + ":" + i + ", Accuracy  = " + binaryConfusionMatrix.getAccuracy());
         Utility.debuggingLog(
             label + ":" + i + ", support   = " + binaryConfusionMatrix.getSupport());
         Utility.debuggingLog(
@@ -185,7 +188,7 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
     it("Test.0500 getBinaryConfusionMatrices()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const confusionMatrix: ConfusionMatrix =  getTestingConfusionMatrix();
+        const confusionMatrix: ConfusionMatrix = getTestingConfusionMatrix();
         const binaryConfusionMatrices: BinaryConfusionMatrix[] =
             confusionMatrix.getBinaryConfusionMatrices();
         assert.ok(binaryConfusionMatrices.length === 3,
@@ -201,6 +204,8 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
         const confusionMatrixMetrics: {
             "averagePrecisionRecallF1Accuracy": number,
             "truePositives": number,
+            "falsePositives": number,
+            "falseNegatives": number,
             "total": number } =
             confusionMatrix.getMicroAverageMetrics();
         assert.ok(Utility.almostEqual(
@@ -209,6 +214,12 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
         assert.ok(
             confusionMatrixMetrics.truePositives === 3,
             `confusionMatrixMetrics.truePositives=${confusionMatrixMetrics.truePositives}`);
+        assert.ok(
+            confusionMatrixMetrics.falsePositives === 6,
+            `confusionMatrixMetrics.falsePositives=${confusionMatrixMetrics.falsePositives}`);
+        assert.ok(
+            confusionMatrixMetrics.falseNegatives === 6,
+            `confusionMatrixMetrics.falseNegatives=${confusionMatrixMetrics.falseNegatives}`);
         assert.ok(
             confusionMatrixMetrics.total === 9,
             `confusionMatrixMetrics.total=${confusionMatrixMetrics.total}`);
@@ -315,25 +326,36 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             "confusionMatrix": IConfusionMatrix,
             "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
             "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microAverageMetrics": {
+                "accuracy": number,
+                "truePositives": number,
+                "falsePositives": number,
+                "falseNegatives": number,
+                "support": number },
             "macroAverageMetrics": {
                 "averagePrecision": number,
                 "averageRecall": number,
                 "averageF1Score": number,
-                "support": number },
-            "microAverageMetrics": {
-                "accuracy": number,
-                "truePositives": number,
+                "averageAccuracy": number,
+                "averageTruePositives": number,
+                "averageFalsePositives": number,
+                "averageTrueNegatives": number,
+                "averageFalseNegatives": number,
+                "averageSupport": number,
                 "support": number },
             "weightedMacroAverageMetrics": {
                 "weightedAveragePrecision": number,
                 "weightedAverageRecall": number,
                 "weightedAverageF1Score": number,
+                "weightedAverageAccuracy": number,
+                "weightedAverageSupport": number,
                 "support": number } } =
             confusionMatrix.generateConfusionMatrixMetricStructure();
-        const confusionMatrixMetrics: [number, number, number, number] =
+        const confusionMatrixMetrics: [number, number, number, number, number] =
             [ confusionMatrixMetricStructure.macroAverageMetrics.averagePrecision,
               confusionMatrixMetricStructure.macroAverageMetrics.averageRecall,
               confusionMatrixMetricStructure.macroAverageMetrics.averageF1Score,
+              confusionMatrixMetricStructure.macroAverageMetrics.averageAccuracy,
               confusionMatrixMetricStructure.macroAverageMetrics.support ];
         Utility.debuggingLog(
             `confusionMatrixMetricStructure=${Utility.jsonStringify(confusionMatrixMetricStructure)}`);
@@ -343,7 +365,9 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             `confusionMatrixMetrics[1]=${confusionMatrixMetrics[1]}`);
         assert.ok(Utility.almostEqual(confusionMatrixMetrics[2], 0.3333333333333333),
             `confusionMatrixMetrics[2]=${confusionMatrixMetrics[2]}`);
-        assert.ok(confusionMatrixMetrics[3] === 9,
+        assert.ok(Utility.almostEqual(confusionMatrixMetrics[3], 0.5555555555555556),
             `confusionMatrixMetrics[3]=${confusionMatrixMetrics[3]}`);
+        assert.ok(confusionMatrixMetrics[4] === 9,
+            `confusionMatrixMetrics[4]=${confusionMatrixMetrics[4]}`);
     });
 });

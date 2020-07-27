@@ -3,15 +3,17 @@
  * Licensed under the MIT License.
  */
 
+import { ISingleLabelConfusionMatrix } from "./ISingleLabelConfusionMatrix";
 import { ConfusionMatrixBase } from "./ConfusionMatrixBase";
-
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
 import { Utility } from "../../utility/Utility";
 
-export class ConfusionMatrix extends ConfusionMatrixBase {
+export class ConfusionMatrix
+extends ConfusionMatrixBase
+implements ISingleLabelConfusionMatrix {
 
     protected confusionMatrix: number[][] = [];
     protected confusionMatrixRows: number[] = [];
