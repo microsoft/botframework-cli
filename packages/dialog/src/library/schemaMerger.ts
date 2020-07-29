@@ -80,16 +80,6 @@ function mergeObjects(obj1: any, obj2: any): any {
     return finalTarget
 }
 
-function fileBase(filename: string): string {
-    return filename.substring(0, filename.indexOf('.'))
-}
-
-function fileLocale(filename: string): string {
-    let extPos = filename.indexOf('.')
-    let localePos = filename.indexOf('.', extPos + 1)
-    return localePos > 0 ? filename.substring(extPos + 1, localePos) : ''
-}
-
 // Build a tree of component (project or package) references in order to compute a topological sort.
 class Component {
     // Name of component
@@ -216,13 +206,12 @@ export default class SchemaMerger {
     private readonly warn: any
     private readonly error: any
     private readonly extensions: string[]
+    private readonly schemaPath: string | undefined
     private readonly debug: boolean | undefined
+    private nugetRoot = ''    // Root where nuget packages are found
 
     // Track packages that have been processed
     private readonly packages = new Set()
-
-    // Root where nuget packages are found
-    private nugetRoot = ''
 
     // Component tree
     private readonly root = new Component()
@@ -273,17 +262,19 @@ export default class SchemaMerger {
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
      * @param extensions Extensions to analyze for loader.
+     * @param schema Path to merged .schema is doin
      * @param debug Generate debug output.
      * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
-    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], debug?: boolean, nugetRoot?: string) {
+    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
-        this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, '.schema')) : ''
+        this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
         this.verbose = verbose
         this.log = log
         this.warn = warn
         this.error = error
         this.extensions = extensions || ['.schema', '.lu', '.lg', '.qna', '.dialog', '.uischema']
+        this.schemaPath = schema
         this.debug = debug
         this.nugetRoot = nugetRoot || ''
     }
@@ -343,7 +334,20 @@ export default class SchemaMerger {
     private async mergeSchemas(): Promise<any> {
         let fullSchema: any
 
+        if (this.schemaPath) {
+            // Passed in merged schema
+            this.currentFile = this.schemaPath
+            let schema = await fs.readJSON(this.schemaPath)
+            this.currentFile = schema.$schema
+            this.metaSchema = await getJSON(schema.$schema)
+            this.validator.addSchema(this.metaSchema, 'componentSchema')
+            this.currentFile = this.schemaPath
+            this.validateSchema(schema)
+            return parser.dereference(schema)
+        }
+
         // Delete existing output
+        let outputPath = ppath.resolve(this.output + '.schema')
         await fs.remove(this.output + '.schema')
         await fs.remove(this.output + '.schema.final')
         await fs.remove(this.output + '.schema.expanded')
@@ -351,8 +355,12 @@ export default class SchemaMerger {
         let componentPaths: PathComponent[] = []
         let schemas = this.files.get('.schema')
         if (schemas) {
-            for (let path of schemas.values()) {
-                componentPaths.push(path[0])
+            for (let pathComponents of schemas.values()) {
+                // Just take first definition if multiple ones
+                let pathComponent = pathComponents[0]
+                if (pathComponent.path !== outputPath) {
+                    componentPaths.push(pathComponent)
+                }
             }
         }
 
@@ -377,8 +385,10 @@ export default class SchemaMerger {
                         delete component.$ref
                     }
 
-                    // Pick up meta-schema from first .dialog file
-                    if (!this.metaSchema) {
+                    if (!component.$schema) {
+                        this.missingSchemaError()
+                    } else if (!this.metaSchema) {
+                        // Pick up meta-schema from first .dialog file
                         this.metaSchemaId = component.$schema
                         this.currentFile = this.metaSchemaId
                         this.metaSchema = await getJSON(component.$schema)
@@ -485,13 +495,20 @@ export default class SchemaMerger {
         let uiSchemas = this.files.get('.uischema')
         let result = {}
         if (uiSchemas) {
+            if (!schema || this.failed) {
+                this.error('Error must have a merged .schema to merge .uischema files')
+                return
+            }
+
             this.log('Merging component .uischema files')
+            if (this.schemaPath) {
+                this.log(`Using merged schema ${this.schemaPath}`)
+            }
             let outputName = ppath.basename(this.output)
             for (let [fileName, componentPaths] of uiSchemas.entries()) {
                 // Skip files that match output .uischema
                 if (!fileName.startsWith(outputName + '.')) {
-                    let kindName = fileBase(fileName)
-                    let localeName = fileLocale(fileName)
+                    let [kindName, localeName] = this.kindAndLocale(fileName, schema)
                     let locale = result[localeName]
                     if (!locale) {
                         locale = result[localeName] = {}
@@ -511,9 +528,10 @@ export default class SchemaMerger {
                                 this.vlog(`Parsing ${this.currentFile}`)
                             }
                             let component = await fs.readJSON(path)
-
-                            // Pick up meta-schema from first .uischema file
-                            if (!this.metaUISchema) {
+                            if (!component.$schema) {
+                                this.missingSchemaError()
+                            } else if (!this.metaUISchema) {
+                                // Pick up meta-schema from first .uischema file
                                 this.metaUISchemaId = component.$schema
                                 this.currentFile = this.metaUISchemaId
                                 this.metaUISchema = await getJSON(component.$schema)
@@ -526,6 +544,7 @@ export default class SchemaMerger {
                             } else {
                                 this.validateUISchema(component)
                             }
+                            delete component.$schema
                             locale[kindName] = mergeObjects(locale[kindName], component)
                         } catch (e) {
                             this.parsingError(e)
@@ -542,18 +561,32 @@ export default class SchemaMerger {
                 }
             }
             if (!this.failed) {
-                for (let locale in result) {
+                for (let locale of Object.keys(result)) {
+                    let uischema = {$schema: this.metaUISchemaId, ...result[locale]}
                     this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
                     this.log(`Writing ${this.currentFile}`)
-                    await fs.writeJSON(this.currentFile, result[locale], this.jsonOptions)
+                    await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
                 }
             }
         }
     }
 
+    private kindAndLocale(filename: string, schema: any): [string, string] {
+        let kindName = ppath.basename(filename, '.uischema')
+        let locale = ''
+        if (!schema.definitions[kindName]) {
+            let split = kindName.lastIndexOf('.')
+            if (split >= 0) {
+                locale = kindName.substring(split + 1)
+                kindName = kindName.substring(0, split)
+            }
+        }
+        return [kindName, locale]
+    }
+
     // For C# copy all assets into generated/<package>/
     private async copyAssets(): Promise<void> {
-        if (!this.failed) {
+        if (!this.failed && !this.schemaPath) {
             let isCS = false
             for (let component of this.components) {
                 if (component.path.endsWith('.csproj') || component.path.endsWith('.nuspec')) {
@@ -569,7 +602,8 @@ export default class SchemaMerger {
                         for (let componentPath of componentPaths) {
                             let component = componentPath.component
                             let path = componentPath.path
-                            if (!component.isCSProject()) {
+                            // Don't copy .schema/.uischema so that we don't pick-up in project
+                            if (!component.isCSProject() && !path.endsWith('.schema') && !path.endsWith('.uischema')) {
                                 // Copy package files to output
                                 let relativePath = ppath.relative(ppath.dirname(component.path), path)
                                 let outputPath = ppath.join(generatedPath, componentPath.component.name, relativePath)
@@ -728,7 +762,6 @@ export default class SchemaMerger {
                                             for (let dependency of group.dependency) {
                                                 dependencies.push(dependency.$)
                                             }
-                                            break
                                         }
                                     }
                                 }
@@ -743,8 +776,8 @@ export default class SchemaMerger {
                 } finally {
                     this.popParent()
                 }
-            } else {
-                this.parsingError('  Could not find nuspec')
+            } else if (this.debug) {
+                this.parsingWarning('  Could not find nuspec')
             }
         }
     }
@@ -768,8 +801,12 @@ export default class SchemaMerger {
                     pkgPath = ppath.join(pkgPath, version || '')
                     let nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
                     await this.expandNuspec(nuspecPath)
-                } else {
-                    this.parsingError('  Nuget package does not exist')
+                } else if (this.debug) {
+                    // Ignore any missing dependencies assuming they are from a target framework like this:
+                    // <group targetFramework=".NETFramework4.0">
+                    //   <dependency id="Microsoft.Diagnostics.Tracing.EventSource.Redist" version = "1.1.28" />
+                    // </group>
+                    this.parsingWarning('Missing package')
                 }
             } catch (e) {
                 this.parsingWarning(e.message)
@@ -1447,6 +1484,12 @@ export default class SchemaMerger {
             this.missingKinds.add(kind)
             this.failed = true
         }
+    }
+
+    // Missing $schema
+    private missingSchemaError() {
+        this.error(`${this.currentFile}: Error missing $schema`)
+        this.failed = true
     }
 
     // Error in schema validity
