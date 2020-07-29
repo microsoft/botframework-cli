@@ -1,6 +1,6 @@
 {
-  "nuget3": {
-    "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "nuget3.component1": {
     "form": {
       "description": "Nuget3 en-us",
       "label": "Nuget3 en-us",
