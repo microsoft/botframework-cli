@@ -34,4 +34,4 @@ stages:
   jobs:
   - job:
     steps:
-    - template: botframework-cli-build-test.yml
+    - template: bf-cli-build-test-steps.yml
