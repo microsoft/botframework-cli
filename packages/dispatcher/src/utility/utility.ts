@@ -4,10 +4,10 @@
  */
 
 import * as path from "path";
-
 import * as fs from "fs";
-
 import * as md5 from "ts-md5";
+
+import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
 
 export class Utility {
 
@@ -1169,6 +1169,159 @@ export class Utility {
         return { intents, texts, weights };
     }
 
+    public static processUtteranceEntityTsv(
+        lines: string[],
+        utterancesEntitiesMap: { [id: string]: Array<[string, number, number]> },
+        utterancesEntitiesPredictedMap: { [id: string]: Array<[string, number, number]> },
+        utteranceIndex: number = 2,
+        entitiesIndex: number = 0,
+        entitiesPredictedIndex: number = 1): boolean {
+        if (utteranceIndex < 0) {
+            Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| < 0`);
+        }
+        lines.forEach((line: string) => {
+            const items: string[] = line.split("\t");
+            if (utteranceIndex >= items.length) {
+                Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| >= items.length|${items.length}|`);
+            }
+            let utterance: string = items[utteranceIndex] ? items[utteranceIndex] : "";
+            let entities: string = "";
+            if ((entitiesIndex >= 0) && (entitiesIndex < items.length)) {
+                entities = items[entitiesIndex] ? items[entitiesIndex] : "";
+            }
+            let entitiesPredicted: string = "";
+            if ((entitiesPredictedIndex >= 0) && (entitiesPredictedIndex < items.length)) {
+                entitiesPredicted = items[entitiesPredictedIndex] ? items[entitiesPredictedIndex] : "";
+            }
+            entities = entities.trim();
+            utterance = utterance.trim();
+            entitiesPredicted = entitiesPredicted.trim();
+            const entityArray: string[] = entities.split(",");
+            for (const entityEntry of entityArray) {
+                Utility.addToEntitiesUtteranceStructure(
+                    utterance,
+                    entityEntry.trim(),
+                    utterancesEntitiesMap);
+            }
+            const entityPredictedArray: string[] = entitiesPredicted.split(",");
+            for (const entityEntryPredicted of entityPredictedArray) {
+                Utility.addToEntitiesUtteranceStructure(
+                    utterance,
+                    entityEntryPredicted.trim(),
+                    utterancesEntitiesPredictedMap);
+            }
+        });
+        return true;
+    }
+    public static addToEntitiesUtteranceStructure(
+        utterance: string,
+        entityEntry: string,
+        utterancesEntitiesMap: { [id: string]: Array<[string, number, number]> }) {
+        const entityComponentArray: string[] = entityEntry.split(";");
+        const entity: [string, number, number] = [
+            entityComponentArray[0],
+            +entityComponentArray[1],
+            +entityComponentArray[1]];
+        let existingEntities: Array<[string, number, number]> = utterancesEntitiesMap[utterance];
+        if (!existingEntities) {
+            existingEntities = new Array<[string, number, number]>();
+            utterancesEntitiesMap[utterance] = existingEntities;
+        }
+        existingEntities.push(entity);
+    }
+
+    public static processUtteranceMultiLabelTsv(
+        lines: string[],
+        utterancesLabelsMap: { [id: string]: string[] },
+        utterancesLabelsPredictedMap: { [id: string]: string[] },
+        utterancesDuplicateLabelsMap: Map<string, Set<string>>,
+        utterancesDuplicateLabelsPredictedMap: Map<string, Set<string>>,
+        utteranceIndex: number = 2,
+        labelsIndex: number = 0,
+        labelsPredictedIndex: number = 1): boolean {
+        if (utteranceIndex < 0) {
+            Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| < 0`);
+        }
+        lines.forEach((line: string) => {
+            const items: string[] = line.split("\t");
+            if (utteranceIndex >= items.length) {
+                Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| >= items.length|${items.length}|`);
+            }
+            let utterance: string = items[utteranceIndex] ? items[utteranceIndex] : "";
+            let labels: string = "";
+            if ((labelsIndex >= 0) && (labelsIndex < items.length)) {
+                labels = items[labelsIndex] ? items[labelsIndex] : "";
+            }
+            let labelsPredicted: string = "";
+            if ((labelsPredictedIndex >= 0) && (labelsPredictedIndex < items.length)) {
+                labelsPredicted = items[labelsPredictedIndex] ? items[labelsPredictedIndex] : "";
+            }
+            labels = labels.trim();
+            utterance = utterance.trim();
+            labelsPredicted = labelsPredicted.trim();
+            const labelArray: string[] = labels.split(",");
+            for (const label of labelArray) {
+                Utility.addToMultiLabelUtteranceStructure(
+                    utterance,
+                    label.trim(),
+                    utterancesLabelsMap,
+                    utterancesDuplicateLabelsMap);
+            }
+            const labelPredictedArray: string[] = labelsPredicted.split(",");
+            for (const labelPredicted of labelPredictedArray) {
+                Utility.addToMultiLabelUtteranceStructure(
+                    utterance,
+                    labelPredicted.trim(),
+                    utterancesLabelsPredictedMap,
+                    utterancesDuplicateLabelsPredictedMap);
+            }
+        });
+        return true;
+    }
+    public static addToMultiLabelUtteranceStructure(
+        utterance: string,
+        label: string,
+        utterancesLabelsMap: { [id: string]: string[] },
+        utterancesDuplicateLabelsMap: Map<string, Set<string>>) {
+        const existingLabels: string[] = utterancesLabelsMap[utterance];
+        if (existingLabels) {
+            if (!Utility.addIfNewLabel(label, existingLabels)) {
+                DictionaryMapUtility.insertStringPairToStringIdStringSetNativeMap(
+                    utterance,
+                    label,
+                    utterancesDuplicateLabelsMap);
+            }
+        } else {
+            utterancesLabelsMap[utterance] = [label];
+        }
+    }
+    public static addIfNewLabel(newLabel: string, labels: string[]): boolean {
+        for (const label of labels) {
+            if (label === newLabel) {
+                return false;
+            }
+        }
+        labels.push(newLabel);
+        return true;
+    }
+
+    public static reverseUniqueKeyedArray(input: {[id: string]: string[]}): {[id: string]: string[]} {
+        const reversed: {[id: string]: string[]} = {};
+        for (const key in input) {
+            if (key) {
+                const keyedArray: string[] = input[key];
+                for (const keyedArrayElement of keyedArray) {
+                    if (keyedArrayElement in reversed) {
+                        reversed[keyedArrayElement].push(key);
+                    } else {
+                        reversed[keyedArrayElement] = [key];
+                    }
+                }
+            }
+        }
+        return reversed;
+    }
+
     public static storeDataArraysToTsvFile(
         outputFilename: string,
         outputEvaluationReportDataArrays: string[][],
@@ -1178,7 +1331,11 @@ export class Utility {
         encoding: string = "utf8"): string {
         if (Utility.isEmptyString(outputFilename)) {
             Utility.debuggingThrow(
-                `outputFilename is empty`);
+                "outputFilename is empty");
+        }
+        if (Utility.isEmptyStringArrays(outputEvaluationReportDataArrays)) {
+            Utility.debuggingThrow(
+                "outputEvaluationReportDataArrays is empty");
         }
         const outputLines: string[] = [];
         if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
@@ -1191,13 +1348,176 @@ export class Utility {
         }
         const outputContent: string = outputLines.join(recordDelimiter);
         try {
-            fs.writeFileSync(outputFilename, `${outputContent}${recordDelimiter}`, encoding);
+            return Utility.dumpFile(outputFilename, `${outputContent}${recordDelimiter}`, encoding);
         } catch (e) {
             Utility.debuggingThrow(
                 `storeTsvFile() cannout create an output file: ${outputFilename}, EXCEPTION=${e}`);
             return "";
         }
-        return outputFilename;
+    }
+
+    public static convertDataArraysToIndexedHtmlTable(
+        tableDescription: string,
+        outputEvaluationReportDataArrays: any[][],
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+            outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+            outputLines.push(indentCumulative + indent + "<tr>");
+            outputLines.push(indentCumulative + indent + indent + "<th>");
+            outputLines.push(indentCumulative + indent + indent + "No");
+            outputLines.push(indentCumulative + indent + indent + "</th>");
+            for (const headerEntry of outputDataArraryHeaders) {
+                outputLines.push(indentCumulative + indent + indent + "<th>");
+                outputLines.push(indentCumulative + indent + indent + headerEntry);
+                outputLines.push(indentCumulative + indent + indent + "</th>");
+            }
+            outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (!Utility.isEmptyStringArrays(outputEvaluationReportDataArrays)) {
+            let index: number = 0;
+            for (const outputEvaluationReportDataArray of outputEvaluationReportDataArrays) {
+                outputLines.push(indentCumulative + indent + "<tr>");
+                outputLines.push(indentCumulative + indent + indent + "<td>");
+                outputLines.push(indentCumulative + indent + indent + index++);
+                outputLines.push(indentCumulative + indent + indent + "</td>");
+                for (const dataEntry of outputEvaluationReportDataArray) {
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + dataEntry);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                }
+                outputLines.push(indentCumulative + indent + "</tr>");
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
+    }
+    public static convertDataArraysToHtmlTable(
+        tableDescription: string,
+        outputEvaluationReportDataArrays: any[][],
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+            outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+            outputLines.push(indentCumulative + indent + "<tr>");
+            for (const headerEntry of outputDataArraryHeaders) {
+                outputLines.push(indentCumulative + indent + indent + "<th>");
+                outputLines.push(indentCumulative + indent + indent + headerEntry);
+                outputLines.push(indentCumulative + indent + indent + "</th>");
+            }
+            outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (Utility.isEmptyStringArrays(outputEvaluationReportDataArrays)) {
+            for (const outputEvaluationReportDataArray of outputEvaluationReportDataArrays) {
+                outputLines.push(indentCumulative + indent + "<tr>");
+                for (const dataEntry of outputEvaluationReportDataArray) {
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + dataEntry);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                }
+                outputLines.push(indentCumulative + indent + "</tr>");
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
+    }
+
+    public static convertMapSetToHtmlTable(
+        tableDescription: string,
+        outputEvaluationMapSet: Map<any, Set<any>>,
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+            outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+          outputLines.push(indentCumulative + indent + "<tr>");
+          for (const headerEntry of outputDataArraryHeaders) {
+            outputLines.push(indentCumulative + indent + indent + "<th>");
+            outputLines.push(indentCumulative + indent + indent + headerEntry);
+            outputLines.push(indentCumulative + indent + indent + "</th>");
+          }
+          outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (!DictionaryMapUtility.isEmptyAnyKeyGenericSetMap<any>(outputEvaluationMapSet)) {
+            for (const outputEvaluationMapSetEntry of outputEvaluationMapSet) {
+              const key: any = outputEvaluationMapSetEntry[0];
+              for (const valueEntry of outputEvaluationMapSetEntry[1]) {
+                outputLines.push(indentCumulative + indent + "<tr>");
+                outputLines.push(indentCumulative + indent + indent + "<td>");
+                outputLines.push(indentCumulative + indent + indent + key);
+                outputLines.push(indentCumulative + indent + indent + "</td>");
+                outputLines.push(indentCumulative + indent + indent + "<td>");
+                outputLines.push(indentCumulative + indent + indent + valueEntry);
+                outputLines.push(indentCumulative + indent + indent + "</td>");
+                outputLines.push(indentCumulative + indent + "</tr>");
+              }
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
+    }
+    public static convertMapSetToIndexedHtmlTable(
+        tableDescription: string,
+        outputEvaluationMapSet: Map<any, Set<any>>,
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+        outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+            outputLines.push(indentCumulative + indent + "<tr>");
+            outputLines.push(indentCumulative + indent + indent + "<th>");
+            outputLines.push(indentCumulative + indent + indent + "No");
+            outputLines.push(indentCumulative + indent + indent + "</th>");
+            for (const headerEntry of outputDataArraryHeaders) {
+                outputLines.push(indentCumulative + indent + indent + "<th>");
+                outputLines.push(indentCumulative + indent + indent + headerEntry);
+                outputLines.push(indentCumulative + indent + indent + "</th>");
+            }
+            outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (!DictionaryMapUtility.isEmptyAnyKeyGenericSetMap<any>(outputEvaluationMapSet)) {
+            let index: number = 0;
+            for (const outputEvaluationMapSetEntry of outputEvaluationMapSet) {
+                const key: any = outputEvaluationMapSetEntry[0];
+                for (const valueSetEntry of outputEvaluationMapSetEntry[1]) {
+                    outputLines.push(indentCumulative + indent + "<tr>");
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + index++);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + key);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + valueSetEntry);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                    outputLines.push(indentCumulative + indent + "</tr>");
+                }
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
     }
 
     public static luUtterancesToEntityAnnotatedCorpusTypes(
@@ -1642,9 +1962,9 @@ export class Utility {
         try {
             const fileContent: string = fs.readFileSync(filename, encoding);
             return fileContent;
-        } catch (e) {
+        } catch (error) {
             Utility.debuggingThrow(
-                `Utility.loadFile(): filename=${filename}, exception=${e}`);
+                `Utility.loadFile(): filename=${filename}, exception=${error}`);
         }
         return "";
     }
@@ -1655,10 +1975,11 @@ export class Utility {
         // Utility.debuggingLog(
         //     `Utility.dumpFile(): filename=${filename}`);
         try {
+            fs.mkdirSync(path.dirname(filename), {recursive: true});
             fs.writeFileSync(filename, content, encoding);
-        } catch (err) {
+        } catch (error) {
           // ---- NOTE ---- An error occurred
-          Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}`);
+          Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, exception=${error}`);
           return "";
         }
         return filename;

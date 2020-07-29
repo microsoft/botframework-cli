@@ -36,39 +36,34 @@ module.exports = {
       let {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
       const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
 
-      let triggerFileIds = Object.keys(triggerRules).map(x => x.toLowerCase())
-      let destFileIds = Object.values(triggerRules).flatMap(x => Object.values(x)).flatMap(y => y).map(x => x.toLowerCase())
-
-      luObjectArray = luObjectArray.filter(x => triggerFileIds.includes(x.id.toLowerCase()) || destFileIds.includes(x.id.toLowerCase()))
-      qnaObjectArray = qnaObjectArray.filter(x => {
-        const luFileId = x.id.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.QnAFile + '$'), helpers.FileExtTypeEnum.LUFile)
-        return triggerFileIds.includes(luFileId) || destFileIds.includes(luFileId)
-      })
-
       // parse lu content to LUResource object
-      let luFileIdToResourceMap = await parseAndValidateContent(luObjectArray, verbose)
+      let {fileIdToResourceMap: luFileIdToResourceMap, allEmpty: allLuEmpty} = await parseAndValidateContent(luObjectArray, verbose)
 
       // parse qna content to LUResource object
-      let qnaFileIdToResourceMap = await parseAndValidateContent(qnaObjectArray, verbose)
+      let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose)
 
-      // construct resource tree to build the father-children relationship among lu files
-      let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
+      if (!allLuEmpty) {
+        // construct resource tree to build the father-children relationship among lu files
+        let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
 
-      // do lu cross training from roots. One root one core training
-      for (const rootObjectId of rootIds) {
-        if (resources.some(r => r.id.toLowerCase() === rootObjectId.toLowerCase())) {
-          // do cross training for each root at top level
-          const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName)
-          for (const res of result) {
-            luFileIdToResourceMap.set(res.id, res.content)
+        // do lu cross training from roots. One root one core training
+        for (const rootObjectId of rootIds) {
+          if (resources.some(r => r.id.toLowerCase() === rootObjectId.toLowerCase())) {
+            // do cross training for each root at top level
+            const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName)
+            for (const res of result) {
+              luFileIdToResourceMap.set(res.id, res.content)
+            }
+          } else {
+            throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, root lu file '${rootObjectId}' does not exist`))
           }
-        } else {
-          throw (new exception(retCode.errorCode.INVALID_INPUT, `Sorry, root lu file '${rootObjectId}' does not exist`))
         }
       }
 
-      // do qna cross training with lu files
-      qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap, intentName)
+      if (!allQnAEmpty) {
+        // do qna cross training with lu files
+        qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap, intentName, allLuEmpty)
+      }
 
       return { luResult: luFileIdToResourceMap, qnaResult: qnaFileIdToResourceMap }
     } catch (err) {
@@ -346,20 +341,24 @@ const extractIntentUtterances = function(resource, intentName) {
  * @param {Map<string, LUResource>} qnaFileIdToResourceMap map of qna file id and resource
  * @param {Map<string, LUResource>} luFileIdToResourceMap map of lu file id and resource
  * @param {string} interruptionIntentName interruption intent name
+ * @param {boolean} allLuEmpty indicate if all lu files are section empty
  * @throws {exception} throws errors
  */
-const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName) {
+const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName, allLuEmpty) {
   try {
-    for (const luObjectId of Array.from(luFileIdToResourceMap.keys())) {
-      let qnaObjectId = luObjectId.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
-      let fileName = path.basename(luObjectId, path.extname(luObjectId))
-      const culture = fileHelper.getCultureFromPath(luObjectId)
+    for (const qnaObjectId of Array.from(qnaFileIdToResourceMap.keys())) {
+      let luObjectId = qnaObjectId.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.QnAFile + '$'), helpers.FileExtTypeEnum.LUFile)
+      let fileName = path.basename(qnaObjectId, path.extname(qnaObjectId))
+      const culture = fileHelper.getCultureFromPath(qnaObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
-      qnaObjectId = Array.from(qnaFileIdToResourceMap.keys()).find(x => x.toLowerCase() === qnaObjectId)
-      if (qnaObjectId) {
-        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName)
+      luObjectId = Array.from(luFileIdToResourceMap.keys()).find(x => x.toLowerCase() === luObjectId)
+      if (luObjectId) {
+        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName, allLuEmpty)
         luFileIdToResourceMap.set(luObjectId, luResource)
+        qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
+      } else {
+        let qnaResource = qnaAddMetaData(qnaFileIdToResourceMap.get(qnaObjectId), fileName)
         qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
       }
     }
@@ -374,9 +373,10 @@ const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, i
  * @param {LUResource} qnaResource the qna resource
  * @param {string} fileName file name
  * @param {string} interruptionIntentName interruption intent name
+ * @param {boolean} allLuEmpty indicate if all lu files are section empty
  * @returns {luResource: LUResource, qnaResource: LUResource} cross trained lu resource and qna resource
  */
-const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interruptionIntentName) {
+const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interruptionIntentName, allLuEmpty) {
   let trainedLuResource = luResource
   let trainedQnaResource = qnaResource
 
@@ -425,10 +425,38 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   const crossTrainingComments = '> Source: cross training. Please do not edit these directly!'
 
   // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
-  if (questionsContent && questionsContent !== '') {
+  if (!allLuEmpty && questionsContent && questionsContent !== '') {
     const questionsToUtterances = `${NEWLINE}${crossTrainingComments}${NEWLINE}# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
     trainedLuResource = new SectionOperator(trainedLuResource).addSection(questionsToUtterances)
   }
+
+  // update qna filters
+  trainedQnaResource = qnaAddMetaData(qnaResource, fileName)
+
+  // remove utterances with curly brackets
+  const utterancesWithoutPatterns = utterances.filter(i => /{([^}]+)}/g.exec(i) === null)
+
+  // remove utterances which are duplicated with local qna questions
+  let questionsOfLowerCase = questions.map(q => q.toLowerCase())
+  let dedupedUtterances = utterancesWithoutPatterns.filter(u => !questionsOfLowerCase.includes(u.toLowerCase()))
+
+  // add utterances from lu file to corresponding qna file with question set to all utterances
+  // split large QA pair to multiple smaller ones to overcome the limit that the maximum number of questions per answer is 300
+  while (dedupedUtterances.length > 0) {
+    let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
+    // construct new question content for qna resource
+    let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
+    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}> !# @qna.pair.source = crosstrained${NEWLINE}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
+  }
+
+  return { luResource: trainedLuResource, qnaResource: trainedQnaResource }
+}
+
+const qnaAddMetaData = function (qnaResource, fileName) {
+  let resultQnaResource = qnaResource
+  // extract qna sections
+  const qnaSections = qnaResource.Sections.filter(s => s.SectionType === LUSectionTypes.QNASECTION)
 
   // update qna filters
   let qnaSectionContents = []
@@ -458,27 +486,10 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     const modelInforContent = modelInfoSections.map(m => m.ModelInfo).join(NEWLINE)
     if (modelInforContent && modelInforContent !== '') qnaContents = NEWLINE + qnaContents
 
-    trainedQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
+    resultQnaResource = new SectionOperator(new LUResource([], modelInforContent, [])).addSection(qnaContents)
   }
 
-  // remove utterances with curly brackets
-  const utterancesWithoutPatterns = utterances.filter(i => /{([^}]+)}/g.exec(i) === null)
-
-  // remove utterances which are duplicated with local qna questions
-  let questionsOfLowerCase = questions.map(q => q.toLowerCase())
-  let dedupedUtterances = utterancesWithoutPatterns.filter(u => !questionsOfLowerCase.includes(u.toLowerCase()))
-
-  // add utterances from lu file to corresponding qna file with question set to all utterances
-  // split large QA pair to multiple smaller ones to overcome the limit that the maximum number of questions per answer is 300
-  while (dedupedUtterances.length > 0) {
-    let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
-    // construct new question content for qna resource
-    let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
-    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}> !# @qna.pair.source = crosstrained${NEWLINE}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
-    trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
-  }
-
-  return { luResource: trainedLuResource, qnaResource: trainedQnaResource }
+  return resultQnaResource
 }
 
 /**
@@ -490,6 +501,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
  */
 const parseAndValidateContent = async function (objectArray, verbose) {
   let fileIdToResourceMap = new Map()
+  let allEmpty = true
   for (const object of objectArray) {    
     let fileContent = object.content
     if (object.content && object.content !== '') {
@@ -504,6 +516,8 @@ const parseAndValidateContent = async function (objectArray, verbose) {
     }
 
     let resource = luParser.parse(fileContent)
+
+    if (resource.Sections.filter(s => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) allEmpty = false
 
     if (resource.Errors && resource.Errors.length > 0) {
       if (verbose) {
@@ -522,7 +536,7 @@ const parseAndValidateContent = async function (objectArray, verbose) {
     fileIdToResourceMap.set(object.id, resource)
   }
 
-  return fileIdToResourceMap
+  return {fileIdToResourceMap, allEmpty}
 }
 
 const pretreatment = function (luContents, qnaContents) {

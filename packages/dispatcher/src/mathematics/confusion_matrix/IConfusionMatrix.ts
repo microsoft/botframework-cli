@@ -13,19 +13,29 @@ export interface IConfusionMatrix {
         "confusionMatrix": IConfusionMatrix,
         "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
         "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+        "microAverageMetrics": {
+            "accuracy": number,
+            "truePositives": number,
+            "falsePositives": number,
+            "falseNegatives": number,
+            "support": number },
         "macroAverageMetrics": {
             "averagePrecision": number,
             "averageRecall": number,
             "averageF1Score": number,
-            "support": number },
-        "microAverageMetrics": {
-            "accuracy": number,
-            "truePositives": number,
+            "averageAccuracy": number,
+            "averageTruePositives": number,
+            "averageFalsePositives": number,
+            "averageTrueNegatives": number,
+            "averageFalseNegatives": number,
+            "averageSupport": number,
             "support": number },
         "weightedMacroAverageMetrics": {
             "weightedAveragePrecision": number,
             "weightedAverageRecall": number,
             "weightedAverageF1Score": number,
+            "weightedAverageAccuracy": number,
+            "weightedAverageSupport": number,
             "support": number } };
 
     getNumberLabels(): number;
@@ -34,21 +44,33 @@ export interface IConfusionMatrix {
 
     getBinaryConfusionMatrices(): BinaryConfusionMatrix[];
 
+    getTotal(binaryConfusionMatrices: BinaryConfusionMatrix[]): number;
+
     getMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
         "averagePrecisionRecallF1Accuracy": number,
         "truePositives": number,
+        "falsePositives": number,
+        "falseNegatives": number,
         "total": number };
 
     getMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
         "averagePrecision": number,
         "averageRecall": number,
         "averageF1Score": number,
+        "averageTruePositives": number,
+        "averageFalsePositives": number,
+        "averageTrueNegatives": number,
+        "averageFalseNegatives": number,
+        "averageAccuracy": number,
+        "averageSupport": number,
         "total": number };
 
     getWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
         "averagePrecision": number,
         "averageRecall": number,
         "averageF1Score": number,
+        "averageAccuracy": number,
+        "averageSupport": number,
         "total": number };
 
     validateLabelId(

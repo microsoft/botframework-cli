@@ -18,67 +18,14 @@ schedules:
     include:
     - master
 
-jobs:
-  - job: CLI
-  
+variables:
+- template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
+#  version: define this in Azure, settable at queue time
+
+stages:
+- stage: Build
+  jobs:
+  - job:
     steps:
-    - bash: |
-        short_hash=`git rev-parse --short=7 HEAD`  ## At least 7 digits, more if needed for uniqueness
-        echo "Full git hash:  $(Build.SourceVersion)"
-        echo "Short git hash: $short_hash"
-        echo "##vso[task.setvariable variable=short_hash]$short_hash"  ## Store variable for subsequent steps
-      workingDirectory: $(Build.SourcesDirectory)
-      displayName: Set Build Version
-
-    - powershell: |
-        $date = (Get-Date).ToString("yyyyMMdd")
-        echo "##vso[task.setvariable variable=buildDate]$date"  ## Store variable for subsequent steps
-
-    - task: colinsalmcorner.colinsalmcorner-buildtasks.tag-build-task.tagBuildOrRelease@0
-      displayName: 'Tag Build with version number'
-      inputs:
-        tags: 'Version=4.10.0-dev.$(buildDate).$(short_hash)'
-      continueOnError: true
-
-    - task: NodeTool@0
-      displayName: 'Use Node 12.x'
-      inputs:
-        versionSpec: 12.x
-
-    - task: Npm@1
-      displayName: 'npm install --global @microsoft/rush'
-      inputs:
-        command: custom
-        verbose: false
-        customCommand: 'install --global @microsoft/rush'
-
-    - script: 'rush update'
-      displayName: 'rush update'
-
-    - script: 'rush build -p 2'
-      displayName: 'rush build -p 2'
-
-    - script: 'rush test'
-      displayName: 'rush test'
-
-    - script: 'node ./common/scripts/version-and-pack.js --version 4.10.0-dev.$(buildDate).$(short_hash)'
-      displayName: 'Version and Pack'
-
-    - task: CopyFiles@2
-      displayName: 'Copy packages to: $(Build.ArtifactStagingDirectory)/drop'
-      inputs:
-        SourceFolder: ./.output
-        Contents: '**/*.tgz'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)/drop'
-        flattenFolders: true
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: drop'
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
-        ArtifactName: drop
-
-    - powershell: 'Get-ChildItem .. -ErrorAction Continue -Recurse -Force | Where {$_.FullName -notlike "*node_modules*"}'
-      displayName: 'Dir workspace except node_modules'
-      continueOnError: true
-      condition: succeededOrFailed()
+    - script: echo '##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-dev
+    - template: bf-cli-build-test-steps.yml

@@ -95,7 +95,7 @@ describe('luis:convert', () => {
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
     .it('luis:convert writes out an error when invalid entity definition is found', async (ctx: any) => {
-      expect(ctx.stderr).to.contain("syntax error: missing ':'")
+      expect(ctx.stderr).to.contain("Invalid entity line, did you miss entity type after $\n")
     })
 
     test

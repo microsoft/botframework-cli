@@ -30,7 +30,6 @@ describe('Section CRUD tests for intent', () => {
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[1].utterance, 'hello');
     });
 
-
     it('add simpleIntentSection test', () => {
         let newFileConent = 
         `# CheckEmail
@@ -194,6 +193,23 @@ describe('Section CRUD tests for intent', () => {
         assert.equal(luresource.Sections[0].Body, `> comment1${NEWLINE}- hi${NEWLINE}hello${NEWLINE}$${NEWLINE}@${NEWLINE}> comment2`);
     });
 
+    it('update section test for invalid content2', () => {
+        // missing entity type after '$a', here 'a' is entity name
+        let newFileConent = `# Greeting${NEWLINE}> comment1${NEWLINE}- hi${NEWLINE}$a${NEWLINE}> comment2`;
+
+        let sectionId = luresource.Sections[0].Id;
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[0].Id, newFileConent);
+        assert.equal(luresource.Errors.length, 1);
+        assert.equal(luresource.Sections.length, 4);
+        assert.equal(luresource.Sections[0].Errors.length, 1);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[0].Name, 'Greeting');
+        assert.equal(luresource.Sections[0].Id, sectionId);
+        assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap.length, 1);
+        assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[0].utterance, 'hi');
+        assert.equal(luresource.Sections[0].Body, `> comment1${NEWLINE}- hi${NEWLINE}$a${NEWLINE}> comment2`);
+    });
+
     it('add section test for nested section content with comments', () => {
         let simpleIntentBody1 = `- hello${NEWLINE}- hi${NEWLINE}> this is comment 1${NEWLINE}@${NEWLINE}> this is comment 2${NEWLINE}`
         let simpleIntentBody2 = `- bye${NEWLINE}$${NEWLINE}> this is comment 3${NEWLINE}${NEWLINE}> this is comment 4${NEWLINE}${NEWLINE}`
@@ -202,7 +218,7 @@ describe('Section CRUD tests for intent', () => {
 
         luresource = new SectionOperator(luresource).addSection(newFileConent);
 
-        assert.equal(luresource.Errors.length, 7);
+        assert.equal(luresource.Errors.length, 4);
         assert.equal(luresource.Sections.length, 6);
         assert.equal(luresource.Sections[4].Errors.length, 3);
         assert.equal(luresource.Sections[4].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
@@ -404,3 +420,81 @@ hello
         assert.equal(luresource.Sections[0].Body.replace(/\r\n/g,"\n"), insertFileContent);
     });
 });
+
+describe('Section range tests', () => {    
+    it('simple intent section test', () => {
+        let fileContent =
+`# Cancel
+- cancel it
+
+#    Greeting
+## HelloGreeting
+- hi
+
+@simple e1
+
+## ByeGreeting
+- bye
+
+@ ml e2`;
+
+        let luresource = luparser.parse(fileContent);
+
+        assert.equal(luresource.Errors.length, 1);
+        assert.equal(luresource.Sections.length, 4);
+
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[0].Name, 'Cancel');
+        assert.equal(luresource.Sections[0].Range.Start.Line, 1)
+        assert.equal(luresource.Sections[0].Range.Start.Character, 0)
+        assert.equal(luresource.Sections[0].Range.End.Line, 3)
+        assert.equal(luresource.Sections[0].Range.End.Character, 0)
+
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[1].Name, 'Greeting');
+        assert.equal(luresource.Sections[1].Range.Start.Line, 4)
+        assert.equal(luresource.Sections[1].Range.Start.Character, 0)
+        assert.equal(luresource.Sections[1].Range.End.Line, 4)
+        assert.equal(luresource.Sections[1].Range.End.Character, 13)
+
+        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[2].Name, 'HelloGreeting');
+        assert.equal(luresource.Sections[2].Range.Start.Line, 5)
+        assert.equal(luresource.Sections[2].Range.Start.Character, 0)
+        assert.equal(luresource.Sections[2].Range.End.Line, 9)
+        assert.equal(luresource.Sections[2].Range.End.Character, 0)
+
+        assert.equal(luresource.Sections[3].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[3].Name, 'ByeGreeting');
+        assert.equal(luresource.Sections[3].Range.Start.Line, 10)
+        assert.equal(luresource.Sections[3].Range.Start.Character, 0)
+        assert.equal(luresource.Sections[3].Range.End.Line, 13)
+        assert.equal(luresource.Sections[3].Range.End.Character, 7)
+    });
+
+    it('nested intent section test', () => {
+        let fileContent =
+`> !# @enableSections = true
+# Greeting
+## HelloGreeting
+- hi
+
+@simple e1
+
+## ByeGreeting
+- bye
+
+@ ml e2`;
+
+        let luresource = luparser.parse(fileContent);
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 2);
+
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.NESTEDINTENTSECTION);
+        assert.equal(luresource.Sections[1].Name, 'Greeting');
+        assert.equal(luresource.Sections[1].Range.Start.Line, 2)
+        assert.equal(luresource.Sections[1].Range.Start.Character, 0)
+        assert.equal(luresource.Sections[1].Range.End.Line, 11)
+        assert.equal(luresource.Sections[1].Range.End.Character, 7)
+    });
+})

@@ -25,14 +25,11 @@ class SimpleIntentSection  extends BaseSection {
         
         if (parseTree) {
             this.Name = this.ExtractName(parseTree);
+            this.IntentNameLine = this.ExtractIntentNameLine(parseTree);
             let result = this.ExtractUtteranceAndEntitiesMap(parseTree);
             this.UtteranceAndEntitiesMap = result.utteranceAndEntitiesMap;
             this.Errors = result.errors;
-            result =  this.ExtractEntities(parseTree);
-            this.Entities = result.entitySections;
-            this.Errors = this.Errors.concat(result.errors);
             this.Id = `${this.SectionType}_${this.Name}`;
-            this.Body = this.ExtractBody(parseTree, content)
             const startPosition = new Position(parseTree.start.line, parseTree.start.column);
             const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
             this.Range = new Range(startPosition, stopPosition);
@@ -41,6 +38,10 @@ class SimpleIntentSection  extends BaseSection {
 
     ExtractName(parseTree) {
         return parseTree.intentDefinition().intentNameLine().intentName().getText().trim();
+    }
+
+    ExtractIntentNameLine(parseTree) {
+        return parseTree.intentDefinition().intentNameLine().getText().trim();
     }
 
     ExtractUtteranceAndEntitiesMap(parseTree) {
@@ -93,45 +94,6 @@ class SimpleIntentSection  extends BaseSection {
         }
 
         return { utteranceAndEntitiesMap, errors };
-    }
-
-    ExtractEntities(parseTree) {
-        let entitySections = [];
-        let errors = [];
-        if (parseTree.entitySection) {
-            for (const entitySection of parseTree.entitySection()) {
-                const entitySectionObj = new EntitySection(entitySection);
-                entitySections.push(entitySectionObj);
-                errors = errors.concat(entitySectionObj.Errors);
-            }
-        }
-
-        if (parseTree.newEntitySection) {
-            for (const newEntitySection of parseTree.newEntitySection()) {
-                const newEntitiySectionObj = new NewEntitySection(newEntitySection);
-                entitySections.push(newEntitiySectionObj);
-                errors = errors.concat(newEntitiySectionObj.Errors);
-            }
-        }
-
-        return { entitySections, errors };
-    }
-
-    ExtractBody(parseTree, content) {
-        const startLine = parseTree.start.line - 1
-        const stopLine = parseTree.stop.line - 1
-        const originList = content.split(/\r?\n/)
-        if (isNaN(startLine) || isNaN(stopLine) || startLine < 0 || startLine > stopLine || originList.Length <= stopLine) {
-            throw new Error("index out of range.")
-        }
-
-        if (startLine < stopLine) {
-            const destList = originList.slice(startLine + 1, stopLine + 1)
-
-            return destList.join(NEWLINE)
-        } else {
-            return ''
-        }
     }
 }
 

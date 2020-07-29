@@ -15,6 +15,7 @@ const LUOptions = require('@microsoft/bf-lu/lib/parser/lu/luOptions')
 const Settings = require('@microsoft/bf-lu/lib/parser/lubuild/settings')
 const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
 const Recognizer = require('@microsoft/bf-lu/lib/parser/lubuild/recognizer')
+const CrosstrainedRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/cross-trained-recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
 const recognizerType = require('@microsoft/bf-lu/lib/parser/utils/enums/recognizertypes')
 const utils = require('../../utils/index')
@@ -107,7 +108,8 @@ export default class LuisBuild extends Command {
       let luContents: any[] = []
       let recognizers = new Map<string, any>()
       let multiRecognizers = new Map<string, any>()
-      let settings = new Map<string, any>()
+      let settings: any
+      let crosstrainedRecognizers = new Map<string, any>()
 
       if ((inVal && inVal !== '') || files.length > 0) {
         if (log) this.log('Loading files...\n')
@@ -128,25 +130,27 @@ export default class LuisBuild extends Command {
         recognizers = loadedResources.recognizers
         multiRecognizers = loadedResources.multiRecognizers
         settings = loadedResources.settings
+        crosstrainedRecognizers = loadedResources.crosstrainedRecognizers
       } else {
         // load lu content from stdin and create default recognizer, multiRecognier and settings
         if (log) this.log('Load lu content from stdin\n')
         const content = new Content(flags.stdin, new LUOptions('stdin', true, defaultCulture, path.join(process.cwd(), 'stdin')))
         luContents.push(content)
         multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
-        settings.set('stdin', new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {}))
+        settings = new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {})
         const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
         recognizers.set(content.name, recognizer)
+        crosstrainedRecognizers.set('stdin', new CrosstrainedRecognizer(path.join(process.cwd(), 'stdin.lu.qna.dialog'), {}))
       }
 
       // update or create and then train and publish luis applications based on loaded resources
       if (log) this.log('Handling applications...')
-      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, deleteOldVersion, isStaging, multiRecognizers, settings)
+      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, deleteOldVersion, isStaging, multiRecognizers, settings, crosstrainedRecognizers, dialog)
 
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
-        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, dialog, luConfig, schema)
+        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, luConfig)
         if (writeDone) {
           this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
         } else {

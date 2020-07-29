@@ -17,7 +17,7 @@ const ChannelAccount = require('./serializable/channelAccount');
 const ConversationAccount = require('./serializable/conversationAccount');
 const Attachment = require('./serializable/attachment');
 const chalk = require('chalk');
-const request = require('request-promise-native');
+const request = require('node-fetch');
 const NEWLINE = require('os').EOL;
 let activityId = 1;
 
@@ -482,9 +482,8 @@ async function addAttachment(activity, arg) {
         contentType = mime.lookup(contentUrl) || cardContentTypes[path.extname(contentUrl)];
 
         if (!contentType && contentUrl && contentUrl.indexOf('http') == 0) {
-            let options = { method: 'HEAD', uri: contentUrl };
-            let response = await request(options);
-            contentType = response['content-type'].split(';')[0];
+            let response = await request(contentUrl, {method: 'HEAD'});
+            contentType = response.headers.get('content-type').split(';')[0];
         }
     }
 

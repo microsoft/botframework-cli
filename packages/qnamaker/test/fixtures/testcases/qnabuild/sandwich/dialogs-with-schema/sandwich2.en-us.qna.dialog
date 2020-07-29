@@ -1,8 +1,8 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
     "$kind": "Microsoft.QnAMakerRecognizer",
-    "id": "QnA_test",
-    "knowledgeBaseId": "=settings.qna.test_en_us_qna",
+    "id": "QnA_sandwich2",
+    "knowledgeBaseId": "=settings.qna.sandwich2_en_us_qna",
     "hostname": "=settings.qna.hostname",
     "endpointKey": "=settings.qna.endpointKey"
 }
