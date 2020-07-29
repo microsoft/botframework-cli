@@ -121,11 +121,11 @@ newEntityRoleOrFeatures
     ;
 
 newEntityName
-    : NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER (WS* INTERCHANGEABLE)?
     ;
 
 newEntityNameWithWS
-    : NEW_ENTITY_IDENTIFIER_WITH_WS
+    : NEW_ENTITY_IDENTIFIER_WITH_WS (WS* INTERCHANGEABLE)?
     ;
 
 entitySection

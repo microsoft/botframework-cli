@@ -462,7 +462,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
             let intentExists = parsedContent.LUISJsonStructure.intents.find(item => item.name === section.Name);
             if (intentExists !== undefined) {
                 // verify the list of features requested have all been defined.
-                let featuresList = section.Features.split(/[,;]/g).map(item => item.trim());
+                let featuresList = section.Features.split(/[,;]/g).map(item => item.trim().replace(/^[\'\"]|[\'\"]$/g, ""));
                 (featuresList || []).forEach(feature => {
                     let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
                     let featureIntentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
@@ -1096,7 +1096,12 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale)
     if (entities && entities.length > 0) {
         for (const entity of entities) {
             if (entity.Type !== INTENTTYPE) {
-                entity.Name = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
+                if (entity.Name.endsWith(PLCONSTS.INTERCHANGEABLE)) {
+                    entity.Name = entity.Name.slice(0, entity.Name.length - PLCONSTS.INTERCHANGEABLE.length).trim().replace(/^[\'\"]|[\'\"]$/g, "") + PLCONSTS.INTERCHANGEABLE
+                } else {
+                    entity.Name = entity.Name.replace(/^[\'\"]|[\'\"]$/g, "");
+                }
+                
                 let entityName = entity.Name.endsWith('=') ? entity.Name.slice(0, entity.Name.length - 1) : entity.Name;
                 let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
                 if (!entityType) {
