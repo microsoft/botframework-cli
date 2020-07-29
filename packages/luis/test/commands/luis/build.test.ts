@@ -366,6 +366,30 @@ describe('luis:build write dialog assets successfully if --dialog set to crosstr
     })
 })
 
+describe('luis:build write crosstrained recognizer asset successfully if lu file is empty and --dialog set to crosstrained', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/empty-file/lufiles/empty.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write crosstrained recognizer asset successfully when lu file is empty and --dialog set to crosstrained', async ctx => {
+      expect(await compareFiles('./../../../results/empty.lu.qna.dialog', './../../fixtures/testcases/lubuild/empty-file/dialogs/empty.lu.qna.dialog')).to.be.true
+    })
+})
+
 describe('luis:build create multiple applications successfully when input is a folder', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))

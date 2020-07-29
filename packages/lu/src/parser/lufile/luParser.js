@@ -74,11 +74,10 @@ class LUParser {
                     emptyIntentSection.Id = `${emptyIntentSection.SectionType}_${emptyIntentSection.Name}`
                     
                     // get the end character index
-                    const firstLine = content.split(/\r?\n/)[0];
+                    // this is default value
+                    // it will be reset in function extractSectionBody()
                     let endCharacter = section.Name.length + 2;
-                    if (firstLine.includes(section.Name)) {
-                        endCharacter = firstLine.length;
-                    }
+                   
                     const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, endCharacter))
                     emptyIntentSection.Range = range;
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
@@ -152,6 +151,8 @@ class LUParser {
                 message: `Error happened when parsing qna section: ${err.message}`
             }))
         }
+
+        sections = this.reconstractIntentSections(sections)
 
         this.extractSectionBody(sections, content)
 
@@ -231,17 +232,10 @@ class LUParser {
         }
 
         let entitySections = fileContext.paragraph()
-            .map(x => x.simpleIntentSection())
-            .filter(x => x && !x.intentDefinition());
+            .map(x => x.entitySection())
+            .filter(x => x && x.entityDefinition());
 
-        let entitySectionList = [];
-        entitySections.forEach(x => {
-            if (x.entitySection) {
-                for (const entitySection of x.entitySection()) {
-                    entitySectionList.push(new EntitySection(entitySection));
-                }
-            }
-        })
+        let entitySectionList = entitySections.map(x => new EntitySection(x));
 
         return entitySectionList;
     }
@@ -256,17 +250,10 @@ class LUParser {
         }
 
         let newEntitySections = fileContext.paragraph()
-            .map(x => x.simpleIntentSection())
-            .filter(x => x && !x.intentDefinition());
+            .map(x => x.newEntitySection())
+            .filter(x => x && x.newEntityDefinition());
         
-        let newEntitySectionList = [];
-        newEntitySections.forEach(x => {
-            if (x.newEntitySection) {
-                for (const newEntitySection of x.newEntitySection()) {
-                    newEntitySectionList.push(new NewEntitySection(newEntitySection));
-                }
-            }
-        })
+        let newEntitySectionList = newEntitySections.map(x => new NewEntitySection(x));
 
         return newEntitySectionList;
     }
@@ -326,11 +313,66 @@ class LUParser {
     }
 
     /**
+     * @param {any[]} sections 
+     */
+    static reconstractIntentSections(sections) {
+        let newSections = []
+        sections.sort((a, b) => a.Range.Start.Line - b.Range.Start.Line)
+        let index
+        for (index = 0; index < sections.length; index++) {
+            let section = sections[index]
+            if (index + 1 === sections.length) {
+                newSections.push(section)
+                break
+            }
+
+            if (section.SectionType === SectionType.NESTEDINTENTSECTION) {
+                if (sections[index + 1].SectionType === SectionType.ENTITYSECTION
+                    || sections[index + 1].SectionType === SectionType.NEWENTITYSECTION) {
+                    let simpleIntentSections = section.SimpleIntentSections
+                    simpleIntentSections[simpleIntentSections.length - 1].Entities.push(sections[index + 1])
+                    simpleIntentSections[simpleIntentSections.length - 1].Errors.push(...sections[index + 1].Errors)
+                    index++
+
+                    while (index + 1 < sections.length 
+                        && (sections[index + 1].SectionType === SectionType.ENTITYSECTION
+                        || sections[index + 1].SectionType === SectionType.NEWENTITYSECTION
+                        || (sections[index + 1].SectionType === SectionType.SIMPLEINTENTSECTION && sections[index + 1].IntentNameLine.includes('##')))) {
+                        if (sections[index + 1].SectionType === SectionType.ENTITYSECTION
+                            || sections[index + 1].SectionType === SectionType.NEWENTITYSECTION) {
+                            simpleIntentSections[simpleIntentSections.length - 1].Entities.push(sections[index + 1])
+                            simpleIntentSections[simpleIntentSections.length - 1].Errors.push(...sections[index + 1].Errors)
+                        } else {
+                            simpleIntentSections.push(sections[index + 1])
+                        }
+
+                        index++
+                    }
+
+                    simpleIntentSections.forEach(s => section.Errors.push(...s.Errors))
+
+                    section.SimpleIntentSection = simpleIntentSections
+                }
+            } else if (section.SectionType === SectionType.SIMPLEINTENTSECTION) {
+                while (index + 1 < sections.length && (sections[index + 1].SectionType === SectionType.ENTITYSECTION
+                    || sections[index + 1].SectionType === SectionType.NEWENTITYSECTION)) {
+                    section.Entities.push(sections[index + 1])
+                    section.Errors.push(...sections[index + 1].Errors)
+                    index++
+                }
+            }
+
+            newSections.push(section)
+        }
+
+        return newSections
+    }
+
+    /**
      * @param {any[]} sections
      * @param {string} content
      */
     static extractSectionBody(sections, content) {
-        sections.sort((a, b) => a.Range.Start.Line - b.Range.Start.Line)
         const originList = content.split(/\r?\n/)
         let qnaSectionIndex = 0
         sections.forEach(function (section, index) {
@@ -348,6 +390,7 @@ class LUParser {
                     stopLine = originList.length
                 }
                 section.Range.End.Line = stopLine;
+                section.Range.End.Character = originList[stopLine - 1].length
 
                 let destList
                 if (section.SectionType === SectionType.QNASECTION) {

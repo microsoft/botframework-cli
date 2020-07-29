@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
+// import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
 import { MultiLabelConfusionMatrixWithBinaryBase } from "./MultiLabelConfusionMatrixWithBinaryBase";
 import { ConfusionMatrixBase } from "./ConfusionMatrixBase";
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
@@ -12,7 +12,8 @@ import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility"
 
 import { Utility } from "../../utility/Utility";
 
-export class MultiLabelConfusionMatrixSubset extends MultiLabelConfusionMatrixWithBinaryBase {
+export class MultiLabelConfusionMatrixSubset
+extends MultiLabelConfusionMatrixWithBinaryBase {
 
     constructor(
         labels: string[],
@@ -28,7 +29,7 @@ export class MultiLabelConfusionMatrixSubset extends MultiLabelConfusionMatrixWi
         this.validateLabelIds(predictedLabelIds);
         if (Utility.isEmptyNumberArray(predictedLabelIds)) {
             if (Utility.isEmptyNumberArray(groundTrueLabelIds)) {
-                this.getBinaryConfusionMatrix().addToTruePositives(value, true);
+                this.getBinaryConfusionMatrix().addToTrueNegatives(value, true);
             }
             this.getBinaryConfusionMatrix().addToFalseNegatives(value, true);
             return;

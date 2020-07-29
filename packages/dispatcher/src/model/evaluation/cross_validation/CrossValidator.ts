@@ -237,19 +237,29 @@ export class CrossValidator extends AbstractBaseEvaluator {
             "confusionMatrix": IConfusionMatrix,
             "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
             "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microAverageMetrics": {
+                "accuracy": number,
+                "truePositives": number,
+                "falsePositives": number,
+                "falseNegatives": number,
+                "support": number },
             "macroAverageMetrics": {
                 "averagePrecision": number,
                 "averageRecall": number,
                 "averageF1Score": number,
-                "support": number },
-            "microAverageMetrics": {
-                "accuracy": number,
-                "truePositives": number,
+                "averageAccuracy": number,
+                "averageTruePositives": number,
+                "averageFalsePositives": number,
+                "averageTrueNegatives": number,
+                "averageFalseNegatives": number,
+                "averageSupport": number,
                 "support": number },
             "weightedMacroAverageMetrics": {
                 "weightedAveragePrecision": number,
                 "weightedAverageRecall": number,
                 "weightedAverageF1Score": number,
+                "weightedAverageAccuracy": number,
+                "weightedAverageSupport": number,
                 "support": number } } =
             confusionMatrixCrossValidation.generateConfusionMatrixMetricStructure();
         Utility.debuggingLog(
