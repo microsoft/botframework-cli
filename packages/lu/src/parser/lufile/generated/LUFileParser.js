@@ -453,12 +453,12 @@ var symbolicNames = [ null, "WS", "NEWLINE", "QNA_SOURCE_INFO", "MODEL_INFO",
                       "IMPORT", "FILTER_MARK", "QNA_ID_MARK", "MULTI_LINE_TEXT", 
                       "PROMPT_MARK", "INVALID_TOKEN_DEFAULT_MODE", "EQUAL", 
                       "COMMA", "HAS_ROLES_LABEL", "HAS_FEATURES_LABEL", 
-                      "NEW_ENTITY_TYPE_IDENTIFIER", "INTERCHANGEABLE", "NEW_COMPOSITE_ENTITY", 
-                      "NEW_REGEX_ENTITY", "NEW_ENTITY_IDENTIFIER", "NEW_ENTITY_IDENTIFIER_WITH_WS", 
-                      "NEWLINE_IN_NAME", "IDENTIFIER", "DOT", "ESCAPE_CHARACTER", 
-                      "EXPRESSION", "TEXT", "NEWLINE_IN_ENTITY", "COMPOSITE_ENTITY", 
-                      "REGEX_ENTITY", "ENTITY_TEXT", "COLON_MARK", "NEWLINE_IN_QNA", 
-                      "QNA_TEXT" ];
+                      "NEW_ENTITY_TYPE_IDENTIFIER", "PHRASE_LIST_LABEL", 
+                      "NEW_COMPOSITE_ENTITY", "NEW_REGEX_ENTITY", "NEW_ENTITY_IDENTIFIER", 
+                      "NEW_ENTITY_IDENTIFIER_WITH_WS", "NEWLINE_IN_NAME", 
+                      "IDENTIFIER", "DOT", "ESCAPE_CHARACTER", "EXPRESSION", 
+                      "TEXT", "NEWLINE_IN_ENTITY", "COMPOSITE_ENTITY", "REGEX_ENTITY", 
+                      "ENTITY_TEXT", "COLON_MARK", "NEWLINE_IN_QNA", "QNA_TEXT" ];
 
 var ruleNames =  [ "file", "paragraph", "newline", "errorString", "nestedIntentSection", 
                    "nestedIntentNameLine", "nestedIntentName", "nameIdentifier", 
@@ -518,7 +518,7 @@ LUFileParser.COMMA = 18;
 LUFileParser.HAS_ROLES_LABEL = 19;
 LUFileParser.HAS_FEATURES_LABEL = 20;
 LUFileParser.NEW_ENTITY_TYPE_IDENTIFIER = 21;
-LUFileParser.INTERCHANGEABLE = 22;
+LUFileParser.PHRASE_LIST_LABEL = 22;
 LUFileParser.NEW_COMPOSITE_ENTITY = 23;
 LUFileParser.NEW_REGEX_ENTITY = 24;
 LUFileParser.NEW_ENTITY_IDENTIFIER = 25;
@@ -3532,8 +3532,8 @@ NewEntityNameContext.prototype.NEW_ENTITY_IDENTIFIER = function() {
     return this.getToken(LUFileParser.NEW_ENTITY_IDENTIFIER, 0);
 };
 
-NewEntityNameContext.prototype.INTERCHANGEABLE = function() {
-    return this.getToken(LUFileParser.INTERCHANGEABLE, 0);
+NewEntityNameContext.prototype.PHRASE_LIST_LABEL = function() {
+    return this.getToken(LUFileParser.PHRASE_LIST_LABEL, 0);
 };
 
 NewEntityNameContext.prototype.WS = function(i) {
@@ -3597,7 +3597,7 @@ LUFileParser.prototype.newEntityName = function() {
                 _la = this._input.LA(1);
             }
             this.state = 391;
-            this.match(LUFileParser.INTERCHANGEABLE);
+            this.match(LUFileParser.PHRASE_LIST_LABEL);
 
         }
     } catch (re) {
@@ -3635,8 +3635,8 @@ NewEntityNameWithWSContext.prototype.NEW_ENTITY_IDENTIFIER_WITH_WS = function() 
     return this.getToken(LUFileParser.NEW_ENTITY_IDENTIFIER_WITH_WS, 0);
 };
 
-NewEntityNameWithWSContext.prototype.INTERCHANGEABLE = function() {
-    return this.getToken(LUFileParser.INTERCHANGEABLE, 0);
+NewEntityNameWithWSContext.prototype.PHRASE_LIST_LABEL = function() {
+    return this.getToken(LUFileParser.PHRASE_LIST_LABEL, 0);
 };
 
 NewEntityNameWithWSContext.prototype.WS = function(i) {
@@ -3700,7 +3700,7 @@ LUFileParser.prototype.newEntityNameWithWS = function() {
                 _la = this._input.LA(1);
             }
             this.state = 401;
-            this.match(LUFileParser.INTERCHANGEABLE);
+            this.match(LUFileParser.PHRASE_LIST_LABEL);
 
         }
     } catch (re) {
