@@ -5,7 +5,7 @@
   "description": "These are all of the kinds that can be created by the loader.",
   "oneOf": [
     {
-      "$ref": "#/definitions/nuget3"
+      "$ref": "#/definitions/nuget3.component1"
     }
   ],
   "definitions": {
@@ -132,7 +132,7 @@
         }
       ]
     },
-    "nuget3": {
+    "nuget3.component1": {
       "$role": [],
       "title": "Nuget3 schema",
       "description": "Example schema for packages.",
@@ -236,7 +236,7 @@
           "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
           "type": "string",
           "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
-          "const": "nuget3"
+          "const": "nuget3.component1"
         },
         "$designer": {
           "title": "Designer information",
