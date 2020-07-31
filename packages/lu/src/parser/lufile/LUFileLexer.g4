@@ -130,6 +130,10 @@ NEW_ENTITY_TYPE_IDENTIFIER
   : S I M P L E | L I S T | R E G E X | P R E B U I L T | C O M P O S I T E | M L | P A T T E R N A N Y | P H R A S E L I S T | I N T E N T
   ;
 
+PHRASE_LIST_LABEL
+  : '(' (~[\r\n])* ')'
+  ;
+
 NEW_COMPOSITE_ENTITY
   : '[' (~[\r\n{}[\]()])* ']'
   ;

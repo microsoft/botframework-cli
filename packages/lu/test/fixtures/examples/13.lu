@@ -1,0 +1,13 @@
+> LUIS application information
+> !# @app.name = myskillen-us_MySkill
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 7.0.0
+> !# @app.tokenizerVersion = 1.0.0
+
+# Application
+
+@ intent Application usesFeature "Application Synonyms"
+
+@ phraselist "Application Synonyms"(interchangeable) disabledForAllModels = 
+	- Application,Web pages,Sites
