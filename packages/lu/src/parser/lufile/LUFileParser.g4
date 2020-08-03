@@ -121,11 +121,11 @@ newEntityRoleOrFeatures
     ;
 
 newEntityName
-    : NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER (WS* PHRASE_LIST_LABEL)?
     ;
 
 newEntityNameWithWS
-    : NEW_ENTITY_IDENTIFIER_WITH_WS
+    : NEW_ENTITY_IDENTIFIER_WITH_WS (WS* PHRASE_LIST_LABEL)?
     ;
 
 entitySection

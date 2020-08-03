@@ -93,6 +93,10 @@ describe('luis:convert', () => {
         await assertToJSON('./../../fixtures/examples/9a.lu', './../../fixtures/verified/9a.json', '9a')
     })
 
+    it('luis:convert phraselist entity types are parsed correctly', async () => {
+        await assertToJSON('./../../fixtures/examples/13.lu', './../../fixtures/verified/13.json', '13')
+    })
+
     it('Parse to LU instance', async () => {
         let luFile = `
         @ ml test
