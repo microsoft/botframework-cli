@@ -28,19 +28,20 @@ module.exports = {
    * @param {any[]} luContents the lu content array whose element includes path and content
    * @param {any[]} qnaContents the qna content array whose element includes path and content
    * @param {any} crossTrainConfig cross train json config
+   * @param {any} fileResolver file resolver when resolving import files
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
    */
-  crossTrain: async function (luContents, qnaContents, crossTrainConfig) {
+  crossTrain: async function (luContents, qnaContents, crossTrainConfig, fileResolver) {
     try {
       let {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
       const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
 
       // parse lu content to LUResource object
-      let {fileIdToResourceMap: luFileIdToResourceMap, allEmpty: allLuEmpty} = await parseAndValidateContent(luObjectArray, verbose)
+      let {fileIdToResourceMap: luFileIdToResourceMap, allEmpty: allLuEmpty} = await parseAndValidateContent(luObjectArray, verbose, fileResolver)
 
       // parse qna content to LUResource object
-      let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose)
+      let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose, fileResolver)
 
       if (!allLuEmpty) {
         // construct resource tree to build the father-children relationship among lu files
@@ -496,21 +497,22 @@ const qnaAddMetaData = function (qnaResource, fileName) {
  * Parse and validate lu or qna object array to convert to LUResource object dict
  * @param {luObject[]} objectArray the lu or qna object list to be parsed
  * @param {boolean} verbose indicate to enable log messages or not
+ * @param {any} fileResolver file resolver when resolving import files
  * @returns {Map<string, LUResource>} map of file id and luResource
  * @throws {exception} throws errors
  */
-const parseAndValidateContent = async function (objectArray, verbose) {
+const parseAndValidateContent = async function (objectArray, verbose, fileResolver) {
   let fileIdToResourceMap = new Map()
   let allEmpty = true
   for (const object of objectArray) {    
     let fileContent = object.content
     if (object.content && object.content !== '') {
       if (object.id.toLowerCase().endsWith(fileExtEnum.LUFile)) {
-        let result = await LuisBuilderVerbose.build([object], verbose)
+        let result = await LuisBuilderVerbose.build([object], verbose, undefined, fileResolver)
         let luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
       } else {
-        let result = await qnaBuilderVerbose.build([object], verbose)
+        let result = await qnaBuilderVerbose.build([object], verbose, fileResolver)
         fileContent = result.parseToQnAContent()
       }
     }
