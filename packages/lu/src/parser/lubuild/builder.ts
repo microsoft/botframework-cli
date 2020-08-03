@@ -34,7 +34,8 @@ export class Builder {
     culture: string,
     suffix: string,
     region: string,
-    schema?: string) {
+    schema?: string,
+    fileResolver?: object) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings: any
     let recognizers = new Map<string, Recognizer>()
@@ -76,7 +77,7 @@ export class Builder {
       let luisObj
       const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
+        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture, fileResolver)
         luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
         this.handler(`${file} loaded\n`)

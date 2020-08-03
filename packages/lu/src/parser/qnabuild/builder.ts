@@ -36,7 +36,8 @@ export class Builder {
     suffix: string,
     region: string,
     culture: string,
-    schema?: string) {
+    schema?: string,
+    fileResolver?: object) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings: any
     let recognizers = new Map<string, Recognizer>()
@@ -129,7 +130,7 @@ export class Builder {
       }
     }
 
-    await this.resolveMergedQnAContentIds(qnaContents, qnaObjects)
+    await this.resolveMergedQnAContentIds(qnaContents, qnaObjects, fileResolver)
 
     return {qnaContents: [...qnaContents.values()], recognizers, multiRecognizers, settings, crosstrainedRecognizers}
   }
@@ -579,11 +580,11 @@ export class Builder {
     this.handler(`Publishing finished for kb ${kbName}\n`)
   }
 
-  async resolveMergedQnAContentIds(contents: Map<string, any>, objects: Map<string, any[]>) {
+  async resolveMergedQnAContentIds(contents: Map<string, any>, objects: Map<string, any[]>, fileResolver?: object) {
     for (const [name, content] of contents) {
       let qnaObjects = objects.get(name)
       try {
-        let result = await qnaBuilderVerbose.build(qnaObjects, true)
+        let result = await qnaBuilderVerbose.build(qnaObjects, true, fileResolver)
         let mergedContent = result.parseToQnAContent()
         content.content = mergedContent
         contents.set(name, content)
