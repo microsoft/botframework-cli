@@ -54,7 +54,6 @@ OPTIONS
   -i, --in=in                            Source .qna file(s) or QnA KB JSON file
   -k, --kbId=kbId                        (required) Specifies the active qnamaker knowledgebase id.
   -o, --out=out                          Output file or folder name. If not specified stdout will be used as output
-  -s, --subscriptionKey=subscriptionKey  (required) QnAMaker subscription key. (Found on the Cognitive Services Azure portal page under "access keys")
   --hostname=hostname                    (required) Specifies the url for your private QnA service.
   --log                                  Enables log messages
   --scorethreshold=scorethreshold        Specifies the confidence score threshold for the returned answer.
@@ -67,7 +66,7 @@ OPTIONS
 Command :
 
 ```
-qnamaker:test -i <testdata.qna> -o <result.qna> -s <subscriptionKey> -e <endpointKey> --hostname <hostname> -k <kbId>
+qnamaker:test -i <testdata.qna> -o <result.qna> -e <endpointKey> --hostname <hostname> -k <kbId>
 ```
 
 Input: testdata.qna
@@ -106,7 +105,7 @@ You can use our REST apis to manage your KB. See here for details: https://westu
 
 Output: result.lu  
 ```
-> Total passed utterance: 8/10
+> Total passed utterances: 8/10
 
 > <list out all the rest results>
 ```
@@ -140,7 +139,7 @@ You can get coffee in our Seattle store at 1 pike place, Seattle, WA
 ``` 
 ````
 
-All the questions in the input will be sent to remote QnA service and get a predicted answer, while the answer below the question in the input will be considered as the expected answer. If the predicted answer and the expected one are exactly the same, the case will be treated as PASS. The QnAId of the answer with an match score will also be listed.
+All the questions in the input will be sent to remote QnA service and get a predicted answer, while the answer below the question in the input will be considered as the expected answer. If the predicted answer and the expected one are exactly the same(both raw text and QnAid if provided), the case will be treated as PASS. The QnAId("167" in the above sample) of the answer with a match score("92.01" in parentheses) will also be listed.
 
 ### Scenario 2: User’s expected answer does not match with the predicted one, list out the actual predicted top-scoring answer.
 
@@ -190,6 +189,7 @@ You're definitely smarter than I am.
 ```
 
 ````
+Before each qna-pair there is a summary that tells how many questions there are and how many passed.
 
 ### Scenario 5: Get the answer with StrictFilter
 
@@ -209,6 +209,68 @@ You can use our REST apis to manage your KB. See here for details: https://westu
 ````
 
 The key-value pair in the Filters field will be used as strict filter to get the predicted answer.
+
+### Scenario 6: Batch test
+
+````
+> # QnA pairs
+
+> Total passed utterances: 6/9
+
+
+> Utterance passed in this answer: 1/1
+> !# @qna.pair.source = Custom Editorial
+
+> PASS, 153(100)
+## ? How can I change the default message from QnA Maker?
+
+```markdown
+You can change the default message if you use the QnAMakerDialog. See this for details: https://docs.botframework.com/en-us/azure-bot-service/templates/qnamaker/#navtitle
+```
+
+
+> Utterance passed in this answer: 1/2
+> !# @qna.pair.source = Custom Editorial
+
+> PASS, 154(100)
+## ? How do I programmatically update my KB?
+> FAIL, -1(0), Top Result: No good match found in KB.
+- change qna maker
+
+**Filters:**
+- category = api
+
+```markdown
+You can use our REST apis to manage your KB. See here for details: https://westus.dev.cognitive.microsoft.com/docs/services/58994a073d9e04097c7ba6fe/operations/58994a073d9e041ad42d9baa
+```
+
+
+> Utterance passed in this answer: 4/6
+> !# @qna.pair.source = custom editorial
+
+> PASS, 158(72.01)
+## ? Do you think I'm the smartest?
+> FAIL, -1(0), Top Result: No good match found in KB.
+- Between you or me, who is the most smart?
+> PASS, 158(80.05)
+- Do you think you're the brightest
+> FAIL, 161(100), Top Result: Age doesn't really apply to me.
+- how old are you?
+> PASS, 158(62.8)
+- Do you think you're more knowledgeable than me?
+> PASS, 158(74.33)
+- I'm definitely more clever
+
+```markdown
+You're definitely smarter than I am.
+```
+
+> # QnA Alterations
+
+
+````
+
+When you batch test the qna-pairs in one .qna file, you will get a summary at the beginning of the doc which tells the total number of questions and the number of passes.
 
 ### TODO
 We may support other scenarios later, such as test for multi-turn conversation or topN matched result.
