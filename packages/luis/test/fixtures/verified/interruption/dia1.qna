@@ -6,7 +6,7 @@
 - tell me a joke
 
 **Filters:**
-- dialogName=Dia1
+- dialogName=dia1
 
 ```
 ha ha ha
@@ -20,7 +20,7 @@ ha ha ha
 # ? can I book a hotel near space needle
 
 **Filters:**
-- dialogName=Dia1
+- dialogName=dia1
 
 ```
 of course you can
@@ -31,7 +31,7 @@ of course you can
 # ? book flight
 
 **Filters:**
-- dialogName=Dia1
+- dialogName=dia1
 
 ```
 I can book flight for you
@@ -43,21 +43,23 @@ I can book flight for you
 - how can you help
 
 **Filters:**
-- dialogName=Dia1
+- dialogName=dia1
 
 ```
 I can help book flight, book hotel and book train ticket
 ```
 
 > Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
 # ? I need a four star hotel
 - book a flight for me
 - book a train ticket for me
 - user guide
 
 **Filters:**
-- dialogName=Dia1
+- dialogName=dia1
 
 ```
-intent=DeferToRecognizer_LUIS_Dia1
+intent=DeferToRecognizer_LUIS_dia1
 ```

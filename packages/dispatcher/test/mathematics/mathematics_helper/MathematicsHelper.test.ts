@@ -5,6 +5,7 @@
 
 import assert = require("assert");
 
+import { IMathematicsHelper } from "../../../src/mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../src/mathematics/mathematics_helper/MathematicsHelper";
 
 import { Utility } from "../../../src/utility/Utility";
@@ -13,12 +14,14 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 const testArray: number[] = [0.4, 0.5, 0.3];
 
+const MathematicsHelperObject: IMathematicsHelper = MathematicsHelper.GetMathematicsHelperObject();
+
 describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/MathematicsHelper", () => {
     it("Test.0000 softmaxSingleFunction()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const softmax: number =
-            MathematicsHelper.softmaxSingleFunction(testArray, 2);
+            MathematicsHelperObject.softmaxSingleFunction(testArray, 2);
         assert.ok(
             Utility.almostEqual(softmax, 0.3006096053557273),
             `softmax=${softmax}`);
@@ -27,7 +30,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothArgmax: number =
-            MathematicsHelper.smoothArgmaxApproximationSingleFunction(testArray, 2);
+            MathematicsHelperObject.smoothArgmaxApproximationSingleFunction(testArray, 2);
         assert.ok(
             Utility.almostEqual(smoothArgmax, 0.3006096053557273),
             `smoothArgmax=${smoothArgmax}`);
@@ -36,7 +39,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const softmaxes: number[] =
-            MathematicsHelper.softmaxFunction(testArray);
+            MathematicsHelperObject.softmaxFunction(testArray);
         assert.ok(
             Utility.almostEqual(softmaxes[0], 0.3322249935333473),
             `softmaxes=${softmaxes}`);
@@ -51,7 +54,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothArgmaxes: number[] =
-            MathematicsHelper.smoothArgmaxApproximationFunction(testArray);
+            MathematicsHelperObject.smoothArgmaxApproximationFunction(testArray);
         assert.ok(
             Utility.almostEqual(smoothArgmaxes[0], 0.3322249935333473),
             `smoothArgmaxes=${smoothArgmaxes}`);
@@ -67,7 +70,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const logsumexpStrictConvex: number =
-            MathematicsHelper.logsumexpStrictConvexSingleFunction(testArray);
+            MathematicsHelperObject.logsumexpStrictConvexSingleFunction(testArray);
         assert.ok(
             Utility.almostEqual(logsumexpStrictConvex, 1.7030019824788412),
             `logsumexpStrictConvex=${logsumexpStrictConvex}`);
@@ -76,7 +79,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothMaxApproximationStrict: number =
-            MathematicsHelper.smoothMaxApproximationStrictConvexFunction(testArray);
+            MathematicsHelperObject.smoothMaxApproximationStrictConvexFunction(testArray);
         assert.ok(
             Utility.almostEqual(smoothMaxApproximationStrict, 1.7030019824788412),
             `smoothMaxApproximationStrict=${smoothMaxApproximationStrict}`);
@@ -85,7 +88,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const logsumexp: number =
-            MathematicsHelper.logsumexpSingleFunction(testArray);
+            MathematicsHelperObject.logsumexpSingleFunction(testArray);
         assert.ok(
             Utility.almostEqual(logsumexp, 1.501942848229244),
             `logsumexp=${logsumexp}`);
@@ -94,7 +97,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothMaxApproximation: number =
-            MathematicsHelper.smoothMaxApproximationFunction(testArray);
+            MathematicsHelperObject.smoothMaxApproximationFunction(testArray);
         assert.ok(
             Utility.almostEqual(smoothMaxApproximation, 1.501942848229244),
             `smoothMaxApproximation=${smoothMaxApproximation}`);
@@ -104,7 +107,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoidLogisticGradient: number =
-            MathematicsHelper.sigmoidLogisticGradientFunction(testArray[1]);
+            MathematicsHelperObject.sigmoidLogisticGradientFunction(testArray[1]);
         assert.ok(
             Utility.almostEqual(sigmoidLogisticGradient, 0.2350037122015945),
             `sigmoidLogisticGradient=${sigmoidLogisticGradient}`);
@@ -114,7 +117,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
-            MathematicsHelper.sigmoidLogisticFunction(testArray[1]);
+            MathematicsHelperObject.sigmoidLogisticFunction(testArray[1]);
         assert.ok(
             Utility.almostEqual(sigmoid, 0.6224593312018546),
             `sigmoid=${sigmoid}`);
@@ -123,7 +126,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
-            MathematicsHelper.sigmoidHyperbolicTangentFunction(testArray[1]);
+            MathematicsHelperObject.sigmoidHyperbolicTangentFunction(testArray[1]);
         assert.ok(
             Utility.almostEqual(sigmoid, 0.4621171572600098),
             `sigmoid=${sigmoid}`);
@@ -132,7 +135,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
-            MathematicsHelper.sigmoidArctangentFunction(testArray[1]);
+            MathematicsHelperObject.sigmoidArctangentFunction(testArray[1]);
         assert.ok(
             Utility.almostEqual(sigmoid, 0.4636476090008061),
             `sigmoid=${sigmoid}`);
@@ -141,7 +144,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
-            MathematicsHelper.sigmoidGudermannianFunction(testArray[1]);
+            MathematicsHelperObject.sigmoidGudermannianFunction(testArray[1]);
         assert.ok(
             Utility.almostEqual(sigmoid, 0.48038107913372946),
             `sigmoid=${sigmoid}`);
@@ -150,7 +153,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
-            MathematicsHelper.sigmoidGeneralizedLogisticFunction(testArray[1]);
+            MathematicsHelperObject.sigmoidGeneralizedLogisticFunction(testArray[1], 1);
         assert.ok(
             Utility.almostEqual(sigmoid, 0.6224593312018546),
             `sigmoid=${sigmoid}`);
@@ -159,7 +162,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
-            MathematicsHelper.sigmoidAlgebraicFunction(testArray[1]);
+            MathematicsHelperObject.sigmoidAlgebraicFunction(testArray[1]);
         assert.ok(
             Utility.almostEqual(sigmoid, 0.4472135954999579),
             `sigmoid=${sigmoid}`);
@@ -171,7 +174,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const weight: number = 1;
         const value: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1Regularized(weight, value);
+            MathematicsHelperObject.getL1Regularized(weight, value);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -184,7 +187,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const weight: number = -1;
         const value: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1Regularized(weight, value);
+            MathematicsHelperObject.getL1Regularized(weight, value);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -197,7 +200,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const weight: number = 0;
         const value: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1Regularized(weight, value);
+            MathematicsHelperObject.getL1Regularized(weight, value);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -210,7 +213,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const weight: number = 2;
         const value: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL2Regularized(weight, value);
+            MathematicsHelperObject.getL2Regularized(weight, value);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -224,7 +227,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueL1: number = 0.5;
         const valueL2: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
+            MathematicsHelperObject.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -238,7 +241,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueL1: number = 0.5;
         const valueL2: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
+            MathematicsHelperObject.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -252,7 +255,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueL1: number = 0.5;
         const valueL2: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
+            MathematicsHelperObject.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -266,7 +269,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueL1: number = 0.5;
         const valueL2: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
+            MathematicsHelperObject.getL1l2RegularizedWeightOptimizedSparse(weight, valueL1, valueL2);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -280,7 +283,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueL1: number = 0.5;
         const valueL2: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(weight, valueL1, valueL2);
+            MathematicsHelperObject.getL1l2RegularizedWeightOptimizedDense(weight, valueL1, valueL2);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -294,7 +297,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueL1: number = 0.5;
         const valueL2: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(weight, valueL1, valueL2);
+            MathematicsHelperObject.getL1l2RegularizedWeightOptimizedDense(weight, valueL1, valueL2);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -308,7 +311,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueL1: number = 0.5;
         const valueL2: number = 0.5;
         const regularization: number =
-            MathematicsHelper.getL1l2RegularizedWeightOptimizedDense(weight, valueL1, valueL2);
+            MathematicsHelperObject.getL1l2RegularizedWeightOptimizedDense(weight, valueL1, valueL2);
         Utility.debuggingLog(
             `regularization=${regularization}`);
         assert.ok(
@@ -329,7 +332,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmax: number[][] =
-            MathematicsHelper.softmaxLogLossGradientUpdate(
+            MathematicsHelperObject.softmaxLogLossGradientUpdate(
                 groundTruthPositiveLabelIndexes,
                 featureVectorSparseIndexArrays,
                 matrixWeightDenseArrays,
@@ -366,7 +369,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmax: number[][] =
-                MathematicsHelper.softmaxLogLossGradientUpdate(
+                MathematicsHelperObject.softmaxLogLossGradientUpdate(
                     groundTruthPositiveLabelIndexes,
                     featureVectorSparseIndexArrays,
                     matrixWeightDenseArrays,
@@ -392,7 +395,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmax: number[][] =
-                MathematicsHelper.softmaxLogLossGradientUpdate(
+                MathematicsHelperObject.softmaxLogLossGradientUpdate(
                     groundTruthPositiveLabelIndexes,
                     featureVectorSparseIndexArrays,
                     matrixWeightDenseArrays,
@@ -418,7 +421,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmax: number[][] =
-                MathematicsHelper.softmaxLogLossGradientUpdate(
+                MathematicsHelperObject.softmaxLogLossGradientUpdate(
                     groundTruthPositiveLabelIndexes,
                     featureVectorSparseIndexArrays,
                     matrixWeightDenseArrays,
@@ -444,7 +447,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmax: number[][] =
-                MathematicsHelper.softmaxLogLossGradientUpdate(
+                MathematicsHelperObject.softmaxLogLossGradientUpdate(
                     groundTruthPositiveLabelIndexes,
                     featureVectorSparseIndexArrays,
                     matrixWeightDenseArrays,
@@ -463,7 +466,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const probabilityVector: number[] = testArray;
         const groundTruthPositiveLabelIndex: number = 1;
         const logLossValue: number =
-            MathematicsHelper.logLoss(probabilityVector, groundTruthPositiveLabelIndex);
+            MathematicsHelperObject.logLoss(probabilityVector, groundTruthPositiveLabelIndex);
         assert.ok(
             Utility.almostEqual(logLossValue, 0.6931471805599453),
             `logLossValue=${logLossValue}`);
@@ -474,7 +477,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const probabilityVector: number[] = testArray;
         const labelArray: number[] = testArray;
         const logLossGenericValue: number =
-            MathematicsHelper.logLossGeneric(probabilityVector, labelArray);
+            MathematicsHelperObject.logLossGeneric(probabilityVector, labelArray);
         assert.ok(
             Utility.almostEqual(logLossGenericValue, 1.0742817243274154),
             `logLossGenericValue=${logLossGenericValue}`);
@@ -486,7 +489,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const softmaxVectors: number[][] = [testArray, testArray];
         const groundTruthPositiveLabelIndexes: number[] = [1, 1];
         const softmaxLogLossValue: number =
-            MathematicsHelper.softmaxLogLoss(softmaxVectors, groundTruthPositiveLabelIndexes);
+            MathematicsHelperObject.softmaxLogLoss(softmaxVectors, groundTruthPositiveLabelIndexes);
         assert.ok(
             Utility.almostEqual(softmaxLogLossValue, 0.6931471805599453),
             `softmaxLogLossValue=${softmaxLogLossValue}`);
@@ -497,7 +500,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const softmaxVectors: number[][] = [testArray, testArray];
         const labelVectors: number[][] = [testArray, testArray];
         const softmaxLogLossGenericValue: number =
-            MathematicsHelper.softmaxLogLossGeneric(softmaxVectors, labelVectors);
+            MathematicsHelperObject.softmaxLogLossGeneric(softmaxVectors, labelVectors);
         assert.ok(
             Utility.almostEqual(softmaxLogLossGenericValue, 1.0742817243274154),
             `softmaxLogLossGenericValue=${softmaxLogLossGenericValue}`);
@@ -529,7 +532,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxSparseIndexesValues(
+            MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexesValues(
                 featureVectorSparseIndexArrays,
                 featureVectorSparseValueArrays,
                 matrixWeightDenseArrays,
@@ -560,7 +563,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmaxVectors: number[][] =
-                MathematicsHelper.matrixVectorProductSoftmaxSparseIndexesValues(
+                MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexesValues(
                     featureVectorSparseIndexArrays,
                     featureVectorSparseValueArrays,
                     matrixWeightDenseArrays,
@@ -580,7 +583,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmaxVectors: number[][] =
-                MathematicsHelper.matrixVectorProductSoftmaxSparseIndexesValues(
+                MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexesValues(
                     featureVectorSparseIndexArrays,
                     featureVectorSparseValueArrays,
                     matrixWeightDenseArrays,
@@ -600,7 +603,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmaxVectors: number[][] =
-                MathematicsHelper.matrixVectorProductSoftmaxSparseIndexesValues(
+                MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexesValues(
                     featureVectorSparseIndexArrays,
                     featureVectorSparseValueArrays,
                     matrixWeightDenseArrays,
@@ -635,7 +638,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxSparseIndexesValues(
+            MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexesValues(
                 featureVectorSparseIndexArrays,
                 featureVectorSparseValueArrays,
                 matrixWeightDenseArrays,
@@ -665,7 +668,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 0;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxSparseIndexesValues(
+            MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexesValues(
                 featureVectorSparseIndexArrays,
                 featureVectorSparseValueArrays,
                 matrixWeightDenseArrays,
@@ -710,7 +713,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+            MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                 featureVectorSparseIndexArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -739,7 +742,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmaxVectors: number[][] =
-                MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+                MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                     featureVectorSparseIndexArrays,
                     matrixWeightDenseArrays,
                     biasVectorDenseValueArray,
@@ -756,7 +759,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+            MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                 featureVectorSparseIndexArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -785,7 +788,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmaxVectors: number[][] =
-                MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+                MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                     featureVectorSparseIndexArrays,
                     matrixWeightDenseArrays,
                     biasVectorDenseValueArray,
@@ -818,7 +821,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+            MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                 featureVectorSparseIndexArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -846,7 +849,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 0;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxSparseIndexes(
+            MathematicsHelperObject.matrixVectorProductSoftmaxSparseIndexes(
                 featureVectorSparseIndexArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -890,7 +893,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxDenseValues(
+            MathematicsHelperObject.matrixVectorProductSoftmaxDenseValues(
                 vectorDenseValueArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -919,7 +922,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmaxVectors: number[][] =
-                MathematicsHelper.matrixVectorProductSoftmaxDenseValues(
+                MathematicsHelperObject.matrixVectorProductSoftmaxDenseValues(
                     vectorDenseValueArrays,
                     matrixWeightDenseArrays,
                     biasVectorDenseValueArray,
@@ -936,7 +939,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxDenseValues(
+            MathematicsHelperObject.matrixVectorProductSoftmaxDenseValues(
                 vectorDenseValueArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -965,7 +968,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexEnd: number = 2;
         assert.throws(() => {
             const softmaxVectors: number[][] =
-                MathematicsHelper.matrixVectorProductSoftmaxDenseValues(
+                MathematicsHelperObject.matrixVectorProductSoftmaxDenseValues(
                     vectorDenseValueArrays,
                     matrixWeightDenseArrays,
                     biasVectorDenseValueArray,
@@ -998,7 +1001,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 2;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxDenseValues(
+            MathematicsHelperObject.matrixVectorProductSoftmaxDenseValues(
                 vectorDenseValueArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -1026,7 +1029,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const featureVectorIndexBegin: number = 0;
         const featureVectorIndexEnd: number = 0;
         const softmaxVectors: number[][] =
-            MathematicsHelper.matrixVectorProductSoftmaxDenseValues(
+            MathematicsHelperObject.matrixVectorProductSoftmaxDenseValues(
                 vectorDenseValueArrays,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray,
@@ -1064,7 +1067,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const biasVectorDenseValueArray: number[] = [0.5, 0.5];
         const matrixVectorProduct: number[] =
-            MathematicsHelper.matrixVectorProductSparseIndexesValues(
+            MathematicsHelperObject.matrixVectorProductSparseIndexesValues(
                 featureVectorSparseIndexArray,
                 featureVectorSparseValueArray,
                 matrixWeightDenseArrays,
@@ -1093,7 +1096,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const biasVectorDenseValueArray: number[] = [0.5, 0.5];
         const matrixVectorProduct: number[] =
-            MathematicsHelper.matrixVectorProductSparseIndexes(
+            MathematicsHelperObject.matrixVectorProductSparseIndexes(
                 featureVectorSparseIndexArray,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray);
@@ -1121,7 +1124,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const biasVectorDenseValueArray: number[] = [0.5, 0.5];
         const matrixVectorProduct: number[] =
-            MathematicsHelper.matrixVectorProductDenseValues(
+            MathematicsHelperObject.matrixVectorProductDenseValues(
                 vectorDenseValueArray,
                 matrixWeightDenseArrays,
                 biasVectorDenseValueArray);
@@ -1150,7 +1153,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const weights: number[] = [0.1, 0.2];
         const weightBias: number = 0.5;
         const dotProduct: number =
-            MathematicsHelper.dotProductSparseIndexesValues(
+            MathematicsHelperObject.dotProductSparseIndexesValues(
                 indexArray,
                 valueArray,
                 weights,
@@ -1175,7 +1178,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const weights: number[] = [0.1, 0.2];
         const weightBias: number = 0.5;
         const dotProduct: number =
-            MathematicsHelper.dotProductSparseIndexes(
+            MathematicsHelperObject.dotProductSparseIndexes(
                 indexArray,
                 weights,
                 weightBias);
@@ -1199,7 +1202,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const weights: number[] = [0.1, 0.2];
         const weightBias: number = 0.5;
         const dotProduct: number =
-            MathematicsHelper.dotProductDenseValues(
+            MathematicsHelperObject.dotProductDenseValues(
                 valueArray,
                 weights,
                 weightBias);
@@ -1242,7 +1245,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[][] =
-            MathematicsHelper.matrixDenseL1l2RegularizedSparseTo(
+            MathematicsHelperObject.matrixDenseL1l2RegularizedSparseTo(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -1293,7 +1296,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[][] =
-            MathematicsHelper.matrixDenseL1l2RegularizedDenseTo(
+            MathematicsHelperObject.matrixDenseL1l2RegularizedDenseTo(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -1343,7 +1346,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[] =
-            MathematicsHelper.vectorDenseL1l2RegularizedSparseTo(
+            MathematicsHelperObject.vectorDenseL1l2RegularizedSparseTo(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -1386,7 +1389,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[] =
-            MathematicsHelper.vectorDenseL1l2RegularizedDenseTo(
+            MathematicsHelperObject.vectorDenseL1l2RegularizedDenseTo(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -1413,7 +1416,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 0.01;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseAddConstantTo(
+            MathematicsHelperObject.matrixDenseAddConstantTo(
                 valueArray,
                 constant);
         assert.ok(
@@ -1444,7 +1447,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 0.01;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseMultiplyConstantTo(
+            MathematicsHelperObject.matrixDenseMultiplyConstantTo(
                 valueArray,
                 constant);
         assert.ok(
@@ -1475,7 +1478,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 0.01;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseSubtractConstantFrom(
+            MathematicsHelperObject.matrixDenseSubtractConstantFrom(
                 valueArray,
                 constant);
         assert.ok(
@@ -1506,7 +1509,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 0.01;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseDivideConstantFrom(
+            MathematicsHelperObject.matrixDenseDivideConstantFrom(
                 valueArray,
                 constant);
         assert.ok(
@@ -1537,7 +1540,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseAddTo(
+            MathematicsHelperObject.matrixDenseAddTo(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -1567,7 +1570,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseMultiplyTo(
+            MathematicsHelperObject.matrixDenseMultiplyTo(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -1597,7 +1600,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseSubtractFrom(
+            MathematicsHelperObject.matrixDenseSubtractFrom(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -1627,7 +1630,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseDivideFrom(
+            MathematicsHelperObject.matrixDenseDivideFrom(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -1660,7 +1663,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 2;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseAddScaledTo(
+            MathematicsHelperObject.matrixDenseAddScaledTo(
                 valueArray,
                 valueArray,
                 constant);
@@ -1693,7 +1696,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 2;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseMultiplyScaledTo(
+            MathematicsHelperObject.matrixDenseMultiplyScaledTo(
                 valueArray,
                 valueArray,
                 constant);
@@ -1726,7 +1729,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 2;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseSubtractScaledFrom(
+            MathematicsHelperObject.matrixDenseSubtractScaledFrom(
                 valueArray,
                 valueArray,
                 constant);
@@ -1759,7 +1762,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const constant: number = 2;
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixDenseDivideScaledFrom(
+            MathematicsHelperObject.matrixDenseDivideScaledFrom(
                 valueArray,
                 valueArray,
                 constant);
@@ -1790,7 +1793,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseAddConstantTo(
+            MathematicsHelperObject.vectorDenseAddConstantTo(
                 valueArray,
                 constant);
         assert.ok(
@@ -1819,7 +1822,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseMultiplyConstantTo(
+            MathematicsHelperObject.vectorDenseMultiplyConstantTo(
                 valueArray,
                 constant);
         assert.ok(
@@ -1848,7 +1851,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseSubtractConstantFrom(
+            MathematicsHelperObject.vectorDenseSubtractConstantFrom(
                 valueArray,
                 constant);
         assert.ok(
@@ -1877,7 +1880,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseDivideConstantFrom(
+            MathematicsHelperObject.vectorDenseDivideConstantFrom(
                 valueArray,
                 constant);
         assert.ok(
@@ -1906,7 +1909,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseAddTo(
+            MathematicsHelperObject.vectorDenseAddTo(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -1934,7 +1937,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseMultiplyTo(
+            MathematicsHelperObject.vectorDenseMultiplyTo(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -1962,7 +1965,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseSubtractFrom(
+            MathematicsHelperObject.vectorDenseSubtractFrom(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -1990,7 +1993,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const constant: number = 0.01;
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseDivideFrom(
+            MathematicsHelperObject.vectorDenseDivideFrom(
                 valueArray,
                 valueArray);
         assert.ok(
@@ -2020,7 +2023,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 0.01;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseAddScaledTo(
+            MathematicsHelperObject.vectorDenseAddScaledTo(
                 valueArray,
                 valueArray,
                 constant);
@@ -2050,7 +2053,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 0.01;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseMultiplyScaledTo(
+            MathematicsHelperObject.vectorDenseMultiplyScaledTo(
                 valueArray,
                 valueArray,
                 constant);
@@ -2080,7 +2083,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 0.01;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseSubtractScaledFrom(
+            MathematicsHelperObject.vectorDenseSubtractScaledFrom(
                 valueArray,
                 valueArray,
                 constant);
@@ -2110,7 +2113,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 0.01;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorDenseDivideScaledFrom(
+            MathematicsHelperObject.vectorDenseDivideScaledFrom(
                 valueArray,
                 valueArray,
                 constant);
@@ -2133,7 +2136,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewLikeWithRandomCells(
+            MathematicsHelperObject.matrixNewLikeWithRandomCells(
                 valueArray);
         assert.ok(
             ((valueArrayResult[0][0] >= 0) && (valueArrayResult[0][0] <= 1)),
@@ -2154,7 +2157,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewLikeWithRandomCellsScaled(
+            MathematicsHelperObject.matrixNewLikeWithRandomCellsScaled(
                 valueArray,
                 scale);
         assert.ok(
@@ -2175,7 +2178,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewLikeWithZeroCells(
+            MathematicsHelperObject.matrixNewLikeWithZeroCells(
                 valueArray);
         assert.ok(
             ((valueArrayResult[0][0] === 0)),
@@ -2196,7 +2199,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewLikeWithConstantCells(
+            MathematicsHelperObject.matrixNewLikeWithConstantCells(
                 valueArray,
                 constant);
         assert.ok(
@@ -2218,7 +2221,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewLikeWithScaledCells(
+            MathematicsHelperObject.matrixNewLikeWithScaledCells(
                 valueArray,
                 scale);
         assert.ok(
@@ -2268,7 +2271,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[][] =
-            MathematicsHelper.matrixNewLikeWithL1l2RegularizedSparseCells(
+            MathematicsHelperObject.matrixNewLikeWithL1l2RegularizedSparseCells(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2319,7 +2322,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[][] =
-            MathematicsHelper.matrixNewLikeWithL1l2RegularizedDenseCells(
+            MathematicsHelperObject.matrixNewLikeWithL1l2RegularizedDenseCells(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2342,7 +2345,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewLikeWithRandomElements(
+            MathematicsHelperObject.vectorNewLikeWithRandomElements(
                 valueArray);
         assert.ok(
             ((valueArrayResult[0] >= 0) && (valueArrayResult[0] <= 1)),
@@ -2363,7 +2366,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewLikeWithRandomElementsScaled(
+            MathematicsHelperObject.vectorNewLikeWithRandomElementsScaled(
                 valueArray,
             scale);
         assert.ok(
@@ -2384,7 +2387,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewLikeWithZeroElements(
+            MathematicsHelperObject.vectorNewLikeWithZeroElements(
                 valueArray);
         assert.ok(
             ((valueArrayResult[0] === 0)),
@@ -2405,7 +2408,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewLikeWithConstantElements(
+            MathematicsHelperObject.vectorNewLikeWithConstantElements(
                 valueArray,
                 constant);
         assert.ok(
@@ -2427,7 +2430,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewLikeWithScaledElements(
+            MathematicsHelperObject.vectorNewLikeWithScaledElements(
                 valueArray,
                 scale);
         assert.ok(
@@ -2475,7 +2478,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[] =
-            MathematicsHelper.vectorNewLikeWithL1l2RegularizedSparseElements(
+            MathematicsHelperObject.vectorNewLikeWithL1l2RegularizedSparseElements(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2518,7 +2521,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[] =
-            MathematicsHelper.vectorNewLikeWithL1l2RegularizedDenseElements(
+            MathematicsHelperObject.vectorNewLikeWithL1l2RegularizedDenseElements(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2535,7 +2538,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewWithRandomCells(
+            MathematicsHelperObject.matrixNewWithRandomCells(
                 valueArray.length,
                 valueArray[0].length);
         assert.ok(
@@ -2557,7 +2560,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewWithRandomCellsScaled(
+            MathematicsHelperObject.matrixNewWithRandomCellsScaled(
                 valueArray.length,
                 valueArray[0].length,
                 scale);
@@ -2579,7 +2582,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewWithZeroCells(
+            MathematicsHelperObject.matrixNewWithZeroCells(
                 valueArray.length,
                 valueArray[0].length);
         assert.ok(
@@ -2601,7 +2604,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewWithConstantCells(
+            MathematicsHelperObject.matrixNewWithConstantCells(
                 valueArray.length,
                 valueArray[0].length,
                 constant);
@@ -2624,7 +2627,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
-            MathematicsHelper.matrixNewWithScaledCells(
+            MathematicsHelperObject.matrixNewWithScaledCells(
                 valueArray,
                 scale);
         assert.ok(
@@ -2674,7 +2677,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[][] =
-            MathematicsHelper.matrixNewWithL1l2RegularizedSparseCells(
+            MathematicsHelperObject.matrixNewWithL1l2RegularizedSparseCells(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2725,7 +2728,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[][] =
-            MathematicsHelper.matrixNewWithL1l2RegularizedDenseCells(
+            MathematicsHelperObject.matrixNewWithL1l2RegularizedDenseCells(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2748,7 +2751,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewWithRandomElements(
+            MathematicsHelperObject.vectorNewWithRandomElements(
                 valueArray.length);
         assert.ok(
             ((valueArrayResult[0] >= 0) && (valueArrayResult[0] <= 1)),
@@ -2769,7 +2772,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewWithRandomElementsScaled(
+            MathematicsHelperObject.vectorNewWithRandomElementsScaled(
                 valueArray.length,
                 scale);
         assert.ok(
@@ -2790,7 +2793,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewWithZeroElements(
+            MathematicsHelperObject.vectorNewWithZeroElements(
                 valueArray.length);
         assert.ok(
             ((valueArrayResult[0] === 0)),
@@ -2811,7 +2814,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const constant: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewWithConstantElements(
+            MathematicsHelperObject.vectorNewWithConstantElements(
                 valueArray.length,
                 constant);
         assert.ok(
@@ -2833,7 +2836,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
-            MathematicsHelper.vectorNewWithScaledElements(
+            MathematicsHelperObject.vectorNewWithScaledElements(
                 valueArray,
                 scale);
         assert.ok(
@@ -2881,7 +2884,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[] =
-            MathematicsHelper.vectorNewWithL1l2RegularizedSparseElements(
+            MathematicsHelperObject.vectorNewWithL1l2RegularizedSparseElements(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2924,7 +2927,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const l1Regularization: number = 0.01;
         const l2Regularization: number = 0.01;
         const valueArrayRegularized: number[] =
-            MathematicsHelper.vectorNewWithL1l2RegularizedDenseElements(
+            MathematicsHelperObject.vectorNewWithL1l2RegularizedDenseElements(
                 valueArray,
                 l1Regularization,
                 l2Regularization);
@@ -2941,7 +2944,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([1, 4, 5, 3, 5, 3, 2]);
         const maxResult: { "indexMax": number, "max": number } =
-            MathematicsHelper.getIndexOnFirstMaxEntryOnArray(valueArray);
+            MathematicsHelperObject.getIndexOnFirstMaxEntryOnArray(valueArray);
         assert.ok(
             maxResult.indexMax === 2,
             `maxResult.indexMax=${maxResult.indexMax}`);
@@ -2954,7 +2957,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([1, 4, 5, 3, 5, 3, 2]);
         const maxResult: { "indexMax": number, "max": number } =
-            MathematicsHelper.getIndexOnLastMaxEntryOnArray(valueArray);
+            MathematicsHelperObject.getIndexOnLastMaxEntryOnArray(valueArray);
         assert.ok(
             maxResult.indexMax === 4,
             `maxResult.indexMax=${maxResult.indexMax}`);
@@ -2967,7 +2970,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [1, 4, 5, 3, 5, 3, 2];
         const maxResult: { "indexMax": number, "max": number } =
-            MathematicsHelper.getIndexOnFirstMaxEntry(valueArray);
+            MathematicsHelperObject.getIndexOnFirstMaxEntry(valueArray);
         assert.ok(
             maxResult.indexMax === 2,
             `maxResult.indexMax=${maxResult.indexMax}`);
@@ -2980,7 +2983,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [1, 4, 5, 3, 5, 3, 2];
         const maxResult: { "indexMax": number, "max": number } =
-            MathematicsHelper.getIndexOnLastMaxEntry(valueArray);
+            MathematicsHelperObject.getIndexOnLastMaxEntry(valueArray);
         assert.ok(
             maxResult.indexMax === 4,
             `maxResult.indexMax=${maxResult.indexMax}`);
@@ -2994,7 +2997,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([6, 4, 5, 3, 5, 3, 6]);
         const minResult: { "indexMin": number, "min": number } =
-            MathematicsHelper.getIndexOnFirstMinEntryOnArray(valueArray);
+            MathematicsHelperObject.getIndexOnFirstMinEntryOnArray(valueArray);
         assert.ok(
             minResult.indexMin === 3,
             `minResult.indexMin=${minResult.indexMin}`);
@@ -3007,7 +3010,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([6, 4, 5, 3, 5, 3, 6]);
         const minResult: { "indexMin": number, "min": number } =
-            MathematicsHelper.getIndexOnLastMinEntryOnArray(valueArray);
+            MathematicsHelperObject.getIndexOnLastMinEntryOnArray(valueArray);
         assert.ok(
             minResult.indexMin === 5,
             `minResult.indexMin=${minResult.indexMin}`);
@@ -3020,7 +3023,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [6, 4, 5, 3, 5, 3, 6];
         const minResult: { "indexMin": number, "min": number } =
-            MathematicsHelper.getIndexOnFirstMinEntry(valueArray);
+            MathematicsHelperObject.getIndexOnFirstMinEntry(valueArray);
         assert.ok(
             minResult.indexMin === 3,
             `minResult.indexMin=${minResult.indexMin}`);
@@ -3033,7 +3036,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [6, 4, 5, 3, 5, 3, 6];
         const minResult: { "indexMin": number, "min": number } =
-            MathematicsHelper.getIndexOnLastMinEntry(valueArray);
+            MathematicsHelperObject.getIndexOnLastMinEntry(valueArray);
         assert.ok(
             minResult.indexMin === 5,
             `minResult.indexMin=${minResult.indexMin}`);
@@ -3048,7 +3051,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const numerator: number = 0;
         const denominator: number = 0;
         const result: number =
-            MathematicsHelper.safeDivide(numerator, denominator);
+            MathematicsHelperObject.safeDivide(numerator, denominator);
         assert.ok(
             Utility.almostEqual(result, 0),
             `result=${result}`);
@@ -3059,7 +3062,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const numerator: number = 0;
         const denominator: number = 1;
         const result: number =
-            MathematicsHelper.safeDivide(numerator, denominator);
+            MathematicsHelperObject.safeDivide(numerator, denominator);
         assert.ok(
             Utility.almostEqual(result, 0),
             `result=${result}`);
@@ -3070,7 +3073,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         const numerator: number = 1;
         const denominator: number = 1;
         const result: number =
-            MathematicsHelper.safeDivide(numerator, denominator);
+            MathematicsHelperObject.safeDivide(numerator, denominator);
         assert.ok(
             Utility.almostEqual(result, 1),
             `result=${result}`);
@@ -3080,7 +3083,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 0;
         const result: number =
-            MathematicsHelper.safeLog(value);
+            MathematicsHelperObject.safeLog(value);
         assert.ok(
             Utility.almostEqual(result, Number.MIN_VALUE),
             `result=${result}`);
@@ -3090,7 +3093,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = -1;
         const result: number =
-            MathematicsHelper.safeLog(value);
+            MathematicsHelperObject.safeLog(value);
         assert.ok(
             Number.isNaN(result),
             `result=${result}`);
@@ -3100,7 +3103,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 1;
         const result: number =
-            MathematicsHelper.safeLog(value);
+            MathematicsHelperObject.safeLog(value);
         assert.ok(
             result === 0,
             `result=${result}`);
@@ -3111,7 +3114,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 0;
         const result: number =
-            MathematicsHelper.clipValue(value);
+            MathematicsHelperObject.clipValue(value);
         assert.ok(
             Utility.almostEqual(result, MathematicsHelper.epsilon),
             `result=${result}`);
@@ -3121,7 +3124,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 1;
         const result: number =
-            MathematicsHelper.clipValue(value);
+            MathematicsHelperObject.clipValue(value);
         assert.ok(
             Utility.almostEqual(result, MathematicsHelper.epsilonUp),
             `result=${result}`);
@@ -3131,7 +3134,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 0.5;
         const result: number =
-            MathematicsHelper.clipValue(value);
+            MathematicsHelperObject.clipValue(value);
         assert.ok(
             Utility.almostEqual(result, value),
             `result=${result}`);

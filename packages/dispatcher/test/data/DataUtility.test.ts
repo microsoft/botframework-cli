@@ -75,7 +75,7 @@ describe("Test Suite - data/DataUtility", () => {
                 const luQnaJsonStructure: string =
                     luData.getLuQnaJsonStructure();
                 Utility.debuggingLog(
-                    `luQnaJsonStructure-MicrosoftFaqForWindows=${Utility.JSONstringify(luQnaJsonStructure)}`);
+                    `luQnaJsonStructure-MicrosoftFaqForWindows=${Utility.jsonStringify(luQnaJsonStructure)}`);
             });
     });
     it("Test.0102 LoadData", function() {
@@ -90,7 +90,7 @@ describe("Test Suite - data/DataUtility", () => {
                 const luQnaJsonStructure: string =
                     luData.getLuQnaJsonStructure();
                 Utility.debuggingLog(
-                    `luQnaJsonStructure-MicrosoftFaqForOffice=${Utility.JSONstringify(luQnaJsonStructure)}`);
+                    `luQnaJsonStructure-MicrosoftFaqForOffice=${Utility.jsonStringify(luQnaJsonStructure)}`);
             });
     });
 });

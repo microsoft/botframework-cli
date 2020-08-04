@@ -3,11 +3,14 @@
  * Licensed under the MIT License.
  */
 
+import { ITextFeaturizer } from "./ITextFeaturizer";
+import { ISparseTextFeaturizer } from "./ISparseTextFeaturizer";
+
 import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtility";
 
 import { Utility } from "../../../utility/Utility";
 
-export class NgramSubwordFeaturizer {
+export class NgramSubwordFeaturizer implements ISparseTextFeaturizer {
 
     protected numberHashingFeaturesSetting: number = 0;
 
@@ -25,9 +28,9 @@ export class NgramSubwordFeaturizer {
             weights: [] };
 
     protected labels: string[] = [];
-    protected labelMap: { [id: string]: number; } = {};
+    protected labelMap: { [id: string]: number } = {};
     protected features: string[] = [];
-    protected featureMap: { [id: string]: number; } = {};
+    protected featureMap: { [id: string]: number } = {};
     protected hashingFeatureArrays: Array<Set<string>> = [];
 
     constructor(
@@ -54,13 +57,13 @@ export class NgramSubwordFeaturizer {
     public getLabels(): string[] {
         return this.labels;
     }
-    public getLabelMap(): { [id: string]: number; } {
+    public getLabelMap(): { [id: string]: number } {
         return this.labelMap;
     }
     public getFeatures(): string[] {
         return this.features;
     }
-    public getFeatureMap(): { [id: string]: number; } {
+    public getFeatureMap(): { [id: string]: number } {
         return this.featureMap;
     }
     public getHashingFeatureArrays(): Array<Set<string>> {
@@ -105,7 +108,7 @@ export class NgramSubwordFeaturizer {
         }
         if (labelId < 0) {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.jsonStringify(this.labelMap)}`);
             }
         }
         return labelId;
@@ -267,7 +270,7 @@ export class NgramSubwordFeaturizer {
             labelArray[labelId] = true;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.jsonStringify(this.labelMap)}`);
             }
         }
         return labelArray;
@@ -291,7 +294,7 @@ export class NgramSubwordFeaturizer {
             labelArray[labelId] = 1;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.JSONstringify(this.labelMap)}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.jsonStringify(this.labelMap)}`);
             }
         }
         return labelArray;
@@ -573,7 +576,7 @@ export class NgramSubwordFeaturizer {
         // -------------------------------------------------------------------
         const intents: string[] =
             intentsUtterancesWeights.intents;
-        const intentLabels: { "stringArray": string[], "stringMap": { [id: string]: number; } } =
+        const intentLabels: { "stringArray": string[], "stringMap": { [id: string]: number } } =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArray(intents);
         this.labels =
             intentLabels.stringArray;
@@ -596,12 +599,12 @@ export class NgramSubwordFeaturizer {
         // ---- NOTE-FOR-REFERENCE ---- NOTE ---- RangeError: Maximum call stack size exceeded!
         // ---- NOTE-FOR-REFERENCE ---- const utteranceTexts: {
         // ---- NOTE-FOR-REFERENCE ----     "stringArray": string[],
-        // ---- NOTE-FOR-REFERENCE ----     "stringMap": { [id: string]: number; } } =
+        // ---- NOTE-FOR-REFERENCE ----     "stringMap": { [id: string]: number } } =
         // tslint:disable-next-line: max-line-length
         // ---- NOTE-FOR-REFERENCE ----     DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArray(featureArrayFlattened);
         const utteranceTexts: {
             "stringArray": string[],
-            "stringMap": { [id: string]: number; } } =
+            "stringMap": { [id: string]: number } } =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromStringArrays(featureArray);
         this.features =
             utteranceTexts.stringArray;

@@ -3,19 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import {Recognizer} from './recognizer'
-import {MultiLanguageRecognizer} from './multi-language-recognizer'
-import {Settings} from './settings'
 import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
 import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
-import * as path from 'path'
 import fetch from 'node-fetch'
 
 const delay = require('delay')
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
-const Content = require('./../lu/lu')
-const LUOptions = require('./../lu/luOptions')
 const Luis = require('./../luis/luis')
 
 const rateLimitErrorCode = 429
@@ -345,7 +339,7 @@ export class LuBuildCore {
     return status
   }
 
-  public async publishApplication(appId: string, versionId: string) {
+  public async publishApplication(appId: string, versionId: string, isStaging: boolean) {
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
@@ -354,7 +348,7 @@ export class LuBuildCore {
           await this.client.apps.publish(appId,
             {
               versionId,
-              isStaging: false
+              isStaging
             })
           break
         } catch (e) {
@@ -370,27 +364,6 @@ export class LuBuildCore {
     if (retryCount === 0) {
       throw error
     }
-  }
-
-  public generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Array<Settings>)
-    : Array<any> {
-    let contents = new Array<any>()
-    for (const recognizer of recognizers) {
-      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
-      contents.push(content)
-    }
-
-    for (const multiRecognizer of multiRecognizers) {
-      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
-      contents.push(multiLangContent)
-    }
-
-    for (const setting of settings) {
-      const settingsContent = new Content(setting.save(), new LUOptions(path.basename(setting.getSettingsPath()), true, '', setting.getSettingsPath()))
-      contents.push(settingsContent)
-    }
-
-    return contents
   }
 
   private updateVersionValue(versionId: string) {

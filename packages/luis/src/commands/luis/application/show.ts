@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationShow extends Command {
@@ -31,10 +33,8 @@ export default class LuisApplicationShow extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     try {
-      const appData = await client.apps.get(appId)
+      const appData = await Application.show({subscriptionKey, endpoint, appId})
       if (appData) {
         await utils.writeToConsole(appData)
       }

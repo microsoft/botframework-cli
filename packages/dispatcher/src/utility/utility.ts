@@ -4,10 +4,10 @@
  */
 
 import * as path from "path";
-
 import * as fs from "fs";
-
 import * as md5 from "ts-md5";
+
+import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
 
 export class Utility {
 
@@ -309,20 +309,20 @@ export class Utility {
     }
 
     public static mapToJsonSerialization<K, V>(map: Map<K, V>): string {
-        return Utility.JSONstringify([...map]);
+        return Utility.jsonStringify([...map]);
     }
     public static jsonSerializationToMap<K, V>(jsonString: string): Map<K, V> {
         const jsonParsedObject: any = JSON.parse(jsonString);
         return new Map<K, V>(jsonParsedObject);
     }
     public static setToJsonSerialization<T>(set: Set<T>): string {
-        return Utility.JSONstringify([...set]);
+        return Utility.jsonStringify([...set]);
     }
     public static jsonSerializationToSet<T>(jsonString: string): Set<T> {
         return new Set<T>(JSON.parse(jsonString));
     }
     public static arrayToJsonSerialization<T>(set: T[]): string {
-        return Utility.JSONstringify([...set]);
+        return Utility.jsonStringify([...set]);
     }
     public static jsonSerializationToArray<T>(jsonString: string): T[] {
         return new Array<T>(JSON.parse(jsonString));
@@ -388,13 +388,13 @@ export class Utility {
     }
 
     public static stringMapSetToJson<V>(stringMapSet: Map<string, Set<V>>): string {
-        return Utility.JSONstringify(Utility.stringMapSetToObject<V>(stringMapSet));
+        return Utility.jsonStringify(Utility.stringMapSetToObject<V>(stringMapSet));
     }
     public static jsonToStringMapSet<V>(jsonString: string): Map<string, Set<V>> {
         return Utility.objectToStringMapSet<V>(JSON.parse(jsonString));
     }
     public static stringMapArrayToJson<V>(stringMapArray: Map<string, V[]>): string {
-        return Utility.JSONstringify(Utility.stringMapArrayToObject<V>(stringMapArray));
+        return Utility.jsonStringify(Utility.stringMapArrayToObject<V>(stringMapArray));
     }
     public static jsonToStringMapArray<V>(jsonString: string): Map<string, V[]> {
         return Utility.objectToStringMapArray<V>(JSON.parse(jsonString));
@@ -427,6 +427,7 @@ export class Utility {
         let s1: number = Utility.xorshift128plusState0;
         const s0: number = Utility.xorshift128plusState1;
         Utility.xorshift128plusState0 = s0;
+        Utility.xorshift128plusState0 %= Number.MAX_SAFE_INTEGER;
         // tslint:disable-next-line: no-bitwise
         s1 ^= s1 << 23;
         // tslint:disable-next-line: no-bitwise
@@ -436,7 +437,10 @@ export class Utility {
         // tslint:disable-next-line: no-bitwise
         s1 ^= s0 >> 26;
         Utility.xorshift128plusState1 = s1;
-        return Utility.xorshift128plusState0 + Utility.xorshift128plusState1;
+        Utility.xorshift128plusState1 %= Number.MAX_SAFE_INTEGER;
+        let result: number = Utility.xorshift128plusState0 + Utility.xorshift128plusState1;
+        result %= Number.MAX_SAFE_INTEGER;
+        return result;
     }
     public static rngNextXorshift128plus(
         inputRngBurninIterations: number = -1): number {
@@ -451,20 +455,67 @@ export class Utility {
         }
         return Utility.rngNextXorshift128plusDirect();
     }
+    public static rngNextXorshift128plusWithNumberStates(): number {
+        if (!Utility.rngBurninDone) {
+            for (let i: number = 0; i < Utility.rngBurninIterations; i++) {
+                Utility.rngNextXorshift128plusDirect();
+            }
+            Utility.rngBurninDone = true;
+        }
+        return Utility.rngNextXorshift128plusDirect();
+    }
+    public static rngNextXorshift128plusFloatWithNumberStates(): number {
+        const result: number = Utility.rngNextXorshift128plus();
+        return (result / Number.MAX_SAFE_INTEGER);
+    }
+    public static seedRandomNumberGeneratorWithNumberStates(
+        newState0: number,
+        newState1: number,
+        inputRngBurninIterationsForBigInt: number = -1): void {
+        Utility.rngSeedXorshift128plus(
+            newState0,
+            newState1,
+            inputRngBurninIterationsForBigInt);
+    }
+    public static getRandomNumberWithNumberStates(): number {
+        return Utility.rngNextXorshift128plusFloatWithNumberStates();
+    }
 
-    public static getXorshift128plusState0BigInt(): bigint {
+    public static getRandomIntWithNumberStates(limit: number): number {
+        return Utility.getRandomIntFromIntLimitWithNumberStates(limit);
+    }
+    public static getRandomIntFromFloatLimitWithNumberStates(limit: number): number {
+        let randomFloat: number =
+            Utility.getRandomNumberWithNumberStates() * limit;
+        if (randomFloat >= limit) {
+            randomFloat = limit - Utility.epsilon;
+        }
+        const randomInt: number = Math.floor(
+            randomFloat);
+        return randomInt;
+    }
+    public static getRandomIntFromIntLimitWithNumberStates(limit: number): number {
+        let randomInt: number = Math.floor(
+            Utility.getRandomNumberWithNumberStates() * Math.floor(limit));
+        if (randomInt >= limit) {
+            randomInt = limit - 1;
+        }
+        return randomInt;
+    }
+
+    public static getXorshift128plusState0WithBigIntStates(): bigint {
         return Utility.xorshift128plusState0BigInt;
     }
-    public static getXorshift128plusState1BigInt(): bigint {
+    public static getXorshift128plusState1WithBigIntStates(): bigint {
         return Utility.xorshift128plusState1BigInt;
     }
-    public static getXorshift128plusCycleBigInt(): bigint {
+    public static getXorshift128plusCycleWithBigIntStates(): bigint {
         return Utility.xorshift128plusCycleBigInt;
     }
-    public static getXorshift128plusCycleBigIntFloat(): number {
-        return Utility.xorshift128plusCycleBigIntFloat;
+    public static getXorshift128plusCycleFloatWithBigIntStates(): number {
+        return Utility.xorshift128plusCycleFloatBigInt;
     }
-    public static rngSeedXorshift128plusBigIntWithNumber(
+    public static rngSeedXorshift128plusWithBigIntStatesWithNumberArguments(
         newState0: number,
         newState1: number,
         inputRngBurninIterationsForBigInt: number = -1): void {
@@ -474,11 +525,11 @@ export class Utility {
         Utility.xorshift128plusState0BigInt = BigInt(newState0);
         Utility.xorshift128plusState1BigInt = BigInt(newState1);
         for (let i: number = 0; i < inputRngBurninIterationsForBigInt; i++) {
-            Utility.rngNextXorshift128plusBigIntDirect();
+            Utility.rngNextXorshift128plusWithBigIntStatesDirect();
         }
         Utility.rngBurninDoneForBigInt = true;
     }
-    public static rngSeedXorshift128plusBigInt(
+    public static rngSeedXorshift128plusWithBigIntStates(
         newState0BigInt: bigint,
         newState1BigInt: bigint,
         newCycleBigInt: bigint,
@@ -490,11 +541,11 @@ export class Utility {
         Utility.xorshift128plusState1BigInt = newState1BigInt;
         Utility.xorshift128plusCycleBigInt = newCycleBigInt;
         for (let i: number = 0; i < inputRngBurninIterationsForBigInt; i++) {
-            Utility.rngNextXorshift128plusBigIntDirect();
+            Utility.rngNextXorshift128plusWithBigIntStatesDirect();
         }
         Utility.rngBurninDoneForBigInt = true;
     }
-    public static rngNextXorshift128plusBigIntDirect(): bigint {
+    public static rngNextXorshift128plusWithBigIntStatesDirect(): bigint {
         let s1: bigint =
             Utility.xorshift128plusState0BigInt;
         const s0: bigint =
@@ -523,31 +574,31 @@ export class Utility {
         result %= Utility.xorshift128plusCycleBigInt;
         return result;
     }
-    public static rngNextXorshift128plusBigInt(): bigint {
+    public static rngNextXorshift128plusWithBigIntStates(): bigint {
         if (!Utility.rngBurninDoneForBigInt) {
             for (let i: number = 0; i < Utility.rngBurninIterationsForBigInt; i++) {
-                Utility.rngNextXorshift128plusBigIntDirect();
+                Utility.rngNextXorshift128plusWithBigIntStatesDirect();
             }
             Utility.rngBurninDoneForBigInt = true;
         }
-        return Utility.rngNextXorshift128plusBigIntDirect();
+        return Utility.rngNextXorshift128plusWithBigIntStatesDirect();
     }
-    public static rngNextXorshift128plusBigIntFloat(): number {
-        const resultBigInt: bigint = Utility.rngNextXorshift128plusBigInt();
+    public static rngNextXorshift128plusFloatWithBigIntStates(): number {
+        const resultBigInt: bigint = Utility.rngNextXorshift128plusWithBigIntStates();
         const resultNumber: number = Number(resultBigInt);
-        return (resultNumber / Utility.xorshift128plusCycleBigIntFloat);
+        return (resultNumber / Utility.xorshift128plusCycleFloatBigInt);
     }
     public static seedRandomNumberGenerator(
         newState0: number,
         newState1: number,
         inputRngBurninIterationsForBigInt: number = -1): void {
-        Utility.rngSeedXorshift128plusBigIntWithNumber(
+        Utility.rngSeedXorshift128plusWithBigIntStatesWithNumberArguments(
             newState0,
             newState1,
             inputRngBurninIterationsForBigInt);
     }
     public static getRandomNumber(): number {
-        return Utility.rngNextXorshift128plusBigIntFloat();
+        return Utility.rngNextXorshift128plusFloatWithBigIntStates();
     }
 
     public static getRandomInt(limit: number): number {
@@ -1118,6 +1169,159 @@ export class Utility {
         return { intents, texts, weights };
     }
 
+    public static processUtteranceEntityTsv(
+        lines: string[],
+        utterancesEntitiesMap: { [id: string]: Array<[string, number, number]> },
+        utterancesEntitiesPredictedMap: { [id: string]: Array<[string, number, number]> },
+        utteranceIndex: number = 2,
+        entitiesIndex: number = 0,
+        entitiesPredictedIndex: number = 1): boolean {
+        if (utteranceIndex < 0) {
+            Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| < 0`);
+        }
+        lines.forEach((line: string) => {
+            const items: string[] = line.split("\t");
+            if (utteranceIndex >= items.length) {
+                Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| >= items.length|${items.length}|`);
+            }
+            let utterance: string = items[utteranceIndex] ? items[utteranceIndex] : "";
+            let entities: string = "";
+            if ((entitiesIndex >= 0) && (entitiesIndex < items.length)) {
+                entities = items[entitiesIndex] ? items[entitiesIndex] : "";
+            }
+            let entitiesPredicted: string = "";
+            if ((entitiesPredictedIndex >= 0) && (entitiesPredictedIndex < items.length)) {
+                entitiesPredicted = items[entitiesPredictedIndex] ? items[entitiesPredictedIndex] : "";
+            }
+            entities = entities.trim();
+            utterance = utterance.trim();
+            entitiesPredicted = entitiesPredicted.trim();
+            const entityArray: string[] = entities.split(",");
+            for (const entityEntry of entityArray) {
+                Utility.addToEntitiesUtteranceStructure(
+                    utterance,
+                    entityEntry.trim(),
+                    utterancesEntitiesMap);
+            }
+            const entityPredictedArray: string[] = entitiesPredicted.split(",");
+            for (const entityEntryPredicted of entityPredictedArray) {
+                Utility.addToEntitiesUtteranceStructure(
+                    utterance,
+                    entityEntryPredicted.trim(),
+                    utterancesEntitiesPredictedMap);
+            }
+        });
+        return true;
+    }
+    public static addToEntitiesUtteranceStructure(
+        utterance: string,
+        entityEntry: string,
+        utterancesEntitiesMap: { [id: string]: Array<[string, number, number]> }) {
+        const entityComponentArray: string[] = entityEntry.split(";");
+        const entity: [string, number, number] = [
+            entityComponentArray[0],
+            +entityComponentArray[1],
+            +entityComponentArray[1]];
+        let existingEntities: Array<[string, number, number]> = utterancesEntitiesMap[utterance];
+        if (!existingEntities) {
+            existingEntities = new Array<[string, number, number]>();
+            utterancesEntitiesMap[utterance] = existingEntities;
+        }
+        existingEntities.push(entity);
+    }
+
+    public static processUtteranceMultiLabelTsv(
+        lines: string[],
+        utterancesLabelsMap: { [id: string]: string[] },
+        utterancesLabelsPredictedMap: { [id: string]: string[] },
+        utterancesDuplicateLabelsMap: Map<string, Set<string>>,
+        utterancesDuplicateLabelsPredictedMap: Map<string, Set<string>>,
+        utteranceIndex: number = 2,
+        labelsIndex: number = 0,
+        labelsPredictedIndex: number = 1): boolean {
+        if (utteranceIndex < 0) {
+            Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| < 0`);
+        }
+        lines.forEach((line: string) => {
+            const items: string[] = line.split("\t");
+            if (utteranceIndex >= items.length) {
+                Utility.debuggingThrow(`utteranceIndex|${utteranceIndex}| >= items.length|${items.length}|`);
+            }
+            let utterance: string = items[utteranceIndex] ? items[utteranceIndex] : "";
+            let labels: string = "";
+            if ((labelsIndex >= 0) && (labelsIndex < items.length)) {
+                labels = items[labelsIndex] ? items[labelsIndex] : "";
+            }
+            let labelsPredicted: string = "";
+            if ((labelsPredictedIndex >= 0) && (labelsPredictedIndex < items.length)) {
+                labelsPredicted = items[labelsPredictedIndex] ? items[labelsPredictedIndex] : "";
+            }
+            labels = labels.trim();
+            utterance = utterance.trim();
+            labelsPredicted = labelsPredicted.trim();
+            const labelArray: string[] = labels.split(",");
+            for (const label of labelArray) {
+                Utility.addToMultiLabelUtteranceStructure(
+                    utterance,
+                    label.trim(),
+                    utterancesLabelsMap,
+                    utterancesDuplicateLabelsMap);
+            }
+            const labelPredictedArray: string[] = labelsPredicted.split(",");
+            for (const labelPredicted of labelPredictedArray) {
+                Utility.addToMultiLabelUtteranceStructure(
+                    utterance,
+                    labelPredicted.trim(),
+                    utterancesLabelsPredictedMap,
+                    utterancesDuplicateLabelsPredictedMap);
+            }
+        });
+        return true;
+    }
+    public static addToMultiLabelUtteranceStructure(
+        utterance: string,
+        label: string,
+        utterancesLabelsMap: { [id: string]: string[] },
+        utterancesDuplicateLabelsMap: Map<string, Set<string>>) {
+        const existingLabels: string[] = utterancesLabelsMap[utterance];
+        if (existingLabels) {
+            if (!Utility.addIfNewLabel(label, existingLabels)) {
+                DictionaryMapUtility.insertStringPairToStringIdStringSetNativeMap(
+                    utterance,
+                    label,
+                    utterancesDuplicateLabelsMap);
+            }
+        } else {
+            utterancesLabelsMap[utterance] = [label];
+        }
+    }
+    public static addIfNewLabel(newLabel: string, labels: string[]): boolean {
+        for (const label of labels) {
+            if (label === newLabel) {
+                return false;
+            }
+        }
+        labels.push(newLabel);
+        return true;
+    }
+
+    public static reverseUniqueKeyedArray(input: {[id: string]: string[]}): {[id: string]: string[]} {
+        const reversed: {[id: string]: string[]} = {};
+        for (const key in input) {
+            if (key) {
+                const keyedArray: string[] = input[key];
+                for (const keyedArrayElement of keyedArray) {
+                    if (keyedArrayElement in reversed) {
+                        reversed[keyedArrayElement].push(key);
+                    } else {
+                        reversed[keyedArrayElement] = [key];
+                    }
+                }
+            }
+        }
+        return reversed;
+    }
+
     public static storeDataArraysToTsvFile(
         outputFilename: string,
         outputEvaluationReportDataArrays: string[][],
@@ -1127,7 +1331,11 @@ export class Utility {
         encoding: string = "utf8"): string {
         if (Utility.isEmptyString(outputFilename)) {
             Utility.debuggingThrow(
-                `outputFilename is empty`);
+                "outputFilename is empty");
+        }
+        if (Utility.isEmptyStringArrays(outputEvaluationReportDataArrays)) {
+            Utility.debuggingThrow(
+                "outputEvaluationReportDataArrays is empty");
         }
         const outputLines: string[] = [];
         if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
@@ -1140,13 +1348,176 @@ export class Utility {
         }
         const outputContent: string = outputLines.join(recordDelimiter);
         try {
-            fs.writeFileSync(outputFilename, `${outputContent}${recordDelimiter}`, encoding);
+            return Utility.dumpFile(outputFilename, `${outputContent}${recordDelimiter}`, encoding);
         } catch (e) {
             Utility.debuggingThrow(
                 `storeTsvFile() cannout create an output file: ${outputFilename}, EXCEPTION=${e}`);
             return "";
         }
-        return outputFilename;
+    }
+
+    public static convertDataArraysToIndexedHtmlTable(
+        tableDescription: string,
+        outputEvaluationReportDataArrays: any[][],
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+            outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+            outputLines.push(indentCumulative + indent + "<tr>");
+            outputLines.push(indentCumulative + indent + indent + "<th>");
+            outputLines.push(indentCumulative + indent + indent + "No");
+            outputLines.push(indentCumulative + indent + indent + "</th>");
+            for (const headerEntry of outputDataArraryHeaders) {
+                outputLines.push(indentCumulative + indent + indent + "<th>");
+                outputLines.push(indentCumulative + indent + indent + headerEntry);
+                outputLines.push(indentCumulative + indent + indent + "</th>");
+            }
+            outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (!Utility.isEmptyStringArrays(outputEvaluationReportDataArrays)) {
+            let index: number = 0;
+            for (const outputEvaluationReportDataArray of outputEvaluationReportDataArrays) {
+                outputLines.push(indentCumulative + indent + "<tr>");
+                outputLines.push(indentCumulative + indent + indent + "<td>");
+                outputLines.push(indentCumulative + indent + indent + index++);
+                outputLines.push(indentCumulative + indent + indent + "</td>");
+                for (const dataEntry of outputEvaluationReportDataArray) {
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + dataEntry);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                }
+                outputLines.push(indentCumulative + indent + "</tr>");
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
+    }
+    public static convertDataArraysToHtmlTable(
+        tableDescription: string,
+        outputEvaluationReportDataArrays: any[][],
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+            outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+            outputLines.push(indentCumulative + indent + "<tr>");
+            for (const headerEntry of outputDataArraryHeaders) {
+                outputLines.push(indentCumulative + indent + indent + "<th>");
+                outputLines.push(indentCumulative + indent + indent + headerEntry);
+                outputLines.push(indentCumulative + indent + indent + "</th>");
+            }
+            outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (Utility.isEmptyStringArrays(outputEvaluationReportDataArrays)) {
+            for (const outputEvaluationReportDataArray of outputEvaluationReportDataArrays) {
+                outputLines.push(indentCumulative + indent + "<tr>");
+                for (const dataEntry of outputEvaluationReportDataArray) {
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + dataEntry);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                }
+                outputLines.push(indentCumulative + indent + "</tr>");
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
+    }
+
+    public static convertMapSetToHtmlTable(
+        tableDescription: string,
+        outputEvaluationMapSet: Map<any, Set<any>>,
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+            outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+          outputLines.push(indentCumulative + indent + "<tr>");
+          for (const headerEntry of outputDataArraryHeaders) {
+            outputLines.push(indentCumulative + indent + indent + "<th>");
+            outputLines.push(indentCumulative + indent + indent + headerEntry);
+            outputLines.push(indentCumulative + indent + indent + "</th>");
+          }
+          outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (!DictionaryMapUtility.isEmptyAnyKeyGenericSetMap<any>(outputEvaluationMapSet)) {
+            for (const outputEvaluationMapSetEntry of outputEvaluationMapSet) {
+              const key: any = outputEvaluationMapSetEntry[0];
+              for (const valueEntry of outputEvaluationMapSetEntry[1]) {
+                outputLines.push(indentCumulative + indent + "<tr>");
+                outputLines.push(indentCumulative + indent + indent + "<td>");
+                outputLines.push(indentCumulative + indent + indent + key);
+                outputLines.push(indentCumulative + indent + indent + "</td>");
+                outputLines.push(indentCumulative + indent + indent + "<td>");
+                outputLines.push(indentCumulative + indent + indent + valueEntry);
+                outputLines.push(indentCumulative + indent + indent + "</td>");
+                outputLines.push(indentCumulative + indent + "</tr>");
+              }
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
+    }
+    public static convertMapSetToIndexedHtmlTable(
+        tableDescription: string,
+        outputEvaluationMapSet: Map<any, Set<any>>,
+        outputDataArraryHeaders: string[] = [],
+        indentCumulative: string = "  ",
+        indent: string = "  "): string {
+        const outputLines: string[] = [];
+        if (!Utility.isEmptyString(tableDescription)) {
+        outputLines.push(indentCumulative + `<p><strong>${tableDescription}</strong></p>`);
+        }
+        outputLines.push(indentCumulative + "<table class=\"table\">");
+        if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
+            outputLines.push(indentCumulative + indent + "<tr>");
+            outputLines.push(indentCumulative + indent + indent + "<th>");
+            outputLines.push(indentCumulative + indent + indent + "No");
+            outputLines.push(indentCumulative + indent + indent + "</th>");
+            for (const headerEntry of outputDataArraryHeaders) {
+                outputLines.push(indentCumulative + indent + indent + "<th>");
+                outputLines.push(indentCumulative + indent + indent + headerEntry);
+                outputLines.push(indentCumulative + indent + indent + "</th>");
+            }
+            outputLines.push(indentCumulative + indent + "<tr>");
+        }
+        if (!DictionaryMapUtility.isEmptyAnyKeyGenericSetMap<any>(outputEvaluationMapSet)) {
+            let index: number = 0;
+            for (const outputEvaluationMapSetEntry of outputEvaluationMapSet) {
+                const key: any = outputEvaluationMapSetEntry[0];
+                for (const valueSetEntry of outputEvaluationMapSetEntry[1]) {
+                    outputLines.push(indentCumulative + indent + "<tr>");
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + index++);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + key);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                    outputLines.push(indentCumulative + indent + indent + "<td>");
+                    outputLines.push(indentCumulative + indent + indent + valueSetEntry);
+                    outputLines.push(indentCumulative + indent + indent + "</td>");
+                    outputLines.push(indentCumulative + indent + "</tr>");
+                }
+            }
+        }
+        outputLines.push(indentCumulative + "</table>");
+        const outputContent: string = outputLines.join("\n");
+        return outputContent;
     }
 
     public static luUtterancesToEntityAnnotatedCorpusTypes(
@@ -1506,7 +1877,7 @@ export class Utility {
                 Utility.debuggingThrow(
                     `lineColumns.length|${lineColumns.length}|!=4` +
                     `,line=$${line}$` +
-                    `,lineColumns=$${Utility.JSONstringify(lineColumns)}$`);
+                    `,lineColumns=$${Utility.jsonStringify(lineColumns)}$`);
             }
             const id: string = lineColumns[0];
             const word: string  = lineColumns[1];
@@ -1591,9 +1962,9 @@ export class Utility {
         try {
             const fileContent: string = fs.readFileSync(filename, encoding);
             return fileContent;
-        } catch (e) {
+        } catch (error) {
             Utility.debuggingThrow(
-                `Utility.loadFile(): filename=${filename}, exception=${e}`);
+                `Utility.loadFile(): filename=${filename}, exception=${error}`);
         }
         return "";
     }
@@ -1604,10 +1975,11 @@ export class Utility {
         // Utility.debuggingLog(
         //     `Utility.dumpFile(): filename=${filename}`);
         try {
+            fs.mkdirSync(path.dirname(filename), {recursive: true});
             fs.writeFileSync(filename, content, encoding);
-        } catch (err) {
+        } catch (error) {
           // ---- NOTE ---- An error occurred
-          Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}`);
+          Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, exception=${error}`);
           return "";
         }
         return filename;
@@ -1636,7 +2008,7 @@ export class Utility {
     }
 
     public static getObjectMd5Hash(objectValue: object): string|Int32Array {
-        return Utility.getStringMd5Hash(Utility.JSONstringify(objectValue));
+        return Utility.getStringMd5Hash(Utility.jsonStringify(objectValue));
     }
     public static getStringMd5Hash(feature: string): string | Int32Array {
         return md5.Md5.hashStr(feature);
@@ -1646,7 +2018,7 @@ export class Utility {
         return Math.abs(Utility.getObjectHashCode(objectValue));
     }
     public static getObjectHashCode(objectValue: object): number {
-        return Utility.getStringHashCode(Utility.JSONstringify(objectValue).toString());
+        return Utility.getStringHashCode(Utility.jsonStringify(objectValue).toString());
     }
     public static getPositiveStringHashCode(feature: string): number {
         return Math.abs(Utility.getStringHashCode(feature));
@@ -1732,7 +2104,7 @@ export class Utility {
         message: any): void {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: ${message}`;
-        throw new Error(Utility.JSONstringify(logMessage));
+        throw new Error(Utility.jsonStringify(logMessage));
     }
 
     public static almostEqual(first: number, second: number): boolean {
@@ -1805,12 +2177,26 @@ export class Utility {
         }
     }
 
+    public static iterableIteratorToArray<K>(iterator: IterableIterator<K>): K[] {
+        const anArray: K[] = [];
+        for (const element of iterator) {
+            anArray.push(element);
+        }
+        return anArray;
+    }
+
     public static splitByPunctuation(
         input: string,
         splitDelimiter: string = " ",
-        toRemoveEmptyElements: boolean = true): string[] {
-        const delimiters: string[] = Utility.LanguageTokenPunctuationDelimiters;
-        const replacementDelimiters: string[] = Utility.LanguageTokenPunctuationReplacementDelimiters;
+        toRemoveEmptyElements: boolean = true,
+        delimiters: string[] = Utility.LanguageTokenPunctuationDelimiters,
+        replacementDelimiters: string[] = Utility.LanguageTokenPunctuationReplacementDelimiters): string[] {
+        if (Utility.isEmptyStringArray(delimiters)) {
+            delimiters = Utility.LanguageTokenPunctuationDelimiters;
+        }
+        if (Utility.isEmptyStringArray(replacementDelimiters)) {
+            delimiters = Utility.LanguageTokenPunctuationReplacementDelimiters;
+        }
         const numberDelimiters: number = delimiters.length;
         for (let i = 0; i < numberDelimiters; i++) {
             input = input.replace(delimiters[i], replacementDelimiters[i]);
@@ -1822,14 +2208,6 @@ export class Utility {
             });
         }
         return result;
-    }
-
-    public static iterableIteratorToArray<K>(iterator: IterableIterator<K>): K[] {
-        const anArray: K[] = [];
-        for (const element of iterator) {
-            anArray.push(element);
-        }
-        return anArray;
     }
 
     public static splitStringWithCommaDelimitersFilteredByDoubleQuotes(input: string): string[] {
@@ -1845,6 +2223,7 @@ export class Utility {
         // ---- NOTE-FOR-REFERENCE ----     splittedStrings.push(input.substring(index, commaIndex));
         // ---- NOTE-FOR-REFERENCE ----     index = commaIndex + 1;
         // ---- NOTE-FOR-REFERENCE ---- }
+        // ---- NOTE-FOR-REFERENCE ---- splittedStrings.push(input.substring(index));
         // ---- NOTE-FOR-REFERENCE ---- return splittedStrings;
     }
     public static splitStringWithColumnDelimitersFilteredByQuotingDelimiters(
@@ -1994,8 +2373,20 @@ export class Utility {
         return filenameWithoutExtension;
     }
 
-    public static JSONstringify(input: any): string {
-        return JSON.stringify(input, null, 4);
+    public static stringifyArray<T>(
+        anArray: T[],
+        delimiter: string = ","): string {
+        return "[" + anArray.join(delimiter) + "]";
+    }
+    public static jsonStringifyInLine(
+        value: any): string {
+        return Utility.jsonStringify(value, null, "");
+    }
+    public static jsonStringify(
+        value: any,
+        replacer: Array<number | string> | null = null,
+        space: string | number = 4): string {
+        return JSON.stringify(value, replacer, space);
     }
 
     public static split(input: string, delimiter: string): string[] {
@@ -2003,6 +2394,27 @@ export class Utility {
     }
     public static splitRaw(input: string, delimiter: string): string[] {
         return input.split(delimiter);
+    }
+
+    public static normalizeArray<T>(array: T[], indexKey: keyof T): { [key: string]: T } {
+        const normalizedObject: { [key: string]: T } = {};
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < array.length; i++) {
+            const key: any = array[i][indexKey];
+            normalizedObject[key] = array[i];
+        }
+        return normalizedObject;
+    }
+
+    public static sparseArrayPairToMap<T>(indexArray: number[], valueArray: number[]): Map<number, number> {
+        const sparseIndexedMap: Map<number, number> = new Map<number, number>();
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < indexArray.length; i++) {
+            const key: number = indexArray[i];
+            const value: number = valueArray[i];
+            sparseIndexedMap.set(key, value);
+        }
+        return sparseIndexedMap;
     }
 
     protected static rngBurninIterations: number = 16384;
@@ -2020,7 +2432,7 @@ export class Utility {
     protected static xorshift128plusState1BigInt: bigint = BigInt(2);
     protected static xorshift128plusCycleBigInt: bigint =
         BigInt("0xffffffffffffffff"); // ---- NOTE: 2^64 - 1 === 18446744073709551615
-    protected static xorshift128plusCycleBigIntFloat: number =
+    protected static xorshift128plusCycleFloatBigInt: number =
         Number(Utility.xorshift128plusCycleBigInt);
 
 }

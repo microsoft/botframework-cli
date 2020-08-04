@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Train from './../../../api/train'
+
 const utils = require('../../../utils/index')
 
 export default class LuisTrainShow extends Command {
@@ -32,10 +34,8 @@ export default class LuisTrainShow extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId, versionId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     try {
-      const trainingStatus = await client.train.getStatus(appId, versionId)
+      const trainingStatus = await Train.getStatus({subscriptionKey, endpoint, appId}, versionId)
       if (trainingStatus) {
         await utils.writeToConsole(trainingStatus)
       }

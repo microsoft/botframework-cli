@@ -7,10 +7,11 @@
 // import { AppSoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 import { SoftmaxRegressionSparse } from "../../supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
+import { IMathematicsHelper } from "../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../mathematics/mathematics_helper/MathematicsHelper";
 
+import { IConfusionMatrix } from "../../../mathematics/confusion_matrix/IConfusionMatrix";
 import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
-
 import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
 import { ThresholdReporter } from "../report/ThresholdReporter";
@@ -29,6 +30,9 @@ import { AbstractBaseModelFeaturizerEvaluator } from "../abstract_base_evaluator
 import { Utility } from "../../../utility/Utility";
 
 export class Tester extends AbstractBaseModelFeaturizerEvaluator {
+
+    public static readonly MathematicsHelperObject: IMathematicsHelper =
+        MathematicsHelper.GetMathematicsHelperObject();
 
     protected intentsCachedAfterTest: string[] = [];
     protected utterancesCachedAfterTest: string[] = [];
@@ -144,22 +148,34 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         const confusionMatrixTest: ConfusionMatrix =
             this.testResultCachedAfterTest.confusionMatrixTest;
         const confusionMatrixMetricStructure: {
-            "confusionMatrix": ConfusionMatrix,
-            "labelBinaryConfusionMatrixDerivedMetricMap": { [id: string]: { [id: string]: number }; },
-            "labelBinaryConfusionMatrixMetricMap": { [id: string]: BinaryConfusionMatrix; },
-            "macroAverageMetrics": { "averagePrecision": number,
-                                     "averageRecall": number,
-                                     "averageF1Score": number,
-                                     "support": number },
-            "microAverageMetrics": { "accuracy": number,
-                                     "truePositives": number,
-                                     "support": number },
-            "weightedMacroAverageMetrics": { "weightedAveragePrecision": number,
-                                             "weightedAverageRecall": number,
-                                             "weightedAverageF1Score": number,
-                                             "support": number } } =
-            ConfusionMatrix.generateConfusionMatrixMetricStructure(
-                confusionMatrixTest);
+            "confusionMatrix": IConfusionMatrix,
+            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
+            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microAverageMetrics": {
+                "accuracy": number,
+                "truePositives": number,
+                "falsePositives": number,
+                "falseNegatives": number,
+                "support": number },
+            "macroAverageMetrics": {
+                "averagePrecision": number,
+                "averageRecall": number,
+                "averageF1Score": number,
+                "averageAccuracy": number,
+                "averageTruePositives": number,
+                "averageFalsePositives": number,
+                "averageTrueNegatives": number,
+                "averageFalseNegatives": number,
+                "averageSupport": number,
+                "support": number },
+            "weightedMacroAverageMetrics": {
+                "weightedAveragePrecision": number,
+                "weightedAverageRecall": number,
+                "weightedAverageF1Score": number,
+                "weightedAverageAccuracy": number,
+                "weightedAverageSupport": number,
+                "support": number } } =
+            confusionMatrixTest.generateConfusionMatrixMetricStructure();
         Utility.debuggingLog(
            `confusionMatrixTest.getMicroAverageMetrics()=` +
            `${confusionMatrixTest.getMicroAverageMetrics()}` +
@@ -233,7 +249,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             this.getFeaturizer();
         // -------------------------------------------------------------------
         const labels: string[] = this.getLabels();
-        const labelMap: { [id: string]: number; } = this.getLabelMap();
+        const labelMap: { [id: string]: number } = this.getLabelMap();
         // const numberLabels: number = featurizer.getNumberLabels();
         // const numberFeatures: number = featurizer.getNumberFeatures();
         // -------------------------------------------------------------------
@@ -301,7 +317,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             groundTruthLabelIndexes[index] = labelIndex;
             // ---------------------------------------------------------------
             const argMax: { "indexMax": number, "max": number } =
-                MathematicsHelper.getIndexOnFirstMaxEntry(prediction);
+                Tester.MathematicsHelperObject.getIndexOnFirstMaxEntry(prediction);
             const predictionLabelIndex: number =
                 argMax.indexMax;
             predictionLabelIndexes[index] =

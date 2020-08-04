@@ -3,26 +3,289 @@
  * Licensed under the MIT License.
  */
 
-import { TMapGenericKeyGenericArray } from "./TMapGenericKeyGenericArray";
-import { TMapGenericKeyGenericArrays } from "./TMapGenericKeyGenericArrays";
-import { TMapGenericKeyGenericValue } from "./TMapGenericKeyGenericValue";
-import { TMapStringKeyGenericArray } from "./TMapStringKeyGenericArray";
-import { TMapStringKeyGenericArrays } from "./TMapStringKeyGenericArrays";
-import { TMapStringKeyGenericValue } from "./TMapStringKeyGenericValue";
+import { TMapAnyKeyGenericArray } from "./TMapAnyKeyGenericArray";
+import { TMapAnyKeyGenericArrays } from "./TMapAnyKeyGenericArrays";
+import { TMapAnyKeyGenericValue } from "./TMapAnyKeyGenericValue";
+import { TMapAnyKeyGenericSet } from "./TMapAnyKeyGenericSet";
 import { TMapNumberKeyGenericArray } from "./TMapNumberKeyGenericArray";
 import { TMapNumberKeyGenericArrays } from "./TMapNumberKeyGenericArrays";
 import { TMapNumberKeyGenericValue } from "./TMapNumberKeyGenericValue";
+import { TMapNumberKeyGenericSet } from "./TMapNumberKeyGenericSet";
+import { TMapGenericKeyGenericArray } from "./TMapGenericKeyGenericArray";
+import { TMapGenericKeyGenericArrays } from "./TMapGenericKeyGenericArrays";
+import { TMapGenericKeyGenericValue } from "./TMapGenericKeyGenericValue";
+import { TMapGenericKeyGenericSet } from "./TMapGenericKeyGenericSet";
+import { TMapStringKeyGenericArray } from "./TMapStringKeyGenericArray";
+import { TMapStringKeyGenericArrays } from "./TMapStringKeyGenericArrays";
+import { TMapStringKeyGenericValue } from "./TMapStringKeyGenericValue";
+import { TMapStringKeyGenericSet } from "./TMapStringKeyGenericSet";
 
 import { IDictionaryNumberIdGenericArray } from "../data_structure/IDictionaryNumberIdGenericArray";
 import { IDictionaryNumberIdGenericArrays } from "../data_structure/IDictionaryNumberIdGenericArrays";
 import { IDictionaryNumberIdGenericValue } from "../data_structure/IDictionaryNumberIdGenericValue";
+import { IDictionaryNumberIdGenericSet } from "../data_structure/IDictionaryNumberIdGenericSet";
 import { IDictionaryStringIdGenericArray } from "../data_structure/IDictionaryStringIdGenericArray";
 import { IDictionaryStringIdGenericArrays } from "../data_structure/IDictionaryStringIdGenericArrays";
 import { IDictionaryStringIdGenericValue } from "../data_structure/IDictionaryStringIdGenericValue";
+import { IDictionaryStringIdGenericSet } from "../data_structure/IDictionaryStringIdGenericSet";
 
 import { Utility } from "../utility/Utility";
 
 export class DictionaryMapUtility {
+
+    public static convertStringKeyGenericSetNativeMapToDictionary<T>(
+        stringKeyGenericSetMap: Map<string, Set<T>>): { [id: string]: Set<T> } {
+        const stringIdGenericSetDictionary: { [id: string]: Set<T> } = {};
+        for (const key in stringKeyGenericSetMap) {
+            if (key) {
+                const value: Set<T> | undefined = stringKeyGenericSetMap.get(key);
+                stringIdGenericSetDictionary[key] = value as Set<T>;
+            }
+        }
+        return stringIdGenericSetDictionary;
+    }
+    public static convertStringKeyGenericValueNativeMapToDictionary<T>(
+        stringKeyGenericValueMap: Map<string, T>): { [id: string]: T } {
+        const stringIdGenericValueDictionary: { [id: string]: T } = {};
+        for (const key in stringKeyGenericValueMap) {
+            if (key) {
+                const value: T | undefined = stringKeyGenericValueMap.get(key);
+                stringIdGenericValueDictionary[key] = value as T;
+            }
+        }
+        return stringIdGenericValueDictionary;
+    }
+    public static convertNumberKeyGenericSetNativeMapToDictionary<T>(
+        numberKeyGenericSetMap: Map<number, Set<T>>): { [id: number]: Set<T> } {
+        const numberIdGenericSetDictionary: { [id: number]: Set<T> } = {};
+        for (const key in numberKeyGenericSetMap) {
+            if (key) {
+                // ---- key is already a number, tslint is mistaken that it's a string
+                const keyInNumber: number = Number(key);
+                const value: Set<T> | undefined = numberKeyGenericSetMap.get(keyInNumber);
+                numberIdGenericSetDictionary[keyInNumber] = value as Set<T>;
+            }
+        }
+        return numberIdGenericSetDictionary;
+    }
+    public static convertNumberKeyGenericValueNativeMapToDictionary<T>(
+        numberKeyGenericValueMap: Map<number, T>): { [id: number]: T } {
+        const numberIdGenericValueDictionary: { [id: number]: T } = {};
+        for (const key in numberKeyGenericValueMap) {
+            if (key) {
+                // ---- key is already a number, tslint is mistaken that it's a string
+                const keyInNumber: number = Number(key);
+                const value: T | undefined = numberKeyGenericValueMap.get(keyInNumber);
+                numberIdGenericValueDictionary[keyInNumber] = value as T;
+            }
+        }
+        return numberIdGenericValueDictionary;
+    }
+
+    public static convertStringKeyGenericSetMapToDictionary<T>(
+        stringKeyGenericSetMap: TMapStringKeyGenericSet<T>): IDictionaryStringIdGenericSet<T> {
+        const stringIdGenericSetDictionary: IDictionaryStringIdGenericSet<T> = {};
+        for (const key in stringKeyGenericSetMap) {
+            if (key) {
+                const value: Set<T> | undefined = stringKeyGenericSetMap.get(key);
+                stringIdGenericSetDictionary[key] = value as Set<T>;
+            }
+        }
+        return stringIdGenericSetDictionary;
+    }
+    public static convertStringKeyGenericValueMapToDictionary<T>(
+        stringKeyGenericValueMap: TMapStringKeyGenericValue<T>): IDictionaryStringIdGenericValue<T> {
+        const stringIdGenericValueDictionary: IDictionaryStringIdGenericValue<T> = {};
+        for (const key in stringKeyGenericValueMap) {
+            if (key) {
+                const value: T | undefined = stringKeyGenericValueMap.get(key);
+                stringIdGenericValueDictionary[key] = value as T;
+            }
+        }
+        return stringIdGenericValueDictionary;
+    }
+    public static convertNumberKeyGenericSetMapToDictionary<T>(
+        numberKeyGenericSetMap: TMapNumberKeyGenericSet<T>): IDictionaryNumberIdGenericSet<T> {
+        const numberIdGenericSetDictionary: IDictionaryNumberIdGenericSet<T> = {};
+        for (const key in numberKeyGenericSetMap) {
+            if (key) {
+                // ---- key is already a number, tslint is mistaken that it's a string
+                const keyInNumber: number = Number(key);
+                const value: Set<T> | undefined = numberKeyGenericSetMap.get(keyInNumber);
+                numberIdGenericSetDictionary[keyInNumber] = value as Set<T>;
+            }
+        }
+        return numberIdGenericSetDictionary;
+    }
+    public static convertNumberKeyGenericValueMapToDictionary<T>(
+        numberKeyGenericValueMap: TMapNumberKeyGenericValue<T>): IDictionaryNumberIdGenericValue<T> {
+        const numberIdGenericValueDictionary: IDictionaryNumberIdGenericValue<T> = {};
+        for (const key in numberKeyGenericValueMap) {
+            if (key) {
+                // ---- key is already a number, tslint is mistaken that it's a string
+                const keyInNumber: number = Number(key);
+                const value: T | undefined = numberKeyGenericValueMap.get(keyInNumber);
+                numberIdGenericValueDictionary[keyInNumber] = value as T;
+            }
+        }
+        return numberIdGenericValueDictionary;
+    }
+
+    public static insertStringPairToStringIdStringSetNativeDictionary(
+        key: string,
+        value: string,
+        stringIdStringSetDictionary: { [id: string]: Set<string> }): { [id: string]: Set<string> } {
+        if (!stringIdStringSetDictionary) {
+            stringIdStringSetDictionary = {};
+        }
+        if (key in stringIdStringSetDictionary) {
+            const stringSet: Set<string> = stringIdStringSetDictionary[key];
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            stringIdStringSetDictionary[key] = stringSet;
+            stringSet.add(value);
+        }
+        return stringIdStringSetDictionary;
+    }
+    public static insertNumberStringPairToNumberIdStringSetNativeDictionary(
+        key: number,
+        value: string,
+        numberIdStringSetDictionary: { [id: number]: Set<string> }): { [id: number]: Set<string> } {
+        if (!numberIdStringSetDictionary) {
+            numberIdStringSetDictionary = {};
+        }
+        if (key in numberIdStringSetDictionary) {
+            const stringSet: Set<string> = numberIdStringSetDictionary[key];
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            numberIdStringSetDictionary[key] = stringSet;
+            stringSet.add(value);
+        }
+        return numberIdStringSetDictionary;
+    }
+
+    public static insertStringPairToStringIdStringSetDictionary(
+        key: string,
+        value: string,
+        stringIdStringSetDictionary: IDictionaryStringIdGenericSet<string>): IDictionaryStringIdGenericSet<string> {
+        if (DictionaryMapUtility.isEmptyStringIdGenericSetDictionary<string>(stringIdStringSetDictionary)) {
+            stringIdStringSetDictionary = {};
+        }
+        if (key in stringIdStringSetDictionary) {
+            const stringSet: Set<string> = stringIdStringSetDictionary[key];
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            stringIdStringSetDictionary[key] = stringSet;
+            stringSet.add(value);
+        }
+        return stringIdStringSetDictionary;
+    }
+    public static insertNumberStringPairToNumberIdStringSetDictionary(
+        key: number,
+        value: string,
+        numberIdStringSetDictionary: IDictionaryNumberIdGenericSet<string>): IDictionaryNumberIdGenericSet<string> {
+        if (DictionaryMapUtility.isEmptyNumberIdGenericSetDictionary<string>(numberIdStringSetDictionary)) {
+            numberIdStringSetDictionary = {};
+        }
+        if (key in numberIdStringSetDictionary) {
+            const stringSet: Set<string> = numberIdStringSetDictionary[key];
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            numberIdStringSetDictionary[key] = stringSet;
+            stringSet.add(value);
+        }
+        return numberIdStringSetDictionary;
+    }
+
+    public static insertStringPairToStringIdStringSetNativeMap(
+        key: string,
+        value: string,
+        stringKeyStringSetMap: Map<string, Set<string>>): Map<string, Set<string>> {
+        if (!stringKeyStringSetMap) {
+            stringKeyStringSetMap = new Map<string, Set<string>>();
+        }
+        if (key in stringKeyStringSetMap) {
+            let stringSet: Set<string> | undefined = stringKeyStringSetMap.get(key);
+            if (!stringSet) {
+                stringSet = new Set<string>();
+                stringKeyStringSetMap.set(key, stringSet);
+            }
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            stringKeyStringSetMap.set(key, stringSet);
+            stringSet.add(value);
+        }
+        return stringKeyStringSetMap;
+    }
+    public static insertNumberStringPairToNumberIdStringSetNativeMap(
+        key: number,
+        value: string,
+        numberKeyStringSetMap: Map<number, Set<string>>): Map<number, Set<string>> {
+        if (!numberKeyStringSetMap) {
+            numberKeyStringSetMap = new Map<number, Set<string>>();
+        }
+        if (key in numberKeyStringSetMap) {
+            let stringSet: Set<string> | undefined = numberKeyStringSetMap.get(key);
+            if (!stringSet) {
+                stringSet = new Set<string>();
+                numberKeyStringSetMap.set(key, stringSet);
+            }
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            numberKeyStringSetMap.set(key, stringSet);
+            stringSet.add(value);
+        }
+        return numberKeyStringSetMap;
+    }
+
+    public static insertStringPairToStringIdStringSetMap(
+        key: string,
+        value: string,
+        stringKeyStringSetMap: TMapStringKeyGenericSet<string>): TMapStringKeyGenericSet<string> {
+        if (DictionaryMapUtility.isEmptyStringKeyGenericSetMap<string>(stringKeyStringSetMap)) {
+            stringKeyStringSetMap = DictionaryMapUtility.newTMapStringKeyGenericSet<string>();
+        }
+        if (key in stringKeyStringSetMap) {
+            let stringSet: Set<string> | undefined = stringKeyStringSetMap.get(key);
+            if (!stringSet) {
+                stringSet = new Set<string>();
+                stringKeyStringSetMap.set(key, stringSet);
+            }
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            stringKeyStringSetMap.set(key, stringSet);
+            stringSet.add(value);
+        }
+        return stringKeyStringSetMap;
+    }
+    public static insertNumberStringPairToNumberIdStringSetMap(
+        key: number,
+        value: string,
+        numberKeyStringSetMap: TMapNumberKeyGenericSet<string>): TMapNumberKeyGenericSet<string> {
+        if (DictionaryMapUtility.isEmptyNumberKeyGenericSetMap<string>(numberKeyStringSetMap)) {
+            numberKeyStringSetMap = DictionaryMapUtility.newTMapNumberKeyGenericSet<string>();
+        }
+        if (key in numberKeyStringSetMap) {
+            let stringSet: Set<string> | undefined = numberKeyStringSetMap.get(key);
+            if (!stringSet) {
+                stringSet = new Set<string>();
+                numberKeyStringSetMap.set(key, stringSet);
+            }
+            stringSet.add(value);
+        } else {
+            const stringSet: Set<string> = new Set<string>();
+            numberKeyStringSetMap.set(key, stringSet);
+            stringSet.add(value);
+        }
+        return numberKeyStringSetMap;
+    }
 
     public static buildStringIdNumberValueDictionaryFromUniqueStringArrayFile(
         filename: string,
@@ -39,13 +302,15 @@ export class DictionaryMapUtility {
         delimiter: string = "\t"): {
             "stringArray": string[],
             "stringMap": IDictionaryStringIdGenericValue<number> } {
-        const stringArray: string[] = Utility.split(content, delimiter);
+        let stringArray: string[] = Utility.split(content, delimiter);
+        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
     }
     public static buildStringIdNumberValueDictionaryFromUniqueStringArray(
         inputStringArray: string[]): IDictionaryStringIdGenericValue<number> {
+        inputStringArray = DictionaryMapUtility.sortStringArray(inputStringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> = { };
         for (let index: number = 0; index < inputStringArray.length; index++) {
             stringMap[inputStringArray[index]] = index;
@@ -75,7 +340,8 @@ export class DictionaryMapUtility {
             "stringArray": string[],
             "stringMap": IDictionaryStringIdGenericValue<number> } {
         const stringSet: Set<string> = new Set(inputStringArray);
-        const stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = Array.from(stringSet.values());
+        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
@@ -90,7 +356,8 @@ export class DictionaryMapUtility {
                 stringSet.add(elementString);
             }
         }
-        const stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = Array.from(stringSet.values());
+        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
@@ -116,10 +383,9 @@ export class DictionaryMapUtility {
             DictionaryMapUtility.getStringIdGenericValueDictionaryLength(stringIdNumberValueDictionary)) {
             if (throwIfNotLegal) {
                 throw new Error(
-                    "stringArray.length|" +
-                    stringIdNumberValueDictionary.length +
-                    "| !== stringIdNumberValueDictionary.length|" +
-                    DictionaryMapUtility.getStringIdGenericValueDictionaryLength(stringIdNumberValueDictionary) + "|");
+                    `stringArray.length|${stringArray.length}|` +
+                    "!==stringIdNumberValueDictionary.length" +
+                    `|${DictionaryMapUtility.getStringIdGenericValueDictionaryLength(stringIdNumberValueDictionary)}|`);
             }
             return false;
         }
@@ -130,14 +396,14 @@ export class DictionaryMapUtility {
                 const keyId: number = stringIdNumberValueDictionary[key];
                 if ((keyId < 0) || (keyId > stringArray.length)) {
                     if (throwIfNotLegal) {
-                        throw new Error("(keyId<0)||(keyId>stringArray.length)");
+                        throw new Error(`(keyId<0)||(keyId|${keyId}|>stringArray.length|${stringArray.length}|)`);
                     }
                     return false;
                 }
                 const keyRetrieved = stringArray[keyId];
                 if (key !== keyRetrieved) {
                     if (throwIfNotLegal) {
-                        throw new Error("key!==keyRetrieved");
+                        throw new Error(`key|${key}|!==keyRetrieved|${keyRetrieved}|`);
                     }
                     return false;
                 }
@@ -195,14 +461,17 @@ export class DictionaryMapUtility {
         delimiter: string = "\t"): {
             "stringArray": string[],
             "stringMap": TMapStringKeyGenericValue<number> } {
-        const stringArray: string[] = Utility.split(content, delimiter);
+        let stringArray: string[] = Utility.split(content, delimiter);
+        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
     }
     public static buildStringKeyNumberValueMapFromUniqueStringArray(
         inputStringArray: string[]): TMapStringKeyGenericValue<number> {
-        const stringMap: TMapStringKeyGenericValue<number> = DictionaryMapUtility.newTMapStringKeyGenericValue();
+        inputStringArray = DictionaryMapUtility.sortStringArray(inputStringArray);
+        const stringMap: TMapStringKeyGenericValue<number> =
+            DictionaryMapUtility.newTMapStringKeyGenericValue();
         for (let index: number = 0; index < inputStringArray.length; index++) {
             stringMap.set(inputStringArray[index], index);
         }
@@ -231,7 +500,8 @@ export class DictionaryMapUtility {
             "stringArray": string[],
             "stringMap": TMapStringKeyGenericValue<number> } {
         const stringSet: Set<string> = new Set(inputStringArray);
-        const stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = Array.from(stringSet.values());
+        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
@@ -246,11 +516,49 @@ export class DictionaryMapUtility {
                 stringSet.add(elementString);
             }
         }
-        const stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = Array.from(stringSet.values());
+        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
     }
+
+    public static sortAnyArray(inputStringArray: any[]): any[] {
+        return inputStringArray.sort(
+          (n1: any, n2: any) => {
+            if (n1 > n2) {
+              return 1;
+            }
+            if (n1 < n2) {
+              return -1;
+            }
+            return 0;
+          });
+      }
+    public static sortNumberArray(inputStringArray: number[]): number[] {
+        return inputStringArray.sort(
+          (n1: number, n2: number) => {
+            if (n1 > n2) {
+              return 1;
+            }
+            if (n1 < n2) {
+              return -1;
+            }
+            return 0;
+          });
+      }
+    public static sortStringArray(inputStringArray: string[]): string[] {
+        return inputStringArray.sort(
+          (n1: string, n2: string) => {
+            if (n1 > n2) {
+              return 1;
+            }
+            if (n1 < n2) {
+              return -1;
+            }
+            return 0;
+          });
+      }
 
     public static validateStringArrayAndStringKeyNumberValueMap(
         stringArray: string[],
@@ -336,7 +644,7 @@ export class DictionaryMapUtility {
         } else {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
-                    `key=${key}, not int the map: ${Utility.mapToJsonSerialization(stringKeyNumberValueMap)}`);
+                    `key=${key}, not in the map: ${Utility.mapToJsonSerialization(stringKeyNumberValueMap)}`);
             }
             return false;
         }
@@ -500,18 +808,18 @@ export class DictionaryMapUtility {
         stringIdNumberValueDictionaryFirst: IDictionaryStringIdGenericValue<number>,
         stringIdNumberValueDictionarySecond: IDictionaryStringIdGenericValue<number>,
         throwIfNotLegal: boolean = true): boolean {
-        if ((stringIdNumberValueDictionaryFirst == null) && (stringIdNumberValueDictionarySecond == null)) {
+        if ((stringIdNumberValueDictionaryFirst === null) && (stringIdNumberValueDictionarySecond === null)) {
             return true;
         }
-        if (stringIdNumberValueDictionaryFirst == null) {
+        if (stringIdNumberValueDictionaryFirst === null) {
             if (throwIfNotLegal) {
-                Utility.debuggingThrow("stringKeyNumberValueDictionaryFirst==null");
+                Utility.debuggingThrow("stringIdNumberValueDictionaryFirst==null");
             }
             return false;
         }
-        if (stringIdNumberValueDictionarySecond == null) {
+        if (stringIdNumberValueDictionarySecond === null) {
             if (throwIfNotLegal) {
-                Utility.debuggingThrow("stringKeyNumberValueDictionarySecond==null");
+                Utility.debuggingThrow("stringIdNumberValueDictionarySecond==null");
             }
             return false;
         }
@@ -806,6 +1114,11 @@ export class DictionaryMapUtility {
         return true;
     }
 
+    public static isEmptyStringIdGenericSetDictionary<T>(
+        stringIdGenericSetMap: IDictionaryStringIdGenericSet<T>): boolean {
+        return !(stringIdGenericSetMap &&
+            DictionaryMapUtility.getStringIdGenericSetDictionaryLength(stringIdGenericSetMap) > 0);
+    }
     public static isEmptyStringIdGenericValueDictionary<T>(
         stringIdGenericValueMap: IDictionaryStringIdGenericValue<T>): boolean {
         return !(stringIdGenericValueMap &&
@@ -820,6 +1133,11 @@ export class DictionaryMapUtility {
         stringIdGenericArraysMap: IDictionaryStringIdGenericArrays<T>): boolean {
         return !(stringIdGenericArraysMap &&
             DictionaryMapUtility.getStringIdGenericArraysDictionaryLength(stringIdGenericArraysMap) > 0);
+    }
+    public static isEmptyNumberIdGenericSetDictionary<T>(
+        numberIdGenericSetMap: IDictionaryNumberIdGenericSet<T>): boolean {
+        return !(numberIdGenericSetMap &&
+            DictionaryMapUtility.getNumberIdGenericSetDictionaryLength(numberIdGenericSetMap) > 0);
     }
     public static isEmptyNumberIdGenericValueDictionary<T>(
         numberIdGenericValueMap: IDictionaryNumberIdGenericValue<T>): boolean {
@@ -837,6 +1155,31 @@ export class DictionaryMapUtility {
             DictionaryMapUtility.getNumberIdGenericArraysDictionaryLength(numberIdGenericArraysMap) > 0);
     }
 
+    public static isEmptyAnyKeyGenericSetMap<T>(
+        anyKeyGenericSetMap: TMapAnyKeyGenericSet<T>): boolean {
+        return !(anyKeyGenericSetMap &&
+            DictionaryMapUtility.getAnyKeyGenericSetMapLength(anyKeyGenericSetMap) > 0);
+    }
+    public static isEmptyAnyKeyGenericValueMap<T>(
+        anyKeyGenericValueMap: TMapAnyKeyGenericValue<T>): boolean {
+        return !(anyKeyGenericValueMap &&
+            DictionaryMapUtility.getAnyKeyGenericValueMapLength(anyKeyGenericValueMap) > 0);
+    }
+    public static isEmptyAnyKeyGenericArrayMap<T>(
+        anyKeyGenericArrayMap: TMapAnyKeyGenericArray<T>): boolean {
+        return !(anyKeyGenericArrayMap &&
+            DictionaryMapUtility.getAnyKeyGenericArrayMapLength(anyKeyGenericArrayMap) > 0);
+    }
+    public static isEmptyAnyKeyGenericArraysMap<T>(
+        anyKeyGenericArraysMap: TMapAnyKeyGenericArrays<T>): boolean {
+        return !(anyKeyGenericArraysMap &&
+            DictionaryMapUtility.getAnyKeyGenericArraysMapLength(anyKeyGenericArraysMap) > 0);
+    }
+    public static isEmptyGenericKeyGenericSetMap<I, T>(
+        genericKeyGenericSetMap: TMapGenericKeyGenericSet<I, T>): boolean {
+        return !(genericKeyGenericSetMap &&
+            DictionaryMapUtility.getGenericKeyGenericSetMapLength(genericKeyGenericSetMap) > 0);
+    }
     public static isEmptyGenericKeyGenericValueMap<I, T>(
         genericKeyGenericValueMap: TMapGenericKeyGenericValue<I, T>): boolean {
         return !(genericKeyGenericValueMap &&
@@ -852,20 +1195,10 @@ export class DictionaryMapUtility {
         return !(genericKeyGenericArraysMap &&
             DictionaryMapUtility.getGenericKeyGenericArraysMapLength(genericKeyGenericArraysMap) > 0);
     }
-    public static isEmptyStringKeyGenericValueMap<T>(
-        stringKeyGenericValueMap: TMapStringKeyGenericValue<T>): boolean {
-        return !(stringKeyGenericValueMap &&
-            DictionaryMapUtility.getStringKeyGenericValueMapLength(stringKeyGenericValueMap) > 0);
-    }
-    public static isEmptyStringKeyGenericArrayMap<T>(
-        stringKeyGenericArrayMap: TMapStringKeyGenericArray<T>): boolean {
-        return !(stringKeyGenericArrayMap &&
-            DictionaryMapUtility.getStringKeyGenericArrayMapLength(stringKeyGenericArrayMap) > 0);
-    }
-    public static isEmptyStringKeyGenericArraysMap<T>(
-        stringKeyGenericArraysMap: TMapStringKeyGenericArrays<T>): boolean {
-        return !(stringKeyGenericArraysMap &&
-            DictionaryMapUtility.getStringKeyGenericArraysMapLength(stringKeyGenericArraysMap) > 0);
+    public static isEmptyNumberKeyGenericSetMap<T>(
+        numberKeyGenericSetMap: TMapNumberKeyGenericSet<T>): boolean {
+        return !(numberKeyGenericSetMap &&
+            DictionaryMapUtility.getNumberKeyGenericSetMapLength(numberKeyGenericSetMap) > 0);
     }
     public static isEmptyNumberKeyGenericValueMap<T>(
         numberKeyGenericValueMap: TMapNumberKeyGenericValue<T>): boolean {
@@ -882,7 +1215,33 @@ export class DictionaryMapUtility {
         return !(numberKeyGenericArraysMap &&
             DictionaryMapUtility.getNumberKeyGenericArraysMapLength(numberKeyGenericArraysMap) > 0);
     }
+    public static isEmptyStringKeyGenericSetMap<T>(
+        stringKeyGenericSetMap: TMapStringKeyGenericSet<T>): boolean {
+        return !(stringKeyGenericSetMap &&
+            DictionaryMapUtility.getStringKeyGenericSetMapLength(stringKeyGenericSetMap) > 0);
+    }
+    public static isEmptyStringKeyGenericValueMap<T>(
+        stringKeyGenericValueMap: TMapStringKeyGenericValue<T>): boolean {
+        return !(stringKeyGenericValueMap &&
+            DictionaryMapUtility.getStringKeyGenericValueMapLength(stringKeyGenericValueMap) > 0);
+    }
+    public static isEmptyStringKeyGenericArrayMap<T>(
+        stringKeyGenericArrayMap: TMapStringKeyGenericArray<T>): boolean {
+        return !(stringKeyGenericArrayMap &&
+            DictionaryMapUtility.getStringKeyGenericArrayMapLength(stringKeyGenericArrayMap) > 0);
+    }
+    public static isEmptyStringKeyGenericArraysMap<T>(
+        stringKeyGenericArraysMap: TMapStringKeyGenericArrays<T>): boolean {
+        return !(stringKeyGenericArraysMap &&
+            DictionaryMapUtility.getStringKeyGenericArraysMapLength(stringKeyGenericArraysMap) > 0);
+    }
 
+    public static getStringIdGenericSetDictionaryLength<T>(map: IDictionaryStringIdGenericSet<T>): number {
+        return (Object.keys(map).length);
+    }
+    public static getNumberIdGenericSetDictionaryLength<T>(map: IDictionaryNumberIdGenericSet<T>): number {
+        return (Object.keys(map).length);
+    }
     public static getStringIdGenericValueDictionaryLength<T>(map: IDictionaryStringIdGenericValue<T>): number {
         return (Object.keys(map).length);
     }
@@ -902,59 +1261,101 @@ export class DictionaryMapUtility {
         return (Object.keys(map).length);
     }
 
-    public static getGenericKeyGenericValueMapLength<I, T>(map: TMapGenericKeyGenericValue<I, T>): number {
+    public static getAnyKeyGenericSetMapLength<T>(map: TMapAnyKeyGenericSet<T>): number {
         return [...map].length;
     }
-    public static getStringKeyGenericValueMapLength<T>(map: TMapStringKeyGenericValue<T>): number {
+    public static getGenericKeyGenericSetMapLength<I, T>(map: TMapGenericKeyGenericSet<I, T>): number {
+        return [...map].length;
+    }
+    public static getNumberKeyGenericSetMapLength<T>(map: TMapNumberKeyGenericSet<T>): number {
+        return [...map].length;
+    }
+    public static getStringKeyGenericSetMapLength<T>(map: TMapStringKeyGenericSet<T>): number {
+        return [...map].length;
+    }
+    public static getAnyKeyGenericValueMapLength<T>(map: TMapAnyKeyGenericValue<T>): number {
+        return [...map].length;
+    }
+    public static getGenericKeyGenericValueMapLength<I, T>(map: TMapGenericKeyGenericValue<I, T>): number {
         return [...map].length;
     }
     public static getNumberKeyGenericValueMapLength<T>(map: TMapNumberKeyGenericValue<T>): number {
         return [...map].length;
     }
-    public static getGenericKeyGenericArrayMapLength<I, T>(map: TMapGenericKeyGenericArray<I, T>): number {
+    public static getStringKeyGenericValueMapLength<T>(map: TMapStringKeyGenericValue<T>): number {
         return [...map].length;
     }
-    public static getStringKeyGenericArrayMapLength<T>(map: TMapStringKeyGenericArray<T>): number {
+    public static getAnyKeyGenericArrayMapLength<T>(map: TMapAnyKeyGenericArray<T>): number {
+        return [...map].length;
+    }
+    public static getGenericKeyGenericArrayMapLength<I, T>(map: TMapGenericKeyGenericArray<I, T>): number {
         return [...map].length;
     }
     public static getNumberKeyGenericArrayMapLength<T>(map: TMapNumberKeyGenericArray<T>): number {
         return [...map].length;
     }
+    public static getStringKeyGenericArrayMapLength<T>(map: TMapStringKeyGenericArray<T>): number {
+        return [...map].length;
+    }
+    public static getAnyKeyGenericArraysMapLength<T>(map: TMapAnyKeyGenericArrays<T>): number {
+        return [...map].length;
+    }
     public static getGenericKeyGenericArraysMapLength<I, T>(map: TMapGenericKeyGenericArrays<I, T>): number {
         return (Object.keys(map).length);
-    }
-    public static getStringKeyGenericArraysMapLength<T>(map: TMapStringKeyGenericArrays<T>): number {
-        return [...map].length;
     }
     public static getNumberKeyGenericArraysMapLength<T>(map: TMapNumberKeyGenericArrays<T>): number {
         return [...map].length;
     }
+    public static getStringKeyGenericArraysMapLength<T>(map: TMapStringKeyGenericArrays<T>): number {
+        return [...map].length;
+    }
 
+    public static newTMapAnyKeyGenericSet<T>(): TMapAnyKeyGenericSet<T> {
+        return new Map<any, Set<T>>();
+    }
+    public static newTMapGenericKeyGenericSet<I, T>(): TMapGenericKeyGenericSet<I, T> {
+        return new Map<I, Set<T>>();
+    }
+    public static newTMapNumberKeyGenericSet<T>(): TMapNumberKeyGenericSet<T> {
+        return new Map<number, Set<T>>();
+    }
+    public static newTMapStringKeyGenericSet<T>(): TMapStringKeyGenericSet<T> {
+        return new Map<string, Set<T>>();
+    }
+    public static newTMapAnyKeyGenericValue<T>(): TMapAnyKeyGenericValue<T> {
+        return new Map<any, T>();
+    }
     public static newTMapGenericKeyGenericValue<I, T>(): TMapGenericKeyGenericValue<I, T> {
         return new Map<I, T>();
-    }
-    public static newTMapStringKeyGenericValue<T>(): TMapStringKeyGenericValue<T> {
-        return new Map<string, T>();
     }
     public static newTMapNumberKeyGenericValue<T>(): TMapNumberKeyGenericValue<T> {
         return new Map<number, T>();
     }
+    public static newTMapStringKeyGenericValue<T>(): TMapStringKeyGenericValue<T> {
+        return new Map<string, T>();
+    }
+    public static newTMapAnyKeyGenericArray<T>(): TMapAnyKeyGenericArray<T> {
+        return new Map<any, T[]>();
+    }
     public static newTMapGenericKeyGenericArray<I, T>(): TMapGenericKeyGenericArray<I, T> {
         return new Map<I, T[]>();
-    }
-    public static newTMapStringKeyGenericArray<T>(): TMapStringKeyGenericArray<T> {
-        return new Map<string, T[]>();
     }
     public static newTMapNumberKeyGenericArray<T>(): TMapNumberKeyGenericArray<T> {
         return new Map<number, T[]>();
     }
+    public static newTMapStringKeyGenericArray<T>(): TMapStringKeyGenericArray<T> {
+        return new Map<string, T[]>();
+    }
+    public static newTMapAnyKeyGenericArrays<T>(): TMapAnyKeyGenericArrays<T> {
+        return new Map<any, T[][]>();
+    }
     public static newTMapGenericKeyGenericArrays<I, T>(): TMapGenericKeyGenericArrays<I, T> {
         return new Map<I, T[][]>();
     }
-    public static newTMapStringKeyGenericArrays<T>(): TMapStringKeyGenericArrays<T> {
-        return new Map<string, T[][]>();
-    }
     public static newTMapNumberKeyGenericArrays<T>(): TMapNumberKeyGenericArrays<T> {
         return new Map<number, T[][]>();
+    }
+    public static newTMapStringKeyGenericArrays<T>(): TMapStringKeyGenericArrays<T> {
+        return new Map<string, T[][]>();
     }
 }

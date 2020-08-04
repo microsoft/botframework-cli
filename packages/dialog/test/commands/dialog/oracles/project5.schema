@@ -1,0 +1,362 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "type": "object",
+  "title": "Component kinds",
+  "description": "These are all of the kinds that can be created by the loader.",
+  "oneOf": [
+    {
+      "$ref": "#/definitions/nuget3.component1"
+    }
+  ],
+  "definitions": {
+    "arrayExpression": {
+      "$role": "expression",
+      "title": "Array or expression",
+      "description": "Array or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "array",
+          "title": "Array",
+          "description": "Array constant."
+        },
+        {
+          "$ref": "#/definitions/equalsExpression"
+        }
+      ]
+    },
+    "booleanExpression": {
+      "$role": "expression",
+      "title": "Boolean or expression",
+      "description": "Boolean constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean constant.",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=user.isVip"
+          ]
+        }
+      ]
+    },
+    "component": {
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "condition": {
+      "$role": "expression",
+      "title": "Boolean condition",
+      "description": "Boolean constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/expression"
+        },
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean value.",
+          "default": true,
+          "examples": [
+            false
+          ]
+        }
+      ]
+    },
+    "equalsExpression": {
+      "$role": "expression",
+      "type": "string",
+      "title": "Expression",
+      "description": "Expression starting with =.",
+      "pattern": "^=.*\\S.*",
+      "examples": [
+        "=user.name"
+      ]
+    },
+    "expression": {
+      "$role": "expression",
+      "type": "string",
+      "title": "Expression",
+      "description": "Expression to evaluate.",
+      "pattern": "^.*\\S.*",
+      "examples": [
+        "user.age > 13"
+      ]
+    },
+    "integerExpression": {
+      "$role": "expression",
+      "title": "Integer or expression",
+      "description": "Integer constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "title": "Integer",
+          "description": "Integer constant.",
+          "default": 0,
+          "examples": [
+            15
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=user.age"
+          ]
+        }
+      ]
+    },
+    "nuget3.component1": {
+      "$role": [],
+      "title": "Nuget3 schema",
+      "description": "Example schema for packages.",
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "type": "object",
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "Object": {
+          "type": "object",
+          "title": " object",
+          "description": "This is an object.",
+          "properties": {
+            "subObject": {
+              "type": "string",
+              "title": "SubObject",
+              "description": "SubObject property of Object."
+            }
+          }
+        },
+        "SimpleArray": {
+          "type": "array",
+          "title": " Empty Array",
+          "description": "This is simple items array.",
+          "items": true
+        },
+        "Array": {
+          "type": "array",
+          "title": " Array",
+          "description": "This is a complex item array.",
+          "items": {
+            "type": "object",
+            "title": "Array item",
+            "description": "This is an array item.",
+            "properties": {
+              "subArray": {
+                "type": "integer",
+                "title": "Integer item",
+                "description": "Integer item"
+              }
+            }
+          }
+        },
+        "AnyOf": {
+          "title": " AnyOf",
+          "description": "This is an anyOf.",
+          "anyOf": [
+            {
+              "type": "object",
+              "title": "AnyOf1",
+              "description": "This is anyOf1 object.",
+              "properties": {
+                "anyOf1": {
+                  "type": "object",
+                  "title": "AnyOf1 object",
+                  "description": "This is anyOf1.",
+                  "properties": {
+                    "subAnyOf1": {
+                      "type": "string",
+                      "title": "SubAnyOf1",
+                      "description": "SubAnyOf1 string"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "title": "AnyOf2",
+              "description": "This is anyOf2 object.",
+              "properties": {
+                "anyOf2": {
+                  "type": "object",
+                  "title": "AnyOf2 object",
+                  "description": "This is anyOf2.",
+                  "properties": {
+                    "subAnyOf2": {
+                      "type": "string",
+                      "title": "SubAnyOf2",
+                      "description": "SubAnyOf2 string"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "nuget3.component1"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "numberExpression": {
+      "$role": "expression",
+      "title": "Number or expression",
+      "description": "Number constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "number",
+          "title": "Number",
+          "description": "Number constant.",
+          "default": 0,
+          "examples": [
+            15.5
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=dialog.quantity"
+          ]
+        }
+      ]
+    },
+    "objectExpression": {
+      "$role": "expression",
+      "title": "Object or expression",
+      "description": "Object or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Object",
+          "description": "Object constant."
+        },
+        {
+          "$ref": "#/definitions/equalsExpression"
+        }
+      ]
+    },
+    "role": {
+      "title": "$role",
+      "description": "Defines the role played in the dialog schema from [expression|interface|implements($kind)|extends($kind)].",
+      "type": "string",
+      "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\))|(extends\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
+    },
+    "stringExpression": {
+      "$role": "expression",
+      "title": "String or expression",
+      "description": "Interpolated string or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "String",
+          "description": "Interpolated string",
+          "pattern": "^(?!(=)).*",
+          "examples": [
+            "Hello ${user.name}"
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=concat('x','y','z')"
+          ]
+        }
+      ]
+    },
+    "valueExpression": {
+      "$role": "expression",
+      "title": "Any or expression",
+      "description": "Any constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Object",
+          "description": "Object constant."
+        },
+        {
+          "type": "array",
+          "title": "Array",
+          "description": "Array constant."
+        },
+        {
+          "type": "string",
+          "title": "String",
+          "description": "Interpolated string.",
+          "pattern": "^(?!(=)).*",
+          "examples": [
+            "Hello ${user.name}"
+          ]
+        },
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean constant",
+          "examples": [
+            false
+          ]
+        },
+        {
+          "type": "number",
+          "title": "Number",
+          "description": "Number constant.",
+          "examples": [
+            15.5
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=..."
+          ]
+        }
+      ]
+    }
+  }
+}

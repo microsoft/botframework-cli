@@ -7,12 +7,12 @@ const { insertParametersFromObject } = require('../insertParametersFromObject');
 const deriveParamsFromPath = require('../deriveParamsFromPath');
 const packageJSON = require('./../../package');
 
-const fetch = require('node-fetch');
+const nodeFetch = require('node-fetch');
 
 global.fetch = function (...args) {
     // No Proxy
     if (!process.env.HTTPS_PROXY) {
-        return fetch(...args);
+        return nodeFetch(...args);
     }
     const [urlOrRequest, requestInit = {}, ...rest] = args;
     // URL is first param attach the proxy
@@ -24,7 +24,7 @@ global.fetch = function (...args) {
     } else {
         urlOrRequest.agent = agent;
     }
-    return fetch(urlOrRequest, requestInit, ...rest);
+    return nodeFetch(urlOrRequest, requestInit, ...rest);
 };
 
 /**
