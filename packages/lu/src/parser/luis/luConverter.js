@@ -92,7 +92,12 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         if(utterance.entities.length >= 0) {
             // update utterance for each entity
             let text = utterance.text;
-            let sortedEntitiesList = objectSortByStartPos(utterance.entities);
+            // flatten entities
+            let flatEntities = [];
+            Object.assign([], utterance.entities).forEach(entity => flattenEntities(entity, flatEntities));
+            let sortedEntitiesList = objectSortByStartPos(flatEntities);
+            // remove all children
+            sortedEntitiesList.forEach(entity => delete entity.children);
             let tokenizedText = text.split('');
             // handle cases where we have both child as well as cases where more than one entity can have the same start position
             // if there are multiple entities in the same start position, then order them by composite, nDepth, regular entity
@@ -106,6 +111,14 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         if(updatedText) fileContent += '- ' + updatedText.replace(/\s+/g, ' ') + NEWLINE;
     });
     return fileContent
+}
+
+const flattenEntities = function(entity, flatEntities)
+{
+    if (entity.children !== undefined && Array.isArray(entity.children) && entity.children.length !== 0) {
+        entity.children.forEach(child => flattenEntities(child, flatEntities));
+    }
+    flatEntities.push(Object.assign({}, entity));
 }
 
 const getEntitiesByPositionList = function(entitiesList, tokenizedText) {
