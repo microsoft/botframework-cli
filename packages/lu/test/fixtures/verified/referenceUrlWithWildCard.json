@@ -1,0 +1,49 @@
+{
+  "intents": [
+    {
+      "name": "test"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "add two apples",
+      "intent": "test",
+      "entities": []
+    },
+    {
+      "text": "one",
+      "intent": "test",
+      "entities": []
+    },
+    {
+      "text": "two",
+      "intent": "test",
+      "entities": []
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "another {entity}",
+      "intent": "test"
+    }
+  ],
+  "patternAnyEntities": [
+    {
+      "name": "entity",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
+  "prebuiltEntities": [],
+  "luis_schema_version": "3.2.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us"
+}

@@ -659,7 +659,11 @@ const parseAndHandleImportSection = async function (parsedContent, luResource) {
 
                 let contentType = response.headers.get('content-type');
                 if (!contentType.includes('text/html')) {
-                    parsedContent.qnaJsonStructure.files.push(new qnaFile(linkValue, linkValueText));
+                    if (parseUrl.pathname.toLowerCase().endsWith('.lu') || parseUrl.pathname.toLowerCase().endsWith('.qna')) {
+                        parsedContent.additionalFilesToParse.push(new fileToParse(linkValue));
+                    } else {
+                        parsedContent.qnaJsonStructure.files.push(new qnaFile(linkValue, linkValueText));
+                    }
                 } else {
                     parsedContent.qnaJsonStructure.urls.push(linkValue);
                 }

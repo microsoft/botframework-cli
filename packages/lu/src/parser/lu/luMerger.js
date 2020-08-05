@@ -16,6 +16,7 @@ const parserObject = require('./../lufile/classes/parserObject');
 const txtfile = require('./../lufile/read-text-file');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
+const fetch = require('node-fetch');
 
 module.exports = {
     /**
@@ -361,7 +362,7 @@ const resolveRefByType = function(srcId, ref, refTree) {
     return filter(srcId, ref, refTree);
 }
 
-const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearchFn = findLuFilesInDir){
+const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearchFn = resolveLuContent){
     let allParsedLUISContent = []
     let allParsedQnAContent = []
     let allParsedAlterationsContent = []
@@ -411,38 +412,80 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
         QnAAlterations: allParsedAlterationsContent
     }
 }
+const resolveLuContent = async function(srcId, idsToFind){
+    let luObjects = [];
+    for(let idx = 0; idx < idsToFind.length; idx++) {
+        let toResolve = idsToFind[idx];
+        if (isUrl(toResolve.filePath)) {
+            await resolveLuUriContent(srcId, toResolve, luObjects);
+        } else {
+            resolveLuFileContent(toResolve, luObjects, srcId);
+        }
+    }
+    return luObjects;
+}
+const resolveLuFileContent = function(file, luObjects, srcId) {
+    let parentFilePath = srcId === 'stdin' ? process.cwd() : path.parse(path.resolve(srcId)).dir
+    // Support wild cards at the end of a relative .LU file path. 
+    // './bar/*' should look for all .lu files under the specified folder.
+    // './bar/**' should recursively look for .lu files under sub-folders as well.
+    if(file.filePath.endsWith('*')) {
+        const isRecursive = file.filePath.endsWith('**')
+        const rootFolder = file.filePath.replace(/\*/g, '')
+        let rootPath = rootFolder;
+        if(!path.isAbsolute(rootFolder)) {
+            rootPath = path.resolve(parentFilePath, rootFolder);
+        } 
+        // Get LU files in this location
+        const luFilesToAdd = helpers.findLUFiles(rootPath, isRecursive);
+        // add these to filesToParse
+        for(let f = 0; f < luFilesToAdd.length; f++){
+            const opts = new luOptions(luFilesToAdd[f], file.includeInCollate)
+            luObjects.push(new luObject(readLuFile(luFilesToAdd[f]), opts))
+        } 
+        return
+    } 
 
+    if(!path.isAbsolute(file.filePath)) {
+        file.filePath = path.resolve(parentFilePath, file.filePath)
+    } 
+    // find matching parsed files and ensure includeInCollate is updated if needed.
+    luObjects.push(new luObject(readLuFile(file.filePath), new luOptions(file.filePath, file.includeInCollate)))
+}
+const resolveLuUriContent = async function(srcId, toResolve, luObjects) {
+    let uri = toResolve.filePath || undefined;
+    if (uri !== undefined) {
+        let response;
+        try {
+            response = await fetch(uri, { method: 'GET' });
+        } catch (err) {
+            // throw, invalid URI
+            let errorMsg = `URI: "${uri}" appears to be invalid. Please double check the URI or re-try this parse when you are connected to the internet.`;
+            let error = BuildDiagnostic({
+                message: errorMsg,
+                range: luImport.Range
+            })
+    
+            throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
+        }
+        var res = await response.buffer();
+        var encodedRes = helpers.fixBuffer(res);
+        luObjects.push(new luObject(encodedRes, new luOptions(toResolve.filePath, toResolve.includeInCollate)));
+    }
+}
+const isUrl = function(path) {
+    try {
+        new URL(path);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
 const findLuFilesInDir = async function(srcId, idsToFind){
     let luObjects = []
     let parentFilePath = srcId === 'stdin' ? process.cwd() : path.parse(path.resolve(srcId)).dir
     for(let idx = 0; idx < idsToFind.length; idx++ ) {
-        // Support wild cards at the end of a relative .LU file path. 
-        // './bar/*' should look for all .lu files under the specified folder.
-        // './bar/**' should recursively look for .lu files under sub-folders as well.
-        let file = idsToFind[idx]
-        if(file.filePath.endsWith('*')) {
-            const isRecursive = file.filePath.endsWith('**')
-            const rootFolder = file.filePath.replace(/\*/g, '')
-            let rootPath = rootFolder;
-            if(!path.isAbsolute(rootFolder)) {
-                rootPath = path.resolve(parentFilePath, rootFolder);
-            } 
-            // Get LU files in this location
-            const luFilesToAdd = helpers.findLUFiles(rootPath, isRecursive);
-            // add these to filesToParse
-            for(let f = 0; f < luFilesToAdd.length; f++){
-                const opts = new luOptions(luFilesToAdd[f], file.includeInCollate)
-                luObjects.push(new luObject(readLuFile(luFilesToAdd[f]), opts))
-            } 
-            continue
-        } 
-
-        if(!path.isAbsolute(file.filePath)) {
-            file.filePath = path.resolve(parentFilePath, file.filePath)
-        } 
-        // find matching parsed files and ensure includeInCollate is updated if needed.
-        luObjects.push(new luObject(readLuFile(file.filePath), new luOptions(file.filePath, file.includeInCollate)))
-        
+        resolveLuFileContent(idsToFind[idx], luObjects, parentFilePath);
     }
     return luObjects
 }
