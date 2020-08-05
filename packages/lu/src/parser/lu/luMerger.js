@@ -481,14 +481,6 @@ const isUrl = function(path) {
         return false;
     }
 }
-const findLuFilesInDir = async function(srcId, idsToFind){
-    let luObjects = []
-    let parentFilePath = srcId === 'stdin' ? process.cwd() : path.parse(path.resolve(srcId)).dir
-    for(let idx = 0; idx < idsToFind.length; idx++ ) {
-        resolveLuFileContent(idsToFind[idx], luObjects, parentFilePath);
-    }
-    return luObjects
-}
 
 const updateParsedFiles = function(allParsedLUISContent, allParsedQnAContent, allParsedAlterationsContent, luobject) {
     // find the instance and ensure includeInCollate property is set correctly 
