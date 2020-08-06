@@ -981,3 +981,73 @@ describe('luis:build write dialog assets successfully if schema is specified', (
       expect(await compareFiles('./../../../results/sandwich.lu.qna.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.lu.qna.dialog')).to.be.true
     })
 })
+
+describe('luis:build write dialog assets successfully when empty files exist', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test.en-us.lu',
+        id: 'f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('import'))
+      .reply(201, {
+        appId: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('train'))
+      .reply(202, {
+        statusId: 2,
+        status: 'UpToDate'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('train'))
+      .reply(200, [{
+        modelId: '99999',
+        details: {
+          statusId: 0,
+          status: 'Success',
+          exampleCount: 0
+        }
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('publish'))
+      .reply(201, {
+        versionId: '0.1',
+        isStaging: false
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/empty-file/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write dialog assets successfully when empty files exist', async ctx => {
+      expect(ctx.stdout).to.contain('empty.lu loaded')
+      expect(ctx.stdout).to.contain('non-empty.lu loaded')
+
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('Creating LUIS.ai application')
+      expect(ctx.stdout).to.contain('training version=0.1')
+      expect(ctx.stdout).to.contain('waiting for training for version=0.1')
+      expect(ctx.stdout).to.contain('publishing version=0.1')
+      
+      expect(ctx.stdout).to.contain('non-empty.lu publishing finished')
+
+      expect(await compareFiles('./../../../results/empty.lu.qna.dialog', './../../fixtures/testcases/lubuild/empty-file/dialogs/empty.lu.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/empty-file/config/luis.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/non-empty.lu.dialog', './../../fixtures/testcases/lubuild/empty-file/dialogs/non-empty.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/non-empty.en-us.lu.dialog', './../../fixtures/testcases/lubuild/empty-file/dialogs/non-empty.en-us.lu.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/non-empty.lu.qna.dialog', './../../fixtures/testcases/lubuild/empty-file/dialogs/non-empty.lu.qna.dialog')).to.be.true
+    })
+})

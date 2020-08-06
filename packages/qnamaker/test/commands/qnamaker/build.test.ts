@@ -763,3 +763,84 @@ describe('qnamaker:build write dialog assets successfully if schema is specified
       expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.lu.qna.dialog')).to.be.true
     })
 })
+
+describe('qnamaker:build write dialog assets successfully when empty files exist', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'))
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test.en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('createasync'))
+      .reply(202, {
+        operationId: 'f8c64e2a-aaaa-3a09-8f78-39d7adc76ec5'
+      })
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('operations'))
+      .reply(200, {
+        operationState: 'Succeeded',
+        resourceLocation: 'a/b/f8c64e2a-2222-3a09-8f78-39d7adc76ec5'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .put(uri => uri.includes('knowledgebases'))
+      .reply(204)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .post(uri => uri.includes('knowledgebases'))
+      .reply(204)
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('knowledgebases'))
+      .reply(200, {
+        id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        hostName: 'https://myqnamakerbot.azurewebsites.net'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .put(uri => uri.includes('alterations'))
+      .reply(204)
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('endpointkeys'))
+      .reply(200, {
+        primaryEndpointKey: 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',
+        secondaryEndpointKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+      })
+  })
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/empty-file/qnafiles', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write dialog assets successfully when empty files exist', async ctx => {
+      expect(ctx.stdout).to.contain('empty.qna loaded')
+      expect(ctx.stdout).to.contain('non-empty.qna loaded')
+      expect(ctx.stdout).to.contain('empty.zh-cn.qna loaded')
+
+      expect(ctx.stdout).to.contain('Handling qnamaker knowledge bases...')
+      expect(ctx.stdout).to.contain('Creating qnamaker KB: test(development).en-us.qna...')
+      expect(ctx.stdout).to.contain('Creating finished')
+      expect(ctx.stdout).to.contain('Publishing kb')
+      expect(ctx.stdout).to.contain('Publishing finished')
+
+      expect(await compareFiles('./../../../results/empty.lu.qna.dialog', './../../fixtures/testcases/qnabuild/empty-file/dialogs/empty.lu.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/empty-file/config/qnamaker.settings.development.westus.json')).to.be.true
+      expect(await compareFiles('./../../../results/non-empty.qna.dialog', './../../fixtures/testcases/qnabuild/empty-file/dialogs/non-empty.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/non-empty.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/empty-file/dialogs/non-empty.en-us.qna.dialog')).to.be.true
+      expect(await compareFiles('./../../../results/non-empty.lu.qna.dialog', './../../fixtures/testcases/qnabuild/empty-file/dialogs/non-empty.lu.qna.dialog')).to.be.true
+    })
+})
