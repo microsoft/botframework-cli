@@ -547,7 +547,7 @@ const parseLuFile = async function(luOb, log, luis_culture) {
     let parsedContent = ''
     if (!luOb.content) {
         let error = BuildDiagnostic({ message: `Cannot parse empty ${luOb.id}. Please add content to the file or remove it.` })
-        throw(new exception(retCode.errorCode.EMPTY_CONTENT, error.toString()));
+        throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, error.toString()));
     } 
     try {
         parsedContent = await parseFileContents.parseFile(luOb.content, log, luis_culture);

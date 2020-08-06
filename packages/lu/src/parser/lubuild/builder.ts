@@ -74,15 +74,18 @@ export class Builder {
       let fileContent = ''
       let result
       let luisObj
-      const luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
+      let luFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.LUFile)
+      this.handler(`${file} loaded\n`)
+
+      // filter empty lu files
+      luFiles = luFiles.filter((file: any) => file.content !== '')
+      if (luFiles.length <= 0) continue
+
       try {
         result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
         luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
-        this.handler(`${file} loaded\n`)
       } catch (err) {
-        if (err.errCode === retCode.errorCode.EMPTY_CONTENT) continue
-
         if (err.source) {
           err.text = `Invalid LU file ${err.source}: ${err.text}`
         } else {
