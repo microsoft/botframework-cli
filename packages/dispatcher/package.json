@@ -6,7 +6,7 @@
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "main": "lib/index.js",
   "dependencies": {
-    "@microsoft/bf-lu": "1.0.0",
+    "@microsoft/bf-lu": "next",
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "tslib": "^1.10.0",

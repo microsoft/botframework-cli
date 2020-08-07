@@ -1,8 +1,0 @@
-> # Intent definitions
-
-##FindDoc
-- find {DocType=word} doc in folder work
-- [((show|find)|open)] {DocType} doc in folder {FolderName}
-
-$FoldeName:work=
-- works

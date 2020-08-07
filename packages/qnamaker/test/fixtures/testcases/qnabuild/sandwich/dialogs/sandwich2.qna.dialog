@@ -1,8 +1,0 @@
-{
-    "$kind": "Microsoft.MultiLanguageRecognizer",
-    "id": "QnA_sandwich2",
-    "recognizers": {
-        "en-us": "sandwich2.en-us.qna",
-        "": "sandwich2.en-us.qna"
-    }
-}

@@ -1,9 +1,0 @@
-{
-    "$kind": "Microsoft.MultiLanguageRecognizer",
-    "id": "QnA_weather",
-    "recognizers": {
-        "en-us": "weather.en-us.qna",
-        "": "weather.en-us.qna",
-        "fr-fr": "weather.fr-fr.qna"
-    }
-}

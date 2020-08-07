@@ -1,6 +1,0 @@
-# UserProfile
-- get started
-- my name is {@userName}
-- Profile
-
-@ prebuilt personName hasRoles userName

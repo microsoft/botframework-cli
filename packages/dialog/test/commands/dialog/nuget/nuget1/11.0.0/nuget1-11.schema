@@ -1,4 +1,0 @@
-{
-    "title": "nuget1-11 Schema",
-    "$ref": "../../../schemas/packageBase.json"
-}

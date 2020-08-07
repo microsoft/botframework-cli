@@ -1,7 +1,0 @@
-# flightDestination
-- book a flight to {toLocation = Beijing}
-
-@ simple toLocation
-
-# flightTime
-- which {flightTime} do you prefer
