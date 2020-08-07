@@ -189,7 +189,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     updateIntentAndEntityFeatures(parsedContent.LUISJsonStructure);
 
     helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
-
+    
 }
 
 const updateIntentAndEntityFeatures = function(luisObj) {
@@ -532,13 +532,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess) {
                         validateFeatureAssignment(entityType, section.Name, INTENTTYPE, feature, section.Range);
                         addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.Range, featureProperties.intentFeatureToModel);
                     } else {
-                        // Item must be defined before being added as a feature.
-                        let errorMsg = `Features must be defined before assigned to an entity. No definition found for feature "${feature}" in usesFeature definition for entity "${section.Name}"`;
-                        let error = BuildDiagnostic({
-                            message: errorMsg,
-                            range: section.Range
-                        })
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                        addFeatures(srcEntity, feature, featureTypeEnum.modelToFeature, section.Range, featureProperties.intentFeatureToModel);
                     }
                 });
             }
