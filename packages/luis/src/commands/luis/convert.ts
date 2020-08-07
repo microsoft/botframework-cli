@@ -45,6 +45,7 @@ export default class LuisConvert extends Command {
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
         result = await LuisBuilder.build(luFiles, flags.log, flags.culture)
+        result.validate()
         if (!hasContent(result)) {
           throw new CLIError('No LU or Luis content parsed!')
         }

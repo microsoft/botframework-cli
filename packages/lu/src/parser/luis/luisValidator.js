@@ -29,6 +29,8 @@ const validateLUIS = function(luisJSON) {
     validateComposites(luisJSON, entitiesList)
     // do boundary validation
     validateBoundaries(luisJSON);
+    // validate feature assignments
+    validateFeatureAssignments(luisJSON);
     return true;
 }
 const validateBoundaries = function(luisJSON) {
@@ -310,6 +312,60 @@ const validateCompositeChildren = function(composite, entitiesList){
 
             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
+    })
+}
+
+const validateFeatureAssignments = function(luisJSON)
+{
+    const verifyList = [];
+    const featureCandidates = [];
+    const verifiedList = [];
+    addFeatureCandidates(luisJSON.prebuiltEntities, featureCandidates);
+    addFeatureCandidates(luisJSON.closedLists, featureCandidates);
+    addFeatureCandidates(luisJSON.regex_entities, featureCandidates);
+    addFeatureCandidates(luisJSON.phraselists, featureCandidates);
+    verifyAndExtractFeatures(luisJSON.intents, verifyList, featureCandidates, verifiedList);
+    verifyAndExtractFeatures(luisJSON.entities, verifyList, featureCandidates, verifiedList);
+    verifyAndExtractFeatures(luisJSON.composites, verifyList, featureCandidates, verifiedList);
+    if (verifyList.length !== 0) {
+        verifyList.forEach(item => {
+            if (!featureCandidates.includes(item)) {
+                let errorMsg = `Feature "${item}" does not have a definition. All features must be defined.`;
+                let error = BuildDiagnostic({ message: errorMsg });
+
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            }
+        })
+    }
+}
+
+const addFeatureCandidates = function(collection, featureCandidates)
+{
+    (collection || []).forEach(item => {
+        if (!featureCandidates.includes(item.name)) {
+            featureCandidates.push(item.name);
+        }
+    })
+}
+
+const verifyAndExtractFeatures = function(collection = [], verifyList = [], featureCandidates = [], verifiedList = []) {
+    (collection || []).forEach(item => {
+        if (!featureCandidates.includes(item.name)) {
+            featureCandidates.push(item.name);
+        }
+        (item.features || []).forEach(feature => {
+            let featureName = feature.modelName || feature.featureName || undefined;
+            if (featureName !== undefined) {
+                if (!verifiedList.includes(featureName)) {
+                    if (!featureCandidates.includes(featureName)) {
+                        if (!verifyList.includes(featureName)) {
+                            verifyList.push(featureName);
+                        }
+                    }
+                }
+            }
+        })
+        if (item.children && Array.isArray(item.children) && item.children.length !== 0) verifyAndExtractFeatures(item.children, verifyList, featureCandidates, verifiedList);
     })
 }
 

@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+const luisBuilder = require('../../../src/parser/luis/luisBuilder');
 const parseFile = require('../../../src/parser/lufile/parseFileContents');
 const luconvert = require('../../../src/parser/luis/luConverter');
 const entityNameWithSpaceAndFeature = require('../../fixtures/testcases/entityNameWithSpaceAndFeature.json');
@@ -196,8 +197,7 @@ describe('Model as feature definitions', function () {
                     @ ml x1
                     @ x1 usesFeature city3
                 `;
-    
-                parseFile.parseFile(luFile)
+                luisBuilder.fromContentAsync(luFile)
                     .then(res => done(res))
                     .catch(err => done())
             });
@@ -435,11 +435,10 @@ describe('Model as feature definitions', function () {
         describe('Composite entity', function() {
             it('Features must be defined before they can be added.', function(done) {
                 let luFile = `
-                    @ patternany x1
+                    @ composite x1
                     @ x1 usesFeature city3
                 `;
-    
-                parseFile.parseFile(luFile)
+                luisBuilder.fromContentAsync(luFile)
                     .then(res => done(res))
                     .catch(err => done())
             });
