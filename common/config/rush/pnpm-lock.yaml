@@ -18,7 +18,6 @@ dependencies:
   '@snyk/nuget-semver': 1.3.0
   '@types/ansi-styles': 3.2.1
   '@types/argparse': 1.0.38
-  '@types/lodash': 4.14.149
   '@types/lru-cache': 5.1.0
   '@types/proxyquire': 1.3.28
   '@types/readline-sync': 1.4.3
@@ -639,6 +638,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ijGqzZt/b7BfzcK9vTrS6MFljQRPn5BFWOx8oE0GYxribu6uV+aA9zZuXI1zc/etK9E8nrgdoF2+LgUw7+9tJQ==
+  /@types/lodash/4.14.159:
+    dev: false
+    resolution:
+      integrity: sha512-gF7A72f7WQN33DpqOWw9geApQPh4M3PxluMtaHxWHXEGSN12/WbcEk/eNSqWNQcQhF66VSZ06vCF94CrHwXJDg==
   /@types/lru-cache/5.1.0:
     dev: false
     resolution:
@@ -6512,7 +6515,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-OhMWgCo6m7d8YRxa/ZoHuVyeBr8taeCH+u6zBHZNOXpSkL8iBRK2j5v3dp0zFHEqZkc/pcpF7Iwtu4D7FIt+2Q==
+      integrity: sha512-VrCjZtPd0E6O9F69w8dxYnoBFt6ejLSeinZ4Ec5CWotDhvbLqJ4Dif8Q7rcGYcsIkKkZusIxzDNUg/YPB0/1Qw==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -6553,7 +6556,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-command'
     resolution:
-      integrity: sha512-E4dGSDdlLTl2Dpeh7MSmoh19SO4XbA5wxwS5QMdDaV/uz1NdjSTVv8nz9AN7uHqUtLwZEmH/m6ixIrqyJuHL4w==
+      integrity: sha512-WvkxK/1q4R52y/2qKSfH4cRsul7ilKOvQdyFgph0LwEFEVp+K01ET0vvWV3Q6Ie0tMqEV51brdP6+otv7m5gFw==
       tarball: 'file:projects/bf-cli-command.tgz'
     version: 0.0.0
   'file:projects/bf-cli-config.tgz':
@@ -6582,7 +6585,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-config'
     resolution:
-      integrity: sha512-vwZf1fXZ7BWQsJjKHFMEQ95zRfQ48Na7ae9cMH36cw/fk/a6MYUkzwSgSabel0S2D8uT/BodVucYXJXPfl9NTw==
+      integrity: sha512-ZvUZsW96vljeLO69GRz/kfBazChVv9O6BkikOIQCHUbUP32PzIh8a0jjEmppA+/RtqajtmKQWGq0q5DEQY4x5A==
       tarball: 'file:projects/bf-cli-config.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6611,7 +6614,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-plugins'
     resolution:
-      integrity: sha512-fegDj5NfXQCsabktk5fStFptRwmJccyH0qzjDqasi0mhTjLi72+ucovjYrzbVmrA73LdOoIsRIAT8tuCfLkkMg==
+      integrity: sha512-2n8WG0y6vxBpyUrSJLVWwLcwUN+FqR8wI5htyMvDmPJOBp/PnH4WrupuQXDhl0UacI6LBhI4RWiZtunIkJ1zBw==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6666,7 +6669,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-dgaJL7Qsjv/BIQolqX0EChhE3yL39e1JsbOlj6EL5dSzD6YYQj4aX/tLBFFv8ZQhLExPOwtjmS20/dEYmUj6yA==
+      integrity: sha512-GZ5UbbR1y0ayFNaRVmDaxEzeS4xmOT2ri2SbFM+nyg8BRmOD1fnKzf2GO9bT6/b4VcwbaYop08ANlHtLI80k2w==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -6696,7 +6699,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-lDw+/gq9+exwt9hYoOnU+1FZRfc7A9LVuIaADoAwMyEweSR/sDFStRVbYLDutKXvWO00QgZ9CsvKIYibvicn0w==
+      integrity: sha512-hg92Iz2+Bxg8zpmNG177Ot2ZpQj0Q4/cnx1gN5Y9swG6k0ri0Ngt4s4XkByRzY3LkOs3o3GB9W8qE6KMLEq4XA==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-lg-cli.tgz':
@@ -6735,7 +6738,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lg-cli'
     resolution:
-      integrity: sha512-kkytBYgClJ8lz6Tm1hgrwkNZ1CqHfHUPxvKPqB1X8E7R5UQjZjkoqmha8lwOX9cXnHH4ZwoB1/EulURSgXegmg==
+      integrity: sha512-no9KfuRbMshP8AveSCo5f28r38fFdQAhoNREE+hCJQue+sD2Qb8wqo8Lc2MhhqqTYUf0qFoSrWvRxCAi7UJ3Sw==
       tarball: 'file:projects/bf-lg-cli.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6747,7 +6750,7 @@ packages:
       '@oclif/test': 1.2.5
       '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.8.3
       '@types/chai': 4.2.10
-      '@types/lodash': 4.14.149
+      '@types/lodash': 4.14.159
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
       '@types/node': 10.17.17
@@ -6777,7 +6780,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-iMZSyzPBQ08X68voAUI8dSEsPiCS+6AWttGwKBLNRLQewmFc//aXDOswl+WjjAr4x4p+an0vdEIYWwi84fCKOg==
+      integrity: sha512-qsE6Tlrv+CymCGvmTV1duqjTLuOTc0BPFCOjjlp01dpzbnpR1nwVnudVnTn/QRpWUTTe2QqF2KY6NB4aUwkBxg==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6793,7 +6796,7 @@ packages:
       '@oclif/test': 1.2.5
       '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.8.3
       '@types/chai': 4.2.10
-      '@types/lodash': 4.14.149
+      '@types/lodash': 4.14.159
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
       '@types/node': 10.17.17
@@ -6804,7 +6807,7 @@ packages:
       cli-ux: 5.3.3
       fs-extra: 8.1.0
       globby: 10.0.2
-      lodash: 4.17.15
+      lodash: 4.17.19
       mocha: 6.2.2
       nock: 11.9.1
       node-fetch: 2.6.0
@@ -6820,7 +6823,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-+m0IFMzWzxcygzkCDw4k+TVGCaMIm0LZBEaNuxQhzwv08bEPSaD6KmV9+bJW6Kq+VHWUn5PSdgTFGW9uvb4mdw==
+      integrity: sha512-BqW+TgfhTF1W2QA/C/S/gzeVBJbY+qB8nSCLrddsFmjLsl2fAy/QCKmafTUVb5Hlh1KQAEQ4gFVMmHkus2VK3g==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6870,7 +6873,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-OVMhTkKSx1fq8vl5VnW3vNu8tMNBAD5Cyyf+d8qNMlQCdCflYW5n2KBCcYx2O2BXoak0bsvHuHo7X3bi1rkrpA==
+      integrity: sha512-c/0EeZ4yrqB2IncE00iYze3Fe2YUFIaAddv4+s9XD/a5LuomQiq1qEGROxJzqBeXyMeod9hn5XcYhNMbApWXEQ==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6906,7 +6909,7 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-ihuLm/1+7f7dr3e1Y5sf1XN6kYnA+b+uRdO45XOz0QelPl1nFxgW7631MshB11PSDmmU54ozVBuU+iaINReKfw==
+      integrity: sha512-RvSJyVz/dc5glO45vQcWXP5L2c8E6Reo3TFMHz2rmA4VYTVziHwxkQ+Jr1NVfHpaYtzYsGW5H6aNe5hnMUhG1Q==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
@@ -6930,7 +6933,6 @@ specifiers:
   '@snyk/nuget-semver': ~1.3.0
   '@types/ansi-styles': ^3.2.1
   '@types/argparse': ^1.0.36
-  '@types/lodash': ~4.14.146
   '@types/lru-cache': ^5.1.0
   '@types/proxyquire': ^1.3.28
   '@types/readline-sync': ^1.4.3
