@@ -32,6 +32,61 @@ function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean
     }
 }
 
+// Split a $ref into path, pointer and name for definition
+function splitRef(ref: string): {path: string, pointer: string, name: string} {
+    const hash = ref.indexOf('#')
+    const path = hash < 0 ? '' : ref.substring(0, hash)
+    const pointer = hash < 0 ? '' : ref.substring(hash + 1)
+    let name = ppath.basename(path)
+    if (name.endsWith('#')) {
+        name = name.substring(0, name.length - 1)
+    }
+    return {path, pointer, name}
+}
+
+// Bundle remote references into schema.
+// Remote references will be found under defitions/<pathBasename> which requires that to be unique.
+async function bundle(schema: any, elt: any, source: string): Promise<void> {
+    if (typeof elt === 'object' || Array.isArray(elt)) {
+        for (let key in elt) {
+            const val = elt[key]
+            if (key === '$ref' && typeof val === 'string') {
+                const scheme = 'schema:'
+                if (val.startsWith(scheme)) {
+                    // Component schema reference
+                    elt.$ref = val.substring(val.indexOf('#'))
+                } else {
+                    const {path, pointer, name} = splitRef(val)
+                    if (path) {
+                        if (!schema.definitions[name]) {
+                            // New source
+                            let cd = ''
+                            try {
+                                const newSource = await getJSON(path)
+                                schema.definitions[name] = newSource
+                                if (path.startsWith('file:')) {
+                                    cd = process.cwd()
+                                    process.chdir(ppath.dirname(path))
+                                }
+                                await bundle(schema, newSource, name)
+                            } finally {
+                                if (cd) {
+                                    process.chdir(cd)
+                                }
+                            }
+                        }
+                        elt.$ref = `#/definitions/${name}${pointer}`
+                    } else if (source) {
+                        elt.$ref = `#/definitions/${source}${pointer}`
+                    }
+                }
+            } else {
+                await bundle(schema, val, source)
+            }
+        }
+    }
+}
+
 function pathName(path: string | undefined, extension: string): string {
     return path ? `${path}/${extension}` : extension
 }
@@ -463,7 +518,7 @@ export default class SchemaMerger {
             }
 
             // Convert all remote references to local ones
-            finalSchema = await parser.bundle(finalSchema as parser.JSONSchema, this.schemaProtocolResolver())
+            await bundle(finalSchema, finalSchema, '')
             finalSchema = this.expandAllOf(finalSchema)
             this.removeId(finalSchema)
             if (this.debug) {
