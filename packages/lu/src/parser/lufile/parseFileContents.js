@@ -174,10 +174,10 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     parseAndHandleEntitySection(parsedContent, luResource, log, locale);
 
     // parse simple intent section
-    parseAndHandleSimpleIntentSection(parsedContent, luResource);
+    await parseAndHandleSimpleIntentSection(parsedContent, luResource);
 
     // parse qna section
-    parseAndHandleQnaSection(parsedContent, luResource);
+    await parseAndHandleQnaSection(parsedContent, luResource);
 
     if (featuresToProcess && featuresToProcess.length > 0) {
         parseFeatureSections(parsedContent, featuresToProcess);
@@ -755,7 +755,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
+const parseAndHandleSimpleIntentSection = async function (parsedContent, luResource) {
     // handle intent
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
     let hashTable = {}
@@ -771,7 +771,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource) {
                 // Fix for BF-CLI #122. 
                 // Ensure only links are detected and passed on to be parsed.
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
-                    let parsedLinkUriInUtterance = helpers.parseLinkURI(utterance);
+                    let parsedLinkUriInUtterance = await helpers.parseLinkURI(utterance);
                     // examine and add these to filestoparse list.
                     parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
@@ -1820,7 +1820,7 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleQnaSection = function (parsedContent, luResource) {
+const parseAndHandleQnaSection = async function (parsedContent, luResource) {
     // handle QNA
     let qnas = luResource.Sections.filter(s => s.SectionType === SectionType.QNASECTION);
     if (qnas && qnas.length > 0) {
@@ -1830,14 +1830,14 @@ const parseAndHandleQnaSection = function (parsedContent, luResource) {
             } 
             let questions = qna.Questions;
             // detect if any question is a reference
-            (questions || []).forEach(question => {
+            await Promise.all((questions || []).map(async question => {
                 // Ensure only links are detected and passed on to be parsed.
                 if (helpers.isUtteranceLinkRef(question || '')) {
-                    let parsedLinkUriInUtterance = helpers.parseLinkURI(question);
+                    let parsedLinkUriInUtterance = await helpers.parseLinkURI(question);
                     // examine and add these to filestoparse list.
                     parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
-            })
+            }))
             let filterPairs = qna.FilterPairs;
             let metadata = [];
             if (filterPairs && filterPairs.length > 0) {
