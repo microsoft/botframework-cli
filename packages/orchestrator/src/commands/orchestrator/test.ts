@@ -6,6 +6,7 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorTest extends Command {
   static description: string = 'Test utterance/label samples from an input file and create an evaluation report';
@@ -47,28 +48,33 @@ export default class OrchestratorTest extends Command {
       ambiguousClosenessParameter = Number(flags.ambiguous);
       if (Number.isNaN(ambiguousClosenessParameter)) {
         Utility.writeLineToConsole(`ambiguous parameter "${flags.ambiguous}" is not a number`);
+        return -1;
       }
     }
     if (flags.low_confidence) {
       lowConfidenceScoreThresholdParameter = Number(flags.low_confidence);
       if (Number.isNaN(lowConfidenceScoreThresholdParameter)) {
         Utility.writeLineToConsole(`low-confidence parameter "${flags.ambiguous}" is not a number`);
+        return -1;
       }
     }
     if (flags.multi_label) {
       multiLabelPredictionThresholdParameter = Number(flags.multi_label);
       if (Number.isNaN(multiLabelPredictionThresholdParameter)) {
         Utility.writeLineToConsole(`multi-label threshold parameter "${flags.multi_label}" is not a number`);
+        return -1;
       }
     }
     if (flags.unknown) {
       unknownLabelPredictionThresholdParameter = Number(flags.unknown);
       if (Number.isNaN(unknownLabelPredictionThresholdParameter)) {
         Utility.writeLineToConsole(`unknown threshold parameter "${flags.unknown}" is not a number`);
+        return -1;
       }
     }
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
+    UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
 
     Utility.debuggingLog(`OrchestratorTest.run(): inputPath=${inputPath}`);
     Utility.debuggingLog(`OrchestratorTest.run(): testPath=${testPath}`);

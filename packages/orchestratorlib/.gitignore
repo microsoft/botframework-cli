@@ -8,7 +8,6 @@
 node_modules
 **/.antlr
 **/java_generated
-
 results
 build
 node_modules

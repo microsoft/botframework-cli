@@ -30,6 +30,36 @@ OPTIONS
 
 _See code: [src\commands\orchestrator\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\index.ts)_
 
+## `bf orchestrator:assess`
+
+Create an evaluation report on a prediction file against a ground-truth file.
+
+```
+USAGE
+  $ bf orchestrator:assess
+
+OPTIONS
+  -d, --debug                     Print debugging information during execution.
+  -h, --help                      Orchestrator 'assess' command help.
+  -i, --in=in                     Path to a ground-truth .json file.
+  -o, --out=out                   Directory where analysis and output files will be placed.
+  -p, --prediction=prediction     Path to a prediction .json file.
+
+DESCRIPTION
+
+  The 'assess' command compare a ground-truth file and a prediction file, then
+  generate two detailed evaluation reports, one for label prediction, and the other entity.
+  The report has the following sections:
+  1) Ground-Truth Label/Utterancce Statistics - label and utterance statistics and distributions.
+  2) Ground-Truth Duplicates - tables of utterance with multiple labels and exact utterance/label duplicates.
+  1) Prediction Label/Utterancce Statistics - label and utterance statistics and distributions.
+  2) Prediction Duplicates - tables of utterance with multiple labels and exact utterance/label duplicates.
+  4) Misclassified - utterances with false positive and false negative predictions.
+  6) Metrics - test confisuon matrix metrics.
+
+EXAMPLE
+```
+
 ## `bf orchestrator:create`
 
 Create orchestrator example file from .lu/.qna files, which represent bot modules

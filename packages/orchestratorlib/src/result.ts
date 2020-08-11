@@ -6,6 +6,12 @@
 import {Label}  from './label';
 
 export class Result {
+  public label: Label;
+
+  public score: number;
+
+  public closesttext: string;
+
   constructor(label: Label, score: number, closesttext: string) {
     this.label = label;
     this.score = score;
@@ -27,10 +33,4 @@ export class Result {
       closesttext: this.closesttext,
     };
   }
-
-  public label: Label;
-
-  public score: number;
-
-  public closesttext: string;
 }

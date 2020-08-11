@@ -1103,6 +1103,22 @@ export interface IMathematicsHelper {
         l1Regularization: number,
         l2Regularization: number): number[];
 
+    getIndexesOnMaxOrEntriesOverThresholdOnArray(
+        inputArray: Float32Array | Int32Array | Uint8Array,
+        threshold: number):
+        { "indexesMax": number[]; "max": number };
+    getIndexesOnMaxOrEntriesOverThreshold(
+        inputArray: number[],
+        threshold: number):
+        { "indexesMax": number[]; "max": number };
+
+    getIndexesOnMaxEntriesOnArray(
+        inputArray: Float32Array | Int32Array | Uint8Array):
+        { "indexesMax": number[], "max": number };
+    getIndexesOnMaxEntries(
+        inputArray: number[]):
+        { "indexesMax": number[], "max": number };
+
     getIndexOnFirstMaxEntryOnArray(
         inputArray: Float32Array | Int32Array | Uint8Array):
         { "indexMax": number, "max": number };
@@ -1115,6 +1131,22 @@ export interface IMathematicsHelper {
     getIndexOnLastMaxEntry(
         inputArray: number[]):
         { "indexMax": number, "max": number };
+
+    getIndexesOnMinOrEntriesLessThanThresholdOnArray(
+        inputArray: Float32Array | Int32Array | Uint8Array,
+        threshold: number):
+        { "indexesMin": number[]; "min": number };
+    getIndexesOnMinOrEntriesLessThanThreshold(
+        inputArray: number[],
+        threshold: number):
+        { "indexesMin": number[]; "min": number };
+
+    getIndexesOnMinEntriesOnArray(
+        inputArray: Float32Array | Int32Array | Uint8Array):
+        { "indexesMin": number[], "min": number };
+    getIndexesOnMinEntries(
+        inputArray: number[]):
+        { "indexesMin": number[], "min": number };
 
     getIndexOnFirstMinEntryOnArray(
         inputArray: Float32Array | Int32Array | Uint8Array):
@@ -1133,4 +1165,6 @@ export interface IMathematicsHelper {
     safeLog(value: number): number;
 
     clipValue(value: number): number;
+
+    safeZeroSmallNegativeErrorSubtract(value0: number, value1: number): number;
 }

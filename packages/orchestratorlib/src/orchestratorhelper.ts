@@ -9,7 +9,7 @@ import {LabelType} from './labeltype';
 import {Label} from './label';
 import {Span} from './span';
 import {Utility} from './utility';
-import {PrebuiltToRecognizerMap} from './resources/recognizerMap';
+import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
 
 const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
@@ -130,17 +130,17 @@ export class OrchestratorHelper {
       entityRecognizers: recognizers,
     };
 
-    let recoFileName = path.join(out, `${baseName}.lu.dialog`);
+    const recoFileName: string = path.join(out, `${baseName}.lu.dialog`);
     this.writeToFile(recoFileName, JSON.stringify(recoContent, null, 2));
-    let multiRecoContent = {
-      "$kind": "Microsoft.MultiLanguageRecognizer",
-      "recognizers": {
-          "en-us": `${baseName}.en-us.lu`,
-          "": `${baseName}.en-us.lu`
-      }
+    const multiRecoContent: any = {
+      $kind: 'Microsoft.MultiLanguageRecognizer',
+      recognizers: {
+        'en-us': `${baseName}.en-us.lu`,
+        '': `${baseName}.en-us.lu`,
+      },
     };
 
-    let multiRecoFileName = path.join(out, `${baseName}.en-us.lu.dialog`);
+    const multiRecoFileName: string = path.join(out, `${baseName}.en-us.lu.dialog`);
     this.writeToFile(multiRecoFileName, JSON.stringify(multiRecoContent, null, 2));
     return baseName;
   }
@@ -152,19 +152,18 @@ export class OrchestratorHelper {
         'snapshots': string;
       };
     } = {
-      'orchestrator': {
-        'modelPath': nlrpath,
-        'snapshots': settings
-      }
+      orchestrator: {
+        modelPath: nlrpath,
+        snapshots: settings,
+      },
     };
 
-    const contentFileName: string = path.join(out, `orchestrator.settings.json`);
+    const contentFileName: string = path.join(out, 'orchestrator.settings.json');
 
     this.writeToFile(contentFileName, JSON.stringify(content, null, 2));
   }
 
-  public static async getEntitiesInLu(input: string): Promise<any>
-  {
+  public static async getEntitiesInLu(input: string): Promise<any> {
     const fileContents: string = OrchestratorHelper.readFile(input);
     const luObject: any = {
       content: fileContents,
@@ -178,15 +177,15 @@ export class OrchestratorHelper {
     if (luisObject.prebuiltEntities === undefined || !Array.isArray(luisObject.prebuiltEntities) || luisObject.prebuiltEntities.length === 0) return [];
     const entitiesList: any = [];
     (luisObject.prebuiltEntities || []).forEach((item: any) => {
-      const mapValue = PrebuiltToRecognizerMap[item.name.toLowerCase().trim()];
+      const mapValue: any = PrebuiltToRecognizerMap[item.name.toLowerCase().trim()];
       if (mapValue !== undefined && mapValue !== '') {
         entitiesList.push({
-          '$kind': mapValue
+          $kind: mapValue,
         });
       } else {
         process.stdout.write(`\n[WARN:] No entity recognizer available for Prebuilt entity '${item.name}'\n`);
       }
-    })
+    });
     return entitiesList;
   }
 
@@ -438,6 +437,37 @@ export class OrchestratorHelper {
     });
   }
 
+  // eslint-disable-next-line max-params
+  static getJsonIntentsEntitiesUtterances(
+    jsonObjectArray: any,
+    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: { [id: string]: Label[] },
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
+    // eslint-disable-next-line no-prototype-builtins
+    jsonObjectArray.forEach((jsonObject: any) => {
+      const utterance: string = jsonObject.text.trim();
+      const labels: string[] = jsonObject.intents;
+      const entities: any[] = jsonObject.entities;
+      labels.forEach((label: string) => {
+        OrchestratorHelper.addNewLabelUtterance(
+          utterance,
+          label,
+          '',
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap);
+      });
+      entities.forEach((entityEntry: any) => {
+        OrchestratorHelper.addNewEntityLabelUtterance(
+          utterance,
+          entityEntry,
+          utteranceEntityLabelsMap,
+          utteranceEntityLabelDuplicateMap);
+      });
+    });
+    Utility.processUnknowLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
+  }
+
   static getLabelFromFileName(fileName: string, ext: string, hierarchical: boolean) {
     return hierarchical ? fileName.substr(0, fileName.length - ext.length) : '';
   }
@@ -448,7 +478,7 @@ export class OrchestratorHelper {
     label: string,
     hierarchicalLabel: string,
     utteranceLabelsMap: { [id: string]: string[] },
-    utteranceLabelDuplicateMap: Map<string, Set<string>>) {
+    utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
     const existingLabels: string[] = utteranceLabelsMap[utterance];
     if (existingLabels) {
       if (hierarchicalLabel && hierarchicalLabel.length > 0) {
@@ -468,24 +498,22 @@ export class OrchestratorHelper {
   // eslint-disable-next-line max-params
   static addNewEntityLabelUtterance(
     utterance: string,
-    entities: any,
+    entityEntry: any,
     utteranceEntityLabelsMap: { [id: string]: Label[] },
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
     let existingEntityLabels: Label[] = utteranceEntityLabelsMap[utterance];
-    for (const entityEntry of entities) {
-      const entity: string = entityEntry.entity;
-      const startPos: number = Number(entityEntry.startPos);
-      const endPos: number = Number(entityEntry.endPos);
-      // const entityMention: string = entityEntry.text;
-      const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos));
-      if (existingEntityLabels) {
-        if (!OrchestratorHelper.addUniqueEntityLabel(entityLabel, existingEntityLabels)) {
-          Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
-        }
-      } else {
-        existingEntityLabels = [entityLabel];
-        utteranceEntityLabelsMap[utterance] = existingEntityLabels;
+    const entity: string = entityEntry.entity;
+    const startPos: number = Number(entityEntry.startPos);
+    const endPos: number = Number(entityEntry.endPos);
+    // const entityMention: string = entityEntry.text;
+    const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos + 1));
+    if (existingEntityLabels) {
+      if (!OrchestratorHelper.addUniqueEntityLabel(entityLabel, existingEntityLabels)) {
+        Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
       }
+    } else {
+      existingEntityLabels = [entityLabel];
+      utteranceEntityLabelsMap[utterance] = existingEntityLabels;
     }
   }
 

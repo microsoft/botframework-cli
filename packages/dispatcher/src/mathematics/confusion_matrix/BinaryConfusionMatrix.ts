@@ -176,11 +176,17 @@ export class BinaryConfusionMatrix {
     }
 
     public calculateDerivedCells(): void {
-        this.row2 = this.total - this.row1;
-        this.column2 = this.total - this.column1;
-        this.cell12 = this.row1 - this.cell11;
-        this.cell21 = this.column1 - this.cell11;
-        this.cell22 = this.total - this.cell11 - this.cell12 - this.cell21;
+        this.row2 = BinaryConfusionMatrix.MathematicsHelperObject.safeZeroSmallNegativeErrorSubtract(this.total, this.row1);
+        this.column2 = BinaryConfusionMatrix.MathematicsHelperObject.safeZeroSmallNegativeErrorSubtract(this.total, this.column1);
+        this.cell12 = BinaryConfusionMatrix.MathematicsHelperObject.safeZeroSmallNegativeErrorSubtract(this.row1, this.cell11);
+        this.cell21 = BinaryConfusionMatrix.MathematicsHelperObject.safeZeroSmallNegativeErrorSubtract(this.column1, this.cell11);
+        this.cell22 = BinaryConfusionMatrix.MathematicsHelperObject.safeZeroSmallNegativeErrorSubtract(
+            BinaryConfusionMatrix.MathematicsHelperObject.safeZeroSmallNegativeErrorSubtract(
+            BinaryConfusionMatrix.MathematicsHelperObject.safeZeroSmallNegativeErrorSubtract(
+                this.total,
+                this.cell11),
+                this.cell12),
+                this.cell21);
         this.expectedCell11 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row1 * this.column1, this.total);
         this.expectedCell12 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row1 * this.column2, this.total);
         this.expectedCell21 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.row2 * this.column1, this.total);
@@ -194,6 +200,10 @@ export class BinaryConfusionMatrix {
         this.ratioCell12 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.cell12, this.total);
         this.ratioCell21 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.cell21, this.total);
         this.ratioCell22 = BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(this.cell22, this.total);
+    }
+
+    public toSimpleString(): string {
+        return `total=${this.getTotal()},cell11=${this.getCell11()},row1=${this.getRow1()},column1=${this.getColumn1()},row2=${this.getRow2()},column2=${this.getColumn2()},cell12=${this.getCell12()},cell21=${this.getCell21()},cell22=${this.getCell22()}`;
     }
 
     public getTotal(): number {
@@ -350,68 +360,68 @@ export class BinaryConfusionMatrix {
     public validate(throwIfNotProper: boolean = true) {
         let isProper: boolean = false;
         if (this.cell11 < 0) {
-            throw new Error("this.cell11 < 0");
+            throw new Error(`this.cell11 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
         }
         if (this.row1 < 0) {
-            throw new Error("this.row1 < 0");
+            throw new Error(`this.row1 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
         }
         if (this.column1 < 0) {
-            throw new Error("this.column1 < 0");
+            throw new Error(`this.column1 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
         }
         if (this.total < 0) {
-            throw new Error("this.total < 0");
+            throw new Error(`this.total < 0, confusion-matrix-cells:${this.toSimpleString()}`);
         }
         if (this.row2 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.row2 < 0");
+                throw new Error(`this.row2 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.column2 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.column2 < 0");
+                throw new Error(`this.column2 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.cell12 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.cell12 < 0");
+                throw new Error(`this.cell12 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.cell21 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.cell21 < 0");
+                throw new Error(`this.cell21 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.cell22 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.cell22 < 0");
+                throw new Error(`this.cell22 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.expectedCell11 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.expectedCell11 < 0");
+                throw new Error(`this.expectedCell11 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.expectedCell12 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.expectedCell12 < 0");
+                throw new Error(`this.expectedCell12 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.expectedCell21 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.expectedCell21 < 0");
+                throw new Error(`this.expectedCell21 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }
         if (this.expectedCell22 < 0) {
             if (throwIfNotProper) {
-                throw new Error("this.expectedCell22 < 0");
+                throw new Error(`this.expectedCell22 < 0, confusion-matrix-cells:${this.toSimpleString()}`);
             }
             return isProper;
         }

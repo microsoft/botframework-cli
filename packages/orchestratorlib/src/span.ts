@@ -3,9 +3,11 @@
  * Licensed under the MIT License.
  */
 
-// ---- NOTE ---- the following eslint disable should not have had needed.
-// eslint-disable-next-line unicorn/filename-case
 export class Span {
+  public offset: number;
+
+  public length: number;
+
   constructor(offset: number, length: number) {
     this.offset = offset;
     this.length = length;
@@ -32,8 +34,4 @@ export class Span {
     }
     return false;
   }
-
-  public offset: number;
-
-  public length: number;
 }

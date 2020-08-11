@@ -14,20 +14,43 @@ import { Utility } from "../../utility/Utility";
 
 export class MultiLabelConfusionMatrix
 extends MultiLabelConfusionMatrixWithBinaryArrayBase {
-
-    public static evaluateMultiLabelPrediction(groundTruths: any[], predictions: any[]): number {
+    public static evaluateMultiLabelSubsetPrediction(groundTruths: any[], predictions: any[]): number {
         if (predictions.length <= 0) {
-          if (groundTruths.length <= 0) {
-            return 3; // ---- NOTE ---- 3 for true negative as there is no prediction on an empty ground-truth set.
-          }
-          return 1; // ---- NOTE ---- 1 for false negative as there is no prediction on a non-empty ground-truth set.
+            if (groundTruths.length <= 0) {
+                return 3;
+                // ---- NOTE ---- 3 for true negative as there is no prediction on an empty ground-truth set.
+            }
+            return 1;
+            // ---- NOTE ---- 1 for false negative as there is no prediction on a non-empty ground-truth set.
         }
         for (const prediction of predictions) {
-          if (!groundTruths.includes(prediction)) {
-            return 2; // ---- NOTE ---- 2 for false positive as there is a prediction not in the ground-truth set.
-          }
+            if (!groundTruths.includes(prediction)) {
+                return 2;
+                // ---- NOTE ---- 2 for false positive as there is a prediction not in the ground-truth set.
+            }
         }
-        return 0; // ---- NOTE ---- 0 for true positive as every prediction is in the ground-trueh set.
+        return 0;
+        // ---- NOTE ---- 0 for true positive as every prediction is in the ground-trueh set.
+    }
+
+      public static evaluateMultiLabelPrediction(groundTruths: any[], predictions: any[]): number[] {
+        const microConfusionMatrix: number[] = [0, 0, 0];
+        for (const prediction of predictions) {
+            if (groundTruths.includes(prediction)) {
+                microConfusionMatrix[0]++;
+                // ---- NOTE ---- 0 for true positive as the prediction is in the ground-truth set.
+            } else {
+                microConfusionMatrix[2]++;
+                // ---- NOTE ---- 2 for false positive as the prediction is not in the ground-truth set.
+            }
+        }
+        for (const groundTruth of groundTruths) {
+            if (!predictions.includes(groundTruth)) {
+                microConfusionMatrix[1]++;
+                // ---- NOTE ---- 1 for false negative as the ground-truth is not in the prediction set.
+            }
+        }
+        return microConfusionMatrix;
       }
 
     constructor(

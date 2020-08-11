@@ -3,6 +3,8 @@
  * Licensed under the MIT License.
  */
 
+// tslint:disable: max-line-length
+
 export { ColumnarData } from "./data/ColumnarData";
 export { Data } from "./data/Data";
 export { DataUtility } from "./data/DataUtility";
@@ -48,6 +50,16 @@ export { MultiLabelConfusionMatrixBase } from "./mathematics/confusion_matrix/Mu
 export { MultiLabelConfusionMatrixSubset } from "./mathematics/confusion_matrix/MultiLabelConfusionMatrixSubset";
 export { MultiLabelConfusionMatrixWithBinaryArrayBase } from "./mathematics/confusion_matrix/MultiLabelConfusionMatrixWithBinaryArrayBase";
 export { MultiLabelConfusionMatrixWithBinaryBase } from "./mathematics/confusion_matrix/MultiLabelConfusionMatrixWithBinaryBase";
+export { LabelObjectConfusionMatrix } from "./mathematics/confusion_matrix/LabelObjectConfusionMatrix";
+export { LabelObjectConfusionMatrixBase } from "./mathematics/confusion_matrix/LabelObjectConfusionMatrixBase";
+export { ILabelObjectConfusionMatrix } from "./mathematics/confusion_matrix/ILabelObjectConfusionMatrix";
+export { IMultiLabelObjectConfusionMatrix } from "./mathematics/confusion_matrix/IMultiLabelObjectConfusionMatrix";
+export { ISingleLabelObjectConfusionMatrix } from "./mathematics/confusion_matrix/ISingleLabelObjectConfusionMatrix";
+export { MultiLabelObjectConfusionMatrix } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrix";
+export { MultiLabelObjectConfusionMatrixBase } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrixBase";
+export { MultiLabelObjectConfusionMatrixSubset } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrixSubset";
+export { MultiLabelObjectConfusionMatrixWithBinaryArrayBase } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrixWithBinaryArrayBase";
+export { MultiLabelObjectConfusionMatrixWithBinaryBase } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrixWithBinaryBase";
 
 export { IMathematicsHelper } from "./mathematics/mathematics_helper/IMathematicsHelper";
 export { MathematicsHelper } from "./mathematics/mathematics_helper/MathematicsHelper";

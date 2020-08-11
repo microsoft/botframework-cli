@@ -94,10 +94,10 @@ export class EvaluationSummaryTemplateHtml {
         <br />
         <ul class="nav nav-pills ms-fontSize-mPlus ms-fontWeight-semibold" id="modelAnalysis" role="tablist" style="padding-bottom:10px">
             <li class="nav-item active">
-                <a class="nav-link active" id="intentutterancestatistics-tab" data-toggle="tab" href="#intentutterancestatistics" role="tab" aria-controls="intentutterancestatistics" aria-selected="true"><strong>Intent/utterancce Statistics</strong></a>
+                <a class="nav-link active" id="intent-utterance-statistics-tab" data-toggle="tab" href="#intent-utterance-statistics" role="tab" aria-controls="intent-utterance-statistics" aria-selected="true"><strong>Intent/Utterancce Statistics</strong></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" id="duplicates-tab" data-toggle="tab" href="#duplicates" role="tab" aria-controls="duplicates" aria-selected="true"><strong>Duplicates</strong></a>
+                <a class="nav-link active" id="utterance-duplicates-tab" data-toggle="tab" href="#utterance-duplicates" role="tab" aria-controls="utterance-duplicates" aria-selected="true"><strong>Utterance Duplicates</strong></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="ambiguous-tab" data-toggle="tab" href="#ambiguous" role="tab" aria-controls="ambiguous" aria-selected="false"><strong>Ambiguous</strong></a>
@@ -109,7 +109,7 @@ export class EvaluationSummaryTemplateHtml {
                 <a class="nav-link" id="lowconfidence-tab" data-toggle="tab" href="#lowconfidence" role="tab" aria-controls="lowconfidence" aria-selected="false"><strong>Low Confidence</strong></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="modelevaluation-tab" data-toggle="tab" href="#modelevaluation" role="tab" aria-controls="modelevaluation" aria-selected="false"><strong>Metrics</strong></a>
+                <a class="nav-link" id="model-evaluation-tab" data-toggle="tab" href="#model-evaluation" role="tab" aria-controls="model-evaluation" aria-selected="false"><strong>Metrics</strong></a>
             </li>
             <!--
             <li class="nav-item">
@@ -118,18 +118,18 @@ export class EvaluationSummaryTemplateHtml {
             -->
         </ul>
         <div class="tab-content">
-            <div class="tab-pane active" id="intentutterancestatistics" role="tabpanel" aria-labelledby="intentutterancestatistics-tab">
-                <p>Intents and utterances statistics</p>
+            <div class="tab-pane active" id="intent-utterance-statistics" role="tabpanel" aria-labelledby="intent-utterance-statistics-tab">
+                <p>Intent and utterance statistics</p>
                 <p>
-                    {INTENTUTTERANCESTATISTICS}
+                    {LABEL_TEXT_STATISTICS}
                 </p>
             </div>
-            <div class="tab-pane" id="duplicates" role="tabpanel" aria-labelledby="duplicates-tab">
+            <div class="tab-pane" id="utterance-duplicates" role="tabpanel" aria-labelledby="utterance-duplicates-tab">
                 <p>Multi-label utterances and duplicate utterance/intent pairs. The utterance/intent pairs in the second table below have been entered more than one times in the source file.
                    It's not a serious problem as they will be deduped.
                 </p>
                 <p>
-                    {DUPLICATES}
+                    {TEXT_DUPLICATES}
                 </p>
             </div>
             <div class="tab-pane" id="ambiguous" role="tabpanel" aria-labelledby="ambiguous-tab">
@@ -141,28 +141,28 @@ export class EvaluationSummaryTemplateHtml {
             <div class="tab-pane" id="misclassified" role="tabpanel" aria-labelledby="misclassified-tab">
                 <p>Utterance(s) yielding predicted intent that is not originally labeled with</p>
                 <p>
-                    {MISCLASSIFICATION}
+                    {MIS_CLASSIFICATION}
                 </p>
             </div>
             <div class="tab-pane" id="lowconfidence" role="tabpanel" aria-labelledby="lowconfidence-tab">
                 <p>Utterance(s) whose intents were correctly predicted (as a subset of the labeled intents), but the prediction score is low</p>
                 <p>
-                    {LOWCONFIDENCE}
+                    {LOW_CONFIDENCE}
                 </p>
             </div>
-            <div class="tab-pane" id="modelevaluation" role="tabpanel" aria-labelledby="modelevaluation-tab">
+            <div class="tab-pane" id="model-evaluation" role="tabpanel" aria-labelledby="model-evaluation-tab">
                 <p>Overall model performance and links to machine learning model evaluation charts and metrics</p>
                 <!--
                 <p>
-                    {MODELEVALUATIONOVERALL}
+                    {MODEL_EVALUATION_OVERALL}
                 </p>
                 -->
                 <p>
-                    {MODELEVALUATION}
+                    {MODEL_EVALUATION}
                 </p>
                 <!--
                 <p>
-                    {CROSSENTROPY}
+                    {CROSS_ENTROPY}
                 </p>
                 -->
             </div>

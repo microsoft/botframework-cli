@@ -5,10 +5,10 @@
 
 import * as path from 'path';
 
-import {MultiLabelConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
-import {ScoreStructure}  from './scorestructure';
+import {PredictionScoreStructure}  from './predictionscorestructure';
 
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
@@ -32,16 +32,16 @@ export class OrchestratorTest {
     unknownLabelPredictionThresholdParameter: number): Promise<void> {
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPath)) {
-      Utility.debuggingThrow(`Please provide path to an input .blu file, CWD=${process.cwd()}, from OrchestratorTest.runAsync()`);
+      Utility.debuggingThrow(`Please provide path to an input .blu file, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
     if (Utility.isEmptyString(testPath)) {
-      Utility.debuggingThrow('Please provide a test file');
+      Utility.debuggingThrow(`Please provide a test file, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
     if (Utility.isEmptyString(outputPath)) {
-      Utility.debuggingThrow('Please provide an output directory');
+      Utility.debuggingThrow(`Please provide an output directory, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
     if (Utility.isEmptyString(nlrPath)) {
-      Utility.debuggingThrow('The nlrPath argument is empty');
+      Utility.debuggingThrow(`The nlrPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
     nlrPath = path.resolve(nlrPath);
     const ambiguousCloseness: number = ambiguousClosenessParameter;
@@ -132,12 +132,12 @@ export class OrchestratorTest {
           'scoringLowConfidenceUtterancesArraysHtml': string;
           'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
-          'confusionMatrix': MultiLabelConfusionMatrix;
+          'confusionMatrix': IConfusionMatrix;
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
-          'scoringConfusionMatrixOutputLines': string[][];
+          'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;}; };
-      'scoreStructureArray': ScoreStructure[];
+      'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
     } =
     Utility.generateEvaluationReport(

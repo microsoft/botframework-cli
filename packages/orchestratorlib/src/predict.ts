@@ -7,7 +7,7 @@ import * as path from 'path';
 
 import * as readline from 'readline';
 
-import {MultiLabelConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
@@ -18,7 +18,7 @@ import {Example} from './example';
 import {LabelType} from './labeltype';
 // import {OrchestratorHelper} from './orchestratorhelper';
 // import {Result} from './result';
-import {ScoreStructure} from './scorestructure';
+import {PredictionScoreStructure} from './predictionscorestructure';
 // import {Span} from './span';
 
 import {Utility} from './utility';
@@ -137,12 +137,12 @@ export class OrchestratorPredict {
         'scoringLowConfidenceUtterancesArraysHtml': string;
         'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
-        'confusionMatrix': MultiLabelConfusionMatrix;
+        'confusionMatrix': IConfusionMatrix;
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
-        'scoringConfusionMatrixOutputLines': string[][];
+        'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;}; };
-    'scoreStructureArray': ScoreStructure[];
+    'predictionScoreStructureArray': PredictionScoreStructure[];
     'scoreOutputLines': string[][];
   } = Utility.generateEmptyEvaluationReport();
 

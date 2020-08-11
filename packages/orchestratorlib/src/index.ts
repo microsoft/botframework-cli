@@ -6,6 +6,7 @@
 import {LabelResolver} from './labelresolver';
 import {Orchestrator} from './orchestrator';
 import {OrchestratorAdd} from './add';
+import {OrchestratorAssess} from './assess';
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
 import {OrchestratorEvaluate} from './evaluate';
@@ -20,6 +21,7 @@ export {
   LabelResolver,
   Orchestrator,
   OrchestratorAdd,
+  OrchestratorAssess,
   OrchestratorBuild,
   OrchestratorCreate,
   OrchestratorEvaluate,

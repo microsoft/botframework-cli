@@ -1232,10 +1232,10 @@ export class Utility {
 
     public static processUtteranceMultiLabelTsv(
         lines: string[],
-        utterancesLabelsMap: { [id: string]: string[] },
+        utteranceLabelsMap: { [id: string]: string[] },
         utterancesLabelsPredictedMap: { [id: string]: string[] },
-        utterancesDuplicateLabelsMap: Map<string, Set<string>>,
-        utterancesDuplicateLabelsPredictedMap: Map<string, Set<string>>,
+        utteranceLabelDuplicateMap: Map<string, Set<string>>,
+        utteranceLabelDuplicatePredictedMap: Map<string, Set<string>>,
         utteranceIndex: number = 2,
         labelsIndex: number = 0,
         labelsPredictedIndex: number = 1): boolean {
@@ -1264,8 +1264,8 @@ export class Utility {
                 Utility.addToMultiLabelUtteranceStructure(
                     utterance,
                     label.trim(),
-                    utterancesLabelsMap,
-                    utterancesDuplicateLabelsMap);
+                    utteranceLabelsMap,
+                    utteranceLabelDuplicateMap);
             }
             const labelPredictedArray: string[] = labelsPredicted.split(",");
             for (const labelPredicted of labelPredictedArray) {
@@ -1273,7 +1273,7 @@ export class Utility {
                     utterance,
                     labelPredicted.trim(),
                     utterancesLabelsPredictedMap,
-                    utterancesDuplicateLabelsPredictedMap);
+                    utteranceLabelDuplicatePredictedMap);
             }
         });
         return true;
@@ -1281,18 +1281,18 @@ export class Utility {
     public static addToMultiLabelUtteranceStructure(
         utterance: string,
         label: string,
-        utterancesLabelsMap: { [id: string]: string[] },
-        utterancesDuplicateLabelsMap: Map<string, Set<string>>) {
-        const existingLabels: string[] = utterancesLabelsMap[utterance];
+        utteranceLabelsMap: { [id: string]: string[] },
+        utteranceLabelDuplicateMap: Map<string, Set<string>>) {
+        const existingLabels: string[] = utteranceLabelsMap[utterance];
         if (existingLabels) {
             if (!Utility.addIfNewLabel(label, existingLabels)) {
                 DictionaryMapUtility.insertStringPairToStringIdStringSetNativeMap(
                     utterance,
                     label,
-                    utterancesDuplicateLabelsMap);
+                    utteranceLabelDuplicateMap);
             }
         } else {
-            utterancesLabelsMap[utterance] = [label];
+            utteranceLabelsMap[utterance] = [label];
         }
     }
     public static addIfNewLabel(newLabel: string, labels: string[]): boolean {
@@ -1334,8 +1334,9 @@ export class Utility {
                 "outputFilename is empty");
         }
         if (Utility.isEmptyStringArrays(outputEvaluationReportDataArrays)) {
-            Utility.debuggingThrow(
-                "outputEvaluationReportDataArrays is empty");
+            return "";
+            // ---- Utility.debuggingThrow(
+            // ----     "outputEvaluationReportDataArrays is empty");
         }
         const outputLines: string[] = [];
         if (!Utility.isEmptyStringArray(outputDataArraryHeaders)) {
@@ -1992,19 +1993,52 @@ export class Utility {
         ignoreEmptyFilename: boolean = true): string {
         // Utility.debuggingLog(
         //     `Utility.deleteFile(): filename=${filename}`);
+        return Utility.unlink(filename, ignoreEmptyFilename);
+    }
+    public static moveFile(
+        filename: string, targetDir: string): string {
+        // Utility.debuggingLog(
+        //     `Utility.moveFile(): filename=${filename}`);
+        // Utility.debuggingLog(
+        //     `Utility.moveFile(): targetDir=${targetDir}`);
+        const filebasename: string = path.basename(filename);
+        const destination: string = path.resolve(targetDir, filebasename);
+        return Utility.rename(filename, destination);
+    }
+
+    public static unlink(
+        entryname: string,
+        ignoreEmptyEntryName: boolean = true): string {
+        // Utility.debuggingLog(
+        //     `Utility.unlink(): entryname=${entryname}`);
         try {
-            if (Utility.isEmptyString(filename)) {
-                if (ignoreEmptyFilename) {
+            if (Utility.isEmptyString(entryname)) {
+                if (ignoreEmptyEntryName) {
                     return "";
                 }
             }
-            fs.unlinkSync(filename);
-        } catch (err) {
+            fs.unlinkSync(entryname);
+        } catch (error) {
             // ---- NOTE ---- An error occurred
-            Utility.debuggingThrow(`FAILED to delete a file: filename=${filename}`);
+            Utility.debuggingThrow(`FAILED to unlink a entry: entryname=${entryname}, error=${error}`);
             return "";
         }
-        return filename;
+        return entryname;
+    }
+    public static rename(
+        entryname: string, entrynameNew: string): string {
+        // Utility.debuggingLog(
+        //     `Utility.rename(): entryname=${entryname}`);
+        // Utility.debuggingLog(
+        //     `Utility.rename(): entrynameNew=${entrynameNew}`);
+        try {
+            fs.renameSync(entryname, entrynameNew);
+        } catch (error) {
+          // ---- NOTE ---- An error occurred
+            Utility.debuggingThrow(`FAILED to rename a entry system entry: entryname=${entrynameNew}, entryname=${entrynameNew}, error=${error}`);
+            return "";
+        }
+        return entryname;
     }
 
     public static getObjectMd5Hash(objectValue: object): string|Int32Array {
@@ -2089,13 +2123,28 @@ export class Utility {
         return JSON.stringify(jsonObject, null, indents);
     }
 
+    public static writeLineToConsoleStdout(outputContents: string) {
+        Utility.writeToConsoleStdout(`${outputContents}\n`);
+    }
+    public static writeLineToConsoleStderr(outputContents: string) {
+        Utility.writeToConsoleStderr(`${outputContents}\n`);
+    }
+
+    public static writeToConsoleStdout(outputContents: string) {
+        process.stdout.write(outputContents);
+    }
+    public static writeToConsoleStderr(outputContents: string) {
+        process.stderr.write(outputContents);
+    }
+
     public static debuggingLog(
         message: any): string {
         const dateTimeString: string = (new Date()).toISOString();
-        const logMessage: string = `[${dateTimeString}] LOG-MESSAGE: ${message}`;
+        const logMessage: string = `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}`;
         if (Utility.toPrintDebuggingLogToConsole) {
-            // tslint:disable-next-line:no-console
-            console.log(logMessage);
+        // eslint-disable-next-line no-console
+        // tslint:disable-next-line: no-console
+        console.log(logMessage);
         }
         return logMessage;
     }
@@ -2103,8 +2152,11 @@ export class Utility {
     public static debuggingThrow(
         message: any): void {
         const dateTimeString: string = (new Date()).toISOString();
-        const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: ${message}`;
-        throw new Error(Utility.jsonStringify(logMessage));
+        const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
     }
 
     public static almostEqual(first: number, second: number): boolean {

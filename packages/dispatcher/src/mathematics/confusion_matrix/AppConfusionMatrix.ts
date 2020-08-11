@@ -131,7 +131,17 @@ export function mainConfusionMatrixFunction(
     Utility.debuggingLog(
         "macro-average metrics = " + confusionMatrix.getMacroAverageMetrics());
     Utility.debuggingLog(
+        "summation-macro-average metrics = " + confusionMatrix.getSummationMacroAverageMetrics());
+    Utility.debuggingLog(
+        "positive-support-label-macro-average metrics = " +
+        confusionMatrix.getPositiveSupportLabelMacroAverageMetrics());
+    Utility.debuggingLog(
+        "positive-support-label-summation-macro-average metrics = " +
+        confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics());
+    Utility.debuggingLog(
         "weighted-macro-average metrics = " + confusionMatrix.getWeightedMacroAverageMetrics());
+    Utility.debuggingLog(
+        "summation-weighted-macro-average metrics = " + confusionMatrix.getSummationWeightedMacroAverageMetrics());
     Utility.debuggingLog(
         "labels=" + confusionMatrix.getLabels());
     // -----------------------------------------------------------------------
@@ -371,7 +381,19 @@ export function exampleFunctionConfusionMatrix(): void {
     Utility.debuggingLog(
         "macro-average metrics = " + confusionMatrix.getMacroAverageMetrics());
     Utility.debuggingLog(
+        "summation-macro-average metrics = " + confusionMatrix.getSummationMacroAverageMetrics());
+    Utility.debuggingLog(
+        "positive-support-label-macro-average metrics = " +
+        confusionMatrix.getPositiveSupportLabelMacroAverageMetrics());
+    Utility.debuggingLog(
+        "positive-support-label-summation-macro-average metrics = " +
+        confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics());
+    Utility.debuggingLog(
         "weighted-macro-average metrics = " + confusionMatrix.getWeightedMacroAverageMetrics());
+    Utility.debuggingLog(
+        "summation-weighted-macro-average metrics = " + confusionMatrix.getSummationWeightedMacroAverageMetrics());
+    Utility.debuggingLog(
+        "labels=" + confusionMatrix.getLabels());
 }
 
 if (require.main === module) {

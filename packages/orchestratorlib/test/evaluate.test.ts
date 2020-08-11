@@ -16,7 +16,7 @@ import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - evaluate', () => {
   it('Test.0000 OrchestratorEvaluate.runAsync()', async function () {
-    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email.blu';

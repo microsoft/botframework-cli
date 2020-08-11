@@ -11,6 +11,7 @@ import {OrchestratorFineTune} from './finetune';
 import {OrchestratorNlr} from './nlr';
 import {OrchestratorPredict} from './predict';
 import {OrchestratorTest} from './test';
+import {OrchestratorAssess} from './assess';
 import {Utility} from '.';
 
 export class Orchestrator {
@@ -64,7 +65,8 @@ export class Orchestrator {
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
     await OrchestratorPredict.runAsync(
       nlrPath, inputPath, outputPath,
-      ambiguousClosenessParameter, lowConfidenceScoreThresholdParameter,
+      ambiguousClosenessParameter,
+      lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter);
   }
@@ -77,9 +79,17 @@ export class Orchestrator {
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
     await OrchestratorTest.runAsync(
-      nlrPath, inputPath, testPath,
-      outputPath, ambiguousClosenessParameter, lowConfidenceScoreThresholdParameter,
+      nlrPath, inputPath, testPath, outputPath,
+      ambiguousClosenessParameter,
+      lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter);
+  }
+
+  // eslint-disable-next-line max-params
+  public static async assessAsync(
+    inputPath: string, predictionPath: string, outputPath: string): Promise<void> {
+    await OrchestratorAssess.runAsync(
+      inputPath, predictionPath, outputPath);
   }
 }
