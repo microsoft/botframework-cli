@@ -14,7 +14,7 @@
       "projectFolder": "packages/orchestratorlib"
     },
     {
-      "packageName": "@microsoft/@microsoft/bf-orchestrator-cli",
+      "packageName": "@microsoft/bf-orchestrator-cli",
       "projectFolder": "packages/orchestrator"
     }
   ]
