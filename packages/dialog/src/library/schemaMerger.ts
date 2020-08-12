@@ -12,6 +12,7 @@ import * as ppath from 'path'
 import {JsonPointer as ptr} from 'json-ptr'
 import * as nuget from '@snyk/nuget-semver'
 import * as xp from 'xml2js'
+import {threadId} from 'worker_threads'
 let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
 let getUri: any = require('get-uri')
@@ -27,61 +28,6 @@ function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean
         if (typeof elt === 'object' || Array.isArray(elt)) {
             for (let key in elt) {
                 walkJSON(elt[key], fun, elt, pathName(path, key))
-            }
-        }
-    }
-}
-
-// Split a $ref into path, pointer and name for definition
-function splitRef(ref: string): {path: string, pointer: string, name: string} {
-    const hash = ref.indexOf('#')
-    const path = hash < 0 ? '' : ref.substring(0, hash)
-    const pointer = hash < 0 ? '' : ref.substring(hash + 1)
-    let name = ppath.basename(path)
-    if (name.endsWith('#')) {
-        name = name.substring(0, name.length - 1)
-    }
-    return {path, pointer, name}
-}
-
-// Bundle remote references into schema.
-// Remote references will be found under defitions/<pathBasename> which requires that to be unique.
-async function bundle(schema: any, elt: any, source: string): Promise<void> {
-    if (typeof elt === 'object' || Array.isArray(elt)) {
-        for (let key in elt) {
-            const val = elt[key]
-            if (key === '$ref' && typeof val === 'string') {
-                const scheme = 'schema:'
-                if (val.startsWith(scheme)) {
-                    // Component schema reference
-                    elt.$ref = val.substring(val.indexOf('#'))
-                } else {
-                    const {path, pointer, name} = splitRef(val)
-                    if (path) {
-                        if (!schema.definitions[name]) {
-                            // New source
-                            let cd = ''
-                            try {
-                                const newSource = await getJSON(path)
-                                schema.definitions[name] = newSource
-                                if (path.startsWith('file:')) {
-                                    cd = process.cwd()
-                                    process.chdir(ppath.dirname(path))
-                                }
-                                await bundle(schema, newSource, name)
-                            } finally {
-                                if (cd) {
-                                    process.chdir(cd)
-                                }
-                            }
-                        }
-                        elt.$ref = `#/definitions/${name}${pointer}`
-                    } else if (source) {
-                        elt.$ref = `#/definitions/${source}${pointer}`
-                    }
-                }
-            } else {
-                await bundle(schema, val, source)
             }
         }
     }
@@ -518,7 +464,7 @@ export default class SchemaMerger {
             }
 
             // Convert all remote references to local ones
-            await bundle(finalSchema, finalSchema, '')
+            await this.bundle(finalSchema)
             finalSchema = this.expandAllOf(finalSchema)
             this.removeId(finalSchema)
             if (this.debug) {
@@ -1402,6 +1348,122 @@ export default class SchemaMerger {
         }
     }
 
+    // Split a $ref into path, pointer and name for definition
+    private splitRef(ref: string): {path: string, pointer: string, name: string} {
+        const hash = ref.indexOf('#')
+        const path = hash < 0 ? '' : ref.substring(0, hash)
+        const pointer = hash < 0 ? '' : ref.substring(hash + 1)
+        let name = ppath.basename(path)
+        if (name.endsWith('#')) {
+            name = name.substring(0, name.length - 1)
+        }
+        return {path, pointer, name}
+    }
+
+    // Bundle remote references into schema while pruning to minimally needed definitions.
+    // Remote references will be found under definitions/<pathBasename> which must be unique.
+    private async bundle(schema: any): Promise<void> {
+        const current = this.currentFile
+        let sources: string[] = []
+        await this.bundleFun(schema, schema, sources, '')
+        for (let source of sources) {
+            this.prune(schema.definitions[source])
+        }
+        this.currentFile = current
+    }
+
+    private async bundleFun(schema: any, elt: any, sources: string[], source: string): Promise<void> {
+        if (typeof elt === 'object' || Array.isArray(elt)) {
+            for (let key in elt) {
+                const val = elt[key]
+                if (key === '$ref' && typeof val === 'string') {
+                    const scheme = 'schema:'
+                    if (val.startsWith(scheme)) {
+                        // Component schema reference
+                        elt.$ref = val.substring(val.indexOf('#'))
+                    } else {
+                        const {path, pointer, name} = this.splitRef(val)
+                        if (path) {
+                            if (!schema.definitions[name]) {
+                                // New source
+                                this.currentFile = path
+                                this.vlog(`Bundling ${path}`)
+                                schema.definitions[name] = await getJSON(path)
+                                sources.push(name)
+                            }
+                            let ref = `#/definitions/${name}${pointer}`
+                            let definition: any = ptr.get(schema, ref)
+                            if (!definition) {
+                                this.refError(elt.$ref, ref)
+                            } else {
+                                this.vlog(`${elt.$ref} to ${ref}`)
+                                elt.$ref = ref
+                                if (!definition.$bundled) {
+                                    // First outside reference mark it to keep and follow internal $ref
+                                    definition.$bundled = true
+                                    let cd = ''
+                                    try {
+                                        if (path.startsWith('file:')) {
+                                            cd = process.cwd()
+                                            process.chdir(ppath.dirname(path))
+                                        }
+                                        await this.bundleFun(schema, definition, sources, name)
+                                    } finally {
+                                        if (cd) {
+                                            process.chdir(cd)
+                                        }
+                                    }
+                                }
+                            }
+                        } else if (source) {
+                            // Internal reference in external source
+                            const ref = `#/definitions/${source}${pointer}`
+                            const definition: any = ptr.get(schema, ref)
+                            this.vlog(`${elt.$ref} to ${ref}`)
+                            elt.$ref = ref
+                            TODO: Restore removing $bundled
+                            TODO: Move schema: processing in here
+                            elt.$bundled = true
+                            if (!definition?.$bundled) {
+                                definition.$bundled = true
+                                await this.bundleFun(schema, definition, sources, source)
+                            }
+                        }
+                    }
+                } else {
+                    await this.bundleFun(schema, val, sources, source)
+                }
+            }
+        }
+    }
+
+    // Prune out any unused keys inside of external schemas
+    private prune(elt: any): boolean {
+        let keep = false
+        if (typeof elt === 'object') {
+            keep = elt.$bundled
+            // TODO: Restore this.
+            // delete elt.$bundled
+            if (!keep) {
+                for (let [key, val] of Object.entries(elt)) {
+                    if (typeof val === 'object' || Array.isArray(val)) {
+                        let childBundled = this.prune(val)
+                        if (!childBundled) {
+                            // Prune any keys of unused structured object
+                            delete elt[key]
+                        }
+                        keep = keep || childBundled
+                    }
+                }
+            }
+        } else if (Array.isArray(elt)) {
+            for (let child of elt) {
+                keep = keep || this.prune(child)
+            }
+        }
+        return keep
+    }
+
     // Expand $ref below allOf and remove allOf
     private expandAllOf(bundle: any): any {
         walkJSON(bundle, val => {
@@ -1441,17 +1503,18 @@ export default class SchemaMerger {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
             let definition = schema.definitions[this.currentKind]
             let verifyProperty = (val, path) => {
-                if (!val.$schema) {
-                    if (val.$ref) {
-                        val = clone(val)
-                        let ref: any = ptr.get(schema, val.$ref)
-                        for (let prop in ref) {
-                            if (!val[prop]) {
-                                val[prop] = ref[prop]
-                            }
+                if (val.$ref) {
+                    val = clone(val)
+                    let ref: any = ptr.get(schema, val.$ref)
+                    for (let prop in ref) {
+                        if (!val[prop]) {
+                            val[prop] = ref[prop]
                         }
-                        delete val.$ref
                     }
+                    delete val.$ref
+                }
+                if (!val.$schema) {
+                    // Assume $schema is an external reference and ignore error checking
                     if (val.$kind) {
                         let kind = schema.definitions[val.$kind]
                         if (this.roles(kind, 'interface').length > 0) {
@@ -1595,6 +1658,12 @@ export default class SchemaMerger {
     // Generic error message
     private uiError(path: string): void {
         this.error(`Error ${path} does not exist in schema`)
+        this.failed = true
+    }
+
+    // Missing $ref
+    private refError(original: string, modified: string): void {
+        this.error(`Error could not bundle ${original} into ${modified}`)
         this.failed = true
     }
 }
