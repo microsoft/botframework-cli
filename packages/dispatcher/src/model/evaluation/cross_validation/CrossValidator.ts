@@ -243,6 +243,17 @@ export class CrossValidator extends AbstractBaseEvaluator {
                 "falsePositives": number,
                 "falseNegatives": number,
                 "total": number },
+            "summationMicroAverageMetrics": {
+                "summationPrecision": number,
+                "summationRecall": number,
+                "summationF1Score": number,
+                "summationAccuracy": number,
+                "summationTruePositives": number,
+                "summationFalsePositives": number,
+                "summationTrueNegatives": number,
+                "summationFalseNegatives": number,
+                "summationSupport": number,
+                "total": number },
             "macroAverageMetrics": {
                 "averagePrecision": number,
                 "averageRecall": number,
@@ -309,6 +320,8 @@ export class CrossValidator extends AbstractBaseEvaluator {
         Utility.debuggingLog(
             `confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
             `${confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+            `,confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +
+            `${confusionMatrixCrossValidation.getSummationMicroAverageMetrics()}` +
             `,confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
             `${confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
             `,confusionMatrixCrossValidation.getSummationMacroAverageMetrics()=` +

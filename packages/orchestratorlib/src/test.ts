@@ -30,6 +30,7 @@ export class OrchestratorTest {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number): Promise<void> {
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPath)) {
       Utility.debuggingThrow(`Please provide path to an input .blu file, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
@@ -56,6 +57,7 @@ export class OrchestratorTest {
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- load the training set
     const trainingFile: string = inputPath;
     if (!Utility.exists(trainingFile)) {
@@ -93,6 +95,7 @@ export class OrchestratorTest {
     if (Object.entries(utteranceLabelsMap).length <= 0) {
       Utility.debuggingThrow('there is no example, something wrong?');
     }
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis reports.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.resetLabelResolverSettingIgnoreSameExample("false")');
     Utility.resetLabelResolverSettingIgnoreSameExample(false);
@@ -154,10 +157,12 @@ export class OrchestratorTest {
     Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReport()');
     // ---- NOTE ---- integrated step to produce analysis report output files.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
+    const evaluationSummary: string =
+      evaluationOutput.evaluationReportAnalyses.evaluationSummary;
     Utility.generateEvaluationReportFiles(
       evaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       evaluationOutput.scoreOutputLines,
-      evaluationOutput.evaluationReportAnalyses.evaluationSummary,
+      evaluationSummary,
       testingSetLabelsOutputFilename,
       testingSetScoresOutputFilename,
       testingSetSummaryHtmlOutputFilename);
@@ -165,6 +170,7 @@ export class OrchestratorTest {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`evaluationOutput=${Utility.jsonStringify(evaluationOutput)}`);
     }
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- THE END
     Utility.debuggingLog('OrchestratorTest.runAsync(), THE END');
   }

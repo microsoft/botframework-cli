@@ -10,8 +10,9 @@ import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {Label}  from './label';
-
 import {OrchestratorHelper} from './orchestratorhelper';
+import {PredictionLabelStructure} from './predictionlabelstructure';
+import {PredictionStructure} from './predictionstructure';
 
 import {Utility} from './utility';
 
@@ -169,6 +170,9 @@ export class OrchestratorAssess {
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
+      'evaluationReportSpuriousPredictions': {
+        'evaluationSummary': string;
+        'spuriousPredictions': [string, string[]][]; };
       'evaluationReportAnalyses': {
         'evaluationSummary': string;
         'misclassifiedAnalysis': {
@@ -181,6 +185,7 @@ export class OrchestratorAssess {
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;}; };
+      'predictionStructureArray': PredictionStructure[];
     } =
     Utility.generateAssessmentEvaluationReport(
       groundTruthSetLabels,
@@ -196,9 +201,11 @@ export class OrchestratorAssess {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`OrchestratorAssess.runAsync(), intentEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary=\n${intentEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary}`);
     }
+    const intentEvaluationSummary: string =
+      intentEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
     Utility.generateAssessmentEvaluationReportFiles(
       intentEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.labelArrayAndMap.stringArray,
-      intentEvaluationOutput.evaluationReportAnalyses.evaluationSummary,
+      intentEvaluationSummary,
       assessmentSetIntentLabelsOutputFilename,
       assessmentSetIntentSummaryHtmlOutputFilename);
     Utility.debuggingLog('OrchestratorAssess.runAsync(), finished calling Utility.generateAssessmentEvaluationReportFiles()');
@@ -245,6 +252,9 @@ export class OrchestratorAssess {
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
+      'evaluationReportSpuriousPredictions': {
+        'evaluationSummary': string;
+        'spuriousPredictions': [string, Label[]][]; };
       'evaluationReportAnalyses': {
         'evaluationSummary': string;
         'misclassifiedAnalysis': {
@@ -257,6 +267,7 @@ export class OrchestratorAssess {
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;}; };
+      'predictionLabelStructureArray': PredictionLabelStructure[];
     } =
     Utility.generateAssessmentLabelObjectEvaluationReport(
       groundTruthSetEntityLabels,
@@ -268,13 +279,18 @@ export class OrchestratorAssess {
       Utility.debuggingLog(`entityEvaluationOutput=${Utility.jsonStringify(entityEvaluationOutput)}`);
     }
     Utility.debuggingLog('OrchestratorAssess.runAsync(), finished calling Utility.generateAssessmentEvaluationReport()');
+    // -----------------------------------------------------------------------
+
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`OrchestratorAssess.runAsync(), entityEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary=\n${entityEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary}`);
     }
+    const entityEvaluationSummary: string =
+      entityEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
     Utility.generateAssessmentEvaluationReportFiles(
       entityEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.labelArrayAndMap.stringArray,
-      entityEvaluationOutput.evaluationReportAnalyses.evaluationSummary,
+      entityEvaluationSummary,
       assessmentSetEntityLabelsOutputFilename,
       assessmentSetEntitySummaryHtmlOutputFilename);
     Utility.debuggingLog('OrchestratorAssess.runAsync(), finished calling Utility.generateAssessmentEvaluationReportFiles()');

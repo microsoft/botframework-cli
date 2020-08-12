@@ -33,6 +33,17 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "falsePositives": number,
             "falseNegatives": number,
             "total": number },
+        "summationMicroAverageMetrics": {
+            "summationPrecision": number,
+            "summationRecall": number,
+            "summationF1Score": number,
+            "summationAccuracy": number,
+            "summationTruePositives": number,
+            "summationFalsePositives": number,
+            "summationTrueNegatives": number,
+            "summationFalseNegatives": number,
+            "summationSupport": number,
+            "total": number },
         "macroAverageMetrics": {
             "averagePrecision": number,
             "averageRecall": number,
@@ -143,6 +154,69 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "falseNegatives": falseNegatives,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": supportMicroAverage };
+        const summationMicroAverageMetricArray: {
+            "summationPrecision": number,
+            "summationRecall": number,
+            "summationF1Score": number,
+            "summationAccuracy": number,
+            "summationTruePositives": number,
+            "summationFalsePositives": number,
+            "summationTrueNegatives": number,
+            "summationFalseNegatives": number,
+            "summationSupport": number,
+            "total": number } =
+            confusionMatrix.getSummationMicroAverageMetrics(binaryConfusionMatrices);
+        const summationPrecision: number =
+            summationMicroAverageMetricArray.summationPrecision;
+        const summationRecall: number =
+            summationMicroAverageMetricArray.summationRecall;
+        const summationF1Score: number =
+            summationMicroAverageMetricArray.summationF1Score;
+        const summationAccuracy: number =
+            summationMicroAverageMetricArray.summationAccuracy;
+        const summationTruePositives: number =
+            summationMicroAverageMetricArray.summationTruePositives;
+        const summationFalsePositives: number =
+            summationMicroAverageMetricArray.summationFalsePositives;
+        const summationTrueNegatives: number =
+            summationMicroAverageMetricArray.summationTrueNegatives;
+        const summationFalseNegatives: number =
+            summationMicroAverageMetricArray.summationFalseNegatives;
+        const summationSupport: number =
+            summationMicroAverageMetricArray.summationSupport;
+        const total: number =
+            summationMicroAverageMetricArray.total;
+        const summationMicroAverageMetrics: {
+            "summationPrecision": number,
+            "summationRecall": number,
+            "summationF1Score": number,
+            "summationAccuracy": number,
+            "summationTruePositives": number,
+            "summationFalsePositives": number,
+            "summationTrueNegatives": number,
+            "summationFalseNegatives": number,
+            "summationSupport": number,
+            "total": number } = {
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationPrecision": summationPrecision,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationRecall": summationRecall,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationF1Score": summationF1Score,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationAccuracy": summationAccuracy,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationTruePositives": summationTruePositives,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationFalsePositives": summationFalsePositives,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationTrueNegatives": summationTrueNegatives,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationFalseNegatives": summationFalseNegatives,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "summationSupport": summationSupport,
+            // tslint:disable-next-line: object-literal-key-quotes
+            "total": total };
         const macroAverageMetricArray: {
             "averagePrecision": number,
             "averageRecall": number,
@@ -507,6 +581,17 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
                 "falsePositives": number,
                 "falseNegatives": number,
                 "total": number },
+            "summationMicroAverageMetrics": {
+                "summationPrecision": number,
+                "summationRecall": number,
+                "summationF1Score": number,
+                "summationAccuracy": number,
+                "summationTruePositives": number,
+                "summationFalsePositives": number,
+                "summationTrueNegatives": number,
+                "summationFalseNegatives": number,
+                "summationSupport": number,
+                "total": number },
             "macroAverageMetrics": {
                 "averagePrecision": number,
                 "averageRecall": number,
@@ -573,6 +658,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             labelBinaryConfusionMatrixBasicMetricMap,
             labelBinaryConfusionMatrixMap,
             microAverageMetrics,
+            summationMicroAverageMetrics,
             macroAverageMetrics,
             summationMacroAverageMetrics,
             positiveSupportLabelMacroAverageMetrics,
@@ -643,6 +729,81 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             falseNegatives,
             total };
         return microAverageMetrics;
+    }
+
+    public getSummationMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
+        "summationPrecision": number,
+        "summationRecall": number,
+        "summationF1Score": number,
+        "summationTruePositives": number,
+        "summationFalsePositives": number,
+        "summationTrueNegatives": number,
+        "summationFalseNegatives": number,
+        "summationAccuracy": number,
+        "summationSupport": number,
+        "total": number } {
+        if (Utility.isEmptyArray(binaryConfusionMatrices)) {
+            binaryConfusionMatrices =
+                this.getBinaryConfusionMatrices();
+        }
+        const summationTruePositives: number =
+            binaryConfusionMatrices.reduce(
+                (accumulation, entry) => accumulation + entry.getTruePositives(), 0);
+        const summationFalsePositives: number =
+            binaryConfusionMatrices.reduce(
+                (accumulation, entry) => accumulation + entry.getFalsePositives(), 0);
+        const summationTrueNegatives: number =
+            binaryConfusionMatrices.reduce(
+                (accumulation, entry) => accumulation + entry.getTrueNegatives(), 0);
+        const summationFalseNegatives: number =
+            binaryConfusionMatrices.reduce(
+                (accumulation, entry) => accumulation + entry.getFalseNegatives(), 0);
+        const summationArithmeticAverageTotal: number =
+            summationTruePositives + summationFalsePositives + summationTrueNegatives + summationFalseNegatives;
+        const summationArithmeticAveragePositives: number =
+            summationTruePositives + summationFalseNegatives;
+        const summationArithmeticAveragePredictedPositives: number =
+            summationTruePositives + summationFalsePositives;
+        const summationArithmeticAverageBinaryConfusionMatrix: BinaryConfusionMatrix =
+            new BinaryConfusionMatrix(
+                summationArithmeticAverageTotal,
+                summationTruePositives,
+                summationArithmeticAveragePositives,
+                summationArithmeticAveragePredictedPositives);
+        const summationPrecision: number =
+            summationArithmeticAverageBinaryConfusionMatrix.getPrecision();
+        const summationRecall: number =
+            summationArithmeticAverageBinaryConfusionMatrix.getRecall();
+        const summationF1Score: number =
+            summationArithmeticAverageBinaryConfusionMatrix.getF1Score();
+        const summationAccuracy: number =
+            summationArithmeticAverageBinaryConfusionMatrix.getAccuracy();
+        const summationSupport: number =
+            summationArithmeticAverageBinaryConfusionMatrix.getSupport();
+        const total: number =
+            summationArithmeticAverageTotal;
+        const macroAverageMetrics: {
+            "summationPrecision": number,
+            "summationRecall": number,
+            "summationF1Score": number,
+            "summationTruePositives": number,
+            "summationFalsePositives": number,
+            "summationTrueNegatives": number,
+            "summationFalseNegatives": number,
+            "summationAccuracy": number,
+            "summationSupport": number,
+            "total": number } = {
+                summationPrecision,
+                summationRecall,
+                summationF1Score,
+                summationTruePositives,
+                summationFalsePositives,
+                summationTrueNegatives,
+                summationFalseNegatives,
+                summationAccuracy,
+                summationSupport,
+                total };
+        return macroAverageMetrics;
     }
 
     public getMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {

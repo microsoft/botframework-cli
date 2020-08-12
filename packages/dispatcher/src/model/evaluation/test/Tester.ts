@@ -157,6 +157,17 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 "falsePositives": number,
                 "falseNegatives": number,
                 "total": number },
+            "summationMicroAverageMetrics": {
+                "summationPrecision": number,
+                "summationRecall": number,
+                "summationF1Score": number,
+                "summationAccuracy": number,
+                "summationTruePositives": number,
+                "summationFalsePositives": number,
+                "summationTrueNegatives": number,
+                "summationFalseNegatives": number,
+                "summationSupport": number,
+                "total": number },
             "macroAverageMetrics": {
                 "averagePrecision": number,
                 "averageRecall": number,
@@ -223,6 +234,8 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         Utility.debuggingLog(
             `confusionMatrixTest.getMicroAverageMetrics()=` +
             `${confusionMatrixTest.getMicroAverageMetrics()}` +
+            `,confusionMatrixTest.getSummationMicroAverageMetrics()=` +
+            `${confusionMatrixTest.getSummationMicroAverageMetrics()}` +
             `,confusionMatrixTest.getMacroAverageMetrics()=` +
             `${confusionMatrixTest.getMacroAverageMetrics()}` +
             `,confusionMatrixTest.getSummationMacroAverageMetrics()=` +

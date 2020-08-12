@@ -19,6 +19,17 @@ export interface IConfusionMatrix {
             "falsePositives": number,
             "falseNegatives": number,
             "total": number },
+        "summationMicroAverageMetrics": {
+            "summationPrecision": number,
+            "summationRecall": number,
+            "summationF1Score": number,
+            "summationAccuracy": number,
+            "summationTruePositives": number,
+            "summationFalsePositives": number,
+            "summationTrueNegatives": number,
+            "summationFalseNegatives": number,
+            "summationSupport": number,
+            "total": number },
         "macroAverageMetrics": {
             "averagePrecision": number,
             "averageRecall": number,
@@ -95,6 +106,18 @@ export interface IConfusionMatrix {
         "truePositives": number,
         "falsePositives": number,
         "falseNegatives": number,
+        "total": number };
+
+    getSummationMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
+        "summationPrecision": number,
+        "summationRecall": number,
+        "summationF1Score": number,
+        "summationTruePositives": number,
+        "summationFalsePositives": number,
+        "summationTrueNegatives": number,
+        "summationFalseNegatives": number,
+        "summationAccuracy": number,
+        "summationSupport": number,
         "total": number };
 
     getMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {

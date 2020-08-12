@@ -73,6 +73,7 @@ export class EvaluationSummaryTemplateHtml {
         <div class="container">
             <div class="navbar-header ms-fontSize-l">
                 <span id="orchestratorName">{APP_NAME}</span>
+                <span id="orchestratorName">{MODEL_SPECIFICATION}</span>
                 <!--
                 <span><a href="https://{PORTAL_URL}/applications/{APP_ID}/versions/{VERSION}/dashboard" target="_blank">LUIS Application ID: {APP_ID}</a></span>
                 -->

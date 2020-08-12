@@ -85,6 +85,41 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "OrchestratorLib Tests",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/orchestratorlib/node_modules/mocha/bin/_mocha",
+            "cwd": "${workspaceFolder}/packages/orchestratorlib",
+            "args": [
+                "test/",
+                "--timeout",
+                "999999",
+                "--colors",
+                "-g",
+                ".*"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "outFiles": [
+                "./lib/**"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Orchestratorlib Build",
+            "program": "${workspaceFolder}/packages/orchestratorlib/node_modules/typescript/bin/tsc",
+            "cwd": "${workspaceFolder}/packages/orchestratorlib",
+            "args": [
+                "--build"
+            ],
+            "console": "integratedTerminal",
+            "outFiles": [
+                "./lib/**"
+            ],
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "LU Tests",
             "preLaunchTask": "${defaultBuildTask}",
             "program": "${workspaceFolder}/packages/luis/node_modules/mocha/bin/_mocha",

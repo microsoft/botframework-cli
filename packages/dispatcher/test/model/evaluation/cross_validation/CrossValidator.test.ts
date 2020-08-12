@@ -91,6 +91,8 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
         Utility.debuggingLog(
             `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
             `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+            `,crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()}` +
             `,crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
             `${crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
             `,crossValidationResult.confusionMatrixCrossValidation.getSummationMacroAverageMetrics()=` +
@@ -176,6 +178,8 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
         Utility.debuggingLog(
             `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
             `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
+            `,crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()}` +
             `,crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()=` +
             `${crossValidationResult.confusionMatrixCrossValidation.getMacroAverageMetrics()}` +
             `,crossValidationResult.confusionMatrixCrossValidation.getSummationMacroAverageMetrics()=` +

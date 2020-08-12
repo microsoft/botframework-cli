@@ -63,6 +63,8 @@ function getTestingConfusionMatrix(): ConfusionMatrix {
     Utility.debuggingLog(
         "micro-average metrics = " + confusionMatrix.getMicroAverageMetrics());
     Utility.debuggingLog(
+        "summation-micro-average metrics = " + confusionMatrix.getSummationMicroAverageMetrics());
+    Utility.debuggingLog(
         "macro-average metrics = " + confusionMatrix.getMacroAverageMetrics());
     Utility.debuggingLog(
         "summation-macro-average metrics = " + confusionMatrix.getSummationMacroAverageMetrics());
@@ -411,6 +413,17 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
                 "truePositives": number,
                 "falsePositives": number,
                 "falseNegatives": number,
+                "total": number },
+            "summationMicroAverageMetrics": {
+                "summationPrecision": number,
+                "summationRecall": number,
+                "summationF1Score": number,
+                "summationAccuracy": number,
+                "summationTruePositives": number,
+                "summationFalsePositives": number,
+                "summationTrueNegatives": number,
+                "summationFalseNegatives": number,
+                "summationSupport": number,
                 "total": number },
             "macroAverageMetrics": {
                 "averagePrecision": number,
