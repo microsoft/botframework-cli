@@ -15,7 +15,7 @@ import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - evaluate', () => {
-  it('Test.0000 OrchestratorEvaluate.runAsync()', async function () {
+  xit('Test.0000 OrchestratorEvaluate.runAsync()', async function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
