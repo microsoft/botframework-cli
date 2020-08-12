@@ -10,7 +10,8 @@
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "tslib": "^1.10.0",
-    "argparse": "~1.0.10"
+    "argparse": "~1.0.10",
+    "ts-md5": "^1.2.6"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
@@ -27,7 +28,6 @@
     "nyc": "^14.1.1",
     "readline-sync": "^1.4.10",
     "rimraf": "^3.0.0",
-    "ts-md5": "^1.2.6",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.1",
     "typescript": "^3.7.2"
