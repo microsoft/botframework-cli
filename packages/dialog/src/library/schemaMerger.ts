@@ -9,10 +9,9 @@ import * as glob from 'globby'
 import * as os from 'os'
 import * as parser from '@apidevtools/json-schema-ref-parser'
 import * as ppath from 'path'
-import {JsonPointer as ptr} from 'json-ptr'
+import { JsonPointer as ptr } from 'json-ptr'
 import * as nuget from '@snyk/nuget-semver'
 import * as xp from 'xml2js'
-import {threadId} from 'worker_threads'
 let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
 let getUri: any = require('get-uri')
@@ -252,7 +251,7 @@ export default class SchemaMerger {
     private currentKind = ''
 
     // Default JSON serialization options
-    private readonly jsonOptions = {spaces: '  ', EOL: os.EOL}
+    private readonly jsonOptions = { spaces: '  ', EOL: os.EOL }
 
     /**
      * Merger to combine component .schema and .uischema files to make a custom schema.
@@ -382,7 +381,7 @@ export default class SchemaMerger {
                     if (component.$ref) {
                         // Expand top-level $ref to support testing
                         let ref = await getJSON(component.$ref)
-                        component = {...ref, ...component}
+                        component = { ...ref, ...component }
                         delete component.$ref
                     }
 
@@ -440,7 +439,7 @@ export default class SchemaMerger {
             .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
             .sort()
             .map(kind => {
-                return {$ref: `#/definitions/${kind}`}
+                return { $ref: `#/definitions/${kind}` }
             })
         this.addSchemaDefinitions()
 
@@ -563,7 +562,7 @@ export default class SchemaMerger {
             }
             if (!this.failed) {
                 for (let locale of Object.keys(result)) {
-                    let uischema = {$schema: this.metaUISchemaId, ...result[locale]}
+                    let uischema = { $schema: this.metaUISchemaId, ...result[locale] }
                     this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
                     this.log(`Writing ${this.currentFile}`)
                     await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
@@ -867,7 +866,7 @@ export default class SchemaMerger {
                             walkJSON(config, elt => {
                                 if (elt.packages?.package) {
                                     for (let info of elt.packages.package) {
-                                        nugetPackages.push({Include: info.$.id, Version: info.$.version})
+                                        nugetPackages.push({ Include: info.$.id, Version: info.$.version })
                                     }
                                     return true
                                 }
@@ -973,7 +972,7 @@ export default class SchemaMerger {
                     record = []
                     map.set(name, record)
                 }
-                record.push({path: ppath.resolve(path), component})
+                record.push({ path: ppath.resolve(path), component })
             }
         }
     }
@@ -1032,7 +1031,7 @@ export default class SchemaMerger {
         if (!this.nugetRoot) {
             this.nugetRoot = ''
             try {
-                const {stdout} = await exec('dotnet nuget locals global-packages --list')
+                const { stdout } = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
                 let start = stdout.indexOf(name)
                 if (start > -1) {
@@ -1133,7 +1132,7 @@ export default class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
+                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -1337,7 +1336,7 @@ export default class SchemaMerger {
     // Add schema definitions and turn schema: or full definition URI into local reference
     private addSchemaDefinitions(): void {
         const scheme = 'schema:'
-        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
+        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
         for (this.currentKind in this.definitions) {
             walkJSON(this.definitions[this.currentKind], val => {
                 if (typeof val === 'object' && val.$ref && (val.$ref.startsWith(scheme) || val.$ref.startsWith(this.metaSchemaId))) {
@@ -1349,7 +1348,7 @@ export default class SchemaMerger {
     }
 
     // Split a $ref into path, pointer and name for definition
-    private splitRef(ref: string): {path: string, pointer: string, name: string} {
+    private splitRef(ref: string): { path: string, pointer: string, name: string } {
         const hash = ref.indexOf('#')
         const path = hash < 0 ? '' : ref.substring(0, hash)
         const pointer = hash < 0 ? '' : ref.substring(hash + 1)
@@ -1357,7 +1356,7 @@ export default class SchemaMerger {
         if (name.endsWith('#')) {
             name = name.substring(0, name.length - 1)
         }
-        return {path, pointer, name}
+        return { path, pointer, name }
     }
 
     // Bundle remote references into schema while pruning to minimally needed definitions.
@@ -1369,6 +1368,12 @@ export default class SchemaMerger {
         for (let source of sources) {
             this.prune(schema.definitions[source])
         }
+        walkJSON(schema, elt => {
+            if (typeof elt === 'object') {
+                delete elt.$bundled
+            }
+            return false
+        })
         this.currentFile = current
     }
 
@@ -1382,7 +1387,7 @@ export default class SchemaMerger {
                         // Component schema reference
                         elt.$ref = val.substring(val.indexOf('#'))
                     } else {
-                        const {path, pointer, name} = this.splitRef(val)
+                        const { path, pointer, name } = this.splitRef(val)
                         if (path) {
                             if (!schema.definitions[name]) {
                                 // New source
@@ -1395,9 +1400,9 @@ export default class SchemaMerger {
                             let definition: any = ptr.get(schema, ref)
                             if (!definition) {
                                 this.refError(elt.$ref, ref)
-                            } else {
-                                this.vlog(`${elt.$ref} to ${ref}`)
+                            } else if (!elt.$bundled) {
                                 elt.$ref = ref
+                                elt.$bundled = true
                                 if (!definition.$bundled) {
                                     // First outside reference mark it to keep and follow internal $ref
                                     definition.$bundled = true
@@ -1419,14 +1424,13 @@ export default class SchemaMerger {
                             // Internal reference in external source
                             const ref = `#/definitions/${source}${pointer}`
                             const definition: any = ptr.get(schema, ref)
-                            this.vlog(`${elt.$ref} to ${ref}`)
-                            elt.$ref = ref
-                            TODO: Restore removing $bundled
-                            TODO: Move schema: processing in here
-                            elt.$bundled = true
-                            if (!definition?.$bundled) {
-                                definition.$bundled = true
-                                await this.bundleFun(schema, definition, sources, source)
+                            if (!elt.$bundled) {
+                                elt.$ref = ref
+                                elt.$bundled = true
+                                if (!definition.$bundled) {
+                                    definition.$bundled = true
+                                    await this.bundleFun(schema, definition, sources, source)
+                                }
                             }
                         }
                     }
@@ -1442,8 +1446,6 @@ export default class SchemaMerger {
         let keep = false
         if (typeof elt === 'object') {
             keep = elt.$bundled
-            // TODO: Restore this.
-            // delete elt.$bundled
             if (!keep) {
                 for (let [key, val] of Object.entries(elt)) {
                     if (typeof val === 'object' || Array.isArray(val)) {
@@ -1458,7 +1460,8 @@ export default class SchemaMerger {
             }
         } else if (Array.isArray(elt)) {
             for (let child of elt) {
-                keep = keep || this.prune(child)
+                const childKeep = this.prune(child)
+                keep = keep || childKeep
             }
         }
         return keep
