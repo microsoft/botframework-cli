@@ -26,10 +26,6 @@
       "projectFolder": "packages/lu"
     },
     {
-      "packageName": "@microsoft/bf-dispatcher",
-      "projectFolder": "packages/dispatcher"
-    },
-    {
       "packageName": "@microsoft/bf-lg-cli",
       "projectFolder": "packages/lg"
     },
