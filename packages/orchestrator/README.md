@@ -6,6 +6,19 @@ This package is intended for Microsoft use only and should be consumed through @
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
 
+# Prerequisite
+- [Node.js](https://nodejs.org/) version 10 or higher
+- For installation on Linux:
+```
+sudo apt-get -y install libicu-dev
+cd (path where you install oc_node_authoring)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)
+```
+- For installation on Mac:
+```
+brew install icu4c
+```
+
 # Commands
 <!-- commands -->
 * [`bf orchestrator`](#bf-orchestrator)
