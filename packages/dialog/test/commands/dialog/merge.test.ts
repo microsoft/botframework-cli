@@ -180,7 +180,7 @@ describe('dialog:merge', async () => {
     it('csproj-errors', async () => {
         console.log('\nStart csproj-errors')
         let [merged, lines] = await merge(['projects/project1/project1.csproj'], undefined, true)
-        assert(!merged, 'Merging should faile')
+        assert(!merged, 'Merging should fail')
         assert(countMatches(/error|warning/i, lines) === 3, 'Wrong number of errors or warnings')
         assert(countMatches(/Following.*project1/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget1.*10.0.1/, lines) === 1, 'Did not follow nuget1')

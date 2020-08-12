@@ -1,5 +1,56 @@
 {
   "$schema": "https://schemas.botframework.com/schemas/ui/v1.0/ui.schema",
+  "Microsoft.AdaptiveDialog": {
+    "form": {
+      "description": "This configures a data driven dialog via a collection of events and actions.",
+      "helpLink": "https://aka.ms/bf-composer-docs-dialog",
+      "hidden": [
+        "triggers",
+        "generator",
+        "selector",
+        "schema"
+      ],
+      "label": "Adaptive dialog",
+      "order": [
+        "recognizer",
+        "*"
+      ],
+      "properties": {
+        "recognizer": {
+          "description": "To understand what the user says, your dialog needs a \"Recognizer\"; that includes example words and sentences that users may use.",
+          "label": "Language Understanding"
+        }
+      }
+    }
+  },
+  "Microsoft.OnCondition": {
+    "form": {
+      "hidden": [
+        "actions"
+      ],
+      "label": "Handle a condition",
+      "order": [
+        "condition",
+        "*"
+      ],
+      "subtitle": "Condition"
+    }
+  },
+  "Microsoft.OnIntent": {
+    "form": {
+      "hidden": [
+        "actions"
+      ],
+      "label": "Intent recognized",
+      "order": [
+        "intent",
+        "condition",
+        "entities",
+        "*"
+      ],
+      "subtitle": "Intent recognized"
+    }
+  },
   "nuget3.component1": {
     "form": {
       "description": "Nuget3",
