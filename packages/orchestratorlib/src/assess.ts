@@ -201,8 +201,16 @@ export class OrchestratorAssess {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`OrchestratorAssess.runAsync(), intentEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary=\n${intentEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary}`);
     }
-    const intentEvaluationSummary: string =
+    let intentEvaluationSummary: string =
       intentEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
+    // -----------------------------------------------------------------------
+    intentEvaluationSummary = intentEvaluationSummary.replace(
+      '{APP_NAME}',
+      '');
+    intentEvaluationSummary = intentEvaluationSummary.replace(
+      '{MODEL_SPECIFICATION}',
+      '');
+    // -----------------------------------------------------------------------
     Utility.generateAssessmentEvaluationReportFiles(
       intentEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       intentEvaluationSummary,
@@ -280,14 +288,20 @@ export class OrchestratorAssess {
     }
     Utility.debuggingLog('OrchestratorAssess.runAsync(), finished calling Utility.generateAssessmentEvaluationReport()');
     // -----------------------------------------------------------------------
-
-    // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`OrchestratorAssess.runAsync(), entityEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary=\n${entityEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary}`);
     }
-    const entityEvaluationSummary: string =
+    let entityEvaluationSummary: string =
       entityEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
+    // -----------------------------------------------------------------------
+    entityEvaluationSummary = entityEvaluationSummary.replace(
+      '{APP_NAME}',
+      '');
+    entityEvaluationSummary = entityEvaluationSummary.replace(
+      '{MODEL_SPECIFICATION}',
+      '');
+    // -----------------------------------------------------------------------
     Utility.generateAssessmentEvaluationReportFiles(
       entityEvaluationOutput.evaluationReportGroundTruthSetLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       entityEvaluationSummary,

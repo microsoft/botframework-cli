@@ -169,8 +169,16 @@ export class OrchestratorEvaluate {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
-    const evaluationSummary: string =
+    let evaluationSummary: string =
       evaluationOutput.evaluationReportAnalyses.evaluationSummary;
+    // -----------------------------------------------------------------------
+    evaluationSummary = evaluationSummary.replace(
+      '{APP_NAME}',
+      '');
+    evaluationSummary = evaluationSummary.replace(
+      '{MODEL_SPECIFICATION}',
+      '');
+    // -----------------------------------------------------------------------
     Utility.generateEvaluationReportFiles(
       evaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       evaluationOutput.scoreOutputLines,

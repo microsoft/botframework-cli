@@ -563,8 +563,16 @@ export class OrchestratorPredict {
       this.unknownLabelPredictionThreshold);
     // ---- NOTE ---- integrated step to produce analysis report output files.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
-    const evaluationSummary: string =
+    let evaluationSummary: string =
       this.currentEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
+    // -----------------------------------------------------------------------
+    evaluationSummary = evaluationSummary.replace(
+      '{APP_NAME}',
+      '');
+    evaluationSummary = evaluationSummary.replace(
+      '{MODEL_SPECIFICATION}',
+      '');
+    // -----------------------------------------------------------------------
     Utility.generateEvaluationReportFiles(
       this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       this.currentEvaluationOutput.scoreOutputLines,

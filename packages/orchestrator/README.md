@@ -47,15 +47,116 @@ OPTIONS
 
 DESCRIPTION
 
-  The 'assess' command compare a ground-truth file and a prediction file, then
-  generate two detailed evaluation reports, one for label prediction, and the other entity.
-  The report has the following sections:
-  1) Ground-Truth Label/Utterancce Statistics - label and utterance statistics and distributions.
-  2) Ground-Truth Duplicates - tables of utterance with multiple labels and exact utterance/label duplicates.
-  1) Prediction Label/Utterancce Statistics - label and utterance statistics and distributions.
-  2) Prediction Duplicates - tables of utterance with multiple labels and exact utterance/label duplicates.
-  4) Misclassified - utterances with false positive and false negative predictions.
-  6) Metrics - test confisuon matrix metrics.
+  The "assess" command compares a prediction file against a ground-truth file, then it
+  generates two detailed evaluation reports, one for intent prediction, and the other entity.
+
+  The two input JSON files each contains a JSON array following the schema and example shown below.
+  In the array, each JSON entry has a "text" attribute for an utterance. The utterance can have an array pf
+  "intents" labels. The utterance can also has an "entities" array of entity JSON objects.
+  Each entity contains an "entity" attribute for its name, a "startPos" attribute indicating the offset
+  of the entry in the utterance, and a "endPos" attribute for the final location of the entity
+  in the utterance. The entity can have some optional fields, such as a "text" attribute
+  for entity mentions, however this attribute is only for debugging purpose and not needed.
+
+    [
+    {
+      "text": "I want to see Medal for the General",
+      "intents": [
+        "None"
+      ],
+      "entities": [
+        {
+          "entity": "movie_name",
+          "startPos": 14,
+          "endPos": 34,
+          "text": "Medal for the General"
+        }
+      ]
+    },
+    ...
+    ]
+
+  The "assess" command reads the input ground-truth and prediction file and generates
+  distributions of the utterances and their labels. It also groups each utterance's
+  ground-truth and prediction labels together, compares them, determines if
+  a prediction is in the ground-truth or vice versa. At then end the "assess" command
+  will generate HTML reports.
+
+  The reports have following sections:
+
+  >  Ground-Truth Label/Utterancce Statistics - ground-truth label and utterance statistics and distributions.
+  >  Ground-Truth Duplicates - tables of ground-truth utterances with multiple labels and exact utterance/label duplicates.
+  >  Prediction Label/Utterancce Statistics - prediction label and utterance statistics and distributions.
+  >  Prediction Duplicates - tables of prediction utterances with multiple labels and exact utterance/label duplicates.
+  >  Misclassified - utterances with false-positive and false-negative predictions.
+  >  Metrics - confisuon matrix metrics.
+
+  In the Metrics section, Orchestrator "assess" command first generates a series of per-label
+  binary confusion matrices.
+  Each confusion matrix is comprised of 4 cells: true positive (TP), false positive (FP), true negative (TN),
+  and false negative (FN). Using these 4 cells, Orchestrator can compute several other confusion
+  matrix metrics, including precision, recall, F1, accuracy, and support, etc.
+  Please reference https://en.wikipedia.org/wiki/Confusion_matrix for details.
+
+  Notice that the logic constructing a per-label confusion matrix is a little diffenent between intent
+  and entity labels. Here is the logic outline:
+
+  Intent - the "assess" command iterates through one ground-truth utterance at a time
+        and compare its ground-truth intent array and prediction intent array. If a label is in
+        both arrays, then the utterance is a TP for this label's confusion matrix. If a label only exists in
+        the prediction array, then it's a FP for the predicted label confusion matrix. Similarly
+        if a label only exists in the ground-truth array, then it's a FN for the ground-truth label confusion
+        matrix. For any other labels, the utterance is a TN for their confusion matrices.
+
+  Entity - the "assess" command iterates through one ground-truth utterance at a time
+        and compare its ground-truth entity array and prediction entity array.
+        If an entity mention exists in both array, then it's a TP for the entity's confusion matrix.
+        FP and FN logic is similar to those of Intent. However, there is no TN for evaluating entity mentions
+        as there are too many possible entity candidates for an utterance, while there is only one or a small
+        number of intent labels for an utterance.
+
+  By the way, sometimes an erroneous prediction file may contain some labeled utterances not in the ground-truth
+  file. These utterances are called spurious, and they will be listed under the "Prediction Duplicates" tab
+  in an evaluation report. 
+
+  Once the serial of per-label binary confusion matrices are built, there would be plenty of
+  per-label metrics, which can be consolidated by several averaging approaches.
+  An evaluation report's "Metrics" tab contains several of them:
+
+  0) Micro-Average - Orchestrator is essentially a multi-class model, so evaluation can also be expressed
+        as a multi-class confusion matrix, besides the series of binary per-label confusion matrices
+        mentioned above. In such a multi-class confusion matrix, every prediction is a positive,
+        there is no negative. The diagonal cells of this multi-class confusion matrix are
+        the TPs. The micro-average metric is the ratio of the sum of TPs over total. Total is the sum
+        of all the supports (positives) from the series of binary confusion matrices.
+  1) Summation Micro-Average - the second way condensing the series of binary confusion matrices into one by
+        summing up theie TP, FP, TN, FN numbers. These 4 summations are then used to calculate precision,
+        recall, F1, and accuracy.
+  2) Macro-Average - another way condensing the series of binary confusion matrices simply takes
+        arithmetic average of their every metrics individually. The denominator for computing the averages
+        is the number of labels in the ground-truth set.
+  3) Summation Macro-Average - While micro-average takes a simple arithmetic average for every metrics.
+        Summation macro-average only takes the average on the 4 confusion matrix cells. Precision, recall,
+        F1, and accuracy are then calculated by the average 4 cells.
+  4) Positive Support Macro-Average - some prediction file may not contain all the ground-truth utterances
+        and may lack predictions for some labels completely. Therefore the denominator for this metric
+        only use the number of prediction labels, i.e., labels with a greater-than-zero support.
+  5) Positive Support Summation Macro-Average - this metric is similar to 3), but use 4)'s denominator.
+  6) Weighted Macro-Average - this metric approach take an weighted average of the series of binary
+        per-label confusion matrices. The weights are the per-label prevalences calculated in the
+        first tab.
+  7) Weighted Summation Macro-Average - similar to 6), but the weighted average only applies to
+        the 4 cells. Weighted TP, FP, TN, FN are then used to calculate precision, recall, F1, and
+        accuracy.
+  8) Multi-Label Subset Aggregate - Orchestrator support multi-labels for each utterance. I.e., an utterance
+        can have more than one meanings (intents). For such a multi-intent application, a model can
+        actually generate spurious intent predictions that can still boost all the per-label metrics
+        described thus far. Multi-Label Subset Aggreagate
+        is a per-instance metric that it builds a binary confusion matrix directly.
+        An utterance is only a TP if a prediction's intent array is an non-empty subset of the ground-truth array. If a prediction's intent array contains one label not the ground-truth array,
+        then this utterance is a FP. If a prediction's intent array is empty while it's not
+        for the ground-truth intent array, then the utterance is a FN. A TN only happens if both arrays
+        are empty. Notice that this metric only applies to multi-intent predictions.
 
 EXAMPLE
 ```
@@ -115,17 +216,18 @@ OPTIONS
 
 DESCRIPTION
 
-  The 'evaluate' command can execute a leave-one-out-cross-validation (LOOCV) on a model and example set, then
-  generate a detailed evaluation report which has the following sections:
-  1) Intent/utterancce Statistics - intent and utterance statistics and distributions.
-  2) Duplicates - tables of utterance with multiple intents and exact utterance/intent duplicates.
-  3) Ambiguous - ambiguous predictions that there are some other intent predictions whose
+  The 'evaluate' command can execute a leave-one-out-cross-validation (LOOCV) analysis
+  on a model and its example set. It also generates a detailed evaluation report with the following sections:
+
+  >  Intent/utterancce Statistics - intent and utterance statistics and distributions.
+  >  Duplicates - tables of utterance with multiple intents and exact utterance/intent duplicates.
+  >  Ambiguous - ambiguous predictions that there are some other intent predictions whose
      scores are close to the correctly predicted intents. Ambiguity closeness is controlled by the "ambiguous" parameter, default to 0.2. I.e., if there is a prediction whose score is within 80% of
      the correctly predicted intent score, then the prediction itself is considered "ambiguous."
-  4) Misclassified - utterance's intent labels were not scored the highest.
-  5) Low Confidence - utterance intent labels are scored the highest, but they are lower than a threshold.
+  >  Misclassified - utterance's intent labels were not scored the highest.
+  >  Low Confidence - utterance intent labels are scored the highest, but they are lower than a threshold.
      This threshold can be configured through the "low_confidence" parameter, the default is 0.5.
-  6) Metrics - test confisuon matrix metrics.
+  >  Metrics - test confisuon matrix metrics. Please reference the "assess" command description for details.
 
 EXAMPLE
 ```
