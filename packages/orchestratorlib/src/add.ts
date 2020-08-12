@@ -31,15 +31,15 @@ export class OrchestratorAdd {
       throw new Error('Please provide snapshot path');
     }
 
-    const labelResolver: any = await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotPath);
+    await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotPath);
 
     const ext: string = OrchestratorHelper.isDirectory(inputPath) ? '' : path.extname(inputPath);
     if (ext === '.blu') {
-      labelResolver.addSnapshot(OrchestratorHelper.getSnapshotFromFile(inputPath), labelPrefix);
+      LabelResolver.addSnapshot(OrchestratorHelper.getSnapshotFromFile(inputPath), labelPrefix);
     } else {
       LabelResolver.addExamples((await OrchestratorHelper.getUtteranceLabelsMap(inputPath)).utteranceLabelsMap);
     }
 
-    OrchestratorHelper.writeToFile(outputPath, labelResolver.createSnapshot());
+    OrchestratorHelper.writeToFile(OrchestratorHelper.getOutputPath(outputPath, inputPath), LabelResolver.createSnapshot());
   }
 }

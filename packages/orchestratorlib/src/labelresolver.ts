@@ -64,6 +64,11 @@ export class LabelResolver {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
     return labelResolver.createSnapshot();
   }
+  
+  public static addSnapshot(snapshot: any, prefix: string = '', labelResolver: any = null) {
+    labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
+    return labelResolver.addSnapshot(snapshot, prefix);
+  }
 
   public static addExample(example: any /* {label: label, text: utterance} */, labelResolver: any = null) {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);

@@ -12,7 +12,8 @@ const sinon: any = require('sinon');
 describe('OrchestratorAddTests', () => {
   beforeEach(() => {
     const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve('./test/fixtures/dispatch/orchestrator.blu'));
-    sinon.stub(LabelResolver, 'createAsync');
+    sinon.stub(LabelResolver, 'createWithSnapshotAsync');
+    sinon.stub(LabelResolver, 'addSnapshot');
     sinon.stub(LabelResolver, 'addExamples');
     sinon.stub(LabelResolver, 'createSnapshot').returns(snapshot);
   });

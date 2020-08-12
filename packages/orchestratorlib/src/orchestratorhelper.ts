@@ -116,6 +116,18 @@ export class OrchestratorHelper {
     return Utility.processUnknowLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
   }
 
+  public static getOutputPath(out: string, base: string): string {
+    let retValue: string = out;
+    if (OrchestratorHelper.isDirectory(out)) {
+      retValue = path.join(out, 'orchestrator.blu');
+    } else if (!out.endsWith('.blu')) {
+      const srcBaseFileName: string = path.basename(base);
+      const dstBaseFileName: string = srcBaseFileName.substring(0, srcBaseFileName.lastIndexOf('.'));
+      retValue = path.join(out, `${dstBaseFileName}.blu`);
+    }
+    return retValue;
+  }
+
   public static writeDialogFiles(out: string, isDialog: boolean, baseName: string, recognizers: any = []) {
     if (!isDialog) return undefined;
     const recoContent: {
