@@ -1,0 +1,17 @@
+{
+  "version": "0.1",
+  "models": {
+    "1.0.0-pretrained.20200729.microsoft.dte.en.onnx" : {
+      "releaseDate": "07/29/2020",
+      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/onnx/1.0.0-pretrained.20200729.microsoft.dte.en.onnx.7z",
+      "description": "Bot Framework SDK release 4.10 - English Onnx NLR",
+      "minSDKVersion": "4.10.0"
+    },
+		"1.0.0-pretrained.20200729.microsoft.dte.en.pytorch" : {
+      "releaseDate": "07/29/2020",
+      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/pytorch/1.0.0-pretrained.20200729.microsoft.dte.en.pytorch.7z",
+      "description": "Bot Framework SDK release 4.10 - English Python NLR",
+      "minSDKVersion": "4.10.0"
+    }
+  }
+}

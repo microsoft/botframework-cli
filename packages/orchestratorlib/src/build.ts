@@ -74,7 +74,7 @@ export class OrchestratorBuild {
   }
 
   private static async processLuFile(luFile: string, isDialog: boolean, bluPaths: any) {
-    const labelResolver: any = OrchestratorBuild.Orchestrator.createLabelResolver();
+    const labelResolver: any = LabelResolver.createLabelResolver();
     const baseName: string = path.basename(luFile, '.lu');
     Utility.debuggingLog('Created label resolver');
 

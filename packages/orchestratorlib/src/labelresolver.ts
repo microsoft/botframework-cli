@@ -45,6 +45,10 @@ export class LabelResolver {
     return LabelResolver.LabelResolver;
   }
 
+  public static createLabelResolver() {
+    return LabelResolver.Orchestrator.createLabelResolver();
+  }
+
   public static async createWithSnapshotAsync(nlrPath: string, snapshotPath: string) {
     const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(snapshotPath);
     await LabelResolver.loadNlrAsync(nlrPath);
@@ -64,7 +68,7 @@ export class LabelResolver {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
     return labelResolver.createSnapshot();
   }
-  
+
   public static addSnapshot(snapshot: any, prefix: string = '', labelResolver: any = null) {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
     return labelResolver.addSnapshot(snapshot, prefix);
