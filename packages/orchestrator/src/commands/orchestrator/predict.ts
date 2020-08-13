@@ -12,9 +12,7 @@ export default class OrchestratorPredict extends Command {
   static description: string = 'Real-time interaction with Orchestrator model and analysis. Can return score of given utterance using previously created orchestrator examples';
 
   static examples: Array<string> = [`
-    $ bf orchestrator:predict 
-    $ bf orchestrator:predict --in ./path/to/file/
-    $ bf orchestrator:predict --in ./path/to/file/ --out ./path/to/output/`]
+    $ bf orchestrator:predict --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/`]
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'l', description: 'Optional path to a previously created Orchestrator .blu file.'}),

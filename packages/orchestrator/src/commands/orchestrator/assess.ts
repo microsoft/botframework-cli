@@ -12,13 +12,11 @@ export default class OrchestratorAssess extends Command {
   static description: string = 'Assess utterance/label samples from an input file and create an evaluation report';
 
   static examples: Array<string> = [`
-    $ bf orchestrator:evaluate 
-    $ bf orchestrator:evaluate --in ./path/to/file/
-    $ bf orchestrator:evaluate --in ./path/to/file/ --out ./path/to/output/`]
+    $ bf orchestrator:assess --in ./path/to/ground-truth --prediction ./path/to/prediction --out ./path/to/output/`]
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator .blu file.'}),
-    prediction: flags.string({char: 't', description: 'Path to a prediction file.'}),
+    in: flags.string({char: 'i', description: 'Path to a ground-truth .JSON file.'}),
+    prediction: flags.string({char: 't', description: 'Path to a prediction .JSON file.'}),
     out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
