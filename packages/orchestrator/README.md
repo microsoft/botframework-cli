@@ -12,10 +12,10 @@ This package is intended for Microsoft use only and should be consumed through @
 ```
 $ npm install -g @microsoft/botframework-cli
 ```
-- For installation on Linux Ubuntu LTS, run the following after package install:
+- For installation on Linux Ubuntu LTS, run the following after bf plugin install (see installation below):
 ```
 sudo apt-get -y install libicu-dev
-cd <install location>
+cd <$(npm root -g)/@microsoft/botframework-cli/node_modules/orchestrator-core>
 ln -s libicudata.so /usr/lib/x86_64-linux-gnu/libicudata.so.60  
 ln -s libicuuc.so /usr/lib/x86_64-linux-gnu/libicuuc.so.60
 ln -s libicui18n.so /usr/lib/x86_64-linux-gnu/libicu18n.so.60
@@ -37,9 +37,10 @@ bf plugins:install @microsoft/bf-orchestrator-cli@beta
 
 <!-- commands -->
 * [`bf orchestrator`](#bf-orchestrator)
+* [`bf orchestrator:assess`](#bf-orchestratorassess)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
+* [`bf orchestrator:build`](#bf-orchestratorbuild)
 * [`bf orchestrator:evaluate`](#bf-orchestratorevaluate)
-* [`bf orchestrator:finetune COMMAND`](#bf-orchestratorfinetune-command)
 * [`bf orchestrator:nlr`](#bf-orchestratornlr)
 * [`bf orchestrator:predict`](#bf-orchestratorpredict)
 * [`bf orchestrator:test`](#bf-orchestratortest)
@@ -56,7 +57,7 @@ OPTIONS
   -h, --help  Orchestrator commands help
 ```
 
-_See code: [src\commands\orchestrator\index.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\index.ts)_
+_See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/index.ts)_
 
 ## `bf orchestrator:assess`
 
@@ -189,6 +190,35 @@ DESCRIPTION
 EXAMPLE
 ```
 
+_See code: [src\commands\orchestrator\assess.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/assess.ts)_
+
+## `bf orchestrator:build`
+
+Creates Orchestrator snapshot file and Orchestrator dialog definition file (optional) for each lu file in input folder.
+
+```
+USAGE
+  $ bf orchestrator:build
+
+OPTIONS
+  -d, --debug
+  -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
+  -h, --help         Orchestrator build command help
+  -i, --in=in        Path to lu file or folder with lu files  .
+  -m, --model=model  Path to Orchestrator model.
+  -o, --out=out      Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.
+  --dialog           Generate multi language or cross train Orchestrator recognizers.
+
+EXAMPLE
+
+       $ bf orchestrator:build 
+       $ bf orchestrator:build --in ./path/to/lufile/or/folder/
+       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/
+       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model
+```
+
+_See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/build.ts)_
+
 ## `bf orchestrator:create`
 
 Create orchestrator example file from .lu/.qna files, which represent bot modules
@@ -220,7 +250,7 @@ EXAMPLE
        $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model
 ```
 
-_See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\create.ts)_
+_See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/create.ts)_
 
 ## `bf orchestrator:evaluate`
 
@@ -260,66 +290,39 @@ DESCRIPTION
 EXAMPLE
 ```
 
-_See code: [src\commands\orchestrator\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\evaluate.ts)_
+_See code: [src\commands\orchestrator\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/evaluate.ts)_
 
-## `bf orchestrator:finetune COMMAND`
+## `bf orchestrator:nlr:get`
 
-Manage Orchestrator fine tuning.
-
-```
-USAGE
-  $ bf orchestrator:finetune COMMAND
-
-ARGUMENTS
-  COMMAND  The "command" is the first mandatory argument.  This can be "status", "put" or "get".
-           status - Status of the last finetune training job.
-           put    - Put finetune training example data to improve orchestrator.
-           get    - Get the model for completed finetune job.
-
-OPTIONS
-  -d, --debug
-  -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file.
-  -h, --help                   Orchestrator finetune command help
-
-  -i, --in=in                  If --input is provided, the path to .lu/.qna files from where orchestrator finetune
-                               example file will be created from. Default to current working directory.
-
-  -l, --logformat=logformat    (Optional) If --logformat is provided, overrides the log file formats (Supported:
-                               labelText, dteData).
-
-  -m, --model=model            Path to Orchestrator model.
-
-  -n, --nlrversion=nlrversion  (Optional) If --nlrversion is provided, overrides the nlr version (Supported: 4.8.0,
-                               4.8.0-multilingual).
-
-  -o, --out=out                If --get flag is provided, the path where the new orchestrator finetune job will be
-                               created. Default to current working directory.
-
-EXAMPLE
-
-       $ bf orchestrator:finetune status
-       $ bf orchestrator:finetune put --in ./path/to/file/ [--nlrversion <model version> | --logformat <logformat>]
-       $ bf orchestrator:finetune get [--out ./path/to/output/]
-```
-
-_See code: [src\commands\orchestrator\finetune.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\finetune.ts)_
-
-## `bf orchestrator:nlr`
-
-describe the command here
+Gets Orchestrator model
 
 ```
 USAGE
-  $ bf orchestrator:nlr
+  $ bf orchestrator:nlr:get
 
 OPTIONS
-  -f, --force
+  -o, --out        Path to Orchestrator model
+  --versionId      Model version to download
   -h, --help       show CLI help
-  -n, --name=name  name to print
 ```
 
-_See code: [src\commands\orchestrator\nlr.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\nlr.ts)_
+_See code: [src\commands\orchestrator\nlr\get.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/nlr/get.ts)_
 
+
+## `bf orchestrator:nlr:list`
+
+Lists all Orchestrator model versions
+
+```
+USAGE
+  $ bf orchestrator:nlr:list
+
+OPTIONS
+  -r, --raw        Raw output
+  -h, --help       show CLI help
+```
+
+_See code: [src\commands\orchestrator\nlr\list.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/nlr/list.ts)_
 
 ## `bf orchestrator:predict`
 
@@ -416,7 +419,7 @@ EXAMPLE
 
 ```
 
-_See code: [src\commands\orchestrator\predict.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\predict.ts)_
+_See code: [src\commands\orchestrator\predict.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/predict.ts)_
 
 ## `bf orchestrator:test`
 
@@ -444,5 +447,5 @@ DESCRIPTION
 
 EXAMPLE
 ```
-_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/v1.0.0/src\commands\orchestrator\test.ts)_
+_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
 <!-- commandsstop -->
