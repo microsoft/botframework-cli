@@ -1,8 +1,14 @@
 const assert = require('chai').assert
 const nock = require('nock')
 const uuidv1 = require('uuid/v1')
+const path = require('path')
 const NEWLINE = require('os').EOL
 const Builder = require('../../../src/parser/qnabuild/builder').Builder
+const luObject = require('../../../src/parser/lu/lu')
+const luOptions = require('../../../src/parser/lu/luOptions')
+const txtfile = require('../../../src/parser/lufile/read-text-file');
+
+const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver/qna-import-resolver')
 
 describe('builder: importUrlOrFileReference function return lu content from file sucessfully', () => {
   before(function () {
@@ -120,5 +126,41 @@ describe('builder: importUrlOrFileReference function return lu content from url 
                             `## ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
                             `\`\`\`markdown${NEWLINE}` +
                             `25 types${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`)
+  })
+})
+
+describe('builder: loadContents function can resolve import files with customized resolver', () => {
+  it('should load contents sucessfully after resolving imports', async () => {
+    let importResolver = async function (srcId, idsToFind) {
+      let luObjects = []
+      let parentFilePath = path.parse(path.resolve(srcId)).dir
+      for (let idx = 0; idx < idsToFind.length; idx++) {
+        let file = idsToFind[idx]
+        if (!path.isAbsolute(file.filePath)) {
+          file.filePath = path.resolve(parentFilePath, file.filePath)
+        }
+
+        if (file.filePath.endsWith(".qna") && !file.filePath.endsWith("en-us.qna")) {
+          file.filePath = file.filePath.slice(0, file.filePath.length - 3) + "en-us.qna"
+        }
+
+        luObjects.push(new luObject(txtfile.readSync(file.filePath), new luOptions(file.filePath, file.includeInCollate)))
+      }
+      return luObjects
+    };
+
+    const builder = new Builder(() => { })
+    const result = await builder.loadContents(
+      [`${path.join(rootDir, "common.en-us.qna")}`],
+      "test",
+      "dev",
+      "westus",
+      "en-us",
+      undefined,
+      importResolver)
+
+    assert.equal(result.qnaContents.length, 1)
+    assert.isTrue(result.qnaContents[0].content.includes(
+      `!# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? help${NEWLINE}- could you help${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}help answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? welcome${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}welcome here${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? cancel${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}cancel the task${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? stop${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}stop that${NEWLINE}\`\`\``))
   })
 })
