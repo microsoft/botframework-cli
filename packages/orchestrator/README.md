@@ -41,7 +41,8 @@ bf plugins:install @microsoft/bf-orchestrator-cli@beta
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:build`](#bf-orchestratorbuild)
 * [`bf orchestrator:evaluate`](#bf-orchestratorevaluate)
-* [`bf orchestrator:nlr`](#bf-orchestratornlr)
+* [`bf orchestrator:nlr:get`](#bf-orchestratornlrget)
+* [`bf orchestrator:nlr:list`](#bf-orchestratornlrlist)
 * [`bf orchestrator:predict`](#bf-orchestratorpredict)
 * [`bf orchestrator:test`](#bf-orchestratortest)
 
