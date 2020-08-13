@@ -77,15 +77,17 @@ OPTIONS
 DESCRIPTION
 
   The "assess" command compares a prediction file against a ground-truth file, then it
-  generates two detailed evaluation reports, one for intent prediction, and the other entity.
+  generates two detailed evaluation reports, one on intent prediction, and the other entity.
 
-  The two input JSON files each contains a JSON array following the schema and example shown below.
+  The two input JSON files each contains a JSON array of labeled utterances
+  following the schema and example shown below.
   In the array, each JSON entry has a "text" attribute for an utterance. The utterance can have an array pf
-  "intents" labels. The utterance can also has an "entities" array of entity JSON objects.
-  Each entity contains an "entity" attribute for its name, a "startPos" attribute indicating the offset
+  "intents." The utterance can also has an array of "entities."
+  Each entity entry contains an "entity" attribute for its name, a "startPos" attribute indicating the offset
   of the entry in the utterance, and a "endPos" attribute for the final location of the entity
   in the utterance. The entity can have some optional fields, such as a "text" attribute
-  for entity mentions, however this attribute is only for debugging purpose and not needed.
+  for a entity mention within the utterance, however this attribute is only for debugging purpose and not consumed
+  for the "assess" command.
 
     [
     {
@@ -105,13 +107,13 @@ DESCRIPTION
     ...
     ]
 
-  The "assess" command reads the input ground-truth and prediction file and generates
+  The "assess" command reads the input ground-truth and prediction JSON files and generates
   distributions of the utterances and their labels. It also groups each utterance's
-  ground-truth and prediction labels together, compares them, determines if
-  a prediction is in the ground-truth or vice versa. At then end the "assess" command
-  will generate HTML reports.
+  ground-truth and prediction intent and entity labels together, compares them, and determines if
+  a prediction is in the ground-truth or vice versa. Using these analyese, the "assess" command
+  will generate HTML reports at the end. One report for intent evaluation and the other entity.
 
-  The reports have following sections:
+  Each report has the following sections:
 
   >  Ground-Truth Label/Utterancce Statistics - ground-truth label and utterance statistics and distributions.
   >  Ground-Truth Duplicates - tables of ground-truth utterances with multiple labels and exact utterance/label duplicates.
@@ -120,7 +122,7 @@ DESCRIPTION
   >  Misclassified - utterances with false-positive and false-negative predictions.
   >  Metrics - confisuon matrix metrics.
 
-  In the Metrics section, Orchestrator "assess" command first generates a series of per-label
+  In the Metrics section, the Orchestrator "assess" command first generates a series of per-label
   binary confusion matrices.
   Each confusion matrix is comprised of 4 cells: true positive (TP), false positive (FP), true negative (TN),
   and false negative (FN). Using these 4 cells, Orchestrator can compute several other confusion
@@ -128,65 +130,69 @@ DESCRIPTION
   Please reference https://en.wikipedia.org/wiki/Confusion_matrix for details.
 
   Notice that the logic constructing a per-label confusion matrix is a little diffenent between intent
-  and entity labels. Here is the logic outline:
+  and entity labels. Here are the logic outlines:
 
   Intent - the "assess" command iterates through one ground-truth utterance at a time
         and compare its ground-truth intent array and prediction intent array. If a label is in
-        both arrays, then the utterance is a TP for this label's confusion matrix. If a label only exists in
-        the prediction array, then it's a FP for the predicted label confusion matrix. Similarly
-        if a label only exists in the ground-truth array, then it's a FN for the ground-truth label confusion
+        both arrays, then this utterance is a TP for the label's confusion matrix. If a label only exists in
+        the prediction array, then it's a FP for the predicted label's confusion matrix. Similarly
+        if a label only exists in the ground-truth array, then it's a FN for the ground-truth label's confusion
         matrix. For any other labels, the utterance is a TN for their confusion matrices.
 
   Entity - the "assess" command iterates through one ground-truth utterance at a time
         and compare its ground-truth entity array and prediction entity array.
-        If an entity mention exists in both array, then it's a TP for the entity's confusion matrix.
-        FP and FN logic is similar to those of Intent. However, there is no TN for evaluating entity mentions
-        as there are too many possible entity candidates for an utterance, while there is only one or a small
-        number of intent labels for an utterance.
+        If an entity mention exists in both array, then it's a TP for the entity label's confusion matrix.
+        FP and FN logic is similar to those for intent. However, there is no TN for evaluating entity mentions
+        as there are too many possible entity mention candidates for an utterance, while there is only one or a small
+        number of intent labels for an utterance. It is still possible to define a custom TN logic, such as
+        an entity label is a TN if it does not exist in an utterance's ground-truth or prediction label arrays.
+        However as some important metrics such as precision, recall, and their combination, F1, do not rely on TN,
+        so it's really necessary to calculate TN for evaluating entity predictions.
 
   By the way, sometimes an erroneous prediction file may contain some labeled utterances not in the ground-truth
   file. These utterances are called spurious, and they will be listed under the "Prediction Duplicates" tab
-  in an evaluation report. 
+  in an evaluation report called "Spurious utterance and label pairs."
 
-  Once the serial of per-label binary confusion matrices are built, there would be plenty of
-  per-label metrics, which can be consolidated by several averaging approaches.
+  Once the serial of per-label binary confusion matrices are built, there are plenty of
+  per-label metrics, which can then be consolidated using several averaging schemes.
   An evaluation report's "Metrics" tab contains several of them:
 
-  0) Micro-Average - Orchestrator is essentially a multi-class model, so evaluation can also be expressed
+  0) Micro-Average - Orchestrator is essentially a multi-class ML learner and model, so evaluation can also be expressed
         as a multi-class confusion matrix, besides the series of binary per-label confusion matrices
         mentioned above. In such a multi-class confusion matrix, every prediction is a positive,
         there is no negative. The diagonal cells of this multi-class confusion matrix are
         the TPs. The micro-average metric is the ratio of the sum of TPs over total. Total is the sum
-        of all the supports (positives) from the series of binary confusion matrices.
-  1) Summation Micro-Average - the second way condensing the series of binary confusion matrices into one by
-        summing up theie TP, FP, TN, FN numbers. These 4 summations are then used to calculate precision,
-        recall, F1, and accuracy.
-  2) Macro-Average - another way condensing the series of binary confusion matrices simply takes
-        arithmetic average of their every metrics individually. The denominator for computing the averages
-        is the number of labels in the ground-truth set.
-  3) Summation Macro-Average - While micro-average takes a simple arithmetic average for every metrics.
-        Summation macro-average only takes the average on the 4 confusion matrix cells. Precision, recall,
-        F1, and accuracy are then calculated by the average 4 cells.
+        of all the supports (#positives) aggregated from the series of binary confusion matrices.
+  1) Summation Micro-Average - the second way coalescing the series of binary confusion matrices into one is by
+        summing up their TP, FP, TN, FN numbers. These 4 summations are then formed as one binary confusion
+        matrix and can be used to calculate overall precision, recall, F1, and accuracy.
+  2) Macro-Average - another way coalescing the series of binary confusion matrices simply takes
+        arithmetic average of every metrics individually. The denominator for computing the averages
+        is the number of labels existed in the ground-truth set.
+  3) Summation Macro-Average - While macro-average takes a simple arithmetic average on every metrics.
+        Summation macro-average only takes the average on the 4 confusion matrix cells, TP, FP, TN, and FN.
+        Precision, recall, F1, and accuracy are then calculated by the 4 averaged cells.
   4) Positive Support Macro-Average - some prediction file may not contain all the ground-truth utterances
-        and may lack predictions for some labels completely. Therefore the denominator for this metric
-        only use the number of prediction labels, i.e., labels with a greater-than-zero support.
+        and may lack predictions for some ground-truth labels completely. The averaging denominator for this metric
+        uses the number of prediction labels, i.e., number of the labels with a greater-than-zero support.
   5) Positive Support Summation Macro-Average - this metric is similar to 3), but use 4)'s denominator.
-  6) Weighted Macro-Average - this metric approach take an weighted average of the series of binary
-        per-label confusion matrices. The weights are the per-label prevalences calculated in the
-        first tab.
+  6) Weighted Macro-Average - this metric averaging approach takes an weighted average of the series of binary
+        per-label confusion matrices. The weights are the per-label prevalences, which are listed in the
+        "Ground-Truth Label/Utterancce Statistics" tab.
   7) Weighted Summation Macro-Average - similar to 6), but the weighted average only applies to
-        the 4 cells. Weighted TP, FP, TN, FN are then used to calculate precision, recall, F1, and
+        the 4 confusion matrix cells. Weighted TP, FP, TN, FN are then used to calculate precision, recall, F1, and
         accuracy.
-  8) Multi-Label Subset Aggregate - Orchestrator support multi-labels for each utterance. I.e., an utterance
-        can have more than one meanings (intents). For such a multi-intent application, a model can
-        actually generate spurious intent predictions that can still boost all the per-label metrics
-        described thus far. Multi-Label Subset Aggreagate
-        is a per-instance metric that it builds a binary confusion matrix directly.
-        An utterance is only a TP if a prediction's intent array is an non-empty subset of the ground-truth array. If a prediction's intent array contains one label not the ground-truth array,
-        then this utterance is a FP. If a prediction's intent array is empty while it's not
-        for the ground-truth intent array, then the utterance is a FN. A TN only happens if both arrays
-        are empty. Notice that this metric only applies to multi-intent predictions.
-
+  8) Multi-Label Subset Aggregate - Orchestrator supports multi-label intents for each utterance. I.e., an utterance
+        can belongs to more than one categories (intents). For such a multi-intent application, a model can
+        actually generate spurious intent predictions that can still boost the "per-label metrics"
+        described thus far. To counter this problem, Multi-Label Subset Aggreagate
+        is a "per-instance metric" that it builds a binary confusion matrix directly.
+        An utterance is only a TP if a prediction's intent array is a non-empty subset of the ground-truth array. If a prediction's intent array contains at least one label not in the ground-truth array,
+        then this utterance is a FP. If an utterance's prediction intent array is empty while it's not
+        for the ground-truth intent array, then this utterance is a FN. A TN only happens if both arrays
+        are empty. Notice that this metric only applies to multi-intent predictions, it is not calculated for
+        evaluating entity predictions.
+	
 EXAMPLE
 ```
 
