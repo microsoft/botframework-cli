@@ -14,7 +14,7 @@ import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility"
 
 import { Utility } from "../../utility/Utility";
 
-export class MultiLabelObjectConfusionMatrixSubset
+export class MultiLabelObjectConfusionMatrixExact
 extends MultiLabelObjectConfusionMatrixWithBinaryBase {
 
     constructor(
@@ -83,10 +83,21 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
                 break;
             }
         }
-        if (isPredictionSubsetOfGroundTruthLabelIds) {
-            this.getBinaryConfusionMatrix().addToTruePositives(value, true);
-        } else {
+        if (!isPredictionSubsetOfGroundTruthLabelIds) {
             this.getBinaryConfusionMatrix().addToFalsePositives(value, true);
+            return;
         }
+        let isGroundTruthSubsetOfPredictionLabelIds: boolean = true;
+        for (const groundTrueLabelId of groundTrueLabelIds) {
+            if (!this.isLabelIdInArray(predictedLabelIds, groundTrueLabelId)) {
+                isGroundTruthSubsetOfPredictionLabelIds = false;
+                break;
+            }
+        }
+        if (!isGroundTruthSubsetOfPredictionLabelIds) {
+            this.getBinaryConfusionMatrix().addToFalseNegatives(value, true);
+            return;
+        }
+        this.getBinaryConfusionMatrix().addToTruePositives(value, true);
     }
 }

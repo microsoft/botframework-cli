@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {Label}  from './label';
@@ -181,6 +182,7 @@ export class OrchestratorAssess {
           'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
+          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
@@ -271,6 +273,7 @@ export class OrchestratorAssess {
           'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
+          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;

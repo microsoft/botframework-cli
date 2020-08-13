@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as readline from 'readline';
 
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
@@ -138,6 +139,7 @@ export class OrchestratorPredict {
         'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
+        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;

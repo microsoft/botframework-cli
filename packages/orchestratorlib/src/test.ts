@@ -6,6 +6,7 @@
 import * as path from 'path';
 
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {PredictionScoreStructure}  from './predictionscorestructure';
@@ -136,6 +137,7 @@ export class OrchestratorTest {
           'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
+          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;

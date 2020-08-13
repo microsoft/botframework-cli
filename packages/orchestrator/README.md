@@ -182,11 +182,20 @@ DESCRIPTION
   7) Weighted Summation Macro-Average - similar to 6), but the weighted average only applies to
         the 4 confusion matrix cells. Weighted TP, FP, TN, FN are then used to calculate precision, recall, F1, and
         accuracy.
-  8) Multi-Label Subset Aggregate - Orchestrator supports multi-label intents for each utterance. I.e., an utterance
-        can belongs to more than one categories (intents). For such a multi-intent application, a model can
-        actually generate spurious intent predictions that can still boost the "per-label metrics"
-        described thus far. To counter this problem, Multi-Label Subset Aggreagate
-        is a "per-instance metric" that it builds a binary confusion matrix directly.
+  8) Multi-Label Exact Aggregate - Orchestrator supports multi-label intents for each utterance. I.e., an utterance
+        can belong to more than one categories (intents). For a multi-intent application, a model can
+        actually generate spurious intent predictions that can still boost the "per-label" metrics
+        described thus far. In a "per-label" metric, every label (an instance can have more than one label)
+        can contribute to metric computation.
+        To counter this problem, Multi-Label Exact Aggreagate is a "per-instance" metric that it builds a binary confusion matrix directly and only a instance can contribute to metric computation disregard the number
+        of labels it has.
+        An utterance is only a TP if a non-empty prediction's intent array is exactly equal to the ground-truth array. If a prediction's intent array contains at least one label not in the ground-truth array,
+        then this utterance is a FP. Then, if an utterance's ground-truth intent array contains at least
+        one label not in the prediction intent array, then this utterance is a FN. A TN only happens if both arrays
+        are empty. Notice that this metric only applies to multi-intent predictions, it is not calculated for
+        evaluating entity predictions.
+  9) Multi-Label Subset Aggregate - Similar to Multi-Label Exact Aggregate, but this metric's TP logic is less
+        restrictive.
         An utterance is only a TP if a prediction's intent array is a non-empty subset of the ground-truth array. If a prediction's intent array contains at least one label not in the ground-truth array,
         then this utterance is a FP. If an utterance's prediction intent array is empty while it's not
         for the ground-truth intent array, then this utterance is a FN. A TN only happens if both arrays
