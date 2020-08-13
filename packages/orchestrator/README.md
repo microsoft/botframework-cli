@@ -8,10 +8,17 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Prerequisite
 - [Node.js](https://nodejs.org/) version 10 or higher
-- For installation on Linux:
+- @microsoft/botframework-cli
+```
+$ npm install -g @microsoft/botframework-cli
+```
+- For installation on Linux Ubuntu LTS, run the following after package install:
 ```
 sudo apt-get -y install libicu-dev
-cd (path where you install oc_node_authoring)
+cd <install location>
+ln -s libicudata.so /usr/lib/x86_64-linux-gnu/libicudata.so.60  
+ln -s libicuuc.so /usr/lib/x86_64-linux-gnu/libicuuc.so.60
+ln -s libicui18n.so /usr/lib/x86_64-linux-gnu/libicu18n.so.60
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)
 ```
 - For installation on Mac:
@@ -19,7 +26,15 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)
 brew install icu4c
 ```
 
+# Installation
+To install:
+
+```
+bf plugins:install @microsoft/bf-orchestrator-cli@beta
+```
+
 # Commands
+
 <!-- commands -->
 * [`bf orchestrator`](#bf-orchestrator)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
