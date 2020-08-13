@@ -46,7 +46,7 @@ export class DictionaryMapUtility {
             "utteranceLabelsMap": { [id: string]: string[] };
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; } {
         const utteranceLabelsMap: { [id: string]: string[] } = utteranceLabels.utteranceLabelsMap;
-        const utteranceLabelDuplicateMap:  Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
+        const utteranceLabelDuplicateMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
         if (utteranceLabelsMap) {
             for (const utteranceKey in utteranceLabelsMap) {
                 if (utteranceKey) {
@@ -96,7 +96,7 @@ export class DictionaryMapUtility {
                 "utteranceLabelsMap": { [id: string]: string[] };
                 "utteranceLabelDuplicateMap": Map<string, Set<string>>; } {
         const utteranceLabelsMap: { [id: string]: string[] } = utteranceLabels.utteranceLabelsMap;
-        const utteranceLabelDuplicateMap:  Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
+        const utteranceLabelDuplicateMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
         if (utteranceLabelsMap) {
             for (const utteranceKey in utteranceLabelsMap) {
                 if (utteranceKey) {

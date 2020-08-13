@@ -4,15 +4,15 @@
  */
 
 import {expect, test} from '@oclif/test';
-import * as fs from 'fs-extra';
-import * as path from 'path';
+// import * as fs from 'fs-extra';
+// import * as path from 'path';
 
 const EMULATOR_CONNECTION_STRING: string = 'DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;' +
     'AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;' +
     'BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;' +
     'TableEndpoint=http://127.0.0.1:10002/devstoreaccount1;' +
     'QueueEndpoint=http://127.0.0.1:10001/devstoreaccount1;';
-
+/*
 function findFile(dir: string, fileToFind: string): string {
   const files: string[] = fs.readdirSync(dir);
 
@@ -32,7 +32,7 @@ function findFile(dir: string, fileToFind: string): string {
   }
   return '';
 }
-
+*/
 describe('orchestrator:finetune cli parameters test', () => {
   // eslint-disable-next-line no-console
   console.log(`EMULATOR_CONNECTION_STRING=${EMULATOR_CONNECTION_STRING}`);
