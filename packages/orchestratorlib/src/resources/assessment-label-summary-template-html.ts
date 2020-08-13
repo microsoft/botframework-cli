@@ -137,7 +137,7 @@ export class AssessmentLabelSummaryTemplateHtml {
             </div>
             <div class="tab-pane" id="ground-truth-set-duplicates" role="tabpanel" aria-labelledby="ground-truth-set-duplicates-tab">
                 <p>Multi-label utterances and duplicate utterance/label pairs. The utterance/label pairs in the second table below have been entered more than one times in the source file.
-                   It's not a serious problem as they will be deduped.
+                   It's not a serious problem as they will be de-duplicated.
                 </p>
                 <p>
                     {GROUND_TRUTH_SET_TEXT_DUPLICATES}
@@ -151,7 +151,8 @@ export class AssessmentLabelSummaryTemplateHtml {
             </div>
             <div class="tab-pane" id="prediction-set-duplicates" role="tabpanel" aria-labelledby="prediction-set-duplicates-tab">
                 <p>Multi-label utterances and duplicate utterance/label pairs. The utterance/label pairs in the second table below have been entered more than one times in the source file.
-                   It's not a serious problem as they will be deduped.
+                   It's not a serious problem as they will be de-duplicated. The spurious table at the end shows the utterances not
+                   in the ground-truth file. They are ignored for evaluation.
                 </p>
                 <p>
                     {PREDICTION_SET_TEXT_DUPLICATES}
@@ -183,7 +184,7 @@ export class AssessmentLabelSummaryTemplateHtml {
             </div>
             -->
             <div class="tab-pane" id="model-evaluation" role="tabpanel" aria-labelledby="model-evaluation-tab">
-                <p>Overall model performance and links to machine learning model evaluation charts and metrics</p>
+                <p>Overall model performance</p>
                 <!--
                 <p>
                     {MODEL_EVALUATION_OVERALL}

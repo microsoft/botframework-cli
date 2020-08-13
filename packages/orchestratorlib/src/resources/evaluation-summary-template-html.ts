@@ -127,7 +127,7 @@ export class EvaluationSummaryTemplateHtml {
             </div>
             <div class="tab-pane" id="utterance-duplicates" role="tabpanel" aria-labelledby="utterance-duplicates-tab">
                 <p>Multi-label utterances and duplicate utterance/intent pairs. The utterance/intent pairs in the second table below have been entered more than one times in the source file.
-                   It's not a serious problem as they will be deduped.
+                   It's not a serious problem as they will be de-duplicated.
                 </p>
                 <p>
                     {TEXT_DUPLICATES}
@@ -152,7 +152,7 @@ export class EvaluationSummaryTemplateHtml {
                 </p>
             </div>
             <div class="tab-pane" id="model-evaluation" role="tabpanel" aria-labelledby="model-evaluation-tab">
-                <p>Overall model performance and links to machine learning model evaluation charts and metrics</p>
+                <p>Overall model performance</p>
                 <!--
                 <p>
                     {MODEL_EVALUATION_OVERALL}
