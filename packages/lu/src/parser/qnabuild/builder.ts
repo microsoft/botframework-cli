@@ -74,8 +74,12 @@ export class Builder {
         crosstrainedRecognizers.set(fileName, new CrossTrainedRecognizer(crossTrainedRecognizerPath, crosstrainedRecognizerContent, crosstrainedRecognizerSchema as string))
       }
 
-      const qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
+      let qnaFiles = await fileHelper.getLuObjects(undefined, file, true, fileExtEnum.QnAFile)
       this.handler(`${file} loaded\n`)
+
+      // filter empty qna files
+      qnaFiles = qnaFiles.filter((file: any) => file.content !== '')
+      if (qnaFiles.length <= 0) continue
 
       const multiRecognizerPath = path.join(fileFolder, `${fileName}.qna.dialog`)
       if (!multiRecognizers.has(fileName)) {
@@ -589,8 +593,6 @@ export class Builder {
         content.content = mergedContent
         contents.set(name, content)
       } catch (err) {
-        if (err.errCode === retCode.errorCode.EMPTY_CONTENT) continue
-
         if (err.source) {
           err.text = `Invalid QnA file ${err.source}: ${err.text}`
         } else {

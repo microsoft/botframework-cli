@@ -5,10 +5,585 @@
   "description": "These are all of the kinds that can be created by the loader.",
   "oneOf": [
     {
+      "$ref": "#/definitions/Microsoft.AdaptiveDialog"
+    },
+    {
+      "$ref": "#/definitions/Microsoft.LuisRecognizer"
+    },
+    {
+      "$ref": "#/definitions/Microsoft.MostSpecificSelector"
+    },
+    {
+      "$ref": "#/definitions/Microsoft.OnCondition"
+    },
+    {
+      "$ref": "#/definitions/Microsoft.OnIntent"
+    },
+    {
+      "$ref": "#/definitions/Microsoft.TemplateEngineLanguageGenerator"
+    },
+    {
       "$ref": "#/definitions/nuget3.component1"
     }
   ],
   "definitions": {
+    "Microsoft.AdaptiveDialog": {
+      "$role": "implements(Microsoft.IDialog)",
+      "title": "Adaptive Dialog",
+      "description": "Flexible, data driven dialog that can adapt to the conversation.",
+      "type": "object",
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Id",
+          "description": "Optional dialog ID."
+        },
+        "autoEndDialog": {
+          "$ref": "#/definitions/booleanExpression",
+          "title": "Auto end dialog",
+          "description": "If set to true the dialog will automatically end when there are no further actions.  If set to false, remember to manually end the dialog using EndDialog action.",
+          "default": true
+        },
+        "defaultResultProperty": {
+          "type": "string",
+          "title": "Default result property",
+          "description": "Value that will be passed back to the parent dialog.",
+          "default": "dialog.result"
+        },
+        "recognizer": {
+          "$kind": "Microsoft.IRecognizer",
+          "title": "Recognizer",
+          "description": "Input recognizer that interprets user input into intent and entities.",
+          "$ref": "#/definitions/Microsoft.IRecognizer"
+        },
+        "generator": {
+          "$kind": "Microsoft.ILanguageGenerator",
+          "title": "Language Generator",
+          "description": "Language generator that generates bot responses.",
+          "$ref": "#/definitions/Microsoft.ILanguageGenerator"
+        },
+        "selector": {
+          "$kind": "Microsoft.ITriggerSelector",
+          "title": "Selector",
+          "description": "Policy to determine which trigger is executed. Defaults to a 'best match' selector (optional).",
+          "$ref": "#/definitions/Microsoft.ITriggerSelector"
+        },
+        "triggers": {
+          "type": "array",
+          "description": "List of triggers defined for this dialog.",
+          "title": "Triggers",
+          "items": {
+            "$kind": "Microsoft.ITrigger",
+            "title": "Event triggers",
+            "description": "Event triggers for handling events.",
+            "$ref": "#/definitions/Microsoft.ITrigger"
+          }
+        },
+        "schema": {
+          "title": "Schema",
+          "description": "Schema to fill in.",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/schema"
+            },
+            {
+              "type": "string",
+              "title": "Reference to JSON schema",
+              "description": "Reference to JSON schema .dialog file."
+            }
+          ]
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "Microsoft.AdaptiveDialog"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "Microsoft.IDialog": {
+      "title": "Microsoft Dialogs",
+      "description": "Components which derive from Dialog",
+      "$role": "interface",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/Microsoft.AdaptiveDialog"
+        }
+      ],
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      }
+    },
+    "Microsoft.ILanguageGenerator": {
+      "title": "Microsoft LanguageGenerator",
+      "description": "Components which dervie from the LanguageGenerator class",
+      "$role": "interface",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/Microsoft.TemplateEngineLanguageGenerator"
+        }
+      ],
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      }
+    },
+    "Microsoft.IRecognizer": {
+      "title": "Microsoft Recognizer",
+      "description": "Components which derive from Recognizer class",
+      "$role": "interface",
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/Microsoft.LuisRecognizer"
+        }
+      ],
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      }
+    },
+    "Microsoft.ITrigger": {
+      "$role": "interface",
+      "title": "Microsoft Triggers",
+      "description": "Components which derive from OnCondition class.",
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "Reference to Microsoft.ITrigger",
+          "description": "Reference to Microsoft.ITrigger .dialog file."
+        },
+        {
+          "$ref": "#/definitions/Microsoft.OnCondition"
+        },
+        {
+          "$ref": "#/definitions/Microsoft.OnIntent"
+        }
+      ]
+    },
+    "Microsoft.ITriggerSelector": {
+      "$role": "interface",
+      "title": "Selectors",
+      "description": "Components which derive from TriggerSelector class.",
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "Reference to Microsoft.ITriggerSelector",
+          "description": "Reference to Microsoft.ITriggerSelector .dialog file."
+        },
+        {
+          "$ref": "#/definitions/Microsoft.MostSpecificSelector"
+        }
+      ]
+    },
+    "Microsoft.LuisRecognizer": {
+      "$role": "implements(Microsoft.IRecognizer)",
+      "title": "LUIS Recognizer",
+      "description": "LUIS recognizer.",
+      "type": "object",
+      "required": [
+        "applicationId",
+        "endpoint",
+        "endpointKey",
+        "$kind"
+      ],
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Id",
+          "description": "Optional unique id using with RecognizerSet.  Other recognizers should return 'DeferToRecognizer_{Id}' intent when cross training data for this recognizer."
+        },
+        "applicationId": {
+          "$ref": "#/definitions/stringExpression",
+          "title": "LUIS Application ID",
+          "description": "Application ID for your model from the LUIS service."
+        },
+        "endpoint": {
+          "$ref": "#/definitions/stringExpression",
+          "title": "LUIS Endpoint",
+          "description": "Endpoint to use for LUIS service like https://westus.api.cognitive.microsoft.com."
+        },
+        "endpointKey": {
+          "$ref": "#/definitions/stringExpression",
+          "title": "LUIS prediction key",
+          "description": "LUIS prediction key used to call endpoint."
+        },
+        "externalEntityRecognizer": {
+          "$kind": "Microsoft.IRecognizer",
+          "title": "External Entity Recognizer",
+          "description": "Entities recognized by this recognizer will be passed to LUIS as external entities.",
+          "$ref": "#/definitions/Microsoft.IRecognizer"
+        },
+        "dynamicLists": {
+          "$ref": "#/definitions/arrayExpression",
+          "title": "Dynamic lists",
+          "description": "Runtime defined entity lists.",
+          "items": {
+            "title": "Entity list",
+            "description": "Lists of canonical values and synonyms for an entity.",
+            "type": "object",
+            "properties": {
+              "entity": {
+                "title": "Entity",
+                "description": "Entity to extend with a dynamic list.",
+                "type": "string"
+              },
+              "list": {
+                "title": "Dynamic list",
+                "description": "List of canonical forms and synonyms.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "title": "List entry",
+                  "description": "Canonical form and synonynms.",
+                  "properties": {
+                    "canonicalForm": {
+                      "title": "Canonical form",
+                      "description": "Resolution if any synonym matches.",
+                      "type": "string"
+                    },
+                    "synonyms": {
+                      "title": "Synonyms",
+                      "description": "List of synonyms for a canonical form.",
+                      "type": "array",
+                      "items": {
+                        "title": "Synonym",
+                        "description": "Synonym for canonical form.",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "predictionOptions": {
+          "type": "object",
+          "title": "Prediction options",
+          "description": "Options to control LUIS prediction behavior.",
+          "properties": {
+            "includeAllIntents": {
+              "type": "boolean",
+              "title": "Include all intents",
+              "description": "True for all intents, false for only top intent."
+            },
+            "includeInstanceData": {
+              "type": "boolean",
+              "title": "Include $instance",
+              "description": "True to include $instance metadata in the LUIS response."
+            },
+            "log": {
+              "type": "boolean",
+              "title": "Log utterances",
+              "description": "True to log utterances on LUIS service."
+            },
+            "preferExternalEntities": {
+              "type": "boolean",
+              "title": "Prefer External Entities",
+              "description": "True to prefer external entities to those generated by LUIS models."
+            },
+            "slot": {
+              "type": "string",
+              "title": "Slot",
+              "description": "Slot to use for talking to LUIS service like production or staging."
+            },
+            "version": {
+              "type": "string",
+              "title": "Version",
+              "description": "LUIS application version to use."
+            }
+          }
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "Microsoft.LuisRecognizer"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "Microsoft.MostSpecificSelector": {
+      "$role": "implements(Microsoft.ITriggerSelector)",
+      "title": "Most Specific Trigger Selector",
+      "description": "Select most specific true events with optional additional selector",
+      "type": "object",
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "selector": {
+          "$kind": "Microsoft.ITriggerSelector",
+          "$ref": "#/definitions/Microsoft.ITriggerSelector"
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "Microsoft.MostSpecificSelector"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "Microsoft.OnCondition": {
+      "$role": "implements(Microsoft.ITrigger)",
+      "title": "On condition",
+      "description": "Actions to perform when specified condition is true.",
+      "type": "object",
+      "required": [
+        "actions",
+        "$kind"
+      ],
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "condition": {
+          "$ref": "#/definitions/condition",
+          "title": "Condition",
+          "description": "Condition (expression).",
+          "examples": [
+            "user.vip == true"
+          ]
+        },
+        "actions": {
+          "type": "array",
+          "title": "Actions",
+          "description": "Sequence of actions to execute.",
+          "items": {
+            "$kind": "Microsoft.IDialog",
+            "$ref": "#/definitions/Microsoft.IDialog"
+          }
+        },
+        "priority": {
+          "$ref": "#/definitions/integerExpression",
+          "title": "Priority",
+          "description": "Priority for trigger with 0 being the highest and < 0 ignored."
+        },
+        "runOnce": {
+          "$ref": "#/definitions/booleanExpression",
+          "title": "Run Once",
+          "description": "True if rule should run once per unique conditions",
+          "examples": [
+            true,
+            "=f(x)"
+          ]
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "Microsoft.OnCondition"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "Microsoft.OnIntent": {
+      "$role": [
+        "implements(Microsoft.ITrigger)",
+        "extends(Microsoft.OnCondition)"
+      ],
+      "title": "On intent recognition",
+      "description": "Actions to perform when specified intent is recognized.",
+      "type": "object",
+      "required": [
+        "actions",
+        "$kind"
+      ],
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "intent": {
+          "type": "string",
+          "title": "Intent",
+          "description": "Name of intent."
+        },
+        "entities": {
+          "type": "array",
+          "title": "Entities",
+          "description": "Required entities.",
+          "items": {
+            "type": "string",
+            "title": "Entity",
+            "description": "Entity that must be present."
+          }
+        },
+        "condition": {
+          "$ref": "#/definitions/condition",
+          "title": "Condition",
+          "description": "Condition (expression).",
+          "examples": [
+            "user.vip == true"
+          ]
+        },
+        "actions": {
+          "type": "array",
+          "title": "Actions",
+          "description": "Sequence of actions to execute.",
+          "items": {
+            "$kind": "Microsoft.IDialog",
+            "$ref": "#/definitions/Microsoft.IDialog"
+          }
+        },
+        "priority": {
+          "$ref": "#/definitions/integerExpression",
+          "title": "Priority",
+          "description": "Priority for trigger with 0 being the highest and < 0 ignored."
+        },
+        "runOnce": {
+          "$ref": "#/definitions/booleanExpression",
+          "title": "Run Once",
+          "description": "True if rule should run once per unique conditions",
+          "examples": [
+            true,
+            "=f(x)"
+          ]
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "Microsoft.OnIntent"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "Microsoft.TemplateEngineLanguageGenerator": {
+      "$role": "implements(Microsoft.ILanguageGenerator)",
+      "title": "Template Multi-Language Generator",
+      "description": "Template Generator which allows only inline evaluation of templates.",
+      "type": "object",
+      "$package": {
+        "name": "nuget3",
+        "version": "1.0.0"
+      },
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Id",
+          "description": "Optional generator ID."
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "Microsoft.TemplateEngineLanguageGenerator"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
     "arrayExpression": {
       "$role": "expression",
       "title": "Array or expression",
@@ -357,6 +932,241 @@
           ]
         }
       ]
+    },
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Core schema meta-schema",
+      "definitions": {
+        "schemaArray": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/schema"
+          }
+        },
+        "nonNegativeInteger": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "nonNegativeIntegerDefault0": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "simpleTypes": {
+          "enum": [
+            "array",
+            "boolean",
+            "integer",
+            "null",
+            "number",
+            "object",
+            "string"
+          ]
+        },
+        "stringArray": {
+          "type": "array",
+          "uniqueItems": true,
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "type": [
+        "object",
+        "boolean"
+      ],
+      "default": true,
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "$ref": {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "default": true,
+        "readOnly": {
+          "type": "boolean",
+          "default": false
+        },
+        "writeOnly": {
+          "type": "boolean",
+          "default": false
+        },
+        "examples": {
+          "type": "array",
+          "items": true
+        },
+        "multipleOf": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "maximum": {
+          "type": "number"
+        },
+        "exclusiveMaximum": {
+          "type": "number"
+        },
+        "minimum": {
+          "type": "number"
+        },
+        "exclusiveMinimum": {
+          "type": "number"
+        },
+        "maxLength": {
+          "$ref": "#/definitions/schema/definitions/nonNegativeInteger"
+        },
+        "minLength": {
+          "$ref": "#/definitions/schema/definitions/nonNegativeIntegerDefault0"
+        },
+        "pattern": {
+          "type": "string",
+          "format": "regex"
+        },
+        "additionalItems": {
+          "$ref": "#/definitions/schema"
+        },
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/schema"
+            },
+            {
+              "$ref": "#/definitions/schema/definitions/schemaArray"
+            }
+          ],
+          "default": true
+        },
+        "maxItems": {
+          "$ref": "#/definitions/schema/definitions/nonNegativeInteger"
+        },
+        "minItems": {
+          "$ref": "#/definitions/schema/definitions/nonNegativeIntegerDefault0"
+        },
+        "uniqueItems": {
+          "type": "boolean",
+          "default": false
+        },
+        "contains": {
+          "$ref": "#/definitions/schema"
+        },
+        "maxProperties": {
+          "$ref": "#/definitions/schema/definitions/nonNegativeInteger"
+        },
+        "minProperties": {
+          "$ref": "#/definitions/schema/definitions/nonNegativeIntegerDefault0"
+        },
+        "required": {
+          "$ref": "#/definitions/schema/definitions/stringArray"
+        },
+        "additionalProperties": {
+          "$ref": "#/definitions/schema"
+        },
+        "definitions": {
+          "type": "object",
+          "default": {},
+          "additionalProperties": {
+            "$ref": "#/definitions/schema"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "default": {},
+          "additionalProperties": {
+            "$ref": "#/definitions/schema"
+          }
+        },
+        "patternProperties": {
+          "type": "object",
+          "propertyNames": {
+            "format": "regex"
+          },
+          "default": {},
+          "additionalProperties": {
+            "$ref": "#/definitions/schema"
+          }
+        },
+        "dependencies": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/schema"
+              },
+              {
+                "$ref": "#/definitions/schema/definitions/stringArray"
+              }
+            ]
+          }
+        },
+        "propertyNames": {
+          "$ref": "#/definitions/schema"
+        },
+        "const": true,
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": true
+        },
+        "type": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/schema/definitions/simpleTypes"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/schema/definitions/simpleTypes"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          ]
+        },
+        "format": {
+          "type": "string"
+        },
+        "contentMediaType": {
+          "type": "string"
+        },
+        "contentEncoding": {
+          "type": "string"
+        },
+        "if": {
+          "$ref": "#/definitions/schema"
+        },
+        "then": {
+          "$ref": "#/definitions/schema"
+        },
+        "else": {
+          "$ref": "#/definitions/schema"
+        },
+        "allOf": {
+          "$ref": "#/definitions/schema/definitions/schemaArray"
+        },
+        "anyOf": {
+          "$ref": "#/definitions/schema/definitions/schemaArray"
+        },
+        "oneOf": {
+          "$ref": "#/definitions/schema/definitions/schemaArray"
+        },
+        "not": {
+          "$ref": "#/definitions/schema"
+        }
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 const LUISBuilder = require('./../../../src/parser/luis/luisBuilder')
 const LU = require('./../../../src/parser/lu/lu')
 var chai = require('chai');
+const luisobjenum = require('../../../src/parser/utils/enums/luisobjenum');
 var assert = chai.assert;
 
 describe('LUISBuilder', function() {
@@ -63,6 +64,12 @@ assert.isTrue(luisObject.validate())
         let testJSON = require('../../fixtures/testcases/plFeatureDisabled.json');
         const luisObject = LUISBuilder.fromJson(testJSON).parseToLU();
         assert.equal(luisObject.content.includes('disabledForAllModels'), true);
+    })
+
+    it('Overlapping entities are converted to LU correctly', async () => {
+        let testJSON = require('../../fixtures/testcases/overlappingEntities.json');
+        const luisObject = LUISBuilder.fromJson(testJSON).parseToLU();
+        assert.equal(luisObject.content.includes(`- {@add=add {@globalCount={@count={@countNumber=two} apples}}}`), true);
     })
 
     

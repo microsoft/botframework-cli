@@ -1,0 +1,6 @@
+{
+    "$kind": "Microsoft.CrossTrainedRecognizerSet",
+    "recognizers": [
+        "non-empty.qna"
+    ]
+}

@@ -9,7 +9,6 @@ dependencies:
   '@rush-temp/bf-cli-config': 'file:projects/bf-cli-config.tgz'
   '@rush-temp/bf-cli-plugins': 'file:projects/bf-cli-plugins.tgz'
   '@rush-temp/bf-dialog': 'file:projects/bf-dialog.tgz'
-  '@rush-temp/bf-dispatcher': 'file:projects/bf-dispatcher.tgz'
   '@rush-temp/bf-lg-cli': 'file:projects/bf-lg-cli.tgz'
   '@rush-temp/bf-lu': 'file:projects/bf-lu.tgz'
   '@rush-temp/bf-luis-cli': 'file:projects/bf-luis-cli.tgz'
@@ -17,8 +16,6 @@ dependencies:
   '@rush-temp/botframework-cli': 'file:projects/botframework-cli.tgz'
   '@snyk/nuget-semver': 1.3.0
   '@types/ansi-styles': 3.2.1
-  '@types/argparse': 1.0.38
-  '@types/lodash': 4.14.149
   '@types/lru-cache': 5.1.0
   '@types/proxyquire': 1.3.28
   '@types/readline-sync': 1.4.3
@@ -28,7 +25,6 @@ dependencies:
   ajv: 6.12.2
   antlr4: 4.8.0
   applicationinsights: 1.7.3
-  argparse: 1.0.10
   await-delay: 1.0.0
   botbuilder-lg: 4.8.0-preview
   botframework-schema: 4.7.2
@@ -71,7 +67,6 @@ dependencies:
   sinon: 7.5.0
   source-map-support: 0.5.16
   testdouble: 3.13.0
-  ts-md5: 1.2.7
   username: 4.1.0
   uuid: 3.4.0
   window-size: 1.1.1
@@ -591,10 +586,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-UFa7mfKgSutXdT+elzJo8Ulr7FHgLNAyglVIOZYXFNJVQERm8DPrcwPret5BYk66LBE7fwm1XoVGi76MJkQ6ow==
-  /@types/argparse/1.0.38:
-    dev: false
-    resolution:
-      integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==
   /@types/chai/4.2.10:
     dev: false
     resolution:
@@ -639,6 +630,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ijGqzZt/b7BfzcK9vTrS6MFljQRPn5BFWOx8oE0GYxribu6uV+aA9zZuXI1zc/etK9E8nrgdoF2+LgUw7+9tJQ==
+  /@types/lodash/4.14.159:
+    dev: false
+    resolution:
+      integrity: sha512-gF7A72f7WQN33DpqOWw9geApQPh4M3PxluMtaHxWHXEGSN12/WbcEk/eNSqWNQcQhF66VSZ06vCF94CrHwXJDg==
   /@types/lru-cache/5.1.0:
     dev: false
     resolution:
@@ -5814,10 +5809,6 @@ packages:
       node: '>=0.6'
     resolution:
       integrity: sha512-1m4RA7xVAJrSGrrXGs0L3YTwyvBs2S8PbRHaLZAkFw7JR8oIFwYtysxlBZhYIa7xSyiYJKZ3iGrrk55cGA3i9A==
-  /ts-md5/1.2.7:
-    dev: false
-    resolution:
-      integrity: sha512-emODogvKGWi1KO1l9c6YxLMBn6CEH3VrH5mVPIyOtxBG52BvV4jP3GWz6bOZCz61nLgBc3ffQYE4+EHfCD+V7w==
   /ts-node/8.6.2_typescript@3.5.3:
     dependencies:
       arg: 4.1.3
@@ -6669,36 +6660,6 @@ packages:
       integrity: sha512-dgaJL7Qsjv/BIQolqX0EChhE3yL39e1JsbOlj6EL5dSzD6YYQj4aX/tLBFFv8ZQhLExPOwtjmS20/dEYmUj6yA==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
-  'file:projects/bf-dispatcher.tgz':
-    dependencies:
-      '@oclif/command': 1.5.19
-      '@oclif/config': 1.13.3
-      '@oclif/dev-cli': 1.22.2
-      '@oclif/plugin-help': 2.2.3
-      '@oclif/test': 1.2.5
-      '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.8.3
-      '@types/argparse': 1.0.38
-      '@types/chai': 4.2.10
-      '@types/mocha': 5.2.7
-      '@types/node': 10.17.17
-      argparse: 1.0.10
-      chai: 4.2.0
-      globby: 10.0.2
-      mocha: 5.2.0
-      nyc: 14.1.1
-      readline-sync: 1.4.10
-      rimraf: 3.0.2
-      ts-md5: 1.2.7
-      ts-node: 8.6.2_typescript@3.8.3
-      tslib: 1.11.1
-      tslint: 5.20.1_typescript@3.8.3
-      typescript: 3.8.3
-    dev: false
-    name: '@rush-temp/bf-dispatcher'
-    resolution:
-      integrity: sha512-lDw+/gq9+exwt9hYoOnU+1FZRfc7A9LVuIaADoAwMyEweSR/sDFStRVbYLDutKXvWO00QgZ9CsvKIYibvicn0w==
-      tarball: 'file:projects/bf-dispatcher.tgz'
-    version: 0.0.0
   'file:projects/bf-lg-cli.tgz':
     dependencies:
       '@oclif/command': 1.5.19
@@ -6747,7 +6708,7 @@ packages:
       '@oclif/test': 1.2.5
       '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.8.3
       '@types/chai': 4.2.10
-      '@types/lodash': 4.14.149
+      '@types/lodash': 4.14.159
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
       '@types/node': 10.17.17
@@ -6777,7 +6738,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-iMZSyzPBQ08X68voAUI8dSEsPiCS+6AWttGwKBLNRLQewmFc//aXDOswl+WjjAr4x4p+an0vdEIYWwi84fCKOg==
+      integrity: sha512-4LEnz+VdExYEDyZnTNu7LE7qprjEJvIO8Zyqr9HEnInbe0HcaGWBMWq2qlfadZ6Yj0defG00+Y9NFrke0ndE9w==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6793,7 +6754,7 @@ packages:
       '@oclif/test': 1.2.5
       '@oclif/tslint': 3.1.1_tslint@5.20.1+typescript@3.8.3
       '@types/chai': 4.2.10
-      '@types/lodash': 4.14.149
+      '@types/lodash': 4.14.159
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
       '@types/node': 10.17.17
@@ -6804,7 +6765,7 @@ packages:
       cli-ux: 5.3.3
       fs-extra: 8.1.0
       globby: 10.0.2
-      lodash: 4.17.15
+      lodash: 4.17.19
       mocha: 6.2.2
       nock: 11.9.1
       node-fetch: 2.6.0
@@ -6820,7 +6781,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-+m0IFMzWzxcygzkCDw4k+TVGCaMIm0LZBEaNuxQhzwv08bEPSaD6KmV9+bJW6Kq+VHWUn5PSdgTFGW9uvb4mdw==
+      integrity: sha512-sD6R3xSk6SIbrBIxZaFNSvmFqIOdqySnJddQJ0349GySy27nyOchXIVdeWsjAQrdeuYZJISfM3B2mmevBx5MdQ==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6921,7 +6882,6 @@ specifiers:
   '@rush-temp/bf-cli-config': 'file:./projects/bf-cli-config.tgz'
   '@rush-temp/bf-cli-plugins': 'file:./projects/bf-cli-plugins.tgz'
   '@rush-temp/bf-dialog': 'file:./projects/bf-dialog.tgz'
-  '@rush-temp/bf-dispatcher': 'file:./projects/bf-dispatcher.tgz'
   '@rush-temp/bf-lg-cli': 'file:./projects/bf-lg-cli.tgz'
   '@rush-temp/bf-lu': 'file:./projects/bf-lu.tgz'
   '@rush-temp/bf-luis-cli': 'file:./projects/bf-luis-cli.tgz'
@@ -6929,8 +6889,6 @@ specifiers:
   '@rush-temp/botframework-cli': 'file:./projects/botframework-cli.tgz'
   '@snyk/nuget-semver': ~1.3.0
   '@types/ansi-styles': ^3.2.1
-  '@types/argparse': ^1.0.36
-  '@types/lodash': ~4.14.146
   '@types/lru-cache': ^5.1.0
   '@types/proxyquire': ^1.3.28
   '@types/readline-sync': ^1.4.3
@@ -6940,7 +6898,6 @@ specifiers:
   ajv: ^6.12.2
   antlr4: ^4.7.2
   applicationinsights: ^1.0.8
-  argparse: ~1.0.10
   await-delay: ^1.0.0
   botbuilder-lg: 4.8.0-preview
   botframework-schema: ^4.5.1
@@ -6983,7 +6940,6 @@ specifiers:
   sinon: ^7.5.0
   source-map-support: ~0.5.16
   testdouble: ^3.11.0
-  ts-md5: ^1.2.6
   username: ^4.1.0
   uuid: ^3.3.3
   window-size: ^1.1.0
