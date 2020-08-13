@@ -15,7 +15,7 @@ export default class OrchestratorNlrGet extends Command {
     versionId: flags.string({description: 'Model version to download.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator nlr:get command help'}),
-    verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false})
+    verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),
   }
 
   async run() {
