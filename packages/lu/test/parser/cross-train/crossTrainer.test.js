@@ -904,8 +904,8 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(qnaResult.get('dia1.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
   })
 
-  it('luis:cross training can get expected result when customized file resolver is provided', async () => {
-    let fileResolver = async function (srcId, idsToFind) {
+  it('luis:cross training can get expected result when customized import resolver is provided', async () => {
+    let importResolver = async function (srcId, idsToFind) {
       let luObjects = []
       let parentFilePath = path.parse(path.resolve(srcId)).dir
       for (let idx = 0; idx < idsToFind.length; idx++) {
@@ -974,7 +974,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
 
     crossTrainConfig.triggerRules[path.join(rootDir, "main.en-us.lu")] = { 'dia1_trigger': path.join(rootDir, "dia1.en-us.lu") }
 
-    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, fileResolver)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, importResolver)
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
