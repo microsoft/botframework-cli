@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Label}  from './label';
+import {Label} from './label';
 
 export class Result {
   public label: Label;

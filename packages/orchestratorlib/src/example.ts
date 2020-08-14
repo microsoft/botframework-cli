@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Label}  from './label';
+import {Label} from './label';
 
 export class Example {
   public static newIntentExample(text: string, labels: string[], spanOffset: number = 0, spanLength: number = 0): Example {

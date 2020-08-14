@@ -12,7 +12,7 @@ export default class OrchestratorEvaluate extends Command {
   static description: string = 'Create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report on a previously generated .blu file .';
 
   static examples: Array<string> = [`
-    $ bf orchestrator:evaluate --in ./path/to/file/ --out ./path/to/output/ [--model ./path/to/model/]`]
+    $ bf orchestrator:evaluate --in=./path/to/snapshot/file --out=./path/to/output/folder/ [--model=./path/to/model/]`]
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator .blu file.'}),
