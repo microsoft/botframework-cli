@@ -176,6 +176,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateAssessmentLabelObjectEvaluationReport(
     groundTruthSetLabels: string[],
+    predictionSetEntityLabelSet: Set<string>,
     groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] },
     groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]>,
     predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] },
@@ -263,8 +264,7 @@ export class Utility {
       groundTruthSetUtteranceEntityLabelDuplicateMap,
       '{GROUND_TRUTH_SET_LABEL_TEXT_STATISTICS}',
       '{GROUND_TRUTH_SET_TEXT_DUPLICATES}',
-      false); // ---- NOTE ---- false, as the 'assess' does not use an unknown threshold to generate UNKNOWN prediction,
-    // ---- NOTE ----           so unknown labels are purely and already processed by the data processing logic before.
+      predictionSetEntityLabelSet.has(Utility.UnknownLabel));
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReport(), evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary=\n${evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary}`);
     }
@@ -296,8 +296,7 @@ export class Utility {
       predictionSetUtteranceEntityLabelDuplicateMap,
       '{PREDICTION_SET_LABEL_TEXT_STATISTICS}',
       '{PREDICTION_SET_TEXT_DUPLICATES}',
-      false); // ---- NOTE ---- false, as the 'assess' does not use an unknown threshold to generate UNKNOWN prediction,
-    // ---- NOTE ----           so unknown labels are purely and already processed by the data processing logic before.
+      predictionSetEntityLabelSet.has(Utility.UnknownLabel));
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReport(), evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary=\n${evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary}`);
     }
@@ -632,12 +631,12 @@ export class Utility {
       if (utterance in predictionSetUtteranceLabelsMap) {
         predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
       }
-      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: Label) => labelArrayAndMap.stringMap[x.name]);
+      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: Label) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x.name));
       const groundTruthSetLabelsConcatenated: string = groundTruthSetLabels.map((x: Label) => x.toSimpleString()).join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
-      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: Label) => labelArrayAndMap.stringMap[x.name]);
+      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: Label) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x.name));
       const predictionSetLabelsConcatenated: string = predictionSetLabels.map((x: Label) => x.toSimpleString()).join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
@@ -710,6 +709,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateAssessmentEvaluationReport(
     groundTruthSetLabels: string[],
+    predictionSetLabelSet: Set<string>,
     groundTruthSetUtteranceLabelsMap: { [id: string]: string[] },
     groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>>,
     predictionSetUtteranceLabelsMap: { [id: string]: string[] },
@@ -797,8 +797,7 @@ export class Utility {
       groundTruthSetUtteranceLabelDuplicateMap,
       '{GROUND_TRUTH_SET_LABEL_TEXT_STATISTICS}',
       '{GROUND_TRUTH_SET_TEXT_DUPLICATES}',
-      false); // ---- NOTE ---- false, as the 'assess' does not use an unknown threshold to generate UNKNOWN prediction,
-    // ---- NOTE ----           so unknown labels are purely and already processed by the data processing logic before.
+      predictionSetLabelSet.has(Utility.UnknownLabel));
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentEvaluationReport(), evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary=\n${evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary}`);
     }
@@ -830,8 +829,7 @@ export class Utility {
       predictionSetUtteranceLabelDuplicateMap,
       '{PREDICTION_SET_LABEL_TEXT_STATISTICS}',
       '{PREDICTION_SET_TEXT_DUPLICATES}',
-      false); // ---- NOTE ---- false, as the 'assess' does not use an unknown threshold to generate UNKNOWN prediction,
-    // ---- NOTE ----           so unknown labels are purely and already processed by the data processing logic before.
+      predictionSetLabelSet.has(Utility.UnknownLabel));
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentEvaluationReport(), evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary=\n${evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary}`);
     }
@@ -1054,7 +1052,7 @@ export class Utility {
     const binaryConfusionMatrices: BinaryConfusionMatrix[] = confusionMatrix.getBinaryConfusionMatrices();
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), binaryConfusionMatrices.length=${binaryConfusionMatrices.length}`);
     for (let i: number = 0; i < binaryConfusionMatrices.length; i++) {
-      const label: string = labelArrayAndMap.stringArray[i];
+      const label: string = Utility.safeAccessStringArray(labelArrayAndMap.stringArray, i);
       const precision: number = Utility.round(binaryConfusionMatrices[i].getPrecision());
       const recall: number = Utility.round(binaryConfusionMatrices[i].getRecall());
       const f1: number = Utility.round(binaryConfusionMatrices[i].getF1Measure());
@@ -1402,12 +1400,12 @@ export class Utility {
       if (utterance in predictionSetUtteranceLabelsMap) {
         predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
       }
-      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: string) => labelArrayAndMap.stringMap[x]);
+      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x));
       const groundTruthSetLabelsConcatenated: string = groundTruthSetLabels.join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
-      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: string) => labelArrayAndMap.stringMap[x]);
+      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x));
       const predictionSetLabelsConcatenated: string = predictionSetLabels.join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
@@ -1665,7 +1663,7 @@ export class Utility {
       utteranceLabelDuplicateMap,
       '{LABEL_TEXT_STATISTICS}',
       '{TEXT_DUPLICATES}',
-      unknownLabelPredictionThreshold > 0);
+      unknownLabelPredictionThreshold > 0); // ---- NOTE ---- there is no UNKNOWN prediction unless the threshold is higher than 0.
     Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generateEvaluationReportLabelUtteranceStatistics()');
     // ---- NOTE ---- collect utterance prediction and scores.
     Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.score()');
@@ -2086,7 +2084,7 @@ export class Utility {
           continue;
         }
         const labels: string[] = utteranceLabels[1];
-        const labelsIndexes: number[] = labels.map((x: string) => labelArrayAndMap.stringMap[x]);
+        const labelsIndexes: number[] = labels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x));
         const labelsConcatenated: string = labels.join(',');
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`Utility.score(), before calling score(), utterance=${utterance}`);
@@ -2114,7 +2112,7 @@ export class Utility {
         let labelsPredictedIndexes: number[] = argMax.indexesMax;
         let labelsPredicted: string[] = labelsPredictedIndexes.map((x: number) => scoreResultArray[x].label.name);
         if (labelsPredictedScore < unknownLabelPredictionThreshold) {
-          labelsPredictedIndexes = [labelArrayAndMap.stringMap[Utility.UnknownLabel]];
+          labelsPredictedIndexes = [Utility.safeAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
           labelsPredicted = [Utility.UnknownLabel];
         }
         const labelsPredictedConcatenated: string = labelsPredicted.join(',');
@@ -2128,7 +2126,7 @@ export class Utility {
           ['30%', '10%', '60%']);
         const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArray,
-          labels.map((x: string) => labelArrayAndMap.stringMap[x]),
+          labels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x)),
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);
@@ -2241,7 +2239,7 @@ export class Utility {
         }
         return 0;
       }).map(
-      (x: [string, string[]], index: number) => [index.toString(), x[0], labelArrayAndMap.stringMap[x[0]].toString(), x[1].length.toString(), Utility.round(x[1].length / labelUtterancesTotal).toString()]);
+      (x: [string, string[]], index: number) => [index.toString(), x[0], Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(), x[1].length.toString(), Utility.round(x[1].length / labelUtterancesTotal).toString()]);
     labelStatistics.push(['Total', 'N/A', 'N/A', labelUtterancesTotal.toString(), 'N/A']);
     const labelStatisticsHtml: string = Utility.convertDataArraysToHtmlTable(
       'Label statistics',
@@ -2353,12 +2351,14 @@ export class Utility {
     if (utteranceLabelsMap) {
       for (const utteranceKey in utteranceLabelsMap) {
         if (utteranceKey) {
-          const concreteLabels: string[] = utteranceLabelsMap[utteranceKey].filter(
+          const originalLabels: string[] = utteranceLabelsMap[utteranceKey];
+          const concreteLabels: string[] = originalLabels.filter(
             (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
           const hasConcreteLabel: boolean = concreteLabels.length > 0;
           if (!hasConcreteLabel) {
             utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
             utteranceLabelsMap[utteranceKey].push(Utility.UnknownLabel);
+            Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
             continue;
           }
           utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
@@ -2369,7 +2369,7 @@ export class Utility {
       }
     }
     if (utteranceLabelDuplicateMap) {
-      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, _: string) => {
+      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, utteranceKey: string) => {
         const labelsArray: string[] = [...labelsSet];
         const concreteLabels: string[] = labelsArray.filter(
           (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
@@ -2384,6 +2384,7 @@ export class Utility {
         } else {
           labelsSet.clear(); // ---- NOTE ---- truncate the array!
           labelsSet.add(Utility.UnknownLabel);
+          Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
         }
       });
     }
@@ -2401,12 +2402,14 @@ export class Utility {
     if (utteranceLabelsMap) {
       for (const utteranceKey in utteranceLabelsMap) {
         if (utteranceKey) {
-          const concreteLabels: string[] = utteranceLabelsMap[utteranceKey].filter(
+          const originalLabels: string[] = utteranceLabelsMap[utteranceKey];
+          const concreteLabels: string[] = originalLabels.filter(
             (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()));
           const hasConcreteLabel: boolean = concreteLabels.length > 0;
           if (!hasConcreteLabel) {
             utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
             utteranceLabelsMap[utteranceKey].push(Utility.UnknownLabel);
+            Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMap(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
             continue;
           }
           utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
@@ -2417,7 +2420,7 @@ export class Utility {
       }
     }
     if (utteranceLabelDuplicateMap) {
-      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, _: string) => {
+      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, utteranceKey: string) => {
         const labelsArray: string[] = [...labelsSet];
         const concreteLabels: string[] = labelsArray.filter(
           (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()));
@@ -2432,6 +2435,7 @@ export class Utility {
         } else {
           labelsSet.clear(); // ---- NOTE ---- truncate the array!
           labelsSet.add(Utility.UnknownLabel);
+          Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMap(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
         }
       });
     }
@@ -3101,6 +3105,34 @@ export class Utility {
       return '';
     }
     return entryname;
+  }
+
+  public static safeAccessStringMap(stringMap: {[id: string]: number}, key: string): number {
+    if (stringMap === undefined) {
+      Utility.debuggingThrow('stringMap === undefined');
+    }
+    const value: number = stringMap[key];
+    if (value === undefined) {
+      Utility.debuggingThrow(`FAIL to use a key ${key} to access a stringMap ${Utility.jsonStringify(stringMap)}`);
+    }
+    return value;
+  }
+
+  public static safeAccessStringArray(stringArray: string[], index: number): string {
+    if (stringArray === undefined) {
+      Utility.debuggingThrow('stringArray === undefined');
+    }
+    if (index < 0) {
+      Utility.debuggingThrow(`index ${index} not in range, stringArray.length=${stringArray.length}`);
+    }
+    if (index >= stringArray.length) {
+      Utility.debuggingThrow(`index ${index} not in range, stringArray.length=${stringArray.length}`);
+    }
+    const value: string = stringArray[index];
+    if (value === undefined) {
+      Utility.debuggingThrow(`FAIL to use a index ${index} to access a stringArray ${Utility.jsonStringify(stringArray)}`);
+    }
+    return value;
   }
 
   public static writeToConsole(outputContents: string) {
