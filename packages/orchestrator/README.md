@@ -77,8 +77,61 @@ OPTIONS
 
 DESCRIPTION
 
-  The "assess" command compares a prediction file against a ground-truth file, then it
+  The "assess" command compares a prediction file against a ground-truth file. It then
   generates two detailed evaluation reports, one on intent prediction, and the other entity.
+
+  This command addresses the issues of frequent inconsistency among evaluations conducted by
+  more than one parties on the same ground-truth set, especially for evaluating competitive
+  technology or models owned by different parites. The Inconsistencies can come from following
+  sources:
+
+  1)  Metric - one team may report Micro-Average, Macro Average, or else. As shown below,
+        there are many ways to compute an average of a metric, such as accuracy or F1, and
+        the discrepancy can be huge on different averaging techniques.
+  2)  Datasets – even though every party tests on the same dataset source, the dataset might diverge
+        after a while after some data massaging, sometimes due to processing errors or filtering logic.
+        Some teams may prefer some datasets, but not others, for their particular technology or models.
+  3)  Data processing – some test dataset can contain duplicate utterances and labels.
+        De-duplicate or not can affect final metric calculation. 
+  4)  Confusion matrix formulation – what is a TP, FP, TN, or FN? 
+        Even though their textbook definition is clear, they can still be up to interpretation
+        in real world scenario. For example, does TN make sense in evaluating entity extracting?
+  5)  Label interpretation – Sometimes people might ignore some test results if the prediction
+        scores are too low. We should have a consistent way to include those predictions. On entity, some
+        people may choose to evaluate based on per-token tags, instead of per-entuty-mention. 
+  6)  Label processing – what is an UNKNOWN label? Different teams may have their various strategies
+        in processing empty, UNKNOWN, or never-seen-before labels in the ground-truth or prediction files.
+  7)  Evaluation Tool – every team has their own tools that might not be consistent in metric computation.
+
+  The "assess" command aims to address these issues:
+
+  1)  Metric -- the "assess" command calculates as many macro average metrics as we can think of.
+      Which metric to focus on for decision-making is up to an evaluation committee.
+      The tool has no bias, even though each party might have its favorites for its own agenda.
+  2)  Datasets -- it's necessary to create a dataset repo for the community to share
+      ground-truth datasets and predictions. There should not be any bias against any datasets,
+      but it’s up to an evaluation committee or individual party to choose whatever evaluation datasets
+      (and performance metrics) they need for their projects.
+  3)  Data processing – this BF-orchestrator evaluation package provides consistent logic.
+      For example, it does de-duplication, so an utterance and its label won’t contribute more than once
+      in metric calculation.
+  4)  Confusion matrix formulation – again, this BF evaluation package provides consistent formulation logic.
+      For example, entity evaluation does not have TN.
+  5)  Label interpretation – again, consistent is key and this "assess" command does not silently
+      ignore some test results for whatever reasons. Every test instance should contribute to
+      metric calculation unless they are spurious – due to processing mistakes by whoever prepares it. 
+  6)  Label processing – this BF-Orchestrator package pre-processes labels and treats
+      an utterance’s empty, None, and never-seen-before labels as UNKNOWN. Since BF-Orchestrator allows
+      multi-label intents for utterances, UNKNOWN is stripped if it con-exists with known labels
+      for an utterance.
+  7)  Evaluation Tool – BF-Orchestrator has been released to the world (through NPM), everyone
+      in the world can run it, file a bug or PR to improve it.
+      It’s not a script hidden in someone's laptop or some team repo.
+
+  Besides addressing these evaluation inconsistency issues, the "assess" command also produces a
+  comprehensive metric report as well as label and utterance distributions.
+
+INPUT
 
   The two input JSON files each contains a JSON array of labeled utterances
   following the schema and example shown below.
@@ -107,6 +160,8 @@ DESCRIPTION
     },
     ...
     ]
+
+REPORT
 
   The "assess" command reads the input ground-truth and prediction JSON files and generates
   distributions of the utterances and their labels. It also groups each utterance's
@@ -202,7 +257,7 @@ DESCRIPTION
         for the ground-truth intent array, then this utterance is a FN. A TN only happens if both arrays
         are empty. Notice that this metric only applies to multi-intent predictions, it is not calculated for
         evaluating entity predictions.
-	
+
 EXAMPLE
 ```
 
@@ -277,21 +332,22 @@ USAGE
   $ bf orchestrator:evaluate
 
 OPTIONS
-  -a, --ambiguous=threshold       Ambiguous analysis threshild. Default to 0.2.
+  -a, --ambiguous=threshold       Optional ambiguous analysis threshold. Default to 0.2.
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'evaluate' command help.
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
-  -l, --low_confidence=threshold  Low confidence analysis threshold. Default to 0.5.
-  -m, --model=model               Directory or a config file hosting Orchestrator model files. Optional.
+  -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
+  -m, --model=model               Optional directory or a config file hosting Orchestrator model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --multi_label=threshold     Plural/multi-label prediction threshold, default to 1,
+  -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
                                   i.e., only max-score intents are predicted
-  -u, --unknown=threshold         Unknow label threshold, default to 0.3.
+  -u, --unknown=threshold         Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
   The 'evaluate' command can execute a leave-one-out-cross-validation (LOOCV) analysis
-  on a model and its example set. It also generates a detailed evaluation report with the following sections:
+  on a model and its example snapshot set. It also generates a detailed evaluation report
+  with the following sections:
 
   >  Intent/utterancce Statistics - intent and utterance statistics and distributions.
   >  Duplicates - tables of utterance with multiple intents and exact utterance/intent duplicates.
@@ -349,16 +405,16 @@ USAGE
     $ bf orchestrator:predict --out=<analysis-and-output-folder> --model=<model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
 
 OPTIONS
-  -a, --ambiguous=threshold       Ambiguous analysis threshild. Default to 0.2.
+  -a, --ambiguous=threshold       Optional ambiguous analysis threshold. Default to 0.2.
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'predict' command help.
   -i, --in=in                     Optional path to a previously created Orchestrator .blu file.
-  -l, --low_confidence=threshold  Low confidence analysis threshold. Default to 0.5.
+  -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
   -m, --model=model               Directory or a config file hosting Orchestrator model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --multi_label=threshold     Plural/multi-label prediction threshold, default to 1,
+  -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
                                   i.e., only max-score intents are predicted
-  -u, --unknown=threshold         Unknow label threshold, default to 0.3.
+  -u, --unknown=threshold         Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
@@ -446,17 +502,17 @@ USAGE
   $ bf orchestrator:test
 
 OPTIONS
-  -a, --ambiguous=threshold       Ambiguous analysis threshild. Default to 0.2.
+  -a, --ambiguous=threshold       Optional ambiguous analysis threshold. Default to 0.2.
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'test' command help.
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
-  -l, --low_confidence=threshold  Low confidence analysis threshold. Default to 0.5.
+  -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
   -m, --model=model               Directory or a config file hosting Orchestrator model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --multi_label=threshold     Plural/multi-label prediction threshold, default to 1,
+  -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
                                   i.e., only max-score intents are predicted
   -t, --test=test                 Path to a test file.
-  -u, --unknown=threshold         Unknow label threshold, default to 0.3.
+  -u, --unknown=threshold         Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
   The 'test' command can test an Orchestrator model and example set on an input utterance/intent file.

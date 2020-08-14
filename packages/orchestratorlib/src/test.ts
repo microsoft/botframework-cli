@@ -11,6 +11,7 @@ import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {PredictionScoreStructure}  from './predictionscorestructure';
 
+import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
@@ -74,7 +75,9 @@ export class OrchestratorTest {
     // ---- NOTE ---- process the training set, retrieve labels
     let processedUtteranceLabelsMap: {
       'utteranceLabelsMap': { [id: string]: string[] };
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>; } = await OrchestratorHelper.getUtteranceLabelsMap(trainingFile, false);
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(trainingFile, false);
     const trainingSetUtterancesLabelsMap: { [id: string]: string[] } = processedUtteranceLabelsMap.utteranceLabelsMap;
     // ---- NOTE-NO-NEED ---- const trainingSetUtterancesDuplicateLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for training set');
