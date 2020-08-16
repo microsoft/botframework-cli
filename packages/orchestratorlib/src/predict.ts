@@ -22,6 +22,7 @@ import {LabelType} from './labeltype';
 import {PredictionScoreStructure} from './predictionscorestructure';
 // import {Span} from './span';
 
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 /* eslint-disable no-console */
@@ -411,7 +412,7 @@ export class OrchestratorPredict {
     console.log(`> Low-confidence closeness:      ${this.lowConfidenceScoreThreshold}`);
     console.log(`> Multi-label threshold:         ${this.multiLabelPredictionThreshold}`);
     console.log(`> Unknown-label threshold:       ${this.unknownLabelPredictionThreshold}`);
-    const labelResolverConfig: any = Utility.getLabelResolverSettings();
+    const labelResolverConfig: any = LabelResolver.getConfigJson();
     console.log(`> Orchestrator configuration:    ${labelResolverConfig}`);
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     this.currentLabelArrayAndMap = Utility.buildStringIdNumberValueDictionaryFromStringArray(labels);
@@ -472,7 +473,8 @@ export class OrchestratorPredict {
   public commandLetIwithEntry(entry: string): number {
     let label: string = entry;
     label = label.trim();
-    const errorMessage: string = Utility.parseLabelResolverLabelEntry(
+    const errorMessage: string = Utility.parseInputLabelEntryIntoInputLabelContainerArray(
+      LabelResolver.getLabels(LabelType.Intent),
       label,
       this.currentIntentLabels);
     if (!Utility.isEmptyString(errorMessage)) {
@@ -494,7 +496,8 @@ export class OrchestratorPredict {
   public commandLetNIwithEntry(entry: string): number {
     let label: string = entry;
     label = label.trim();
-    const errorMessage: string = Utility.parseLabelResolverLabelEntry(
+    const errorMessage: string = Utility.parseInputLabelEntryIntoInputLabelContainerArray(
+      LabelResolver.getLabels(LabelType.Intent),
       label,
       this.newIntentLabels);
     if (!Utility.isEmptyString(errorMessage)) {
@@ -530,7 +533,7 @@ export class OrchestratorPredict {
     if (Utility.isEmptyString(this.nlrPath)) {
       console.log('> No model is loaded, cannot make a prediction.');
     }
-    Utility.resetLabelResolverSettingIgnoreSameExample(false);
+    UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(false);
     const scoreResults: any = LabelResolver.score(this.currentUtterance, LabelType.Intent);
     if (!scoreResults) {
       return -1;
@@ -551,11 +554,12 @@ export class OrchestratorPredict {
     }
     Utility.examplesToUtteranceLabelMaps(examples, utteranceLabelsMap, utteranceLabelDuplicateMap);
     // ---- NOTE ---- integrated step to produce analysis reports.
-    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call Utility.resetLabelResolverSettingIgnoreSameExample("false")');
-    Utility.resetLabelResolverSettingIgnoreSameExample(false);
-    Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.resetLabelResolverSettingIgnoreSameExample()');
-    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call Utility.generateEvaluationReport()');
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("false")');
+    UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(false);
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample()');
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     this.currentEvaluationOutput = Utility.generateEvaluationReport(
+      UtilityLabelResolver.score,
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
