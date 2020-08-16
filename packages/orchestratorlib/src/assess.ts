@@ -4,7 +4,6 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
 
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
@@ -59,17 +58,37 @@ export class OrchestratorAssess {
     const assessmentSetEntityLabelsOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetEntityLabelsOutputFilename);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the ground-truth set, retrieve labels ----------
-    const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } = {};
-    const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
-    const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFile);
-    OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-      groundTruthSetJsonObjectArray,
-      groundTruthSetUtteranceLabelsMap,
-      groundTruthSetUtteranceLabelDuplicateMap,
-      groundTruthSetUtteranceEntityLabelsMap,
-      groundTruthSetUtteranceEntityLabelDuplicateMap);
+    const groundTruthFileProcessedUtteranceLabelsMap: {
+      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
+      await OrchestratorHelper.getUtteranceLabelsMap(groundTruthFile, false);
+    const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } =
+      groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
+    const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
+      groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelDuplicateMap;
+    const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } =
+      groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
+    const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
+      groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
+    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } = {};
+    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    // ---- NOTE-REFACTORED ---- const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFile);
+    // ---- NOTE-REFACTORED ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+    // ---- NOTE-REFACTORED ----   groundTruthSetJsonObjectArray,
+    // ---- NOTE-REFACTORED ----   '',
+    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceLabelsMap,
+    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceLabelDuplicateMap,
+    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceEntityLabelsMap,
+    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceEntityLabelDuplicateMap);
+    // ---- NOTE-REFACTORED ---- Utility.processUnknowLabelsInUtteranceLabelsMap(
+    // ---- NOTE-REFACTORED ----   {
+    // ---- NOTE-REFACTORED ----     utteranceLabelsMap: groundTruthSetUtteranceLabelsMap,
+    // ---- NOTE-REFACTORED ----     utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
+    // ---- NOTE-REFACTORED ----   });
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getJsonIntentsEntitiesUtterances() for groundTruth set');
     const groundTruthSetLabels: string[] =
       [...Object.values(groundTruthSetUtteranceLabelsMap)].reduce(
@@ -93,20 +112,37 @@ export class OrchestratorAssess {
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set duplicate utterance/label pairs=${groundTruthSetUtteranceEntityLabelDuplicateMap.size}`);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the prediction set, retrieve labels ------------
-    const predictionSetUtteranceLabelsMap: { [id: string]: string[] } = {};
-    const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
-    const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFile);
-    OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-      predictionSetJsonObjectArray,
-      predictionSetUtteranceLabelsMap,
-      predictionSetUtteranceLabelDuplicateMap,
-      predictionSetUtteranceEntityLabelsMap,
-      predictionSetUtteranceEntityLabelDuplicateMap);
+    const predictionFileProcessedUtteranceLabelsMap: {
+      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
+      await OrchestratorHelper.getUtteranceLabelsMap(predictionFile, false);
+    const predictionSetUtteranceLabelsMap: { [id: string]: string[] } =
+      predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
+    const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
+      predictionFileProcessedUtteranceLabelsMap.utteranceLabelDuplicateMap;
+    const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } =
+      predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
+    const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
+      predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
+    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceLabelsMap: { [id: string]: string[] } = {};
+    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    // ---- NOTE-REFACTORED ---- const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFile);
+    // ---- NOTE-REFACTORED ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+    // ---- NOTE-REFACTORED ----   predictionSetJsonObjectArray,
+    // ---- NOTE-REFACTORED ----   '',
+    // ---- NOTE-REFACTORED ----   predictionSetUtteranceLabelsMap,
+    // ---- NOTE-REFACTORED ----   predictionSetUtteranceLabelDuplicateMap,
+    // ---- NOTE-REFACTORED ----   predictionSetUtteranceEntityLabelsMap,
+    // ---- NOTE-REFACTORED ----   predictionSetUtteranceEntityLabelDuplicateMap);
     Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(
-      {utteranceLabelsMap: predictionSetUtteranceLabelsMap,
-        utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap},
+      {
+        utteranceLabelsMap: predictionSetUtteranceLabelsMap,
+        utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap,
+      },
       groundTruthSetLabelSet);
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getJsonIntentsEntitiesUtterances() for prediction set');
     const predictionSetLabels: string[] =
