@@ -13,6 +13,10 @@ _BF_ plugins command group allows you to extend the CLI with preview commands. O
 
 ## Available plugins
 
+There are currently no plugins available.
+
+The most recent plugin was [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog), it is now a core part of the [BF CLI](https://github.com/microsoft/botframework-cli).
+<!--
 [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog)
 ```
 npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
@@ -21,9 +25,13 @@ bf plugins:install @microsoft/bf-dialog
 
 npm config set registry https://registry.npmjs.org/
 ```
-<!-- toc -->
+
+-->
+
+<!-- toc 
 * [Commands](#commands)
-<!-- tocstop -->
+ tocstop -->
+
 # Commands
 <!-- commands -->
 * [`bf plugins`](#bf-plugins)
