@@ -15,6 +15,7 @@ import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 export class OrchestratorTest {
@@ -101,10 +102,10 @@ export class OrchestratorTest {
     }
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis reports.
-    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.resetLabelResolverSettingIgnoreSameExample("false")');
-    Utility.resetLabelResolverSettingIgnoreSameExample(false);
-    Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.resetLabelResolverSettingIgnoreSameExample()');
-    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReport()');
+    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("false")');
+    UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(false);
+    Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample()');
+    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     const evaluationOutput: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
@@ -149,6 +150,7 @@ export class OrchestratorTest {
       'scoreOutputLines': string[][];
     } =
     Utility.generateEvaluationReport(
+      UtilityLabelResolver.score,
       trainingSetLabels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,

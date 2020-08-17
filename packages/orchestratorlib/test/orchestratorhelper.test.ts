@@ -220,6 +220,7 @@ describe('Test Suite - orchestratorhelper', () => {
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     OrchestratorHelper.getJsonIntentsEntitiesUtterances(
       jsonObjectArray,
+      '',
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       utteranceEntityLabelsMap,
@@ -244,6 +245,7 @@ describe('Test Suite - orchestratorhelper', () => {
       `utteranceEntityLabelsMap[utterance1].length=${utteranceEntityLabelsMap[utterance1].length}`);
     OrchestratorHelper.getJsonIntentsEntitiesUtterances(
       jsonObjectArray,
+      '',
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       utteranceEntityLabelsMap,
@@ -276,6 +278,7 @@ describe('Test Suite - orchestratorhelper', () => {
       `(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length}`);
     OrchestratorHelper.getJsonIntentsEntitiesUtterances(
       jsonObjectArray,
+      '',
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       utteranceEntityLabelsMap,
@@ -308,6 +311,7 @@ describe('Test Suite - orchestratorhelper', () => {
       `(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length}`);
     OrchestratorHelper.getJsonIntentsEntitiesUtterances(
       jsonObjectArray,
+      '',
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       utteranceEntityLabelsMap,

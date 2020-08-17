@@ -234,11 +234,12 @@ export class OrchestratorHelper {
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
     hierarchical: boolean): Promise<void> {
     const ext: string = path.extname(filePath);
+    const hierarchicalLabel: string = OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical);
     if (ext === '.lu') {
       Utility.writeToConsole(`Processing ${filePath}...`);
       await OrchestratorHelper.parseLuFile(
         filePath,
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        hierarchicalLabel,
         utteranceLabelsMap,
         utteranceLabelDuplicateMap,
         utteranceEntityLabelsMap,
@@ -247,12 +248,21 @@ export class OrchestratorHelper {
       Utility.writeToConsole(`Processing ${filePath}...`);
       await OrchestratorHelper.parseQnaFile(
         filePath,
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        hierarchicalLabel,
         utteranceLabelsMap,
         utteranceLabelDuplicateMap);
     } else if (ext === '.json') {
       Utility.writeToConsole(`Processing ${filePath}...\n`);
-      OrchestratorHelper.getLuisIntentsEnitiesUtterances(
+      if (OrchestratorHelper.getLuisIntentsEnitiesUtterances(
+        fs.readJsonSync(filePath),
+        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+        utteranceLabelsMap,
+        utteranceLabelDuplicateMap,
+        utteranceEntityLabelsMap,
+        utteranceEntityLabelDuplicateMap)) {
+        return;
+      }
+      OrchestratorHelper.getJsonIntentsEntitiesUtterances(
         fs.readJsonSync(filePath),
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utteranceLabelsMap,
@@ -470,29 +480,35 @@ export class OrchestratorHelper {
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: { [id: string]: Label[] },
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
-    // eslint-disable-next-line no-prototype-builtins
-    if (luisObject.hasOwnProperty('utterances')) {
-      luisObject.utterances.forEach((e: any) => {
-        const label: string = e.intent.trim();
-        const utterance: string = e.text.trim();
-        OrchestratorHelper.addNewLabelUtterance(
-          utterance,
-          label,
-          hierarchicalLabel,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap
-        );
-        const entities: any[] = e.entities;
-        entities.forEach((entityEntry: any) => {
-          OrchestratorHelper.addNewEntityLabelUtterance(
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
+    try {
+      // eslint-disable-next-line no-prototype-builtins
+      if (luisObject.hasOwnProperty('utterances')) {
+        luisObject.utterances.forEach((e: any) => {
+          const label: string = e.intent.trim();
+          const utterance: string = e.text.trim();
+          OrchestratorHelper.addNewLabelUtterance(
             utterance,
-            entityEntry,
-            utteranceEntityLabelsMap,
-            utteranceEntityLabelDuplicateMap);
+            label,
+            hierarchicalLabel,
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap
+          );
+          const entities: any[] = e.entities;
+          entities.forEach((entityEntry: any) => {
+            OrchestratorHelper.addNewEntityLabelUtterance(
+              utterance,
+              entityEntry,
+              utteranceEntityLabelsMap,
+              utteranceEntityLabelDuplicateMap);
+          });
         });
-      });
+        return true;
+      }
+    } catch (error) {
+      return false;
     }
+    return false;
   }
 
   static getQnaQuestionsAsUtterances(
@@ -517,32 +533,40 @@ export class OrchestratorHelper {
   // eslint-disable-next-line max-params
   static getJsonIntentsEntitiesUtterances(
     jsonObjectArray: any,
+    hierarchicalLabel: string,
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: { [id: string]: Label[] },
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
-    // eslint-disable-next-line no-prototype-builtins
-    jsonObjectArray.forEach((jsonObject: any) => {
-      const utterance: string = jsonObject.text.trim();
-      const labels: string[] = jsonObject.intents;
-      const entities: any[] = jsonObject.entities;
-      labels.forEach((label: string) => {
-        OrchestratorHelper.addNewLabelUtterance(
-          utterance,
-          label,
-          '',
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap);
-      });
-      entities.forEach((entityEntry: any) => {
-        OrchestratorHelper.addNewEntityLabelUtterance(
-          utterance,
-          entityEntry,
-          utteranceEntityLabelsMap,
-          utteranceEntityLabelDuplicateMap);
-      });
-    });
-    Utility.processUnknowLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
+    try {
+      // eslint-disable-next-line no-prototype-builtins
+      if ((jsonObjectArray.length > 0) && (jsonObjectArray[0].hasOwnProperty('intents')) && (jsonObjectArray[0].hasOwnProperty('entities'))) {
+        jsonObjectArray.forEach((jsonObject: any) => {
+          const utterance: string = jsonObject.text.trim();
+          const labels: string[] = jsonObject.intents;
+          const entities: any[] = jsonObject.entities;
+          labels.forEach((label: string) => {
+            OrchestratorHelper.addNewLabelUtterance(
+              utterance,
+              label,
+              hierarchicalLabel,
+              utteranceLabelsMap,
+              utteranceLabelDuplicateMap);
+          });
+          entities.forEach((entityEntry: any) => {
+            OrchestratorHelper.addNewEntityLabelUtterance(
+              utterance,
+              entityEntry,
+              utteranceEntityLabelsMap,
+              utteranceEntityLabelDuplicateMap);
+          });
+        });
+        return true;
+      }
+    } catch (error) {
+      return false;
+    }
+    return false;
   }
 
   static getLabelFromFileName(fileName: string, ext: string, hierarchical: boolean) {

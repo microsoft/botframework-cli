@@ -14,6 +14,7 @@ import {PredictionScoreStructure}  from './predictionscorestructure';
 
 import {LabelResolver} from './labelresolver';
 
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 export class OrchestratorEvaluate {
@@ -113,10 +114,10 @@ export class OrchestratorEvaluate {
     }
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis reports.
-    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call Utility.resetLabelResolverSettingIgnoreSameExample("true")');
-    Utility.resetLabelResolverSettingIgnoreSameExample(true);
-    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), finished calling Utility.resetLabelResolverSettingIgnoreSameExample()');
-    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call Utility.generateEvaluationReport()');
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("true")');
+    UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(true);
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), finished calling UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample()');
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     const evaluationOutput: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
@@ -161,6 +162,7 @@ export class OrchestratorEvaluate {
         'scoreOutputLines': string[][];
     } =
     Utility.generateEvaluationReport(
+      UtilityLabelResolver.score,
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,

@@ -44,5 +44,35 @@ describe('Test Suite - assess', () => {
     }
     Utility.debuggingLog('THE END - Test.0000 OrchestratorAssess.runAsync()');
   });
+
+  it('Test.0001 OrchestratorAssess.runAsync()', async function () {
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+    Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
+    const inputPath: string = './resources/data/EvaluationJsonFormat/va_test.json';
+    const prdictionPath: string = './resources/data/EvaluationJsonFormat/va_predictions-top1.json';
+    const outputPath: string = './resources/data/EvaluationJsonFormat/OrchestratorAssess_VAtest';
+    const assessmentSetIntentSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetIntentSummaryHtmlOutputFilename);
+    const assessmentSetIntentLabelsOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetIntentLabelsOutputFilename);
+    const assessmentSetEntitySummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetEntitySummaryHtmlOutputFilename);
+    const assessmentSetEntityLabelsOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetEntityLabelsOutputFilename);
+    await OrchestratorAssess.runAsync(
+      inputPath,
+      prdictionPath,
+      outputPath);
+    // ---- NOTE ---- clean up after unit tests.
+    const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
+    if (toCleanUpAfterUnitTest) {
+      try {
+        Utility.deleteFile(assessmentSetIntentSummaryHtmlOutputFilename);
+        Utility.deleteFile(assessmentSetIntentLabelsOutputFilename);
+        Utility.deleteFile(assessmentSetEntitySummaryHtmlOutputFilename);
+        Utility.deleteFile(assessmentSetEntityLabelsOutputFilename);
+        fs.rmdirSync(outputPath);
+      } catch (error) {
+      }
+    }
+    Utility.debuggingLog('THE END - Test.0000 OrchestratorAssess.runAsync()');
+  });
 });
 
