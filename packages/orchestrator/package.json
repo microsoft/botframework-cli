@@ -63,7 +63,7 @@
     "lint": "eslint . --ext .ts",
     "postpack": "rimraf oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "tsc -b && oclif-dev manifest",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
@@ -71,6 +71,6 @@
     "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
     "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
     "doc:readme": "oclif-dev manifest && oclif-dev readme",
-    "version": "npm run doc:readme && git add README.md"
+    "version": ""
   }
 }
