@@ -38,7 +38,7 @@ export default class OrchestratorCreate extends Command {
 
     try {
       OrchestratorSettings.init(__dirname, nlrPath, output, __dirname);
-      await Orchestrator.createAsync(OrchestratorSettings.ModelPath, input, output, flags.hierarchical);
+      await Orchestrator.createAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath, flags.hierarchical);
       OrchestratorSettings.persist();
     } catch (error) {
       throw (new CLIError(error));

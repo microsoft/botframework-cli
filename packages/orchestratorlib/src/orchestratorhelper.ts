@@ -132,15 +132,22 @@ export class OrchestratorHelper {
     return {utteranceLabelsMap, utteranceLabelDuplicateMap, utteranceEntityLabelsMap, utteranceEntityLabelDuplicateMap};
   }
 
-  public static getOutputPath(out: string, base: string): string {
+  /*
+  If --in is a file
+      - If --out is a folder, write to outFolder\inFileName.blu
+      - If --out is a file, write to outFile
+      - else, write to cwd()\orchestrator.blu
+  Else
+      - If --out is a folder, write to outFolder\orchestrator.blu
+      - If --out is a file, write to outFile
+      - else, write to cwd()\orchestrator.blu
+  */
+  public static getOutputPath(out: string, input: string): string {
     let retValue: string = out;
     if (OrchestratorHelper.isDirectory(out)) {
-      retValue = path.join(out, 'orchestrator.blu');
-    } else if (!out.endsWith('.blu')) {
-      const srcBaseFileName: string = path.basename(base);
-      const dstBaseFileName: string = srcBaseFileName.substring(0, srcBaseFileName.lastIndexOf('.'));
-      retValue = path.join(out, `${dstBaseFileName}.blu`);
-    }
+      const fileName: string = OrchestratorHelper.isDirectory(input) ? 'orchestrator.blu' : path.basename(input);
+      retValue = path.join(out, fileName);
+    } 
     return retValue;
   }
 

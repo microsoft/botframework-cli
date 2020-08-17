@@ -63,13 +63,17 @@ export class OrchestratorSettings {
       snapshotPath = path.resolve(snapshotPath);
 
       if (!OrchestratorHelper.exists(snapshotPath)) {
-        fs.mkdirSync(snapshotPath, {recursive: true});
-      }
-      if (OrchestratorHelper.isDirectory(snapshotPath)) {
-        snapshotPath = path.join(snapshotPath, 'orchestrator.blu');
+        let snapshotDir: string = path.dirname(snapshotPath);
+        let snapshotFile: string = path.basename(snapshotPath);
+        if (!snapshotFile.includes('.')) {
+          snapshotDir = snapshotPath;
+          snapshotFile = '';
+        }
+        fs.mkdirSync(snapshotDir, {recursive: true});
+        snapshotPath = path.join(snapshotPath, snapshotFile);
       }
     } else if (!settingsFileExists || !settings.snapshotPath || settings.snapshotPath.length === 0) {
-      snapshotPath = path.join(defaultSnapshotPath, 'orchestrator.blu');
+      snapshotPath = defaultSnapshotPath;
     } else {
       snapshotPath = settings.snapshotPath;
     }
