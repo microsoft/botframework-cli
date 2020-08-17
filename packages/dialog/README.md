@@ -33,7 +33,7 @@ _See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframew
 
 ## `bf dialog:merge PATTERNS`
 
-Merge <kind>.schema and <kind>[.<locale>].uischema definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources are included in the same location.
+Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources are included in the same location.
 
 ```
 USAGE
