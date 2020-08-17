@@ -17,6 +17,8 @@ const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
 const processedFiles: string[] = [];
 
 export class OrchestratorHelper {
+  public static SnapshotFileName: string = 'orchestrator.blu';
+
   public static exists(path: string): boolean {
     return fs.existsSync(path);
   }
@@ -145,9 +147,14 @@ export class OrchestratorHelper {
   public static getOutputPath(out: string, input: string): string {
     let retValue: string = out;
     if (OrchestratorHelper.isDirectory(out)) {
-      const fileName: string = OrchestratorHelper.isDirectory(input) ? 'orchestrator.blu' : path.basename(input);
-      retValue = path.join(out, fileName);
-    } 
+      if (OrchestratorHelper.isDirectory(input)) {
+        retValue = path.join(out, OrchestratorHelper.SnapshotFileName);
+      } else {
+        const srcBaseFileName: string = path.basename(input);
+        const dstBaseFileName: string = srcBaseFileName.substring(0, srcBaseFileName.lastIndexOf('.'));
+        retValue = path.join(out, `${dstBaseFileName}.blu`);
+      }
+    }
     return retValue;
   }
 

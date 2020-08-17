@@ -13,6 +13,8 @@ import {Label} from '../src/label';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
 describe('Test Suite - orchestratorhelper', () => {
   it('Test.0000 OrchestratorHelper.addNewLabelUtterance()', function () {
@@ -342,6 +344,51 @@ describe('Test Suite - orchestratorhelper', () => {
       `(utteranceEntityLabelDuplicateMap.get(utterance0) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance0) as Label[]).length}`);
     assert.ok((utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length === 3,
       `(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length}`);
+  });
+
+  it('Test.0300 OrchestratorHelper.getOutputPath()', () => {
+    const baseOutputDir: string = './test/fixtures/output';
+    const baseInputDir: string = './test/fixtures/dispatch/';
+
+    // output is folder, input is folder
+    let output: string = baseOutputDir;
+    let input: string = baseInputDir;
+
+    if (!OrchestratorHelper.exists(baseOutputDir)) {
+      fs.mkdirSync(baseOutputDir, {recursive: true});
+    }
+
+    let snapshotPath: string = OrchestratorHelper.getOutputPath(output, input);
+    let expected: string = path.join(output, OrchestratorHelper.SnapshotFileName);
+    assert.ok(snapshotPath === expected, `Incorrect output file, expected ${expected}, actual ${snapshotPath}`);
+
+    // output is folder, input is file
+    input = path.join(input, 'Weather.json');
+    snapshotPath = OrchestratorHelper.getOutputPath(output, input);
+    expected = path.join(output, 'Weather.blu');
+    assert.ok(snapshotPath === expected, `Incorrect output file, expected ${expected}, actual ${snapshotPath}`);
+
+    // output is orchestrator.blu, input is file
+    output = expected;
+    snapshotPath = OrchestratorHelper.getOutputPath(output, input);
+    expected = output;
+    assert.ok(snapshotPath === expected, `Incorrect output file, expected ${expected}, actual ${snapshotPath}`);
+
+    // output is file <> orchestrator.blu, input is file
+    output = path.join(baseOutputDir, 'test.blu');
+    snapshotPath = OrchestratorHelper.getOutputPath(output, input);
+    expected = output;
+    assert.ok(snapshotPath === expected, `Incorrect output file, expected ${expected}, actual ${snapshotPath}`);
+
+    // output is file <> orchestrator.blu, input is folder
+    input = baseInputDir;
+    snapshotPath = OrchestratorHelper.getOutputPath(output, input);
+    expected = output;
+    assert.ok(snapshotPath === expected, `Incorrect output file, expected ${expected}, actual ${snapshotPath}`);
+
+    if (OrchestratorHelper.exists(baseOutputDir)) {
+      fs.mkdirSync(baseOutputDir, {recursive: true});
+    }
   });
 });
 
