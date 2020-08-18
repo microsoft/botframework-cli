@@ -1349,6 +1349,8 @@ export default class SchemaMerger {
 
     // Bundle remote references into schema while pruning to minimally needed definitions.
     // Remote references will be found under definitions/<pathBasename> which must be unique.
+    // There is special code to handle requires siblings to $ref where we remove the requires from
+    // the bundled definition.  This is similar to what JSON schema 8 does.
     private async bundle(schema: any): Promise<void> {
         const current = this.currentFile
         let sources: string[] = []
@@ -1390,6 +1392,11 @@ export default class SchemaMerger {
                             } else if (!elt.$bundled) {
                                 elt.$ref = ref
                                 elt.$bundled = true
+                                if (elt.required) {
+                                    // Strip required from destination
+                                    // This is to support a required sibling to $ref
+                                    delete definition.required
+                                }
                                 if (!definition.$bundled) {
                                     // First outside reference mark it to keep and follow internal $ref
                                     definition.$bundled = true
