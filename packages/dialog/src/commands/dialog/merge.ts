@@ -7,7 +7,7 @@ import {Command, flags} from '@microsoft/bf-cli-command'
 import SchemaMerger from '../../library/schemaMerger'
 
 export default class DialogMerge extends Command {
-    static description = 'Merge <kind>.schema and <kind>[.<locale>].uischema definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources are included in the same location.'
+    static description = 'Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources are included in the same location.'
 
     static args = [
         {name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .csproj, .nuspec or package.json files.'},
